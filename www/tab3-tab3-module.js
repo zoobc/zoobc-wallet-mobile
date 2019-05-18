@@ -52,7 +52,7 @@ var Tab3PageModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ion-header>\n  <ion-toolbar>\n    <ion-buttons start>\n      <ion-button icon-only color=\"royal\">\n        <ion-icon name=\"search\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n    <ion-title>Send To...</ion-title>\n    <ion-buttons end>\n      <ion-button ion-button icon-only color=\"royal\">\n        <ion-icon name=\"person-add\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n<ion-content>\n\n\n\n    <ion-card>\n      <ion-card-header>\n        <ion-card-subtitle>Card Subtitle</ion-card-subtitle>\n        <ion-card-title>Card Title</ion-card-title>\n      </ion-card-header>\n\n      <ion-card-content>\n        Keep close to Nature's heart... and break clear away, once in awhile,\n        and climb a mountain or spend a week in the woods. Wash your spirit clean.\n\n        <ion-list>\n          <ion-item>\n            <ion-icon name=\"leaf\" item-start></ion-icon>\n              Herbology\n          </ion-item>\n        </ion-list>\n      </ion-card-content>\n    </ion-card>\n\n    <ion-card>\n      <ion-item>\n        <ion-icon name=\"pin\" slot=\"start\"></ion-icon>\n        <ion-label>ion-item in a card, icon left, button right</ion-label>\n        <ion-button fill=\"outline\" slot=\"end\">View</ion-button>\n      </ion-item>\n\n      <ion-card-content>\n        This is content, without any paragraph or header tags,\n        within an ion-card-content element.\n      </ion-card-content>\n    </ion-card>\n\n    <ion-card>\n      <ion-item href=\"#\" class=\"activated\">\n        <ion-icon name=\"wifi\" slot=\"start\"></ion-icon>\n        <ion-label>Card Link Item 1 .activated</ion-label>\n      </ion-item>\n\n      <ion-item href=\"#\">\n        <ion-icon name=\"wine\" slot=\"start\"></ion-icon>\n        <ion-label>Card Link Item 2</ion-label>\n      </ion-item>\n\n      <ion-item class=\"activated\">\n        <ion-icon name=\"warning\" slot=\"start\"></ion-icon>\n        <ion-label>Card Button Item 1 .activated</ion-label>\n      </ion-item>\n\n      <ion-item>\n        <ion-icon name=\"walk\" slot=\"start\"></ion-icon>\n        <ion-label>Card Button Item 2</ion-label>\n      </ion-item>\n    </ion-card>\n\n</ion-content>\n"
+module.exports = "<ion-header>\n\n  <ion-toolbar color=\"primary\">\n    <ion-title>Spinechain - Scan QR</ion-title>\n  </ion-toolbar>\n\n\n\n</ion-header>\n\n\n<ion-content ion-padding>\n  <h1>Click Button To Scan</h1>\n\n  <ion-button (click)=\"scanCode()\">\n    Scan Code\n  </ion-button>\n\n  <div *ngIf=\"scannedData\">\n    <p>\n      Scanned Code Text : <b>{{ scannedData[\"text\"] }}</b>\n    </p>\n    <p>\n      Scanned Code Format : <b>{{ scannedData[\"format\"] }}</b>\n    </p>\n  </div>\n\n  <h1>Enter Value to Create QR code</h1>\n  <ion-input type=\"text\" [(ngModel)]=\"encodedData\"></ion-input>\n\n  <ion-button (click)=\"encodedText()\">\n    Create QR\n  </ion-button>\n</ion-content>"
 
 /***/ }),
 
@@ -79,17 +79,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Tab3Page", function() { return Tab3Page; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _ionic_native_barcode_scanner_ngx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic-native/barcode-scanner/ngx */ "./node_modules/@ionic-native/barcode-scanner/ngx/index.js");
+
 
 
 var Tab3Page = /** @class */ (function () {
-    function Tab3Page() {
+    function Tab3Page(barcodeScanner) {
+        this.barcodeScanner = barcodeScanner;
+        this.encodeData = 'yuhjKhgjhgdOp786579954jhfjkhkk';
+        // Options
+        this.barcodeScannerOptions = {
+            showTorchButton: true,
+            showFlipCameraButton: true
+        };
     }
+    Tab3Page.prototype.scanCode = function () {
+        var _this = this;
+        this.barcodeScanner
+            .scan()
+            .then(function (barcodeData) {
+            alert('Barcode data ' + JSON.stringify(barcodeData));
+            _this.scannedData = barcodeData;
+        })
+            .catch(function (err) {
+            console.log('Error', err);
+        });
+    };
+    Tab3Page.prototype.encodedText = function () {
+        var _this = this;
+        this.barcodeScanner
+            .encode(this.barcodeScanner.Encode.TEXT_TYPE, this.encodeData)
+            .then(function (encodedData) {
+            console.log(encodedData);
+            _this.encodeData = encodedData;
+        }, function (err) {
+            console.log('Error occured : ' + err);
+        });
+    };
     Tab3Page = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-tab3',
             template: __webpack_require__(/*! ./tab3.page.html */ "./src/app/tab3/tab3.page.html"),
             styles: [__webpack_require__(/*! ./tab3.page.scss */ "./src/app/tab3/tab3.page.scss")]
-        })
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ionic_native_barcode_scanner_ngx__WEBPACK_IMPORTED_MODULE_2__["BarcodeScanner"]])
     ], Tab3Page);
     return Tab3Page;
 }());

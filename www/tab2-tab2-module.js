@@ -52,7 +52,7 @@ var Tab2PageModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ion-header>\n  <ion-toolbar>\n    <ion-buttons slot=\"start\">\n      <ion-back-button></ion-back-button>\n    </ion-buttons>\n    <ion-title>My Navigation Bar</ion-title>\n  </ion-toolbar>\n\n  <ion-toolbar>\n    <ion-title>Subheader</ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n\n\n<!-- Default -->\n<ion-button>Default</ion-button>\n\n<!-- Anchor -->\n<ion-button href=\"#\">Anchor</ion-button>\n\n<!-- Colors -->\n<ion-button color=\"primary\">Primary</ion-button>\n<ion-button color=\"secondary\">Secondary</ion-button>\n<ion-button color=\"tertiary\">Tertiary</ion-button>\n<ion-button color=\"success\">Success</ion-button>\n<ion-button color=\"warning\">Warning</ion-button>\n<ion-button color=\"danger\">Danger</ion-button>\n<ion-button color=\"light\">Light</ion-button>\n<ion-button color=\"medium\">Medium</ion-button>\n<ion-button color=\"dark\">Dark</ion-button>\n\n<!-- Expand -->\n<ion-button expand=\"full\">Full Button</ion-button>\n<ion-button expand=\"block\">Block Button</ion-button>\n\n<!-- Round -->\n<ion-button shape=\"round\">Round Button</ion-button>\n\n<!-- Fill -->\n<ion-button expand=\"full\" fill=\"outline\">Outline + Full</ion-button>\n<ion-button expand=\"block\" fill=\"outline\">Outline + Block</ion-button>\n<ion-button shape=\"round\" fill=\"outline\">Outline + Round</ion-button>\n\n<!-- Icons -->\n<ion-button>\n  <ion-icon slot=\"start\" name=\"star\"></ion-icon>\n  Left Icon\n</ion-button>\n\n<ion-button>\n  Right Icon\n  <ion-icon slot=\"end\" name=\"star\"></ion-icon>\n</ion-button>\n\n<ion-button>\n  <ion-icon slot=\"icon-only\" name=\"star\"></ion-icon>\n</ion-button>\n\n<!-- Sizes -->\n<ion-button size=\"large\">Large</ion-button>\n<ion-button>Default</ion-button>\n<ion-button size=\"small\">Small</ion-button>\n\n</ion-content>\n"
+module.exports = "<ion-header>\n  <ion-toolbar color=\"primary\">\n      <ion-title>Spinechain - Receive</ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content ion-padding>\n  \n  <h1>Enter Value to Create QR code</h1>\n  <ion-input type=\"text\" [(ngModel)]=\"encodedData\"></ion-input>\n\n  <ion-button (click)=\"encodedText()\">\n    Create QR\n  </ion-button>\n\n</ion-content>\n"
 
 /***/ }),
 
@@ -79,17 +79,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Tab2Page", function() { return Tab2Page; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _ionic_native_barcode_scanner_ngx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic-native/barcode-scanner/ngx */ "./node_modules/@ionic-native/barcode-scanner/ngx/index.js");
+
 
 
 var Tab2Page = /** @class */ (function () {
-    function Tab2Page() {
+    function Tab2Page(barcodeScanner) {
+        this.barcodeScanner = barcodeScanner;
+        this.encodeData = 'yuhjKhgjhgdOp786579954jhfjkhkk';
+        // Options
+        this.barcodeScannerOptions = {
+            showTorchButton: true,
+            showFlipCameraButton: true
+        };
     }
+    Tab2Page.prototype.scanCode = function () {
+        var _this = this;
+        this.barcodeScanner
+            .scan()
+            .then(function (barcodeData) {
+            alert('Barcode data ' + JSON.stringify(barcodeData));
+            _this.scannedData = barcodeData;
+        })
+            .catch(function (err) {
+            console.log('Error', err);
+        });
+    };
+    Tab2Page.prototype.encodedText = function () {
+        var _this = this;
+        this.barcodeScanner
+            .encode(this.barcodeScanner.Encode.TEXT_TYPE, this.encodeData)
+            .then(function (encodedData) {
+            console.log(encodedData);
+            _this.encodeData = encodedData;
+        }, function (err) {
+            console.log('Error occured : ' + err);
+        });
+    };
     Tab2Page = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-tab2',
             template: __webpack_require__(/*! ./tab2.page.html */ "./src/app/tab2/tab2.page.html"),
             styles: [__webpack_require__(/*! ./tab2.page.scss */ "./src/app/tab2/tab2.page.scss")]
-        })
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ionic_native_barcode_scanner_ngx__WEBPACK_IMPORTED_MODULE_2__["BarcodeScanner"]])
     ], Tab2Page);
     return Tab2Page;
 }());
