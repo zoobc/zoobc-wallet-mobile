@@ -17,5 +17,3 @@
 - Install ionic framework
 - Clone code 
 
-
-- 
