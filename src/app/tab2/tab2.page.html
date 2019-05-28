@@ -1,9 +1,16 @@
 <ion-header>
-  <ion-toolbar>
-      <ion-title>Spinechain.com</ion-title>
+  <ion-toolbar color="primary">
+      <ion-title>Spinechain - Receive</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-     <p>Receive</p>
+<ion-content ion-padding>
+  
+  <h1>Enter Value to Create QR code</h1>
+  <ion-input type="text" [(ngModel)]="encodedData"></ion-input>
+
+  <ion-button (click)="encodedText()">
+    Create QR
+  </ion-button>
+
 </ion-content>
