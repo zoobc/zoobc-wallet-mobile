@@ -1,8 +1,29 @@
 <ion-header>
-  <ion-toolbar>
-      <ion-title>Spinechain.com</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Spinechain - Scan QR</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <p>Scan ...</p>
+
+
+<ion-content style="text-align:center">
+
+  <ion-icon name="qr-scanner"></ion-icon>
+
+  <h1>Scan QR Codes</h1>
+  <p>You can scan Spinechain addresses, payment requests, papper wallets, and more.</p>  
+
+  <ion-button (click)="scanCode()">
+    Scan QR Code
+  </ion-button>
+
+  <div *ngIf="scannedData">
+    <p>
+      Scanned Code Text : <b>{{ scannedData["text"] }}</b>
+    </p>
+    <p>
+      Scanned Code Format : <b>{{ scannedData["format"] }}</b>
+    </p>
+  </div>
+
+
 </ion-content>
