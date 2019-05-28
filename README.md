@@ -14,6 +14,12 @@
 ### Installation
 
 - Install nodejs 
-- Install ionic framework
-- Clone code 
+- npm install -g ionic
+- git clone https://github.com/BlockchainZoo/spinechain-wallet-mobile-prototype.git
+- cd spinechain-wallet-mobile-prototype
+- npm install
+- ionic serve
+
+
+
 
