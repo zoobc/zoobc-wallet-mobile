@@ -1,4 +1,15 @@
 import { Component } from '@angular/core';
+import * as CryptoJS from 'crypto-js';
+import * as Bip39 from 'bip39';
+import { wordlist } from '../../assets/js/wordlist'; 
+
+const EC = require('elliptic').ec;
+const ec = new EC('secp256k1');
+const SHA256 = require('crypto-js/sha256');
+
+const EDDSA = require('elliptic').eddsa;
+const eddsa = new EDDSA('ed25519');
+
 import {
   BarcodeScannerOptions,
   BarcodeScanner
@@ -13,13 +24,13 @@ import {
 
 export class Tab2Page {
   encodeData: any;
-  scannedData:{};
+  scannedData: {};
   barcodeScannerOptions: BarcodeScannerOptions;
 
 
   constructor(private barcodeScanner: BarcodeScanner) {
     this.encodeData = 'yuhjKhgjhgdOp786579954jhfjkhkk';
-  
+
     // Options
     this.barcodeScannerOptions = {
       showTorchButton: true,
@@ -53,5 +64,64 @@ export class Tab2Page {
       );
   }
 
+  showAlert() {
+
+
+    // Generate a new key pair and convert them to hex-strings
+    const key = ec.genKeyPair();
+    const publicKey = key.getPublic('hex');
+    const privateKey = key.getPrivate('hex');
+
+    var myString = "https://www.titanesmedellin.com/";
+    var myPassword = "myPassword";
+
+
+    // PROCESS
+    var encrypted = CryptoJS.AES.encrypt(myString, myPassword);
+    var decrypted = CryptoJS.AES.decrypt(encrypted, myPassword);
+
+
+    var crypto = window.crypto;
+    var passPhrase = "";
+
+    
+
+    if (crypto) {
+      var bits = 128;
+      var random = new Uint32Array(bits / 32);
+      crypto.getRandomValues(random);
+      var n = wordlist.length;
+      var phraseWords = [];
+      var x, w1, w2, w3;
+      for (var i = 0; i < random.length; i++) {
+        x = random[i];
+        w1 = x % n;
+        w2 = (((x / n) >> 0) + w1) % n;
+        w3 = (((((x / n) >> 0) / n) >> 0) + w2) % n;
+
+        phraseWords.push(wordlist[w1]);
+        phraseWords.push(wordlist[w2]);
+        phraseWords.push(wordlist[w3]);
+      }
+
+      passPhrase = phraseWords.join(" ");
+      crypto.getRandomValues(random);
+    }
+
+    
+    let kp = eddsa.keyFromSecret(passPhrase);
+    let pubKey = kp.getPublic('hex');
+    //let priKey = kp.getPrivate('hex');
+
+    alert(pubKey);
+  }
+  
+  calculateHash(){    
+    return SHA256("Dari Putu" + "Ke Eka" + 120000).toString();
+  }
+
+  genKeyPair(secret) {
+    return eddsa.keyFromSecret(secret);
+  }
 
 }
