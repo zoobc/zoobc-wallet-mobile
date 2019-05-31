@@ -1,7 +1,7 @@
 <ion-content>
   <div class="setup-pin">
     <div>
-      <ion-input type="number" maxlength="4"></ion-input>
+      <ion-input type="number" maxlength="4" [(ngModel)]="pin"></ion-input>
     </div>
     <ion-button (click)="savePin()">Save PIN</ion-button>
   </div>
