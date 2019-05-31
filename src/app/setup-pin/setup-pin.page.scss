@@ -1,0 +1,13 @@
+@import "../../assets/scss/main.scss";
+
+.setup-pin {
+    padding: 20px;
+    height: 100%;
+    @include flex-init;
+    @include flex-direction(column);
+    @include justify-content(center);
+
+    input {
+        border-bottom: solid 1px black !important;
+    }
+}

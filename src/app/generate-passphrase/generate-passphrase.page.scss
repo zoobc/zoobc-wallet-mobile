@@ -1,0 +1,36 @@
+@import "../../assets/scss/main.scss";
+
+.generate-passphrase {
+    padding: 10px;
+    position: relative;
+    height: 100%;
+    pre {
+        white-space: pre-wrap;       /* css-3 */
+        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+        white-space: -pre-wrap;      /* Opera 4-6 */
+        white-space: -o-pre-wrap;    /* Opera 7 */
+        word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    }
+
+    .term-condition {
+        @include flex-init;
+        margin-bottom: 20px;
+
+        ion-label {
+            @include flex(1);
+        }
+
+        ion-checkbox {
+            @include flex-basis(18px);
+            margin-right: 10px;
+        }
+    }
+
+    .setup-pin {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        padding: 20px;
+    }
+}
