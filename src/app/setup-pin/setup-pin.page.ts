@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import sha256 from 'crypto-js/sha256';
+import sha512 from 'crypto-js/sha512';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-setup-pin',
@@ -8,19 +9,18 @@ import sha256 from 'crypto-js/sha256';
   styleUrls: ['./setup-pin.page.scss'],
 })
 export class SetupPinPage implements OnInit {
-  pin: number
+  private pin: number
 
   constructor(
-    private storage: Storage
+    private storage: Storage,
+    private router: Router
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async savePin() {
-    const encryptedPin = sha256(this.pin).toString();
+    const encryptedPin = this.pin;
     this.storage.set("pin", encryptedPin)
-    const a = await this.storage.get("pin")
+    this.router.navigate(['login']);
   }
-
 }

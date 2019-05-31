@@ -1,6 +1,9 @@
 <ion-content>
-  <div class="login">
-    <ion-button expand="block" routerLink="/create-wallet">Create Wallet</ion-button>
-    <ion-button expand="block">Open Existing Wallet</ion-button>
-  </div>
-</ion-content>
+    <div class="login">
+      <div>
+        <ion-input type="number" maxlength="4" [(ngModel)]="pin"></ion-input>
+      </div>
+      <ion-button (click)="login()" expand="block" >Unlock</ion-button>
+    </div>
+  </ion-content>
+  

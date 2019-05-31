@@ -4,5 +4,7 @@
       <ion-input type="number" maxlength="4" [(ngModel)]="pin"></ion-input>
     </div>
     <ion-button (click)="savePin()">Save PIN</ion-button>
+
+    <div [innerHTML]="qrElement"></div>
   </div>
 </ion-content>
