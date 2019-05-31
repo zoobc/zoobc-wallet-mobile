@@ -58,5 +58,13 @@
     "variables": {
       "ANDROID_SUPPORT_V4_VERSION": "27.1.1"
     }
+  },
+  "cordova-plugin-pin-dialog": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-pin-dialog"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }
