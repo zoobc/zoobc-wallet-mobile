@@ -1,0 +1,18 @@
+@import '../../assets/scss/main.scss';
+
+.create-wallet-page {
+    @include flex-init;
+    @include justify-content(center);
+    @include align-items(center);
+    @include flex-direction(column);
+    height: 100%;
+    padding: 30px;
+
+    .create-wallet-title {
+        text-align: center
+    }
+
+    .create-wallet-desc {
+        text-align: center;
+    }
+}
