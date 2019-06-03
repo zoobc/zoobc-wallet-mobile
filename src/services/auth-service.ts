@@ -25,9 +25,9 @@ export class AuthService implements CanActivate {
     }
 
     async login(pin) {
-        const encryptedPin = sha512(pin).toString();
+        // const encryptedPin = sha512(pin).toString();
+        const encryptedPin = pin;
         const storedPin = await this.storage.get('pin')
-        console.log("encryptedPin", encryptedPin)
         if(encryptedPin === storedPin) {
             this.isUserLoggenIn = true
             return true
@@ -35,5 +35,4 @@ export class AuthService implements CanActivate {
             return false
         }
     }
-
 }

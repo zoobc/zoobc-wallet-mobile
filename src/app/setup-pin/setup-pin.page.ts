@@ -19,7 +19,8 @@ export class SetupPinPage implements OnInit {
   ngOnInit() {}
 
   savePin() {
-    const encryptedPin = sha512(this.pin).toString();
+    // const encryptedPin = sha512(this.pin).toString();
+    const encryptedPin = this.pin;
     console.log("encryptedPin", encryptedPin)
     this.storage.set("pin", encryptedPin)
     this.router.navigate(['login']);
