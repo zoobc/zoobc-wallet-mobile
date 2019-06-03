@@ -14,10 +14,6 @@ export class TransactionService {
 
   getData(publicKey: string): Observable<any> {
     const response1 = this.http.get(apiUrl + publicKey);
-    // const response2 = this.http.get(apiUrl + 'IN/110001');
-    // const response3 = this.http.get(apiUrl + 'BR/01000-000');
-    // const response4 = this.http.get(apiUrl + 'FR/01000');
-    //return forkJoin([response1, response2, response3, response4]);
     return forkJoin([response1]);
   }
 

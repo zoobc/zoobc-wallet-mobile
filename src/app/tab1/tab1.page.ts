@@ -13,16 +13,17 @@ export class Tab1Page implements OnInit{
   data2: any;
   balance: any;
   transactions: any;
-
+  publicKey = 'JkhkUiury9899';
+  
   constructor(public blnSrv: BalanceService, public trxSrv: TransactionService, public loadingController: LoadingController) { }
 
-  async getBalance() {
+  async getBalance(pKey: string) {
     const loading = await this.loadingController.create({
       message: 'Loading'
     });
     await loading.present();
-    this.blnSrv.getData()
-      .subscribe(res => {
+    this.blnSrv.getData(pKey)
+      .subscribe(res => { 
         console.log(res);
         this.data1 = res[0];
         this.balance = this.data1['data'];
@@ -51,8 +52,8 @@ export class Tab1Page implements OnInit{
   }
 
   ngOnInit() {
-    this.getBalance();
-    this.getTransaction('UiuiiuKllk');
+    this.getBalance(this.publicKey);
+    this.getTransaction(this.publicKey);
   }
 
 }
