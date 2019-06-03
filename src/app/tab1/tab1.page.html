@@ -9,20 +9,89 @@
   <ion-grid>
     <ion-row>
       <ion-col col-6>
-        <ion-button shape="round" fill="outline" expand="full">Receive</ion-button>
+        <ion-button shape="round" [routerLink]="['//tabs/tab2']" fill="outline" expand="full">Receive</ion-button>
       </ion-col>
       <ion-col col-6>
-        <ion-button shape="round" fill="outline" expand="full">Buy SPC cash</ion-button>
+        <ion-button shape="round" href="https://coinmarketcap.com/" fill="outline" expand="full">Buy SPC cash</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-   <ion-card>
+  <ion-card>
       <ion-card-header>
-        <ion-card-title>Spinechain Cash (SPC)</ion-card-title>
+        <ion-card-title>Spinechain Cash</ion-card-title>
       </ion-card-header>
       <ion-card-content>
+          <ion-textarea name="balance" [(ngModel)]="balance">SPC</ion-textarea>
       </ion-card-content>
-    </ion-card>
+  </ion-card>
     
+  <ion-card>
+      <ion-card-header>
+        <ion-card-title>News 1</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+
+      </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+      <ion-card-header>
+        <ion-card-title>News 2</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+
+      </ion-card-content>
+  </ion-card>    
+<!--
+<ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>{{data1['country']}}</ion-card-subtitle>
+      <ion-card-title>{{data1['post code']}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ul>
+        <li *ngFor="let p of data1.places">{{p['place name']}}</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>{{data2['country']}}</ion-card-subtitle>
+      <ion-card-title>{{data2['post code']}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ul>
+        <li *ngFor="let p of data2.places">{{p['place name']}}</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>{{data3['country']}}</ion-card-subtitle>
+      <ion-card-title>{{data3['post code']}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ul>
+        <li *ngFor="let p of data3.places">{{p['place name']}}</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>{{data4['country']}}</ion-card-subtitle>
+      <ion-card-title>{{data4['post code']}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ul>
+        <li *ngFor="let p of data4.places">{{p['place name']}}</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+  -->
+
 </ion-content>

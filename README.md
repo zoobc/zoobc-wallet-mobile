@@ -20,6 +20,8 @@
 - npm install
 - ionic serve
 
+### Troubleshooting
+- read Troubleshooting in this repo https://github.com/nabto/ionic-starter-nabto
 
 
 

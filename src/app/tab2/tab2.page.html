@@ -1,16 +1,21 @@
+
 <ion-header>
   <ion-toolbar color="primary">
-      <ion-title>Spinechain - Receive</ion-title>
+      <ion-title>Receive</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content ion-padding>
-  
-  <h1>Enter Value to Create QR code</h1>
-  <ion-input type="text" [(ngModel)]="encodedData"></ion-input>
+<ion-content ion-padding style="text-align:center">
+  <ion-grid>
+    <ion-row>          
+      <ion-col align-self-center align-self-center size-md="12" style="text-align:center" size-lg="12" size-xs="12">
+        <h3>My Wallet Address</h3>
+        <ion-textarea name="encodeData" [(ngModel)]="encodeData"></ion-textarea>
+    
+        <div [innerHTML]="qrElement" class="qr-code" ></div>
+    </ion-col>
+  </ion-row>    
 
-  <ion-button (click)="encodedText()">
-    Create QR
-  </ion-button>
 
+  </ion-grid>
 </ion-content>
