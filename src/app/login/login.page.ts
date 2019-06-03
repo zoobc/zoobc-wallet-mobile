@@ -21,11 +21,11 @@ export class LoginPage implements OnInit {
 
   async login() {
     const isUserLoggedIn = await this.authService.login(this.pin);
-    if(isUserLoggedIn) {
-      this.router.navigate(['tabs']);
-    } else {
-      this.failedToast()
-    }
+    // if(isUserLoggedIn) {
+    //   this.router.navigate(['tabs']);
+    // } else {
+    //   this.failedToast()
+    // }
   }
 
   async failedToast() {
