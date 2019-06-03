@@ -1,0 +1,4 @@
+[submodule "externals/bip39"]
+	path = externals/bip39
+	url = https://github.com/iancoleman/bip39.git
+	branch = master
