@@ -3,7 +3,9 @@ import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import sha512 from 'crypto-js/sha512';
 
-@Injectable()
+@Injectable({
+    providedIn: "root"
+})
 export class AuthService implements CanActivate {
     private isUserLoggenIn = false
     constructor(
