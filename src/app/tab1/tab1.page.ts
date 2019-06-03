@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
-import { BalanceService } from '../../service/balance.service';
+import { BalanceService } from '../../services/balance.service';
 
 @Component({
   selector: 'app-tab1',
@@ -10,9 +10,6 @@ import { BalanceService } from '../../service/balance.service';
 export class Tab1Page implements OnInit{
 
   data1: any;
-  data2: any;
-  data3: any;
-  data4: any;
   balance: any;
 
   constructor(public api: BalanceService, public loadingController: LoadingController) { }
@@ -26,9 +23,7 @@ export class Tab1Page implements OnInit{
       .subscribe(res => {
         console.log(res);
         this.data1 = res[0];
-        this.data2 = res[1];
-        this.data3 = res[2];
-        this.data4 = res[3];
+        this.balance = this.data1['data'];
         loading.dismiss();
       }, err => {
         console.log(err);
