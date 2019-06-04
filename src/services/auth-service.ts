@@ -14,12 +14,14 @@ export class AuthService implements CanActivate {
     }
 
     async canActivate(route: ActivatedRouteSnapshot) {
-
-        if (await this.storage.get("pin") && !this.isUserLoggenIn) {
-            this.router.navigate(['initial']);
-        }
-        else if (!this.isUserLoggenIn) {
+        const isPinSetup = await this.storage.get("pin")
+        if (isPinSetup && !this.isUserLoggenIn) {
             this.router.navigate(['login']);
+            return false
+        }
+        else if(!this.isUserLoggenIn){
+            this.router.navigate(['initial']);
+            return false
         }
         return true;
     }
