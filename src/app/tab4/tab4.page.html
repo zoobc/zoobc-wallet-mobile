@@ -1,11 +1,16 @@
 <ion-header>
 
   <ion-toolbar color="primary">
-    <ion-title>Spinechain - Send</ion-title>
+    <ion-title>Send</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-    <p>&nbsp;</p>
+<ion-content padding>
+
+    <div style="text-align:center">
+        <h3>Send Money</h3>
+    </div>
+
+        <!--
     <ion-card>
       <ion-card-header>
         <ion-card-title style="text-align:center">Send Money</ion-card-title>
@@ -13,8 +18,8 @@
 
       <ion-card-content padding>
 
-        <!--
           <p>&nbsp;</p>
+
           <p style="text-align:center">To get started, buy Spinechain Cash (SPC), or share your address.</p>
           <p style="text-align:center">You can receive spinechain from any wallet or service.</p>
 
@@ -38,7 +43,8 @@
           </ion-grid>
 
 
-
+ </ion-card-content>
+    </ion-card>
 
         -->
           <form  #form="ngForm" (ngSubmit)="register(form)">
@@ -47,8 +53,8 @@
                   <ion-col align-self-center align-self-center size-md="6" size-lg="5" size-xs="12">
                      <div padding>
                         <ion-item>
-                          <ion-label>From:</ion-label>  
-                          <ion-input name="sender" type="text" [(ngModel)]="sender" required readonly></ion-input>
+                          <ion-label>From:</ion-label> 
+                           <ion-textarea [(ngModel)]="sender" name="sender" autocomplete="on" autocorrect="on"></ion-textarea>
                         </ion-item>
                         <ion-item>
                           <ion-label>Pay To:</ion-label>  
@@ -58,14 +64,22 @@
                           <ion-label>Amount:</ion-label>  
                           <ion-input name="amount" type="text" [(ngModel)]="amount" required></ion-input>
                         </ion-item>
+                        <ion-item>
+                          <ion-label>Fee:</ion-label>  
+                          <ion-input name="fee" type="text" [(ngModel)]="fee" required></ion-input>
+                        </ion-item> 
                       </div>
                       <div padding>
-                        <ion-button  size="large" type="submit"  expand="block">Send</ion-button>
+                        <ion-button  size="large" (click)="sendMoney()" type="submit"  expand="block">Send</ion-button>
+                      </div>
+                      <div>
+                        <ion-item>
+                            <ion-label>{{status}}</ion-label>
+                        </ion-item>
                       </div>
                   </ion-col>
                 </ion-row>
             </ion-grid>
           </form>
-      </ion-card-content>
-    </ion-card>
+     
 </ion-content>
