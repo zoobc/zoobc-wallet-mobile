@@ -6,12 +6,17 @@ import { Component } from '@angular/core';
   styleUrls: ['tab4.page.scss']
 })
 export class Tab4Page {
+  sender: any;
+  recipient: any;
+  amount: any;
 
   constructor(){
+    this.sender = this.getAddress();
   }
 
 
   getAddress(){
+    return 'Kljkhhgg989KKk';
   }
 
 
