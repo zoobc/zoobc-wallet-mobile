@@ -1,8 +1,8 @@
 {
-  "name": "walletmob",
+  "name": "spinechainwallet",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "BlockchainZoo Wallet Team",
+  "homepage": "https://blockchainzoo.com/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -20,7 +20,7 @@
     "@angular/platform-browser": "^7.2.2",
     "@angular/platform-browser-dynamic": "^7.2.2",
     "@angular/router": "^7.2.2",
-    "@ionic-native/barcode-scanner": "^5.6.0",
+    "@ionic-native/barcode-scanner": "^5.7.0",
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/qr-scanner": "^5.6.0",
     "@ionic-native/splash-screen": "^5.0.0",
@@ -35,7 +35,7 @@
     "jayson": "^3.0.2",
     "ngx-qrcode2": "0.0.9",
     "node-fetch": "^2.6.0",
-    "phonegap-plugin-barcodescanner": "^8.0.1",
+    "phonegap-plugin-barcodescanner": "8.0.1",
     "qrcode-generator": "^1.4.3",
     "rxjs": "~6.5.1",
     "stream": "0.0.2",
@@ -86,7 +86,7 @@
       },
       "cordova-plugin-ionic-keyboard": {},
       "phonegap-plugin-barcodescanner": {
-        "ANDROID_SUPPORT_V4_VERSION": "27.1.1"
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
       }
     },
     "platforms": [
