@@ -11,7 +11,8 @@ const routes: Routes = [
   { path: 'generate-passphrase', loadChildren: './generate-passphrase/generate-passphrase.module#GeneratePassphrasePageModule' },
   { path: 'initial', loadChildren: './initial/initial.module#InitialPageModule' },
   { path: 'setup-pin', loadChildren: './setup-pin/setup-pin.module#SetupPinPageModule' },
-  { path: 'login', loadChildren: './login/login.module#LoginPageModule' }
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
+  { path: 'test-w', loadChildren: './test-w/test-w.module#TestWPageModule' }
 ];
 @NgModule({
   imports: [
