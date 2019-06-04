@@ -52,7 +52,7 @@ var Tab3PageModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ion-header>\n\n  <ion-toolbar color=\"primary\">\n    <ion-title>Spinechain - Scan QR</ion-title>\n  </ion-toolbar>\n\n\n\n</ion-header>\n\n\n<ion-content ion-padding>\n  <h1>Click Button To Scan</h1>\n\n  <ion-button (click)=\"scanCode()\">\n    Scan Code\n  </ion-button>\n\n  <div *ngIf=\"scannedData\">\n    <p>\n      Scanned Code Text : <b>{{ scannedData[\"text\"] }}</b>\n    </p>\n    <p>\n      Scanned Code Format : <b>{{ scannedData[\"format\"] }}</b>\n    </p>\n  </div>\n\n  <h1>Enter Value to Create QR code</h1>\n  <ion-input type=\"text\" [(ngModel)]=\"encodedData\"></ion-input>\n\n  <ion-button (click)=\"encodedText()\">\n    Create QR\n  </ion-button>\n</ion-content>"
+module.exports = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-title>Spinechain - Scan QR</ion-title>\n  </ion-toolbar>\n</ion-header>\n\n\n<ion-content style=\"text-align:center\">\n\n  <ion-icon name=\"qr-scanner\"></ion-icon>\n\n  <h1>Scan QR Codes</h1>\n  <p>You can scan Spinechain addresses, payment requests, papper wallets, and more.</p>  \n\n  <ion-button (click)=\"scanCode()\">\n    Scan QR Code\n  </ion-button>\n\n  <div *ngIf=\"scannedData\">\n    <p>\n      Scanned Code Text : <b>{{ scannedData[\"text\"] }}</b>\n    </p>\n    <p>\n      Scanned Code Format : <b>{{ scannedData[\"format\"] }}</b>\n    </p>\n  </div>\n\n\n</ion-content>"
 
 /***/ }),
 
@@ -86,7 +86,7 @@ __webpack_require__.r(__webpack_exports__);
 var Tab3Page = /** @class */ (function () {
     function Tab3Page(barcodeScanner) {
         this.barcodeScanner = barcodeScanner;
-        this.encodeData = 'yuhjKhgjhgdOp786579954jhfjkhkk';
+        this.encodeData = '1Lhqun1E9zZZhodiTqxfPQBcwr1CVDV2sy';
         // Options
         this.barcodeScannerOptions = {
             showTorchButton: true,
@@ -98,7 +98,7 @@ var Tab3Page = /** @class */ (function () {
         this.barcodeScanner
             .scan()
             .then(function (barcodeData) {
-            alert('Barcode data ' + JSON.stringify(barcodeData));
+            //alert('Barcode data ' + JSON.stringify(barcodeData));
             _this.scannedData = barcodeData;
         })
             .catch(function (err) {

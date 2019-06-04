@@ -63,7 +63,7 @@
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"common":"common","tab1-tab1-module":"tab1-tab1-module","tab2-tab2-module":"tab2-tab2-module","tab3-tab3-module":"tab3-tab3-module","tab4-tab4-module":"tab4-tab4-module","tabs-tabs-module":"tabs-tabs-module"}[chunkId]||chunkId) + ".js"
+/******/ 		return __webpack_require__.p + "" + ({"common":"common","about-about-module":"about-about-module","create-wallet-create-wallet-module":"create-wallet-create-wallet-module","generate-passphrase-generate-passphrase-module":"generate-passphrase-generate-passphrase-module","initial-initial-module":"initial-initial-module","login-login-module":"login-login-module","selectwallet-selectwallet-module":"selectwallet-selectwallet-module","setup-pin-setup-pin-module":"setup-pin-setup-pin-module","tab1-tab1-module":"tab1-tab1-module","tab2-tab2-module":"tab2-tab2-module","tab3-tab3-module":"tab3-tab3-module","tab4-tab4-module":"tab4-tab4-module","tabs-tabs-module":"tabs-tabs-module","test-w-test-w-module":"test-w-test-w-module"}[chunkId]||chunkId) + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
