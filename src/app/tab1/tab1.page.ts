@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
-import { BalanceService } from '../../services/balance.service';
-import { TransactionService } from '../../services/transaction.service';
+import { RestapiService } from '../../services/restapi.service';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -14,15 +13,15 @@ export class Tab1Page implements OnInit{
   balance: any;
   transactions: any;
   publicKey = 'JkhkUiury9899';
-  
-  constructor(public blnSrv: BalanceService, public trxSrv: TransactionService, public loadingController: LoadingController) { }
+
+  constructor(private apiservice: RestapiService, private loadingController: LoadingController) { }
 
   async getBalance(pKey: string) {
     const loading = await this.loadingController.create({
       message: 'Loading'
     });
     await loading.present();
-    this.blnSrv.getData(pKey)
+    this.apiservice.getBalance(pKey)
       .subscribe(res => { 
         console.log(res);
         this.data1 = res[0];
@@ -39,7 +38,7 @@ export class Tab1Page implements OnInit{
       message: 'Loading'
     });
     await loading.present();
-    this.trxSrv.getData(pKey)
+    this.apiservice.getAccountTransactions(pKey)
       .subscribe(res => {
         console.log(res);
         this.data2 = res[0];
