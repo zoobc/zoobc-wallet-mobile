@@ -3,7 +3,6 @@ import { Observable, of, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -24,9 +23,36 @@ export class RestapiService {
     return forkJoin([response1]);
   }
 
-  sendMoney(data: string){
-
+  // get hash of transaction
+  getHashTransaction(data: string): any{
+    const trxHash = 'hashed=' + data;
+    console.log('trxHash: ', trxHash)
+    return trxHash;
   }
 
+  signingHashTrx(hash: string){
+    return hash + 'signet';
+  }
+
+  sendMoney(from: string, to: string, amount: any, fee: any): Observable<any> {
+
+    const trxHash = this.getHashTransaction(from + to + amount + fee);
+    const signature = this.signingHashTrx(trxHash);
+    const postData = {From: from, Recipient: to, Amount: amount, Fee:fee, SignatureHash: signature,  TransactionHash: trxHash}
+
+    console.log(postData);
+
+    let response: any;
+    this.http.post(this.apiUrl + '/sendMoney', postData)
+    .subscribe(data => {
+      console.log(data);
+      response = data;
+    }, error => {
+      response = error;
+      console.log(error);
+    });
+
+    return forkJoin([response]);
+  }
 
 }
