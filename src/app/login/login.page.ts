@@ -21,8 +21,8 @@ export class LoginPage implements OnInit {
 
   async login() {
     const isUserLoggedIn = await this.authService.login(this.pin);
-    console.log("isUserLoggedIn", isUserLoggedIn)
     if(isUserLoggedIn) {
+      this.pin = ""
       this.router.navigate(['tabs']);
     } else {
       this.failedToast()
