@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  mnemonicLanguage: "japanese",
-  mnemonicNumWords: 15,
+  mnemonicLanguage: "english",
+  mnemonicNumWords: 12,
 };
 
 /*

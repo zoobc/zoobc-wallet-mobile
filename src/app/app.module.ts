@@ -14,6 +14,7 @@ import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule } from "@angular/common/http";
 import { NgxQRCodeModule } from "ngx-qrcode2";
+import { NgxsModule } from '@ngxs/store';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,7 +27,8 @@ import { NgxQRCodeModule } from "ngx-qrcode2";
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    NgxQRCodeModule
+    NgxQRCodeModule,
+    NgxsModule.forRoot()
   ],
   providers: [
     StatusBar,
