@@ -149,7 +149,7 @@ export namespace Peer {
 
   export enum StateEnum { 
     NON_CONNECTED = 0,
-    CONNECTED = 1, 
+    CONNECTED = 1,
     DISCONNECTED = 2,
     BLACKLISTED = 3,
   }
