@@ -2,8 +2,8 @@
   <div class="generate-passphrase">
     <ion-card>
       <ion-card-content>
-        <pre>Keep close to Nature's heart and break clear away, once in awhile</pre>
-        <ion-button expand="block" fill="outline">Copy to Clipboard</ion-button>
+        <pre>{{ passphrase }}</pre>
+        <ion-button expand="block" fill="outline" (click)="copyToClipboard()">Copy to Clipboard</ion-button>
       </ion-card-content>
     </ion-card>
 
