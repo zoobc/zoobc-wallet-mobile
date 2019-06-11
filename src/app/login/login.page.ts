@@ -29,6 +29,11 @@ export class LoginPage implements OnInit {
     }
   }
 
+  createAccount() {
+    console.log("test")
+    this.router.navigate(['initial'])
+  }
+
   async failedToast() {
     const toast = await this.toastController.create({
       message: 'Unlock Failed',

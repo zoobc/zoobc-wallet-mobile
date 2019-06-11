@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import sha512 from 'crypto-js/sha512';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/services/auth-service';
 
 @Component({
   selector: 'app-setup-pin',
@@ -13,14 +14,20 @@ export class SetupPinPage implements OnInit {
 
   constructor(
     private storage: Storage,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {}
 
   async savePin() {
+    console.log("test")
     const encryptedPin = sha512(this.pin.toString()).toString()
     this.storage.set("pin", encryptedPin)
-    this.router.navigate(['login'])
+    const isUserLoggedIn = await this.authService.login(this.pin)
+
+    if(isUserLoggedIn) {
+      this.router.navigate(['tabs'])
+    }
   }
 }

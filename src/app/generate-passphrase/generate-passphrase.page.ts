@@ -7,9 +7,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GeneratePassphrasePage implements OnInit {
 
+  private writtenDown = false
+  private terms = false
+  private setupPin = false
+
+
   constructor() { }
 
   ngOnInit() {
+    this.checkSetupPin();
+  }
+
+  checkSetupPin() {
+    if(this.writtenDown && this.terms) {
+      this.setupPin = true
+    }
   }
 
 }

@@ -12,7 +12,8 @@ const routes: Routes = [
   { path: 'initial', loadChildren: './initial/initial.module#InitialPageModule' },
   { path: 'setup-pin', loadChildren: './setup-pin/setup-pin.module#SetupPinPageModule' },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
-  { path: 'test-w', loadChildren: './test-w/test-w.module#TestWPageModule' }
+  { path: 'test-w', loadChildren: './test-w/test-w.module#TestWPageModule' },
+  { path: 'existing-wallet', loadChildren: './existing-wallet/existing-wallet.module#ExistingWalletPageModule' }
 ];
 @NgModule({
   imports: [
