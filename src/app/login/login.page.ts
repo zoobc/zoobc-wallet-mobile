@@ -30,7 +30,6 @@ export class LoginPage implements OnInit {
   }
 
   createAccount() {
-    console.log("test")
     this.router.navigate(['initial'])
   }
 

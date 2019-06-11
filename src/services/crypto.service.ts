@@ -25,13 +25,10 @@ export class CryptoService {
   }
 
   browserRandom(count, options) {
-    console.log("browser random", count, options)
     // eslint-disable-line
     const nativeArr = new Uint8Array(count);
     const crypto = window.crypto;
     crypto.getRandomValues(nativeArr);
-
-    console.log("nativeArr", )
 
     switch (options.type) {
       case "Array":
