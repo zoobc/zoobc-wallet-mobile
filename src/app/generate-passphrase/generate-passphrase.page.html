@@ -21,7 +21,8 @@
     </ion-list>
 
     <div class="setup-pin">
-      <ion-button expand="block" routerLink="/setup-pin">Setup PIN</ion-button>
+      <ion-button expand="block" routerLink="/setup-pin" *ngIf="!isPinSetup">Setup PIN</ion-button>
+      <ion-button expand="block" (click)="goToAccount()" *ngIf="isPinSetup">Go To Account</ion-button>
     </div>
   </div>
 </ion-content>
