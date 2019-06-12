@@ -4,5 +4,5 @@
 	branch = master
 [submodule "externals/bip32"]
 	path = externals/bip32
-	url = https://github.com/bitcoinjs/bip32.git
-	branch = master
+	url = https://github.com/BlockchainZoo/bip32.git
+	branch = SLIP10
