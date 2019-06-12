@@ -15,6 +15,7 @@ import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule } from "@angular/common/http";
 import { NgxQRCodeModule } from "ngx-qrcode2";
 import { NgxsModule } from '@ngxs/store';
+import { PinComponent } from 'src/components/pin/pin.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,7 +29,7 @@ import { NgxsModule } from '@ngxs/store';
     FormsModule,
     HttpClientModule,
     NgxQRCodeModule,
-    NgxsModule.forRoot()
+    NgxsModule.forRoot(),
   ],
   providers: [
     StatusBar,

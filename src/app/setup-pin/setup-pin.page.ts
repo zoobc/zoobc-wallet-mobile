@@ -28,7 +28,6 @@ export class SetupPinPage implements OnInit {
 
   async storeKey() {
     const seedHex = await this.storage.get('private_key');
-    console.log("private Key", seedHex)
 
     const privKeyUint8 = await this.cryptoService.rootKeyFromSeed(this.converterService.hexToArrayByte(seedHex))
     const pinUint8 = this.converterService.stringToArrayByte(this.pin)
@@ -48,17 +47,17 @@ export class SetupPinPage implements OnInit {
       deriveAlgo: this.cryptoService.genDeriveAlgo(),
     }
 
-    const test = await this.cryptoService.wrapKeyWithPin(privKeyUint8, pinUint8, opts)
+    const wrappedKey = await this.cryptoService.wrapKeyWithPin(privKeyUint8, pinUint8, opts)
     // this.cryptoService.wrapKeyWithPin()
 
-    this.storage.set('encrypted_key', test)
+    this.storage.set('encrypted_key', [wrappedKey])
   }
 
-  async savePin() {
-    const encryptedPin = sha512(this.pin.toString()).toString()
-    this.storage.set("pin", encryptedPin)
-    const isUserLoggedIn = await this.authService.login(this.pin)
-
+  async savePin(event) {
+    const encryptedPin = sha512(event.toString()).toString()
+    await this.storage.set("pin", encryptedPin)
+    const isUserLoggedIn = await this.authService.login(event)
+    console.log("isUserLoggedIn", isUserLoggedIn)
     if(isUserLoggedIn) {
       this.router.navigate(['tabs'])
     }

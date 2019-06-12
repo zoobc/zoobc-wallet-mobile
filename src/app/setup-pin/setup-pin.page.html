@@ -1,13 +1,5 @@
 <ion-content>
   <div class="setup-pin">
-    <div>
-      <ion-item>
-        <ion-label>PIN</ion-label>
-        <ion-input type="number" maxlength="4" [(ngModel)]="pin"></ion-input>
-      </ion-item>
-    </div>
-    <ion-button (click)="savePin()">Save PIN</ion-button>
-
-    <div [innerHTML]="qrElement"></div>
+    <app-pin (change)="savePin($event)"></app-pin>
   </div>
 </ion-content>
