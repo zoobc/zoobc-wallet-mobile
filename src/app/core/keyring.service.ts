@@ -7,7 +7,7 @@ import * as bip32 from "../../../externals/bip32";
 import { BIP32Interface } from "../../../externals/bip32";
 export { BIP32Interface } from "../../../externals/bip32";
 
-export const coins : Array<CoinInterface> = [
+export const coins: Array<CoinInterface> = [
   {
     name: "AC - Asiacoin",
     network: "asiacoin",
@@ -800,13 +800,22 @@ export const coins : Array<CoinInterface> = [
     coinValue: 121
   },
   {
-    name: "XLM - Stellar Lumens",
+    name: "XLM - Stellar",
     segwitAvailable: false,
     network: "bitcoin",
     coinValue: 148,
     purposeValue: 44,
     derivationStandard: "sep5",
-    curveName: "ed25519",
+    curveName: "ed25519"
+  },
+  {
+    name: "SPN - Spinechain",
+    segwitAvailable: false,
+    network: "bitcoin",
+    coinValue: 148,
+    purposeValue: 44,
+    derivationStandard: "sep5",
+    curveName: "ed25519"
   }
 ];
 
@@ -817,8 +826,14 @@ interface CoinInterface {
   network: string;
   coinValue: number;
   purposeValue?: number;
-  derivationStandard?: "sep5" | "bip32" | "bip44" | "bip49" | "bip84" | "bip141";
-  curveName?: "secp256k1" | "P-256" | "ed25519",
+  derivationStandard?:
+    | "sep5"
+    | "bip32"
+    | "bip44"
+    | "bip49"
+    | "bip84"
+    | "bip141";
+  curveName?: "secp256k1" | "P-256" | "ed25519";
 }
 
 interface Network {
@@ -833,10 +848,10 @@ interface Network {
   scriptHash?: number;
 }
 
-export function getCoin(coinName: string) : CoinInterface {
+export function getCoin(coinName: string): CoinInterface {
   const coinConfig = coins.find(c => c.name.startsWith(coinName));
   if (!coinConfig) throw new Error("coin not found");
-  return coinConfig
+  return coinConfig;
 }
 
 export function hasStrongRandom() {
@@ -865,8 +880,9 @@ export function parseIntNoNaN(val, defaultVal: number) {
 
 export function calcBip32ExtendedKey(
   path: string,
-  bip32RootKey: BIP32Interface
-) : BIP32Interface {
+  bip32RootKey: BIP32Interface,
+  curveName: "secp256k1" | "P-256" | "ed25519"
+): BIP32Interface {
   // Check there's a root key to derive from
   if (!bip32RootKey) {
     return bip32RootKey;
@@ -886,9 +902,9 @@ export function calcBip32ExtendedKey(
     if (invalidDerivationPath) {
       extendedKey = null;
     } else if (hardened) {
-      extendedKey = extendedKey.deriveHardened(index);
+      extendedKey = extendedKey.deriveHardened(index, curveName);
     } else {
-      extendedKey = extendedKey.derive(index);
+      extendedKey = extendedKey.derive(index, curveName);
     }
   }
   return extendedKey;
@@ -921,8 +937,6 @@ export function displayBip32Info(
     extendedPubKey
   };
 }
-
-export function displayAddresses(start: number, total: number) {}
 
 export function getDerivationPath(
   derivationStandard: string,
@@ -1067,10 +1081,9 @@ export function findDerivationPathErrors(path: string) {
   return false;
 }
 
-export function arrayByteToHex(bytes) {
-  return bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
-}
-
+// export function arrayByteToHex(bytes) {
+//   return bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+// }
 
 @Injectable({
   providedIn: "root"
@@ -1096,15 +1109,17 @@ export class KeyringService {
   constructor(
     private mnemonicsService: MnemonicsService,
     @Inject(APP_CONFIG) private config: AppConfig,
-    @Inject("global") private global: any,
+    @Inject("global") private global: any
   ) {}
 
   getNetwork(networkName: string): Network {
-    const networkConfig: Network = this.global.bitcoinjs.bitcoin.networks[networkName];
+    const networkConfig: Network = this.global.bitcoinjs.bitcoin.networks[
+      networkName
+    ];
     if (!networkConfig) {
       throw new Error("network not found in bitcoinjs' list");
     }
-    return networkConfig
+    return networkConfig;
   }
 
   generateRandomPhrase(
@@ -1137,9 +1152,9 @@ export class KeyringService {
   calcBip32RootKeyFromSeed(
     coinName: string,
     phrase: string,
-    passphrase: string,
+    passphrase: string
   ) {
-    const { network: networkName, curveName = "secp256k1" } = getCoin(coinName)
+    const { network: networkName, curveName = "secp256k1" } = getCoin(coinName);
     this.seed = this.mnemonicsService.mnemonic.toSeed(phrase, passphrase);
     this.bip32RootKey = bip32.fromSeed(
       Buffer.from(this.seed, "hex"),
@@ -1154,27 +1169,30 @@ export class KeyringService {
 
   calcForDerivationPathForCoin(
     coinName: string,
-    accountValue: string = "0",
-    changeValue: string = "0",
+    accountValue: number,
+    changeValue: 0 | 1 = 0,
     bip32RootKey: BIP32Interface = this.bip32RootKey
   ) {
     const {
+      curveName = "secp256k1",
       derivationStandard = "bip44",
       purposeValue = "44",
       coinValue
     } = getCoin(coinName);
 
     return this.calcForDerivationPath(
+      curveName,
       derivationStandard,
       String(purposeValue),
       String(coinValue),
-      accountValue,
-      changeValue,
+      String(accountValue),
+      String(changeValue),
       bip32RootKey
     );
   }
 
   calcForDerivationPath(
+    curveName: "secp256k1" | "P-256" | "ed25519",
     derivationStandard: string,
     purposeValue: string,
     coinValue: string,
@@ -1208,16 +1226,29 @@ export class KeyringService {
       // showValidationError(errorText);
       throw new Error(errorText);
     }
-    this.bip32ExtendedKey = calcBip32ExtendedKey(derivationPath, bip32RootKey);
-    if (
-      ["sep5", "bip44", "bip49", "bip84"].includes(derivationStandard)
-    ) {
+    this.bip32ExtendedKey = calcBip32ExtendedKey(
+      derivationPath,
+      bip32RootKey,
+      curveName
+    );
+    if (["sep5", "bip44", "bip49", "bip84"].includes(derivationStandard)) {
       // Calculate the account extended keys
-      const extraSliceTo = ["bip44", "bip49", "bip84"].includes(derivationStandard) ? 1 : 0;
-      const accountPath = derivationPath.slice(0, derivationPath.lastIndexOf("/") + extraSliceTo);
-      const accountExtendedKey = calcBip32ExtendedKey(accountPath, bip32RootKey);
-      console.log("accountPath", accountPath);
-      console.log("accountPrivateKey", arrayByteToHex(accountExtendedKey.privateKey));
+      const extraSliceTo = ["bip44", "bip49", "bip84"].includes(
+        derivationStandard
+      )
+        ? 1
+        : 0;
+      const accountPath = derivationPath.slice(
+        0,
+        derivationPath.lastIndexOf("/") + extraSliceTo
+      );
+      const accountExtendedKey = calcBip32ExtendedKey(
+        accountPath,
+        bip32RootKey,
+        curveName
+      );
+      // console.debug("accountPath", accountPath);
+      // console.debug("accountPrivateKey", accountExtendedKey.privateKey);
       const accountXprv = accountExtendedKey.toBase58();
       const accountXpub = accountExtendedKey.neutered().toBase58();
       return {
@@ -1225,11 +1256,16 @@ export class KeyringService {
         accountXprv,
         accountXpub,
         derivationPath,
+        derivationPrivKey: this.bip32ExtendedKey.privateKey,
         ...displayBip32Info(this.bip32RootKey, this.bip32ExtendedKey)
       };
     } else {
       return displayBip32Info(this.bip32RootKey, this.bip32ExtendedKey);
     }
+  }
+
+  get extendedSeed() {
+    return this.bip32ExtendedKey.privateKey
   }
 
   //   function phraseChanged() {

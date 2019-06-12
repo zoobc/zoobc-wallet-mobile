@@ -43,6 +43,7 @@
     "rxjs": "~6.5.1",
     "supercop.wasm": "^5.0.1",
     "tslib": "^1.9.0",
+    "tweetnacl": "^1.0.1",
     "zone.js": "~0.8.29"
   },
   "devDependencies": {

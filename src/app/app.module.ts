@@ -16,6 +16,9 @@ import { HttpClientModule } from "@angular/common/http";
 import { NgxQRCodeModule } from "ngx-qrcode2";
 import { NgxsModule } from '@ngxs/store';
 
+// import * as supercop from 'supercop.wasm';
+import { sign as naclSign } from 'tweetnacl';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -36,6 +39,8 @@ import { NgxsModule } from '@ngxs/store';
     BarcodeScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: "global", useFactory: () => window },
+    { provide: "nacl.sign", useFactory: () => naclSign },
+    // { provide: "supercop", useFactory: () => supercop },
   ],
   bootstrap: [AppComponent]
 })
