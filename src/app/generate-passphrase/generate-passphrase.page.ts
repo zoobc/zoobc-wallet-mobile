@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { KeyringService } from '../core/keyring.service';
 import { ToastController } from '@ionic/angular';
 import { MnemonicsService } from '../core/mnemonics.service';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-generate-passphrase',
@@ -19,7 +20,8 @@ export class GeneratePassphrasePage implements OnInit {
   constructor(
     private keyringService: KeyringService,
     private toastController: ToastController,
-    private mnemonicsService: MnemonicsService
+    private mnemonicsService: MnemonicsService,
+    private storage: Storage
   ) { }
 
   ngOnInit() {
@@ -36,8 +38,7 @@ export class GeneratePassphrasePage implements OnInit {
   generatePassphrase() {
     this.passphrase = this.keyringService.generateRandomPhrase().phrase
     const privateKey = this.mnemonicsService.mnemonic.toSeed(this.passphrase, null)
-
-    console.log("privateKey", privateKey)
+    this.storage.set('private_key', privateKey)
   }
 
   copyToClipboard() {
