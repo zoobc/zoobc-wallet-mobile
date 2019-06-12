@@ -36,7 +36,7 @@ import { PinComponent } from 'src/components/pin/pin.component';
     SplashScreen,
     BarcodeScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: "global", useFactory: () => window }
+    { provide: "global", useFactory: () => window },
   ],
   bootstrap: [AppComponent]
 })

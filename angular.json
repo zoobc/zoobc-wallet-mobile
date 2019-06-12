@@ -41,6 +41,8 @@
               }
             ],
             "scripts": [
+              "externals/bip39/src/js/bitcoinjs-3.3.2.js",
+              "externals/bip39/src/js/bitcoinjs-extensions.js",
               "externals/bip39/src/js/wordlist_english.js",
               "externals/bip39/src/js/wordlist_japanese.js",
               "externals/bip39/src/js/wordlist_spanish.js",
