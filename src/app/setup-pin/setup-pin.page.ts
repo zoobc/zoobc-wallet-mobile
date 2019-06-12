@@ -23,15 +23,15 @@ export class SetupPinPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.testFunction();
+    this.storeKey();
   }
 
-  async testFunction() {
-    const pin = "1234"
-    const seedHex = "86d7324f71d22f56f244a4b2ca37000cbcb429fdcd173139534bc8526dfbebb29fb15e09bba7235100e1e89f33dcc9629e6286103aec559c10efaf22558c3474"
+  async storeKey() {
+    const seedHex = await this.storage.get('private_key');
+    console.log("private Key", seedHex)
 
     const privKeyUint8 = await this.cryptoService.rootKeyFromSeed(this.converterService.hexToArrayByte(seedHex))
-    const pinUint8 = this.converterService.stringToArrayByte(pin)
+    const pinUint8 = this.converterService.stringToArrayByte(this.pin)
 
     const keyAlgo = {
       name: 'AES-GCM',
