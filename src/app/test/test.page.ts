@@ -36,12 +36,8 @@ export class TestPage implements OnInit {
   }
 
   testService() {
-<<<<<<< HEAD
     console.log("bip32", bip32)
-    const { phrase } = this.keyringService.generateRandomPhrase()
-=======
     let { phrase } = this.keyringService.generateRandomPhrase()
->>>>>>> ac10490cd793c7639b6a2863fae4700c28561167
     console.log("phrase:", phrase)
     phrase = "cable spray genius state float twenty onion head street palace net private method loan turn phrase state blanket interest dry amazing dress blast tube"
     console.log("phrase:", phrase)
