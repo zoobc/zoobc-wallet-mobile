@@ -13,12 +13,14 @@ module.exports = {
   //   })
   ],
   node: {
-    console: false,
-    global: true,
-    process: "mock",
-    __filename: false,
-    __dirname: false,
-    Buffer: "mock",
-    setImmediate: false
+    // See: https://github.com/webpack/node-libs-browser
+    Buffer: true,
+    stream: true,
+    // console: false,
+    // global: true,
+    // process: "mock",
+    // __filename: false,
+    // __dirname: false,
+    // setImmediate: false
   }
 };

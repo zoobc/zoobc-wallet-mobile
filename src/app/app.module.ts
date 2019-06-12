@@ -17,6 +17,9 @@ import { NgxQRCodeModule } from "ngx-qrcode2";
 import { NgxsModule } from '@ngxs/store';
 import { PinComponent } from 'src/components/pin/pin.component';
 
+// import * as supercop from 'supercop.wasm';
+import { sign as naclSign } from 'tweetnacl';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -36,7 +39,9 @@ import { PinComponent } from 'src/components/pin/pin.component';
     SplashScreen,
     BarcodeScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: "global", useFactory: () => window }
+    { provide: "global", useFactory: () => window },
+    { provide: "nacl.sign", useFactory: () => naclSign },
+    // { provide: "supercop", useFactory: () => supercop },
   ],
   bootstrap: [AppComponent]
 })
