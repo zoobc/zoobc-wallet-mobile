@@ -16,8 +16,14 @@ export class TestPage implements OnInit {
   }
 
   testService() {
-    const { phrase } = this.keyringService.generateRandomPhrase()
+    let { phrase } = this.keyringService.generateRandomPhrase()
     console.log("phrase:", phrase)
+    phrase = "cable spray genius state float twenty onion head street palace net private method loan turn phrase state blanket interest dry amazing dress blast tube"
+    console.log("phrase:", phrase)
+    const { seed, bip32RootKey } = this.keyringService.calcBip32RootKeyFromSeed("BTC", phrase, "p4ssphr4se")
+    console.log("seed:", seed)
+    const result = this.keyringService.calcForDerivationPathForCoin("BTC", "0", "0", bip32RootKey)
+    console.log("result:", result)
   }
 
 }
