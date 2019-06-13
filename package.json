@@ -40,6 +40,7 @@
     "crypto-js": "^3.1.9-1",
     "diceware-wordlist-en-eff": "^1.0.1",
     "elliptic": "^6.4.1",
+    "google-protobuf": "^3.8.0",
     "grpc-web": "^1.0.4",
     "jayson": "^3.0.2",
     "ngx-build-plus": "^7.8.3",
