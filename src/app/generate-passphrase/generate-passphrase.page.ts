@@ -6,9 +6,9 @@ import { Storage } from '@ionic/storage';
 import { CryptoService } from 'src/services/crypto.service';
 import { ConverterService } from 'src/services/converter.service';
 import { Router } from '@angular/router';
-import * as bip32 from 'bip32'
-import { calcBip32ExtendedKey } from '../core/keyring.service';
-import { arrayByteToHex, stringToArrayByte } from '../../helpers/converters'
+// import * as bip32 from 'bip32'
+// import { calcBip32ExtendedKey } from '../core/keyring.service';
+// import { arrayByteToHex, stringToArrayByte } from '../../helpers/converters'
 
 @Component({
   selector: 'app-generate-passphrase',
