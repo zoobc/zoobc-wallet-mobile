@@ -30,8 +30,6 @@
     "@ionic/storage": "^2.2.0",
     "@keyhub/keyhub-vault-nxt": "^0.1.0",
     "@ngxs/store": "^3.4.3",
-    "bip32": "^2.0.3",
-    "bip39": "^3.0.2",
     "cordova-android": "8.0.0",
     "core-js": "^2.5.4",
     "crypto-js": "^3.1.9-1",
