@@ -1,0 +1,12 @@
+@import "../../assets/scss/main.scss";
+
+.existing-wallet {
+    @include flex-init;
+    @include flex-direction(column);
+    @include justify-content(center);
+    height: 100vh;
+    
+    .existing-wallet-button {
+        padding: 20px;
+    }
+}
