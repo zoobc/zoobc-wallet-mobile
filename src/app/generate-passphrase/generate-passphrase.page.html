@@ -10,19 +10,19 @@
     <ion-list>
       <ion-item>
         <ion-label>I have written down or otherwise securely stored my passphrase</ion-label>
-        <ion-checkbox slot="start"></ion-checkbox>
+        <ion-checkbox slot="start" [(ngModel)]="writtenDown"></ion-checkbox>
       </ion-item>
     </ion-list>
     <ion-list>
       <ion-item>
         <ion-label>I agree to the terms & conditions </ion-label>
-        <ion-checkbox slot="start"></ion-checkbox>
+        <ion-checkbox slot="start" [(ngModel)]="terms"></ion-checkbox>
       </ion-item>
     </ion-list>
 
     <div class="setup-pin">
-      <ion-button expand="block" routerLink="/setup-pin" *ngIf="!isPinSetup">Setup PIN</ion-button>
-      <ion-button expand="block" (click)="goToAccount()" *ngIf="isPinSetup">Go To Account</ion-button>
+      <ion-button expand="block" (click)="goToSetupPin()" *ngIf="!isPinSetup" disabled="{{!(writtenDown && terms)}}">Setup PIN</ion-button>
+      <ion-button expand="block" (click)="goToAccount()" *ngIf="isPinSetup" disabled="{{!(writtenDown && terms)}}">Go To Account</ion-button>
     </div>
   </div>
 </ion-content>

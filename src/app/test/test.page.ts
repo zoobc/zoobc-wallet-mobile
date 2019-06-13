@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { KeyringService } from '../core/keyring.service';
-import * as bip32 from 'bip32'
+import * as bip32 from 'bip32' 
 
 // import { calcBip32ExtendedKey } from '../core/keyring.service';
 // import { getMasterKeyFromSeed, derivePath } from '../../../externals/hd-key';
