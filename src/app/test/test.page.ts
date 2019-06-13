@@ -2,11 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { KeyringService } from '../core/keyring.service';
 import * as bip32 from 'bip32'
 
-<<<<<<< HEAD
 // import { calcBip32ExtendedKey } from '../core/keyring.service';
-=======
-import { calcBip32ExtendedKey } from '../core/keyring.service';
->>>>>>> cfcc4e32980ef61f5ee6498f2839fa17715f2fc2
 // import { getMasterKeyFromSeed, derivePath } from '../../../externals/hd-key';
 
 export function arrayByteToHex(bytes) {
