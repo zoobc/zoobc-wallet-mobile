@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GrpcapiService } from 'src/services/grpc.service';
 
 @Component({
   selector: 'app-test-w',
@@ -7,8 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TestWPage implements OnInit {
 
-  constructor() { }
+  constructor(
+    private grpcService: GrpcapiService
+  ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    const test = await this.grpcService.getAccountBalance()
+    console.log("account balance", test)
   }
 }

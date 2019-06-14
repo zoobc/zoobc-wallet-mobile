@@ -10,7 +10,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "grpc:build": "protoc --plugin=\"protoc-gen-ts='node_modules/.bin/protoc-gen-ts'\" --grpc-web_out=\"import_style=typescript,mode=grpcwebtext:src/grpc/generated\" --js_out=\"import_style=commonjs,binary:src/grpc/generated\" src/grpc/schema/service/*.proto --proto_path=src/grpc/schema protoc --plugin=\"protoc-gen-ts='node_modules/.bin/protoc-gen-ts'\" --grpc-web_out=\"import_style=typescript,mode=grpcwebtext:src/grpc/generated\" --js_out=\"import_style=commonjs,binary:src/grpc/generated\" src/grpc/schema/model/*.proto --proto_path=src/grpc/schema"
   },
   "private": true,
   "dependencies": {
@@ -35,6 +36,7 @@
     "crypto-js": "^3.1.9-1",
     "diceware-wordlist-en-eff": "^1.0.1",
     "elliptic": "^6.4.1",
+    "grpc-web": "^1.0.4",
     "jayson": "^3.0.2",
     "ngx-build-plus": "^7.8.3",
     "ngx-qrcode2": "0.0.9",
@@ -43,6 +45,7 @@
     "qrcode-generator": "^1.4.3",
     "rxjs": "~6.5.1",
     "supercop.wasm": "^5.0.1",
+    "ts-protoc-gen": "^0.10.0",
     "tslib": "^1.9.0",
     "tweetnacl": "^1.0.1",
     "zone.js": "~0.8.29"

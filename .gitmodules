@@ -6,3 +6,7 @@
 	path = externals/bip32
 	url = https://github.com/BlockchainZoo/bip32.git
 	branch = SLIP10
+[submodule "src/grpc/schema"]
+	path = src/grpc/schema
+	url = https://github.com/BlockchainZoo/spinechain-schema-prototype.git
+	branch = master
