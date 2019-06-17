@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
+import { Storage } from '@ionic/storage';
+import { ObservableService } from 'src/services/observable.service';
+import { ACTIVE_ACCOUNT } from 'src/environments/variable.const';
 
 
 @Component({
@@ -12,8 +15,12 @@ import * as qrcode from 'qrcode-generator';
 export class Tab2Page implements OnInit{
   encodeData: any;
   qrElement: any;
+  private activeAccount
 
-  constructor() {}
+  constructor(
+    private storage: Storage,
+    private Obs: ObservableService
+  ) {}
 
   createQR() {
     const qr = qrcode(8, 'L');
@@ -22,13 +29,25 @@ export class Tab2Page implements OnInit{
     this.qrElement = qr.createImgTag();
   }
 
-  getAddress(){
-    this.encodeData =  JSON.stringify('1Mz7153HMuxXTuR2R1t78mGSdzaAtNbBWX');
+  async getAddress(){
+    const activeAccount = await this.storage.get('active_account')
+    this.encodeData =  activeAccount.accountXpub
+    this.createQR();
   }
 
   ngOnInit() {
+    const a = this.Obs.Watch(ACTIVE_ACCOUNT).subscribe(e => {
+      console.log("subscription on")
+      this.activeAccount = e
+    })
+    console.log("a", a)
     this.getAddress();
-    this.createQR();
+  }
+
+  ionViewWillEnter() {
+    // this.getAddress()
+    const a = this.Obs.GetAll()
+    console.log("getAll", a)
   }
 
 }

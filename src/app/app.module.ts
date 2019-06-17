@@ -19,6 +19,7 @@ import { PinComponent } from 'src/components/pin/pin.component';
 
 // import * as supercop from 'supercop.wasm';
 import { sign as naclSign } from 'tweetnacl';
+import { ObservableService } from 'src/services/observable.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,6 +43,7 @@ import { sign as naclSign } from 'tweetnacl';
     { provide: "global", useFactory: () => window },
     { provide: "nacl.sign", useFactory: () => naclSign },
     // { provide: "supercop", useFactory: () => supercop },
+    ObservableService
   ],
   bootstrap: [AppComponent]
 })

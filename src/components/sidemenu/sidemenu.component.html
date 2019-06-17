@@ -19,11 +19,8 @@
     <ion-list>
       <ion-item>
         <ion-label>Account</ion-label>
-        <ion-select value="xprv9s21ZrQH143K3Pj6cspGoSJdSJcQU2GNus5wKz24PW6RjkenhwTjNbBUC3VdTEEF3HqE1wCWvDZQoLNFH4ir5Jw7Ve4CvSxfuxM2jP6AyTv" interface="action-sheet">
-          <ion-select-option value="xprv9s21ZrQH143K3Pj6cspGoSJdSJcQU2GNus5wKz24PW6RjkenhwTjNbBUC3VdTEEF3HqE1wCWvDZQoLNFH4ir5Jw7Ve4CvSxfuxM2jP6AyTv">xprv9s21ZrQH143K3Pj6cspGoSJdSJcQU2GNus5wKz24PW6RjkenhwTjNbBUC3VdTEEF3HqE1wCWvDZQoLNFH4ir5Jw7Ve4CvSxfuxM2jP6AyTv</ion-select-option>
-          <ion-select-option value="xprv9s21ZrQH143K3Pj6cspGoSJdSJcQU2GNus5wKz24PW6RjkenhwTjNbBUC3VdTEEF3HqE1wCWvDZQoLNFH4ir5Jw7Ve4CvSxfuxM2jP6AyTv">xprv9s21ZrQH143K3Pj6cspGoSJdSJcQU2GNus5wKz24PW6RjkenhwTjNbBUC3VdTEEF3HqE1wCWvDZQoLNFH4ir5Jw7Ve4CvSxfuxM2jP6AyTv</ion-select-option>
-          <ion-select-option value="xprv9s21ZrQH143K3Pj6cspGoSJdSJcQU2GNus5wKz24PW6RjkenhwTjNbBUC3VdTEEF3HqE1wCWvDZQoLNFH4ir5Jw7Ve4CvSxfuxM2jP6AyTv">xprv9s21ZrQH143K3Pj6cspGoSJdSJcQU2GNus5wKz24PW6RjkenhwTjNbBUC3VdTEEF3HqE1wCWvDZQoLNFH4ir5Jw7Ve4CvSxfuxM2jP6AyTv</ion-select-option>
-          <ion-select-option value="xprv9s21ZrQH143K3Pj6cspGoSJdSJcQU2GNus5wKz24PW6RjkenhwTjNbBUC3VdTEEF3HqE1wCWvDZQoLNFH4ir5Jw7Ve4CvSxfuxM2jP6AyTv">xprv9s21ZrQH143K3Pj6cspGoSJdSJcQU2GNus5wKz24PW6RjkenhwTjNbBUC3VdTEEF3HqE1wCWvDZQoLNFH4ir5Jw7Ve4CvSxfuxM2jP6AyTv</ion-select-option>
+        <ion-select interface="action-sheet" [(ngModel)]="activeAccount" (ionChange)="selectAccount($event)">
+          <ion-select-option *ngFor="let account of accounts; let i = index" value="{{ i }}">{{ account.address }}</ion-select-option>
         </ion-select>
       </ion-item>
     </ion-list>

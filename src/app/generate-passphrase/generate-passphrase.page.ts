@@ -6,6 +6,8 @@ import { Storage } from '@ionic/storage';
 import { CryptoService } from 'src/services/crypto.service';
 import { ConverterService } from 'src/services/converter.service';
 import { Router } from '@angular/router';
+import { ObservableService } from 'src/services/observable.service';
+import { ACTIVE_ACCOUNT } from 'src/environments/variable.const';
 // import * as bip32 from 'bip32'
 // import { calcBip32ExtendedKey } from '../core/keyring.service';
 // import { arrayByteToHex, stringToArrayByte } from '../../helpers/converters'
@@ -32,6 +34,7 @@ export class GeneratePassphrasePage implements OnInit {
     private storage: Storage,
     private cryptoService: CryptoService,
     private converterService: ConverterService,
+    private Obs: ObservableService,
     private router: Router,
     @Inject("nacl.sign") private sign: any
   ) { }
@@ -78,6 +81,8 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   goToSetupPin() {
+    this.Obs.Set(ACTIVE_ACCOUNT, this.account)
+    this.storage.set('active_account', this.account)
     this.storage.set('accounts', [this.account])
     this.router.navigate(['/setup-pin'])
   }

@@ -10,7 +10,9 @@
     <ion-row>          
       <ion-col align-self-center align-self-center size-md="12" style="text-align:center" size-lg="12" size-xs="12">
         <h3>My Wallet Address</h3>
-        <ion-textarea name="encodeData" [(ngModel)]="encodeData"></ion-textarea>
+        <p>
+          {{ encodeData }}
+        </p>
     
         <div [innerHTML]="qrElement" class="qr-code" ></div>
     </ion-col>
