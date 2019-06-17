@@ -4,13 +4,17 @@
   "author": "BlockchainZoo Wallet Team",
   "homepage": "https://blockchainzoo.com/",
   "scripts": {
+    "postinstall": "git submodule update --init --recursive && cd externals/bip32 && npm install --ignore-scripts",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "compile": "protoc ./src/protos/spinechain.proto --js_out=import_style=commonjs:./ --grpc-web_out=import_style=commonjs,mode=grpcweb:./"
+    "s1": "protoc --proto_path=./src/app/grpc ./src/app/grpc/service/service.proto --js_out=import_style=commonjs:./src/app/grpc --grpc-web_out=import_style=commonjs,mode=grpcweb:./src/app/grpc",
+    "s1s": "protoc --proto_path=./src/app/grpc ./src/app/grpc/service/service.proto --js_out=import_style=typescript:./src/app/grpc --grpc-web_out=import_style=typescript,mode=grpcweb:./src/app/grpc",
+    "c1": "protoc --proto_path=./src/app/grpc ./src/app/grpc/model/model.proto --js_out=import_style=commonjs:./src/app/grpc --grpc-web_out=import_style=commonjs,mode=grpcweb:./src/app/grpc",
+    "c1s": "protoc --proto_path=./src/app/grpc ./src/app/grpc/model/model.proto --js_out=import_style=typescript:./src/app/grpc --grpc-web_out=import_style=typescript,mode=grpcweb:./src/app/grpc"
   },
   "private": true,
   "dependencies": {
@@ -29,12 +33,13 @@
     "@ionic/angular": "^4.1.0",
     "@ionic/storage": "^2.2.0",
     "@keyhub/keyhub-vault-nxt": "^0.1.0",
-    "bip39": "^3.0.2",
+    "@ngxs/store": "^3.4.3",
     "cordova-android": "8.0.0",
     "core-js": "^2.5.4",
     "crypto-js": "^3.1.9-1",
     "diceware-wordlist-en-eff": "^1.0.1",
     "elliptic": "^6.4.1",
+    "google-protobuf": "^3.8.0",
     "grpc-web": "^1.0.4",
     "jayson": "^3.0.2",
     "ngx-build-plus": "^7.8.3",
@@ -43,8 +48,9 @@
     "phonegap-plugin-barcodescanner": "8.0.1",
     "qrcode-generator": "^1.4.3",
     "rxjs": "~6.5.1",
-    "stream": "0.0.2",
+    "supercop.wasm": "^5.0.1",
     "tslib": "^1.9.0",
+    "tweetnacl": "^1.0.1",
     "zone.js": "~0.8.29"
   },
   "devDependencies": {

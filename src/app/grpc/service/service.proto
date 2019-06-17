@@ -1,0 +1,22 @@
+syntax="proto3";
+
+package service;
+
+import "model/model.proto";
+
+service TransactionService {
+    rpc GetTransactionsByAccountPublicKey(model.GetTransactionsByAccountPublicKeyRequest) returns (model.GetTransactionsResponse) {}
+    rpc GetTransactionsByBlockID(model.GetTransactionsByBlockIDRequest) returns (model.GetTransactionsResponse) {}
+}
+
+// AccountBalanceService represent request on Account Balance
+service AccountBalancesService {
+    rpc GetAccountBalances(model.Empty) returns (model.GetAccountBalancesResponse) {}
+    rpc GetAccountBalance(model.GetAccountBalanceRequest) returns (model.AccountBalance) {}
+}
+
+// AccountService represent request on Account
+service AccountService {
+    rpc GetAccounts(model.Empty) returns (model.GetAccountsResponse) {}
+    rpc GetAccountByPublicKey(model.GetAccountByPublicKeyRequest) returns (model.Account) {}
+}

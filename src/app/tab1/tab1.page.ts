@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { RestapiService } from '../../services/restapi.service';
+import { AuthService } from 'src/services/auth-service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -14,7 +16,12 @@ export class Tab1Page implements OnInit{
   transactions: any;
   publicKey = 'JkhkUiury9899';
 
-  constructor(private apiservice: RestapiService, private loadingController: LoadingController) { }
+  constructor(
+    private apiservice: RestapiService, 
+    private loadingController: LoadingController,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   async getBalance(pKey: string) {
     const loading = await this.loadingController.create({
@@ -48,6 +55,12 @@ export class Tab1Page implements OnInit{
         console.log(err);
         loading.dismiss();
       });
+  }
+
+  logout() {
+    console.log("test logout")
+    this.authService.logout();
+    this.router.navigate(['login']);
   }
 
   ngOnInit() {

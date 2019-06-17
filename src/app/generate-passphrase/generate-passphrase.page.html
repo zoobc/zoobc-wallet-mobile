@@ -2,27 +2,27 @@
   <div class="generate-passphrase">
     <ion-card>
       <ion-card-content>
-        <pre>Keep close to Nature's heart and break clear away, once in awhile</pre>
-        <ion-button expand="block" fill="outline">Copy to Clipboard</ion-button>
+        <pre>{{ passphrase }}</pre>
+        <ion-button expand="block" fill="outline" (click)="copyToClipboard()">Copy to Clipboard</ion-button>
       </ion-card-content>
     </ion-card>
 
-    <ion-card>
-        <ion-card-content>
-          <div class="term-condition">
-            <ion-checkbox></ion-checkbox>
-            <ion-label>I have written down or otherwise securely stored my passphrase</ion-label>
-          </div>
-          <div class="term-condition">
-            <ion-checkbox></ion-checkbox>
-            <ion-label>I agree to the terms & conditions </ion-label>
-          </div>
-          <ion-button expand="block" fill="outline">Terms & Conditions</ion-button>
-        </ion-card-content>
-      </ion-card>
+    <ion-list>
+      <ion-item>
+        <ion-label>I have written down or otherwise securely stored my passphrase</ion-label>
+        <ion-checkbox slot="start" [(ngModel)]="writtenDown"></ion-checkbox>
+      </ion-item>
+    </ion-list>
+    <ion-list>
+      <ion-item>
+        <ion-label>I agree to the terms & conditions </ion-label>
+        <ion-checkbox slot="start" [(ngModel)]="terms"></ion-checkbox>
+      </ion-item>
+    </ion-list>
 
     <div class="setup-pin">
-      <ion-button expand="block" routerLink="/setup-pin">Setup PIN</ion-button>
+      <ion-button expand="block" (click)="goToSetupPin()" *ngIf="!isPinSetup" disabled="{{!(writtenDown && terms)}}">Setup PIN</ion-button>
+      <ion-button expand="block" (click)="goToAccount()" *ngIf="isPinSetup" disabled="{{!(writtenDown && terms)}}">Go To Account</ion-button>
     </div>
   </div>
 </ion-content>

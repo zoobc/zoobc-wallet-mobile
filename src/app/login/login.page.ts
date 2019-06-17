@@ -9,7 +9,7 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  private pin
+  private pin = ""
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -19,14 +19,17 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
 
-  async login() {
-    const isUserLoggedIn = await this.authService.login(this.pin);
-    console.log("isUserLoggedIn", isUserLoggedIn)
+  async login(event) {
+    const isUserLoggedIn = await this.authService.login(event);
     if(isUserLoggedIn) {
       this.router.navigate(['tabs']);
     } else {
       this.failedToast()
     }
+  }
+
+  createAccount() {
+    this.router.navigate(['initial'])
   }
 
   async failedToast() {
