@@ -1,4 +1,4 @@
-const WorkerPlugin = require("worker-plugin");
+// const WorkerPlugin = require("worker-plugin");
 const webpack = require("webpack");
 
 module.exports = {
