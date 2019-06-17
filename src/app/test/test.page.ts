@@ -59,8 +59,8 @@ export class TestPage implements OnInit {
     const txBytes = hexToByteArray("0100018407025d3c00000004264abef89b96225a837f9d6a2ccc09e8b1422e090c0fa3852bb139d99caec404264a2ef814619d4a2b1fa3b45f4aa09b248d53ef07d8e92237f3cc8eb30d6d809698000000000000e1f5050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004264a2ef814619d4a2b1fa3b45f4aa09b248d53ef07d8e92237f3cc8eb30d6d809698000000000000e1f50500000000")
     txBytes.set(publicKey, 11);
     
-    const txView = new DataView(txBytes.buffer, txBytes.byteOffset, txBytes.byteLength);
-    txView.setBigUint64(83, BigInt(txFeeNQT));
+    // const txView = new DataView(txBytes.buffer, txBytes.byteOffset, txBytes.byteLength);
+    // txView.setBigUint64(83, BigInt(txFeeNQT));
   
     console.log("unsignedTxBytes:", byteArrayToHex(txBytes))
     const signature = this.sign.detached(txBytes, secretKey)
