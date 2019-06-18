@@ -27,8 +27,8 @@
         <ion-card-title>Wallet</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <ion-item>Available Balance: {{balance['BalanceNQT']}}</ion-item>
-        <ion-item>Pendig Balance: {{balance['UnconfirmedBalanceNQT']}}</ion-item>
+        <ion-item>Available Balance: {{ balance ? balance['balance'] : '0'}}</ion-item>
+        <ion-item>Pendig Balance: {{ balance ? balance['unconfirmedbalance'] : '0'}}</ion-item>
       </ion-card-content>
   </ion-card>
     
@@ -36,10 +36,10 @@
       <ion-card-header>
         <ion-card-title>Recent Transaction</ion-card-title>
       </ion-card-header>
-      <ion-card-content>
-        <ion-list *ngFor="let p of transactions">
+      <ion-card-content *ngIf="transactions">
+        <ion-list *ngFor="let transaction of transactions.transactionsList">
           <ion-item>
-            <ion-label>Time: {{p['Timestamp']}} | Amount: {{p['AmountNQT']}} | Fee: {{p['feeNQT']}}</ion-label>
+            <ion-label>Time: {{transaction['timestamp']}} | Amount: {{transaction['amountnqt']}} | Fee: {{transaction['feenqt']}}</ion-label>
           </ion-item>
         </ion-list>
       </ion-card-content>

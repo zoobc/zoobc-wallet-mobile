@@ -3,7 +3,7 @@ import { KeyringService } from '../core/keyring.service';
 
 import { byteArrayToHex, publicKeyToAddress, addressToPublicKey } from '../../helpers/converters'
 import { SendMoneyTx } from '../../helpers/serializers';
-import { GrpcapiService } from 'src/services/grpc.service';
+import { GRPCService } from 'src/services/grpc.service';
 
 // import { calcBip32ExtendedKey } from '../core/keyring.service';
 
@@ -19,7 +19,7 @@ export class TestPage implements OnInit {
   constructor(
     private keyringService: KeyringService,
     @Inject("nacl.sign") private sign: any,
-    private grpcService: GrpcapiService
+    private grpcService: GRPCService
   ) { }
 
   ngOnInit() {

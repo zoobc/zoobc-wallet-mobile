@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { SendMoneyTx } from 'src/helpers/serializers';
 import { addressToPublicKey } from 'src/helpers/converters';
-import { GrpcapiService } from 'src/services/grpc.service';
+import { GRPCService } from 'src/services/grpc.service';
 import { ToastController } from '@ionic/angular';
 
 @Component({
@@ -20,7 +20,7 @@ export class Tab4Page {
   constructor(
     private storage: Storage,
     @Inject("nacl.sign") private sign: any,
-    private grpcService: GrpcapiService,
+    private grpcService: GRPCService,
     private toastController: ToastController
   ){
     // this.sender = this.getAddress();

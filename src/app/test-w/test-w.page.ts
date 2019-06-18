@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GrpcapiService } from 'src/services/grpc.service';
+import { GRPCService } from 'src/services/grpc.service';
 
 @Component({
   selector: 'app-test-w',
@@ -9,7 +9,7 @@ import { GrpcapiService } from 'src/services/grpc.service';
 export class TestWPage implements OnInit {
 
   constructor(
-    private grpcService: GrpcapiService
+    private grpcService: GRPCService
   ) { }
 
   async ngOnInit() {

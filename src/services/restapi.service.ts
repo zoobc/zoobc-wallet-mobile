@@ -9,7 +9,7 @@ import { forkJoin } from 'rxjs';
 })
 export class RestapiService {
 
-  apiUrl = 'http://54.254.196.180:8000';
+  apiUrl = 'https://54.254.196.180:8000';
 
   constructor(private http: HttpClient) { }
 

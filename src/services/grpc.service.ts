@@ -14,28 +14,38 @@ import {
   PostTransactionRequest,
   PostTransactionResponse
 } from '../grpc/generated/model/transaction_pb';
+import { ACTIVE_ACCOUNT } from 'src/environments/variable.const';
+import { Storage } from '@ionic/storage';
+import { AccountService } from './account.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GrpcapiService {
+export class GRPCService {
   client: AccountBalancesServiceClient;
   txServ: TransactionServiceClient;
 
   AccountTransaction = [];
   PublicKey: any;
 
-  apiUrl = 'http://54.254.196.180:8000';
+  apiUrl = 'https://54.254.196.180:8000';
   grpcUrl = 'http://18.139.3.139:8080';
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private storage: Storage,
+    private accountService: AccountService
+  ) {
   }
 
-  getAccountTransaction() {
+  async getAccountTransaction() {
+    const account = await this.storage.get('active_account')
+    const publicKey = this.accountService.getAccountPublicKey(account)
+
     this.txServ = new TransactionServiceClient(this.grpcUrl, null, null);
     return new Promise((resolve, reject) => {
       const request = new GetTransactionsByAccountPublicKeyRequest();
-      request.setAccountpublickey(this.PublicKey);
+      request.setAccountpublickey(publicKey);
 
       this.txServ.getTransactionsByAccountPublicKey(
         request,
@@ -48,15 +58,14 @@ export class GrpcapiService {
     });
   }
 
-  getAccountBalance() {
-    const account = "242,71,255,92,144,93,48,182,91,196,152,28,137,238,74,71,200,58,142,46,223,176,10,137,139,243,246,29,169,46,114,107"
-    this.PublicKey = new Uint8Array(account.split(",").map(Number));
+  async getAccountBalance() {
+    const account = await this.storage.get('active_account')
+    const publicKey = this.accountService.getAccountPublicKey(account)
 
     this.client = new AccountBalancesServiceClient(this.grpcUrl, null, null);
     return new Promise((resolve, reject) => {
       const request = new GetAccountBalanceRequest();
-      console.log(this.PublicKey);
-      request.setPublickey(this.PublicKey);
+      request.setPublickey(publicKey);
 
       this.client.getAccountBalance(
         request,

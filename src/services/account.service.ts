@@ -12,9 +12,14 @@ export class AccountService {
 
     }
     getAccountAddress(account) {
+        const publicKey = this.getAccountPublicKey(account)
+        return publicKeyToAddress(publicKey)
+    }
+
+    getAccountPublicKey(account) {
         const { derivationPrivKey: accountSeed } = account
         const { publicKey } = this.sign.keyPair.fromSeed(accountSeed)
-        return publicKeyToAddress(publicKey)
+        return publicKey
     }
   
 }
