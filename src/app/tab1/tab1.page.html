@@ -14,32 +14,32 @@
   <ion-grid>
     <ion-row>
       <ion-col col-6>
-        <ion-button shape="round" [routerLink]="['//tabs/tab2']" fill="outline" expand="full">Receive</ion-button>
+        <ion-button shape="round" [routerLink]="['//tabs/tab2']" fill="outline" expand="full">{{ "WALLETS.recieve" | translate }}</ion-button>
       </ion-col>
       <ion-col col-6>
-        <ion-button shape="round" href="https://coinmarketcap.com/" fill="outline" expand="full">Buy SPC cash</ion-button>
+        <ion-button shape="round" href="https://coinmarketcap.com/" fill="outline" expand="full">{{ "WALLETS.buy" | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
 
   <ion-card>
       <ion-card-header>
-        <ion-card-title>Wallet</ion-card-title>
+        <ion-card-title>{{ "WALLETS.wallet" | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <ion-item>Available Balance: {{ balance ? balance['balance'] : '0'}}</ion-item>
-        <ion-item>Pendig Balance: {{ balance ? balance['unconfirmedbalance'] : '0'}}</ion-item>
+        <ion-item>{{ "WALLETS.available_balance" | translate }}: {{ balance ? balance['balance'] : '0'}}</ion-item>
+        <ion-item>{{ "WALLETS.pending_balance" | translate }}: {{ balance ? balance['unconfirmedbalance'] : '0'}}</ion-item>
       </ion-card-content>
   </ion-card>
     
   <ion-card>
       <ion-card-header>
-        <ion-card-title>Recent Transaction</ion-card-title>
+        <ion-card-title>{{ "WALLETS.recent_transaction" | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content *ngIf="transactions">
         <ion-list *ngFor="let transaction of transactions.transactionsList">
           <ion-item>
-            <ion-label>Time: {{transaction['timestamp']}} | Amount: {{transaction['amountnqt']}} | Fee: {{transaction['feenqt']}}</ion-label>
+            <ion-label>{{ "WALLETS.time" | translate }}: {{transaction['timestamp']}} | {{ "WALLETS.amount" | translate }}: {{transaction['amountnqt']}} | {{ "WALLETS.fee" | translate }}: {{transaction['feenqt']}}</ion-label>
           </ion-item>
         </ion-list>
       </ion-card-content>

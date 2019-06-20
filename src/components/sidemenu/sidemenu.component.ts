@@ -3,8 +3,9 @@ import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { ObservableService } from 'src/services/observable.service';
-import { ACTIVE_ACCOUNT } from 'src/environments/variable.const';
+import { ACTIVE_ACCOUNT, LANGUAGES, SELECTED_LANGUAGE } from 'src/environments/variable.const';
 import { AccountService } from 'src/services/account.service';
+import { LanguageService } from 'src/services/language.service';
 
 @Component({
   selector: 'app-sidemenu',
@@ -13,6 +14,8 @@ import { AccountService } from 'src/services/account.service';
 })
 export class SidemenuComponent implements OnInit {
   private accounts = []
+  private languages = []
+  private activeLanguage = 'en'
   private activeAccount = 0
 
   constructor(
@@ -20,15 +23,17 @@ export class SidemenuComponent implements OnInit {
     private router: Router,
     private storage: Storage,
     private Obs: ObservableService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private languageService: LanguageService
   ) { }
 
   ionViewWillEnter() {
-    console.log("test")
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.getListAccounts()
+    this.languages = LANGUAGES
+    this.activeLanguage = await this.storage.get(SELECTED_LANGUAGE)
   }
 
   ngOnChanges() {
@@ -55,6 +60,11 @@ export class SidemenuComponent implements OnInit {
     this.Obs.Set(ACTIVE_ACCOUNT, this.accounts[this.activeAccount])
     const account = await this.storage.set('active_account', this.accounts[this.activeAccount])
     console.log("account", account)
+  }
+
+  selectActiveLanguage() {
+    console.log("this.activeLanguage", this.activeLanguage)
+    this.languageService.setLanguage(this.activeLanguage)
   }
 
 }

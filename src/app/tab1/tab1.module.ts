@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tab1Page } from './tab1.page';
 import { ComponentsModule } from 'src/components/components.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -12,7 +13,8 @@ import { ComponentsModule } from 'src/components/components.module';
     CommonModule,
     FormsModule,
     RouterModule.forChild([{ path: '', component: Tab1Page }]),
-    ComponentsModule
+    ComponentsModule,
+    TranslateModule
   ],
   declarations: [Tab1Page]
 })

@@ -1,0 +1,44 @@
+{
+    "TABS": {
+        "wallets": "Dompet",
+        "recieve": "Terima",
+        "scan": "Pindai",
+        "send": "Kirim"
+    },
+    "LOGIN": {
+        "clear": "HAPUS"
+    },
+    "SIDEMENU": {
+        "settings": "Pengaturan",
+        "account": "Akun",
+        "language": "Bahasa",
+        "create_new_account": "BUAT ACCOUNT"
+    },
+    "SEND": {
+        "send_money": "Kirim Uang",
+        "from": "Dari",
+        "pay_to": "Ke",
+        "amount": "Jumlah",
+        "fee": "Biaya",
+        "send": "KIRIM"
+    },
+    "SCAN": {
+        "title": "Pindai QR Code",
+        "desc": "Anda dapat memindai alamat SpainChain, permintaan pembayaran, dompet kertas, dan lainnya.",
+        "scan": "PINDAI QR CODE"
+    },
+    "RECIEVE": {
+        "address": "Alamat Dompet Saya"
+    },
+    "WALLETS": {
+        "recieve": "Terima",
+        "buy": "Beli SPC Cash",
+        "wallet": "Dompent",
+        "available_balance": "Saldo Tersedia",
+        "pending_balance": "Saldo Tertunda",
+        "recent_transaction": "Transaksi Terbaru",
+        "time": "Waktu",
+        "amount": "Jumlah",
+        "fee": "Biaya"
+    }
+}

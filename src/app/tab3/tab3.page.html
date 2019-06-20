@@ -9,11 +9,11 @@
 
   <ion-icon name="qr-scanner"></ion-icon>
 
-  <h1>Scan QR Codes</h1>
-  <p>You can scan Spinechain addresses, payment requests, papper wallets, and more.</p>  
+  <h1>{{ "SCAN.title" | translate }}</h1>
+  <p>{{ "SCAN.desc" | translate }}</p>  
 
   <ion-button (click)="scanCode()">
-    Scan QR Code
+    {{ "SCAN.scan" | translate }}
   </ion-button>
 
   <div *ngIf="scannedData">
