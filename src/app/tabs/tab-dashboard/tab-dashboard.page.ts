@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController } from '@ionic/angular';
-import { RestapiService } from '../../services/restapi.service';
+import { LoadingController, MenuController } from '@ionic/angular';
+import { RestapiService } from '../../../services/restapi.service';
 import { AuthService } from 'src/services/auth-service';
 import { Router } from '@angular/router';
 @Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  selector: 'app-tab-dashboard',
+  templateUrl: 'tab-dashboard.page.html',
+  styleUrls: ['tab-dashboard.page.scss']
 })
-export class Tab1Page implements OnInit{
+export class TabDashboardPage implements OnInit {
 
   data1: any;
   data2: any;
@@ -17,10 +17,11 @@ export class Tab1Page implements OnInit{
   publicKey = 'JkhkUiury9899';
 
   constructor(
-    private apiservice: RestapiService, 
+    private apiservice: RestapiService,
     private loadingController: LoadingController,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private menuController: MenuController
   ) { }
 
   async getBalance(pKey: string) {
@@ -29,7 +30,7 @@ export class Tab1Page implements OnInit{
     });
     await loading.present();
     this.apiservice.getBalance(pKey)
-      .subscribe(res => { 
+      .subscribe(res => {
         console.log(res);
         this.data1 = res[0];
         this.balance = this.data1['data'];
@@ -55,6 +56,10 @@ export class Tab1Page implements OnInit{
         console.log(err);
         loading.dismiss();
       });
+  }
+
+  openMenu() {
+    this.menuController.open("mainMenu")
   }
 
   logout() {

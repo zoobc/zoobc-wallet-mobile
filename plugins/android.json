@@ -25,6 +25,9 @@
     },
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "com.blockchainzoo.spainchainwallet"
+    },
+    "cordova-plugin-qrscanner": {
+      "PACKAGE_NAME": "com.blockchainzoo.spinechainwallet"
     }
   },
   "dependent_plugins": {}

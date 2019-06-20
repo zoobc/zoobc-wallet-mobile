@@ -1,9 +1,14 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthService } from 'src/services/auth-service';
+import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 
 const routes: Routes = [
-  { path: '', loadChildren: './tabs/tabs.module#TabsPageModule', canActivate: [AuthService]},
+  {
+    path: '', loadChildren: './tabs/tabs.module#TabsPageModule',
+    //canActivate: [AuthService]
+  },
+  { path: 'qr-scanner', component: QrScannerComponent },
   { path: 'about', loadChildren: './about/about.module#AboutPageModule' },
   { path: 'selectwallet', loadChildren: './selectwallet/selectwallet.module#SelectwalletPageModule' },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
@@ -23,4 +28,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

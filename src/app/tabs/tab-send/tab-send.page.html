@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="openMenu()">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Send Money</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content>
+
+  <ion-nav [root]="rootPage"></ion-nav>
+
+
+  <!--
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title style="text-align:center">Send Money</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content padding>
+
+          <p>&nbsp;</p>
+
+          <p style="text-align:center">To get started, buy Spinechain Cash (SPC), or share your address.</p>
+          <p style="text-align:center">You can receive spinechain from any wallet or service.</p>
+
+
+          <p>&nbsp;</p>
+     
+     
+          <ion-grid>
+            <ion-row>
+              <ion-col col-12>
+                <ion-button color="success"  fill="solid" expand="full">Buy Spinechain now</ion-button>
+              </ion-col>            
+            </ion-row>
+            <ion-row>
+              <ion-col col-12>
+                <ion-button  color="warning" fill="solid" expand="full">Show my address</ion-button>
+              </ion-col>
+            </ion-row>
+
+            <p>&nbsp;</p>
+          </ion-grid>
+
+
+ </ion-card-content>
+    </ion-card>
+
+        -->
+
+
+  <form #form="ngForm" (ngSubmit)="register(form)">
+
+    <ion-item>
+      <ion-label position="floating">From:</ion-label>
+      <ion-input [(ngModel)]="sender" name="sender" autocomplete="on" autocorrect="on"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required placeholder="Pay to"></ion-input>
+      <button (click)="scanQrCode()" item-right>
+        <ion-icon name="qr-scanner"></ion-icon>
+      </button>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Amount:</ion-label>
+      <ion-input name="amount" type="text" [(ngModel)]="amount" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Fee:</ion-label>
+      <ion-input name="fee" type="text" [(ngModel)]="fee" required></ion-input>
+    </ion-item>
+
+    <div padding>
+      <ion-button size="large" (click)="sendMoney()" type="submit" expand="block">Send</ion-button>
+    </div>
+
+    <ion-item>
+      <ion-label>{{status}}</ion-label>
+    </ion-item>
+
+  </form>
+
+</ion-content>
