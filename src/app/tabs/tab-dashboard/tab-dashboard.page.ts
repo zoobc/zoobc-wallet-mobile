@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController, MenuController } from '@ionic/angular';
+import { LoadingController, MenuController, NavController } from '@ionic/angular';
 import { RestapiService } from '../../../services/restapi.service';
 import { AuthService } from 'src/services/auth-service';
 import { Router } from '@angular/router';
@@ -21,8 +21,17 @@ export class TabDashboardPage implements OnInit {
     private loadingController: LoadingController,
     private authService: AuthService,
     private router: Router,
-    private menuController: MenuController
+    private menuController: MenuController,
+    private navCtrl: NavController
   ) { }
+
+  goToSend() {
+    this.router.navigateByUrl("tabs/send")
+  }
+
+  goToRequest() {
+    this.router.navigateByUrl("tabs/receive")
+  }
 
   async getBalance(pKey: string) {
     const loading = await this.loadingController.create({
@@ -71,6 +80,8 @@ export class TabDashboardPage implements OnInit {
   ngOnInit() {
     this.getBalance(this.publicKey);
     this.getTransaction(this.publicKey);
+
+
   }
 
 }

@@ -11,7 +11,7 @@ import { MenuController } from '@ionic/angular';
 
 
 export class TabReceivePage implements OnInit {
-  encodeData: any;
+  encodeData: string;
   qrElement: any;
 
   constructor(private menuController: MenuController) { }
@@ -28,7 +28,7 @@ export class TabReceivePage implements OnInit {
   }
 
   getAddress() {
-    this.encodeData = JSON.stringify('1Mz7153HMuxXTuR2R1t78mGSdzaAtNbBWX');
+    this.encodeData = '1Mz7153HMuxXTuR2R1t78mGSdzaAtNbBWX';
   }
 
   ngOnInit() {
