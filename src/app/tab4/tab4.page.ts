@@ -33,32 +33,37 @@ export class Tab4Page {
   }
 
   async sendMoney() {
-    console.log("send money function running")
     const { derivationPrivKey: accountSeed } = this.account
     const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed)
 
-    const tx = new SendMoneyTx();
-    tx.senderPublicKey = publicKey;
-    tx.recipientPublicKey = addressToPublicKey(this.recipient);
-    tx.amount = 1;
-    tx.fee = 1;
-    tx.timestamp = Date.now() / 1000;
-    const txBytes = tx.toBytes();
+    const balance = await this.grpcService.getAccountBalance()
 
-    const signature = this.sign.detached(txBytes, secretKey)
-    txBytes.set(signature, 123);
+    if(balance > (this.account + this.fee)) {
+      const tx = new SendMoneyTx();
+      tx.senderPublicKey = publicKey;
+      tx.recipientPublicKey = addressToPublicKey(this.recipient);
+      tx.amount = this.amount;
+      tx.fee = this.fee;
+      tx.timestamp = Date.now() / 1000;
+      const txBytes = tx.toBytes();
 
-    const resolveTx = await this.grpcService.postTransaction(txBytes)
+      const signature = this.sign.detached(txBytes, secretKey)
+      txBytes.set(signature, 123);
 
-    console.log("resolveTx", resolveTx)
-    if(resolveTx) {
-      this.transactionToast()
+      const resolveTx = await this.grpcService.postTransaction(txBytes)
+
+      console.log("resolveTx", resolveTx)
+      if(resolveTx) {
+        this.transactionToast('Money Sent')
+      }
+    } else {
+      this.transactionToast('Balance not enough')
     }
   }
 
-  async transactionToast() {
+  async transactionToast(message) {
     const toast = await this.toastController.create({
-      message: 'Money Sent',
+      message: message,
       duration: 2000
     });
     toast.present();

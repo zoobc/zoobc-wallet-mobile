@@ -3,6 +3,8 @@ import * as qrcode from 'qrcode-generator';
 import { Storage } from '@ionic/storage';
 import { ObservableService } from 'src/services/observable.service';
 import { ACTIVE_ACCOUNT } from 'src/environments/variable.const';
+import { AccountService } from 'src/services/account.service';
+import { byteArrayToHex } from 'src/helpers/converters';
 
 
 @Component({
@@ -19,7 +21,8 @@ export class Tab2Page implements OnInit{
 
   constructor(
     private storage: Storage,
-    private Obs: ObservableService
+    private Obs: ObservableService,
+    private accountService: AccountService
   ) {}
 
   createQR() {
@@ -31,7 +34,7 @@ export class Tab2Page implements OnInit{
 
   async getAddress(){
     const activeAccount = await this.storage.get('active_account')
-    this.encodeData =  activeAccount.accountXpub
+    this.encodeData  = this.accountService.getAccountAddress(activeAccount)
     this.createQR();
   }
 

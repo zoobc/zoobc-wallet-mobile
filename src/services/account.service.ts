@@ -20,6 +20,5 @@ export class AccountService {
         const { derivationPrivKey: accountSeed } = account
         const { publicKey } = this.sign.keyPair.fromSeed(accountSeed)
         return publicKey
-    }
-  
+    }  
 }
