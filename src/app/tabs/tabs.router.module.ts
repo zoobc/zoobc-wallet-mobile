@@ -8,51 +8,42 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'tab1',
+        path: 'dashboard',
         children: [
           {
             path: '',
-            loadChildren: '../tab1/tab1.module#Tab1PageModule'
+            loadChildren: './tab-dashboard/tab-dashboard.module#TabDashboardPageModule'
+          }
+        ],
+      },
+      {
+        path: 'receive',
+        children: [
+          {
+            path: '',
+            loadChildren: './tab-receive/tab-receive.module#TabReceivePageModule'
           }
         ]
       },
       {
-        path: 'tab2',
+        path: 'send',
         children: [
           {
             path: '',
-            loadChildren: '../tab2/tab2.module#Tab2PageModule'
-          }
-        ]
-      },
-      {
-        path: 'tab3',
-        children: [
-          {
-            path: '',
-            loadChildren: '../tab3/tab3.module#Tab3PageModule'
-          }
-        ]
-      },
-      {
-        path: 'tab4',
-        children: [
-          {
-            path: '',
-            loadChildren: '../tab4/tab4.module#Tab4PageModule'
+            loadChildren: './tab-send/tab-send.module#TabSendPageModule'
           }
         ]
       },
       {
         path: '',
-        redirectTo: '/tabs/tab1',
+        redirectTo: '/tabs/dashboard',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/tab1',
+    redirectTo: '/tabs/dashboard',
     pathMatch: 'full'
   }
 ];
@@ -63,4 +54,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class TabsPageRoutingModule {}
+export class TabsPageRoutingModule { }

@@ -19,9 +19,12 @@ import { PinComponent } from 'src/components/pin/pin.component';
 
 // import * as supercop from 'supercop.wasm';
 import { sign as naclSign } from 'tweetnacl';
+import { AboutPage } from './about/about.page';
+import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
+import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, QrScannerComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -38,6 +41,7 @@ import { sign as naclSign } from 'tweetnacl';
     StatusBar,
     SplashScreen,
     BarcodeScanner,
+    QRScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: "global", useFactory: () => window },
     { provide: "nacl.sign", useFactory: () => naclSign },
@@ -45,4 +49,4 @@ import { sign as naclSign } from 'tweetnacl';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
