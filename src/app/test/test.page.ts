@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { KeyringService } from '../core/keyring.service';
+// import * as bip32 from 'bip32'
 
 import { byteArrayToHex, publicKeyToAddress, addressToPublicKey } from '../../helpers/converters'
 import { SendMoneyTx } from '../../helpers/serializers';

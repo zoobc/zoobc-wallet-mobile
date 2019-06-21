@@ -3,7 +3,8 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tab4Page } from './tab4.page';
+import { TabDashboardPage } from './tab-dashboard.page';
+import { ComponentsModule } from 'src/components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
@@ -11,9 +12,11 @@ import { TranslateModule } from '@ngx-translate/core';
     IonicModule,
     CommonModule,
     FormsModule,
-    RouterModule.forChild([{ path: '', component: Tab4Page }]),
-    TranslateModule
+    ComponentsModule,
+    TranslateModule,
+    RouterModule.forChild([{ path: '', component: TabDashboardPage }]),
+    ComponentsModule
   ],
-  declarations: [Tab4Page]
+  declarations: [TabDashboardPage]
 })
-export class Tab4PageModule {}
+export class TabDashboardPageModule { }

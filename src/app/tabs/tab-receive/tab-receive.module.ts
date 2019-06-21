@@ -3,19 +3,17 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tab2Page } from './tab2.page';
-import { ComponentsModule } from 'src/components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { TabReceivePage } from './tab-receive.page';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    ComponentsModule,
-    RouterModule.forChild([{ path: '', component: Tab2Page }]),
-    TranslateModule
+    TranslateModule,
+    RouterModule.forChild([{ path: '', component: TabReceivePage }])
   ],
-  declarations: [Tab2Page]
+  declarations: [TabReceivePage]
 })
-export class Tab2PageModule {}
+export class TabReceivePageModule { }

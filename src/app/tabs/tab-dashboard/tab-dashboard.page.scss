@@ -1,0 +1,72 @@
+.page-dashboard{
+
+  font-family: 'Gotham-Light';
+
+  .send-request-container{
+    background-color: #2656C1;
+    color: #fff;
+    padding-top: 0.5rem;
+    padding-bottom: 5rem;
+    text-align: center;
+
+    h3{
+      font-family: 'Montserrat-Bold';
+      font-size: 1rem;
+    }
+    
+    .button{
+      text-align: center;
+      background: transparent;
+      color: #fff;
+
+      .icon{
+        width: 80px;
+        height: 80px;
+        background-color: #142C87;
+        color: #fff;
+        font-size: 2rem;
+        display: inline-block;
+        text-align: center;
+        margin-bottom: 1rem;
+        display: flex;
+        margin-right: auto;
+        margin-left: auto;
+
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        border-radius: 50%;
+      }
+      .text{
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .balance-line{
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
+    margin-bottom: 0.7rem;
+
+    .label{
+      font-size: 0.8rem;
+      color: #565656;
+    }
+
+    .amount{
+      font-size: 0.7rem;
+      font-family: 'Gotham-XLight';
+
+      &.top{
+        font-size: 1.6rem;
+      }
+    }
+  }
+
+  .last-transaction-container{
+    margin-top: -2rem;
+
+    ion-card{
+      background-color: #fff;
+    }
+  }
+}

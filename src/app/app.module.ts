@@ -21,12 +21,15 @@ import { sign as naclSign } from 'tweetnacl';
 import { ObservableService } from 'src/services/observable.service';
 import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { AboutPage } from './about/about.page';
+import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
+import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, QrScannerComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -50,6 +53,7 @@ export function createTranslateLoader(http: HttpClient) {
     StatusBar,
     SplashScreen,
     BarcodeScanner,
+    QRScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: "global", useFactory: () => window },
     { provide: "nacl.sign", useFactory: () => naclSign },
@@ -58,4 +62,4 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

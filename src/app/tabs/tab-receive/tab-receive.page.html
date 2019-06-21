@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="openMenu()">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Receive</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-qrcode" ion-padding>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>My Wallet Address</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="address">{{ encodeData }}</p>
+      <p class="text-copy">Top on green text to copy</p>
+      <div [innerHTML]="qrElement" class="qrcode-container"></div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

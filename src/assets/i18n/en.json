@@ -36,6 +36,9 @@
         "wallet": "Wallet",
         "available_balance": "Available Balance",
         "pending_balance": "Pending Balance",
-        "recent_transaction": "Recent Transaction"
+        "recent_transaction": "Recent Transaction",
+        "time": "Time",
+        "amount": "Amount",
+        "fee": "Fee"
     }
 }

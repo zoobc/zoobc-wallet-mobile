@@ -3,19 +3,23 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tab1Page } from './tab1.page';
 import { ComponentsModule } from 'src/components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { TabSendPage } from './tab-send.page';
+import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    RouterModule.forChild([{ path: '', component: Tab1Page }]),
     ComponentsModule,
-    TranslateModule
+    TranslateModule,
+    RouterModule.forChild([{ path: '', component: TabSendPage }])
   ],
-  declarations: [Tab1Page]
+  providers: [
+    QRScanner
+  ],
+  declarations: [TabSendPage]
 })
-export class Tab1PageModule {}
+export class TabSendPageModule { }

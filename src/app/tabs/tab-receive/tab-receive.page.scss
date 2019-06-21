@@ -1,0 +1,32 @@
+.page-qrcode{
+
+    text-align: center;
+
+    p.address{
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: green;
+    }
+
+    p.text-copy{
+        font-size: 0.7rem;
+        color: #dedede;
+    }
+
+
+    .sc-ion-card-md-s img{
+        width: auto !important;
+    }
+
+    /*.qrcode-container {
+        img {
+            border: 1px solid #dedede;
+            max-width:300px;
+            height:auto;
+    
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+    }*/
+}
