@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
+
 import { MenuController, ToastController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
+import { AccountService } from 'src/services/account.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 @Component({
@@ -15,8 +18,11 @@ export class TabReceivePage implements OnInit {
 
   constructor(
     private clipboard: Clipboard,
+    private toastController: ToastController,
     private menuController: MenuController,
-    private toastController: ToastController) { }
+    private storage: Storage,
+    private accountService: AccountService
+  ) { }
 
   openMenu() {
     this.menuController.open("mainMenu")
@@ -43,13 +49,13 @@ export class TabReceivePage implements OnInit {
     this.qrCodeUrl = qrCode.createDataURL(4, 8);
   }
 
-  getAddress() {
-    this.encodeData = '1Mz7153HMuxXTuR2R1t78mGSdzaAtNbBWX';
+  async getAddress() {
+    const activeAccount = await this.storage.get('active_account')
+    this.encodeData = this.accountService.getAccountAddress(activeAccount)
+    this.createQR();
   }
 
   ngOnInit() {
     this.getAddress();
-    this.createQR();
   }
-
 }

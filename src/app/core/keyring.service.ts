@@ -1260,12 +1260,16 @@ export class KeyringService {
         ...displayBip32Info(this.bip32RootKey, this.bip32ExtendedKey)
       };
     } else {
-      return displayBip32Info(this.bip32RootKey, this.bip32ExtendedKey);
+      return {
+        derivationPath,
+        derivationPrivKey: this.bip32ExtendedKey.privateKey,
+        ...displayBip32Info(this.bip32RootKey, this.bip32ExtendedKey)
+      };
     }
   }
 
   get extendedSeed() {
-    return this.bip32ExtendedKey.privateKey
+    return this.bip32ExtendedKey.privateKey;
   }
 
   //   function phraseChanged() {

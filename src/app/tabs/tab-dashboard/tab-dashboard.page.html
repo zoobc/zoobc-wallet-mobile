@@ -14,30 +14,30 @@
     <img src="">
   </p>
 
-  <p class="ion-text-center">Welcome</p>
+  <p class="ion-text-center">{{ "WALLETS.welcome" | translate }}</p>
 
   <div class="balance-line">
-    <div class="label">Available Balance:</div>
+    <div class="label">{{ "WALLETS.available_balance" | translate }}:</div>
     <div>
-      <div class="ion-text-end">
-        <div class="amount top">100.00</div>
+      <div class="ion-text-end" *ngIf="balance">
+        <div class="amount top">{{ balance.balance }}</div>
         <div class="amount">($ 10,000)</div>
       </div>
     </div>
   </div>
 
   <div class="balance-line">
-    <div class="label">Pending Balance:</div>
+    <div class="label">{{ "WALLETS.pending_balance" | translate }}:</div>
     <div>
       <div class="ion-text-end">
-        <div class="amount top">100.00</div>
+        <div class="amount top" *ngIf="balance">{{ balance.unconfirmedbalance }}</div>
         <div class="amount">($ 10,000)</div>
       </div>
     </div>
   </div>
 
   <div class="send-request-container">
-    <h3>Send & Request</h3>
+    <h3>{{ "WALLETS.send_request" | translate }}</h3>
     <ion-grid>
       <ion-row>
         <ion-col class="ion-text-center">
@@ -47,12 +47,15 @@
             </div>
             <div class="ion-text-uppercase text">Receive Money
             </div>
+            <div class="ion-text-uppercase text">{{ "WALLETS.send_money" | translate }}</div>
           </button>
         </ion-col>
         <ion-col class="ion-text-center">
           <button class="button" (click)="goToSend()">
             <div class="icon ion-justify-content-center">
-              <ion-icon name="send" class="ion-align-self-center"></ion-icon>
+              <ion-icon name="cash" class="ion-align-self-center"></ion-icon>
+            </div>
+            <div class="ion-text-uppercase text">{{ "WALLETS.request_money" | translate }}
             </div>
             <div class="ion-text-uppercase text">Send Money</div>
           </button>
@@ -64,33 +67,27 @@
   <div class="last-transaction-container">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Recent Transaction</ion-card-title>
+        <ion-card-title>{{ "WALLETS.recent_transaction" | translate }}</ion-card-title>
       </ion-card-header>
-      <ion-card-content>
+      <ion-card-content *ngIf="transactions">
 
-        <ion-list>
+        <ion-list *ngFor="let transaction of transactions.transactionsList">
           <ion-item>
             <ion-grid>
               <ion-row class="ion-justify-content-between">
                 <ion-col size="6">
                   <div>
                     <ion-label>ini nama</ion-label>
-                    <div>2 days ago</div>
+                    <div>{{ transaction.timestamp * 10000 | date }}</div>
                   </div>
                 </ion-col>
                 <ion-col size="6" class="ion-text-end">
                   <div>
-                    + 100.00
+                    {{ transaction.amountnqt }}
                   </div>
                 </ion-col>
               </ion-row>
             </ion-grid>
-          </ion-item>
-        </ion-list>
-
-        <ion-list *ngFor="let p of transactions">
-          <ion-item>
-            <ion-label>Time: fds | Amount: fds | Fee: fds</ion-label>
           </ion-item>
         </ion-list>
       </ion-card-content>

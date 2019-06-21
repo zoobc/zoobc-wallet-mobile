@@ -1,0 +1,46 @@
+{
+    "TABS": {
+        "wallets": "Wallets",
+        "recieve": "Recieve",
+        "scan": "Scan",
+        "send": "Send"
+    },
+    "LOGIN": {
+        "clear": "CLEAR"
+    },
+    "SIDEMENU": {
+        "settings": "Settings",
+        "account": "Account",
+        "language": "Language",
+        "create_new_account": "CREATE NEW ACCOUNT"
+    },
+    "SEND": {
+        "send_money": "Send Money",
+        "from": "From",
+        "pay_to": "Pay To",
+        "amount": "Amount",
+        "fee": "Fee",
+        "send": "SEND"
+    },
+    "SCAN": {
+        "title": "Scan QR Code",
+        "desc": "You can scan Spinechain addresses, payment requests, papper wallets, and more.",
+        "scan": "SCAN QR CODE"
+    },
+    "RECIEVE": {
+        "recieve": "Recieve",
+        "address": "My Wallet Address"
+    },
+    "WALLETS": {
+        "welcome": "Welcome",
+        "available_balance": "Available Balance",
+        "pending_balance": "Pending Balance",
+        "send_request": "Send & Request",
+        "recent_transaction": "Recent Transaction",
+        "send_money": "Send Money",
+        "request_money": "Request Money",
+        "time": "Time",
+        "amount": "Amount",
+        "fee": "Fee"
+    }
+}

@@ -4,18 +4,18 @@
   <ion-tab-bar slot="bottom" [ngStyle]="{'display': seeTabs?'flex':'none'}">
 
     <ion-tab-button tab="dashboard">
-      <ion-icon name="home"></ion-icon>
-      <ion-label>Dashboard</ion-label>
+      <ion-icon name="wallet"></ion-icon>
+      <ion-label>{{ "TABS.wallets" | translate }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="receive">
-      <ion-icon name="cash"></ion-icon>
-      <ion-label>Receive</ion-label>
+      <ion-icon name="arrow-round-down"></ion-icon>
+      <ion-label>{{ "TABS.recieve" | translate }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="send">
-      <ion-icon name="send"></ion-icon>
-      <ion-label>Send</ion-label>
+      <ion-icon name="arrow-round-up"></ion-icon>
+      <ion-label>{{ "TABS.send" | translate }}</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 

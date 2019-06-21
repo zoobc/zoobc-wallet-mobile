@@ -12,17 +12,22 @@ import { AppComponent } from "./app.component";
 import { FormsModule } from "@angular/forms";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { IonicStorageModule } from "@ionic/storage";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { NgxQRCodeModule } from "ngx-qrcode2";
 import { NgxsModule } from '@ngxs/store';
-import { PinComponent } from 'src/components/pin/pin.component';
 
 // import * as supercop from 'supercop.wasm';
 import { sign as naclSign } from 'tweetnacl';
+import { ObservableService } from 'src/services/observable.service';
+import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import { TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { AboutPage } from './about/about.page';
 import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}
 @NgModule({
   declarations: [AppComponent, QrScannerComponent],
   entryComponents: [],
@@ -36,6 +41,13 @@ import { QRScanner } from '@ionic-native/qr-scanner/ngx';
     HttpClientModule,
     NgxQRCodeModule,
     NgxsModule.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     StatusBar,
@@ -46,6 +58,7 @@ import { QRScanner } from '@ionic-native/qr-scanner/ngx';
     { provide: "global", useFactory: () => window },
     { provide: "nacl.sign", useFactory: () => naclSign },
     // { provide: "supercop", useFactory: () => supercop },
+    ObservableService
   ],
   bootstrap: [AppComponent]
 })
