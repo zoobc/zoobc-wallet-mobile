@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
-import { MenuController } from '@ionic/angular';
-
+import { MenuController, ToastController } from '@ionic/angular';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 @Component({
   selector: 'app-tab-receive',
@@ -9,22 +9,38 @@ import { MenuController } from '@ionic/angular';
   styleUrls: ['tab-receive.page.scss']
 })
 
-
 export class TabReceivePage implements OnInit {
   encodeData: string;
-  qrElement: any;
+  qrCodeUrl: any;
 
-  constructor(private menuController: MenuController) { }
+  constructor(
+    private clipboard: Clipboard,
+    private menuController: MenuController,
+    private toastController: ToastController) { }
 
   openMenu() {
     this.menuController.open("mainMenu")
   }
 
+  tapAddress() {
+    this.clipboard.copy(this.encodeData);
+    this.copySuccess();
+  }
+
+  async copySuccess() {
+    const toast = await this.toastController.create({
+      message: 'Your address copied to clipboard.',
+      duration: 2000
+    });
+
+    toast.present();
+  }
+
   createQR() {
-    const qr = qrcode(8, 'L');
-    qr.addData(this.encodeData);
-    qr.make();
-    this.qrElement = qr.createImgTag();
+    const qrCode = qrcode(8, 'L');
+    qrCode.addData(this.encodeData);
+    qrCode.make();
+    this.qrCodeUrl = qrCode.createDataURL(4, 8);
   }
 
   getAddress() {

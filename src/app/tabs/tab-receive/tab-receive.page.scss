@@ -6,6 +6,19 @@
         font-size: 1.2rem;
         font-weight: bold;
         color: green;
+        max-width: 17rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    p.note{
+        color: #818181;
+        font-size: 0.8rem;
+        max-width: 14rem;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 1.4rem;
+        margin-bottom: 1.4rem;
     }
 
     p.text-copy{
@@ -18,15 +31,22 @@
         width: auto !important;
     }
 
-    /*.qrcode-container {
-        img {
-            border: 1px solid #dedede;
-            max-width:300px;
-            height:auto;
+    .qrcode-container {
+        border: 1px solid #dedede;
+        display: inline-block;
+        margin-right: auto;
+        margin-left: auto;
+
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;   
+    }
     
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-        }
-    }*/
+    img{
+        vertical-align: middle;
+        
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+    }
 }
