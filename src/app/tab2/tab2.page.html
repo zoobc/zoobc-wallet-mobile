@@ -1,0 +1,23 @@
+
+<ion-header>
+  <ion-toolbar color="primary">
+      <ion-title>Receive</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content ion-padding style="text-align:center">
+  <ion-grid>
+    <ion-row>          
+      <ion-col align-self-center align-self-center size-md="12" style="text-align:center" size-lg="12" size-xs="12">
+        <h3>{{ "RECIEVE.address" | translate }}</h3>
+        <p>
+          {{ encodeData }}
+        </p>
+    
+        <div [innerHTML]="qrElement" class="qr-code" ></div>
+    </ion-col>
+  </ion-row>    
+
+
+  </ion-grid>
+</ion-content>

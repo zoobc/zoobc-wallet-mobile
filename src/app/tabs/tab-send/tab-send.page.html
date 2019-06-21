@@ -5,7 +5,7 @@
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Send Money</ion-title>
+    <ion-title>{{ "SEND.send_money" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -58,29 +58,29 @@
   <form #form="ngForm" (ngSubmit)="register(form)">
 
     <ion-item>
-      <ion-label position="floating">From:</ion-label>
+      <ion-label position="floating">{{ "SEND.from" | translate }}:</ion-label>
       <ion-input [(ngModel)]="sender" name="sender" autocomplete="on" autocorrect="on"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required placeholder="Pay to"></ion-input>
+      <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required placeholder="{{ 'SEND.pay_to' | translate }}"></ion-input>
       <button (click)="scanQrCode()" item-right>
         <ion-icon name="qr-scanner"></ion-icon>
       </button>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Amount:</ion-label>
+      <ion-label position="floating">{{ "SEND.amount" | translate }}:</ion-label>
       <ion-input name="amount" type="text" [(ngModel)]="amount" required></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Fee:</ion-label>
+      <ion-label position="floating">{{ "SEND.fee" | translate }}:</ion-label>
       <ion-input name="fee" type="text" [(ngModel)]="fee" required></ion-input>
     </ion-item>
 
     <div padding>
-      <ion-button size="large" (click)="sendMoney()" type="submit" expand="block">Send</ion-button>
+      <ion-button size="large" (click)="sendMoney()" type="submit" expand="block">{{ "SEND.send" | translate }}</ion-button>
     </div>
 
     <ion-item>
