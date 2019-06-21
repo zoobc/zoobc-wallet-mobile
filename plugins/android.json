@@ -28,6 +28,9 @@
     },
     "cordova-plugin-qrscanner": {
       "PACKAGE_NAME": "com.blockchainzoo.spinechainwallet"
+    },
+    "cordova-clipboard": {
+      "PACKAGE_NAME": "com.blockchainzoo.spinechainwallet"
     }
   },
   "dependent_plugins": {}
