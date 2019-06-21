@@ -28,15 +28,17 @@
         "scan": "SCAN QR CODE"
     },
     "RECIEVE": {
+        "recieve": "Recieve",
         "address": "My Wallet Address"
     },
     "WALLETS": {
-        "recieve": "Recieve",
-        "buy": "Buy SPC Cash",
-        "wallet": "Wallet",
+        "welcome": "Welcome",
         "available_balance": "Available Balance",
         "pending_balance": "Pending Balance",
+        "send_request": "Send & Request",
         "recent_transaction": "Recent Transaction",
+        "send_money": "Send Money",
+        "request_money": "Request Money",
         "time": "Time",
         "amount": "Amount",
         "fee": "Fee"

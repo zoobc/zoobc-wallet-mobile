@@ -1,93 +1,75 @@
-import { Component, OnInit } from '@angular/core';
-import { LoadingController, ToastController, NavController, MenuController } from '@ionic/angular';
-import { RestapiService } from '../../../services/restapi.service';
-import * as  SHA256 from 'crypto-js/sha256';
-import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
-import { AboutPage } from '../../about/about.page';
-import { Router } from '@angular/router';
-import { QrScannerService } from '../../qr-scanner/qr-scanner.service';
+import { Component, Inject } from '@angular/core';
+import { ToastController } from '@ionic/angular';
+import { GRPCService } from 'src/services/grpc.service';
+import { SendMoneyTx } from 'src/helpers/serializers';
+import { addressToPublicKey } from 'src/helpers/converters';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab-send',
   templateUrl: 'tab-send.page.html',
   styleUrls: ['tab-send.page.scss']
 })
-export class TabSendPage implements OnInit {
+export class TabSendPage {
+  account: any
   sender: any;
   recipient: any;
   amount: any;
-  fee: any;
-  result: any;
-  dataui: any;
-  status: any;
+  fee: any
 
-  public rootPage: any = AboutPage
-
-  constructor(private loadingController: LoadingController,
-    private apiservice: RestapiService, private qrScanner: QRScanner,
-    private toastCtrl: ToastController,
-    public navCtrl: NavController,
-    private router: Router,
-    private menuController: MenuController,
-    private qrScannerSrv: QrScannerService) {
-    this.sender = this.getAddress();
-    //this.resetForm();
+  constructor(
+    private storage: Storage,
+    @Inject("nacl.sign") private sign: any,
+    private grpcService: GRPCService,
+    private toastController: ToastController
+  ){
+    // this.sender = this.getAddress();
   }
 
-  ngOnInit() {
 
-  }
-
-  resetForm() {
-    this.recipient = this.getFakeRecipient();
-    this.amount = Math.floor((Math.random() * 10000) + 1);
-    this.fee = Math.floor((Math.random() * 10) + 1);
-  }
-
-  getFakeRecipient() {
-    const recipient = Math.floor((Math.random() * 1000000) + 1) + '-Recipient';
-    return SHA256(JSON.stringify(recipient)).toString();
+  async getAddress(){
+    this.account = await this.storage.get('active_account')
+    this.sender = this.account.address
   }
 
   async sendMoney() {
-    this.status = '... processing ...';
-    this.recipient = this.getFakeRecipient();
+    const { derivationPrivKey: accountSeed } = this.account
+    const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed)
 
-    const loading = await this.loadingController.create({
-      message: 'Loading'
+    const balance = await this.grpcService.getAccountBalance()
+
+    if(balance > (this.account + this.fee)) {
+      const tx = new SendMoneyTx();
+      tx.senderPublicKey = publicKey;
+      tx.recipientPublicKey = addressToPublicKey(this.recipient);
+      tx.amount = this.amount;
+      tx.fee = this.fee;
+      tx.timestamp = Date.now() / 1000;
+      const txBytes = tx.toBytes();
+
+      const signature = this.sign.detached(txBytes, secretKey)
+      txBytes.set(signature, 123);
+
+      const resolveTx = await this.grpcService.postTransaction(txBytes)
+
+      console.log("resolveTx", resolveTx)
+      if(resolveTx) {
+        this.transactionToast('Money Sent')
+      }
+    } else {
+      this.transactionToast('Balance not enough')
+    }
+  }
+
+  async transactionToast(message) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
     });
-    await loading.present();
-    this.apiservice.sendMoney(this.sender, this.recipient, this.amount, this.fee)
-      .subscribe(res => {
-        console.log(res);
-        this.result = res[0];
-        this.dataui = this.result['data'];
-        this.status = '... success ...';
-        loading.dismiss();
-      }, err => {
-        console.log(err);
-        loading.dismiss();
-        this.status = '... error ...';
-      });
-
-    this.resetForm();
-
+    toast.present();
   }
 
-  getAddress() {
-    const sender = Math.floor((Math.random() * 1000000) + 1) + '-Sender';
-    return SHA256(JSON.stringify(sender)).toString();
-  }
-
-  openMenu() {
-    this.menuController.open("mainMenu")
-  }
-
-  scanQrCode() {
-    this.router.navigateByUrl('/qr-scanner')
-
-    this.qrScannerSrv.listen().subscribe((str: string) => {
-      this.recipient = str;
-    })
+  ionViewWillEnter() {
+    this.getAddress()
   }
 }

@@ -5,14 +5,14 @@
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Receive</ion-title>
+    <ion-title>{{ "RECIEVE.recieve" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="page-qrcode" ion-padding>
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>My Wallet Address</ion-card-subtitle>
+      <ion-card-subtitle>{{ "RECIEVE.address" | translate }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <p class="address">{{ encodeData }}</p>

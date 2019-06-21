@@ -28,15 +28,17 @@
         "scan": "PINDAI QR CODE"
     },
     "RECIEVE": {
+        "recieve": "Terima",
         "address": "Alamat Dompet Saya"
     },
     "WALLETS": {
-        "recieve": "Terima",
-        "buy": "Beli SPC Cash",
-        "wallet": "Dompent",
+        "welcome": "Selamat datang",
         "available_balance": "Saldo Tersedia",
         "pending_balance": "Saldo Tertunda",
+        "send_request": "Kirim & Permintaan",
         "recent_transaction": "Transaksi Terbaru",
+        "send_money": "Kirim Koin",
+        "request_money": "Permintaan Koin",
         "time": "Waktu",
         "amount": "Jumlah",
         "fee": "Biaya"

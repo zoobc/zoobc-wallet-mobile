@@ -15,7 +15,8 @@ import { TranslateModule } from '@ngx-translate/core';
     ComponentsModule,
     TranslateModule,
     RouterModule.forChild([{ path: '', component: TabDashboardPage }]),
-    ComponentsModule
+    ComponentsModule,
+    TranslateModule
   ],
   declarations: [TabDashboardPage]
 })

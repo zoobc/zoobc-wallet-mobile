@@ -8,7 +8,7 @@ import { GRPCService } from 'src/services/grpc.service';
 @Component({
   selector: 'app-tab-dashboard',
   templateUrl: 'tab-dashboard.page.html',
-  styleUrls: ['tab-dashboard.page.scss']
+  styleUrls: ['tab-dashboard.page.scss'],
 })
 export class TabDashboardPage implements OnInit {
 
@@ -89,14 +89,14 @@ export class TabDashboardPage implements OnInit {
 
   async getAccountBalance() {
     this.balance = await this.grpcService.getAccountBalance()
+    console.log("balance", this.balance)
   }
 
   async getAccountTransaction() {
     this.transactions  = await this.grpcService.getAccountTransaction()
     console.log("transactions", this.transactions)
-    this.getBalance(this.publicKey);
-    this.getTransaction(this.publicKey);
-
+    // this.getBalance(this.publicKey);
+    // this.getTransaction(this.publicKey);
 
   }
 

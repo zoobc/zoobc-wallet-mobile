@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
 import { MenuController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
+import { AccountService } from 'src/services/account.service';
 
 
 @Component({
@@ -14,7 +16,11 @@ export class TabReceivePage implements OnInit {
   encodeData: string;
   qrElement: any;
 
-  constructor(private menuController: MenuController) { }
+  constructor(
+    private menuController: MenuController,
+    private storage: Storage,
+    private accountService: AccountService
+  ) { }
 
   openMenu() {
     this.menuController.open("mainMenu")
@@ -27,13 +33,13 @@ export class TabReceivePage implements OnInit {
     this.qrElement = qr.createImgTag();
   }
 
-  getAddress() {
-    this.encodeData = '1Mz7153HMuxXTuR2R1t78mGSdzaAtNbBWX';
+  async getAddress(){
+    const activeAccount = await this.storage.get('active_account')
+    this.encodeData  = this.accountService.getAccountAddress(activeAccount)
+    this.createQR();
   }
 
   ngOnInit() {
     this.getAddress();
-    this.createQR();
   }
-
 }
