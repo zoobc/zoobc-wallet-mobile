@@ -1,7 +1,7 @@
 <app-sidemenu></app-sidemenu>
 
-<ion-tabs>
-  <ion-tab-bar slot="bottom">
+<ion-tabs #myTabs (ionTabsDidChange)="onTabChanged($event)">
+  <ion-tab-bar slot="bottom" [ngStyle]="{'display': seeTabs?'flex':'none'}">
 
     <ion-tab-button tab="dashboard">
       <ion-icon name="wallet"></ion-icon>
