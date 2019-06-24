@@ -10,7 +10,7 @@ import { Storage } from '@ionic/storage';
   styleUrls: ['./existing-wallet.page.scss'],
 })
 export class ExistingWalletPage implements OnInit {
-  private passphrase
+  passphrase
   constructor(
     private mnemonicService: MnemonicsService,
     private toastController: ToastController,
