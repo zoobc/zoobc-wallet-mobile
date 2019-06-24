@@ -14,7 +14,7 @@
   <h3 class="page-title">{{ "SEND.send_money" | translate }}</h3>
   <form #form="ngForm" (ngSubmit)="register(form)">
     <div class="f-group">
-      <ion-item>
+      <ion-item lines="none">
         <ion-label position="stacked">{{ "SEND.from" | translate }}:</ion-label>
         <ion-input [(ngModel)]="sender" name="sender" autocomplete="on" autocorrect="on"></ion-input>
       </ion-item>
@@ -24,7 +24,7 @@
       <ion-grid>
         <ion-row align-items-end justify-content-between>
           <ion-col class="ion-text-start">
-            <ion-item>
+            <ion-item lines="none">
               <ion-label position="stacked">{{ "SEND.pay_to" | translate }}:</ion-label>
               <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required></ion-input>
             </ion-item>
@@ -50,14 +50,14 @@
     </div>
 
     <div class="f-group">
-      <ion-item>
+      <ion-item lines="none">
         <ion-label position="stacked">{{ "SEND.amount" | translate }}:</ion-label>
         <ion-input name="amount" type="number" [(ngModel)]="amount" required></ion-input>
       </ion-item>
     </div>
 
     <div class="f-group">
-      <ion-item>
+      <ion-item lines="none">
         <ion-label position="stacked">{{ "SEND.fee" | translate }}:</ion-label>
         <ion-input name="fee" type="number" [(ngModel)]="fee" required></ion-input>
       </ion-item>
