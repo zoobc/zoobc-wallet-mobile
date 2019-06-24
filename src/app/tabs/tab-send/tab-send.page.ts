@@ -4,6 +4,8 @@ import { GRPCService } from 'src/services/grpc.service';
 import { SendMoneyTx } from 'src/helpers/serializers';
 import { addressToPublicKey } from 'src/helpers/converters';
 import { Storage } from '@ionic/storage';
+import { QrScannerService } from 'src/app/qr-scanner/qr-scanner.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab-send',
@@ -22,7 +24,9 @@ export class TabSendPage {
     @Inject("nacl.sign") private sign: any,
     private grpcService: GRPCService,
     private toastController: ToastController,
-    private menuController: MenuController
+    private menuController: MenuController,
+    private qrScannerSrv: QrScannerService,
+    private router: Router
   ) {
     // this.sender = this.getAddress();
   }
@@ -75,5 +79,13 @@ export class TabSendPage {
 
   ionViewWillEnter() {
     this.getAddress()
+  }
+
+  scanQrCode() {
+    this.router.navigateByUrl('/qr-scanner')
+
+    this.qrScannerSrv.listen().subscribe((str: string) => {
+      this.recipient = str;
+    })
   }
 }
