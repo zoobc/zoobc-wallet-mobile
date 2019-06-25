@@ -6,7 +6,7 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 const routes: Routes = [
   {
     path: '', loadChildren: './tabs/tabs.module#TabsPageModule',
-    //canActivate: [AuthService]
+    canActivate: [AuthService]
   },
   { path: 'qr-scanner', component: QrScannerComponent },
   { path: 'about', loadChildren: './about/about.module#AboutPageModule' },

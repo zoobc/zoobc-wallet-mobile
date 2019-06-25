@@ -6,7 +6,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./pin.component.scss'],
 })
 export class PinComponent implements OnInit {
-  private pin = ""
+  pin = ""
 
   @Output() change: EventEmitter<string> = new EventEmitter<string>();
 

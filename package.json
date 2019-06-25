@@ -40,6 +40,7 @@
     "@ngxs/store": "^3.4.3",
     "cordova-android": "8.0.0",
     "cordova-clipboard": "1.2.1",
+    "cordova-ios": "5.0.1",
     "cordova-plugin-qrscanner": "3.0.1",
     "core-js": "^2.5.4",
     "crypto-js": "^3.1.9-1",

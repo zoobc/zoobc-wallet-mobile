@@ -11,6 +11,11 @@ import { Storage } from '@ionic/storage';
   styleUrls: ['tab-send.page.scss']
 })
 export class TabSendPage {
+  rootPage: any;
+  status: any;
+  openMenu: any;
+  register: any;
+  scanQrCode: any;
   account: any
   sender: any;
   recipient: any;

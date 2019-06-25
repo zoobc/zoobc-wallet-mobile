@@ -70,7 +70,7 @@
   "cordova-plugin-qrscanner": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-qrscanner"
+      "id": "cordova-plugin-qrscanner@3.0.1"
     },
     "is_top_level": true,
     "variables": {}
@@ -78,9 +78,17 @@
   "cordova-clipboard": {
     "source": {
       "type": "registry",
-      "id": "cordova-clipboard"
+      "id": "cordova-clipboard@1.2.1"
     },
     "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-add-swift-support": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-add-swift-support"
+    },
+    "is_top_level": false,
     "variables": {}
   }
 }

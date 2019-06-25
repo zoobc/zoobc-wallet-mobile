@@ -13,10 +13,10 @@ import { LanguageService } from 'src/services/language.service';
   styleUrls: ['./sidemenu.component.scss'],
 })
 export class SidemenuComponent implements OnInit {
-  private accounts = []
-  private languages = []
-  private activeLanguage = 'en'
-  private activeAccount = 0
+  accounts = []
+  languages = []
+  activeLanguage = 'en'
+  activeAccount = 0
 
   constructor(
     private menuController: MenuController,
