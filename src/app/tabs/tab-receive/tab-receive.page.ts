@@ -12,7 +12,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
   styleUrls: ['tab-receive.page.scss']
 })
 
-export class TabReceivePage implements OnInit {
+export class TabReceivePage {
   encodeData: string;
   qrCodeUrl: any;
 
@@ -55,7 +55,11 @@ export class TabReceivePage implements OnInit {
     this.createQR();
   }
 
-  ngOnInit() {
+  ionViewDidEnter() {
     this.getAddress();
+  }
+
+  onInit() {
+
   }
 }
