@@ -54,7 +54,7 @@
     "ngx-build-plus": "^7.8.3",
     "ngx-qrcode2": "0.0.9",
     "node-fetch": "^2.6.0",
-    "phonegap-plugin-barcodescanner": "8.0.1",
+    "phonegap-plugin-barcodescanner": "^8.1.0",
     "qrcode-generator": "^1.4.3",
     "rxjs": "^6.5.2",
     "supercop.wasm": "^5.0.1",
@@ -64,8 +64,8 @@
     "zone.js": "~0.8.29"
   },
   "devDependencies": {
-    "@angular-devkit/architect": "~0.13.8",
-    "@angular-devkit/build-angular": "~0.13.8",
+    "@angular-devkit/architect": "~0.12.3",
+    "@angular-devkit/build-angular": "~0.12.3",
     "@angular-devkit/core": "~7.3.8",
     "@angular-devkit/schematics": "~7.3.8",
     "@angular/cli": "~7.3.8",
@@ -107,11 +107,11 @@
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
       "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-qrscanner": {},
+      "cordova-clipboard": {},
       "phonegap-plugin-barcodescanner": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      },
-      "cordova-plugin-qrscanner": {},
-      "cordova-clipboard": {}
+      }
     },
     "platforms": [
       "android"
