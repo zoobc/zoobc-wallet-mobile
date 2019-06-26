@@ -220,5 +220,13 @@ newest SDK which was the one that had the license accepted).
 - "@angular-devkit/build-angular": "~0.12.3",
 - cd externals/bip32/node_modules/cipher-base && npm i stream
 - cd externals/bip32/node_modules/hash-base && npm i stream
+- if Duplicate Camera permition: cd cordova-plugin-qrscanner edit plugin.xml and comment this
+
+`<!--
+      <uses-permission android:name="android.permission.CAMERA" android:required="false" />
+      <uses-feature android:name="android.hardware.camera" android:required="false" />
+      <uses-feature android:name="android.hardware.camera.front" android:required="false" />
+-->`
+
 
 
