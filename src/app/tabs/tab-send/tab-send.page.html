@@ -1,92 +1,75 @@
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header no-border>
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="openMenu()">
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>{{ "SEND.send_money" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 
 
-<ion-content>
-
-  <ion-nav [root]="rootPage"></ion-nav>
-
-
-  <!--
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title style="text-align:center">Send Money</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content padding>
-
-          <p>&nbsp;</p>
-
-          <p style="text-align:center">To get started, buy Spinechain Cash (SPC), or share your address.</p>
-          <p style="text-align:center">You can receive spinechain from any wallet or service.</p>
-
-
-          <p>&nbsp;</p>
-     
-     
-          <ion-grid>
-            <ion-row>
-              <ion-col col-12>
-                <ion-button color="success"  fill="solid" expand="full">Buy Spinechain now</ion-button>
-              </ion-col>            
-            </ion-row>
-            <ion-row>
-              <ion-col col-12>
-                <ion-button  color="warning" fill="solid" expand="full">Show my address</ion-button>
-              </ion-col>
-            </ion-row>
-
-            <p>&nbsp;</p>
-          </ion-grid>
-
-
- </ion-card-content>
-    </ion-card>
-
-        -->
-
-
+<ion-content class="page-send" padding="true">
+  <h3 class="page-title">{{ "SEND.send_money" | translate }}</h3>
   <form #form="ngForm" (ngSubmit)="register(form)">
+    <div class="f-group">
+      <ion-item lines="none">
+        <ion-label position="stacked">{{ "SEND.from" | translate }}:</ion-label>
+        <ion-input [(ngModel)]="sender" name="sender" autocomplete="on" autocorrect="on"></ion-input>
+      </ion-item>
+    </div>
 
-    <ion-item>
-      <ion-label position="floating">{{ "SEND.from" | translate }}:</ion-label>
-      <ion-input [(ngModel)]="sender" name="sender" autocomplete="on" autocorrect="on"></ion-input>
-    </ion-item>
+    <div class="f-group">
+      <ion-grid>
+        <ion-row align-items-end justify-content-between>
+          <ion-col class="ion-text-start">
+            <ion-item lines="none">
+              <ion-label position="stacked">{{ "SEND.pay_to" | translate }}:</ion-label>
+              <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col class="ion-text-end" size="4">
+            <ion-grid>
+              <ion-row nowrap align-items-end>
+                <ion-col size="6">
+                  <button (click)="scanQrCode()" class="btn-icon">
+                    <ion-icon name="qr-scanner"></ion-icon>
+                  </button>
+                </ion-col>
+                <ion-col size="6">
+                  <button class="btn-icon">
+                    <ion-icon name="bookmarks"></ion-icon>
+                  </button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
 
-    <ion-item>
-      <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required placeholder="{{ 'SEND.pay_to' | translate }}"></ion-input>
-      <button (click)="scanQrCode()" item-right>
-        <ion-icon name="qr-scanner"></ion-icon>
-      </button>
-    </ion-item>
+    <div class="f-group">
+      <ion-item lines="none">
+        <ion-label position="stacked">{{ "SEND.amount" | translate }}:</ion-label>
+        <ion-input name="amount" type="number" [(ngModel)]="amount" required></ion-input>
+      </ion-item>
+    </div>
 
-    <ion-item>
-      <ion-label position="floating">{{ "SEND.amount" | translate }}:</ion-label>
-      <ion-input name="amount" type="text" [(ngModel)]="amount" required></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="floating">{{ "SEND.fee" | translate }}:</ion-label>
-      <ion-input name="fee" type="text" [(ngModel)]="fee" required></ion-input>
-    </ion-item>
+    <div class="f-group">
+      <ion-item lines="none">
+        <ion-label position="stacked">{{ "SEND.fee" | translate }}:</ion-label>
+        <ion-input name="fee" type="number" [(ngModel)]="fee" required></ion-input>
+      </ion-item>
+    </div>
 
     <div padding>
-      <ion-button size="large" (click)="sendMoney()" type="submit" expand="block">{{ "SEND.send" | translate }}</ion-button>
+      <ion-button size="large" (click)="sendMoney()" type="submit" expand="block">{{ "SEND.send" | translate }}
+      </ion-button>
     </div>
 
     <ion-item>
       <ion-label>{{status}}</ion-label>
     </ion-item>
-
   </form>
-
 </ion-content>
