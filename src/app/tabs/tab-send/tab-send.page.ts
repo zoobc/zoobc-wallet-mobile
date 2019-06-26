@@ -15,9 +15,7 @@ import { Router } from '@angular/router';
 export class TabSendPage {
   rootPage: any;
   status: any;
-  openMenu: any;
   register: any;
-  scanQrCode: any;
   account: any
   sender: any;
   recipient: any;
