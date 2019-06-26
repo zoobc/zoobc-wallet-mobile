@@ -10,7 +10,6 @@ import { AppConfigModule } from "./app-config.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { FormsModule } from "@angular/forms";
-import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { NgxQRCodeModule } from "ngx-qrcode2";
@@ -52,7 +51,6 @@ export function createTranslateLoader(http: HttpClient) {
   providers: [
     StatusBar,
     SplashScreen,
-    BarcodeScanner,
     QRScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: "global", useFactory: () => window },
