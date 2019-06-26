@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./pin.page.scss'],
 })
 export class PinPage implements OnInit {
-
+  passcode
   constructor() { }
 
 

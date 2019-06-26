@@ -13,6 +13,11 @@ import { Router } from '@angular/router';
   styleUrls: ['tab-send.page.scss']
 })
 export class TabSendPage {
+  rootPage: any;
+  status: any;
+  openMenu: any;
+  register: any;
+  scanQrCode: any;
   account: any
   sender: any;
   recipient: any;

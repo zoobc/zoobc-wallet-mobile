@@ -19,10 +19,10 @@ import { ACTIVE_ACCOUNT } from 'src/environments/variable.const';
 })
 export class GeneratePassphrasePage implements OnInit {
 
-  private writtenDown = false
-  private terms = false
-  private passphrase
-  private isPinSetup = false
+  writtenDown = false
+  terms = false
+  passphrase
+  isPinSetup = false
 
   private account
 

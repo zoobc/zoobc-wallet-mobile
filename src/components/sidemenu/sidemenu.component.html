@@ -8,7 +8,7 @@
     <ion-list>
       <ion-item>
         <ion-label>{{ "SIDEMENU.account" | translate }}</ion-label>
-        <ion-select interface="action-sheet" [(ngModel)]="activeAccount" (ionChange)="selectAccount($event)">
+        <ion-select interface="action-sheet" [(ngModel)]="activeAccount" (ionChange)="selectAccount()">
           <ion-select-option *ngFor="let account of accounts; let i = index" value="{{ i }}">{{ account.address }}</ion-select-option>
         </ion-select>
       </ion-item>
