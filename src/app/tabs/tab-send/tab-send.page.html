@@ -63,7 +63,8 @@
     </ion-item>
 
     <ion-item>
-      <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required placeholder="{{ 'SEND.pay_to' | translate }}"></ion-input>
+      <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required
+        placeholder="{{ 'SEND.pay_to' | translate }}"></ion-input>
       <button (click)="scanQrCode()" item-right>
         <ion-icon name="qr-scanner"></ion-icon>
       </button>
@@ -80,7 +81,8 @@
     </ion-item>
 
     <div padding>
-      <ion-button size="large" (click)="sendMoney()" type="submit" expand="block">{{ "SEND.send" | translate }}</ion-button>
+      <ion-button size="large" (click)="sendMoney()" type="submit" expand="block">{{ "SEND.send" | translate }}
+      </ion-button>
     </div>
 
     <ion-item>
