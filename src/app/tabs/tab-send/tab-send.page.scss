@@ -1,1 +1,29 @@
+.page-send{
+    text-align: center;
 
+    .f-group{
+        margin-bottom: 1.6rem;
+    }
+
+    ion-grid{
+        --ion-grid-padding: 0;
+    }
+
+    ion-col{
+        --ion-grid-column-padding: 0;
+    }
+
+    ion-item{
+        --padding-start: 0;
+        --inner-padding-end: 0;
+    }
+
+    .btn-icon{
+        background-color: transparent;
+        font-size: 1.6rem;
+    }
+
+    ion-input{
+        border-bottom: 1px solid #D8D8D8;
+    }
+}

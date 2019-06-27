@@ -4,6 +4,8 @@ import { GRPCService } from "src/services/grpc.service";
 import { SendMoneyTx } from "src/helpers/serializers";
 import { addressToPublicKey } from "src/helpers/converters";
 import { Storage } from "@ionic/storage";
+import { QrScannerService } from "src/app/qr-scanner/qr-scanner.service";
+import { Router } from "@angular/router";
 import { AccountService } from "src/services/account.service";
 
 @Component({
@@ -15,7 +17,6 @@ export class TabSendPage {
   rootPage: any;
   status: any;
   register: any;
-  scanQrCode: any;
   account: any;
   sender: any;
   recipient: any;
@@ -28,15 +29,19 @@ export class TabSendPage {
     private grpcService: GRPCService,
     private toastController: ToastController,
     private accountService: AccountService,
-    private menuController: MenuController
+    private menuController: MenuController,
+    private qrScannerSrv: QrScannerService,
+    private router: Router
   ) {
     // this.sender = this.getAddress();
   }
 
+  openMenu() {
+    this.menuController.open("mainMenu");
+  }
+
   async getAddress() {
     this.account = await this.storage.get("active_account");
-    console.log("this.account: ", this.account);
-
     this.sender = this.accountService.getAccountAddress(this.account);
   }
 
@@ -81,7 +86,11 @@ export class TabSendPage {
     this.getAddress();
   }
 
-  openMenu() {
-    this.menuController.open("mainMenu");
+  scanQrCode() {
+    this.router.navigateByUrl("/qr-scanner");
+
+    this.qrScannerSrv.listen().subscribe((str: string) => {
+      this.recipient = str;
+    });
   }
 }
