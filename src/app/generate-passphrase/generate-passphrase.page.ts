@@ -80,10 +80,9 @@ export class GeneratePassphrasePage implements OnInit {
     this.router.navigate(['/'])
   }
 
-  goToSetupPin() {
-    this.Obs.Set(ACTIVE_ACCOUNT, this.account)
-    this.storage.set('active_account', this.account)
-    this.storage.set('accounts', [this.account])
+  async goToSetupPin() {
+    await this.storage.set('active_account', this.account)
+    await this.storage.set('accounts', [this.account])
     this.router.navigate(['/setup-pin'])
   }
 

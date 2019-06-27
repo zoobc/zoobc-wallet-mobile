@@ -33,6 +33,7 @@ export class SidemenuComponent implements OnInit {
   async ngOnInit() {
     this.getListAccounts()
     this.languages = LANGUAGES
+    this.activeAccount = await this.storage.get('active_account')
     this.activeLanguage = await this.storage.get(SELECTED_LANGUAGE)
   }
 
