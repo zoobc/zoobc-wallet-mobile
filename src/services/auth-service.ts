@@ -17,6 +17,7 @@ export class AuthService implements CanActivate {
 
     async canActivate(route: ActivatedRouteSnapshot) {
         const isPinSetup = await this.storage.get("pin")
+        console.log("isPinSetup", isPinSetup)
         if (isPinSetup && !this.isUserLoggenIn) {
             this.router.navigate(['login']);
             return false

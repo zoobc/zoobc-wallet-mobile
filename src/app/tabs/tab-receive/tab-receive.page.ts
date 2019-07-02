@@ -55,7 +55,13 @@ export class TabReceivePage {
     this.createQR();
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
+    console.log("enter")
+    await this.storage.forEach((value, key, index) => {
+      console.log("value", value)
+      console.log("key", key)
+      console.log("index", index)
+    })
     this.getAddress();
   }
 

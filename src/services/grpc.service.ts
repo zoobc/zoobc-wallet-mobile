@@ -1,25 +1,25 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
-import { AccountBalancesServiceClient } from '../grpc/generated/service/accountBalanceServiceClientPb';
-import { TransactionServiceClient } from '../grpc/generated/service/transactionServiceClientPb';
+import { AccountBalancesServiceClient } from "../grpc/generated/service/accountBalanceServiceClientPb";
+import { TransactionServiceClient } from "../grpc/generated/service/transactionServiceClientPb";
 
 import {
   GetAccountBalanceRequest,
   AccountBalance
-} from '../grpc/generated/model/accountBalance_pb';
+} from "../grpc/generated/model/accountBalance_pb";
 import {
   GetTransactionsByAccountPublicKeyRequest,
   GetTransactionsResponse,
   PostTransactionRequest,
   PostTransactionResponse
-} from '../grpc/generated/model/transaction_pb';
-import { ACTIVE_ACCOUNT } from 'src/environments/variable.const';
-import { Storage } from '@ionic/storage';
-import { AccountService } from './account.service';
+} from "../grpc/generated/model/transaction_pb";
+import { ACTIVE_ACCOUNT } from "src/environments/variable.const";
+import { Storage } from "@ionic/storage";
+import { AccountService } from "./account.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class GRPCService {
   client: AccountBalancesServiceClient;
@@ -28,19 +28,20 @@ export class GRPCService {
   AccountTransaction = [];
   PublicKey: any;
 
-  apiUrl = 'https://54.254.196.180:8000';
-  grpcUrl = 'http://18.139.3.139:8080';
+  apiUrl = "https://54.254.196.180:8000";
+  grpcUrl = "http://18.139.3.139:8080";
 
   constructor(
     private http: HttpClient,
     private storage: Storage,
     private accountService: AccountService
-  ) {
-  }
+  ) {}
 
   async getAccountTransaction() {
-    const account = await this.storage.get('active_account')
-    const publicKey = this.accountService.getAccountPublicKey(account)
+    const account = await this.storage.get("active_account");
+    const publicKey = this.accountService.getAccountPublicKey(
+      account.accountProps
+    );
 
     this.txServ = new TransactionServiceClient(this.grpcUrl, null, null);
     return new Promise((resolve, reject) => {
@@ -59,8 +60,10 @@ export class GRPCService {
   }
 
   async getAccountBalance() {
-    const account = await this.storage.get('active_account')
-    const publicKey = this.accountService.getAccountPublicKey(account)
+    const account = await this.storage.get("active_account");
+    const publicKey = this.accountService.getAccountPublicKey(
+      account.accountProps
+    );
 
     this.client = new AccountBalancesServiceClient(this.grpcUrl, null, null);
     return new Promise((resolve, reject) => {
