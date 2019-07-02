@@ -10,6 +10,8 @@
   - Scan Barcode
   - Receive Money
   - Buy coin (redirect to marketplace example https://www.coinbase.com/)
+  - Multi Language i18N
+  - Multi Currency
 
 ### Installation
 
