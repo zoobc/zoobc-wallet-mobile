@@ -1,13 +1,13 @@
 <ion-menu type="overlay" menuId="mainMenu">
   <ion-header>
     <ion-toolbar color="primary">
-      <ion-title>{{ "SIDEMENU.settings" | translate }}</ion-title>
+      <ion-title>{{ "Settings" | translate }}</ion-title>
     </ion-toolbar>
   </ion-header>
   <ion-content>
     <ion-list>
       <ion-item>
-        <ion-label>{{ "SIDEMENU.account" | translate }}</ion-label>
+        <ion-label>{{ "Account" | translate }}</ion-label>
         <ion-select interface="action-sheet" [(ngModel)]="activeAccount" (ionChange)="selectAccount()">
           <ion-select-option *ngFor="let account of accounts; let i = index" value="{{ i }}"
             [attr.selected]="i === activeAccount">{{ account.accountName }}
@@ -17,7 +17,7 @@
     </ion-list>
     <ion-list>
       <ion-item>
-        <ion-label>{{ "SIDEMENU.language" | translate }}</ion-label>
+        <ion-label>{{ "Language" | translate }}</ion-label>
         <ion-select interface="action-sheet" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
           <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
             {{ language.country }}</ion-select-option>
@@ -27,7 +27,7 @@
   </ion-content>
   <ion-footer>
     <ion-toolbar>
-      <ion-button expand="block" fill="clear" (click)="goToGenerate()">{{ "SIDEMENU.create_new_account" | translate }}
+      <ion-button expand="block" fill="clear" (click)="goToGenerate()">{{ "Create New Account" | translate }}
       </ion-button>
     </ion-toolbar>
   </ion-footer>

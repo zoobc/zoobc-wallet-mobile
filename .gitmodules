@@ -10,3 +10,6 @@
 	path = src/grpc/schema
 	url = https://github.com/BlockchainZoo/spinechain-schema-prototype.git
 	branch = master
+[submodule "src/assets/languages"]
+	path = src/assets/languages
+	url = https://github.com/zoobc/zoobc-language-files.git

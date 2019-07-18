@@ -14,10 +14,10 @@
     <img src="">
   </p>
 
-  <p class="ion-text-center">{{ "WALLETS.welcome" | translate }}</p>
+  <p class="ion-text-center">{{ "Welcome" | translate }}</p>
 
   <div class="balance-line">
-    <div class="label">{{ "WALLETS.available_balance" | translate }}:</div>
+    <div class="label">{{ "Available Balance" | translate }}:</div>
     <div>
       <div class="ion-text-end" *ngIf="balance">
         <div class="amount top">{{ balance.balance }}</div>
@@ -27,7 +27,7 @@
   </div>
 
   <div class="balance-line">
-    <div class="label">{{ "WALLETS.pending_balance" | translate }}:</div>
+    <div class="label">{{ "Pending Balance" | translate }}:</div>
     <div>
       <div class="ion-text-end">
         <div class="amount top" *ngIf="balance">{{ balance.unconfirmedbalance }}</div>
@@ -37,7 +37,7 @@
   </div>
 
   <div class="send-request-container">
-    <h3>{{ "WALLETS.send_request" | translate }}</h3>
+    <h3>{{ "Send & Request" | translate }}</h3>
     <ion-grid>
       <ion-row>
         <ion-col class="ion-text-center">
@@ -45,7 +45,7 @@
             <div class="icon ion-justify-content-center">
               <ion-icon name="cash" class="ion-align-self-center"></ion-icon>
             </div>
-            <div class="ion-text-uppercase text">{{ "WALLETS.send_money" | translate }}</div>
+            <div class="ion-text-uppercase text">{{ "Send Money" | translate }}</div>
           </button>
         </ion-col>
         <ion-col class="ion-text-center">
@@ -53,7 +53,7 @@
             <div class="icon ion-justify-content-center">
               <ion-icon name="cash" class="ion-align-self-center"></ion-icon>
             </div>
-            <div class="ion-text-uppercase text">{{ "WALLETS.request_money" | translate }}</div>
+            <div class="ion-text-uppercase text">{{ "Request Money" | translate }}</div>
           </button>
         </ion-col>
       </ion-row>
@@ -63,7 +63,7 @@
   <div class="last-transaction-container">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>{{ "WALLETS.recent_transaction" | translate }}</ion-card-title>
+        <ion-card-title>{{ "Recent Transaction" | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content *ngIf="transactions">
 

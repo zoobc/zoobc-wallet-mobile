@@ -18,15 +18,16 @@ import { NgxsModule } from '@ngxs/store';
 // import * as supercop from 'supercop.wasm';
 import { sign as naclSign } from 'tweetnacl';
 import { ObservableService } from 'src/services/observable.service';
-import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
-import { TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AboutPage } from './about/about.page';
 import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'assets/languages/locales/', '.json');
 }
+
 @NgModule({
   declarations: [AppComponent, QrScannerComponent],
   entryComponents: [],
