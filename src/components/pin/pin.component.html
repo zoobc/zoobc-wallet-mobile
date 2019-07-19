@@ -1,55 +1,66 @@
-<div text-center large margin-vertical>
-  <ion-icon [name]="pin.length>0 ? 'radio-button-on' : 'radio-button-off'"></ion-icon>
-  <ion-icon [name]="pin.length>1 ? 'radio-button-on' : 'radio-button-off'"></ion-icon>
-  <ion-icon [name]="pin.length>2 ? 'radio-button-on' : 'radio-button-off'"></ion-icon>
-  <ion-icon [name]="pin.length>3 ? 'radio-button-on' : 'radio-button-off'"></ion-icon>
-</div>
+<div class="page-pin">
+  <div class="logo-container">
+    <img src="assets/images/logo.png">
+  </div>
 
-<div>
-  <ion-grid text-center>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('1')">1</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('2')">2</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('3')">3</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('4')">4</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('5')">5</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('6')">6</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('7')">7</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('8')">8</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('9')">9</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('clear')">{{ 'Clear' | translate }}</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block" (click)="handleInput('0')">0</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block" (click)="emitEvent()">OK</ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <div class="intro-text">
+    <div>Welcome</div>
+    Please enter your PIN
+  </div>
+  <div text-center large margin-vertical>
+    <ion-icon [name]="pin.length>0 ? 'radio-button-on' : 'radio-button-off'"></ion-icon>
+    <ion-icon [name]="pin.length>1 ? 'radio-button-on' : 'radio-button-off'"></ion-icon>
+    <ion-icon [name]="pin.length>2 ? 'radio-button-on' : 'radio-button-off'"></ion-icon>
+    <ion-icon [name]="pin.length>3 ? 'radio-button-on' : 'radio-button-off'"></ion-icon>
+  </div>
+
+  <div class="pad-container">
+    <ion-grid text-center>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('1')">1</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('2')">2</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('3')">3</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('4')">4</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('5')">5</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('6')">6</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('7')">7</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('8')">8</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('9')">9</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button fill="clear" class="btn-text" expand="block" (click)="handleInput('clear')">
+            {{ 'Clear' | translate }}</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" (click)="handleInput('0')">0</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button fill="clear" class="btn-text" expand="block" (click)="emitEvent()">OK</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </div>

@@ -43,21 +43,11 @@
     font-style: normal;
 }
 
-$font-family-base: 'Gotham-Light';
-
-$font-family-ios-base: 'Gotham-Light';
-$font-family-md-base: 'Gotham-Light';
-$font-family-wp-base: 'Gotham-Light';
-
 .page-title{
-    font-family: 'Montserrat-Bold';
+    font-family: var(--font-family-title);
     font-size: 1rem;
     margin-top: 0;
     margin-bottom: 3rem;
-}
-
-body{
-    font-family: 'Gotham-Light';
 }
 
 .label{
