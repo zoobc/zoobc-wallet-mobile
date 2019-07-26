@@ -14,6 +14,7 @@ import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { NgxQRCodeModule } from "ngx-qrcode2";
 import { NgxsModule } from '@ngxs/store';
+import { Network } from '@ionic-native/network/ngx';
 
 // import * as supercop from 'supercop.wasm';
 import { sign as naclSign } from 'tweetnacl';
@@ -50,6 +51,7 @@ export function createTranslateLoader(http: HttpClient) {
     })
   ],
   providers: [
+    Network,
     StatusBar,
     SplashScreen,
     QRScanner,

@@ -5,6 +5,10 @@ import { AuthService } from 'src/services/auth-service';
 import { Router } from '@angular/router';
 import { AccountService } from 'src/services/account.service';
 import { GRPCService } from 'src/services/grpc.service';
+import { HttpClient } from '@angular/common/http';
+import { Network } from '@ionic-native/network/ngx';
+import { ToastController } from '@ionic/angular';
+
 @Component({
   selector: 'app-tab-dashboard',
   templateUrl: 'tab-dashboard.page.html',
@@ -25,7 +29,8 @@ export class TabDashboardPage implements OnInit {
     private router: Router,
     private menuController: MenuController,
     private navCtrl: NavController,
-    private grpcService: GRPCService
+    private grpcService: GRPCService,
+    private http: HttpClient
   ) { }
 
   goToSend() {
@@ -88,12 +93,16 @@ export class TabDashboardPage implements OnInit {
   }
 
   async getAccountBalance() {
-    this.balance = await this.grpcService.getAccountBalance()
+    this.balance = await this.grpcService.getAccountBalance().then(() => {
+
+    }, (err) => {
+      //alert(JSON.stringify(err))
+    })
     console.log("balance", this.balance)
   }
 
   async getAccountTransaction() {
-    this.transactions  = await this.grpcService.getAccountTransaction()
+    this.transactions = await this.grpcService.getAccountTransaction()
     console.log("transactions", this.transactions)
     // this.getBalance(this.publicKey);
     // this.getTransaction(this.publicKey);
