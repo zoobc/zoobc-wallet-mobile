@@ -14,14 +14,15 @@
           </ion-select-option>
         </ion-select>
       </ion-item>
-    </ion-list>
-    <ion-list>
       <ion-item>
         <ion-label>{{ "Language" | translate }}</ion-label>
         <ion-select interface="action-sheet" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
           <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
             {{ language.country }}</ion-select-option>
         </ion-select>
+      </ion-item>
+      <ion-item href="/node-admin">
+        <ion-label>{{ "Node Admin" | translate }}</ion-label>
       </ion-item>
     </ion-list>
   </ion-content>

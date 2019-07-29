@@ -20,7 +20,8 @@ const routes: Routes = [
   { path: 'test-w', loadChildren: './test-w/test-w.module#TestWPageModule' },
   { path: 'existing-wallet', loadChildren: './existing-wallet/existing-wallet.module#ExistingWalletPageModule' },
   { path: 'test', loadChildren: './test/test.module#TestPageModule' },
-  { path: 'create-account', loadChildren: './create-account/create-account.module#CreateAccountPageModule' }
+  { path: 'create-account', loadChildren: './create-account/create-account.module#CreateAccountPageModule' },
+  { path: 'node-admin', loadChildren: './node-admin/node-admin.module#NodeAdminModule' }
 ];
 @NgModule({
   imports: [
