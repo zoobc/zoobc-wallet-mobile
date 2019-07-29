@@ -1,19 +1,5 @@
-<!-- <ion-content>
-  <div class="login">
-    <div>
-      <ion-item>
-        <ion-label>PIN</ion-label>
-        <ion-input type="number" maxlength="4" [(ngModel)]="pin"></ion-input>
-      </ion-item>
-    </div>
-    <ion-button (click)="login()" expand="block" >Unlock</ion-ion-button>
-    <ion-button (click)="createAccount()" expand="block" >Create New Account</ion-ion-button>
-  </div>
-</ion-content> -->
-
 <ion-content>
   <div class="login">
-    <app-pin (change)="login($event)"></app-pin>
-    <!-- <ion-button (click)="createAccount()" expand="block" >Create New Account</ion-button> -->
+    <app-pin (onChange)="login($event)"></app-pin>
   </div>
 </ion-content>

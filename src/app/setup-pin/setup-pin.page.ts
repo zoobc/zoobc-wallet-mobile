@@ -53,11 +53,17 @@ export class SetupPinPage implements OnInit {
   //   this.storage.set('encrypted_key', [wrappedKey])
   // }
 
-  async savePin(event) {
-    const encryptedPin = sha512(event.toString()).toString()
+  async savePin(e) {
+    const { observer, pin } = e;
+
+    setTimeout(() => {
+      observer.next(true)
+    }, 500)
+
+    const encryptedPin = sha512(pin.toString()).toString()
     await this.storage.set("pin", encryptedPin)
-    const isUserLoggedIn = await this.authService.login(event)
-    if(isUserLoggedIn) {
+    const isUserLoggedIn = await this.authService.login(pin)
+    if (isUserLoggedIn) {
       this.router.navigate(['tabs'])
     }
   }

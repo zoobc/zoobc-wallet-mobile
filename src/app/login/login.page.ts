@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/services/auth-service';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Observable, Observer } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -19,12 +20,23 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
 
-  async login(event) {
-    const isUserLoggedIn = await this.authService.login(event);
-    if(isUserLoggedIn) {
+  async login(e: any) {
+
+    const { observer, pin } = e
+
+    const isUserLoggedIn = await this.authService.login(pin);
+    if (isUserLoggedIn) {
       this.router.navigate(['tabs']);
+
+      setTimeout(() => {
+        observer.next(true)
+      }, 500)
+
     } else {
-      this.failedToast()
+      setTimeout(() => {
+        observer.next(true);
+        this.failedToast();
+      }, 500)
     }
   }
 

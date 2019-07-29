@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { TabDashboardPage } from './tab-dashboard.page';
 import { ComponentsModule } from 'src/components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { Network } from '@ionic-native/network/ngx';
 
 @NgModule({
   imports: [
@@ -15,9 +16,9 @@ import { TranslateModule } from '@ngx-translate/core';
     ComponentsModule,
     TranslateModule,
     RouterModule.forChild([{ path: '', component: TabDashboardPage }]),
-    ComponentsModule,
-    TranslateModule
+    ComponentsModule
   ],
-  declarations: [TabDashboardPage]
+  declarations: [TabDashboardPage],
+  providers: [Network]
 })
 export class TabDashboardPageModule { }
