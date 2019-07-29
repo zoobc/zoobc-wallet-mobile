@@ -7,6 +7,7 @@ import { TabDashboardPage } from './tab-dashboard.page';
 import { ComponentsModule } from 'src/components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
+import { PipeModule } from 'src/pipe/pipe.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { Network } from '@ionic-native/network/ngx';
     ComponentsModule,
     TranslateModule,
     RouterModule.forChild([{ path: '', component: TabDashboardPage }]),
-    ComponentsModule
+    ComponentsModule,
+    PipeModule
   ],
   declarations: [TabDashboardPage],
   providers: [Network]
