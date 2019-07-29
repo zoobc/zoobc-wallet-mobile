@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { LanguageService } from 'src/services/language.service';
 import { AboutPage } from './about/about.page';
+import { CurrencyService } from 'src/services/currency.service';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +19,8 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private currencyService: CurrencyService
   ) {
     this.initializeApp();
   }
@@ -27,8 +29,8 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-
       this.languageService.setInitialAppLanguage();
+      this.currencyService.getCurrencyRates();
     });
   }
 }
