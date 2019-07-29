@@ -7,6 +7,7 @@ import { LanguageService } from 'src/services/language.service';
 import { AboutPage } from './about/about.page';
 import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
+import { CurrencyService } from 'src/services/currency.service';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,8 @@ export class AppComponent implements OnInit {
     private languageService: LanguageService,
     private toastController: ToastController,
     private network: Network,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private currencyService: CurrencyService
   ) {
     this.initializeApp();
   }
@@ -34,8 +36,8 @@ export class AppComponent implements OnInit {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-
       this.languageService.setInitialAppLanguage();
+      this.currencyService.getCurrencyRates();
     });
   }
 
