@@ -19,7 +19,6 @@ const routes: Routes = [
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
   { path: 'test-w', loadChildren: './test-w/test-w.module#TestWPageModule' },
   { path: 'existing-wallet', loadChildren: './existing-wallet/existing-wallet.module#ExistingWalletPageModule' },
-  // { path: 'login-pin', loadChildren: './login-pin/login-pin.module#LoginPinPageModule' },
   { path: 'test', loadChildren: './test/test.module#TestPageModule' },
   { path: 'create-account', loadChildren: './create-account/create-account.module#CreateAccountPageModule' }
 ];

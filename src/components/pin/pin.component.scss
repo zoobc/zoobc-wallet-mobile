@@ -1,4 +1,4 @@
-.page-pin{
+.pins-container{
     .logo-container{
         text-align: center;
 
@@ -43,5 +43,10 @@
         .btn-text{
             font-size: 0.8rem;
         }
+    }
+
+    ion-col{
+        width: 33.33333%;
+        flex-basis: auto;
     }
 }
