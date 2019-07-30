@@ -57,6 +57,10 @@ export class SidemenuComponent implements OnInit {
       alert('TO DO open help support');
   }
 
+  openNodeAdmin(){
+      alert('TO DO open Node Admin');
+  }
+
   ngOnChanges() {
     this.getListAccounts();
   }
