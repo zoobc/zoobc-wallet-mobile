@@ -4,7 +4,7 @@
       <ion-title>{{ "Settings" | translate }}</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content>
+  <ion-content>  
     <ion-list>
       <ion-item>
         <ion-label>{{ "Account" | translate }}</ion-label>
@@ -37,6 +37,16 @@
           >
         </ion-select>
       </ion-item>
+
+      <ion-item>
+        <ion-label>{{ "Currency" | translate }}</ion-label>
+        <ion-select interface="action-sheet" [(ngModel)]="activeCurrency" (ionChange)="selectActiveCurrency()">
+          <ion-select-option *ngFor="let currency of currencies; let i = index" value="{{ currency.code }}">
+            {{ currency.country }} - {{ currency.code }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+  
+
 
       <ion-item>
         <ion-label (click)="openNodeAdmin()">
