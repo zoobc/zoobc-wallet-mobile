@@ -20,7 +20,11 @@ const routes: Routes = [
   { path: 'test-w', loadChildren: './test-w/test-w.module#TestWPageModule' },
   { path: 'existing-wallet', loadChildren: './existing-wallet/existing-wallet.module#ExistingWalletPageModule' },
   { path: 'test', loadChildren: './test/test.module#TestPageModule' },
-  { path: 'create-account', loadChildren: './create-account/create-account.module#CreateAccountPageModule' },  { path: 'nodeadmin', loadChildren: './nodeadmin/nodeadmin.module#NodeadminPageModule' }
+  { path: 'create-account', loadChildren: './create-account/create-account.module#CreateAccountPageModule' },
+  { path: 'addressbook', loadChildren: './addressbook/addressbook.module#AddressbookPageModule' },
+  { path: 'nodeadmin', loadChildren: './nodeadmin/nodeadmin.module#NodeadminPageModule' },
+  { path: 'feedback', loadChildren: './feedback/feedback.module#FeedbackPageModule' },
+  { path: 'help', loadChildren: './help/help.module#HelpPageModule' }
 
 ];
 @NgModule({

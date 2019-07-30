@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { MenuController, NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { ObservableService } from 'src/services/observable.service';
@@ -28,7 +28,8 @@ export class SidemenuComponent implements OnInit {
     private storage: Storage,
     private Obs: ObservableService,
     private accountService: AccountService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private navCtrl: NavController
   ) {}
 
   ionViewWillEnter() {}
@@ -42,23 +43,23 @@ export class SidemenuComponent implements OnInit {
   }
 
   openAboutView(){
-      alert('TO DO open About View');
+      this.navCtrl.navigateForward('about');
   }
 
   openAddresBook(){
-     alert('TO DO open address book view');
+      this.navCtrl.navigateForward('addressbook');
   }
 
   openSendFeedbak(){
-      alert('TO DO open send feedback');
+    this.navCtrl.navigateForward('feedback');
   }
 
-  openHelpSupport(){
-      alert('TO DO open help support');
+  openHelpSupport() {
+    this.navCtrl.navigateForward('help');
   }
 
   openNodeAdmin(){
-      alert('TO DO open Node Admin');
+    this.navCtrl.navigateForward('nodeadmin');
   }
 
   ngOnChanges() {
