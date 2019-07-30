@@ -5,18 +5,21 @@
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <ion-title>Send Money</ion-title>
   </ion-toolbar>
 </ion-header>
 
-
-
 <ion-content class="page-send" padding="true">
-  <h3 class="page-title">{{ "Send Money" | translate }}</h3>
   <form #form="ngForm" (ngSubmit)="register(form)">
     <div class="f-group">
       <ion-item lines="none">
         <ion-label position="stacked">{{ "From" | translate }}:</ion-label>
-        <ion-input [(ngModel)]="sender" name="sender" autocomplete="on" autocorrect="on"></ion-input>
+        <ion-input
+          [(ngModel)]="sender"
+          name="sender"
+          autocomplete="on"
+          autocorrect="on"
+        ></ion-input>
       </ion-item>
     </div>
 
@@ -25,8 +28,16 @@
         <ion-row align-items-end justify-content-between>
           <ion-col class="ion-text-start">
             <ion-item lines="none">
-              <ion-label position="stacked">{{ "Pay to" | translate }}:</ion-label>
-              <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required></ion-input>
+              <ion-label position="stacked"
+                >{{ "Pay to" | translate }}:</ion-label
+              >
+              <ion-input
+                name="recipient"
+                type="text"
+                [(ngModel)]="recipient"
+                ngModel
+                required
+              ></ion-input>
             </ion-item>
           </ion-col>
           <ion-col class="ion-text-end" size="4">
@@ -52,24 +63,39 @@
     <div class="f-group">
       <ion-item lines="none">
         <ion-label position="stacked">{{ "Amount" | translate }}:</ion-label>
-        <ion-input name="amount" type="number" [(ngModel)]="amount" required></ion-input>
+        <ion-input
+          name="amount"
+          type="number"
+          [(ngModel)]="amount"
+          required
+        ></ion-input>
       </ion-item>
     </div>
 
     <div class="f-group">
       <ion-item lines="none">
         <ion-label position="stacked">{{ "Fee" | translate }}:</ion-label>
-        <ion-input name="fee" type="number" [(ngModel)]="fee" required></ion-input>
+        <ion-input
+          name="fee"
+          type="number"
+          [(ngModel)]="fee"
+          required
+        ></ion-input>
       </ion-item>
     </div>
 
     <div padding>
-      <ion-button size="large" (click)="sendMoney()" type="submit" expand="block">{{ "Send" | translate }}
+      <ion-button
+        size="large"
+        (click)="sendMoney()"
+        type="submit"
+        expand="block"
+        >{{ "Send" | translate }}
       </ion-button>
     </div>
 
     <ion-item>
-      <ion-label>{{status}}</ion-label>
+      <ion-label>{{ status }}</ion-label>
     </ion-item>
   </form>
 </ion-content>
