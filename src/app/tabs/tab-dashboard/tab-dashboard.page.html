@@ -8,86 +8,114 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-dashboard" *ngIf="balance">
-
-  <p>
-    <img src="">
+<ion-content class="page-dashboard">
+  <p class="ion-padding-horizontal title-section">
+    {{ "Welcome" | translate }}
   </p>
 
-  <p class="ion-text-center">{{ "Welcome" | translate }}</p>
+  <ion-card class="card-balance">
+    <ion-card-content>
+      <h2 class="account-name">Account 1</h2>
+      <ion-label>otAT-ML-eTz6nrHppp8kWmPCVBv9f5cGDavTwyZanYeG</ion-label>
 
-  <div class="balance-line">
-    <div class="label">{{ "Available Balance" | translate }}:</div>
-    <div>
-      <div class="ion-text-end" *ngIf="balance">
-        <div class="amount top">{{ balance.balance }}</div>
-        <div class="amount">($ 10,000)</div>
-      </div>
-    </div>
-  </div>
+      <ion-item lines="none" class="ion-no-padding balance-item">
+        <img class="logo" src="assets/images/logo-white.png" />
+        <ion-label>
+          <ion-label class="balance-title">
+            Balance
+          </ion-label>
+          <ion-label class="main-balance"
+            >{{ balance.balance | number }} ZBC</ion-label
+          >
+          <ion-label class="sub-balance">-1,800.0 USD</ion-label>
+        </ion-label>
+      </ion-item>
 
-  <div class="balance-line">
-    <div class="label">{{ "Pending Balance" | translate }}:</div>
-    <div>
-      <div class="ion-text-end">
-        <div class="amount top" *ngIf="balance">{{ balance.unconfirmedbalance }}</div>
-        <div class="amount">($ 10,000)</div>
-      </div>
-    </div>
-  </div>
+      <ion-item lines="none" class="ion-no-padding balance-item">
+        <img class="logo" src="assets/images/logo-white.png" />
+        <ion-label>
+          <ion-label class="balance-title">
+            Pending Balance
+          </ion-label>
+          <ion-label class="main-balance"
+            >{{ balance.unconfirmedbalance | number }} ZBC</ion-label
+          >
+          <ion-label class="sub-balance">-1,800.0 USD</ion-label>
+        </ion-label>
+      </ion-item>
 
-  <div class="send-request-container">
-    <h3>{{ "Send & Request" | translate }}</h3>
-    <ion-grid>
-      <ion-row>
-        <ion-col class="ion-text-center">
-          <button class="button" (click)="goToSend()">
-            <div class="icon ion-justify-content-center">
-              <ion-icon name="cash" class="ion-align-self-center"></ion-icon>
-            </div>
-            <div class="ion-text-uppercase text">{{ "Send Money" | translate }}</div>
-          </button>
-        </ion-col>
-        <ion-col class="ion-text-center">
-          <button class="button" (click)="goToRequest()">
-            <div class="icon ion-justify-content-center">
-              <ion-icon name="cash" class="ion-align-self-center"></ion-icon>
-            </div>
-            <div class="ion-text-uppercase text">{{ "Request Money" | translate }}</div>
-          </button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
+      <h3 class="ion-text-center send-request-title">
+        {{ "Send & Receive" | translate }}
+      </h3>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <button class="button-send" (click)="goToSend()">
+              <div class="icon">
+                <ion-icon name="send"></ion-icon>
+              </div>
+              <div class="ion-text-uppercase">
+                {{ "Send" | translate }}
+              </div>
+            </button>
+          </ion-col>
+          <ion-col>
+            <button class="button-receive" (click)="goToRequest()">
+              <div class="icon">
+                <ion-icon name="cash"></ion-icon>
+              </div>
+              <div class="ion-text-uppercase">
+                {{ "Receive" | translate }}
+              </div>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
 
-  <div class="last-transaction-container">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>{{ "Recent Transaction" | translate }}</ion-card-title>
-      </ion-card-header>
-      <ion-card-content *ngIf="transactions">
-
-        <ion-list *ngFor="let transaction of transactions.transactionsList">
-          <ion-item>
-            <ion-grid>
-              <ion-row class="ion-justify-content-between">
-                <ion-col size="6">
-                  <div>
-                    <ion-label>ini nama</ion-label>
-                    <div>{{ transaction.timestamp * 10000 | date }}</div>
-                  </div>
-                </ion-col>
-                <ion-col size="6" class="ion-text-end">
-                  <div>
-                    {{ transaction.amountnqt }}
-                  </div>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
-  </div>
-
+  <p class="title-section ion-padding-horizontal">
+    {{ "Recent Transaction" | translate }}
+  </p>
+  <ion-list class="ion-margin-top list-transaction">
+    <ion-item
+      *ngFor="
+        let transaction of transactions.transactionsList;
+        let index = index
+      "
+    >
+      <ion-label>
+        <ion-row class="ion-justify-content-between">
+          <ion-col size="7">
+            <ion-label class="title">
+              {{ transaction.recipientpublickey }}
+            </ion-label>
+            <ion-label class="date">{{
+              transaction.timestamp * 10000 | date
+            }}</ion-label>
+          </ion-col>
+          <ion-col size="5" class="ion-text-end">
+            <ion-label
+              class="amount"
+              [ngClass]="{
+                plus: index == 0 || index == 2,
+                minus: index != 0 && index != 2
+              }"
+            >
+              <span class="prefix" *ngIf="index == 0 || index == 2; else minus"
+                >+</span
+              >
+              <ng-template #minus>
+                -
+              </ng-template>
+              {{ transaction.amountnqt | number }}</ion-label
+            >
+          </ion-col>
+        </ion-row>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-button>View More Data</ion-button>
+    </ion-item>
+  </ion-list>
 </ion-content>
