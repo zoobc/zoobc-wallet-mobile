@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NodeadminPage } from './nodeadmin.page';
+import { NodeAdminComponent } from './node-admin.component';
 
-describe('NodeadminPage', () => {
-  let component: NodeadminPage;
-  let fixture: ComponentFixture<NodeadminPage>;
+describe('NodeAdminComponent', () => {
+  let component: NodeAdminComponent;
+  let fixture: ComponentFixture<NodeAdminComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NodeadminPage ],
+      declarations: [ NodeAdminComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NodeadminPage);
+    fixture = TestBed.createComponent(NodeAdminComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
