@@ -5,6 +5,7 @@
     </ion-toolbar>
   </ion-header>
   <ion-content>
+
     <ion-list>
       <ion-item>
         <ion-label>{{ "Account" | translate }}</ion-label>
@@ -15,6 +16,7 @@
         </ion-select>
       </ion-item>
     </ion-list>
+
     <ion-list>
       <ion-item>
         <ion-label>{{ "Language" | translate }}</ion-label>
@@ -27,17 +29,25 @@
 
     <ion-list>
       <ion-item>
-          <ion-label (click)="openAddresBook()">
-            Address Book
+          <ion-label (click)="openNodeAdmin()">
+            Node Admin
           </ion-label>
       </ion-item>
     </ion-list>
 
     <ion-list>
       <ion-item>
-          <ion-label (click)="openHelpSupport()">
-            Help & Support
-          </ion-label>
+        <ion-label (click)="openAddresBook()">
+          Address Book
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-list>
+      <ion-item>
+        <ion-label (click)="openHelpSupport()">
+          Help & Support
+        </ion-label>
       </ion-item>
     </ion-list>
 
