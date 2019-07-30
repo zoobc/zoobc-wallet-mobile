@@ -1,9 +1,9 @@
 <app-sidemenu></app-sidemenu>
 
-<ion-content>
+<ion-content class="page-node-admin">
   <ion-list class="info-list">
     <ion-list-header>
-      Recent Conversations
+      <ion-label>Global Information</ion-label>
     </ion-list-header>
 
     <ion-item>
@@ -70,35 +70,42 @@
     </ion-item>
   </ion-list>
 
-  <h2>Memory</h2>
+  <ion-list class="ion-margin-top">
+    <ion-list-header>
+      <ion-label>Memory</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label>
+        <ion-row>
+          <ion-col>Usage</ion-col>
+          <ion-col class="ion-text-end">8GB / 100GB (50%)</ion-col>
+        </ion-row>
+        <ion-progress-bar value="0.2"></ion-progress-bar>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
-  <ion-card>
-    <ion-card-content>
-      <ion-row justify-content-between>
-        <ion-col>Usage</ion-col>
-        <ion-col class="ion-text-end">8GB / 100GB (50%)</ion-col>
-      </ion-row>
-      <ion-progress-bar value="0.2"></ion-progress-bar>
-    </ion-card-content>
-  </ion-card>
-
-  <h2>Storage</h2>
-
-  <ion-card>
-    <ion-card-content>
-      <h3>Disk 0</h3>
-      <ion-row>
-        <ion-col>Usage</ion-col>
-        <ion-col class="ion-text-end">8GB / 100GB (50%)</ion-col>
-      </ion-row>
-      <ion-progress-bar value="0.2"></ion-progress-bar>
-      <div class="separator"></div>
-      <h3>Disk 1</h3>
-      <ion-row justify-content-between>
-        <ion-col>Usage</ion-col>
-        <ion-col class="ion-text-end">8GB / 100GB (50%)</ion-col>
-      </ion-row>
-      <ion-progress-bar value="0.9"></ion-progress-bar>
-    </ion-card-content>
-  </ion-card>
+  <ion-list class="ion-margin-top">
+    <ion-list-header>
+      <ion-label>Storage</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label>
+        <ion-row>
+          <ion-col>Usage</ion-col>
+          <ion-col class="ion-text-end">8GB / 100GB (50%)</ion-col>
+        </ion-row>
+        <ion-progress-bar value="0.2"></ion-progress-bar>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-row>
+          <ion-col>Usage</ion-col>
+          <ion-col class="ion-text-end">8GB / 100GB (50%)</ion-col>
+        </ion-row>
+        <ion-progress-bar value="0.2"></ion-progress-bar>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
