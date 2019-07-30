@@ -24,9 +24,7 @@
           <ion-label class="balance-title">
             Balance
           </ion-label>
-          <ion-label class="main-balance"
-            >{{ balance.balance | number }} ZBC</ion-label
-          >
+          <ion-label class="main-balance">{{ balance | number }} ZBC</ion-label>
           <ion-label class="sub-balance">-1,800.0 USD</ion-label>
         </ion-label>
       </ion-item>
@@ -38,7 +36,7 @@
             Pending Balance
           </ion-label>
           <ion-label class="main-balance"
-            >{{ balance.unconfirmedbalance | number }} ZBC</ion-label
+            >{{ unconfirmedBalance | number }} ZBC</ion-label
           >
           <ion-label class="sub-balance">-1,800.0 USD</ion-label>
         </ion-label>
@@ -78,21 +76,14 @@
     {{ "Recent Transaction" | translate }}
   </p>
   <ion-list class="ion-margin-top list-transaction">
-    <ion-item
-      *ngFor="
-        let transaction of transactions.transactionsList;
-        let index = index
-      "
-    >
+    <ion-item *ngFor="let transaction of transactions; let index = index">
       <ion-label>
         <ion-row class="ion-justify-content-between">
           <ion-col size="7">
             <ion-label class="title">
-              {{ transaction.recipientpublickey }}
+              {{ transaction.title }}
             </ion-label>
-            <ion-label class="date">{{
-              transaction.timestamp * 10000 | date
-            }}</ion-label>
+            <ion-label class="date">{{ transaction.date }}</ion-label>
           </ion-col>
           <ion-col size="5" class="ion-text-end">
             <ion-label
@@ -102,20 +93,19 @@
                 minus: index != 0 && index != 2
               }"
             >
-              <span class="prefix" *ngIf="index == 0 || index == 2; else minus"
+              <span
+                class="prefix"
+                *ngIf="transaction.type == 'plus'; else minus"
                 >+</span
               >
               <ng-template #minus>
                 -
               </ng-template>
-              {{ transaction.amountnqt | number }}</ion-label
+              {{ transaction.amount | number }} ZBC</ion-label
             >
           </ion-col>
         </ion-row>
       </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-button>View More Data</ion-button>
     </ion-item>
   </ion-list>
 </ion-content>
