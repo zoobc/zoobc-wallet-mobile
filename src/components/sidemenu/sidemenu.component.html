@@ -8,27 +8,71 @@
     <ion-list>
       <ion-item>
         <ion-label>{{ "Account" | translate }}</ion-label>
-        <ion-select interface="action-sheet" [(ngModel)]="activeAccount" (ionChange)="selectAccount()">
-          <ion-select-option *ngFor="let account of accounts; let i = index" value="{{ i }}"
-            [attr.selected]="i === activeAccount">{{ account.accountName }}
+        <ion-select
+          interface="action-sheet"
+          [(ngModel)]="activeAccount"
+          (ionChange)="selectAccount()"
+        >
+          <ion-select-option
+            *ngFor="let account of accounts; let i = index"
+            value="{{ i }}"
+            [attr.selected]="i === activeAccount"
+            >{{ account.accountName }}
           </ion-select-option>
         </ion-select>
       </ion-item>
+
       <ion-item>
         <ion-label>{{ "Language" | translate }}</ion-label>
-        <ion-select interface="action-sheet" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
-          <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
-            {{ language.country }}</ion-select-option>
+        <ion-select
+          interface="action-sheet"
+          [(ngModel)]="activeLanguage"
+          (ionChange)="selectActiveLanguage()"
+        >
+          <ion-select-option
+            *ngFor="let language of languages; let i = index"
+            value="{{ language.code }}"
+          >
+            {{ language.country }}</ion-select-option
+          >
         </ion-select>
       </ion-item>
-      <ion-item href="/node-admin">
-        <ion-label>{{ "Node Admin" | translate }}</ion-label>
+
+      <ion-item>
+        <ion-label (click)="openNodeAdmin()">
+          {{ "Node Admin" | translate }}
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label (click)="openAddresBook()">
+          Address Book
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label (click)="openHelpSupport()">
+          Help & Support
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label (click)="openSendFeedbak()">
+          Send Feedback
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label (click)="openAboutView()">
+          About ZooBC Wallet
+        </ion-label>
       </ion-item>
     </ion-list>
   </ion-content>
   <ion-footer>
     <ion-toolbar>
-      <ion-button expand="block" fill="clear" (click)="goToGenerate()">{{ "Create New Account" | translate }}
+      <ion-button expand="block" fill="clear" (click)="goToGenerate()"
+        >{{ "Create New Account" | translate }}
       </ion-button>
     </ion-toolbar>
   </ion-footer>

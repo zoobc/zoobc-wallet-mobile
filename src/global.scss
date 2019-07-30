@@ -81,3 +81,24 @@ a {
 .bg-grey {
   background-color: #eee;
 }
+
+.list-transaction {
+  .title {
+    font-size: 0.8rem;
+    color: #666;
+  }
+  .date {
+    margin-top: 3px;
+    font-size: 0.9rem;
+  }
+  .amount {
+    font-family: "Montserrat-Bold";
+
+    &.plus {
+      color: green;
+    }
+    &.minus {
+      color: red;
+    }
+  }
+}
