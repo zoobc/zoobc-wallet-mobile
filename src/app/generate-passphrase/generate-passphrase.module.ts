@@ -1,15 +1,16 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { Routes, RouterModule } from "@angular/router";
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule } from "@ionic/angular";
 
-import { GeneratePassphrasePage } from './generate-passphrase.page';
+import { GeneratePassphrasePage } from "./generate-passphrase.page";
+import { CreateNewStepsComponent } from "../partials/create-new-steps/create-new-steps.component";
 
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: GeneratePassphrasePage
   }
 ];
@@ -21,6 +22,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [GeneratePassphrasePage]
+  declarations: [GeneratePassphrasePage, CreateNewStepsComponent]
 })
 export class GeneratePassphrasePageModule {}
