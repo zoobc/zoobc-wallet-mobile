@@ -69,6 +69,10 @@ export class SidemenuComponent implements OnInit {
     this.navCtrl.navigateForward('node-admin');
   }
 
+  openNotifications(){
+    this.navCtrl.navigateForward('notifications');
+  }
+
   ngOnChanges() {
     this.getListAccounts();
   }
