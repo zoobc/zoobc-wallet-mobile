@@ -58,7 +58,8 @@ const routes: Routes = [
     path: "feedback",
     loadChildren: "./feedback/feedback.module#FeedbackPageModule"
   },
-  { path: "help", loadChildren: "./help/help.module#HelpPageModule" }
+  { path: "help", loadChildren: "./help/help.module#HelpPageModule" },  { path: 'notifications', loadChildren: './notifications/notifications.module#NotificationsPageModule' }
+
 ];
 @NgModule({
   imports: [
