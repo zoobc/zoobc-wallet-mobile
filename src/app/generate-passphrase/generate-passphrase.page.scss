@@ -1,36 +1,71 @@
 @import "../../assets/scss/main.scss";
 
-.generate-passphrase {
-    padding: 10px;
-    position: relative;
-    height: 100%;
-    pre {
-        white-space: pre-wrap;       /* css-3 */
-        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-        white-space: -pre-wrap;      /* Opera 4-6 */
-        white-space: -o-pre-wrap;    /* Opera 7 */
-        word-wrap: break-word;       /* Internet Explorer 5.5+ */
+.page-generate-passphrase {
+  padding: 10px;
+  position: relative;
+  height: 100%;
+
+  .your-passphrase {
+    font-size: 0.9rem;
+  }
+
+  .card-passphrase {
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+
+    box-shadow: 0 0 8px rgba(52, 61, 72, 0.2);
+  }
+
+  .warning {
+    background: #fff176;
+    color: #353535;
+    padding: 0.9rem;
+
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+  }
+
+  .passphrase {
+    font-size: 1.2rem;
+    text-align: center;
+    color: #333333;
+    font-family: "Montserrat-Bold";
+  }
+
+  ion-grid {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .btn-action {
+    margin-top: 0.3rem;
+    font-size: 0.8rem;
+
+    --box-shadow: none;
+    --background: var(--ion-color-btn);
+
+    ion-icon {
+      margin-right: 0.2rem;
     }
+  }
 
-    .term-condition {
-        @include flex-init;
-        margin-bottom: 20px;
+  .checklist {
+    display: flex;
+    font-size: 0.8rem;
+    margin-top: 1.2rem;
 
-        ion-label {
-            @include flex(1);
-        }
-
-        ion-checkbox {
-            @include flex-basis(18px);
-            margin-right: 10px;
-        }
+    ion-checkbox {
+      margin-right: 0.8rem;
     }
+  }
+}
 
-    .setup-pin {
-        position: absolute;
-        bottom: 20px;
-        left: 0;
-        right: 0;
-        padding: 20px;
-    }
+.footer-generate-passphrase {
+  .btn-submit {
+    font-family: "Montserrat-Bold";
+  }
 }

@@ -75,6 +75,23 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 
-  --ion-font-family: 'Gotham-Light';
-  --font-family-title: 'Montserrat-Bold';
+  /** grey **/
+  --ion-color-grey: #eaeaea;
+  --ion-color-grey-rgb: 234, 234, 234;
+  --ion-color-grey-contrast: #000000;
+  --ion-color-grey-contrast-rgb: 0, 0, 0;
+  --ion-color-grey-shade: #eaeaea;
+  --ion-color-grey-tint: #eaeaea;
+
+  --ion-font-family: "Gotham-Light";
+  --font-family-title: "Montserrat-Bold";
+}
+
+.ion-color-grey {
+  --ion-color-base: var(--ion-color-grey) !important;
+  --ion-color-base-rgb: var(--ion-color-grey-rgb) !important;
+  --ion-color-contrast: var(--ion-color-grey-contrast) !important;
+  --ion-color-contrast-rgb: var(--ion-color-grey-contrast-rgb) !important;
+  --ion-color-shade: var(--ion-color-grey-shade) !important;
+  --ion-color-tint: var(--ion-color-grey-tint) !important;
 }
