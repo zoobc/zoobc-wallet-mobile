@@ -105,6 +105,10 @@ export class TabDashboardPage implements OnInit {
     );
   }
 
+  openchart(){
+    this.navCtrl.navigateForward('chart');
+  }
+
   openMenu() {
     this.menuController.open("mainMenu");
   }

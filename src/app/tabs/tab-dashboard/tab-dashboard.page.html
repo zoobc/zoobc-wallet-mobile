@@ -1,11 +1,19 @@
 <ion-header no-border>
   <ion-toolbar>
+
     <ion-buttons slot="start">
       <ion-button (click)="openMenu()">
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Dashboard</ion-title>
+    
+    <ion-title>Dashboards</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="openchart()">
+          <ion-icon name="stats"></ion-icon>
+      </ion-button>  
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
