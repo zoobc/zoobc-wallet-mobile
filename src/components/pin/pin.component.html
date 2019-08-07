@@ -19,12 +19,13 @@
         <ion-col *ngFor="let number of numbers">
           <ion-button expand="block" (click)="handleInput(number+1)">{{number + 1}}</ion-button>
         </ion-col>
-        <ion-col>
-          <ion-button fill="clear" class="btn-text" expand="block" (click)="clear()">
-            {{ 'Clear' | translate }}</ion-button>
-        </ion-col>
+        <ion-col></ion-col>
         <ion-col>
           <ion-button expand="block" (click)="handleInput('0')">0</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" (click)="clear()">
+              <ion-icon name="trash"></ion-icon></ion-button>
         </ion-col>
         <ion-col>
         </ion-col>
