@@ -1,9 +1,26 @@
-<ion-content>
-  <div class="create-wallet-page">
-    <h3 class="create-wallet-title">We're about to generate your very own passphrase</h3>
-    <p class="create-wallet-desc">This keeps your account secure, and lets you open your wallet on multiple devices. It's very important you write this down.</p>
+<ion-content padding class="create-wallet-page">
+  <div>
+    <div>
+      <h3 class="title ion-text-center">
+        We're about to generate your very own passphrase
+      </h3>
+    </div>
 
-    <ion-button expand="block" routerLink="/generate-passphrase">Generate Passphrase</ion-button>
-    <a routerLink="/initial">Back</a>
+    <div class="description ion-text-center">
+      <p>
+        This keeps your account secure, and lets you open your wallet on
+        multiple devices. It's very important you write this down.
+      </p>
+
+      <ion-button expand="block" color="grey" routerLink="/generate-passphrase"
+        >Generate Passphrase</ion-button
+      >
+    </div>
+
+    <div class="btn-container">
+      <ion-button (click)="goback()" expand="block" fill="outline" color="grey"
+        >Back</ion-button
+      >
+    </div>
   </div>
 </ion-content>

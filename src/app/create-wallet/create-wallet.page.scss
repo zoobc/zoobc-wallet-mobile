@@ -1,18 +1,33 @@
-@import '../../assets/scss/main.scss';
+@import "../../assets/scss/main.scss";
 
 .create-wallet-page {
+  @include background;
+
+  & > div {
     @include flex-init;
-    @include justify-content(center);
-    @include align-items(center);
     @include flex-direction(column);
+    @include justify-content(space-around);
+
     height: 100%;
-    padding: 30px;
 
-    .create-wallet-title {
-        text-align: center
+    .title {
+      font-size: 1.2rem;
     }
 
-    .create-wallet-desc {
-        text-align: center;
+    .description {
+      p {
+        font-size: 0.8rem;
+        margin-bottom: 1.2rem;
+      }
+      ion-button {
+        width: 100%;
+      }
     }
+
+    .btn-container {
+      ion-button {
+        width: 100%;
+      }
+    }
+  }
 }
