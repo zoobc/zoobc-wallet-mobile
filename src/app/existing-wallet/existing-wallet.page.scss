@@ -1,12 +1,22 @@
 @import "../../assets/scss/main.scss";
 
-.existing-wallet {
+.existing-wallet-page {
+  @include background;
+  flex-direction: column;
+
+  & > div {
     @include flex-init;
     @include flex-direction(column);
-    @include justify-content(center);
-    height: 100vh;
-    
-    .existing-wallet-button {
-        padding: 20px;
-    }
+    @include justify-content(space-around);
+
+    height: 100%;
+  }
+
+  ion-textarea {
+    --background: #fff;
+    --color: #333;
+    --border-radius: 10px;
+
+    margin-bottom: 1rem;
+  }
 }

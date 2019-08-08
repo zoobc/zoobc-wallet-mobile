@@ -1,13 +1,30 @@
-<ion-content>
-  <div class="existing-wallet">
-    <ion-item>
-      <ion-label position="floating">Enter your 12 words</ion-label>
-      <ion-input [(ngModel)]="passphrase"></ion-input>
-    </ion-item>
+<ion-content padding class="existing-wallet-page">
+  <div>
+    <div>
+      <h3 class="title ion-text-center">
+        Please enter your 12 words
+      </h3>
+    </div>
 
-    <div class="existing-wallet-button">
-      <ion-button expand="block" (click)="openExistingWallet()">Open Wallet</ion-button>
-      <ion-button expand="block" routerLink="/initial" >Back</ion-button>
+    <div>
+      <ion-textarea
+        rows="5"
+        auto-grow="true"
+        [(ngModel)]="passphrase"
+        placeholder="Please enter your 12 words"
+      ></ion-textarea>
+
+      <div class="existing-wallet-button">
+        <ion-button expand="block" color="grey" (click)="openExistingWallet()"
+          >Open Wallet</ion-button
+        >
+      </div>
+    </div>
+
+    <div class="btn-container">
+      <ion-button expand="block" fill="outline" color="grey" (click)="goback()"
+        >Back</ion-button
+      >
     </div>
   </div>
 </ion-content>
