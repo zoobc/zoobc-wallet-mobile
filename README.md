@@ -1,3 +1,5 @@
+![](/src/assets/images/ZooBC-wallet-mobile.png)
+
 # Technology
   - Ionic Framework v4 with Angluar 7
   - lib for cryptography crypto-js etc
