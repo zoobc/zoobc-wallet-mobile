@@ -1,7 +1,15 @@
 ![](/src/assets/images/ZooBC-wallet-mobile.png)
 
+# Requirement
+  nodejs v10.16.2
+  npm 6.9.2
+  ionic 5.23
+  
+
+
 # Technology
-  - Ionic Framework v4 with Angluar 7
+  - Ionic Framework v4
+  - Angluar 7
   - lib for cryptography crypto-js etc
 
 # Features!
@@ -19,8 +27,8 @@
 
 - Install nodejs 
 - npm install -g ionic
-- git clone https://github.com/BlockchainZoo/spinechain-wallet-mobile-prototype.git
-- cd spinechain-wallet-mobile-prototype
+- git clone https://github.com/zoobc/zoobc-wallet-mobile.git
+- cd zoobc-wallet-mobile
 - npm install
 - ionic serve
 
@@ -152,7 +160,7 @@ Showing first 200 errors only
 
 The following build commands failed:
 
-	Ld /Users/Spinechain/Library/Developer/Xcode/DerivedData/AMP_Heat-befzuqlqcagkojfbuvacxskkiqvh/Build/Intermediates/ArchiveIntermediates/AMP\ Heat/IntermediateBuildFilesPath/AMP\ Heat.build/Debug-iphoneos/AMP\ Heat.build/Objects-normal/arm64/AMP\ Heat normal arm64
+	Ld /Users/Zoobc/Library/Developer/Xcode/DerivedData/AMP_Heat-befzuqlqcagkojfbuvacxskkiqvh/Build/Intermediates/ArchiveIntermediates/AMP\ Heat/IntermediateBuildFilesPath/AMP\ Heat.build/Debug-iphoneos/AMP\ Heat.build/Objects-normal/arm64/AMP\ Heat normal arm64
 ```
 
 You need to update the linker settings to force load the Cordova library:

@@ -809,7 +809,7 @@ export const coins: Array<CoinInterface> = [
     curveName: "ed25519"
   },
   {
-    name: "SPN - Spinechain",
+    name: "ZBC - Zoobc",
     segwitAvailable: false,
     network: "bitcoin",
     coinValue: 148,

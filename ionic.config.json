@@ -1,5 +1,5 @@
 {
-  "name": "spinechainwallet",
+  "name": "zoobc-wallet",
   "integrations": {
     "cordova": {}
   },

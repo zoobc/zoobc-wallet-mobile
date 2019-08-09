@@ -1,8 +1,8 @@
 {
-  "name": "spinechainwallet",
+  "name": "zoobc-wallet",
   "version": "0.0.1",
-  "author": "BlockchainZoo Wallet Team",
-  "homepage": "https://blockchainzoo.com/",
+  "author": "Zoobc Wallet Team",
+  "homepage": "https://zoobc.com/",
   "scripts": {
     "postinstall": "git submodule update --init --recursive && cd externals/bip32 && npm install --ignore-scripts",
     "ng": "ng",
