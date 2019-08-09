@@ -85,6 +85,11 @@ export class SidemenuComponent implements OnInit {
     this.router.navigate(['/create-account']);
   }
 
+
+  logout(){
+    this.router.navigate(['/login']);
+  }
+
   async getListAccounts() {
     this.accounts = await this.storage.get('accounts');
     // accounts.forEach(account => {

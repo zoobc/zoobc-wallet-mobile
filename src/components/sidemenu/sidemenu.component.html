@@ -24,6 +24,7 @@
             [attr.selected]="i === activeAccount"
             >{{ account.accountName }}
           </ion-select-option>
+
         </ion-select>
       </ion-item>
 
@@ -112,9 +113,13 @@
   </ion-content>
   <ion-footer>
     <ion-toolbar>
-      <ion-button expand="block" fill="clear" (click)="goToGenerate()"
-        >{{ "Create New Account" | translate }}
+      <ion-button expand="block" fill="clear" (click)="goToGenerate()">
+        {{ "Create New Account" | translate }}
       </ion-button>
+      <ion-button expand="block" (click)="logout()" color="danger">
+        Log out
+      </ion-button>
+
     </ion-toolbar>
   </ion-footer>
 </ion-menu>
