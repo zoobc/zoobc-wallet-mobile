@@ -3,10 +3,35 @@
       <ion-buttons slot="start">
         <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
       </ion-buttons>
-      <ion-title>Chart</ion-title>
+      <ion-title>Rates</ion-title>
     </ion-toolbar>
   </ion-header>
   
-<ion-content>
+<ion-content padding>
+
+    <ion-label>History Data</ion-label>
+    <ion-list>
+      <ion-item>
+        Time | 
+        Open |
+        Close |
+        High |
+        Low |
+        volumefrom |
+        volumeto
+      </ion-item>
+      <ion-item button *ngFor="let item of (results | async)">
+          <ion-label text-wrap>
+            {{ item.time }} 
+            | {{ item.open }} 
+            | {{ item.close }}
+            | {{ item.high }}
+            | {{ item.low }}
+            | {{ item.volumefrom }}
+            | {{ item.volumeto }}
+          </ion-label>
+        </ion-item>
+     
+      </ion-list>
 
 </ion-content>

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 interface Holding {
   crypto: string;
@@ -16,11 +17,24 @@ interface Holding {
 
 export class ChartService {
 
-  public holdings: Holding[] = [];
+  private CRYPTO_KEY = "a83286c854d012d8c5e3d02c225abba04b8a4ce11f0373ca234509f2a48f33b0";
+  private CRYPTO_API_URL = "https://min-api.cryptocompare.com/data";
 
+
+  public holdings: Holding[] = [];
   constructor(private http: HttpClient, private storage: Storage) {
 
   }
+
+
+  getHistoryData(): Observable<any> {
+    const url = this.CRYPTO_API_URL + "/histoday?fsym=BTC&tsym=USD&limit=10&api_key=" + this.CRYPTO_KEY;
+
+    return this.http.get(url).pipe(
+      map(results => results['Data'])
+    );
+  }
+ 
 
   addHolding(holding: Holding): void {
     this.holdings.push(holding);
