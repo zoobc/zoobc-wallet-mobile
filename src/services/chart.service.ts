@@ -4,6 +4,9 @@ import { Injectable } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+const cc = require('cryptocompare');
+cc.setApiKey('a83286c854d012d8c5e3d02c225abba04b8a4ce11f0373ca234509f2a48f33b0');
+
 interface Holding {
   crypto: string;
   currency: string;
@@ -28,6 +31,9 @@ export class ChartService {
 
 
   getHistoryData(): Observable<any> {
+
+    this.getCoinList();
+
     const url = this.CRYPTO_API_URL + "/histoday?fsym=BTC&tsym=USD&limit=10&api_key=" + this.CRYPTO_KEY;
 
     return this.http.get(url).pipe(
@@ -35,6 +41,38 @@ export class ChartService {
     );
   }
  
+
+  getCoinList(){
+
+      console.log('will get coin list----------');
+      // Usage:
+      cc.coinList()
+      .then(coinList => {
+        console.log(coinList)
+        // ->
+        // {
+        //   BTC: {
+        //    Id: "1182",
+        //    Url: "/coins/btc/overview",
+        //    ImageUrl: "/media/19633/btc.png",
+        //    Name: "BTC",
+        //    Symbol: "BTC",
+        //    CoinName: "Bitcoin",
+        //    FullName: "Bitcoin (BTC)",
+        //    Algorithm: "SHA256",
+        //    ProofType: "PoW",
+        //    FullyPremined: "0",
+        //    TotalCoinSupply: "21000000",
+        //    PreMinedValue: "N/A",
+        //    TotalCoinsFreeFloat: "N/A",
+        //    SortOrder: "1",
+        //    Sponsored: false
+        // },
+        //   ETH: {...},
+        // }
+      })
+      .catch(console.error);
+  }
 
   addHolding(holding: Holding): void {
     this.holdings.push(holding);
