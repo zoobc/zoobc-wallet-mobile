@@ -30,11 +30,19 @@ export class ChartService {
   }
 
 
-  getHistoryData(): Observable<any> {
+  getHistoryData(periode: string): Observable<any> {
 
     this.getCoinList();
 
-    const url = this.CRYPTO_API_URL + "/histoday?fsym=BTC&tsym=USD&limit=10&api_key=" + this.CRYPTO_KEY;
+    let url = this.CRYPTO_API_URL + "/histominute?fsym=BTC&tsym=USD&limit=20&api_key=" + this.CRYPTO_KEY;
+    if (periode=="day"){
+      url = this.CRYPTO_API_URL + "/histominute?fsym=BTC&tsym=USD&limit=20&api_key=" + this.CRYPTO_KEY;
+    }else if (periode=="week"){
+      url = this.CRYPTO_API_URL + "/histohour?fsym=BTC&tsym=USD&limit=20&api_key=" + this.CRYPTO_KEY;
+    }else if (periode=="month"){
+      url = this.CRYPTO_API_URL + "/histoday?fsym=BTC&tsym=USD&limit=20&api_key=" + this.CRYPTO_KEY;
+    }
+
 
     return this.http.get(url).pipe(
       map(results => results['Data'])

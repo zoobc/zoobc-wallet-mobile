@@ -17,6 +17,8 @@ export class ChartPage implements OnInit {
   @ViewChild('barCanvas') barCanvas;
   @ViewChild('lineCanvas') lineCanvas;
 
+  chartTitle: string;
+
   barChart: any;
   lineChart: any;
   
@@ -24,11 +26,29 @@ export class ChartPage implements OnInit {
 
   ngOnInit() {
       console.log('Data ini');
-      this.results = this.chrtSrv.getHistoryData();
+      this.results = this.chrtSrv.getHistoryData("day");
       console.log('Cart DAta: '+ this.results);
+      this.chartTitle = "Daily Chart";
+
       this.barChartMethod();
       this.lineChartMethod();
   }
+
+  dailyChart(){
+    this.results = this.chrtSrv.getHistoryData("day");
+    this.chartTitle = "Daily Chart";
+  }
+
+  weeklyChart(){
+    this.results = this.chrtSrv.getHistoryData("week");
+    this.chartTitle = "Weekly Chart";
+  }
+
+  monthlyChart(){
+    this.results = this.chrtSrv.getHistoryData("month");
+    this.chartTitle = "Monthly Chart";
+  }
+
 
   barChartMethod() {
     this.barChart = new Chart(this.barCanvas.nativeElement, {
@@ -76,7 +96,7 @@ export class ChartPage implements OnInit {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'],
         datasets: [
           {
-            label: 'Sell per week',
+            label: 'Price per Hour',
             fill: false,
             lineTension: 0.1,
             backgroundColor: 'rgba(75,192,192,0.4)',
