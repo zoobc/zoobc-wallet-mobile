@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>Create New Account</ion-title>
   </ion-toolbar>
@@ -29,6 +29,15 @@
         type="submit"
         expand="block"
         >Create Account
+      </ion-button>
+
+      <ion-button
+        fill="outline"
+        color="grey"
+        (click)="closeModal()"
+        type="submit"
+        expand="block"
+        >Close
       </ion-button>
     </div>
   </div>

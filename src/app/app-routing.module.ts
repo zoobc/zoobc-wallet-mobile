@@ -58,9 +58,16 @@ const routes: Routes = [
     path: "feedback",
     loadChildren: "./feedback/feedback.module#FeedbackPageModule"
   },
-  { path: "help", loadChildren: "./help/help.module#HelpPageModule" },  { path: 'notifications', loadChildren: './notifications/notifications.module#NotificationsPageModule' },
-  { path: 'chart', loadChildren: './chart/chart.module#ChartPageModule' }
-
+  { path: "help", loadChildren: "./help/help.module#HelpPageModule" },
+  {
+    path: "notifications",
+    loadChildren: "./notifications/notifications.module#NotificationsPageModule"
+  },
+  { path: "chart", loadChildren: "./chart/chart.module#ChartPageModule" },
+  {
+    path: "list-account",
+    loadChildren: "./list-account/list-account.module#ListAccountModule"
+  }
 ];
 @NgModule({
   imports: [
