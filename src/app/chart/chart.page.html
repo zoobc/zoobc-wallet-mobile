@@ -7,7 +7,9 @@
     </ion-toolbar>
   </ion-header>
   
-<ion-content padding>
+<ion-content>
+
+
     <ion-item>
       Current ZBC Price
     </ion-item>
@@ -32,51 +34,9 @@
       <ion-button (click)="weeklyChart()">Week</ion-button>      
       <ion-button (click)="monthlyChart()">Month</ion-button>
     </ion-item>
-    <ion-card>
-      <ion-card-header>
-        {{chartTitle}}
-      </ion-card-header>
-      <ion-card-content>
-        <canvas #lineCanvas></canvas>
-      </ion-card-content>
-    </ion-card>
 
+    <google-chart [data]="lineChart"></google-chart>
+         
+    <google-chart [data]="candlestickChart"></google-chart>
 
-    <ion-card>
-        <ion-card-header>
-          Bar Chart
-        </ion-card-header>
-        <ion-card-content>
-          <canvas #barCanvas></canvas>
-        </ion-card-content>
-    </ion-card>
-
-    <ion-label>History Data</ion-label>
-    <ion-list>
-      <ion-item>
-        Time | 
-        Open |
-        Close |
-        High |
-        Low |
-        volumefrom |
-        volumeto
-      </ion-item>
-      <ion-item button *ngFor="let item of (results | async)">
-          <ion-label text-wrap>
-            {{ item.time * 1000 | date: "dd/MM/yyyy HH:mm a"}} 
-            | {{ item.open }} 
-            | {{ item.close }}
-            | {{ item.high }}
-            | {{ item.low }}
-            | {{ item.volumefrom }}
-            | {{ item.volumeto }}
-          </ion-label>
-        </ion-item>
-     
-      </ion-list>
-
-
-
-      
 </ion-content>

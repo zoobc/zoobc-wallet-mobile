@@ -18,6 +18,7 @@ interface Holding {
   providedIn: 'root'
 })
 
+
 export class ChartService {
 
   private CRYPTO_KEY = "a83286c854d012d8c5e3d02c225abba04b8a4ce11f0373ca234509f2a48f33b0";
@@ -30,25 +31,28 @@ export class ChartService {
   }
 
 
-  getHistoryData(periode: string): Observable<any> {
-
-    this.getCoinList();
-
-    let url = this.CRYPTO_API_URL + "/histominute?fsym=BTC&tsym=USD&limit=20&api_key=" + this.CRYPTO_KEY;
-    if (periode=="day"){
-      url = this.CRYPTO_API_URL + "/histominute?fsym=BTC&tsym=USD&limit=20&api_key=" + this.CRYPTO_KEY;
-    }else if (periode=="week"){
-      url = this.CRYPTO_API_URL + "/histohour?fsym=BTC&tsym=USD&limit=20&api_key=" + this.CRYPTO_KEY;
-    }else if (periode=="month"){
-      url = this.CRYPTO_API_URL + "/histoday?fsym=BTC&tsym=USD&limit=20&api_key=" + this.CRYPTO_KEY;
-    }
-
-
+  getDailyData(): Observable<any> {
+    let url = this.CRYPTO_API_URL + "/histominute?fsym=BTC&tsym=USD&limit=30&api_key=" + this.CRYPTO_KEY;
     return this.http.get(url).pipe(
       map(results => results['Data'])
     );
   }
  
+
+  getWeeklyData(): Observable<any> {
+    let url = this.CRYPTO_API_URL + "/histohour?fsym=BTC&tsym=USD&limit=30&api_key=" + this.CRYPTO_KEY;
+    return this.http.get(url).pipe(
+      map(results => results['Data'])
+    );
+  }
+
+
+  getMonthlyData(): Observable<any> {
+    let url = this.CRYPTO_API_URL + "/histoday?fsym=BTC&tsym=USD&limit=30&api_key=" + this.CRYPTO_KEY;
+    return this.http.get(url).pipe(
+      map(results => results['Data'])
+    );
+  }
 
   getCoinList(){
 
