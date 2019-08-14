@@ -12,6 +12,7 @@ import {
 import { AccountService } from "src/services/account.service";
 import { LanguageService } from "src/services/language.service";
 import { CurrencyService } from "src/services/currency.service";
+import { ActiveAccountService } from "src/app/services/active-account.service";
 
 @Component({
   selector: "app-sidemenu",
@@ -22,7 +23,7 @@ export class SidemenuComponent implements OnInit {
   accounts = [];
   languages = [];
   activeLanguage = "en";
-  activeAccount = 0;
+  activeAccount = "";
 
   activeCurrency = "USD";
   currencies = [];
@@ -35,16 +36,25 @@ export class SidemenuComponent implements OnInit {
     private accountService: AccountService,
     private languageService: LanguageService,
     private navCtrl: NavController,
-    private currencyService: CurrencyService
-  ) {}
-
-  ionViewWillEnter() {}
+    private currencyService: CurrencyService,
+    private activeAccountSrv: ActiveAccountService
+  ) {
+    this.activeAccountSrv.accountSubject.subscribe({
+      next: v => {
+        this.activeAccount = v.accountName;
+      }
+    });
+  }
 
   async ngOnInit() {
     this.getActiveAccount();
     this.languages = LANGUAGES;
     this.activeLanguage = await this.storage.get(SELECTED_LANGUAGE);
     this.currencies = CURRENCIES;
+
+    const account = await this.storage.get("active_account");
+
+    this.activeAccount = account.accountName;
   }
 
   openAboutView() {

@@ -1,18 +1,17 @@
 <ion-header no-border>
   <ion-toolbar>
-
     <ion-buttons slot="start">
       <ion-button (click)="openMenu()">
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
-     
+
     <ion-title>ZooBC</ion-title>
 
     <ion-buttons slot="end">
       <ion-button (click)="openchart()">
         <ion-icon slot="icon-only" name="trending-up"></ion-icon>
-      </ion-button>  
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -26,8 +25,8 @@
 
   <ion-card class="card-balance">
     <ion-card-content>
-      <h2 class="account-name">Account 1</h2>
-      <ion-label>otAT-ML-eTz6nrHppp8kWmPCVBv9f5cGDavTwyZanYeG</ion-label>
+      <h2 class="account-name">{{ account.accountName }}</h2>
+      <ion-label>{{ account.address }}</ion-label>
 
       <ion-item lines="none" class="ion-no-padding balance-item">
         <img class="logo" src="assets/images/logo-white.png" />

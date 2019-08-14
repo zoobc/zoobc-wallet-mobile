@@ -3,6 +3,7 @@ import { NavController, ModalController } from "@ionic/angular";
 import { ModalCreateAccountComponent } from "./modal-create-account/modal-create-account.component";
 import { Storage } from "@ionic/storage";
 import { AccountService } from "src/services/account.service";
+import { ActiveAccountService } from "../services/active-account.service";
 
 @Component({
   selector: "app-list-account",
@@ -14,10 +15,12 @@ export class ListAccountComponent implements OnInit {
     private navtrl: NavController,
     public modalController: ModalController,
     private storage: Storage,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private activeAccountSrv: ActiveAccountService
   ) {}
 
   accounts: any = [];
+
   accountsRaw = [];
 
   ngOnInit() {
@@ -35,11 +38,12 @@ export class ListAccountComponent implements OnInit {
   }
 
   accountClicked(index) {
-    const account = this.storage
-      .set("active_account", this.accounts[index])
-      .then(() => {
-        this.navtrl.pop();
-      });
+    const activeAccount = this.accountsRaw[index];
+
+    this.storage.set("active_account", activeAccount).then(() => {
+      this.activeAccountSrv.setActiveAccount(activeAccount);
+      this.navtrl.pop();
+    });
   }
 
   createNewAccount() {
