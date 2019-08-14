@@ -7,53 +7,36 @@
     </ion-toolbar>
   </ion-header>
   
-<ion-content padding>
- 
-
-    <ion-card>
-      <ion-card-header>
-        Line Chart
-      </ion-card-header>
-      <ion-card-content>
-        <canvas #lineCanvas></canvas>
-      </ion-card-content>
-    </ion-card>
+<ion-content>
 
 
-    <ion-card>
-        <ion-card-header>
-          Bar Chart
-        </ion-card-header>
-        <ion-card-content>
-          <canvas #barCanvas></canvas>
-        </ion-card-content>
-    </ion-card>
+    <ion-item>
+      Current ZBC Price
+    </ion-item>
+    <ion-item>
+      <ion-label>IDR</ion-label>
+      <h3>232,323,989.90</h3>
+      <ion-label color="success">
+          <ion-icon name="arrow-dropup"></ion-icon>
+          1.2%
+      </ion-label>
+    </ion-item>
 
-    <ion-label>History Data</ion-label>
-    <ion-list>
-      <ion-item>
-        Time | 
-        Open |
-        Close |
-        High |
-        Low |
-        volumefrom |
-        volumeto
-      </ion-item>
-      <ion-item button *ngFor="let item of (results | async)">
-          <ion-label text-wrap>
-            {{ item.time }} 
-            | {{ item.open }} 
-            | {{ item.close }}
-            | {{ item.high }}
-            | {{ item.low }}
-            | {{ item.volumefrom }}
-            | {{ item.volumeto }}
-          </ion-label>
-        </ion-item>
-     
-      </ion-list>
+    <ion-item texcenter>
+      <ion-button > Buy ZBC with a card</ion-button>
+    </ion-item>
+    <ion-item>
+      Statistics ZBC
+    </ion-item>
+    
+    <ion-item>
+      <ion-button (click)="dailyChart()">Day</ion-button>
+      <ion-button (click)="weeklyChart()">Week</ion-button>      
+      <ion-button (click)="monthlyChart()">Month</ion-button>
+    </ion-item>
 
+    <google-chart [data]="lineChart"></google-chart>
+         
+    <google-chart [data]="candlestickChart"></google-chart>
 
-      
 </ion-content>

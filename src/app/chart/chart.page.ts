@@ -2,6 +2,9 @@ import { Component, ViewChild, OnInit } from '@angular/core';
 import { ChartService } from 'src/services/chart.service';
 import { Observable } from 'rxjs';
 import { Chart } from 'chart.js';
+import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
+
+
 
 @Component({
   selector: 'app-chart',
@@ -9,97 +12,144 @@ import { Chart } from 'chart.js';
   styleUrls: ['./chart.page.scss'],
 })
 
+
+
 export class ChartPage implements OnInit {
 
-  private chartVal: any
-  results: Observable<any>;
+
+  private lineChart: GoogleChartInterface;  
+  public candlestickChart : GoogleChartInterface;
+
+  private results: any;
+
+  private candledata: any;
 
   @ViewChild('barCanvas') barCanvas;
   @ViewChild('lineCanvas') lineCanvas;
 
-  barChart: any;
-  lineChart: any;
+  private chartTitle: string;
   
   constructor(private chrtSrv: ChartService) { }
 
-  ngOnInit() {
-      console.log('Data ini');
-      this.results = this.chrtSrv.getHistoryData();
-      console.log('Cart DAta: '+ this.results);
-      this.barChartMethod();
-      this.lineChartMethod();
+
+  ngOnInit() {    
+      this.chrtSrv.getDailyData().subscribe(
+        (res) => {
+          this.loadCandleStickData(res);
+          this.loadCandleStickChart();
+        },
+        (err) => console.log(err),
+        () => console.log('done..!')
+      );
+      
+      this.chartTitle = "Daily Chart";
   }
 
-  barChartMethod() {
-    this.barChart = new Chart(this.barCanvas.nativeElement, {
-      type: 'bar',
-      data: {
-        labels: ['BJP', 'INC', 'AAP', 'CPI', 'CPI-M', 'NCP'],
-        datasets: [{
-          label: '# of Votes',
-          data: [200, 50, 30, 15, 20, 34],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
+
+  loadCandleStickData(res){
+    const aa=[];
+    for (let i=0; i< res.length; i++){
+      const dt = res[i]
+      aa.push([
+        new Date(dt.time * 1000),
+        dt.low,
+        dt.open,
+        dt.close,
+        dt.high
+      ])
+    }
+    this.results = aa;
+    console.log(this.results);
+  }
+  
+
+  loadCandleStickChart(){
+    this.candlestickChart ={
+      chartType: 'CandlestickChart',
+      dataTable: this.results,
+      opt_firstRowIsData: true,
       options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
-          }]
+        legend: 'none',
+        label: 'none',
+        height: 400,
+        candlestick: {
+          fallingColor: { strokeWidth: 0, fill: '#a52714' }, // red
+          risingColor: { strokeWidth: 0, fill: '#0f9d58' }   // green
         }
       }
-    });
+    };
+  }
+  
+  dailyChart(){
+    this.chrtSrv.getDailyData().subscribe(
+      (res) => {
+        this.loadCandleStickData(res);
+        this.candlestickChart.dataTable = this.results;
+      },
+      (err) => console.log(err),
+      () => console.log('done..!')
+    );
+    this.chartTitle = "Daily Chart";
   }
 
-  lineChartMethod() {
-    this.lineChart = new Chart(this.lineCanvas.nativeElement, {
-      type: 'line',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'],
-        datasets: [
-          {
-            label: 'Sell per week',
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: 'rgba(75,192,192,0.4)',
-            borderColor: 'rgba(75,192,192,1)',
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: 'rgba(75,192,192,1)',
-            pointBackgroundColor: '#fff',
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-            pointHoverBorderColor: 'rgba(220,220,220,1)',
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-            data: [65, 59, 80, 81, 56, 55, 40, 10, 5, 50, 10, 15],
-            spanGaps: false,
-          }
-        ]
-      }
-    });
+  weeklyChart(){
+    this.chrtSrv.getWeeklyData().subscribe(
+      (res) => {
+        this.loadCandleStickData(res);
+        this.candlestickChart.dataTable = this.results;
+        
+        //this.loadCandleStickChart(res)
+      },
+      (err) => console.log(err),
+      () => console.log('done..!')
+    );
+    this.chartTitle = "Weekly Chart";
   }
+
+  monthlyChart(){
+    this.chrtSrv.getMonthlyData().subscribe(
+      (res) => {
+        this.loadCandleStickData(res);
+        this.candlestickChart.dataTable = this.results;
+        //this.loadCandleStickChart(res)
+      },
+      (err) => console.log(err),
+      () => console.log('done..!')
+    );
+    this.chartTitle = "Monthly Chart";
+  }
+
+  ionViewDidEnter() {
+    this.loadLineChart();
+    console.log('daa', this.results);
+  }
+
+
+  loadLineChart() {
+    this.lineChart = {
+      chartType: 'AreaChart',
+      dataTable: [
+        [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9],
+        [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
+        [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
+        [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
+        [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53],
+        [30, 55], [31, 60], [32, 61], [33, 59], [34, 62], [35, 65],
+        [36, 62], [37, 58], [38, 55], [39, 61], [40, 64], [41, 65],
+        [42, 63], [43, 66], [44, 67], [45, 69], [46, 69], [47, 70],
+        [48, 72], [49, 68], [50, 66], [51, 65], [52, 67], [53, 70],
+        [54, 71], [55, 72], [56, 73], [57, 75], [58, 70], [59, 68],
+        [60, 64], [61, 60], [62, 65], [63, 67], [64, 68], [65, 69],
+        [66, 70], [67, 72], [68, 75], [69, 80]
+      ],
+      opt_firstRowIsData: true,
+      options : {
+        legend: 'none',
+        bar: { groupWidth: '100%' },
+      },
+
+    };
+  }
+
 
 }
