@@ -4,7 +4,8 @@
   nodejs v10.16.2
   npm 6.9.2
   ionic 5.23
-  
+  npm i -g cordova
+  npm i -g native-run
 
 
 # Technology
