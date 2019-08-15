@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add New Address</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="add-address-page">
+    <ion-list padding>
+      <ion-item>
+        <ion-input
+          padding="false"
+          placeholder="Please the name"
+          [(ngModel)]="name"
+          name="name"
+          autocomplete="on"
+          autocorrect="on"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          padding="false"
+          placeholder="Please the address"
+          [(ngModel)]="address"
+          name="address"
+          autocomplete="on"
+          autocorrect="on"
+        ></ion-input>
+      </ion-item>
+    </ion-list>
+    <div padding>
+      <ion-button
+        color="primary"
+        (click)="addAddress()"
+        type="submit"
+        expand="block"
+        >Add Address
+      </ion-button>
+
+      <ion-button
+        fill="outline"
+        color="grey"
+        (click)="closeModal()"
+        type="submit"
+        expand="block"
+        >Close
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
