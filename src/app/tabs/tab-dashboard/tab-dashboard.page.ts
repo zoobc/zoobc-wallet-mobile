@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, NgZone } from "@angular/core";
 import {
   LoadingController,
   MenuController,
@@ -9,6 +9,10 @@ import { AuthService } from "src/services/auth-service";
 import { Router } from "@angular/router";
 import { AccountService } from "src/services/account.service";
 import { GRPCService } from "src/services/grpc.service";
+import { Storage } from "@ionic/storage";
+import { ActiveAccountService } from "src/app/services/active-account.service";
+import { Observable } from "rxjs";
+
 @Component({
   selector: "app-tab-dashboard",
   templateUrl: "tab-dashboard.page.html",
@@ -19,6 +23,15 @@ export class TabDashboardPage implements OnInit {
   data2: any;
 
   publicKey = "JkhkUiury9899";
+
+  account = {
+    accountName: "",
+    address: ""
+  };
+
+  address = "";
+
+  accountName: string = "";
 
   balance = 18.0;
   unconfirmedBalance = 10.0;
@@ -56,8 +69,31 @@ export class TabDashboardPage implements OnInit {
     private router: Router,
     private menuController: MenuController,
     private navCtrl: NavController,
-    private grpcService: GRPCService
-  ) {}
+    private grpcService: GRPCService,
+    private storage: Storage,
+    private accountService: AccountService,
+    private activeAccountSrv: ActiveAccountService,
+    private zone: NgZone
+  ) {
+    this.activeAccountSrv.accountSubject.subscribe({
+      next: v => {
+        this.account.accountName = v.accountName;
+        this.account.address = this.accountService.getAccountAddress(v);
+      }
+    });
+  }
+
+  async ngOnInit() {
+    //this.getBalance(this.publicKey);
+    // this.getTransaction(this.publicKey);
+    //this.getAccountBalance();
+    //this.getAccountTransaction();
+
+    const account = await this.storage.get("active_account");
+
+    this.account.accountName = account.accountName;
+    this.account.address = this.accountService.getAccountAddress(account);
+  }
 
   goToSend() {
     this.router.navigateByUrl("tabs/send");
@@ -105,8 +141,8 @@ export class TabDashboardPage implements OnInit {
     );
   }
 
-  openchart(){
-    this.navCtrl.navigateForward('chart');
+  openchart() {
+    this.navCtrl.navigateForward("chart");
   }
 
   openMenu() {
@@ -116,13 +152,6 @@ export class TabDashboardPage implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(["login"]);
-  }
-
-  ngOnInit() {
-    // this.getBalance(this.publicKey);
-    // this.getTransaction(this.publicKey);
-    //this.getAccountBalance();
-    //this.getAccountTransaction();
   }
 
   async getAccountBalance() {

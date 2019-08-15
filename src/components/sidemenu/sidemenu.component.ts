@@ -1,30 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { MenuController, NavController } from '@ionic/angular';
-import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
-import { ObservableService } from 'src/services/observable.service';
+import { Component, OnInit } from "@angular/core";
+import { MenuController, NavController } from "@ionic/angular";
+import { Router } from "@angular/router";
+import { Storage } from "@ionic/storage";
+import { ObservableService } from "src/services/observable.service";
 import {
   ACTIVE_ACCOUNT,
   LANGUAGES,
   SELECTED_LANGUAGE,
   CURRENCIES
-} from 'src/environments/variable.const';
-import { AccountService } from 'src/services/account.service';
-import { LanguageService } from 'src/services/language.service';
-import { CurrencyService } from 'src/services/currency.service';
+} from "src/environments/variable.const";
+import { AccountService } from "src/services/account.service";
+import { LanguageService } from "src/services/language.service";
+import { CurrencyService } from "src/services/currency.service";
+import { ActiveAccountService } from "src/app/services/active-account.service";
 
 @Component({
-  selector: 'app-sidemenu',
-  templateUrl: './sidemenu.component.html',
-  styleUrls: ['./sidemenu.component.scss']
+  selector: "app-sidemenu",
+  templateUrl: "./sidemenu.component.html",
+  styleUrls: ["./sidemenu.component.scss"]
 })
 export class SidemenuComponent implements OnInit {
   accounts = [];
   languages = [];
-  activeLanguage = 'en';
-  activeAccount = 0;
+  activeLanguage = "en";
+  activeAccount = "";
 
-  activeCurrency = 'USD';
+  activeCurrency = "USD";
   currencies = [];
 
   constructor(
@@ -35,78 +36,65 @@ export class SidemenuComponent implements OnInit {
     private accountService: AccountService,
     private languageService: LanguageService,
     private navCtrl: NavController,
-    private currencyService: CurrencyService
-  ) {}
-
-  ionViewWillEnter() {}
+    private currencyService: CurrencyService,
+    private activeAccountSrv: ActiveAccountService
+  ) {
+    this.activeAccountSrv.accountSubject.subscribe({
+      next: v => {
+        this.activeAccount = v.accountName;
+      }
+    });
+  }
 
   async ngOnInit() {
-    this.getListAccounts();
-    console.log('ngOnInit');
     this.getActiveAccount();
     this.languages = LANGUAGES;
     this.activeLanguage = await this.storage.get(SELECTED_LANGUAGE);
     this.currencies = CURRENCIES;
+
+    const account = await this.storage.get("active_account");
+
+    this.activeAccount = account.accountName;
   }
 
   openAboutView() {
-    this.navCtrl.navigateForward('about');
+    this.navCtrl.navigateForward("about");
+  }
+
+  openListAccount() {
+    this.navCtrl.navigateForward("list-account");
   }
 
   openAddresBook() {
-    this.navCtrl.navigateForward('addressbook');
+    this.navCtrl.navigateForward("addressbook");
   }
 
   openSendFeedbak() {
-    this.navCtrl.navigateForward('feedback');
+    this.navCtrl.navigateForward("feedback");
   }
 
   openHelpSupport() {
-    this.navCtrl.navigateForward('help');
+    this.navCtrl.navigateForward("help");
   }
 
   openNodeAdmin() {
-    this.navCtrl.navigateForward('node-admin');
+    this.navCtrl.navigateForward("node-admin");
   }
 
-  openNotifications(){
-    this.navCtrl.navigateForward('notifications');
-  }
-
-  ngOnChanges() {
-    this.getListAccounts();
+  openNotifications() {
+    this.navCtrl.navigateForward("notifications");
   }
 
   openMenu() {
-    this.menuController.open('first');
+    this.menuController.open("first");
   }
 
   goToGenerate() {
-    this.router.navigate(['/create-account']);
+    this.router.navigate(["/create-account"]);
   }
 
-
-  logout(){
-    this.router.navigate(['/login']);
-  }
-
-  async getListAccounts() {
-    this.accounts = await this.storage.get('accounts');
-    // accounts.forEach(account => {
-    //   const address = this.accountService.getAccountAddress(
-    //     account.accountProps
-    //   );
-    //   this.accounts.push({ ...account, address });
-    // });
-  }
-
-  async selectAccount() {
-    // this.Obs.Set(ACTIVE_ACCOUNT, this.accounts[this.activeAccount]);
-    const account = await this.storage.set(
-      'active_account',
-      this.accounts[this.activeAccount]
-    );
-    console.log('account', account);
+  logout() {
+    this.router.navigate(["/login"]);
   }
 
   selectActiveCurrency() {
@@ -116,13 +104,13 @@ export class SidemenuComponent implements OnInit {
   }
 
   selectActiveLanguage() {
-    console.log('this.activeLanguage', this.activeLanguage);
+    console.log("this.activeLanguage", this.activeLanguage);
     this.languageService.setLanguage(this.activeLanguage);
   }
 
   async getActiveAccount() {
-    const accounts = await this.storage.get('accounts');
-    const account = await this.storage.get('active_account');
+    const accounts = await this.storage.get("accounts");
+    const account = await this.storage.get("active_account");
     accounts.forEach((acc, index) => {
       console.log(
         acc.accountProps.derivationPath === account.accountProps.derivationPath,

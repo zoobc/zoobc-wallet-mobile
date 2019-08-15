@@ -10,13 +10,13 @@
 </ion-header>
 
 <ion-content class="page-qrcode" padding="true">
-  <p class="address" (click)="tapAddress()">{{ encodeData }}</p>
+  <p class="address" (click)="tapAddress()">{{ account.address }}</p>
   <p class="note">
     tap your address above to copy then paste it to your friend
   </p>
   <p class="note">- or -</p>
   <div class="qrcode-container">
-    <img [src]="qrCodeUrl" />
+    <img [src]="account.qrCode" />
   </div>
   <p class="note">
     show this qrcode to your friend to transfer money to your account

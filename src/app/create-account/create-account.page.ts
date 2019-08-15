@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Storage } from "@ionic/storage";
 import { KeyringService } from "../core/keyring.service";
 import { Router } from "@angular/router";
+import { NavController } from "@ionic/angular";
 
 @Component({
   selector: "app-create-account",
@@ -15,7 +16,7 @@ export class CreateAccountPage implements OnInit {
   constructor(
     private storage: Storage,
     private keyringService: KeyringService,
-    private router: Router
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -47,7 +48,10 @@ export class CreateAccountPage implements OnInit {
       accountProps: this.account
     };
 
+    console.log("__account", account);
+
     await this.storage.set("accounts", [...accounts, account]);
-    this.router.navigate(["/"]);
+
+    this.navCtrl.pop();
   }
 }
