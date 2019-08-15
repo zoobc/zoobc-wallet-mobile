@@ -12,6 +12,7 @@ import { GRPCService } from "src/services/grpc.service";
 import { Storage } from "@ionic/storage";
 import { ActiveAccountService } from "src/app/services/active-account.service";
 import { Observable } from "rxjs";
+import * as moment from "moment";
 
 @Component({
   selector: "app-tab-dashboard",
@@ -29,38 +30,12 @@ export class TabDashboardPage implements OnInit {
     address: ""
   };
 
-  address = "";
-
   accountName: string = "";
 
   balance = 18.0;
   unconfirmedBalance = 10.0;
-  transactions = [
-    {
-      title: "otAT-ML-eTz6nrHppp8kWmPCVBv9f5cGDavTwyZanYeG",
-      date: "18 Jul 2019",
-      type: "plus",
-      amount: 200
-    },
-    {
-      title: "otAT-ML-eTz6nrHppp8kWmPCVBv9f5cGDavTwyZanYeG",
-      date: "10 Jul 2019",
-      type: "minus",
-      amount: 10
-    },
-    {
-      title: "otAT-ML-eTz6nrHppp8kWmPCVBv9f5cGDavTwyZanYeG",
-      date: "8 Jul 2019",
-      type: "minus",
-      amount: 90
-    },
-    {
-      title: "otAT-ML-eTz6nrHppp8kWmPCVBv9f5cGDavTwyZanYeG",
-      date: "20 Jun 2019",
-      type: "plus",
-      amount: 100
-    }
-  ];
+
+  transactions: any = [];
 
   constructor(
     private apiservice: RestapiService,
@@ -85,9 +60,10 @@ export class TabDashboardPage implements OnInit {
 
   async ngOnInit() {
     //this.getBalance(this.publicKey);
-    // this.getTransaction(this.publicKey);
-    //this.getAccountBalance();
-    //this.getAccountTransaction();
+    //this.getTransaction(this.publicKey);
+
+    this.getAccountBalance();
+    this.getAccountTransaction();
 
     const account = await this.storage.get("active_account");
 
@@ -133,9 +109,11 @@ export class TabDashboardPage implements OnInit {
         this.data2 = res[0];
         this.transactions = this.data2["transactions"];
         loading.dismiss();
+
+        console.log("__res", res);
       },
       err => {
-        console.log(err);
+        console.log("__resErr", err);
         loading.dismiss();
       }
     );
@@ -155,11 +133,29 @@ export class TabDashboardPage implements OnInit {
   }
 
   async getAccountBalance() {
-    //this.balance = await this.grpcService.getAccountBalance();
-    //console.log("balance", this.balance);
+    const balance = await (<any>this.grpcService.getAccountBalance());
+    console.log("__balance", balance);
   }
 
   async getAccountTransaction() {
-    //this.transactions = await this.grpcService.getAccountTransaction();
+    const accountTrans = await (<any>this.grpcService.getAccountTransaction());
+
+    this.transactions = accountTrans.transactionsList.map((v: any) => {
+      var time = new Date(v.timestamp * 1000);
+
+      let type = "minus";
+      let rec = v.recipientpublickey;
+
+      if (this.publicKey === v.recipientpublickey) {
+        type = "plus";
+      }
+
+      return {
+        title: rec,
+        date: moment(time).format("MMM Do YY"),
+        type: type,
+        amount: v.amountnqt
+      };
+    });
   }
 }
