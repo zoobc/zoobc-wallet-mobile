@@ -1,55 +1,53 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/services/auth-service';
-import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
-import { Observable, Observer } from 'rxjs';
+import { Component, OnInit } from "@angular/core";
+import { AuthService } from "src/services/auth-service";
+import { Router } from "@angular/router";
+import { ToastController } from "@ionic/angular";
+import { Observable, Observer } from "rxjs";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: "app-login",
+  templateUrl: "./login.page.html",
+  styleUrls: ["./login.page.scss"]
 })
 export class LoginPage implements OnInit {
-  private pin = ""
+  private pin = "";
   constructor(
     private authService: AuthService,
     private router: Router,
     private toastController: ToastController
-  ) { }
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async login(e: any) {
+    const { observer, pin } = e;
 
-    const { observer, pin } = e
+    console.log("__pin", pin);
 
     const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
-      this.router.navigate(['tabs']);
+      this.router.navigate(["tabs"]);
 
       setTimeout(() => {
-        observer.next(true)
-      }, 500)
-
+        observer.next(true);
+      }, 500);
     } else {
       setTimeout(() => {
         observer.next(true);
         this.failedToast();
-      }, 500)
+      }, 500);
     }
   }
 
   createAccount() {
-    this.router.navigate(['initial'])
+    this.router.navigate(["initial"]);
   }
 
   async failedToast() {
     const toast = await this.toastController.create({
-      message: 'Unlock Failed',
+      message: "Unlock Failed",
       duration: 2000
     });
     toast.present();
   }
-
 }

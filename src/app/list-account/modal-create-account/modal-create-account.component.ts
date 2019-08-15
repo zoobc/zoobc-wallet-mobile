@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ModalController, NavController } from "@ionic/angular";
+import { ModalController } from "@ionic/angular";
 import { Storage } from "@ionic/storage";
 import { KeyringService } from "src/app/core/keyring.service";
 import { AccountService } from "src/services/account.service";
@@ -13,8 +13,7 @@ export class ModalCreateAccountComponent implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private storage: Storage,
-    private keyringService: KeyringService,
-    private accountService: AccountService
+    private keyringService: KeyringService
   ) {}
 
   account: any;
@@ -63,10 +62,7 @@ export class ModalCreateAccountComponent implements OnInit {
     await this.storage.set("accounts", [...accounts, account]);
 
     this.modalCtrl.dismiss({
-      account: {
-        accountName: this.accountName,
-        address: this.accountService.getAccountAddress(account)
-      }
+      account
     });
   }
 }

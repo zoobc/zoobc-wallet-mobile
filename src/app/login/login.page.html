@@ -1,5 +1,13 @@
 <ion-content>
   <div class="login">
+    <div class="logo-container">
+      <img src="assets/images/logo.png" />
+    </div>
+
+    <p class="intro-text ion-text-center">
+      {{ "Please Enter Your Pin" | translate }}
+    </p>
+
     <app-pin (onChange)="login($event)"></app-pin>
   </div>
 </ion-content>
