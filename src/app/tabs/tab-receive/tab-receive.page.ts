@@ -1,31 +1,48 @@
-import { Component, OnInit } from '@angular/core';
-import * as qrcode from 'qrcode-generator';
+import { Component, OnInit } from "@angular/core";
+import * as qrcode from "qrcode-generator";
 
-import { MenuController, ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
-import { AccountService } from 'src/services/account.service';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { MenuController, ToastController } from "@ionic/angular";
+import { Storage } from "@ionic/storage";
+import { AccountService } from "src/services/account.service";
+import { Clipboard } from "@ionic-native/clipboard/ngx";
+import { ActiveAccountService } from "src/app/services/active-account.service";
 
 @Component({
-  selector: 'app-tab-receive',
-  templateUrl: 'tab-receive.page.html',
-  styleUrls: ['tab-receive.page.scss']
+  selector: "app-tab-receive",
+  templateUrl: "tab-receive.page.html",
+  styleUrls: ["tab-receive.page.scss"]
 })
-
 export class TabReceivePage {
   encodeData: string;
   qrCodeUrl: any;
+
+  account = {
+    accountName: "",
+    address: "",
+    qrCode: ""
+  };
 
   constructor(
     private clipboard: Clipboard,
     private toastController: ToastController,
     private menuController: MenuController,
     private storage: Storage,
-    private accountService: AccountService
-  ) { }
+    private accountService: AccountService,
+    private activeAccountSrv: ActiveAccountService
+  ) {
+    this.activeAccountSrv.accountSubject.subscribe({
+      next: v => {
+        const address = this.accountService.getAccountAddress(v);
+
+        this.account.accountName = v.accountName;
+        this.account.address = address;
+        this.account.qrCode = this.createQR(address);
+      }
+    });
+  }
 
   openMenu() {
-    this.menuController.open("mainMenu")
+    this.menuController.open("mainMenu");
   }
 
   tapAddress() {
@@ -35,37 +52,32 @@ export class TabReceivePage {
 
   async copySuccess() {
     const toast = await this.toastController.create({
-      message: 'Your address copied to clipboard.',
+      message: "Your address copied to clipboard.",
       duration: 2000
     });
 
     toast.present();
   }
 
-  createQR() {
-    const qrCode = qrcode(8, 'L');
-    qrCode.addData(this.encodeData);
+  createQR(value: string) {
+    const qrCode = qrcode(8, "L");
+    qrCode.addData(value);
     qrCode.make();
-    this.qrCodeUrl = qrCode.createDataURL(4, 8);
+    return qrCode.createDataURL(4, 8);
   }
 
-  async getAddress() {
-    const activeAccount = await this.storage.get('active_account')
-    this.encodeData = this.accountService.getAccountAddress(activeAccount)
-    this.createQR();
+  async getActiveAccount() {
+    const activeAccount = await this.storage.get("active_account");
+    const address = this.accountService.getAccountAddress(activeAccount);
+
+    this.account.accountName = activeAccount.accountName;
+    this.account.address = address;
+    this.account.qrCode = this.createQR(address);
   }
 
   async ionViewDidEnter() {
-    console.log("enter")
-    await this.storage.forEach((value, key, index) => {
-      console.log("value", value)
-      console.log("key", key)
-      console.log("index", index)
-    })
-    this.getAddress();
+    this.getActiveAccount();
   }
 
-  onInit() {
-
-  }
+  onInit() {}
 }
