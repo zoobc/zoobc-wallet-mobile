@@ -25,6 +25,8 @@ export class ListAccountComponent implements OnInit {
 
   ngOnInit() {
     this.storage.get("accounts").then(data => {
+      console.log("__data", data);
+
       this.accountsRaw = data;
       this.accounts = data.map(acc => {
         const { accountName, created } = acc;
@@ -57,7 +59,13 @@ export class ListAccountComponent implements OnInit {
 
     modal.onDidDismiss().then((returnVal: any) => {
       if (returnVal.data.account) {
-        this.accounts.push(returnVal.data.account);
+        const account = returnVal.data.account;
+
+        this.accountsRaw.push(account);
+        this.accounts.push({
+          accountName: account.accountName,
+          address: this.accountService.getAccountAddress(account)
+        });
       }
     });
 
