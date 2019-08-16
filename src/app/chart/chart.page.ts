@@ -1,6 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ChartService } from 'src/services/chart.service';
-import { Observable } from 'rxjs';
 import { Chart } from 'chart.js';
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
 
@@ -16,13 +15,11 @@ import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces
 
 export class ChartPage implements OnInit {
 
-
-  private lineChart: GoogleChartInterface;  
-  public candlestickChart : GoogleChartInterface;
-
+  @ViewChild('hrzLineChart') hrzLineChart;
+ 
+  private hrzLines: any; 
+  private candlestickChart : GoogleChartInterface;
   private results: any;
-
-  private candledata: any;
 
   @ViewChild('barCanvas') barCanvas;
   @ViewChild('lineCanvas') lineCanvas;
@@ -45,6 +42,27 @@ export class ChartPage implements OnInit {
       this.chartTitle = "Daily Chart";
   }
 
+  
+  createSimpleLineChart(label, datas) {
+    this.hrzLines = new Chart(this.hrzLineChart.nativeElement, {
+      type: 'line',
+      data: {
+        labels: label,
+        datasets: [{
+          label: '',
+          data: datas,
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          borderColor: 'rgb(38, 194, 129)',
+          borderWidth: 1
+        }],
+        options: {
+          legend: {
+              display: false,          }
+      }
+      }
+    });
+  }
+
 
   loadCandleStickData(res){
     const aa=[];
@@ -62,16 +80,17 @@ export class ChartPage implements OnInit {
     console.log(this.results);
   }
   
-
+  
+  
   loadCandleStickChart(){
     this.candlestickChart ={
       chartType: 'CandlestickChart',
       dataTable: this.results,
       opt_firstRowIsData: true,
       options: {
+        height: 450,
+        chartArea: {'left': 55, 'height': '80%', 'right':15},
         legend: 'none',
-        label: 'none',
-        height: 400,
         candlestick: {
           fallingColor: { strokeWidth: 0, fill: '#a52714' }, // red
           risingColor: { strokeWidth: 0, fill: '#0f9d58' }   // green
@@ -81,75 +100,143 @@ export class ChartPage implements OnInit {
   }
   
   dailyChart(){
-    this.chrtSrv.getDailyData().subscribe(
-      (res) => {
-        this.loadCandleStickData(res);
-        this.candlestickChart.dataTable = this.results;
-      },
-      (err) => console.log(err),
-      () => console.log('done..!')
-    );
+    this.getMarketPricesData('day');
+    // this.chrtSrv.getDailyData().subscribe(
+    //   (res) => {
+    //     this.loadCandleStickData(res);
+    //     this.candlestickChart.dataTable = this.results;
+    //   },
+    //   (err) => console.log(err),
+    //   () => console.log('done..!')
+    // );
     this.chartTitle = "Daily Chart";
   }
 
   weeklyChart(){
-    this.chrtSrv.getWeeklyData().subscribe(
-      (res) => {
-        this.loadCandleStickData(res);
-        this.candlestickChart.dataTable = this.results;
+    this.getMarketPricesData('week');
+  
+    // this.chrtSrv.getWeeklyData().subscribe(
+    //   (res) => {
+    //     this.loadCandleStickData(res);
+    //     this.candlestickChart.dataTable = this.results;
         
-        //this.loadCandleStickChart(res)
-      },
-      (err) => console.log(err),
-      () => console.log('done..!')
-    );
+    //     //this.loadCandleStickChart(res)
+    //   },
+    //   (err) => console.log(err),
+    //   () => console.log('done..!')
+    // );
     this.chartTitle = "Weekly Chart";
   }
 
   monthlyChart(){
-    this.chrtSrv.getMonthlyData().subscribe(
-      (res) => {
-        this.loadCandleStickData(res);
-        this.candlestickChart.dataTable = this.results;
-        //this.loadCandleStickChart(res)
-      },
-      (err) => console.log(err),
-      () => console.log('done..!')
-    );
+    this.getMarketPricesData('month');
+    // this.chrtSrv.getMonthlyData().subscribe(
+    //   (res) => {
+    //     this.loadCandleStickData(res);
+    //     this.candlestickChart.dataTable = this.results;
+    //     //this.loadCandleStickChart(res)
+    //   },
+    //   (err) => console.log(err),
+    //   () => console.log('done..!')
+    // );
     this.chartTitle = "Monthly Chart";
   }
 
+  private price: any;
+  private rank: any;
+  private volume: any;
+  private marketcap: number;
+  private cryptoId: string;
+
+
+
+  getTimeFormat(unix_timestamp, arg){
+
+
+    var a = new Date(unix_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time =  hour + ':' + min ;
+  
+    if (arg=='week'){
+      time = date + ' ' + month + ' ' + hour + ':' + min  ;
+    }else if (arg=='month'){
+      time = month + ' ' + year;
+    }
+    
+    
+    return time;
+
+      // var dt = new Date(unix_timestamp*1000);
+  
+      // var year = dt.getFullYear();
+      // var month = dt.getMonth();
+      // var date = dt.getDate();
+
+      // // Hours part from the timestamp
+      // var hours = dt.getHours();
+      // // Minutes part from the timestamp
+      // var minutes = "0" + dt.getMinutes();
+      // // Seconds part from the timestamp
+      // var seconds = "0" + dt.getSeconds();
+
+
+      // var formattedTime = hours + ':' + minutes.substr(-2) ;
+      // if (arg=='week'){
+      //   formattedTime = date + '/' + month + '/' + year;
+      // }else if (arg=='month'){
+      //    formattedTime = date + '/' + month + '/' + year;
+      // }
+      
+      // return formattedTime;
+  }
+
+  async getMarketPricesData(arg){
+
+    this.chrtSrv.getCoinMarketPrice(arg).subscribe(
+      (res) => {
+
+        const labels=[];
+        const datas=[];
+
+        for (let i=0; i< res.length; i++){
+          const dt = res[i]
+          labels.push(this.getTimeFormat(dt.time,arg));
+          datas.push(dt.high);
+        }
+        this.createSimpleLineChart(labels,datas);       
+      }
+    ); 
+  }
+
+
+  async getPriceData(){
+    this.chrtSrv.getCoinPrice().subscribe(
+      (res) => {
+
+        if (res && res.length > 0){
+          let prd = res[0];
+          this.cryptoId = prd.id;
+          this.price = prd.current_price;
+          this.marketcap = prd.market_cap;
+          this.volume = prd.total_volume;
+          this.rank = prd.market_cap_rank;
+ 
+          console.log('show price: ', prd); 
+        }
+        
+      }
+    ); 
+  }
+  
   ionViewDidEnter() {
-    this.loadLineChart();
-    console.log('daa', this.results);
+    this.getMarketPricesData('day');
+    this.getPriceData();
   }
-
-
-  loadLineChart() {
-    this.lineChart = {
-      chartType: 'AreaChart',
-      dataTable: [
-        [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9],
-        [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
-        [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
-        [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
-        [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53],
-        [30, 55], [31, 60], [32, 61], [33, 59], [34, 62], [35, 65],
-        [36, 62], [37, 58], [38, 55], [39, 61], [40, 64], [41, 65],
-        [42, 63], [43, 66], [44, 67], [45, 69], [46, 69], [47, 70],
-        [48, 72], [49, 68], [50, 66], [51, 65], [52, 67], [53, 70],
-        [54, 71], [55, 72], [56, 73], [57, 75], [58, 70], [59, 68],
-        [60, 64], [61, 60], [62, 65], [63, 67], [64, 68], [65, 69],
-        [66, 70], [67, 72], [68, 75], [69, 80]
-      ],
-      opt_firstRowIsData: true,
-      options : {
-        legend: 'none',
-        bar: { groupWidth: '100%' },
-      },
-
-    };
-  }
-
 
 }

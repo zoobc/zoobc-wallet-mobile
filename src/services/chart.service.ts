@@ -32,106 +32,45 @@ export class ChartService {
 
 
   getDailyData(): Observable<any> {
-    let url = this.CRYPTO_API_URL + "/histominute?fsym=BTC&tsym=USD&limit=30&api_key=" + this.CRYPTO_KEY;
+    let url = this.CRYPTO_API_URL + "/histominute?fsym=XRP&tsym=USD&limit=30&aggregate=3&e=CCCAGG&api_key=" + this.CRYPTO_KEY;
     return this.http.get(url).pipe(
       map(results => results['Data'])
     );
   }
  
 
-  getWeeklyData(): Observable<any> {
-    let url = this.CRYPTO_API_URL + "/histohour?fsym=BTC&tsym=USD&limit=30&api_key=" + this.CRYPTO_KEY;
+  getWeeklyData(): Observable<any> { 
+    let url = this.CRYPTO_API_URL + "/histohour?fsym=XRP&tsym=USD&limit=30&aggregate=3&e=CCCAGG&api_key=" + this.CRYPTO_KEY;
     return this.http.get(url).pipe(
       map(results => results['Data'])
     );
   }
-
 
   getMonthlyData(): Observable<any> {
-    let url = this.CRYPTO_API_URL + "/histoday?fsym=BTC&tsym=USD&limit=30&api_key=" + this.CRYPTO_KEY;
+    let url = this.CRYPTO_API_URL + "/histoday?fsym=XRP&tsym=USD&limit=30&aggregate=3&e=CCCAGG&api_key=" + this.CRYPTO_KEY;
     return this.http.get(url).pipe(
       map(results => results['Data'])
     );
   }
 
-  getCoinList(){
-
-      console.log('will get coin list----------');
-      // Usage:
-      cc.coinList()
-      .then(coinList => {
-        console.log(coinList)
-        // ->
-        // {
-        //   BTC: {
-        //    Id: "1182",
-        //    Url: "/coins/btc/overview",
-        //    ImageUrl: "/media/19633/btc.png",
-        //    Name: "BTC",
-        //    Symbol: "BTC",
-        //    CoinName: "Bitcoin",
-        //    FullName: "Bitcoin (BTC)",
-        //    Algorithm: "SHA256",
-        //    ProofType: "PoW",
-        //    FullyPremined: "0",
-        //    TotalCoinSupply: "21000000",
-        //    PreMinedValue: "N/A",
-        //    TotalCoinsFreeFloat: "N/A",
-        //    SortOrder: "1",
-        //    Sponsored: false
-        // },
-        //   ETH: {...},
-        // }
-      })
-      .catch(console.error);
+  getCoinPrice(): Observable<any> {
+    let url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ripple&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h,24h,7d,30d';
+    return this.http.get(url).pipe(
+      map(results => results)
+    );
   }
-
-  addHolding(holding: Holding): void {
-    this.holdings.push(holding);
-    this.fetchPrices();
-    this.saveHoldings();
-  }
-
-  removeHolding(holding): void {
-    this.holdings.splice(this.holdings.indexOf(holding), 1);
-    this.fetchPrices();
-    this.saveHoldings();
-  }
-
-  saveHoldings(): void {
-    this.storage.set('cryptoHoldings', this.holdings);
-  }
-
-  verifyHolding(holding): Observable<any> {
-    return this.http.get('https://api.cryptonator.com/api/ticker/' + holding.crypto + '-' + holding.currency);
-  }
-
-  fetchPrices(refresher?): void {
-    const requests = [];
-    for (const holding of this.holdings){
-        const request = this.http.get('https://api.cryptonator.com/api/ticker/' + holding.crypto + '-' + holding.currency);
-        requests.push(request);
+   
+  getCoinMarketPrice(arg): Observable<any> {
+    let url = this.CRYPTO_API_URL + "/histominute?fsym=XRP&tsym=USD&limit=90&aggregate=3&e=CCCAGG&api_key=" + this.CRYPTO_KEY;
+    if (arg==='week'){
+      url = this.CRYPTO_API_URL + "/histohour?fsym=XRP&tsym=USD&limit=30&aggregate=3&e=CCCAGG&api_key=" + this.CRYPTO_KEY;
+    }else if (arg=='month'){
+      url = this.CRYPTO_API_URL + "/histoday?fsym=XRP&tsym=USD&limit=30&aggregate=3&e=CCCAGG&api_key=" + this.CRYPTO_KEY;
     }
 
-    forkJoin(requests).subscribe(results => {
-        results.forEach((result: any, index) => {
-            this.holdings[index].value = result.ticker.price;
-        });
-
-        if(typeof(refresher) !== 'undefined'){
-            refresher.complete();
-        }
-
-        this.saveHoldings();
-
-    }, err => {
-
-        if(typeof(refresher) !== 'undefined'){
-            refresher.complete();
-        }
-
-    });
-
+    //let url = 'https://api.coingecko.com/api/v3/coins/stellar/market_chart?vs_currency=usd&days=30';
+    return this.http.get(url).pipe(
+      map(results => results['Data'])
+    );
   }
-
 }
