@@ -33,6 +33,7 @@ export class TabDashboardPage implements OnInit {
   accountName: string = "";
 
   balance = 18.0;
+  spendablebalance = 0
   unconfirmedBalance = 10.0;
 
   transactions: any = [];
@@ -133,29 +134,32 @@ export class TabDashboardPage implements OnInit {
   }
 
   async getAccountBalance() {
-    const balance = await (<any>this.grpcService.getAccountBalance());
-    console.log("__balance", balance);
+    const account = await (<any>this.grpcService.getAccountBalance());
+    this.balance = account.accountbalance.balance
+    this.spendablebalance = account.accountbalance.spendablebalance
+    // console.log("__balance", balance);
   }
 
   async getAccountTransaction() {
     const accountTrans = await (<any>this.grpcService.getAccountTransaction());
 
-    this.transactions = accountTrans.transactionsList.map((v: any) => {
-      var time = new Date(v.timestamp * 1000);
+    this.transactions = accountTrans
+    // this.transactions = accountTrans.map((v: any) => {
+    //   var time = new Date(v.timestamp * 1000);
 
-      let type = "minus";
-      let rec = v.recipientpublickey;
+    //   let type = "minus";
+    //   let rec = v.recipientpublickey;
 
-      if (this.publicKey === v.recipientpublickey) {
-        type = "plus";
-      }
+    //   if (this.publicKey === v.recipientpublickey) {
+    //     type = "plus";
+    //   }
 
-      return {
-        title: rec,
-        date: moment(time).format("MMM Do YY"),
-        type: type,
-        amount: v.amountnqt
-      };
-    });
+    //   return {
+    //     title: rec,
+    //     date: moment(time).format("MMM Do YY"),
+    //     type: type,
+    //     amount: v.amountnqt
+    //   };
+    // });
   }
 }
