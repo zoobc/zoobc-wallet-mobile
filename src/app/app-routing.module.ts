@@ -47,10 +47,6 @@ const routes: Routes = [
       "./create-account/create-account.module#CreateAccountPageModule"
   },
   {
-    path: "addressbook",
-    loadChildren: "./addressbook/addressbook.module#AddressbookPageModule"
-  },
-  {
     path: "node-admin",
     loadChildren: "./node-admin/node-admin.module#NodeAdminModule"
   },
@@ -67,6 +63,11 @@ const routes: Routes = [
   {
     path: "list-account",
     loadChildren: "./list-account/list-account.module#ListAccountModule"
+  },
+  {
+    path: "address-book",
+    loadChildren:
+      "./Pages/address-book/address-book.module#AddressBookPageModule"
   }
 ];
 @NgModule({

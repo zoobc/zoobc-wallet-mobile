@@ -5,13 +5,13 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { IonicModule } from "@ionic/angular";
 
-import { AddressbookPage } from "./addressbook.page";
-import { ModalAddressbookComponent } from "./modal-addressbook/modal-addressbook.component";
+import { AddressBookPage } from "./address-book.page";
+import { AddressBookComponentModule } from "src/app/Components/address-book/address-book.module";
 
 const routes: Routes = [
   {
     path: "",
-    component: AddressbookPage
+    component: AddressBookPage
   }
 ];
 
@@ -20,9 +20,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    AddressBookComponentModule
   ],
-  declarations: [AddressbookPage, ModalAddressbookComponent],
-  entryComponents: [ModalAddressbookComponent]
+  declarations: [AddressBookPage]
 })
-export class AddressbookPageModule {}
+export class AddressBookPageModule {}
