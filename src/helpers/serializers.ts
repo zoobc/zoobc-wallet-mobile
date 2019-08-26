@@ -92,4 +92,5 @@ export class SendMoneyTx {
   toView() : DataView {
     return this.txView;
   }
+  
 }

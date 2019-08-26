@@ -148,3 +148,10 @@ export const dataViewSetBigUint64 = __makeDataViewSetter('DataViewSetBigUint64',
 export const dataViewSetBigInt64 = __makeDataViewSetter('DataViewSetBigInt64', 'Int32');
 export const dataViewGetBigUint64 = __makeDataViewGetter('DataViewGetBigInt64', 'Uint32');
 export const dataViewGetBigInt64 = __makeDataViewGetter('DataViewGetBigInt64', 'Int32');
+
+export function readInt64(buff, offset) {
+  var buff1 = buff.readUInt32LE(offset);
+  var buff2 = buff.readUInt32LE(offset + 4);
+  if (!(buff2 & 0x80000000)) return buff1 + 0x100000000 * buff2;
+  return -((~buff2 >>> 0) * 0x100000000 + (~buff1 >>> 0) + 1);
+}
