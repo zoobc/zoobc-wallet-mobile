@@ -2,7 +2,8 @@ import { Component, OnInit, NgZone } from "@angular/core";
 import {
   LoadingController,
   MenuController,
-  NavController
+  NavController,
+  ModalController
 } from "@ionic/angular";
 import { RestapiService } from "../../../services/restapi.service";
 import { AuthService } from "src/services/auth-service";
@@ -33,7 +34,7 @@ export class TabDashboardPage implements OnInit {
   accountName: string = "";
 
   balance = 18.0;
-  spendablebalance = 0
+  spendablebalance = 0;
   unconfirmedBalance = 10.0;
 
   transactions: any = [];
@@ -49,7 +50,8 @@ export class TabDashboardPage implements OnInit {
     private storage: Storage,
     private accountService: AccountService,
     private activeAccountSrv: ActiveAccountService,
-    private zone: NgZone
+    private zone: NgZone,
+    private modalController: ModalController
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
@@ -135,15 +137,15 @@ export class TabDashboardPage implements OnInit {
 
   async getAccountBalance() {
     const account = await (<any>this.grpcService.getAccountBalance());
-    this.balance = account.accountbalance.balance
-    this.spendablebalance = account.accountbalance.spendablebalance
+    this.balance = account.accountbalance.balance;
+    this.spendablebalance = account.accountbalance.spendablebalance;
     // console.log("__balance", balance);
   }
 
   async getAccountTransaction() {
     const accountTrans = await (<any>this.grpcService.getAccountTransaction());
 
-    this.transactions = accountTrans
+    this.transactions = accountTrans;
     // this.transactions = accountTrans.map((v: any) => {
     //   var time = new Date(v.timestamp * 1000);
 
@@ -161,5 +163,9 @@ export class TabDashboardPage implements OnInit {
     //     amount: v.amountnqt
     //   };
     // });
+  }
+
+  openDetailTransction() {
+    this.navCtrl.navigateForward("transaction-detail");
   }
 }
