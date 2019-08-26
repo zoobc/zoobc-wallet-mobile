@@ -6,12 +6,14 @@ import {
 } from "@ionic/angular";
 import { GRPCService } from "src/services/grpc.service";
 import { SendMoneyTx } from "src/helpers/serializers";
-import { addressToPublicKey } from "src/helpers/converters";
+import { addressToPublicKey, publicKeyToAddress } from "src/helpers/converters";
 import { Storage } from "@ionic/storage";
 import { QrScannerService } from "src/app/qr-scanner/qr-scanner.service";
 import { Router } from "@angular/router";
 import { AccountService } from "src/services/account.service";
 import { AddressBookModalComponent } from "./address-book-modal/address-book-modal.component";
+import { KeyringService } from "src/app/core/keyring.service";
+import { BytesMaker } from "src/helpers/BytesMaker";
 
 @Component({
   selector: "app-tab-send",
@@ -37,7 +39,8 @@ export class TabSendPage {
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private keyringServ: KeyringService
   ) {
     // this.sender = this.getAddress();
   }
@@ -56,27 +59,72 @@ export class TabSendPage {
     console.log("this.account.accountProps: ", this.account.accountProps);
     const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed);
 
-    const balance = await this.grpcService.getAccountBalance();
+    // const balance = await this.grpcService.getAccountBalance();
 
-    if (balance > this.account + this.fee) {
-      const tx = new SendMoneyTx();
-      tx.senderPublicKey = publicKey;
-      tx.recipientPublicKey = addressToPublicKey(this.recipient);
-      tx.amount = this.amount;
-      tx.fee = this.fee;
-      tx.timestamp = Date.now() / 1000;
-      const txBytes = tx.toBytes();
+    // if (balance > this.account + this.fee) {
+    //   const tx = new SendMoneyTx();
+    //   tx.senderPublicKey = publicKey;
+    //   tx.recipientPublicKey = addressToPublicKey(this.recipient);
+    //   tx.amount = this.amount;
+    //   tx.fee = this.fee;
+    //   tx.timestamp = Date.now() / 1000;
+    //   const txBytes = tx.toBytes();
 
-      const signature = this.sign.detached(txBytes, secretKey);
-      txBytes.set(signature, 123);
+    //   const signature = this.sign.detached(txBytes, secretKey);
+    //   txBytes.set(signature, 123);
 
-      const resolveTx = await this.grpcService.postTransaction(txBytes);
+    //   const resolveTx = await this.grpcService.postTransaction(txBytes);
 
-      if (resolveTx) {
-        this.transactionToast("Money Sent");
-      }
-    } else {
-      this.transactionToast("Balance not enough");
+    //   if (resolveTx) {
+    //     this.transactionToast("Money Sent");
+    //   }
+    // } else {
+    //   this.transactionToast("Balance not enough");
+    // }
+
+    const sender = Buffer.from(publicKeyToAddress(publicKey), "utf-8");
+    const recepient = Buffer.from(this.recipient, "utf-8");
+    const amount = this.amount;
+    const fee = this.fee;
+    const timestamp = Math.trunc(Date.now() / 1000);
+
+    let bytes = new BytesMaker(129);
+    // transaction type
+    bytes.write4bytes(1);
+    // version
+    bytes.write1Byte(1);
+    // timestamp
+    bytes.write8Bytes(timestamp);
+    // sender address length
+    bytes.write4bytes(44);
+    // sender address
+    bytes.write44Bytes(sender);
+    // recepient address length
+    bytes.write4bytes(44);
+    // recepient address
+    bytes.write44Bytes(recepient);
+    // tx fee
+    bytes.write8Bytes(fee);
+    // tx body length
+    bytes.write4bytes(8);
+    // tx body (amount)
+    bytes.write8Bytes(amount);
+
+    const signature = this.sign.detached(bytes.value, secretKey);
+    let bytesWithSign = new BytesMaker(193);
+
+    // copy to new bytes
+    bytesWithSign.write(bytes.value, 129);
+    // set signature
+    bytesWithSign.write(signature, 64);
+    console.log(bytesWithSign.value);
+
+    const resolveTx = await this.grpcService.postTransaction(
+      bytesWithSign.value
+    );
+
+    if (resolveTx) {
+      this.transactionToast("Money Sent");
     }
   }
 
