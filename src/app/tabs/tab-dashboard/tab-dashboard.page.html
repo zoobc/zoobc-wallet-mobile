@@ -58,22 +58,22 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <button class="button-send" (click)="goToSend()">
-              <div class="icon">
-                <ion-icon name="send"></ion-icon>
-              </div>
-              <div class="ion-text-uppercase">
-                {{ "Send" | translate }}
-              </div>
-            </button>
-          </ion-col>
-          <ion-col>
             <button class="button-receive" (click)="goToRequest()">
               <div class="icon">
                 <ion-icon name="cash"></ion-icon>
               </div>
               <div class="ion-text-uppercase">
                 {{ "Receive" | translate }}
+              </div>
+            </button>
+          </ion-col>
+          <ion-col>
+            <button class="button-send" (click)="goToSend()">
+              <div class="icon">
+                <ion-icon name="send"></ion-icon>
+              </div>
+              <div class="ion-text-uppercase">
+                {{ "Send" | translate }}
               </div>
             </button>
           </ion-col>
@@ -93,7 +93,9 @@
             <ion-label class="title">
               {{ transaction.address }}
             </ion-label>
-            <ion-label class="date">{{ transaction.timestamp | date:'dd MMMM yyyy' }}</ion-label>
+            <ion-label class="date">{{
+              transaction.timestamp | date: "dd MMMM yyyy"
+            }}</ion-label>
           </ion-col>
           <ion-col size="5" class="ion-text-end">
             <ion-label class="amount {{ transaction.type }}">
