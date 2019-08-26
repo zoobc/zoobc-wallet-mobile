@@ -1,5 +1,9 @@
 import { Component, Inject } from "@angular/core";
-import { ToastController, MenuController } from "@ionic/angular";
+import {
+  ToastController,
+  MenuController,
+  ModalController
+} from "@ionic/angular";
 import { GRPCService } from "src/services/grpc.service";
 import { SendMoneyTx } from "src/helpers/serializers";
 import { addressToPublicKey } from "src/helpers/converters";
@@ -7,6 +11,7 @@ import { Storage } from "@ionic/storage";
 import { QrScannerService } from "src/app/qr-scanner/qr-scanner.service";
 import { Router } from "@angular/router";
 import { AccountService } from "src/services/account.service";
+import { AddressBookModalComponent } from "./address-book-modal/address-book-modal.component";
 
 @Component({
   selector: "app-tab-send",
@@ -31,7 +36,8 @@ export class TabSendPage {
     private accountService: AccountService,
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController
   ) {
     // this.sender = this.getAddress();
   }
@@ -93,4 +99,24 @@ export class TabSendPage {
       this.recipient = str;
     });
   }
+
+  openAddresses() {
+    this.presentModalAddressesList();
+  }
+
+  async presentModalAddressesList() {
+    const modal = await this.modalController.create({
+      component: AddressBookModalComponent
+    });
+
+    modal.onDidDismiss().then((returnVal: any) => {
+      if (returnVal.data.address) {
+        this.recipient = returnVal.data.address;
+      }
+    });
+
+    return await modal.present();
+  }
+
+  submit() {}
 }

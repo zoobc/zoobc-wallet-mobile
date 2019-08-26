@@ -12,7 +12,7 @@ export class AuthService implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot) {
     const isPinSetup = await this.storage.get("pin");
-    console.log("isPinSetup", isPinSetup);
+
     if (isPinSetup && !this.isUserLoggenIn) {
       this.router.navigate(["login"]);
       return false;
@@ -27,10 +27,7 @@ export class AuthService implements CanActivate {
     const encryptedPin = sha512(pin.toString()).toString();
     const storedPin = await this.storage.get("pin");
 
-    console.log("__liak", encryptedPin, storedPin);
-
     if (encryptedPin === storedPin) {
-      console.log("__berhasil");
       this.isUserLoggenIn = true;
       return true;
     } else {

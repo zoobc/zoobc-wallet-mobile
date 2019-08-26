@@ -12,7 +12,7 @@ import {
 import { AccountService } from "src/services/account.service";
 import { LanguageService } from "src/services/language.service";
 import { CurrencyService } from "src/services/currency.service";
-import { ActiveAccountService } from "src/app/services/active-account.service";
+import { ActiveAccountService } from "src/app/Services/active-account.service";
 
 @Component({
   selector: "app-sidemenu",
@@ -66,7 +66,7 @@ export class SidemenuComponent implements OnInit {
   }
 
   openAddresBook() {
-    this.navCtrl.navigateForward("addressbook");
+    this.navCtrl.navigateForward("address-book");
   }
 
   openSendFeedbak() {

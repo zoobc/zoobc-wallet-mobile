@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ModalAddressbookComponent } from './modal-addressbook.component';
+import { AddressBookPage } from './address-book.page';
 
-describe('ModalAddressbookComponent', () => {
-  let component: ModalAddressbookComponent;
-  let fixture: ComponentFixture<ModalAddressbookComponent>;
+describe('AddressBookPage', () => {
+  let component: AddressBookPage;
+  let fixture: ComponentFixture<AddressBookPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ModalAddressbookComponent ],
+      declarations: [ AddressBookPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ModalAddressbookComponent);
+    fixture = TestBed.createComponent(AddressBookPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
