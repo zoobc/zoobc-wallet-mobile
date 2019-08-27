@@ -2,17 +2,21 @@ import { Component, OnInit, NgZone } from "@angular/core";
 import {
   LoadingController,
   MenuController,
-  NavController
+  NavController,
+  ModalController
 } from "@ionic/angular";
 import { RestapiService } from "../../../services/restapi.service";
 import { AuthService } from "src/services/auth-service";
-import { Router } from "@angular/router";
+import { Router, NavigationExtras } from "@angular/router";
 import { AccountService } from "src/services/account.service";
 import { GRPCService } from "src/services/grpc.service";
 import { Storage } from "@ionic/storage";
 import { ActiveAccountService } from "src/app/services/active-account.service";
 import { Observable } from "rxjs";
 import * as moment from "moment";
+import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
+import { TransactionService } from "src/app/services/transaction.service";
+import { Transaction } from "src/app/grpc/model/transaction_pb";
 
 @Component({
   selector: "app-tab-dashboard",
@@ -33,10 +37,10 @@ export class TabDashboardPage implements OnInit {
   accountName: string = "";
 
   balance = 0;
-  spendablebalance = 0
+  spendablebalance = 0;
   unconfirmedBalance = 0;
 
-  transactions: any = [];
+  transactions: any[] = [];
 
   constructor(
     private apiservice: RestapiService,
@@ -49,17 +53,22 @@ export class TabDashboardPage implements OnInit {
     private storage: Storage,
     private accountService: AccountService,
     private activeAccountSrv: ActiveAccountService,
-    private zone: NgZone
+    private zone: NgZone,
+    private modalController: ModalController,
+    private transactionSrv: TransactionService
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
         this.account.accountName = v.accountName;
         this.account.address = this.accountService.getAccountAddress(v);
+
+        this.getAccountTransaction();
+        this.getAccountBalance();
       }
     });
   }
 
-  async ionViewDidEnter(){
+  async ionViewDidEnter() {
     this.loadData();
   }
 
@@ -70,13 +79,16 @@ export class TabDashboardPage implements OnInit {
     this.loadData();
   }
 
-  async loadData(){
+  async loadData() {
     this.getAccountBalance();
     this.getAccountTransaction();
 
     const account = await this.storage.get("active_account");
     this.account.accountName = account.accountName;
     this.account.address = this.accountService.getAccountAddress(account);
+
+    this.getAccountBalance();
+    this.getAccountTransaction();
   }
 
   goToSend() {
@@ -142,31 +154,38 @@ export class TabDashboardPage implements OnInit {
 
   async getAccountBalance() {
     const account = await (<any>this.grpcService.getAccountBalance());
-    this.balance = account.accountbalance.balance
-    this.spendablebalance = account.accountbalance.spendablebalance
+    this.balance = account.accountbalance.balance;
+    this.spendablebalance = account.accountbalance.spendablebalance;
     // console.log("__balance", balance);
   }
 
   async getAccountTransaction() {
-    const accountTrans = await (<any>this.grpcService.getAccountTransaction());
+    const transactions = await this.transactionSrv.getAll(this.account.address);
 
-    this.transactions = accountTrans
-    // this.transactions = accountTrans.map((v: any) => {
-    //   var time = new Date(v.timestamp * 1000);
+    this.transactions = transactions.map(v => {
+      let type = "minus";
+      let address = v.sender;
 
-    //   let type = "minus";
-    //   let rec = v.recipientpublickey;
+      if (this.account.address === v.recipient) {
+        address = v.recipient;
+        type = "plus";
+      }
 
-    //   if (this.publicKey === v.recipientpublickey) {
-    //     type = "plus";
-    //   }
+      return {
+        id: v.id,
+        address,
+        date: v.transactionDate,
+        type: type,
+        amount: v.amount
+      };
+    });
+  }
 
-    //   return {
-    //     title: rec,
-    //     date: moment(time).format("MMM Do YY"),
-    //     type: type,
-    //     amount: v.amountnqt
-    //   };
-    // });
+  openDetailTransction(index) {
+    const transObj = this.transactions[index];
+
+    const transId = transObj.id;
+
+    this.router.navigate(["transaction/" + transId]);
   }
 }

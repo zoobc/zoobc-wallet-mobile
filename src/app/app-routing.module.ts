@@ -68,6 +68,15 @@ const routes: Routes = [
     path: "address-book",
     loadChildren:
       "./Pages/address-book/address-book.module#AddressBookPageModule"
+  },
+  {
+    path: "transaction",
+    loadChildren: "./Pages/transaction/transaction.module#TransactionPageModule"
+  },
+  {
+    path: "transaction/:transId",
+    loadChildren:
+      "./Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule"
   }
 ];
 @NgModule({

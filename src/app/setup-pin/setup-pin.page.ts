@@ -1,26 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
-import sha512 from 'crypto-js/sha512';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/services/auth-service';
-import { CryptoService } from 'src/services/crypto.service';
-import { ConverterService } from 'src/services/converter.service';
+import { Component, OnInit } from "@angular/core";
+import { Storage } from "@ionic/storage";
+import sha512 from "crypto-js/sha512";
+import { Router } from "@angular/router";
+import { AuthService } from "src/services/auth-service";
+import { CryptoService } from "src/services/crypto.service";
+import { ConverterService } from "src/services/converter.service";
+import { CreateAccountService } from "../services/create-account.service";
+import { NavController } from "@ionic/angular";
 
 @Component({
-  selector: 'app-setup-pin',
-  templateUrl: './setup-pin.page.html',
-  styleUrls: ['./setup-pin.page.scss'],
+  selector: "app-setup-pin",
+  templateUrl: "./setup-pin.page.html",
+  styleUrls: ["./setup-pin.page.scss"]
 })
 export class SetupPinPage implements OnInit {
-  private pin: number
+  private pin: number;
 
   constructor(
     private storage: Storage,
     private router: Router,
     private authService: AuthService,
     private cryptoService: CryptoService,
-    private converterService: ConverterService
-  ) { }
+    private converterService: ConverterService,
+    private createAccSrv: CreateAccountService,
+    private navCtrl: NavController,
+    private authSrv: AuthService
+  ) {}
 
   ngOnInit() {
     // this.storeKey();
@@ -57,14 +62,20 @@ export class SetupPinPage implements OnInit {
     const { observer, pin } = e;
 
     setTimeout(() => {
-      observer.next(true)
-    }, 500)
+      observer.next(true);
+    }, 500);
 
-    const encryptedPin = sha512(pin.toString()).toString()
-    await this.storage.set("pin", encryptedPin)
-    const isUserLoggedIn = await this.authService.login(pin)
-    if (isUserLoggedIn) {
-      this.router.navigate(['tabs'])
+    const encryptedPin = sha512(pin.toString()).toString();
+    //await this.storage.set("pin", encryptedPin);
+    //const isUserLoggedIn = await this.authService.login(pin);
+
+    ///
+    const _pin = encryptedPin;
+    this.createAccSrv.setPin(_pin);
+    await this.createAccSrv.createAccount();
+    const loginStatus = await this.authSrv.login(_pin);
+    if (loginStatus) {
+      this.navCtrl.navigateForward("/");
     }
   }
 }

@@ -3,6 +3,7 @@ import { MnemonicsService } from "../core/mnemonics.service";
 import { ToastController, NavController } from "@ionic/angular";
 import { Router } from "@angular/router";
 import { Storage } from "@ionic/storage";
+import { CreateAccountService } from "../services/create-account.service";
 
 @Component({
   selector: "app-existing-wallet",
@@ -16,7 +17,8 @@ export class ExistingWalletPage implements OnInit {
     private toastController: ToastController,
     private router: Router,
     private storage: Storage,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private createAccSrv: CreateAccountService
   ) {}
 
   ngOnInit() {}
@@ -25,7 +27,10 @@ export class ExistingWalletPage implements OnInit {
     const lengthPassphrase = this.passphrase.split(" ").length;
     if (this.passphrase && lengthPassphrase === 12) {
       const privateKey = this.mnemonicService.mnemonic.toSeed(this.passphrase);
-      this.storage.set("private_key", privateKey);
+
+      this.createAccSrv.setPassphrase(this.passphrase);
+
+      //this.storage.set("private_key", privateKey);
       this.router.navigate(["/setup-pin"]);
     } else {
       this.errorToast();
@@ -34,7 +39,7 @@ export class ExistingWalletPage implements OnInit {
 
   async errorToast() {
     const toast = await this.toastController.create({
-      message: "Passphrase copied to clipboard",
+      message: "Error",
       duration: 2000
     });
     toast.present();

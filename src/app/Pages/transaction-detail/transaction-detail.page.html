@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Transaction Detail</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="info-list">
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Sender Address" | translate }}</p>
+        <p class="info-desc">{{ transaction.sender }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Recipient Address" | translate }}</p>
+        <p class="info-desc">{{ transaction.recipient }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Amount" | translate }}</p>
+        <p class="info-desc">{{ transaction.amount }} ZBC</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Amount" | translate }} USD</p>
+        <p class="info-desc">{{ transaction.amount }} USD</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Fee" | translate }}</p>
+        <p class="info-desc">{{ transaction.fee }} ZBC</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Fee" | translate }} USD</p>
+        <p class="info-desc">{{ transaction.fee }} ZBC</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Transaction Date" | translate }}</p>
+        <p class="info-desc">
+          {{ transaction.transactionDate | date: "medium" }}
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
