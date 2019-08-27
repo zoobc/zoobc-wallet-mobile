@@ -59,15 +59,22 @@ export class TabDashboardPage implements OnInit {
     });
   }
 
+  async ionViewDidEnter(){
+    this.loadData();
+  }
+
   async ngOnInit() {
     //this.getBalance(this.publicKey);
     //this.getTransaction(this.publicKey);
 
+    this.loadData();
+  }
+
+  async loadData(){
     this.getAccountBalance();
     this.getAccountTransaction();
 
     const account = await this.storage.get("active_account");
-
     this.account.accountName = account.accountName;
     this.account.address = this.accountService.getAccountAddress(account);
   }

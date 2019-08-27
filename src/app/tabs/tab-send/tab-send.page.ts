@@ -84,7 +84,7 @@ export class TabSendPage {
 
     const sender = Buffer.from(publicKeyToAddress(publicKey), "utf-8");
     const recepient = Buffer.from(this.recipient, "utf-8");
-    const amount = this.amount;
+    const amount = this.amount*1e8;
     const fee = this.fee;
     const timestamp = Math.trunc(Date.now() / 1000);
 
@@ -125,6 +125,9 @@ export class TabSendPage {
 
     if (resolveTx) {
       this.transactionToast("Money Sent");
+      this.recipient = "";
+      this.amount = 0;
+      this.fee = 0;
     }
   }
 
