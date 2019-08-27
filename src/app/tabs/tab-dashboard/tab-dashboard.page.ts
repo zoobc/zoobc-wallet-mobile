@@ -15,7 +15,7 @@ import { ActiveAccountService } from "src/app/services/active-account.service";
 import { Observable } from "rxjs";
 import * as moment from "moment";
 import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
-import { TransactionService } from "src/app/Services/transaction.service";
+import { TransactionService } from "src/app/services/transaction.service";
 import { Transaction } from "src/app/grpc/model/transaction_pb";
 
 @Component({
@@ -63,6 +63,7 @@ export class TabDashboardPage implements OnInit {
         this.account.address = this.accountService.getAccountAddress(v);
 
         this.getAccountTransaction();
+        this.getAccountBalance();
       }
     });
   }
@@ -71,13 +72,13 @@ export class TabDashboardPage implements OnInit {
     //this.getBalance(this.publicKey);
     //this.getTransaction(this.publicKey);
 
-    this.getAccountBalance();
-    this.getAccountTransaction();
-
     const account = await this.storage.get("active_account");
 
     this.account.accountName = account.accountName;
     this.account.address = this.accountService.getAccountAddress(account);
+
+    this.getAccountBalance();
+    this.getAccountTransaction();
   }
 
   goToSend() {
@@ -161,6 +162,7 @@ export class TabDashboardPage implements OnInit {
       }
 
       return {
+        id: v.id,
         address,
         date: v.transactionDate,
         type: type,
