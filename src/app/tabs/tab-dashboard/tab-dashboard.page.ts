@@ -7,13 +7,16 @@ import {
 } from "@ionic/angular";
 import { RestapiService } from "../../../services/restapi.service";
 import { AuthService } from "src/services/auth-service";
-import { Router } from "@angular/router";
+import { Router, NavigationExtras } from "@angular/router";
 import { AccountService } from "src/services/account.service";
 import { GRPCService } from "src/services/grpc.service";
 import { Storage } from "@ionic/storage";
 import { ActiveAccountService } from "src/app/Services/active-account.service";
 import { Observable } from "rxjs";
 import * as moment from "moment";
+import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
+import { TransactionService } from "src/app/Services/transaction.service";
+import { Transaction } from "src/app/grpc/model/transaction_pb";
 
 @Component({
   selector: "app-tab-dashboard",
@@ -37,7 +40,7 @@ export class TabDashboardPage implements OnInit {
   spendablebalance = 0;
   unconfirmedBalance = 10.0;
 
-  transactions: any = [];
+  transactions: any[] = [];
 
   constructor(
     private apiservice: RestapiService,
@@ -51,12 +54,15 @@ export class TabDashboardPage implements OnInit {
     private accountService: AccountService,
     private activeAccountSrv: ActiveAccountService,
     private zone: NgZone,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private transactionSrv: TransactionService
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
         this.account.accountName = v.accountName;
         this.account.address = this.accountService.getAccountAddress(v);
+
+        this.getAccountTransaction();
       }
     });
   }
@@ -143,29 +149,31 @@ export class TabDashboardPage implements OnInit {
   }
 
   async getAccountTransaction() {
-    const accountTrans = await (<any>this.grpcService.getAccountTransaction());
+    const transactions = await this.transactionSrv.getAll(this.account.address);
 
-    this.transactions = accountTrans;
-    // this.transactions = accountTrans.map((v: any) => {
-    //   var time = new Date(v.timestamp * 1000);
+    this.transactions = transactions.map(v => {
+      let type = "minus";
+      let address = v.sender;
 
-    //   let type = "minus";
-    //   let rec = v.recipientpublickey;
+      if (this.account.address === v.recipient) {
+        address = v.recipient;
+        type = "plus";
+      }
 
-    //   if (this.publicKey === v.recipientpublickey) {
-    //     type = "plus";
-    //   }
-
-    //   return {
-    //     title: rec,
-    //     date: moment(time).format("MMM Do YY"),
-    //     type: type,
-    //     amount: v.amountnqt
-    //   };
-    // });
+      return {
+        address,
+        date: v.transactionDate,
+        type: type,
+        amount: v.amount
+      };
+    });
   }
 
-  openDetailTransction() {
-    this.navCtrl.navigateForward("transaction-detail");
+  openDetailTransction(index) {
+    const transObj = this.transactions[index];
+
+    const transId = transObj.id;
+
+    this.router.navigate(["transaction/" + transId]);
   }
 }

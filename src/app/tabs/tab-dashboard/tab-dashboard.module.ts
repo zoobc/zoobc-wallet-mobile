@@ -8,8 +8,6 @@ import { ComponentsModule } from "src/components/components.module";
 import { TranslateModule } from "@ngx-translate/core";
 import { Network } from "@ionic-native/network/ngx";
 import { PipeModule } from "src/pipe/pipe.module";
-import { TransactionModule } from "src/app/Components/transaction/transaction.module";
-import { TransactionDetailComponent } from "src/app/Components/transaction/transaction-detail/transaction-detail.component";
 
 @NgModule({
   imports: [
@@ -20,11 +18,10 @@ import { TransactionDetailComponent } from "src/app/Components/transaction/trans
     TranslateModule,
     RouterModule.forChild([{ path: "", component: TabDashboardPage }]),
     ComponentsModule,
-    PipeModule,
-    TransactionModule
+    PipeModule
   ],
   declarations: [TabDashboardPage],
-  entryComponents: [TransactionDetailComponent],
+  entryComponents: [],
   providers: [Network]
 })
 export class TabDashboardPageModule {}
