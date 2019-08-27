@@ -4,11 +4,19 @@ import { HttpClient } from "@angular/common/http";
 import { ACTIVE_ACCOUNT } from "src/environments/variable.const";
 import { Storage } from "@ionic/storage";
 import { AccountService } from "./account.service";
-import { AccountBalanceServiceClient } from 'src/app/grpc/service/accountBalanceServiceClientPb';
-import { GetAccountBalanceRequest, GetAccountBalanceResponse } from 'src/app/grpc/model/accountBalance_pb';
-import { TransactionServiceClient } from 'src/app/grpc/service/transactionServiceClientPb';
-import { GetTransactionsRequest, GetTransactionsResponse, PostTransactionRequest, PostTransactionResponse } from 'src/app/grpc/model/transaction_pb';
-import { readInt64 } from 'src/helpers/converters';
+import { AccountBalanceServiceClient } from "src/app/grpc/service/accountBalanceServiceClientPb";
+import {
+  GetAccountBalanceRequest,
+  GetAccountBalanceResponse
+} from "src/app/grpc/model/accountBalance_pb";
+import { TransactionServiceClient } from "src/app/grpc/service/transactionServiceClientPb";
+import {
+  GetTransactionsRequest,
+  GetTransactionsResponse,
+  PostTransactionRequest,
+  PostTransactionResponse
+} from "src/app/grpc/model/transaction_pb";
+import { readInt64 } from "src/helpers/converters";
 
 @Injectable({
   providedIn: "root"
@@ -39,8 +47,8 @@ export class GRPCService {
     return new Promise((resolve, reject) => {
       const request = new GetTransactionsRequest();
       request.setLimit(10);
-      request.setPage(1)
-      request.setAccountaddress('nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd')
+      request.setPage(1);
+      request.setAccountaddress("nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd");
 
       this.txServ.getTransactions(
         request,
@@ -48,27 +56,30 @@ export class GRPCService {
         (err, response: GetTransactionsResponse) => {
           if (err) return reject(err);
 
-          let originTx = response.toObject().transactionsList
+          let originTx = response.toObject().transactionsList;
           let transactions = originTx.map(tx => {
             const bytes = Buffer.from(
               tx.transactionbodybytes.toString(),
-              'base64'
+              "base64"
             );
             const amount = readInt64(bytes, 0);
             const friendAddress =
-              tx.senderaccountaddress == 'nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd'
+              tx.senderaccountaddress ==
+              "nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd"
                 ? tx.recipientaccountaddress
                 : tx.senderaccountaddress;
             const type =
-              tx.senderaccountaddress == 'nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd' ? 'send' : 'receive';
-​
+              tx.senderaccountaddress ==
+              "nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd"
+                ? "send"
+                : "receive";
             return {
-              alias: '',
+              alias: "",
               address: friendAddress,
               type: type,
               timestamp: parseInt(tx.timestamp) * 1000,
               fee: parseInt(tx.fee),
-              amount: amount,
+              amount: amount
             };
           });
 
@@ -87,14 +98,14 @@ export class GRPCService {
     this.client = new AccountBalanceServiceClient(this.grpcUrl, null, null);
     return new Promise((resolve, reject) => {
       const request = new GetAccountBalanceRequest();
-      request.setAccountaddress('nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd')
+      request.setAccountaddress("nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd");
 
       this.client.getAccountBalance(
         request,
         null,
         (err, response: GetAccountBalanceResponse) => {
           console.log(response.toObject());
-          
+
           if (err) return reject(err);
           resolve(response.toObject());
         }
@@ -134,6 +145,8 @@ export class GRPCService {
         null,
         (err, response: PostTransactionResponse) => {
           if (err) return reject(err);
+
+          console.log(response.toObject());
           resolve(response.toObject());
         }
       );
