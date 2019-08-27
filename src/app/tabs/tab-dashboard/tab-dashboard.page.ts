@@ -32,9 +32,9 @@ export class TabDashboardPage implements OnInit {
 
   accountName: string = "";
 
-  balance = 18.0;
+  balance = 0;
   spendablebalance = 0
-  unconfirmedBalance = 10.0;
+  unconfirmedBalance = 0;
 
   transactions: any = [];
 

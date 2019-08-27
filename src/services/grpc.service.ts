@@ -38,6 +38,14 @@ export class GRPCService {
   ) {}
 
   async getAccountTransaction() {
+
+    const account = await this.storage.get("active_account");
+    console.log(account);
+    
+    const address  = this.accountService.getAccountAddress(account);
+    console.log('address: ', address)
+
+    
     // const account = await this.storage.get("active_account");
     // const publicKey = this.accountService.getAccountPublicKey(
     //   account.accountProps
@@ -48,14 +56,27 @@ export class GRPCService {
       const request = new GetTransactionsRequest();
       request.setLimit(10);
       request.setPage(1);
-      request.setAccountaddress("nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd");
+      request.setAccountaddress(address);
 
       this.txServ.getTransactions(
         request,
         null,
         (err, response: GetTransactionsResponse) => {
-          if (err) return reject(err);
 
+          if (err) {
+            if (err.code == 2) {
+              return resolve({
+              accountbalance: {
+                balance: 0,
+                spendablebalance: 0,
+              }
+            })
+           } else return reject(err)
+            
+          }
+          console.log(response.toObject());
+
+          if (err) return reject(err);
           let originTx = response.toObject().transactionsList;
           let transactions = originTx.map(tx => {
             const bytes = Buffer.from(
@@ -65,12 +86,12 @@ export class GRPCService {
             const amount = readInt64(bytes, 0);
             const friendAddress =
               tx.senderaccountaddress ==
-              "nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd"
+              address
                 ? tx.recipientaccountaddress
                 : tx.senderaccountaddress;
             const type =
               tx.senderaccountaddress ==
-              "nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd"
+              address
                 ? "send"
                 : "receive";
             return {
@@ -90,7 +111,11 @@ export class GRPCService {
   }
 
   async getAccountBalance() {
-    // const account = await this.storage.get("active_account");
+    const account = await this.storage.get("active_account");
+    console.log(account);
+    
+    const address  = this.accountService.getAccountAddress(account);
+    console.log('address: ', address)
     // const publicKey = this.accountService.getAccountPublicKey(
     //   account.accountProps
     // );
@@ -98,12 +123,23 @@ export class GRPCService {
     this.client = new AccountBalanceServiceClient(this.grpcUrl, null, null);
     return new Promise((resolve, reject) => {
       const request = new GetAccountBalanceRequest();
-      request.setAccountaddress("nK_ouxdDDwuJiogiDAi_zs1LqeN7f5ZsXbFtXGqGc0Pd");
+      request.setAccountaddress(address);
 
       this.client.getAccountBalance(
         request,
         null,
         (err, response: GetAccountBalanceResponse) => {
+          if (err) {
+            if (err.code == 2) {
+              return resolve({
+              accountbalance: {
+                balance: 0,
+                spendablebalance: 0,
+              }
+            })
+           } else return reject(err)
+            
+          }
           console.log(response.toObject());
 
           if (err) return reject(err);
