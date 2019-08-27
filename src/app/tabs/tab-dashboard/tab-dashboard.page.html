@@ -105,7 +105,7 @@
             <ion-label class="amount {{ transaction.type }}">
               <span
                 class="prefix"
-                *ngIf="transaction.type == 'receive'; else minus"
+                *ngIf="transaction.type == 'plus'; else minus"
                 >+</span
               >
               <ng-template #minus>
