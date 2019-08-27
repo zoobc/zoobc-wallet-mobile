@@ -5,7 +5,7 @@ import { MenuController, ToastController } from "@ionic/angular";
 import { Storage } from "@ionic/storage";
 import { AccountService } from "src/services/account.service";
 import { Clipboard } from "@ionic-native/clipboard/ngx";
-import { ActiveAccountService } from "src/app/Services/active-account.service";
+import { ActiveAccountService } from "src/app/services/active-account.service";
 
 @Component({
   selector: "app-tab-receive",
