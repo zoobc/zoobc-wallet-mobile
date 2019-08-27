@@ -17,6 +17,7 @@
 </ion-header>
 
 <ion-content class="page-dashboard">
+
   <!--
   <p class="ion-padding-horizontal title-section">
     {{ "Welcome" | translate }}
@@ -34,8 +35,8 @@
           <ion-label class="balance-title">
             Balance
           </ion-label>
-          <ion-label class="main-balance">{{ balance | number }} ZBC</ion-label>
-          <ion-label class="sub-balance">-1,800.0 USD</ion-label>
+          <ion-label class="main-balance">{{ balance/1e8 | number: '0.0-4' }} ZBC</ion-label>
+          <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
       </ion-item>
 
@@ -45,10 +46,8 @@
           <ion-label class="balance-title">
             Spendable Balance
           </ion-label>
-          <ion-label class="main-balance"
-            >{{ spendablebalance | number }} ZBC</ion-label
-          >
-          <ion-label class="sub-balance">-1,800.0 USD</ion-label>
+          <ion-label class="main-balance">{{ spendablebalance/1e8 | number: '0.0-4' }} ZBC</ion-label>
+          <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
       </ion-item>
 
@@ -111,7 +110,7 @@
               <ng-template #minus>
                 -
               </ng-template>
-              {{ transaction.amount | number }} ZBC</ion-label
+              {{ transaction.amount / 1e8 | number: '0.0-4' }} ZBC</ion-label
             >
           </ion-col>
         </ion-row>
