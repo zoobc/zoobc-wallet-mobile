@@ -7,6 +7,34 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
 
+<ion-content padding>
+  <form >
+    <ion-list lines="full" class="ion-no-margin ion-no-padding">
+      <ion-item>
+        <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text"></ion-input>
+      </ion-item>
+
+
+      <ion-item>
+        <ion-label position="stacked">Subject<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Message<ion-text color="danger">*</ion-text></ion-label>
+        <ion-textarea rows="4"></ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    <div class="ion-padding">
+      <ion-button expand="block" type="submit" class="ion-no-margin">Send</ion-button>
+    </div>
+  </form>
 </ion-content>
