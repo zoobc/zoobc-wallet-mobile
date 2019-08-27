@@ -8,7 +8,7 @@ import { ConverterService } from "src/services/converter.service";
 import { Router } from "@angular/router";
 import { ObservableService } from "src/services/observable.service";
 import { ACTIVE_ACCOUNT } from "src/environments/variable.const";
-import { CreateAccountService } from "../Services/create-account.service";
+import { CreateAccountService } from "../services/create-account.service";
 import { AuthService } from "src/services/auth-service";
 // import * as bip32 from 'bip32'
 // import { calcBip32ExtendedKey } from '../core/keyring.service';
