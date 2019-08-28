@@ -70,10 +70,9 @@ export class SetupPinPage implements OnInit {
     //const isUserLoggedIn = await this.authService.login(pin);
 
     ///
-    const _pin = encryptedPin;
-    this.createAccSrv.setPin(_pin);
+    this.createAccSrv.setPin(pin);
     await this.createAccSrv.createAccount();
-    const loginStatus = await this.authSrv.login(_pin);
+    const loginStatus = await this.authSrv.login(pin);
     if (loginStatus) {
       this.navCtrl.navigateForward("/");
     }
