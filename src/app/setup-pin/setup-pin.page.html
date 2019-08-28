@@ -1,3 +1,12 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Setup Pin</ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
   <div class="setup-pin">
     <app-pin (onChange)="savePin($event)"></app-pin>
