@@ -8,7 +8,6 @@ const routes: Routes = [
     loadChildren: "./Pages/main/main.module#MainPageModule",
     canActivate: [AuthService]
   },
-
   {
     path: "qr-scanner",
     loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule"
@@ -90,6 +89,10 @@ const routes: Routes = [
   {
     path: "qr-scanner",
     loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule"
+  },
+  {
+    path: "setup-pin",
+    loadChildren: "./Pages/setup-pin/setup-pin.module#SetupPinPageModule"
   }
 ];
 @NgModule({

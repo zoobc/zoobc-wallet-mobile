@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { MnemonicsService } from "../../Services/mnemonics.service";
 import { ToastController, NavController } from "@ionic/angular";
-import { Router } from "@angular/router";
-import { Storage } from "@ionic/storage";
 import { CreateAccountService } from "../../Services/create-account.service";
+import { SetupPinService } from "src/app/Services/setup-pin.service";
+import { AuthService } from "src/app/Services/auth-service";
 
 @Component({
   selector: "app-existing-wallet",
@@ -11,33 +10,45 @@ import { CreateAccountService } from "../../Services/create-account.service";
   styleUrls: ["./existing-wallet.page.scss"]
 })
 export class ExistingWalletPage implements OnInit {
-  passphrase;
+  passphrase: string;
+
   constructor(
-    private mnemonicService: MnemonicsService,
+    private authSrv: AuthService,
     private toastController: ToastController,
-    private router: Router,
-    private storage: Storage,
     private navCtrl: NavController,
-    private createAccSrv: CreateAccountService
+    private createAccSrv: CreateAccountService,
+    private setupPinSrv: SetupPinService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.setupPinSrv.setupPinSubject.subscribe(data => {
+      const { status, pin } = data;
+      if (status == "success") {
+        this.setPin(pin);
+      }
+    });
+  }
+
+  async setPin(pin: string) {
+    this.createAccSrv.setPin(pin);
+    await this.createAccSrv.createAccount();
+    const loginStatus = await this.authSrv.login(pin);
+    if (loginStatus) {
+      this.navCtrl.navigateRoot("main/dashboard");
+    }
+  }
 
   openExistingWallet() {
     const lengthPassphrase = this.passphrase.split(" ").length;
     if (this.passphrase && lengthPassphrase === 12) {
-      const privateKey = this.mnemonicService.mnemonic.toSeed(this.passphrase);
-
       this.createAccSrv.setPassphrase(this.passphrase);
-
-      //this.storage.set("private_key", privateKey);
-      this.router.navigate(["/setup-pin"]);
+      this.navCtrl.navigateForward("setup-pin");
     } else {
-      this.errorToast();
+      this.presentErrorToast();
     }
   }
 
-  async errorToast() {
+  async presentErrorToast() {
     const toast = await this.toastController.create({
       message: "Error",
       duration: 2000

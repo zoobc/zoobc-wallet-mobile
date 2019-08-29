@@ -9,6 +9,12 @@
 
 <ion-content>
   <div class="setup-pin">
+    <h3 class="ion-text-center">
+      <span *ngIf="page == 'enter-pin'; else confirmPin">Please enter pin</span>
+      <ng-template #confirmPin>
+        <span>Confirm your pin</span>
+      </ng-template>
+    </h3>
     <app-pin (onChange)="savePin($event)"></app-pin>
   </div>
 </ion-content>
