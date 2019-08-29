@@ -12,7 +12,7 @@ export class ChartPage implements OnInit {
   @ViewChild("hrzLineChart") hrzLineChart;
 
   private hrzLines: any;
-  private candlestickChart: GoogleChartInterface;
+  public candlestickChart: GoogleChartInterface;
   private results: any;
 
   @ViewChild("barCanvas") barCanvas;
@@ -128,11 +128,11 @@ export class ChartPage implements OnInit {
     this.chartTitle = "Monthly Chart";
   }
 
-  private price: any;
-  private rank: any;
-  private volume: any;
-  private marketcap: number;
-  private cryptoId: string;
+  public price: any;
+  public rank: any;
+  public volume: any;
+  public marketcap: number;
+  public cryptoId: string;
 
   getTimeFormat(unix_timestamp, arg) {
     var a = new Date(unix_timestamp * 1000);
