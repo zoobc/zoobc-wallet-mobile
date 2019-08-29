@@ -163,12 +163,12 @@ export class TabDashboardPage implements OnInit {
     const transactions = await this.transactionSrv.getAll(this.account.address);
 
     this.transactions = transactions.map(v => {
-      let type = "minus";
+      let type = "plus";
       let address = v.sender;
 
-      if (this.account.address === v.recipient) {
+      if (this.account.address === v.sender) {
         address = v.recipient;
-        type = "plus";
+        type = "minus";
       }
 
       return {
