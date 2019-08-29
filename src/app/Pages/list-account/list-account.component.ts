@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NavController, ModalController } from "@ionic/angular";
 import { ModalCreateAccountComponent } from "./modal-create-account/modal-create-account.component";
 import { Storage } from "@ionic/storage";
-import { AccountService } from "src/services/account.service";
+import { AccountService } from "src/app/Services/account.service";
 import { ActiveAccountService } from "../../Services/active-account.service";
 
 @Component({

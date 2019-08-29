@@ -18,7 +18,7 @@ import { Network } from "@ionic-native/network/ngx";
 
 // import * as supercop from 'supercop.wasm';
 import { sign as naclSign } from "tweetnacl";
-import { ObservableService } from "src/services/observable.service";
+import { ObservableService } from "src/app/Services/observable.service";
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { AboutPage } from "./Pages/about/about.page";

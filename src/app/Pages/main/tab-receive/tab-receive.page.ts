@@ -3,7 +3,7 @@ import * as qrcode from "qrcode-generator";
 
 import { MenuController, ToastController } from "@ionic/angular";
 import { Storage } from "@ionic/storage";
-import { AccountService } from "src/services/account.service";
+import { AccountService } from "src/app/Services/account.service";
 import { Clipboard } from "@ionic-native/clipboard/ngx";
 import { ActiveAccountService } from "src/app/Services/active-account.service";
 

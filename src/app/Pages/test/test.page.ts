@@ -8,7 +8,7 @@ import {
   addressToPublicKey
 } from "../../../helpers/converters";
 import { SendMoneyTx } from "../../../helpers/serializers";
-import { GRPCService } from "src/services/grpc.service";
+import { GRPCService } from "src/app/Services/grpc.service";
 
 // import { calcBip32ExtendedKey } from '../Services/keyring.service';
 

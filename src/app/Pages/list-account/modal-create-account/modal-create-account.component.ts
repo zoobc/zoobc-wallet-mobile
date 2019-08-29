@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ModalController } from "@ionic/angular";
 import { Storage } from "@ionic/storage";
 import { KeyringService } from "src/app/Services/keyring.service";
-import { AccountService } from "src/services/account.service";
+import { AccountService } from "src/app/Services/account.service";
 
 @Component({
   selector: "app-modal-create-account",

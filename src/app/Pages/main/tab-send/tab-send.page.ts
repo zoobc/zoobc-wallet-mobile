@@ -4,12 +4,12 @@ import {
   MenuController,
   ModalController
 } from "@ionic/angular";
-import { GRPCService } from "src/services/grpc.service";
+import { GRPCService } from "src/app/Services/grpc.service";
 import { SendMoneyTx } from "src/helpers/serializers";
 import { addressToPublicKey, publicKeyToAddress } from "src/helpers/converters";
 import { Storage } from "@ionic/storage";
 import { Router } from "@angular/router";
-import { AccountService } from "src/services/account.service";
+import { AccountService } from "src/app/Services/account.service";
 import { AddressBookModalComponent } from "./address-book-modal/address-book-modal.component";
 import { KeyringService } from "src/app/Services/keyring.service";
 import { BytesMaker } from "src/helpers/BytesMaker";

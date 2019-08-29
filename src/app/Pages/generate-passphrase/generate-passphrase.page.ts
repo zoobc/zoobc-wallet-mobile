@@ -3,13 +3,13 @@ import { KeyringService } from "../../Services/keyring.service";
 import { ToastController, NavController } from "@ionic/angular";
 import { MnemonicsService } from "../../Services/mnemonics.service";
 import { Storage } from "@ionic/storage";
-import { CryptoService } from "src/services/crypto.service";
-import { ConverterService } from "src/services/converter.service";
+import { CryptoService } from "src/app/Services/crypto.service";
+import { ConverterService } from "src/app/Services/converter.service";
 import { Router } from "@angular/router";
-import { ObservableService } from "src/services/observable.service";
+import { ObservableService } from "src/app/Services/observable.service";
 import { ACTIVE_ACCOUNT } from "src/environments/variable.const";
 import { CreateAccountService } from "../../Services/create-account.service";
-import { AuthService } from "src/services/auth-service";
+import { AuthService } from "src/app/Services/auth-service";
 // import * as bip32 from 'bip32'
 // import { calcBip32ExtendedKey } from '../Services/keyring.service';
 // import { arrayByteToHex, stringToArrayByte } from '../../helpers/converters'

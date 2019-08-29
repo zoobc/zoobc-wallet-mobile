@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from "@angular/router";
 import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
 import { TransactionService } from "src/app/Services/transaction.service";
 import { ActiveAccountService } from "src/app/Services/active-account.service";
-import { AccountService } from "src/services/account.service";
+import { AccountService } from "src/app/Services/account.service";
 
 @Component({
   selector: "app-transaction-detail",
