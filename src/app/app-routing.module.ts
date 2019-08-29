@@ -1,68 +1,77 @@
 import { NgModule } from "@angular/core";
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
-import { AuthService } from "src/services/auth-service";
-import { QrScannerComponent } from "./qr-scanner/qr-scanner.component";
+import { AuthService } from "src/app/Services/auth-service";
 
 const routes: Routes = [
   {
     path: "",
-    loadChildren: "./tabs/tabs.module#TabsPageModule",
+    loadChildren: "./Pages/main/main.module#MainPageModule",
     canActivate: [AuthService]
   },
-  { path: "qr-scanner", component: QrScannerComponent },
-  { path: "about", loadChildren: "./about/about.module#AboutPageModule" },
+
+  {
+    path: "qr-scanner",
+    loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule"
+  },
+  { path: "about", loadChildren: "./Pages/about/about.module#AboutPageModule" },
   {
     path: "selectwallet",
-    loadChildren: "./selectwallet/selectwallet.module#SelectwalletPageModule"
+    loadChildren:
+      "./Pages/selectwallet/selectwallet.module#SelectwalletPageModule"
   },
-  { path: "login", loadChildren: "./login/login.module#LoginPageModule" },
+  { path: "login", loadChildren: "./Pages/login/login.module#LoginPageModule" },
   {
     path: "create-wallet",
-    loadChildren: "./create-wallet/create-wallet.module#CreateWalletPageModule"
+    loadChildren:
+      "./Pages/create-wallet/create-wallet.module#CreateWalletPageModule"
   },
   {
     path: "generate-passphrase",
     loadChildren:
-      "./generate-passphrase/generate-passphrase.module#GeneratePassphrasePageModule"
+      "./Pages/generate-passphrase/generate-passphrase.module#GeneratePassphrasePageModule"
   },
   {
     path: "initial",
-    loadChildren: "./initial/initial.module#InitialPageModule"
+    loadChildren: "./Pages/initial/initial.module#InitialPageModule"
   },
   {
     path: "setup-pin",
-    loadChildren: "./setup-pin/setup-pin.module#SetupPinPageModule"
+    loadChildren: "./Pages/setup-pin/setup-pin.module#SetupPinPageModule"
   },
-  { path: "login", loadChildren: "./login/login.module#LoginPageModule" },
-  { path: "test-w", loadChildren: "./test-w/test-w.module#TestWPageModule" },
+  { path: "login", loadChildren: "./Pages/login/login.module#LoginPageModule" },
+  {
+    path: "test-w",
+    loadChildren: "./Pages/test-w/test-w.module#TestWPageModule"
+  },
   {
     path: "existing-wallet",
     loadChildren:
-      "./existing-wallet/existing-wallet.module#ExistingWalletPageModule"
+      "./Pages/existing-wallet/existing-wallet.module#ExistingWalletPageModule"
   },
-  { path: "test", loadChildren: "./test/test.module#TestPageModule" },
+  { path: "test", loadChildren: "./Pages/test/test.module#TestPageModule" },
   {
     path: "create-account",
     loadChildren:
-      "./create-account/create-account.module#CreateAccountPageModule"
+      "./Pages/create-account/create-account.module#CreateAccountPageModule"
   },
   {
     path: "node-admin",
-    loadChildren: "./node-admin/node-admin.module#NodeAdminModule"
+    loadChildren: "./Pages/node-admin/node-admin.module#NodeAdminModule"
   },
   {
     path: "feedback",
-    loadChildren: "./feedback/feedback.module#FeedbackPageModule"
+    loadChildren: "./Pages/feedback/feedback.module#FeedbackPageModule"
   },
-  { path: "help", loadChildren: "./help/help.module#HelpPageModule" },
+  { path: "help", loadChildren: "./Pages/help/help.module#HelpPageModule" },
   {
     path: "notifications",
-    loadChildren: "./notifications/notifications.module#NotificationsPageModule"
+    loadChildren:
+      "./Pages/notifications/notifications.module#NotificationsPageModule"
   },
-  { path: "chart", loadChildren: "./chart/chart.module#ChartPageModule" },
+  { path: "chart", loadChildren: "./Pages/chart/chart.module#ChartPageModule" },
   {
     path: "list-account",
-    loadChildren: "./list-account/list-account.module#ListAccountModule"
+    loadChildren: "./Pages/list-account/list-account.module#ListAccountModule"
   },
   {
     path: "address-book",
@@ -77,6 +86,10 @@ const routes: Routes = [
     path: "transaction/:transId",
     loadChildren:
       "./Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule"
+  },
+  {
+    path: "qr-scanner",
+    loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule"
   }
 ];
 @NgModule({

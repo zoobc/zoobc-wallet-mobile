@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { AddressBook } from "src/app/Interfaces/address-book";
-import { AddressBookService } from "src/app/services/address-book.service";
+import { AddressBookService } from "src/app/Services/address-book.service";
 import { ModalController } from "@ionic/angular";
 import { AddressBookFormComponent } from "../address-book-form/address-book-form.component";
 

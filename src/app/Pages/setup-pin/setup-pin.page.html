@@ -3,10 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="main/dashboard"></ion-back-button>
     </ion-buttons>
-    <ion-title>Address Book</ion-title>
+    <ion-title>Setup Pin</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="grey">
-  <app-address-book-list></app-address-book-list>
+<ion-content>
+  <div class="setup-pin">
+    <app-pin (onChange)="savePin($event)"></app-pin>
+  </div>
 </ion-content>

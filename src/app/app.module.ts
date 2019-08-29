@@ -13,25 +13,23 @@ import { FormsModule } from "@angular/forms";
 import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { NgxQRCodeModule } from "ngx-qrcode2";
-import { NgxsModule } from '@ngxs/store';
-import { Network } from '@ionic-native/network/ngx';
+import { NgxsModule } from "@ngxs/store";
+import { Network } from "@ionic-native/network/ngx";
 
 // import * as supercop from 'supercop.wasm';
-import { sign as naclSign } from 'tweetnacl';
-import { ObservableService } from 'src/services/observable.service';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { AboutPage } from './about/about.page';
-import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
-import { QRScanner } from '@ionic-native/qr-scanner/ngx';
-
+import { sign as naclSign } from "tweetnacl";
+import { ObservableService } from "src/app/Services/observable.service";
+import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
+import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { AboutPage } from "./Pages/about/about.page";
+import { QRScanner } from "@ionic-native/qr-scanner/ngx";
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/languages/locales/', '.json');
+  return new TranslateHttpLoader(http, "assets/languages/locales/", ".json");
 }
 
 @NgModule({
-  declarations: [AppComponent, QrScannerComponent],
+  declarations: [AppComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -46,7 +44,7 @@ export function createTranslateLoader(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
+        useFactory: createTranslateLoader,
         deps: [HttpClient]
       }
     })
@@ -64,4 +62,4 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
