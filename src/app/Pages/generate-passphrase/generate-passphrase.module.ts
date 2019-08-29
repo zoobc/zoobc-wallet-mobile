@@ -7,6 +7,7 @@ import { IonicModule } from "@ionic/angular";
 
 import { GeneratePassphrasePage } from "./generate-passphrase.page";
 import { CreateNewStepsComponent } from "../../Components/create-new-steps/create-new-steps.component";
+import { PinModule } from "src/app/Components/pin/pin.module";
 
 const routes: Routes = [
   {
@@ -20,7 +21,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    PinModule
   ],
   declarations: [GeneratePassphrasePage, CreateNewStepsComponent]
 })
