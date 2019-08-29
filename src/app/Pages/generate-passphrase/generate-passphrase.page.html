@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="main/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Create New Account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-generate-passphrase">
+  <div class="ion-margin-top">
+    <app-create-new-steps active="{{ pageStep }}"></app-create-new-steps>
+  </div>
+
+  <ng-template [ngIf]="pagePosition == 3">
+    <ion-content class="page-generate-passphrase">
+      <p class="ion-text-center">Confirm your PIN</p>
+      <app-pin (onChange)="confirmPin($event)"></app-pin>
+    </ion-content>
+  </ng-template>
+
+  <ng-template [ngIf]="pagePosition == 2">
+    <ion-content class="page-generate-passphrase">
+      <p class="ion-text-center">Setup your PIN</p>
+      <app-pin (onChange)="setupPin($event)"></app-pin>
+    </ion-content>
+  </ng-template>
+
+  <ng-template [ngIf]="pagePosition == 1">
+    <p class="ion-margin-horizontal  ion-text-center your-passphrase">
+      Your Passphrase:
+    </p>
+
+    <ion-card class="card-passphrase ion-margin-horizontal">
+      <ion-card-content>
+        <p class="passphrase">{{ passphrase }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button
+            no-shadow
+            color="grey"
+            class="btn-action"
+            expand="block"
+            (click)="copyToClipboard()"
+            ><ion-icon name="copy"></ion-icon>Copy Passphrase</ion-button
+          >
+        </ion-col>
+        <ion-col>
+          <ion-button
+            color="grey"
+            class="btn-action"
+            expand="block"
+            (click)="generatePassphrase()"
+          >
+            <ion-icon name="refresh-circle"></ion-icon> Regenerate
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <div class="warning ion-margin-horizontal">
+      Remember: Never tell your passphrase. If you lose it, you lose access to
+      your account!
+    </div>
+
+    <div class="ion-margin-horizontal checklist">
+      <div>
+        <ion-checkbox [(ngModel)]="writtenDown"></ion-checkbox>
+      </div>
+      <span
+        >I have written down or otherwise securely stored my passphrase</span
+      >
+    </div>
+
+    <div class="ion-margin-horizontal checklist">
+      <div>
+        <ion-checkbox [(ngModel)]="terms"></ion-checkbox>
+      </div>
+      <span>I agree to the terms & conditions </span>
+    </div>
+
+    <div class="footer-generate-passphrase">
+      <ion-button
+        color="dark"
+        size="large"
+        class="ion-margin-horizontal btn-submit"
+        expand="block"
+        (click)="setPagePosition(2)"
+        *ngIf="!isPinSetup"
+        disabled="{{ !(writtenDown && terms) }}"
+        >Setup PIN</ion-button
+      >
+    </div>
+  </ng-template>
+</ion-content>

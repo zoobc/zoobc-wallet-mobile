@@ -1,11 +1,11 @@
 import { Injectable, Inject } from "@angular/core";
 
-import { MnemonicsService } from "../Services/mnemonics.service";
+import { MnemonicsService } from "./mnemonics.service";
 import { APP_CONFIG, AppConfig } from "../app-config.module";
 
-import * as bip32 from "../../../externals/bip32/types";
-import { BIP32Interface } from "../../../externals/bip32/types";
-export { BIP32Interface } from "../../../externals/bip32/types";
+import * as bip32 from "../../externals/bip32/types";
+import { BIP32Interface } from "../../externals/bip32/types";
+export { BIP32Interface } from "../../externals/bip32/types";
 
 export const coins: Array<CoinInterface> = [
   {

@@ -69,6 +69,7 @@
     "ngx-qrcode2": "0.0.9",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",
+    "path": "^0.12.7",
     "qrcode-generator": "^1.4.3",
     "rxjs": "^6.5.2",
     "stream": "0.0.2",

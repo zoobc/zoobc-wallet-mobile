@@ -4,7 +4,7 @@ import { Platform, ToastController } from "@ionic/angular";
 import { SplashScreen } from "@ionic-native/splash-screen/ngx";
 import { StatusBar } from "@ionic-native/status-bar/ngx";
 import { LanguageService } from "src/services/language.service";
-import { AboutPage } from "./about/about.page";
+import { AboutPage } from "./Pages/about/about.page";
 import { Network } from "@ionic-native/network/ngx";
 import { TranslateService } from "@ngx-translate/core";
 import { CurrencyService } from "src/services/currency.service";

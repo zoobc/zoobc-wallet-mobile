@@ -1,9 +1,0 @@
-@import "../../assets/scss/main.scss";
-
-.login {
-    height: 100%;
-    padding: 20px;
-    @include flex-init;
-    @include flex-direction(column);
-    @include justify-content(center);
-}

@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="main/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>List Account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="grey">
+  <ion-fab ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="createNewAccount()"
+      ><ion-icon name="add"></ion-icon
+    ></ion-fab-button>
+  </ion-fab>
+  <div class="list-account-page">
+    <ng-template #noData>
+      <ion-item lines="none">
+        <ion-label>You dont have any address</ion-label>
+      </ion-item>
+    </ng-template>
+
+    <ion-list *ngIf="accounts.length >= 1; else noData">
+      <ion-list-header>
+        <ion-label
+          >Here is the list of all addresses that are linked to your ZooBc
+          Wallet <span>Tap the address to copy</span></ion-label
+        >
+      </ion-list-header>
+      <ion-item
+        *ngFor="let account of accounts; let i = index"
+        (click)="accountClicked(i)"
+      >
+        <ion-label>
+          <div class="title">{{ account.accountName }}</div>
+          <div class="address">{{ account.address }}</div>
+          <div class="created">
+            Created: {{ account.created | date: "short" }}
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Storage } from "@ionic/storage";
-import { KeyringService } from "../core/keyring.service";
+import { KeyringService } from "../Services/keyring.service";
 import sha512 from "crypto-js/sha512";
 
 @Injectable({

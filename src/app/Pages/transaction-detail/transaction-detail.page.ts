@@ -2,8 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { Transaction } from "src/app/Interfaces/transaction";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
-import { TransactionService } from "src/app/services/transaction.service";
-import { ActiveAccountService } from "src/app/services/active-account.service";
+import { TransactionService } from "src/app/Services/transaction.service";
+import { ActiveAccountService } from "src/app/Services/active-account.service";
 import { AccountService } from "src/services/account.service";
 
 @Component({
