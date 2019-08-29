@@ -12,7 +12,6 @@ import { AppComponent } from "./app.component";
 import { FormsModule } from "@angular/forms";
 import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
-import { NgxQRCodeModule } from "ngx-qrcode2";
 import { NgxsModule } from "@ngxs/store";
 import { Network } from "@ionic-native/network/ngx";
 
@@ -39,7 +38,6 @@ export function createTranslateLoader(http: HttpClient) {
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    NgxQRCodeModule,
     NgxsModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
