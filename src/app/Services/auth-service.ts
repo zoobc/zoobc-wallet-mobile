@@ -1,23 +1,24 @@
 import { Injectable } from "@angular/core";
-import { Router, CanActivate, ActivatedRouteSnapshot } from "@angular/router";
+import { CanActivate, ActivatedRouteSnapshot } from "@angular/router";
 import { Storage } from "@ionic/storage";
 import sha512 from "crypto-js/sha512";
+import { NavController } from "@ionic/angular";
 
 @Injectable({
   providedIn: "root"
 })
 export class AuthService implements CanActivate {
   private isUserLoggenIn = false;
-  constructor(private router: Router, private storage: Storage) {}
+  constructor(private navCtrl: NavController, private storage: Storage) {}
 
   async canActivate(route: ActivatedRouteSnapshot) {
     const isPinSetup = await this.storage.get("pin");
 
     if (isPinSetup && !this.isUserLoggenIn) {
-      this.router.navigate(["login"]);
+      this.navCtrl.navigateForward("login");
       return false;
     } else if (!this.isUserLoggenIn) {
-      this.router.navigate(["initial"]);
+      this.navCtrl.navigateForward("initial");
       return false;
     }
     return true;

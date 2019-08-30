@@ -30,9 +30,7 @@ export class SidemenuComponent implements OnInit {
 
   constructor(
     private menuController: MenuController,
-    private router: Router,
     private storage: Storage,
-    private Obs: ObservableService,
     private accountService: AccountService,
     private languageService: LanguageService,
     private navCtrl: NavController,
@@ -90,11 +88,11 @@ export class SidemenuComponent implements OnInit {
   }
 
   goToGenerate() {
-    this.router.navigate(["/create-account"]);
+    this.navCtrl.navigateForward("create-account");
   }
 
   logout() {
-    this.router.navigate(["/login"]);
+    this.navCtrl.navigateForward("login");
   }
 
   selectActiveCurrency() {
