@@ -1,29 +1,34 @@
-.page-send{
-    text-align: center;
+.page-send {
+  .account {
+    border: 1px solid #dedede;
+    border-radius: 4px;
+  }
 
-    .f-group{
-        margin-bottom: 1.6rem;
-    }
+  text-align: center;
 
-    ion-grid{
-        --ion-grid-padding: 0;
-    }
+  .f-group {
+    margin-bottom: 1.6rem;
+  }
 
-    ion-col{
-        --ion-grid-column-padding: 0;
-    }
+  ion-grid {
+    --ion-grid-padding: 0;
+  }
 
-    ion-item{
-        --padding-start: 0;
-        --inner-padding-end: 0;
-    }
+  ion-col {
+    --ion-grid-column-padding: 0;
+  }
 
-    .btn-icon{
-        background-color: transparent;
-        font-size: 1.6rem;
-    }
+  ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+  }
 
-    ion-input{
-        border-bottom: 1px solid #D8D8D8;
-    }
+  .btn-icon {
+    background-color: transparent;
+    font-size: 1.6rem;
+  }
+
+  ion-input {
+    border-bottom: 1px solid #d8d8d8;
+  }
 }

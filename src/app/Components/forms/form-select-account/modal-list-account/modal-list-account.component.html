@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="arrow-round-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Modal Header</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="grey">
+  <ion-item
+    *ngFor="let item of items; let i = index"
+    button="true"
+    (click)="selectItem(i)"
+  >
+    <ion-label>
+      <h3>{{ item.name }}</h3>
+      <p>{{ item.address }}</p>
+    </ion-label>
+    <ion-label color="success" slot="end" text-right>
+      <div class="">{{ item.balance }} ZBC</div>
+      <div class="">USD 10,000</div>
+    </ion-label>
+  </ion-item>
+</ion-content>

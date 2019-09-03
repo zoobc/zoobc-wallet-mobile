@@ -11,10 +11,12 @@ import { addressToPublicKey, publicKeyToAddress } from "src/helpers/converters";
 import { Storage } from "@ionic/storage";
 import { Router } from "@angular/router";
 import { AccountService } from "src/app/Services/account.service";
-import { AddressBookModalComponent } from "./address-book-modal/address-book-modal.component";
+import { ModalAddressBookComponent } from "./modal-address-book/modal-address-book.component";
 import { KeyringService } from "src/app/Services/keyring.service";
 import { BytesMaker } from "src/helpers/BytesMaker";
 import { QrScannerService } from "src/app/Services/qr-scanner.service";
+import { ModalConfirmationComponent } from "./modal-confirmation/modal-confirmation.component";
+import { FormBuilder } from "@angular/forms";
 
 @Component({
   selector: "app-tab-send",
@@ -31,6 +33,8 @@ export class TabSendPage {
   amount: any;
   fee: any;
 
+  sendForm;
+
   constructor(
     private storage: Storage,
     @Inject("nacl.sign") private sign: any,
@@ -41,9 +45,17 @@ export class TabSendPage {
     private qrScannerSrv: QrScannerService,
     private navCtrl: NavController,
     private modalController: ModalController,
-    private keyringServ: KeyringService
+    private keyringServ: KeyringService,
+    private formBuilder: FormBuilder
   ) {
     // this.sender = this.getAddress();
+
+    this.sendForm = this.formBuilder.group({
+      sender: "",
+      recipient: "",
+      amount: "",
+      fee: ""
+    });
   }
 
   openMenu() {
@@ -55,7 +67,31 @@ export class TabSendPage {
     this.sender = this.accountService.getAccountAddress(this.account);
   }
 
-  async sendMoney() {
+  onSubmit() {
+    this.presentConfirmationModal();
+  }
+
+  async presentConfirmationModal() {
+    const modal = await this.modalController.create({
+      component: ModalConfirmationComponent,
+      componentProps: {
+        sender: this.sendForm.get("sender").value,
+        recipient: this.sendForm.get("recipient").value,
+        amount: this.sendForm.get("amount").value,
+        fee: this.sendForm.get("fee").value
+      }
+    });
+
+    modal.onDidDismiss().then((returnVal: any) => {
+      if (returnVal.data && returnVal.data.confirm) {
+        this.confirm();
+      }
+    });
+
+    return await modal.present();
+  }
+
+  async confirm() {
     const { derivationPrivKey: accountSeed } = this.account.accountProps;
     console.log("this.account.accountProps: ", this.account.accountProps);
     const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed);
@@ -148,7 +184,9 @@ export class TabSendPage {
     this.navCtrl.navigateForward("qr-scanner");
 
     this.qrScannerSrv.listen().subscribe((str: string) => {
-      this.recipient = str;
+      this.sendForm.patchValue({
+        recipient: str
+      });
     });
   }
 
@@ -158,17 +196,17 @@ export class TabSendPage {
 
   async presentModalAddressesList() {
     const modal = await this.modalController.create({
-      component: AddressBookModalComponent
+      component: ModalAddressBookComponent
     });
 
     modal.onDidDismiss().then((returnVal: any) => {
-      if (returnVal.data.address) {
-        this.recipient = returnVal.data.address;
+      if (returnVal.data && returnVal.data.address) {
+        this.sendForm.patchValue({
+          recipient: returnVal.data.address
+        });
       }
     });
 
     return await modal.present();
   }
-
-  submit() {}
 }

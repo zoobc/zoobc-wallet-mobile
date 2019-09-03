@@ -44,10 +44,6 @@ const routes: Routes = [
   },
   { path: "login", loadChildren: "./Pages/login/login.module#LoginPageModule" },
   {
-    path: "test-w",
-    loadChildren: "./Pages/test-w/test-w.module#TestWPageModule"
-  },
-  {
     path: "existing-wallet",
     loadChildren:
       "./Pages/existing-wallet/existing-wallet.module#ExistingWalletPageModule"
