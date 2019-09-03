@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="arrow-round-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Confirmation</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="grey">
+  <ion-list class="info-list">
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Sender Address" | translate }}</p>
+        <p class="info-desc">{{ sender }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Recipient Address" | translate }}</p>
+        <p class="info-desc">{{ recipient }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Amount" | translate }}</p>
+        <p class="info-desc">{{ amount }} ZBC</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Amount" | translate }} USD</p>
+        <p class="info-desc">{{ amount }} USD</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Fee" | translate }}</p>
+        <p class="info-desc">{{ fee }} ZBC</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "Fee" | translate }} USD</p>
+        <p class="info-desc">{{ fee }} ZBC</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-button (click)="confirm()">Submit</ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

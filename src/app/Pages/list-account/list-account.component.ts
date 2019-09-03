@@ -13,34 +13,35 @@ import { ActiveAccountService } from "../../Services/active-account.service";
 export class ListAccountComponent implements OnInit {
   constructor(
     private navtrl: NavController,
-    public modalController: ModalController,
+    private modalController: ModalController,
     private storage: Storage,
-    private accountService: AccountService,
+    private accountSrv: AccountService,
     private activeAccountSrv: ActiveAccountService
   ) {}
 
-  accounts: any = [];
+  items: any = [];
 
-  accountsRaw = [];
-
-  ngOnInit() {
-    this.storage.get("accounts").then(data => {
-      console.log("__data", data);
-
-      this.accountsRaw = data;
-      this.accounts = data.map(acc => {
-        const { accountName, created } = acc;
-        return {
-          accountName,
-          address: this.accountService.getAccountAddress(acc),
-          created
-        };
-      });
-    });
+  async ngOnInit() {
+    const accounts = await this.accountSrv.getAll();
+    this.items = await this.renderItems(accounts);
   }
 
-  accountClicked(index) {
-    const activeAccount = this.accountsRaw[index];
+  renderItems(arr) {
+    const promises = arr.map(async obj => {
+      const balanceObj: any = await this.accountSrv.getBalance(obj.address);
+      const balance = balanceObj.accountbalance.balance;
+      return {
+        accountName: obj.accountName,
+        address: obj.address,
+        balance: balance,
+        created: obj.created
+      };
+    });
+    return Promise.all(promises);
+  }
+
+  itemClicked(index) {
+    const activeAccount = this.items[index];
 
     this.storage.set("active_account", activeAccount).then(() => {
       this.activeAccountSrv.setActiveAccount(activeAccount);
@@ -61,11 +62,7 @@ export class ListAccountComponent implements OnInit {
       if (returnVal.data.account) {
         const account = returnVal.data.account;
 
-        this.accountsRaw.push(account);
-        this.accounts.push({
-          accountName: account.accountName,
-          address: this.accountService.getAccountAddress(account)
-        });
+        this.items.push(account);
       }
     });
 

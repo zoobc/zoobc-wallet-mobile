@@ -10,18 +10,13 @@
 </ion-header>
 
 <ion-content class="page-send" padding="true">
-  <form #form="ngForm" (ngSubmit)="submit()">
-    <div class="f-group">
-      <ion-item lines="none">
-        <ion-label position="stacked">{{ "From" | translate }}:</ion-label>
-        <ion-input
-          [(ngModel)]="sender"
-          name="sender"
-          autocomplete="on"
-          autocorrect="on"
-        ></ion-input>
-      </ion-item>
-    </div>
+  <form [formGroup]="sendForm" (ngSubmit)="onSubmit()">
+    <ion-label>{{ "Select an account to debit" || translate }}:</ion-label>
+    <ion-item lines="none" button="true" no-padding>
+      <ion-label>
+        <form-select-account formControlName="sender"></form-select-account>
+      </ion-label>
+    </ion-item>
 
     <div class="f-group">
       <ion-grid>
@@ -29,27 +24,25 @@
           <ion-col class="ion-text-start">
             <ion-item lines="none">
               <ion-label position="stacked"
-                >{{ "Pay to" | translate }}:</ion-label
+                >{{ "Recipient" | translate }}:</ion-label
               >
-              <ion-input
-                name="recipient"
-                type="text"
-                [(ngModel)]="recipient"
-                ngModel
-                required
-              ></ion-input>
+              <ion-input formControlName="recipient"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col class="ion-text-end" size="4">
             <ion-grid>
               <ion-row nowrap align-items-end>
                 <ion-col size="6">
-                  <button (click)="scanQrCode()" class="btn-icon">
+                  <button (click)="scanQrCode()" type="button" class="btn-icon">
                     <ion-icon name="qr-scanner"></ion-icon>
                   </button>
                 </ion-col>
                 <ion-col size="6">
-                  <button class="btn-icon" (click)="openAddresses()">
+                  <button
+                    class="btn-icon"
+                    type="button"
+                    (click)="openAddresses()"
+                  >
                     <ion-icon name="bookmarks"></ion-icon>
                   </button>
                 </ion-col>
@@ -63,33 +56,19 @@
     <div class="f-group">
       <ion-item lines="none">
         <ion-label position="stacked">{{ "Amount" | translate }}:</ion-label>
-        <ion-input
-          name="amount"
-          type="number"
-          [(ngModel)]="amount"
-          required
-        ></ion-input>
+        <ion-input formControlName="amount" type="number"></ion-input>
       </ion-item>
     </div>
 
     <div class="f-group">
       <ion-item lines="none">
         <ion-label position="stacked">{{ "Fee" | translate }}:</ion-label>
-        <ion-input
-          name="fee"
-          type="number"
-          [(ngModel)]="fee"
-          required
-        ></ion-input>
+        <ion-input formControlName="fee" type="number"></ion-input>
       </ion-item>
     </div>
 
     <div padding>
-      <ion-button
-        size="large"
-        (click)="sendMoney()"
-        type="submit"
-        expand="block"
+      <ion-button size="large" type="submit" expand="block"
         >{{ "Send" | translate }}
       </ion-button>
     </div>

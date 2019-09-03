@@ -32,8 +32,8 @@ export class TabReceivePage {
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
-        const address = this.accountService.getAccountAddress(v);
-
+        //const address = this.accountService.getAccountAddress(v);
+        const address = v.address;
         this.account.accountName = v.accountName;
         this.account.address = address;
         this.account.qrCode = this.createQR(address);
@@ -81,7 +81,8 @@ export class TabReceivePage {
 
   async getActiveAccount() {
     const activeAccount = await this.storage.get("active_account");
-    const address = this.accountService.getAccountAddress(activeAccount);
+    //const address = this.accountService.getAccountAddress(activeAccount);
+    const address = activeAccount.address;
 
     this.account.accountName = activeAccount.accountName;
     this.account.address = address;

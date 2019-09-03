@@ -50,14 +50,14 @@ export class TabDashboardPage implements OnInit {
     private navCtrl: NavController,
     private grpcService: GRPCService,
     private storage: Storage,
-    private accountService: AccountService,
+    private accountSrv: AccountService,
     private activeAccountSrv: ActiveAccountService,
     private transactionSrv: TransactionService
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        this.account.accountName = v.accountName;
-        this.account.address = this.accountService.getAccountAddress(v);
+      next: account => {
+        this.account.accountName = account.accountName;
+        this.account.address = account.address;
 
         this.getAccountTransaction();
         this.getAccountBalance();
@@ -82,7 +82,7 @@ export class TabDashboardPage implements OnInit {
 
     const account = await this.storage.get("active_account");
     this.account.accountName = account.accountName;
-    this.account.address = this.accountService.getAccountAddress(account);
+    this.account.address = account.address;
 
     this.getAccountBalance();
     this.getAccountTransaction();
@@ -150,7 +150,13 @@ export class TabDashboardPage implements OnInit {
   }
 
   async getAccountBalance() {
-    const account = await (<any>this.grpcService.getAccountBalance());
+    //const account = await (<any>this.grpcService.getAccountBalance());
+
+    const active_account = await this.storage.get("active_account");
+
+    const account = await (<any>(
+      this.accountSrv.getBalance(active_account.address)
+    ));
     this.balance = account.accountbalance.balance;
     this.spendablebalance = account.accountbalance.spendablebalance;
     // console.log("__balance", balance);

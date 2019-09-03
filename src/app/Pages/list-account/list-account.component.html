@@ -20,7 +20,7 @@
       </ion-item>
     </ng-template>
 
-    <ion-list *ngIf="accounts.length >= 1; else noData">
+    <ion-list *ngIf="items.length >= 1; else noData">
       <ion-list-header>
         <ion-label
           >Here is the list of all addresses that are linked to your ZooBc
@@ -28,15 +28,13 @@
         >
       </ion-list-header>
       <ion-item
-        *ngFor="let account of accounts; let i = index"
-        (click)="accountClicked(i)"
+        *ngFor="let item of items; let i = index"
+        (click)="itemClicked(i)"
       >
         <ion-label>
-          <div class="title">{{ account.accountName }}</div>
-          <div class="address">{{ account.address }}</div>
-          <div class="created">
-            Created: {{ account.created | date: "short" }}
-          </div>
+          <div class="title">{{ item.accountName }}</div>
+          <div class="address">{{ item.address }}</div>
+          <div class="created">Created: {{ item.created | date: "short" }}</div>
         </ion-label>
       </ion-item>
     </ion-list>

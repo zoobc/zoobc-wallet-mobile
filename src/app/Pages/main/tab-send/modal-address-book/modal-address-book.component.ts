@@ -2,11 +2,11 @@ import { Component, OnInit } from "@angular/core";
 import { ModalController } from "@ionic/angular";
 
 @Component({
-  selector: "app-address-book-modal",
-  templateUrl: "./address-book-modal.component.html",
-  styleUrls: ["./address-book-modal.component.scss"]
+  selector: "app-modal-address-book",
+  templateUrl: "./modal-address-book.component.html",
+  styleUrls: ["./modal-address-book.component.scss"]
 })
-export class AddressBookModalComponent implements OnInit {
+export class ModalAddressBookComponent implements OnInit {
   constructor(private modalController: ModalController) {}
 
   ngOnInit() {}
