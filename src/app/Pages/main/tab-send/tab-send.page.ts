@@ -2,7 +2,8 @@ import { Component, Inject } from "@angular/core";
 import {
   ToastController,
   MenuController,
-  ModalController
+  ModalController,
+  NavController
 } from "@ionic/angular";
 import { GRPCService } from "src/app/Services/grpc.service";
 import { SendMoneyTx } from "src/helpers/serializers";
@@ -38,7 +39,7 @@ export class TabSendPage {
     private accountService: AccountService,
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
-    private router: Router,
+    private navCtrl: NavController,
     private modalController: ModalController,
     private keyringServ: KeyringService
   ) {
@@ -144,7 +145,7 @@ export class TabSendPage {
   }
 
   scanQrCode() {
-    this.router.navigateByUrl("/qr-scanner");
+    this.navCtrl.navigateForward("qr-scanner");
 
     this.qrScannerSrv.listen().subscribe((str: string) => {
       this.recipient = str;

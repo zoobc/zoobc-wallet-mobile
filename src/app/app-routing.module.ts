@@ -10,9 +10,14 @@ const routes: Routes = [
   },
   {
     path: "qr-scanner",
-    loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule"
+    loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule",
+    canActivate: [AuthService]
   },
-  { path: "about", loadChildren: "./Pages/about/about.module#AboutPageModule" },
+  {
+    path: "about",
+    loadChildren: "./Pages/about/about.module#AboutPageModule",
+    canActivate: [AuthService]
+  },
   {
     path: "selectwallet",
     loadChildren:
@@ -55,19 +60,30 @@ const routes: Routes = [
   },
   {
     path: "node-admin",
-    loadChildren: "./Pages/node-admin/node-admin.module#NodeAdminModule"
+    loadChildren: "./Pages/node-admin/node-admin.module#NodeAdminModule",
+    canActivate: [AuthService]
   },
   {
     path: "feedback",
-    loadChildren: "./Pages/feedback/feedback.module#FeedbackPageModule"
+    loadChildren: "./Pages/feedback/feedback.module#FeedbackPageModule",
+    canActivate: [AuthService]
   },
-  { path: "help", loadChildren: "./Pages/help/help.module#HelpPageModule" },
+  {
+    path: "help",
+    loadChildren: "./Pages/help/help.module#HelpPageModule",
+    canActivate: [AuthService]
+  },
   {
     path: "notifications",
     loadChildren:
-      "./Pages/notifications/notifications.module#NotificationsPageModule"
+      "./Pages/notifications/notifications.module#NotificationsPageModule",
+    canActivate: [AuthService]
   },
-  { path: "chart", loadChildren: "./Pages/chart/chart.module#ChartPageModule" },
+  {
+    path: "chart",
+    loadChildren: "./Pages/chart/chart.module#ChartPageModule",
+    canActivate: [AuthService]
+  },
   {
     path: "list-account",
     loadChildren: "./Pages/list-account/list-account.module#ListAccountModule"
@@ -75,20 +91,25 @@ const routes: Routes = [
   {
     path: "address-book",
     loadChildren:
-      "./Pages/address-book/address-book.module#AddressBookPageModule"
+      "./Pages/address-book/address-book.module#AddressBookPageModule",
+    canActivate: [AuthService]
   },
   {
     path: "transaction",
-    loadChildren: "./Pages/transaction/transaction.module#TransactionPageModule"
+    loadChildren:
+      "./Pages/transaction/transaction.module#TransactionPageModule",
+    canActivate: [AuthService]
   },
   {
     path: "transaction/:transId",
     loadChildren:
-      "./Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule"
+      "./Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule",
+    canActivate: [AuthService]
   },
   {
     path: "qr-scanner",
-    loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule"
+    loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule",
+    canActivate: [AuthService]
   },
   {
     path: "setup-pin",

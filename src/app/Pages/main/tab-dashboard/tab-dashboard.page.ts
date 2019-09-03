@@ -46,15 +46,12 @@ export class TabDashboardPage implements OnInit {
     private apiservice: RestapiService,
     private loadingController: LoadingController,
     private authService: AuthService,
-    private router: Router,
     private menuController: MenuController,
     private navCtrl: NavController,
     private grpcService: GRPCService,
     private storage: Storage,
     private accountService: AccountService,
     private activeAccountSrv: ActiveAccountService,
-    private zone: NgZone,
-    private modalController: ModalController,
     private transactionSrv: TransactionService
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
@@ -92,11 +89,11 @@ export class TabDashboardPage implements OnInit {
   }
 
   goToSend() {
-    this.router.navigateByUrl("main/send");
+    this.navCtrl.navigateForward("main/send");
   }
 
   goToRequest() {
-    this.router.navigateByUrl("main/receive");
+    this.navCtrl.navigateForward("main/receive");
   }
 
   async getBalance(pKey: string) {
@@ -149,7 +146,7 @@ export class TabDashboardPage implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(["login"]);
+    this.navCtrl.navigateForward("login");
   }
 
   async getAccountBalance() {
@@ -186,6 +183,6 @@ export class TabDashboardPage implements OnInit {
 
     const transId = transObj.id;
 
-    this.router.navigate(["transaction/" + transId]);
+    this.navCtrl.navigateForward("transaction/" + transId);
   }
 }

@@ -1,8 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthService } from "src/app/Services/auth-service";
-import { Router } from "@angular/router";
-import { ToastController } from "@ionic/angular";
-import { Observable, Observer } from "rxjs";
+import { ToastController, NavController } from "@ionic/angular";
 
 @Component({
   selector: "app-login",
@@ -10,10 +8,9 @@ import { Observable, Observer } from "rxjs";
   styleUrls: ["./login.page.scss"]
 })
 export class LoginPage implements OnInit {
-  private pin = "";
   constructor(
     private authService: AuthService,
-    private router: Router,
+    private navCtrl: NavController,
     private toastController: ToastController
   ) {}
 
@@ -24,21 +21,21 @@ export class LoginPage implements OnInit {
 
     const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
-      this.router.navigate(["main"]);
+      this.navCtrl.navigateRoot("main/dashboard");
 
       setTimeout(() => {
-        observer.next(true);
+        observer.next("");
       }, 500);
     } else {
       setTimeout(() => {
-        observer.next(true);
+        observer.next("");
         this.failedToast();
       }, 500);
     }
   }
 
   createAccount() {
-    this.router.navigate(["initial"]);
+    this.navCtrl.navigateForward("initial");
   }
 
   async failedToast() {
