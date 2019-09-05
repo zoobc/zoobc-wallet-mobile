@@ -8,6 +8,7 @@ import {
 } from "../grpc/model/accountBalance_pb";
 import { environment } from "src/environments/environment";
 import { KeyringService } from "./keyring.service";
+import { Account } from "../Interfaces/account";
 
 @Injectable({
   providedIn: "root"
@@ -23,20 +24,46 @@ export class AccountService {
     return await this.storage.get("accounts");
   }
 
+  //async getAll(): Promise<Account[]> {
   async getAll() {
     const accounts = await this.rawData();
 
-    return accounts.map(acc => {
-      const { accountName, created } = acc;
+    const acountPromises = accounts.map(async acc => {
+      const { name, created } = acc;
+      const address = this.getAccountAddress(acc.accountProps);
+
+      const balanceObj: any = await this.getAccountBalance(address);
+      const balance = balanceObj.accountbalance.balance;
+
       return {
-        accountName,
-        address: this.getAccountAddress(acc.accountProps),
+        name,
+        address,
+        balance,
         created
       };
     });
+
+    return Promise.all(acountPromises);
   }
 
-  async getBalance(address) {
+  async getActiveAccount(): Promise<Account> {
+    const active_account = await this.storage.get("active_account");
+    const { name, balance, address, created } = active_account;
+
+    return {
+      name,
+      balance,
+      address,
+      created
+    };
+  }
+
+  async setActiveAccount(account: Account) {
+    await this.storage.set("active_account", account);
+    return account;
+  }
+
+  async getAccountBalance(address: string) {
     const client = new AccountBalanceServiceClient(
       environment.grpcUrl,
       null,
@@ -80,7 +107,7 @@ export class AccountService {
 
     const account = this.keyringSrv.calcForDerivationPathForCoin(
       coinCode,
-      accounts.length,
+      accounts ? accounts.length : 0,
       0,
       bip32RootKey
     );
@@ -88,21 +115,30 @@ export class AccountService {
     return account;
   }
 
-  async insert(name, account) {
+  async insert(name: string, accountProps: any): Promise<Account> {
     const accounts = await this.rawData();
 
-    const _account = {
-      accountName: name,
-      accountProps: account,
+    const account = {
+      name: name,
+      accountProps: accountProps,
       created: new Date()
     };
 
-    await this.storage.set("accounts", [...accounts, _account]);
+    let accountsInsert = [account];
+    if (accounts) {
+      accountsInsert = [...accounts, account];
+    }
+
+    await this.storage.set("accounts", accountsInsert);
+
+    const address = this.getAccountAddress(accountProps);
+    const _balance: any = await this.getAccountBalance(address);
 
     return {
-      accountName: _account.accountName,
-      address: this.getAccountAddress(account),
-      created: _account.created
+      name: account.name,
+      address: address,
+      balance: _balance.accountbalance.balance,
+      created: account.created
     };
   }
 
