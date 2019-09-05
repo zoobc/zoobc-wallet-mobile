@@ -36,7 +36,7 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   async setPin(pin: string) {
-    this.createAccSrv.setPin(pin);
+    this.createAccSrv.pin = pin;
     await this.createAccSrv.createAccount();
     const loginStatus = await this.authSrv.login(pin);
     if (loginStatus) {
@@ -45,7 +45,7 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   setupPin() {
-    this.createAccSrv.setPassphrase(this.passphrase);
+    this.createAccSrv.passphrase = this.passphrase;
     this.navCtrl.navigateForward("setup-pin");
   }
 

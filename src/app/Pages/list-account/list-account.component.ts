@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { NavController, ModalController } from "@ionic/angular";
 import { ModalCreateAccountComponent } from "./modal-create-account/modal-create-account.component";
-import { Storage } from "@ionic/storage";
 import { AccountService } from "src/app/Services/account.service";
 import { ActiveAccountService } from "../../Services/active-account.service";
+import { Account } from "src/app/Interfaces/account";
 
 @Component({
   selector: "app-list-account",
@@ -14,37 +14,23 @@ export class ListAccountComponent implements OnInit {
   constructor(
     private navtrl: NavController,
     private modalController: ModalController,
-    private storage: Storage,
     private accountSrv: AccountService,
     private activeAccountSrv: ActiveAccountService
   ) {}
 
-  items: any = [];
+  //items: Account[] = [];
+
+  items: any[] = [];
 
   async ngOnInit() {
-    const accounts = await this.accountSrv.getAll();
-    this.items = await this.renderItems(accounts);
-  }
-
-  renderItems(arr) {
-    const promises = arr.map(async obj => {
-      const balanceObj: any = await this.accountSrv.getBalance(obj.address);
-      const balance = balanceObj.accountbalance.balance;
-      return {
-        accountName: obj.accountName,
-        address: obj.address,
-        balance: balance,
-        created: obj.created
-      };
-    });
-    return Promise.all(promises);
+    this.items = await this.accountSrv.getAll();
   }
 
   itemClicked(index) {
-    const activeAccount = this.items[index];
+    const account = this.items[index];
 
-    this.storage.set("active_account", activeAccount).then(() => {
-      this.activeAccountSrv.setActiveAccount(activeAccount);
+    this.accountSrv.setActiveAccount(account).then(() => {
+      this.activeAccountSrv.setActiveAccount(account);
       this.navtrl.pop();
     });
   }

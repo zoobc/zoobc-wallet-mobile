@@ -17,6 +17,7 @@ import * as moment from "moment";
 import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
 import { TransactionService } from "src/app/Services/transaction.service";
 import { Transaction } from "src/app/grpc/model/transaction_pb";
+import { Account } from "src/app/Interfaces/account";
 
 @Component({
   selector: "app-tab-dashboard",
@@ -29,9 +30,11 @@ export class TabDashboardPage implements OnInit {
 
   publicKey = "JkhkUiury9899";
 
-  account = {
-    accountName: "",
-    address: ""
+  account: Account = {
+    name: "",
+    balance: 0,
+    address: "",
+    created: null
   };
 
   accountName: string = "";
@@ -56,7 +59,7 @@ export class TabDashboardPage implements OnInit {
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
       next: account => {
-        this.account.accountName = account.accountName;
+        this.account.name = account.name;
         this.account.address = account.address;
 
         this.getAccountTransaction();
@@ -77,12 +80,7 @@ export class TabDashboardPage implements OnInit {
   }
 
   async loadData() {
-    this.getAccountBalance();
-    this.getAccountTransaction();
-
-    const account = await this.storage.get("active_account");
-    this.account.accountName = account.accountName;
-    this.account.address = account.address;
+    this.account = await this.accountSrv.getActiveAccount();
 
     this.getAccountBalance();
     this.getAccountTransaction();
@@ -150,16 +148,13 @@ export class TabDashboardPage implements OnInit {
   }
 
   async getAccountBalance() {
-    //const account = await (<any>this.grpcService.getAccountBalance());
-
     const active_account = await this.storage.get("active_account");
 
     const account = await (<any>(
-      this.accountSrv.getBalance(active_account.address)
+      this.accountSrv.getAccountBalance(active_account.address)
     ));
     this.balance = account.accountbalance.balance;
     this.spendablebalance = account.accountbalance.spendablebalance;
-    // console.log("__balance", balance);
   }
 
   async getAccountTransaction() {

@@ -9,36 +9,31 @@
 
 <ion-content>
   <div class="create-account-page">
-    <ion-list padding>
-      <ion-item>
-        <ion-input
-          padding="false"
-          placeholder="Please enter your account name"
-          [(ngModel)]="accountName"
-          name="sender"
-          autocomplete="on"
-          autocorrect="on"
-        ></ion-input>
-      </ion-item>
-    </ion-list>
+    <form [formGroup]="formAccount" (submit)="save()">
+      <ion-list padding>
+        <ion-item>
+          <ion-input
+            padding="false"
+            placeholder="Please enter your account name"
+            formControlName="name"
+          ></ion-input>
+        </ion-item>
+      </ion-list>
 
-    <div padding>
-      <ion-button
-        color="primary"
-        (click)="createAccount()"
-        type="submit"
-        expand="block"
-        >Create Account
-      </ion-button>
+      <div padding>
+        <ion-button color="primary" type="submit" expand="block"
+          >Create Account
+        </ion-button>
 
-      <ion-button
-        fill="outline"
-        color="grey"
-        (click)="closeModal()"
-        type="submit"
-        expand="block"
-        >Close
-      </ion-button>
-    </div>
+        <ion-button
+          fill="outline"
+          color="grey"
+          (click)="closeModal()"
+          type="button"
+          expand="block"
+          >Close
+        </ion-button>
+      </div>
+    </form>
   </div>
 </ion-content>

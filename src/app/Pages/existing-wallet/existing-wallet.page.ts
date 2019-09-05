@@ -3,6 +3,7 @@ import { ToastController, NavController } from "@ionic/angular";
 import { CreateAccountService } from "../../Services/create-account.service";
 import { SetupPinService } from "src/app/Services/setup-pin.service";
 import { AuthService } from "src/app/Services/auth-service";
+import { AccountService } from "src/app/Services/account.service";
 
 @Component({
   selector: "app-existing-wallet",
@@ -17,6 +18,7 @@ export class ExistingWalletPage implements OnInit {
     private toastController: ToastController,
     private navCtrl: NavController,
     private createAccSrv: CreateAccountService,
+    private accountSrv: AccountService,
     private setupPinSrv: SetupPinService
   ) {}
 
@@ -24,14 +26,21 @@ export class ExistingWalletPage implements OnInit {
     this.setupPinSrv.setupPinSubject.subscribe(data => {
       const { status, pin } = data;
       if (status == "success") {
-        this.setPin(pin);
+        this.submit(pin);
       }
     });
   }
 
-  async setPin(pin: string) {
-    this.createAccSrv.setPin(pin);
+  async submit(pin: string) {
+    this.createAccSrv.pin = pin;
     await this.createAccSrv.createAccount();
+
+    const accountProps = await this.accountSrv.generateAccount(
+      this.createAccSrv.passphrase
+    );
+    const account = await this.accountSrv.insert("Account 1", accountProps);
+    this.accountSrv.setActiveAccount(account);
+
     const loginStatus = await this.authSrv.login(pin);
     if (loginStatus) {
       this.navCtrl.navigateRoot("main/dashboard");
@@ -41,7 +50,7 @@ export class ExistingWalletPage implements OnInit {
   openExistingWallet() {
     const lengthPassphrase = this.passphrase.split(" ").length;
     if (this.passphrase && lengthPassphrase === 12) {
-      this.createAccSrv.setPassphrase(this.passphrase);
+      this.createAccSrv.passphrase = this.passphrase;
       this.navCtrl.navigateForward("setup-pin");
     } else {
       this.presentErrorToast();

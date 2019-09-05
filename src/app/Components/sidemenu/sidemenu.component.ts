@@ -13,6 +13,7 @@ import { AccountService } from "src/app/Services/account.service";
 import { LanguageService } from "src/app/Services/language.service";
 import { CurrencyService } from "src/app/Services/currency.service";
 import { ActiveAccountService } from "src/app/Services/active-account.service";
+import { Account } from "src/app/Interfaces/account";
 
 @Component({
   selector: "app-sidemenu",
@@ -31,28 +32,27 @@ export class SidemenuComponent implements OnInit {
   constructor(
     private menuController: MenuController,
     private storage: Storage,
-    private accountService: AccountService,
+    private accountSrv: AccountService,
     private languageService: LanguageService,
     private navCtrl: NavController,
     private currencyService: CurrencyService,
     private activeAccountSrv: ActiveAccountService
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        this.activeAccount = v.accountName;
+      next: (acc: Account) => {
+        this.activeAccount = acc.name;
       }
     });
   }
 
   async ngOnInit() {
-    this.getActiveAccount();
     this.languages = LANGUAGES;
     this.activeLanguage = await this.storage.get(SELECTED_LANGUAGE);
     this.currencies = CURRENCIES;
 
-    const account = await this.storage.get("active_account");
+    const account: Account = await this.accountSrv.getActiveAccount();
 
-    this.activeAccount = account.accountName;
+    this.activeAccount = account.name;
   }
 
   openAboutView() {
@@ -96,7 +96,7 @@ export class SidemenuComponent implements OnInit {
   }
 
   selectActiveCurrency() {
-    if (this.accountService) {
+    if (this.accountSrv) {
       this.currencyService.setCurrency(this.activeCurrency);
     }
   }
@@ -104,22 +104,5 @@ export class SidemenuComponent implements OnInit {
   selectActiveLanguage() {
     console.log("this.activeLanguage", this.activeLanguage);
     this.languageService.setLanguage(this.activeLanguage);
-  }
-
-  async getActiveAccount() {
-    const accounts = await this.storage.get("accounts");
-    const account = await this.storage.get("active_account");
-    accounts.forEach((acc, index) => {
-      console.log(
-        acc.accountProps.derivationPath === account.accountProps.derivationPath,
-        acc.accountProps.derivationPath,
-        account.accountProps.derivationPath
-      );
-      if (
-        acc.accountProps.derivationPath === account.accountProps.derivationPath
-      ) {
-        this.activeAccount = index;
-      }
-    });
   }
 }

@@ -25,7 +25,7 @@
 
   <ion-card class="card-balance">
     <ion-card-content>
-      <h2 class="account-name">{{ account.accountName }}</h2>
+      <h2 class="account-name">{{ account.name }}</h2>
       <ion-label>{{ account.address }}</ion-label>
 
       <ion-item lines="none" class="ion-no-padding balance-item">
@@ -34,7 +34,9 @@
           <ion-label class="balance-title">
             Balance
           </ion-label>
-          <ion-label class="main-balance">{{ balance / 1e8 | number: "0.0-4" }} ZBC</ion-label>
+          <ion-label class="main-balance"
+            >{{ balance / 1e8 | number: "0.0-4" }} ZBC</ion-label
+          >
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
       </ion-item>
@@ -45,7 +47,9 @@
           <ion-label class="balance-title">
             Spendable Balance
           </ion-label>
-          <ion-label class="main-balance">{{ spendablebalance / 1e8 | number: "0.0-4" }} ZBC</ion-label>
+          <ion-label class="main-balance"
+            >{{ spendablebalance / 1e8 | number: "0.0-4" }} ZBC</ion-label
+          >
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
       </ion-item>
@@ -88,8 +92,12 @@
       <ion-label>You don't have any transactions</ion-label>
     </ion-item>
     <ng-template #transWithData>
-      <ion-item #transWithData *ngFor="let transaction of transactions; let i = index" button
-        (click)="openDetailTransction(i)">
+      <ion-item
+        #transWithData
+        *ngFor="let transaction of transactions; let i = index"
+        button
+        (click)="openDetailTransction(i)"
+      >
         <ion-label>
           <ion-row class="ion-justify-content-between">
             <ion-col size="7">
@@ -97,12 +105,16 @@
                 {{ transaction.address }}
               </ion-label>
               <ion-label class="date">{{
-              transaction.date | date: "short"
-            }}</ion-label>
+                transaction.date | date: "short"
+              }}</ion-label>
             </ion-col>
             <ion-col size="5" class="ion-text-end">
               <ion-label class="amount {{ transaction.type }}">
-                <span class="prefix" *ngIf="transaction.type == 'plus'; else minus">+</span>
+                <span
+                  class="prefix"
+                  *ngIf="transaction.type == 'plus'; else minus"
+                  >+</span
+                >
                 <ng-template #minus>
                   -
                 </ng-template>

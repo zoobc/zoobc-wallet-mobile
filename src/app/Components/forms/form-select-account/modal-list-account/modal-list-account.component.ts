@@ -16,21 +16,7 @@ export class ModalListAccountComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const accounts = await this.accountSrv.getAll();
-    this.items = await this.renderItems(accounts);
-  }
-
-  renderItems(arr) {
-    const promises = arr.map(async obj => {
-      const balanceObj: any = await this.accountSrv.getBalance(obj.address);
-      const balance = balanceObj.accountbalance.balance;
-      return {
-        name: obj.accountName,
-        address: obj.address,
-        balance: balance
-      };
-    });
-    return Promise.all(promises);
+    this.items = await this.accountSrv.getAll();
   }
 
   selectItem(index: number) {
