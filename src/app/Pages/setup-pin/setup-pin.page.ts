@@ -10,7 +10,7 @@ import { SetupPinService } from "src/app/Services/setup-pin.service";
 export class SetupPinPage implements OnInit {
   private pin: string;
 
-  private page: string = "enter-pin";
+  public page: string = "enter-pin";
 
   constructor(
     private toastController: ToastController,
