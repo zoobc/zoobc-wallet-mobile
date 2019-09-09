@@ -21,6 +21,7 @@ export class ModalListAccountComponent implements OnInit {
 
   selectItem(index: number) {
     const item = this.items[index];
+
     this.modalController.dismiss(item);
   }
 

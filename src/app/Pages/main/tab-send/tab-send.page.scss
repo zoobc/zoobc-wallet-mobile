@@ -1,13 +1,31 @@
 .page-send {
+  .label {
+    font-size: 0.8rem;
+  }
   .account {
     border: 1px solid #dedede;
     border-radius: 4px;
   }
 
-  text-align: center;
-
   .f-group {
     margin-bottom: 1.6rem;
+
+    p.label {
+      margin-bottom: 0.3rem;
+    }
+
+    .row-recipient {
+      ion-col {
+        flex-shrink: 1;
+        flex-grow: 0;
+        ion-item {
+          --inner-padding-end: 0;
+        }
+      }
+      .col-recipient {
+        flex-grow: 1;
+      }
+    }
   }
 
   ion-grid {
@@ -18,10 +36,10 @@
     --ion-grid-column-padding: 0;
   }
 
-  ion-item {
+  /*ion-item {
     --padding-start: 0;
     --inner-padding-end: 0;
-  }
+  }*/
 
   .btn-icon {
     background-color: transparent;
