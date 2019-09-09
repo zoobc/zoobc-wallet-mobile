@@ -18,7 +18,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 export class FormSelectAccountComponent
   implements OnInit, ControlValueAccessor {
   value;
-  selectedItem: any = {};
+  selectedItem: any;
 
   constructor(private modalController: ModalController) {}
 
@@ -34,9 +34,7 @@ export class FormSelectAccountComponent
     });
     modal.onDidDismiss().then(returnVal => {
       if (returnVal.data) {
-        this.selectedItem.name = returnVal.data.name;
-        this.selectedItem.address = returnVal.data.address;
-        this.selectedItem.balance = returnVal.data.balance;
+        this.selectedItem = returnVal.data;
 
         this.changeData(returnVal.data.address);
       }

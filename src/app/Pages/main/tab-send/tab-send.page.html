@@ -1,4 +1,4 @@
-<ion-header no-border>
+<ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="openMenu()">
@@ -9,19 +9,23 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-send" padding="true">
+<ion-content class="page-send">
   <form [formGroup]="sendForm" (ngSubmit)="onSubmit()">
-    <ion-label>{{ "Select an account to debit" || translate }}:</ion-label>
-    <ion-item lines="none" button="true" no-padding>
-      <ion-label>
-        <form-select-account formControlName="sender"></form-select-account>
-      </ion-label>
-    </ion-item>
+    <div class="f-group">
+      <p class="label ion-padding-start ion-padding-end">
+        {{ "Select an account to debit" || translate }}:
+      </p>
+      <ion-item button="true">
+        <ion-label>
+          <form-select-account formControlName="sender"></form-select-account>
+        </ion-label>
+      </ion-item>
+    </div>
 
     <div class="f-group">
       <ion-grid>
-        <ion-row align-items-end justify-content-between>
-          <ion-col class="ion-text-start">
+        <ion-row class="row-recipient" align-items-end justify-content-between>
+          <ion-col class="col-recipient">
             <ion-item lines="none">
               <ion-label position="stacked"
                 >{{ "Recipient" | translate }}:</ion-label
@@ -29,35 +33,27 @@
               <ion-input formControlName="recipient"></ion-input>
             </ion-item>
           </ion-col>
-          <ion-col class="ion-text-end" size="4">
-            <ion-grid>
-              <ion-row nowrap align-items-end>
-                <ion-col size="6">
-                  <button (click)="scanQrCode()" type="button" class="btn-icon">
-                    <ion-icon name="qr-scanner"></ion-icon>
-                  </button>
-                </ion-col>
-                <ion-col size="6">
-                  <button
-                    class="btn-icon"
-                    type="button"
-                    (click)="openAddresses()"
-                  >
-                    <ion-icon name="bookmarks"></ion-icon>
-                  </button>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
+          <ion-col>
+            <button (click)="scanQrCode()" type="button" class="btn-icon">
+              <ion-icon name="qr-scanner"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col>
+            <button class="btn-icon" type="button" (click)="openAddresses()">
+              <ion-icon name="bookmarks"></ion-icon>
+            </button>
           </ion-col>
         </ion-row>
       </ion-grid>
     </div>
 
     <div class="f-group">
-      <ion-item lines="none">
-        <ion-label position="stacked">{{ "Amount" | translate }}:</ion-label>
-        <ion-input formControlName="amount" type="number"></ion-input>
-      </ion-item>
+      <ion-list>
+        <ion-item lines="none">
+          <ion-label position="stacked">{{ "Amount" | translate }}:</ion-label>
+          <ion-input formControlName="amount" type="number"></ion-input>
+        </ion-item>
+      </ion-list>
     </div>
 
     <div class="f-group">
@@ -67,8 +63,8 @@
       </ion-item>
     </div>
 
-    <div padding>
-      <ion-button size="large" type="submit" expand="block"
+    <div class="zbc-button-container" padding>
+      <ion-button class="zbc-button" type="submit"
         >{{ "Send" | translate }}
       </ion-button>
     </div>

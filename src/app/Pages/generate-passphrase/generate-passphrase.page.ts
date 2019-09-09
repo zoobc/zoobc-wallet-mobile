@@ -4,6 +4,7 @@ import { ToastController, NavController } from "@ionic/angular";
 import { CreateAccountService } from "../../Services/create-account.service";
 import { AuthService } from "src/app/Services/auth-service";
 import { SetupPinService } from "src/app/Services/setup-pin.service";
+import { AccountService } from "src/app/Services/account.service";
 
 @Component({
   selector: "app-generate-passphrase",
@@ -21,7 +22,8 @@ export class GeneratePassphrasePage implements OnInit {
     private createAccSrv: CreateAccountService,
     private navCtrl: NavController,
     private authSrv: AuthService,
-    private setupPinSrv: SetupPinService
+    private setupPinSrv: SetupPinService,
+    private accountSrv: AccountService
   ) {}
 
   ngOnInit() {
@@ -29,6 +31,7 @@ export class GeneratePassphrasePage implements OnInit {
 
     this.setupPinSrv.setupPinSubject.subscribe(data => {
       const { status, pin } = data;
+
       if (status == "success") {
         this.setPin(pin);
       }
@@ -38,6 +41,13 @@ export class GeneratePassphrasePage implements OnInit {
   async setPin(pin: string) {
     this.createAccSrv.pin = pin;
     await this.createAccSrv.createAccount();
+
+    const accountProps = await this.accountSrv.generateAccount(
+      this.createAccSrv.passphrase
+    );
+    const account = await this.accountSrv.insert("Account 1", accountProps);
+    this.accountSrv.setActiveAccount(account);
+
     const loginStatus = await this.authSrv.login(pin);
     if (loginStatus) {
       this.navCtrl.navigateRoot("main/dashboard");
