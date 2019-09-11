@@ -22,8 +22,9 @@ export class CreateAccountService {
     this.passphrase = value;
   }
 
-  setPin(value: string) {
+  async setPin(value: string) {
     this.pin = sha512(value).toString();
+    await this.storage.set("pin", this.pin);
   }
 
   async createAccount() {

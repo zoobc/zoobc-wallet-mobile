@@ -27,9 +27,6 @@
   </ng-template>
 
   <ng-template [ngIf]="pagePosition == 1">
-    <p class="ion-margin-horizontal  ion-text-center your-passphrase">
-      Your Passphrase:
-    </p>
 
     <ion-card class="card-passphrase ion-margin-horizontal">
       <ion-card-content>
@@ -42,7 +39,7 @@
         <ion-col>
           <ion-button
             no-shadow
-            color="grey"
+            color="dark"
             class="btn-action"
             expand="block"
             (click)="copyToClipboard()"
@@ -51,7 +48,7 @@
         </ion-col>
         <ion-col>
           <ion-button
-            color="grey"
+            color="tertiary"
             class="btn-action"
             expand="block"
             (click)="generatePassphrase()"
@@ -83,16 +80,14 @@
       <span>I agree to the terms & conditions </span>
     </div>
 
-    <div class="footer-generate-passphrase">
+    <div class="footer-generate-passphrase" text-center style="margin-bottom:20px;">
       <ion-button
-        color="dark"
-        size="large"
+        color="secondary"
         class="ion-margin-horizontal btn-submit"
         expand="block"
         (click)="setPagePosition(2)"
         *ngIf="!isPinSetup"
-        disabled="{{ !(writtenDown && terms) }}"
-        >Setup PIN</ion-button
+        disabled="{{ !(writtenDown && terms) }}"><b>Setup PIN</b></ion-button
       >
     </div>
   </ng-template>

@@ -28,8 +28,10 @@
     "@angular/platform-browser": "^7.2.2",
     "@angular/platform-browser-dynamic": "^7.2.2",
     "@angular/router": "^7.2.2",
+    "@ionic-native/android-permissions": "^4.20.0",
     "@ionic-native/clipboard": "^5.8.0",
     "@ionic-native/core": "^5.10.0",
+    "@ionic-native/diagnostic": "^5.13.0",
     "@ionic-native/file": "^5.12.0",
     "@ionic-native/network": "^5.10.0",
     "@ionic-native/qr-scanner": "^5.8.0",
@@ -47,11 +49,12 @@
     "chart.js": "^2.8.0",
     "cordova-android": "8.0.0",
     "cordova-clipboard": "1.2.1",
-    "cordova-ios": "5.0.1",
+    "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-network-information": "2.0.2",
     "cordova-plugin-qrscanner": "3.0.1",
     "cordova-plugin-x-socialsharing": "^5.4.7",
+    "cordova.plugins.diagnostic": "^5.0.0",
     "core-js": "^2.5.4",
     "crypto-js": "^3.1.9-1",
     "cryptocompare": "^1.0.0",
@@ -66,7 +69,6 @@
     "moment": "^2.24.0",
     "ng2-google-charts": "^4.0.0",
     "ngx-build-plus": "^7.8.3",
-    "ngx-qrcode2": "0.0.9",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",
     "qrcode-generator": "^1.4.3",
@@ -129,7 +131,11 @@
       "cordova-plugin-x-socialsharing": {
         "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
       },
-      "cordova-plugin-file": {}
+      "cordova-plugin-file": {},
+      "cordova-plugin-android-permissions": {},
+      "cordova.plugins.diagnostic": {
+        "ANDROID_SUPPORT_VERSION": "28.+"
+      }
     },
     "platforms": [
       "android"

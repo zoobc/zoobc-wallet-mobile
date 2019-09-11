@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar>
+    <ion-toolbar color="secondary">
       <ion-buttons slot="start">
         <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
       </ion-buttons>
@@ -33,8 +33,31 @@
       </ion-item>
     </ion-list>
 
-    <div class="ion-padding">
-      <ion-button expand="block" type="submit" class="ion-no-margin">Send</ion-button>
+
+    <div padding>
+
+        <ion-row>
+            <ion-col col-6> 
+              <ion-button
+                expand="block"
+                color="tertiary"
+                (click)="goDashboard()"
+                expand="block"><b>Cancel</b>
+              </ion-button>
+            </ion-col>
+          
+            <ion-col col-6>
+                <ion-button
+                color="primary"
+                (click)="addAddress()"
+                type="submit"
+                expand="block"><b>Save</b>
+              </ion-button>        
+            </ion-col>
+        </ion-row>
+    
     </div>
+
+
   </form>
 </ion-content>

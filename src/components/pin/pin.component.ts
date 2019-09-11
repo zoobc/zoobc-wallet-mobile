@@ -17,7 +17,7 @@ export class PinComponent implements OnInit {
   @Output() onChange: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() {
-    this.dots = Array(4).fill(null).map((x, i) => i);
+    this.dots = Array(6).fill(null).map((x, i) => i);
     this.numbers = Array(9).fill(null).map((x, i) => i);
   }
 
@@ -32,7 +32,7 @@ export class PinComponent implements OnInit {
 
     this.pin += pin;
 
-    if (this.pin.length === 4) {
+    if (this.pin.length === 6) {
       this.obs = new Observable(observer => {
         this.onChange.emit({
           observer,

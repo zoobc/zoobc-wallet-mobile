@@ -2,7 +2,7 @@
 
 .initial-page {
   @include background;
-
+  
   & > div {
     @include flex-init;
     @include flex-direction(column);

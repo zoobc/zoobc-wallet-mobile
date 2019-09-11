@@ -12,19 +12,14 @@ import { AppComponent } from "./app.component";
 import { FormsModule } from "@angular/forms";
 import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
-import { NgxQRCodeModule } from "ngx-qrcode2";
 import { NgxsModule } from '@ngxs/store';
 import { Network } from '@ionic-native/network/ngx';
-
-// import * as supercop from 'supercop.wasm';
 import { sign as naclSign } from 'tweetnacl';
 import { ObservableService } from 'src/services/observable.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { AboutPage } from './about/about.page';
 import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
-
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/languages/locales/', '.json');
@@ -41,7 +36,6 @@ export function createTranslateLoader(http: HttpClient) {
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    NgxQRCodeModule,
     NgxsModule.forRoot(),
     TranslateModule.forRoot({
       loader: {

@@ -12,8 +12,17 @@
     text-transform: uppercase;
   }
 
+  .my-width{
+		width:600px;
+  }
+  
+  .item-text-wrap .col{
+    width: 33.33%;
+    text-align: center;
+ }
+
   .card-balance {
-    --background: linear-gradient(90deg, #0288d1, #26c6da);
+    --background: linear-gradient(90deg, #00abd4, #ab52a6);
     --color: #fff;
 
     .balance-item {

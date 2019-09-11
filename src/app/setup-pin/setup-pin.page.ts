@@ -66,11 +66,11 @@ export class SetupPinPage implements OnInit {
     }, 500);
 
     const encryptedPin = sha512(pin.toString()).toString();
-    //await this.storage.set("pin", encryptedPin);
+    await this.storage.set("pin", pin.toString());
     //const isUserLoggedIn = await this.authService.login(pin);
 
     ///
-    const _pin = encryptedPin;
+    const _pin = pin.toString(); //encryptedPin;
     this.createAccSrv.setPin(_pin);
     await this.createAccSrv.createAccount();
     const loginStatus = await this.authSrv.login(_pin);

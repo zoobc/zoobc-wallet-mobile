@@ -31,11 +31,17 @@
         width: auto !important;
     }
 
+    .toolbar-background {
+        background: linear-gradient(90deg, #0288d1, #b35aa7);
+        color: #fff;
+    }
+
     .qrcode-container {
         border: 1px solid #dedede;
         display: inline-block;
         margin-right: auto;
         margin-left: auto;
+        width: 74%;
 
         -webkit-border-radius: 5px;
         -moz-border-radius: 5px;

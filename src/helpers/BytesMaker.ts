@@ -1,11 +1,11 @@
-import { bigintToByteArray, BigInt } from "./converters";
+import { bigintToByteArray, BigInt } from './converters';
 
 export class BytesMaker {
   private bytes: Buffer;
-  private offset: number = 0;
+  private offset = 0;
 
   constructor(length: number) {
-    this.bytes = new Buffer(length);
+    this.bytes = Buffer.alloc(length);
   }
 
   get value() {
@@ -13,7 +13,9 @@ export class BytesMaker {
   }
 
   write(array: ArrayLike<number>, length: number) {
-    if (array.length != length) throw new Error();
+    if (array.length !== length) {
+      throw new Error();
+    }
     this.bytes.set(array, this.offset);
     this.offset += length;
   }
@@ -34,7 +36,9 @@ export class BytesMaker {
   }
 
   write44Bytes(array: ArrayLike<number>): void {
-    if (array.length != 44) throw new Error();
+    if (array.length !== 44) {
+      throw new Error();
+    }
     this.bytes.set(array, this.offset);
     this.offset += 44;
   }

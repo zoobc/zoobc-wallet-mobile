@@ -17,19 +17,25 @@ export class ChartPage implements OnInit {
 
   @ViewChild('hrzLineChart') hrzLineChart;
  
-  private hrzLines: any; 
-  private candlestickChart : GoogleChartInterface;
-  private results: any;
+  public hrzLines: any; 
+  public candlestickChart : GoogleChartInterface;
+  public results: any;
+
+  public price: any;
+  public rank: any;
+  public volume: any;
+  public marketcap: number;
+  public cryptoId: string;
 
   @ViewChild('barCanvas') barCanvas;
   @ViewChild('lineCanvas') lineCanvas;
 
-  private chartTitle: string;
-  
+  public chartTitle: string;
+
   constructor(private chrtSrv: ChartService) { }
 
 
-  ngOnInit() {    
+  ngOnInit() {
       this.chrtSrv.getDailyData().subscribe(
         (res) => {
           this.loadCandleStickData(res);
@@ -79,8 +85,7 @@ export class ChartPage implements OnInit {
     this.results = aa;
     console.log(this.results);
   }
-  
-  
+
   
   loadCandleStickChart(){
     this.candlestickChart ={
@@ -141,12 +146,6 @@ export class ChartPage implements OnInit {
     // );
     this.chartTitle = "Monthly Chart";
   }
-
-  private price: any;
-  private rank: any;
-  private volume: any;
-  private marketcap: number;
-  private cryptoId: string;
 
 
 

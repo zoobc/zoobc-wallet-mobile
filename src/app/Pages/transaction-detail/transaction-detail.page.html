@@ -24,25 +24,25 @@
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "Amount" | translate }}</p>
-        <p class="info-desc">{{ transaction.amount }} ZBC</p>
+        <p class="info-desc">{{ transaction.amount / 1e8 }} ZBC</p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <p class="info-label">{{ "Amount" | translate }} USD</p>
-        <p class="info-desc">{{ transaction.amount }} USD</p>
+        <p class="info-label">{{ "Amount" | translate }}</p>
+        <p class="info-desc">{{ transaction.amount / 1e8}} USD</p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "Fee" | translate }}</p>
-        <p class="info-desc">{{ transaction.fee }} ZBC</p>
+        <p class="info-desc">{{ transaction.fee / 1e8 }} ZBC</p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "Fee" | translate }} USD</p>
-        <p class="info-desc">{{ transaction.fee }} ZBC</p>
+        <p class="info-desc">{{ transaction.fee / 1e8 }} ZBC</p>
       </ion-label>
     </ion-item>
     <ion-item>

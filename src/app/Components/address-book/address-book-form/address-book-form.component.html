@@ -13,7 +13,7 @@
       <ion-item>
         <ion-input
           padding="false"
-          placeholder="Please the name"
+          placeholder="Please type the name"
           [(ngModel)]="name"
           name="name"
           autocomplete="on"
@@ -23,7 +23,7 @@
       <ion-item>
         <ion-input
           padding="false"
-          placeholder="Please the address"
+          placeholder="Please type the address"
           [(ngModel)]="address"
           name="address"
           autocomplete="on"
@@ -31,23 +31,35 @@
         ></ion-input>
       </ion-item>
     </ion-list>
-    <div padding>
-      <ion-button
-        color="primary"
-        (click)="addAddress()"
-        type="submit"
-        expand="block"
-        >Add Address
-      </ion-button>
 
-      <ion-button
-        fill="outline"
-        color="grey"
-        (click)="closeModal()"
-        type="submit"
-        expand="block"
-        >Close
-      </ion-button>
+
+    <div padding>
+
+        <ion-row>
+            <ion-col col-6> 
+              <ion-button
+                expand="block"
+                color="tertiary"
+                (click)="closeModal()"
+                expand="block"><b>Cancel</b>
+              </ion-button>
+            </ion-col>
+          
+            <ion-col col-6>
+                <ion-button
+                color="primary"
+                (click)="addAddress()"
+                type="submit"
+                expand="block"><b>Save</b>
+              </ion-button>        
+            </ion-col>
+        </ion-row>
+    
+    </div>
+
+
+    <div padding>
+
     </div>
   </div>
 </ion-content>

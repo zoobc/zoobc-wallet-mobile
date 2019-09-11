@@ -1,50 +1,35 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 import {
-  LoadingController,
   MenuController,
-  NavController,
-  ModalController
-} from "@ionic/angular";
-import { RestapiService } from "../../../services/restapi.service";
-import { AuthService } from "src/services/auth-service";
-import { Router, NavigationExtras } from "@angular/router";
-import { AccountService } from "src/services/account.service";
-import { GRPCService } from "src/services/grpc.service";
-import { Storage } from "@ionic/storage";
-import { ActiveAccountService } from "src/app/services/active-account.service";
-import { Observable } from "rxjs";
-import * as moment from "moment";
-import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
-import { TransactionService } from "src/app/services/transaction.service";
-import { Transaction } from "src/app/grpc/model/transaction_pb";
+  NavController
+} from '@ionic/angular';
+import { AuthService } from 'src/services/auth-service';
+import { Router } from '@angular/router';
+import { AccountService } from 'src/services/account.service';
+import { GRPCService } from 'src/services/grpc.service';
+import { Storage } from '@ionic/storage';
+import { ActiveAccountService } from 'src/app/services/active-account.service';
+import { TransactionService } from 'src/app/services/transaction.service';
 
 @Component({
-  selector: "app-tab-dashboard",
-  templateUrl: "tab-dashboard.page.html",
-  styleUrls: ["tab-dashboard.page.scss"]
+  selector: 'app-tab-dashboard',
+  templateUrl: 'tab-dashboard.page.html',
+  styleUrls: ['tab-dashboard.page.scss']
 })
 export class TabDashboardPage implements OnInit {
-  data1: any;
-  data2: any;
-
-  publicKey = "JkhkUiury9899";
-
-  account = {
-    accountName: "",
-    address: ""
+  public account = {
+    accountName: '',
+    address: '',
+    shortadress: ''
   };
 
-  accountName: string = "";
+  public balance = 0;
+  public spendablebalance = 0;
+  public unconfirmedBalance = 0;
 
-  balance = 0;
-  spendablebalance = 0;
-  unconfirmedBalance = 0;
-
-  transactions: any[] = [];
+  public transactions: any[] = [];
 
   constructor(
-    private apiservice: RestapiService,
-    private loadingController: LoadingController,
     private authService: AuthService,
     private router: Router,
     private menuController: MenuController,
@@ -53,19 +38,30 @@ export class TabDashboardPage implements OnInit {
     private storage: Storage,
     private accountService: AccountService,
     private activeAccountSrv: ActiveAccountService,
-    private zone: NgZone,
-    private modalController: ModalController,
     private transactionSrv: TransactionService
   ) {
+
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
         this.account.accountName = v.accountName;
         this.account.address = this.accountService.getAccountAddress(v);
-
-        this.getAccountTransaction();
+        this.account.shortadress = this.shortAddress(this.account.address);
         this.getAccountBalance();
+        this.getAccountTransaction();
       }
     });
+
+  }
+
+  shortAddress(addrs: string) {
+    return addrs.substring(0, 10).concat('...').concat(addrs.substring(addrs.length - 10, addrs.length));
+  }
+
+  async doRefresh(event) {
+    this.loadData();
+    setTimeout(() => {
+      event.target.complete();
+    }, 2000);
   }
 
   async ionViewDidEnter() {
@@ -73,119 +69,74 @@ export class TabDashboardPage implements OnInit {
   }
 
   async ngOnInit() {
-    //this.getBalance(this.publicKey);
-    //this.getTransaction(this.publicKey);
-
-    this.loadData();
   }
 
   async loadData() {
-    this.getAccountBalance();
-    this.getAccountTransaction();
-
-    const account = await this.storage.get("active_account");
+    const account = await this.storage.get('active_account');
     this.account.accountName = account.accountName;
     this.account.address = this.accountService.getAccountAddress(account);
+    this.account.shortadress = this.shortAddress(this.account.address);
 
     this.getAccountBalance();
     this.getAccountTransaction();
   }
 
   goToSend() {
-    this.router.navigateByUrl("tabs/send");
+    this.router.navigateByUrl('tabs/send');
   }
 
   goToRequest() {
-    this.router.navigateByUrl("tabs/receive");
-  }
-
-  async getBalance(pKey: string) {
-    const loading = await this.loadingController.create({
-      message: "Loading"
-    });
-    await loading.present();
-    this.apiservice.getBalance(pKey).subscribe(
-      res => {
-        console.log(res);
-        this.data1 = res[0];
-        this.balance = this.data1["data"];
-        loading.dismiss();
-      },
-      err => {
-        console.log(err);
-        loading.dismiss();
-      }
-    );
-  }
-
-  async getTransaction(pKey: string) {
-    const loading = await this.loadingController.create({
-      message: "Loading"
-    });
-    await loading.present();
-    this.apiservice.getAccountTransactions(pKey).subscribe(
-      res => {
-        console.log(res);
-        this.data2 = res[0];
-        this.transactions = this.data2["transactions"];
-        loading.dismiss();
-
-        console.log("__res", res);
-      },
-      err => {
-        console.log("__resErr", err);
-        loading.dismiss();
-      }
-    );
+    this.router.navigateByUrl('tabs/receive');
   }
 
   openchart() {
-    this.navCtrl.navigateForward("chart");
+    this.navCtrl.navigateForward('chart');
   }
 
   openMenu() {
-    this.menuController.open("mainMenu");
+    this.menuController.open('mainMenu');
   }
 
   logout() {
     this.authService.logout();
-    this.router.navigate(["login"]);
+    this.router.navigate(['login']);
   }
 
   async getAccountBalance() {
-    const account = await (<any>this.grpcService.getAccountBalance());
+    const account = await (this.grpcService.getAccountBalance() as any);
     this.balance = account.accountbalance.balance;
     this.spendablebalance = account.accountbalance.spendablebalance;
-    // console.log("__balance", balance);
   }
 
   async getAccountTransaction() {
     const transactions = await this.transactionSrv.getAll(this.account.address);
 
     this.transactions = transactions.map(v => {
-      let type = "minus";
+      let trxType = 'minus';
       let address = v.sender;
 
       if (this.account.address === v.recipient) {
         address = v.recipient;
-        type = "plus";
+        trxType = 'plus';
       }
 
       return {
         id: v.id,
         address,
         date: v.transactionDate,
-        type: type,
+        type: trxType,
         amount: v.amount
       };
     });
   }
 
+  openListAccount() {
+    this.navCtrl.navigateForward('list-account');
+  }
+
   openDetailTransction(index) {
     const transObj = this.transactions[index];
-
     const transId = transObj.id;
-
-    this.router.navigate(["transaction/" + transId]);
+    this.router.navigate(['transaction/' + transId]);
   }
 }

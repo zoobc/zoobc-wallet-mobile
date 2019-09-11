@@ -14,6 +14,15 @@ export class QrScannerComponent implements OnInit {
 
   ngOnInit() { }
 
+  ionViewWillLeave(){
+    try {
+      this.qrScanner.hide();
+      this.qrScanner.destroy();
+    } catch (e) {
+
+    }
+  }
+
   ionViewDidEnter() {
 
 

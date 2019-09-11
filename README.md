@@ -8,6 +8,37 @@
   npm i -g native-run
 
 
+How to build
+
+- ionic cordova build android --prod --release
+- keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+
+- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore HelloWorld-release-unsigned.apk alias_name
+
+- zipalign -v 4 HelloWorld-release-unsigned.apk HelloWorld.apk
+
+- https://ionicframework.com/docs/publishing/play-store
+
+#1. ionic cordova build android --prod --release
+
+cd  /home/jhonkus/PROJECTS_WALLET/WALLET_MOBILE_DEMO/zoobc-wallet-mobile/platforms/android/app/build/outputs/apk/release/
+
+#2. keytool -genkey -v -keystore zoobc-release-key.keystore -alias zoobc_wallet -keyalg RSA -keysize 2048 -validity 10000
+
+password 12345678
+
+keytool -importkeystore -srckeystore zoobc-release-key.keystore -destkeystore zoobc-release-key.keystore -deststoretype pkcs12
+
+#3. jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore zoobc-release-key.keystore app-release-unsigned.apk zoobc_wallet
+
+/home/jhonkus/Android/Sdk/build-tools/29.0.1/zipalign -v 4 app-release-unsigned.apk zoobc.apk
+
+cd  /home/jhonkus/PROJECTS_WALLET/WALLET_MOBILE_DEMO/zoobc-wallet-mobile
+
+
+
+
+
 # Technology
   - Ionic Framework v4
   - Angluar 7

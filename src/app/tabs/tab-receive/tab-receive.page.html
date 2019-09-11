@@ -1,22 +1,18 @@
-<ion-header no-border>
-  <ion-toolbar>
+<ion-header>
+  <ion-toolbar color="secondary">
     <ion-buttons slot="start">
       <ion-button (click)="openMenu()">
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Receive Money</ion-title>
+    <ion-title>Receive ZBC</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="page-qrcode" padding="true">
-  <p class="address" (click)="tapAddress()">{{ account.address }}</p>
-  <p class="note">
-    tap your address above to copy then paste it to your friend
-  </p>
-  <p class="note">- or -</p>
+  <p class="address" style="color:#9d4396" (click)="tapAddress()">{{ account.shortadress }}</p>
   <div class="qrcode-container">
-    <img [src]="account.qrCode" />
+    <img style="width: 100%;" [src]="account.qrCode" />
   </div>
   <p class="note">
     show this qrcode to your friend to transfer money to your account
