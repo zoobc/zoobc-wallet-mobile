@@ -9,68 +9,205 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-send">
+<ion-content class="page-send zbc-content-style-1">
   <form [formGroup]="sendForm" (ngSubmit)="onSubmit()">
-    <div class="f-group">
-      <p class="label ion-padding-start ion-padding-end">
-        {{ "Select an account to debit" || translate }}:
-      </p>
-      <ion-item button="true">
-        <ion-label>
-          <form-select-account formControlName="sender"></form-select-account>
+    <div class="content-inner ion-padding-top ion-padding-bottom">
+      <div class="zbc-form-item">
+        <ion-label class="ion-padding zbc-label">
+          {{ "Select an account to debit" || translate }}
         </ion-label>
-      </ion-item>
-    </div>
-
-    <div class="f-group">
-      <ion-grid>
-        <ion-row class="row-recipient" align-items-end justify-content-between>
-          <ion-col class="col-recipient">
-            <ion-item lines="none">
-              <ion-label position="stacked"
-                >{{ "Recipient" | translate }}:</ion-label
-              >
-              <ion-input formControlName="recipient"></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <button (click)="scanQrCode()" type="button" class="btn-icon">
-              <ion-icon name="qr-scanner"></ion-icon>
-            </button>
-          </ion-col>
-          <ion-col>
-            <button class="btn-icon" type="button" (click)="openAddresses()">
-              <ion-icon name="bookmarks"></ion-icon>
-            </button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
-
-    <div class="f-group">
-      <ion-list>
-        <ion-item lines="none">
-          <ion-label position="stacked">{{ "Amount" | translate }}:</ion-label>
-          <ion-input formControlName="amount" type="number"></ion-input>
+        <ion-item button="true" lines="none">
+          <ion-label>
+            <form-select-account formControlName="sender"></form-select-account>
+          </ion-label>
         </ion-item>
-      </ion-list>
+      </div>
+      <div
+        class="form-error-text ion-padding-start ion-padding-end"
+        *ngIf="sendForm.get('sender').hasError('required') && formSubmitted"
+      >
+        Please select an account
+      </div>
+
+      <div class="zbc-form-item last">
+        <ion-grid>
+          <ion-row
+            class="row-recipient"
+            align-items-end
+            justify-content-between
+          >
+            <ion-col class="col-recipient">
+              <ion-item lines="none">
+                <ion-label position="stacked"
+                  >{{ "Recipient" | translate }}:</ion-label
+                >
+                <ion-input
+                  formControlName="recipient"
+                  placeholder="{{ 'Recipient' | translate }}"
+                ></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col>
+              <button (click)="scanQrCode()" type="button" class="btn-icon">
+                <ion-icon name="qr-scanner"></ion-icon>
+              </button>
+            </ion-col>
+            <ion-col>
+              <button class="btn-icon" type="button" (click)="openAddresses()">
+                <ion-icon name="bookmarks"></ion-icon>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <div
+          class="form-error-text ion-padding-start ion-padding-end"
+          *ngIf="
+            sendForm.get('recipient').hasError('required') &&
+            (formSubmitted ||
+              sendForm.get('recipient').dirty ||
+              sendForm.get('recipient').touched)
+          "
+        >
+          Please enter a recipient
+        </div>
+
+        <div class="ion-padding save-address-button">
+          <ion-checkbox formControlName="saveToAddreesBook"></ion-checkbox>
+          <span>Save to Address Book</span>
+        </div>
+
+        <ion-item lines="none" *ngIf="sendForm.get('saveToAddreesBook').value">
+          <ion-label position="stacked"
+            >{{ "Enter an alias" | translate }}:</ion-label
+          >
+          <ion-input
+            formControlName="alias"
+            type="text"
+            placeholder="{{ 'Enter an alias' | translate }}"
+          ></ion-input>
+        </ion-item>
+        <div
+          class="form-error-text ion-padding-start ion-padding-end"
+          *ngIf="
+            sendForm.get('alias').hasError('required') &&
+            (formSubmitted ||
+              sendForm.get('alias').dirty ||
+              sendForm.get('alias').touched)
+          "
+        >
+          Please enter an alias
+        </div>
+      </div>
     </div>
 
-    <div class="f-group">
-      <ion-item lines="none">
-        <ion-label position="stacked">{{ "Fee" | translate }}:</ion-label>
-        <ion-input formControlName="fee" type="number"></ion-input>
-      </ion-item>
+    <div
+      class="content-inner ion-padding-top ion-padding-bottom ion-margin-top"
+    >
+      <div class="zbc-form-item">
+        <div class="amount ion-text-right ion-padding-start ion-padding-end">
+          <div class="primary-amount">
+            {{ conversionValue.amount.ZBC | number: "1.2-2" }} ZBC
+          </div>
+          <div class="secondary-amount">
+            {{ conversionValue.amount.USD | number: "1.2-2" }} USD
+          </div>
+        </div>
+
+        <ion-grid>
+          <ion-row justify-content-between>
+            <ion-col size="4">
+              <ion-select
+                formControlName="amountCurr"
+                placeholder="Currency"
+                (ionChange)="onAmountKeyUp($event)"
+                interface="action-sheet"
+              >
+                <ion-select-option value="ZBC">ZBC</ion-select-option>
+                <ion-select-option value="USD">USD</ion-select-option>
+                <ion-select-option value="IDR">IDR</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col size="8">
+              <ion-item lines="none">
+                <ion-input
+                  (ionChange)="onAmountKeyUp($event)"
+                  formControlName="amount"
+                  type="number"
+                  placeholder="Enter amount"
+                ></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+      <div
+        class="form-error-text ion-padding-start ion-padding-end"
+        *ngIf="
+          sendForm.get('amount').hasError('required') &&
+          (formSubmitted ||
+            sendForm.get('amount').dirty ||
+            sendForm.get('amount').touched)
+        "
+      >
+        Please enter an amount
+      </div>
+
+      <div class="zbc-form-item last">
+        <div
+          class="amount ion-text-right ion-padding-start ion-padding-end ion-padding-top"
+        >
+          <div class="primary-amount">
+            {{ conversionValue.fee.ZBC | number: "1.2-2" }} ZBC
+          </div>
+          <div class="secondary-amount">
+            {{ conversionValue.fee.USD | number: "1.2-2" }} USD
+          </div>
+        </div>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-select
+                formControlName="feeCurr"
+                placeholder="Currency"
+                interface="action-sheet"
+                (ionChange)="onFeeKeyUp($event)"
+              >
+                <ion-select-option value="ZBC">ZBC</ion-select-option>
+                <ion-select-option value="USD">USD</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col size="8">
+              <ion-item lines="none">
+                <ion-input
+                  (ionChange)="onFeeKeyUp($event)"
+                  formControlName="fee"
+                  placeholder="Enter fee"
+                  type="number"
+                ></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+      <div
+        class="form-error-text ion-padding-start ion-padding-end"
+        *ngIf="
+          sendForm.get('fee').hasError('required') &&
+          (formSubmitted ||
+            sendForm.get('fee').dirty ||
+            sendForm.get('fee').touched)
+        "
+      >
+        Please enter a fee
+      </div>
     </div>
 
-    <div class="zbc-button-container" padding>
-      <ion-button class="zbc-button" type="submit"
-        >{{ "Send" | translate }}
-      </ion-button>
-    </div>
-
-    <ion-item>
-      <ion-label>{{ status }}</ion-label>
-    </ion-item>
+    <ion-button
+      class="zbc-button-full ion-margin-top"
+      expand="full"
+      type="submit"
+      >{{ "Send" | translate }}
+    </ion-button>
   </form>
 </ion-content>

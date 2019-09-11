@@ -36,7 +36,7 @@ export class FormSelectAccountComponent
       if (returnVal.data) {
         this.selectedItem = returnVal.data;
 
-        this.changeData(returnVal.data.address);
+        this.changeData(returnVal.data);
       }
     });
     return await modal.present();

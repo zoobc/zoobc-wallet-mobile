@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import {
   ToastController,
   MenuController,
@@ -16,14 +16,16 @@ import { KeyringService } from "src/app/Services/keyring.service";
 import { BytesMaker } from "src/helpers/BytesMaker";
 import { QrScannerService } from "src/app/Services/qr-scanner.service";
 import { ModalConfirmationComponent } from "./modal-confirmation/modal-confirmation.component";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { CurrencyService } from "src/app/Services/currency.service";
+import { Account } from "src/app/Interfaces/account";
 
 @Component({
   selector: "app-tab-send",
   templateUrl: "tab-send.page.html",
   styleUrls: ["tab-send.page.scss"]
 })
-export class TabSendPage {
+export class TabSendPage implements OnInit {
   rootPage: any;
   status: any;
   register: any;
@@ -34,6 +36,19 @@ export class TabSendPage {
   fee: any;
 
   sendForm;
+
+  conversionValue = {
+    amount: {
+      ZBC: 0,
+      USD: 0
+    },
+    fee: {
+      ZBC: 0,
+      USD: 0
+    }
+  };
+
+  formSubmitted: boolean = false;
 
   constructor(
     private storage: Storage,
@@ -46,16 +61,43 @@ export class TabSendPage {
     private navCtrl: NavController,
     private modalController: ModalController,
     private keyringServ: KeyringService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private currencySrv: CurrencyService
   ) {
     // this.sender = this.getAddress();
+  }
 
+  ngOnInit() {
     this.sendForm = this.formBuilder.group({
-      sender: "",
-      recipient: "",
-      amount: "",
-      fee: ""
+      sender: new FormControl("", Validators.compose([Validators.required])),
+      recipient: new FormControl("", Validators.compose([Validators.required])),
+      amount: new FormControl("", Validators.compose([Validators.required])),
+      amountCurr: new FormControl(
+        "ZBC",
+        Validators.compose([Validators.required])
+      ),
+      fee: new FormControl("", Validators.compose([Validators.required])),
+      feeCurr: new FormControl(
+        "ZBC",
+        Validators.compose([Validators.required])
+      ),
+      saveToAddreesBook: false,
+      alias: ""
     });
+
+    this.sendForm
+      .get("saveToAddreesBook")
+      .valueChanges.subscribe(saveToAddreesBook => {
+        const alias = this.sendForm.get("alias");
+
+        if (saveToAddreesBook) {
+          alias.setValidators([Validators.required]);
+        } else {
+          alias.setValidators(null);
+        }
+
+        alias.updateValueAndValidity();
+      });
   }
 
   openMenu() {
@@ -67,18 +109,51 @@ export class TabSendPage {
     this.sender = this.accountService.getAccountAddress(this.account);
   }
 
-  onSubmit() {
-    this.presentConfirmationModal();
+  onAmountKeyUp(event) {
+    const amount = this.sendForm.get("amount").value;
+    const amountCurr = this.sendForm.get("amountCurr").value;
+    this.conversionValue.amount.ZBC = this.currencySrv.convertCurrency(
+      amount,
+      amountCurr,
+      "ZBC"
+    );
+    this.conversionValue.amount.USD = this.currencySrv.convertCurrency(
+      amount,
+      amountCurr,
+      "USD"
+    );
+  }
+
+  onFeeKeyUp(event) {
+    const fee = this.sendForm.get("fee").value;
+    const feeCurr = this.sendForm.get("feeCurr").value;
+    this.conversionValue.fee.ZBC = this.currencySrv.convertCurrency(
+      fee,
+      feeCurr,
+      "ZBC"
+    );
+    this.conversionValue.fee.USD = this.currencySrv.convertCurrency(
+      fee,
+      feeCurr,
+      "USD"
+    );
   }
 
   async presentConfirmationModal() {
+    const senderValue = this.sendForm.get("sender").value;
     const modal = await this.modalController.create({
       component: ModalConfirmationComponent,
       componentProps: {
-        sender: this.sendForm.get("sender").value,
+        sender: senderValue.address,
         recipient: this.sendForm.get("recipient").value,
-        amount: this.sendForm.get("amount").value,
-        fee: this.sendForm.get("fee").value
+        amount: {
+          ZBC: this.conversionValue.amount.ZBC,
+          USD: this.conversionValue.amount.USD
+        },
+        fee: {
+          ZBC: this.conversionValue.fee.ZBC,
+          USD: this.conversionValue.fee.USD
+        }
       }
     });
 
@@ -91,9 +166,19 @@ export class TabSendPage {
     return await modal.present();
   }
 
+  onSubmit() {
+    this.formSubmitted = true;
+
+    if (this.sendForm.valid) {
+      this.presentConfirmationModal();
+    }
+  }
+
   async confirm() {
-    const { derivationPrivKey: accountSeed } = this.account.accountProps;
-    console.log("this.account.accountProps: ", this.account.accountProps);
+    const selectedAccount: Account = this.sendForm.get("sender").value;
+    const { accountProps } = selectedAccount;
+
+    const { derivationPrivKey: accountSeed } = accountProps;
     const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed);
 
     // const balance = await this.grpcService.getAccountBalance();
@@ -120,9 +205,24 @@ export class TabSendPage {
     // }
 
     const sender = Buffer.from(publicKeyToAddress(publicKey), "utf-8");
-    const recepient = Buffer.from(this.recipient, "utf-8");
-    const amount = this.amount * 1e8;
-    const fee = this.fee;
+    const recepient = Buffer.from(
+      this.sendForm.get("recepient").value,
+      "utf-8"
+    );
+    const _amount = this.sendForm.get("amount");
+    const amountCurr = this.sendForm.get("amountCurr");
+    const convertedAmount = this.currencySrv.convertCurrency(
+      _amount,
+      amountCurr,
+      "ZBC"
+    );
+    const amount = convertedAmount * 1e8;
+
+    const _fee = this.sendForm.get("fee");
+    const feeCurr = this.sendForm.get("feeCurr");
+    const convertedFee = this.currencySrv.convertCurrency(_fee, feeCurr, "ZBC");
+    const fee = convertedFee * 1e8;
+
     const timestamp = Math.trunc(Date.now() / 1000);
 
     let bytes = new BytesMaker(129);
@@ -177,7 +277,7 @@ export class TabSendPage {
   }
 
   ionViewWillEnter() {
-    this.getAddress();
+    //this.getAddress();
   }
 
   scanQrCode() {

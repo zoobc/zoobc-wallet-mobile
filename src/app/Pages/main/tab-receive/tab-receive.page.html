@@ -9,16 +9,18 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-qrcode" padding="true">
-  <p class="address" (click)="tapAddress()">{{ account.address }}</p>
-  <p class="note">
-    tap your address above to copy then paste it to your friend
-  </p>
-  <p class="note">- or -</p>
-  <div class="qrcode-container">
-    <img [src]="account.qrCode" />
+<ion-content class="page-qrcode zbc-content-style-1">
+  <div class="content-inner ion-padding-top ion-padding-bottom">
+    <p class="address" (click)="tapAddress()">{{ account.address }}</p>
+    <p class="note">
+      tap your address above to copy then paste it to your friend
+    </p>
+    <p class="note">- or -</p>
+    <div class="qrcode-container">
+      <img [src]="account.qrCode" />
+    </div>
+    <p class="note">
+      show this qrcode to your friend to transfer money to your account
+    </p>
   </div>
-  <p class="note">
-    show this qrcode to your friend to transfer money to your account
-  </p>
 </ion-content>
