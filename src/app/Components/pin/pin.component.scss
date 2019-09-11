@@ -1,52 +1,60 @@
-.pins-container{
-    .logo-container{
-        text-align: center;
+.pins-container {
+  .logo-container {
+    text-align: center;
 
-        img{
-            max-width: 84px;
-            height: auto;
-        }
+    img {
+      max-width: 84px;
+      height: auto;
+    }
+  }
+
+  .intro-text {
+    text-align: center;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    font-family: var(--font-family-title);
+    color: rgba(0, 0, 0, 0.4);
+
+    div {
+      margin-bottom: 3px;
+    }
+  }
+
+  .pad-container {
+    .pad-row-container {
+      display: flex;
     }
 
-    .intro-text{
-        text-align: center;
-        margin-bottom: 1rem;
-        margin-top: 1rem;
-        font-family: var(--font-family-title);
-        color: rgba(0,0,0,0.4);
+    ion-col {
+      flex-grow: 0;
+      flex-basis: 86px;
+    }
+    ion-button {
+      height: 76px;
+      width: 76px;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 1.4rem;
 
-        div{
-            margin-bottom: 3px;
-        }
+      --color: #333;
+      --color-activated: #333;
+      --ripple-color: #333;
+      --background: #fff;
+      --background-activated: #fff;
+      --border-radius: 45px;
+      --box-shadow: none;
+      --border-color: #dedede;
+      --border-focused: red;
+      --border-style: solid;
     }
 
-    .pad-container{
-        ion-button{
-            height: 76px;
-            width: 76px;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 1.4rem;
-            
-            --color: #333;
-            --color-activated: #333;
-            --ripple-color: #333;
-            --background: #fff;
-            --background-activated: #fff;
-            --border-radius: 45px;
-            --box-shadow: none;
-            --border-color: #dedede;
-            --border-focused: red;
-            --border-style: solid;
-        }
-
-        .btn-text{
-            font-size: 0.8rem;
-        }
+    .btn-text {
+      font-size: 0.8rem;
     }
+  }
 
-    ion-col{
-        width: 33.33333%;
-        flex-basis: auto;
-    }
+  ion-col {
+    width: 33.33333%;
+    flex-basis: auto;
+  }
 }
