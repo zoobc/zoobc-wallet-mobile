@@ -28,6 +28,7 @@ export class TabDashboardPage implements OnInit {
   public unconfirmedBalance = 0;
 
   public transactions: any[] = [];
+  public pendingtrxs: any[] = [];
 
   constructor(
     private authService: AuthService,
@@ -47,6 +48,7 @@ export class TabDashboardPage implements OnInit {
         this.account.address = this.accountService.getAccountAddress(v);
         this.account.shortadress = this.shortAddress(this.account.address);
         this.getAccountBalance();
+        this.getPendingTransactions();
         this.getAccountTransaction();
       }
     });
@@ -78,6 +80,7 @@ export class TabDashboardPage implements OnInit {
     this.account.shortadress = this.shortAddress(this.account.address);
 
     this.getAccountBalance();
+    this.getPendingTransactions();
     this.getAccountTransaction();
   }
 
@@ -107,6 +110,25 @@ export class TabDashboardPage implements OnInit {
     this.balance = account.accountbalance.balance;
     this.spendablebalance = account.accountbalance.spendablebalance;
   }
+
+
+  async getPendingTransactions() {
+    const unconfirmTrxs = await this.transactionSrv.getUnconfirmTransactions(this.account.address);
+
+    this.pendingtrxs = unconfirmTrxs.map(v => {
+        console.log('==pending:',   v);
+        return v;
+
+        // return {
+        //   address: v.address,
+        //   date: v.timestamp,
+        //   type: type,
+        //   amount: v.amount
+        // };
+
+    });
+  }
+
 
   async getAccountTransaction() {
     const transactions = await this.transactionSrv.getAll(this.account.address);

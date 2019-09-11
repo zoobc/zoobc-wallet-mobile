@@ -30,7 +30,7 @@ export class TransactionService {
   }
 
 
-  getUnconfirmTransaction(address: string): Promise<any[]> {
+  getUnconfirmTransactions(address: string): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const request = new GetMempoolTransactionsRequest();
       request.setLimit(10);
