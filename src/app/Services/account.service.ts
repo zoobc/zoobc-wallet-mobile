@@ -31,7 +31,7 @@ export class AccountService {
     const acountPromises = accounts.map(async acc => {
       const { name, created } = acc;
       const address = this.getAccountAddress(acc.accountProps);
-
+      const accountProps = acc.accountProps;
       const balanceObj: any = await this.getAccountBalance(address);
       const balance = balanceObj.accountbalance.balance;
 
@@ -39,6 +39,7 @@ export class AccountService {
         name,
         address,
         balance,
+        accountProps,
         created
       };
     });
@@ -48,12 +49,13 @@ export class AccountService {
 
   async getActiveAccount(): Promise<Account> {
     const active_account = await this.storage.get("active_account");
-    const { name, balance, address, created } = active_account;
+    const { name, balance, address, accountProps, created } = active_account;
 
     return {
       name,
       balance,
       address,
+      accountProps,
       created
     };
   }
@@ -119,8 +121,8 @@ export class AccountService {
     const accounts = await this.rawData();
 
     const account = {
-      name: name,
-      accountProps: accountProps,
+      name,
+      accountProps,
       created: new Date()
     };
 
@@ -136,8 +138,9 @@ export class AccountService {
 
     return {
       name: account.name,
-      address: address,
+      address,
       balance: _balance.accountbalance.balance,
+      accountProps,
       created: account.created
     };
   }

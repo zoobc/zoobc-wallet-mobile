@@ -1,26 +1,35 @@
-import { Injectable } from '@angular/core';
-import axios from 'axios';
-import { Storage } from '@ionic/storage';
-import { RATES, SELECTED_CURRENCY } from 'src/environments/variable.const';
+import { Injectable } from "@angular/core";
+import axios from "axios";
+import { Storage } from "@ionic/storage";
+import { RATES, SELECTED_CURRENCY } from "src/environments/variable.const";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class CurrencyService {
+  _rates = {
+    ZBC: 1,
+    USD: 3,
+    IDR: 42135
+  };
+
   constructor(private storage: Storage) {}
 
   async getCurrencyRates() {
     const { data } = await axios.get(
-      'https://api.exchangeratesapi.io/latest?base=USD&symbols=USD,IDR'
+      "https://api.exchangeratesapi.io/latest?base=USD&symbols=USD,IDR"
     );
     await this.storage.set(RATES, data.rates);
   }
 
-  async convertCurrency(price, currency) {
-    const rates = await this.storage.get(RATES);
+  convertCurrency(price, currFrom, currTo) {
+    if (currFrom === currTo) {
+      return price * 1;
+    } else {
+      const currFromVal = this._rates[currFrom];
+      const currToVal = this._rates[currTo];
 
-    if (rates[currency.toUpperCase()]) {
-      return price * rates[currency.toUpperCase()];
+      return (currToVal / currFromVal) * price;
     }
   }
 

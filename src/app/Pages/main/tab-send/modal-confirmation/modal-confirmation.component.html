@@ -9,46 +9,52 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="grey">
-  <ion-list class="info-list">
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Sender Address" | translate }}</p>
-        <p class="info-desc">{{ sender }}</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Recipient Address" | translate }}</p>
-        <p class="info-desc">{{ recipient }}</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Amount" | translate }}</p>
-        <p class="info-desc">{{ amount }} ZBC</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Amount" | translate }} USD</p>
-        <p class="info-desc">{{ amount }} USD</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Fee" | translate }}</p>
-        <p class="info-desc">{{ fee }} ZBC</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Fee" | translate }} USD</p>
-        <p class="info-desc">{{ fee }} ZBC</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-button (click)="confirm()">Submit</ion-button>
-    </ion-item>
-  </ion-list>
+<ion-content class="zbc-content-style-1">
+  <div class="content-inner ion-padding-top ion-padding-bottom">
+    <ion-list class="info-list">
+      <ion-item>
+        <ion-label class="ion-text-wrap">
+          <p class="info-label">{{ "Sender Address" | translate }}</p>
+          <p class="info-desc">{{ sender }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label class="ion-text-wrap">
+          <p class="info-label">{{ "Recipient Address" | translate }}</p>
+          <p class="info-desc">{{ recipient }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <p class="info-label">{{ "Amount" | translate }}</p>
+          <p class="info-desc">{{ amount.ZBC | number: "1.2-2" }} ZBC</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <p class="info-label">{{ "Amount" | translate }} USD</p>
+          <p class="info-desc">{{ amount.USD | number: "1.2-2" }} USD</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <p class="info-label">{{ "Fee" | translate }}</p>
+          <p class="info-desc">{{ fee.ZBC | number: "1.2-2" }} ZBC</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <p class="info-label">{{ "Fee" | translate }} USD</p>
+          <p class="info-desc">{{ fee.USD | number: "1.2-2" }} ZBC</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+  <ion-button
+    (click)="confirm()"
+    class="zbc-button-full ion-margin-top"
+    expand="full"
+    type="submit"
+    >{{ "Send" | translate }}
+  </ion-button>
 </ion-content>

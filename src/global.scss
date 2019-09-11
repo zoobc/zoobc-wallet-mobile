@@ -151,3 +151,47 @@ a {
     color: green;
   }
 }
+
+.zbc-content-style-1 {
+  --background: #efefef;
+  --padding-top: 1.4rem;
+  --padding-bottom: 1.4rem;
+
+  .content-inner {
+    background-color: #fff;
+  }
+}
+
+.zbc-form-item {
+  border-bottom: 1px solid #dedede;
+
+  &.last {
+    border-bottom: none;
+  }
+
+  .row-recipient {
+    border-bottom: 1px solid #dedede;
+    ion-col {
+      flex-shrink: 1;
+      flex-grow: 0;
+      ion-item {
+        --inner-padding-end: 0;
+      }
+    }
+    .col-recipient {
+      flex-grow: 1;
+    }
+  }
+}
+
+.zbc-button-full {
+  --box-shadow: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.form-error-text {
+  font-size: 0.8rem;
+  color: red;
+  margin-top: 0.3rem;
+}
