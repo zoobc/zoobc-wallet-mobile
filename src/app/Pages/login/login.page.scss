@@ -1,9 +1,11 @@
-@import "../../../assets/scss/main.scss";
+@import "../../../assets/scss/mixins/_mixins";
 
-.login {
-  height: 100%;
-  padding: 20px;
-  @include flex-init;
-  @include flex-direction(column);
-  @include justify-content(center);
+.page-login {
+  .login {
+    height: 100%;
+    padding: 20px;
+    @include flex-init;
+    @include flex-direction(column);
+    @include justify-content(center);
+  }
 }
