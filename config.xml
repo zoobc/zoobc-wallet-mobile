@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.zoobc.walletmobile" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>ZooBC Wallet</name>
+<widget id="com.zoobc.wallet" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>ZooBC</name>
     <description>Wallet app for Zoo Blockchain.</description>
     <author email="support@zoobc.com" href="http://zoobc.com/">Zoobc Wallet Team</author>
     <content src="index.html" />

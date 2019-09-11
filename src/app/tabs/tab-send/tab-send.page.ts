@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { LoadingController, AlertController } from '@ionic/angular';
-
+import { AuthService } from 'src/services/auth-service';
 import {
   ToastController,
   MenuController,
@@ -39,6 +39,7 @@ export class TabSendPage {
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
     private router: Router,
+    private authService: AuthService,
     private modalController: ModalController,
     public alertController: AlertController,
     public loadingController: LoadingController
@@ -65,8 +66,7 @@ export class TabSendPage {
         {
           name: 'pin',
           type: 'password',
-          placeholder: '6 digits number',
-          value: '123456'
+          placeholder: '6 digits number'
         }
       ],
       buttons: [
@@ -79,9 +79,30 @@ export class TabSendPage {
           }
         }, {
           text: 'Ok',
-          handler: () => {
-            console.log('Confirm Ok');
-            this.sendMoney();
+          handler: (data) => {
+            console.log(JSON.stringify(data));
+
+            if ('' === data.pin) {
+              console.log('empty pin: ' + data.pin);
+              this.failedToast();
+              return;
+            }
+
+            if (data.pin.length < 6) {
+              console.log(' pin length: ' + data.pin.length);
+              this.failedToast();
+              return;
+            }
+
+
+            if (data.pin.length > 6) {
+              console.log(' pin length: ' + data.pin.length);
+              this.failedToast();
+              return;
+            }
+
+            console.log(data.pin);
+            this.login(data);
           }
         }
       ]
@@ -91,7 +112,43 @@ export class TabSendPage {
   }
 
 
-  async presentAlertConfirm() {
+
+
+  async login(e: any) {
+
+    const { observer, pin } = e;
+
+    console.log('=====pin:', pin);
+    console.log('=====pin:', observer);
+
+    const isUserLoggedIn = await this.authService.login(pin);
+    if (isUserLoggedIn) {
+      this.sendMoney();
+     // this.router.navigate(["tabs"]);
+
+      setTimeout(() => {
+        console.log('wait a secon');
+      }, 1000);
+
+    } else {
+      setTimeout(() => {
+        console.log('wait a secon');
+        this.failedToast();
+      }, 1000);
+    }
+
+  }
+
+
+  async failedToast() {
+    const toast = await this.toastController.create({
+      message: 'PIN not match',
+      duration: 2000
+    });
+    toast.present();
+  }
+
+  async showConfirmation() {
     const alert = await this.alertController.create({
       header: 'Confirmation!',
       message: '<div>From:</br><strong>' + this.shortAddress(this.sender) + '</strong></br></br>'
@@ -108,7 +165,7 @@ export class TabSendPage {
             console.log('Confirm Cancel: blah');
           }
         }, {
-          text: 'Okay',
+          text: 'Ok',
           handler: () => {
             console.log('Confirm Okay');
             this.inputPIN();

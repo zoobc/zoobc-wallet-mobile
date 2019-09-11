@@ -1,5 +1,5 @@
 <ion-header no-border>
-  <ion-toolbar>
+  <ion-toolbar color="secondary">
     <ion-buttons slot="start">
       <ion-button (click)="openMenu()">
         <ion-icon slot="icon-only" name="menu"></ion-icon>
@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content class="page-send" padding="true">
-  <form #form="ngForm" (ngSubmit)="submit(form)">
+  <form #form="ngForm" (ngSubmit)="submit()">
     <div class="f-group">
       <ion-item lines="none">
         <ion-label position="stacked">{{ "From" | translate }}:</ion-label>
@@ -87,10 +87,8 @@
     <div padding>
       <ion-button
         color="secondary"
-        (click)="sendMoney()"
-        type="submit"
-        expand="block"
-        >{{ "Send" | translate }}
+        (click)="showConfirmation()"
+        expand="block"><b>{{ "Send" | translate }}</b>
       </ion-button>
     </div>
 

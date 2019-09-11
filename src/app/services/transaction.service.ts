@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TransactionServiceClient } from "../grpc/service/transactionServiceClientPb";
+import { MempoolServiceClient } from "../grpc/service/mempoolServiceClientPb";
 
 import {
   GetTransactionsRequest,
@@ -9,6 +10,9 @@ import {
   GetTransactionRequest,
   Transaction
 } from "../grpc/model/transaction_pb";
+
+import { MempoolTransaction, GetMempoolTransactionsRequest, GetMempoolTransactionsResponse } from '../grpc/model/mempool_pb';
+
 import { readInt64 } from "src/helpers/converters";
 
 @Injectable({
@@ -18,12 +22,69 @@ export class TransactionService {
   grpcUrl = "http://18.139.3.139:7001";
 
   srvClient: TransactionServiceClient;
+  mempoolClient: MempoolServiceClient;
 
   constructor() {
     this.srvClient = new TransactionServiceClient(this.grpcUrl, null, null);
+    this.mempoolClient = new MempoolServiceClient(this.grpcUrl, null, null);
+  }
+
+
+  getUnconfirmTransaction(address: string): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const request = new GetMempoolTransactionsRequest();
+      request.setLimit(10);
+      request.setPage(1);
+      request.setAddress(address);
+
+      this.mempoolClient.getMempoolTransactions(
+        request,
+        null,
+        (err, response: GetMempoolTransactionsResponse) => {
+          if (err) {
+            return reject(err);
+          }
+
+          const originTx = response.toObject().mempooltransactionsList;
+
+          const transactions = originTx.map(tx => {
+            const bytes = Buffer.from(
+              tx.transactionbytes.toString(),
+              'base64'
+            );
+
+            const trxAmount = readInt64(bytes, 121);
+            const trxFee = readInt64(bytes, 109);
+
+            const friendAddress =
+            tx.senderaccountaddress === address
+              ? tx.recipientaccountaddress
+              : tx.senderaccountaddress;
+
+            const trxType = tx.senderaccountaddress === address ? 'send' : 'receive';
+            const trxAlias = 'Alias-';
+            //  this.contactServ.getContact(friendAddress).alias || '';
+
+            return {
+                alias: trxAlias,
+                address: friendAddress,
+                type: trxType,
+                timestamp: parseInt(tx.arrivaltimestamp, 10) * 1000,
+                fee: trxFee,
+                amount: trxAmount,
+              };
+
+          });
+
+          resolve(transactions);
+        }
+      );
+
+    });
   }
 
   getAll(account: string): Promise<any[]> {
+
     return new Promise((resolve, reject) => {
       const request = new GetTransactionsRequest();
       request.setLimit(10);

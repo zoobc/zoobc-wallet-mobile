@@ -49,8 +49,8 @@ export class QrScannerComponent implements OnInit {
         }
       })
       .catch((e: any) => {
-        alert(e)
-        console.log('Error is', e)
+        alert(e);
+        console.log('Error is', e);
       });
 
   }
