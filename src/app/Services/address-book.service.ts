@@ -38,4 +38,10 @@ export class AddressBookService {
 
     return addressObj;
   }
+
+  async delete(index) {
+    const addresses = await this.storage.get("addresses");
+    addresses.splice(index, 1);
+    await this.storage.set("addresses", addresses);
+  }
 }
