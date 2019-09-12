@@ -34,7 +34,6 @@ const routes: Routes = [
     loadChildren: "./setup-pin/setup-pin.module#SetupPinPageModule"
   },
   { path: "login", loadChildren: "./login/login.module#LoginPageModule" },
-  { path: "test-w", loadChildren: "./test-w/test-w.module#TestWPageModule" },
   {
     path: "existing-wallet",
     loadChildren:

@@ -20,6 +20,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/languages/locales/', '.json');
@@ -50,6 +51,7 @@ export function createTranslateLoader(http: HttpClient) {
     StatusBar,
     SplashScreen,
     QRScanner,
+    SocialSharing,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: "global", useFactory: () => window },
     { provide: "nacl.sign", useFactory: () => naclSign },

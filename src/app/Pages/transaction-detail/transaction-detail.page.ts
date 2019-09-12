@@ -17,8 +17,9 @@ export class TransactionDetailPage implements OnInit {
     type: null,
     sender: "",
     recipient: "",
-    amount: null,
-    fee: null,
+    amount: 0,
+    fee: 0,
+    total: 0,
     transactionDate: null
   };
 

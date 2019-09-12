@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 import { MenuController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -22,13 +23,17 @@ export class TabReceivePage {
     shortadress: ''
   };
 
+  text = 'zoobc address: jkJjljlljklljl908kHJyijuiui';
+  url = 'https://zoobc.com';
+
   constructor(
     private clipboard: Clipboard,
     private toastController: ToastController,
     private menuController: MenuController,
     private storage: Storage,
     private accountService: AccountService,
-    private activeAccountSrv: ActiveAccountService
+    private activeAccountSrv: ActiveAccountService,
+    private socialSharing: SocialSharing
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
@@ -61,6 +66,15 @@ export class TabReceivePage {
     document.body.removeChild(selBox);
 
     this.copySuccess();
+  }
+
+  async shareWhatsApp() {
+    // Text + Image or URL works
+    this.socialSharing.shareViaWhatsApp(this.text, null, this.url).then(() => {
+      // Success
+    }).catch((e) => {
+      // Error!
+    });
   }
 
   async copySuccess() {

@@ -3,7 +3,8 @@ export interface Transaction {
   type: string;
   sender: string;
   recipient: string;
-  amount: any;
+  amount: number;
   fee: number;
+  total: number;
   transactionDate: Date;
 }
