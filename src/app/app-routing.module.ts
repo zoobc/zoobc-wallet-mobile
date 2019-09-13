@@ -91,6 +91,12 @@ const routes: Routes = [
     canActivate: [AuthService]
   },
   {
+    path: "select-address",
+    loadChildren:
+      "./Pages/select-address/select-address.module#SelectAddressPageModule",
+    canActivate: [AuthService]
+  },
+  {
     path: "transaction",
     loadChildren:
       "./Pages/transaction/transaction.module#TransactionPageModule",
@@ -110,6 +116,11 @@ const routes: Routes = [
   {
     path: "setup-pin",
     loadChildren: "./Pages/setup-pin/setup-pin.module#SetupPinPageModule"
+  },
+  {
+    path: "select-address",
+    loadChildren:
+      "./Pages/select-address/select-address.module#SelectAddressPageModule"
   }
 ];
 @NgModule({

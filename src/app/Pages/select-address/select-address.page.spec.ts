@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddressBookListComponent } from './address-book-list.component';
+import { SelectAddressPage } from './select-address.page';
 
-describe('AddressBookListComponent', () => {
-  let component: AddressBookListComponent;
-  let fixture: ComponentFixture<AddressBookListComponent>;
+describe('SelectAddressPage', () => {
+  let component: SelectAddressPage;
+  let fixture: ComponentFixture<SelectAddressPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddressBookListComponent ],
+      declarations: [ SelectAddressPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddressBookListComponent);
+    fixture = TestBed.createComponent(SelectAddressPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -11,7 +11,6 @@ import { addressToPublicKey, publicKeyToAddress } from "src/helpers/converters";
 import { Storage } from "@ionic/storage";
 import { Router } from "@angular/router";
 import { AccountService } from "src/app/Services/account.service";
-import { ModalAddressBookComponent } from "./modal-address-book/modal-address-book.component";
 import { KeyringService } from "src/app/Services/keyring.service";
 import { BytesMaker } from "src/helpers/BytesMaker";
 import { QrScannerService } from "src/app/Services/qr-scanner.service";
@@ -19,6 +18,8 @@ import { ModalConfirmationComponent } from "./modal-confirmation/modal-confirmat
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { CurrencyService } from "src/app/Services/currency.service";
 import { Account } from "src/app/Interfaces/account";
+import { AddressBookService } from "src/app/Services/address-book.service";
+import { SelectAddressService } from "src/app/Services/select-address.service";
 
 @Component({
   selector: "app-tab-send",
@@ -62,7 +63,9 @@ export class TabSendPage implements OnInit {
     private modalController: ModalController,
     private keyringServ: KeyringService,
     private formBuilder: FormBuilder,
-    private currencySrv: CurrencyService
+    private currencySrv: CurrencyService,
+    private addressBookSrv: AddressBookService,
+    private selectAddressSrv: SelectAddressService
   ) {
     // this.sender = this.getAddress();
   }
@@ -291,22 +294,12 @@ export class TabSendPage implements OnInit {
   }
 
   openAddresses() {
-    this.presentModalAddressesList();
-  }
-
-  async presentModalAddressesList() {
-    const modal = await this.modalController.create({
-      component: ModalAddressBookComponent
+    this.selectAddressSrv.onSelect().subscribe(addressObj => {
+      this.sendForm.patchValue({
+        recipient: addressObj.address
+      });
     });
 
-    modal.onDidDismiss().then((returnVal: any) => {
-      if (returnVal.data && returnVal.data.address) {
-        this.sendForm.patchValue({
-          recipient: returnVal.data.address
-        });
-      }
-    });
-
-    return await modal.present();
+    this.navCtrl.navigateForward("select-address");
   }
 }
