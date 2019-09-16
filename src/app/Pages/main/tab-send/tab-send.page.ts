@@ -20,6 +20,7 @@ import { CurrencyService } from "src/app/Services/currency.service";
 import { Account } from "src/app/Interfaces/account";
 import { AddressBookService } from "src/app/Services/address-book.service";
 import { SelectAddressService } from "src/app/Services/select-address.service";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-tab-send",
@@ -169,8 +170,18 @@ export class TabSendPage implements OnInit {
     return await modal.present();
   }
 
+  resetForm() {
+    this.sendForm.reset({
+      amountCurr: "ZBC",
+      feeCurr: "ZBC"
+    });
+  }
+
   onSubmit() {
-    this.formSubmitted = true;
+    (<any>Object).values(this.sendForm.controls).forEach(control => {
+      control.markAsDirty();
+      control.markAsTouched();
+    });
 
     if (this.sendForm.valid) {
       this.presentConfirmationModal();
@@ -182,38 +193,17 @@ export class TabSendPage implements OnInit {
     const { accountProps } = selectedAccount;
 
     const { derivationPrivKey: accountSeed } = accountProps;
+
     const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed);
 
-    // const balance = await this.grpcService.getAccountBalance();
-
-    // if (balance > this.account + this.fee) {
-    //   const tx = new SendMoneyTx();
-    //   tx.senderPublicKey = publicKey;
-    //   tx.recipientPublicKey = addressToPublicKey(this.recipient);
-    //   tx.amount = this.amount;
-    //   tx.fee = this.fee;
-    //   tx.timestamp = Date.now() / 1000;
-    //   const txBytes = tx.toBytes();
-
-    //   const signature = this.sign.detached(txBytes, secretKey);
-    //   txBytes.set(signature, 123);
-
-    //   const resolveTx = await this.grpcService.postTransaction(txBytes);
-
-    //   if (resolveTx) {
-    //     this.transactionToast("Money Sent");
-    //   }
-    // } else {
-    //   this.transactionToast("Balance not enough");
-    // }
-
+    //form value
     const sender = Buffer.from(publicKeyToAddress(publicKey), "utf-8");
-    const recepient = Buffer.from(
-      this.sendForm.get("recepient").value,
-      "utf-8"
-    );
-    const _amount = this.sendForm.get("amount");
-    const amountCurr = this.sendForm.get("amountCurr");
+
+    const _recipient = this.sendForm.get("recipient").value;
+    const recipient = Buffer.from(_recipient, "utf-8");
+
+    const _amount = this.sendForm.get("amount").value;
+    const amountCurr = this.sendForm.get("amountCurr").value;
     const convertedAmount = this.currencySrv.convertCurrency(
       _amount,
       amountCurr,
@@ -221,12 +211,14 @@ export class TabSendPage implements OnInit {
     );
     const amount = convertedAmount * 1e8;
 
-    const _fee = this.sendForm.get("fee");
-    const feeCurr = this.sendForm.get("feeCurr");
+    const _fee = this.sendForm.get("fee").value;
+    const feeCurr = this.sendForm.get("feeCurr").value;
     const convertedFee = this.currencySrv.convertCurrency(_fee, feeCurr, "ZBC");
     const fee = convertedFee * 1e8;
 
     const timestamp = Math.trunc(Date.now() / 1000);
+
+    const alias = this.sendForm.get("alias").value;
 
     let bytes = new BytesMaker(129);
     // transaction type
@@ -239,10 +231,10 @@ export class TabSendPage implements OnInit {
     bytes.write4bytes(44);
     // sender address
     bytes.write44Bytes(sender);
-    // recepient address length
+    // recipient address length
     bytes.write4bytes(44);
-    // recepient address
-    bytes.write44Bytes(recepient);
+    // recipient address
+    bytes.write44Bytes(recipient);
     // tx fee
     bytes.write8Bytes(fee);
     // tx body length
@@ -251,13 +243,17 @@ export class TabSendPage implements OnInit {
     bytes.write8Bytes(amount);
 
     const signature = this.sign.detached(bytes.value, secretKey);
-    let bytesWithSign = new BytesMaker(193);
+
+    //let signature = childSeed.sign(bytes.value);
+
+    let bytesWithSign = new BytesMaker(197);
 
     // copy to new bytes
     bytesWithSign.write(bytes.value, 129);
+    // set signature type
+    bytesWithSign.write4bytes(0);
     // set signature
     bytesWithSign.write(signature, 64);
-    console.log(bytesWithSign.value);
 
     const resolveTx = await this.grpcService.postTransaction(
       bytesWithSign.value
@@ -265,9 +261,12 @@ export class TabSendPage implements OnInit {
 
     if (resolveTx) {
       this.transactionToast("Money Sent");
-      this.recipient = "";
-      this.amount = 0;
-      this.fee = 0;
+
+      this.resetForm();
+
+      if (this.sendForm.get("saveToAddreesBook").value) {
+        this.addressBookSrv.save(alias, _recipient);
+      }
     }
   }
 

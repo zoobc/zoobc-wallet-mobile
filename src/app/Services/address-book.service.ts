@@ -8,6 +8,7 @@ import { Subject, Observable } from "rxjs";
 })
 export class AddressBookService {
   private _insertListener = new Subject<AddressBook>();
+  private _updateListener = new Subject<any>();
 
   constructor(private storage: Storage) {}
 
@@ -18,6 +19,56 @@ export class AddressBookService {
 
   onInsert(): Observable<any> {
     return this._insertListener.asObservable();
+  }
+
+  onUpdate(): Observable<any> {
+    return this._updateListener.asObservable();
+  }
+
+  async save(name: string, address: string) {
+    const _addresses = await this.getAll();
+    const addresses = _addresses ? _addresses : [];
+
+    const index = addresses.findIndex(elm => {
+      return elm.address == address;
+    });
+
+    let addressObj: AddressBook;
+
+    let isInsert = false;
+
+    if (index >= 0) {
+      //update
+      addresses[index].name = name;
+      addresses[index].address = address;
+
+      addressObj = {
+        name: addresses[index].name,
+        address: addresses[index].address,
+        created: addresses[index].created
+      };
+    } else {
+      //insert
+      addressObj = {
+        name: name,
+        address: address,
+        created: new Date()
+      };
+
+      addresses.push(addressObj);
+
+      isInsert = true;
+    }
+
+    await this.storage.set("addresses", addresses);
+
+    if (isInsert) {
+      this._insertListener.next(addressObj);
+    } else {
+      this._updateListener.next({ index, addressObj });
+    }
+
+    return addressObj;
   }
 
   async insert(name: string, address: string) {

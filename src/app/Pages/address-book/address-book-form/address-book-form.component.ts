@@ -50,7 +50,7 @@ export class AddressBookFormComponent implements OnInit {
     if (!this.addressForm.valid) {
       this.presentToast("Please complete all the fields");
     } else {
-      await this.addressBookSrv.insert(value.name, value.address);
+      await this.addressBookSrv.save(value.name, value.address);
 
       this.navCtrl.pop();
     }
