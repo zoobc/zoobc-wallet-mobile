@@ -58,6 +58,7 @@ export class TransactionDetailPage implements OnInit {
       recipient: transactionObj.recipient,
       amount: transactionObj.amount,
       fee: transactionObj.fee,
+      total: (transactionObj.amount + transactionObj.fee),
       transactionDate: new Date()
     };
   }

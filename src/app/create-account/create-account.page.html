@@ -22,14 +22,31 @@
       </ion-item>
     </ion-list>
 
+
     <div padding>
-      <ion-button
-        color="secondary"
-        (click)="createAccount()"
-        type="submit"
-        expand="block"
-        >Create Account
-      </ion-button>
+
+        <ion-row>
+            <ion-col col-6> 
+              <ion-button
+                expand="block"
+                color="tertiary"
+                (click)="closeModal()"
+                fill="outline"
+                expand="block"><b>Cancel</b>
+              </ion-button>
+            </ion-col>
+          
+            <ion-col col-6>
+                <ion-button
+                color="primary"
+                (click)="createAccount()"
+                type="submit"
+                expand="block"><b>Save</b>
+              </ion-button>        
+            </ion-col>
+        </ion-row>
+    
     </div>
+
   </div>
 </ion-content>

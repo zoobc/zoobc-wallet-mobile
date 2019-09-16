@@ -39,7 +39,6 @@ const routes: Routes = [
     loadChildren:
       "./existing-wallet/existing-wallet.module#ExistingWalletPageModule"
   },
-  { path: "test", loadChildren: "./test/test.module#TestPageModule" },
   {
     path: "create-account",
     loadChildren:
@@ -77,7 +76,7 @@ const routes: Routes = [
     loadChildren:
       "./Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule"
   },
-  { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule' }
+  { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule' },
 
 ];
 @NgModule({

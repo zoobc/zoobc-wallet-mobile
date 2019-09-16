@@ -68,7 +68,7 @@ export class GeneratePassphrasePage implements OnInit {
         this.navCtrl.navigateForward("/");
       }
     } else {
-      this.presentToast("Your Pin in not same");
+      this.presentToast("Your Pin is not same");
     }
   }
 

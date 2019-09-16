@@ -1129,6 +1129,9 @@ export class KeyringService {
       const errorText = "This browser does not support strong randomness";
       throw new Error(errorText);
     }
+
+    console.log('=== number words:', numWords);
+   
     // get the amount of entropy to use
     const strength = (numWords / 3) * 32;
     const buffer = new Uint8Array(strength / 8);

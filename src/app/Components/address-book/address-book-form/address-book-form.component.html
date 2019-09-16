@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar color="secondary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
@@ -41,13 +41,14 @@
                 expand="block"
                 color="tertiary"
                 (click)="closeModal()"
+                fill="outline"
                 expand="block"><b>Cancel</b>
               </ion-button>
             </ion-col>
           
             <ion-col col-6>
                 <ion-button
-                color="primary"
+                color="secondary"
                 (click)="addAddress()"
                 type="submit"
                 expand="block"><b>Save</b>
@@ -57,9 +58,5 @@
     
     </div>
 
-
-    <div padding>
-
-    </div>
   </div>
 </ion-content>

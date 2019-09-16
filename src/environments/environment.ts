@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   mnemonicLanguage: "english",
-  mnemonicNumWords: 12,
+  mnemonicNumWords: 24,
 };
 
 /*

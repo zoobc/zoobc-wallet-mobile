@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Storage } from "@ionic/storage";
 import { KeyringService } from "../core/keyring.service";
 import { Router } from "@angular/router";
-import { NavController } from "@ionic/angular";
+import { NavController, ModalController } from "@ionic/angular";
 
 @Component({
   selector: "app-create-account",
@@ -16,12 +16,20 @@ export class CreateAccountPage implements OnInit {
   constructor(
     private storage: Storage,
     private keyringService: KeyringService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
     this.generateAccount();
   }
+
+  closeModal() {
+    this.modalController.dismiss({
+      dismissed: true
+    });
+  }
+
 
   async generateAccount() {
     const passphrase = await this.storage.get("passphrase");
