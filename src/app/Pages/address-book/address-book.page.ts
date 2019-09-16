@@ -22,6 +22,10 @@ export class AddressBookPage implements OnInit {
       this.addresses.push(addressObj);
     });
 
+    this.addressBookSrv.onUpdate().subscribe(({ index, addressObj }) => {
+      this.addresses[index] = addressObj;
+    });
+
     this.loadData();
   }
 

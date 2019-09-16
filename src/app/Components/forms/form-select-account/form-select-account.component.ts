@@ -47,6 +47,7 @@ export class FormSelectAccountComponent
   }
   writeValue(value: any) {
     this.value = value;
+    this.selectedItem = value;
   }
   registerOnChange(fn: any) {
     this.changeData = fn;

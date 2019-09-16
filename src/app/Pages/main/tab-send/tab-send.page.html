@@ -24,7 +24,10 @@
       </div>
       <div
         class="form-error-text ion-padding-start ion-padding-end"
-        *ngIf="sendForm.get('sender').hasError('required') && formSubmitted"
+        *ngIf="
+          sendForm.get('sender').hasError('required') &&
+          (sendForm.get('sender').dirty || sendForm.get('sender').touched)
+        "
       >
         Please select an account
       </div>
@@ -63,8 +66,7 @@
           class="form-error-text ion-padding-start ion-padding-end"
           *ngIf="
             sendForm.get('recipient').hasError('required') &&
-            (formSubmitted ||
-              sendForm.get('recipient').dirty ||
+            (sendForm.get('recipient').dirty ||
               sendForm.get('recipient').touched)
           "
         >
@@ -90,9 +92,7 @@
           class="form-error-text ion-padding-start ion-padding-end"
           *ngIf="
             sendForm.get('alias').hasError('required') &&
-            (formSubmitted ||
-              sendForm.get('alias').dirty ||
-              sendForm.get('alias').touched)
+            (sendForm.get('alias').dirty || sendForm.get('alias').touched)
           "
         >
           Please enter an alias
@@ -144,9 +144,7 @@
         class="form-error-text ion-padding-start ion-padding-end"
         *ngIf="
           sendForm.get('amount').hasError('required') &&
-          (formSubmitted ||
-            sendForm.get('amount').dirty ||
-            sendForm.get('amount').touched)
+          (sendForm.get('amount').dirty || sendForm.get('amount').touched)
         "
       >
         Please enter an amount
@@ -194,9 +192,7 @@
         class="form-error-text ion-padding-start ion-padding-end"
         *ngIf="
           sendForm.get('fee').hasError('required') &&
-          (formSubmitted ||
-            sendForm.get('fee').dirty ||
-            sendForm.get('fee').touched)
+          (sendForm.get('fee').dirty || sendForm.get('fee').touched)
         "
       >
         Please enter a fee
@@ -209,5 +205,16 @@
       type="submit"
       >{{ "Send" | translate }}
     </ion-button>
+
+    <div class="ion-text-center">
+      <ion-button
+        (click)="resetForm()"
+        class="zbc-button-full ion-margin-top"
+        fill="clear"
+        color="medium"
+        type="button"
+        >{{ "Reset Form" | translate }}
+      </ion-button>
+    </div>
   </form>
 </ion-content>
