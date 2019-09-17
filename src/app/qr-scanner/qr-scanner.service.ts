@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
-export class QrScannerService {
+export class QrScannerService implements OnInit {
 
   private listners = new Subject<string>();
 
   constructor() { }
+
+  ngOnInit() {
+  }
 
   listen(): Observable<any> {
     return this.listners.asObservable();

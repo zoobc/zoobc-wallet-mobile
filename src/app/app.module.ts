@@ -22,6 +22,7 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
+import { from } from 'rxjs';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/languages/locales/', '.json');
 }

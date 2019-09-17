@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthService } from 'src/services/auth-service';
 import {
@@ -10,7 +10,7 @@ import { GRPCService } from 'src/services/grpc.service';
 import { publicKeyToAddress } from 'src/helpers/converters';
 import { Storage } from '@ionic/storage';
 import { QrScannerService } from 'src/app/qr-scanner/qr-scanner.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from 'src/services/account.service';
 import { AddressBookModalComponent } from './address-book-modal/address-book-modal.component';
 import { BytesMaker } from 'src/helpers/BytesMaker';
@@ -20,7 +20,7 @@ import { BytesMaker } from 'src/helpers/BytesMaker';
   templateUrl: 'tab-send.page.html',
   styleUrls: ['tab-send.page.scss']
 })
-export class TabSendPage {
+export class TabSendPage implements OnInit{
   rootPage: any;
   status: any;
   register: any;
@@ -42,6 +42,7 @@ export class TabSendPage {
     private authService: AuthService,
     private modalController: ModalController,
     public alertController: AlertController,
+    private activeRoute: ActivatedRoute,
     public loadingController: LoadingController
   ) {
   }
@@ -61,6 +62,7 @@ export class TabSendPage {
 
   async inputPIN() {
     const alert = await this.alertController.create({
+      cssClass: 'popup-pin',
       header: 'Input your PIN!',
       inputs: [
         {
@@ -111,8 +113,12 @@ export class TabSendPage {
     await alert.present();
   }
 
-
-
+  ngOnInit() {
+    this.activeRoute.queryParams.subscribe(params => {
+      this.recipient = JSON.parse(params.address);
+      console.log('== From: ', this.recipient);
+    });
+  }
 
   async login(e: any) {
 
@@ -150,11 +156,13 @@ export class TabSendPage {
 
   async showConfirmation() {
     const alert = await this.alertController.create({
+      cssClass: 'popup-pin',
       header: 'Confirmation!',
       message: '<div>From:</br><strong>' + this.shortAddress(this.sender) + '</strong></br></br>'
       + 'To:</br><strong>' + this.shortAddress(this.recipient) + '</strong></br></br>'
       + 'Amount:</br><strong>' + this.amount + '</strong></br></br>'
       + 'Fee:</br><strong>' + this.fee + '</strong></br></br>'
+      + 'Total:</br><strong>' + (this.amount + this.fee) + '</strong></br></br>'
       + '</div>',
       buttons: [
         {
@@ -178,6 +186,15 @@ export class TabSendPage {
   }
 
   async sendMoney() {
+
+    // show loading bar
+    const loading = await this.loadingController.create({
+      message: 'Please wait, submiting!',
+      duration: 5000
+    });
+    await loading.present();
+
+
     const { derivationPrivKey: accountSeed } = this.account.accountProps;
     console.log('this.account.accountProps: ', this.account.accountProps);
     const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed);
@@ -247,26 +264,25 @@ export class TabSendPage {
     console.log(bytesWithSign.value);
 
 
-    // show loading bar
-    const loading = await this.loadingController.create({
-      message: 'Please wait, submiting!',
-      duration: 5000
-    });
-    await loading.present();
-
-    const resolveTx = await this.grpcService.postTransaction(
+    await this.grpcService.postTransaction(
       bytesWithSign.value
+    ).then((resolveTx) => {
+
+      console.log('========= response from grpc: ',  resolveTx);
+      if (resolveTx) {
+        loading.dismiss();
+        this.transactionToast('Transaction Submited!');
+        this.recipient = '';
+        this.amount = 0;
+        this.fee = 0;
+
+        this.router.navigateByUrl('/tabs/dashboard');
+
+        return;
+      }}
     );
 
 
-    console.log('========= response from grpc: ',  resolveTx);
-
-    if (resolveTx) {
-      this.transactionToast('Money Sent');
-      this.recipient = '';
-      this.amount = 0;
-      this.fee = 0;
-    }
     loading.dismiss();
 
   }
@@ -274,7 +290,7 @@ export class TabSendPage {
   async transactionToast(msg) {
     const toast = await this.toastController.create({
       message: msg,
-      duration: 2000
+      duration: 5000
     });
     toast.present();
   }
@@ -285,9 +301,8 @@ export class TabSendPage {
 
   scanQrCode() {
     this.router.navigateByUrl('/qr-scanner');
-
-    this.qrScannerSrv.listen().subscribe((str: string) => {
-      this.recipient = str;
+    this.qrScannerSrv.listen().subscribe((address: string) => {
+      this.recipient = address;
     });
   }
 

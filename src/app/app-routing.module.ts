@@ -76,7 +76,8 @@ const routes: Routes = [
     loadChildren:
       "./Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule"
   },
-  { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule' },
+  { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule' }
+
 
 ];
 @NgModule({

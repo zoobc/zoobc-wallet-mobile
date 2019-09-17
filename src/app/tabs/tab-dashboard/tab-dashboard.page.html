@@ -37,9 +37,9 @@
       <ion-grid>
         
         <ion-row >
-          <ion-col   size="12" text-center>
-              <h2 class="account-name"><span (click)="openListAccount()">{{ account.accountName }}</span></h2>
-              <ion-label>{{ account.shortadress }}</ion-label>
+          <ion-col  size="12" text-center>
+              <h2 class="account-name" (click)="openListAccount()"><span >{{ account.accountName }}</span> <span><ion-icon style = "margin-left:10px;" name="arrow-dropdown"></ion-icon></span></h2>
+              <ion-label sytle="margin-bottom:20px;" (click)="openListAccount()">{{ account.shortadress }}</ion-label>
           </ion-col>
         </ion-row>
       

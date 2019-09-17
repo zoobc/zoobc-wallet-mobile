@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-
-import { MenuController, ToastController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
+import { MenuController, ToastController, ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { AccountService } from 'src/services/account.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
@@ -23,9 +23,6 @@ export class TabReceivePage {
     shortadress: ''
   };
 
-  text = 'zoobc address: jkJjljlljklljl908kHJyijuiui';
-  url = 'https://zoobc.com';
-
   constructor(
     private clipboard: Clipboard,
     private toastController: ToastController,
@@ -33,7 +30,8 @@ export class TabReceivePage {
     private storage: Storage,
     private accountService: AccountService,
     private activeAccountSrv: ActiveAccountService,
-    private socialSharing: SocialSharing
+    private socialSharing: SocialSharing,
+    public platform: Platform
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
@@ -48,6 +46,17 @@ export class TabReceivePage {
 
   openMenu() {
     this.menuController.open('mainMenu');
+  }
+
+
+  // Share Options
+  async openSharing() {
+    this.platform.ready().then(async () => {
+      await this.socialSharing.share('My ZooBC address: '  +  this.account.address).then(() => {
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
   }
 
   tapAddress() {
@@ -66,15 +75,6 @@ export class TabReceivePage {
     document.body.removeChild(selBox);
 
     this.copySuccess();
-  }
-
-  async shareWhatsApp() {
-    // Text + Image or URL works
-    this.socialSharing.shareViaWhatsApp(this.text, null, this.url).then(() => {
-      // Success
-    }).catch((e) => {
-      // Error!
-    });
   }
 
   async copySuccess() {
@@ -111,5 +111,5 @@ export class TabReceivePage {
     this.getActiveAccount();
   }
 
-  onInit() {}
+  onInit() { }
 }
