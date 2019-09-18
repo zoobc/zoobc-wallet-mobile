@@ -43,6 +43,7 @@ export class TabDashboardPage implements OnInit {
   unconfirmedBalance = 0;
 
   transactions: any[] = [];
+  pendingTransactions: any[] = [];
 
   constructor(
     private apiservice: RestapiService,
@@ -83,6 +84,7 @@ export class TabDashboardPage implements OnInit {
 
     this.getAccountBalance();
     this.getAccountTransaction();
+    this.getPendingTransactions();
   }
 
   goToSend() {
@@ -171,6 +173,30 @@ export class TabDashboardPage implements OnInit {
     );
 
     this.transactions = transactions.map(v => {
+      let type = "plus";
+      let address = v.sender;
+
+      if (this.account.address === v.sender) {
+        address = v.recipient;
+        type = "minus";
+      }
+
+      return {
+        id: v.id,
+        address,
+        date: v.transactionDate,
+        type: type,
+        amount: v.amount
+      };
+    });
+  }
+
+  async getPendingTransactions() {
+    const transactions = await this.transactionSrv.getPendingTransaction(
+      this.account.address
+    );
+
+    this.pendingTransactions = transactions.map(v => {
       let type = "plus";
       let address = v.sender;
 
