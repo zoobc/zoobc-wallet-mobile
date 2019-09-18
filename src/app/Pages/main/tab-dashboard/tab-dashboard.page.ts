@@ -16,7 +16,6 @@ import { Observable } from "rxjs";
 import * as moment from "moment";
 import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
 import { TransactionService } from "src/app/Services/transaction.service";
-import { Transaction } from "src/app/grpc/model/transaction_pb";
 import { Account } from "src/app/Interfaces/account";
 
 @Component({
@@ -94,6 +93,10 @@ export class TabDashboardPage implements OnInit {
     this.navCtrl.navigateForward("main/receive");
   }
 
+  goToTransaction() {
+    this.navCtrl.navigateForward("transaction");
+  }
+
   async getBalance(pKey: string) {
     const loading = await this.loadingController.create({
       message: "Loading"
@@ -158,7 +161,10 @@ export class TabDashboardPage implements OnInit {
   }
 
   async getAccountTransaction() {
-    const transactions = await this.transactionSrv.getAll(this.account.address);
+    const transactions = await this.transactionSrv.getAll(
+      this.account.address,
+      5
+    );
 
     this.transactions = transactions.map(v => {
       let type = "plus";

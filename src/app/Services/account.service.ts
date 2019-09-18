@@ -1,14 +1,15 @@
 import { Injectable, Inject } from "@angular/core";
 import { publicKeyToAddress } from "src/helpers/converters";
 import { Storage } from "@ionic/storage";
-import { AccountBalanceServiceClient } from "../grpc/service/accountBalanceServiceClientPb";
-import {
-  GetAccountBalanceResponse,
-  GetAccountBalanceRequest
-} from "../grpc/model/accountBalance_pb";
+
 import { environment } from "src/environments/environment";
 import { KeyringService } from "./keyring.service";
 import { Account } from "../Interfaces/account";
+import {
+  GetAccountBalanceRequest,
+  GetAccountBalanceResponse
+} from "externals/grpc/model/accountBalance_pb";
+import { AccountBalanceServiceClient } from "externals/grpc/service/accountBalanceServiceClientPb";
 
 @Injectable({
   providedIn: "root"
@@ -66,11 +67,7 @@ export class AccountService {
   }
 
   async getAccountBalance(address: string) {
-    const client = new AccountBalanceServiceClient(
-      environment.grpcUrl,
-      null,
-      null
-    );
+    const client = new AccountBalanceServiceClient(environment.grpcUrl, null);
     return new Promise((resolve, reject) => {
       const request = new GetAccountBalanceRequest();
       request.setAccountaddress(address);
