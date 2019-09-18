@@ -34,6 +34,7 @@ export class TransactionService {
       const request = new GetTransactionsRequest();
       request.setPagination(pagination);
       request.setAccountaddress(account);
+      request.setTransactiontype(1);
 
       this.srvClient.getTransactions(
         request,
