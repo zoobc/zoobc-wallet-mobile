@@ -1,33 +1,38 @@
 import { Injectable } from "@angular/core";
-import { TransactionServiceClient } from "../grpc/service/transactionServiceClientPb";
 
+import { readInt64 } from "src/helpers/converters";
+import { environment } from "src/environments/environment";
+import { TransactionServiceClient } from "externals/grpc/service/transactionServiceClientPb";
+import { Pagination } from "externals/grpc/model/pagination_pb";
 import {
   GetTransactionsRequest,
   GetTransactionsResponse,
-  PostTransactionRequest,
-  PostTransactionResponse,
   GetTransactionRequest,
   Transaction
-} from "../grpc/model/transaction_pb";
-import { readInt64 } from "src/helpers/converters";
+} from "externals/grpc/model/transaction_pb";
 
 @Injectable({
   providedIn: "root"
 })
 export class TransactionService {
-  grpcUrl = "http://18.139.3.139:7001";
-
   srvClient: TransactionServiceClient;
 
   constructor() {
-    this.srvClient = new TransactionServiceClient(this.grpcUrl, null, null);
+    this.srvClient = new TransactionServiceClient(environment.grpcUrl);
   }
 
-  getAll(account: string): Promise<any[]> {
+  getAll(
+    account: string,
+    limit: number = 10,
+    page: number = 1
+  ): Promise<any[]> {
     return new Promise((resolve, reject) => {
+      const pagination = new Pagination();
+      pagination.setLimit(limit);
+      pagination.setPage(page);
+
       const request = new GetTransactionsRequest();
-      request.setLimit(10);
-      request.setPage(1);
+      request.setPagination(pagination);
       request.setAccountaddress(account);
 
       this.srvClient.getTransactions(

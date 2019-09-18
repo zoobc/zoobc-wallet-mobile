@@ -8,6 +8,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { Network } from "@ionic-native/network/ngx";
 import { PipeModule } from "src/pipe/pipe.module";
 import { SidemenuModule } from "src/app/Components/sidemenu/sidemenu.module";
+import { ZoobcPipesModule } from "src/app/Pipes/zoobc-pipes.module";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { SidemenuModule } from "src/app/Components/sidemenu/sidemenu.module";
     TranslateModule,
     RouterModule.forChild([{ path: "", component: TabDashboardPage }]),
     PipeModule,
-    SidemenuModule
+    SidemenuModule,
+    ZoobcPipesModule
   ],
   declarations: [TabDashboardPage],
   entryComponents: [],
