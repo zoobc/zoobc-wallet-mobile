@@ -9,5 +9,13 @@
     </div>
 
     <app-pin (onChange)="login($event)"></app-pin>
+
+    <ion-button
+      routerLink="/initial"
+      class="zbc-button-full ion-margin-top"
+      expand="full"
+      type="submit"
+      >{{ "Change Account" | translate }}
+    </ion-button>
   </div>
 </ion-content>
