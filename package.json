@@ -11,8 +11,7 @@
     "build:ios": "cordova build ios --buildFlag='-UseModernBuildSystem=0'",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "compile-proto": "sh compile-proto.sh"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
