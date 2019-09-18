@@ -3,6 +3,20 @@
 
   font-family: "Gotham-Light";
 
+  .selected-account {
+    ion-item {
+      --background: transparent;
+      --color: #fff;
+      font-size: 0.8rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 5px;
+      h2 {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
   .title-section {
     margin-top: 1.6rem;
   }

@@ -25,8 +25,19 @@
 
   <ion-card class="card-balance">
     <ion-card-content>
-      <h2 class="account-name">{{ account.name }}</h2>
-      <ion-label>{{ account.address }}</ion-label>
+      <div class="selected-account">
+        <ion-item
+          lines="none"
+          button="true"
+          detail="true"
+          (click)="openListAccount()"
+        >
+          <ion-label
+            ><h2 class="account-name">{{ account.name }}</h2>
+            {{ account.address }}</ion-label
+          >
+        </ion-item>
+      </div>
 
       <ion-item lines="none" class="ion-no-padding balance-item">
         <img class="logo" src="assets/images/logo-white.png" />
