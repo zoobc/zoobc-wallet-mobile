@@ -6,10 +6,6 @@
 	path = externals/bip32
 	url = https://github.com/BlockchainZoo/bip32.git
 	branch = SLIP10
-[submodule "src/grpc/schema"]
-	path = src/grpc/schema
-	url = https://github.com/BlockchainZoo/spinechain-schema-prototype.git
-	branch = master
 [submodule "src/assets/languages"]
 	path = src/assets/languages
 	url = https://github.com/zoobc/zoobc-language-files.git
@@ -17,3 +13,6 @@
 	path = externals/proto
 	url = https://github.com/zoobc/zoobc-schema
 	branch = develop
+[submodule "externals/grpc"]
+	path = externals/grpc
+	url = https://github.com/zoobc/zoobc-grpc-ts.git
