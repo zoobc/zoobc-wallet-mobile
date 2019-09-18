@@ -3,23 +3,26 @@ import { Injectable } from "@angular/core";
 import { readInt64 } from "src/helpers/converters";
 import { environment } from "src/environments/environment";
 import { TransactionServiceClient } from "externals/grpc/service/transactionServiceClientPb";
-import { Pagination } from "externals/grpc/model/pagination_pb";
+import { Pagination, OrderBy } from "externals/grpc/model/pagination_pb";
 import {
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetTransactionRequest,
   Transaction
 } from "externals/grpc/model/transaction_pb";
+import {
+  GetMempoolTransactionRequest,
+  GetMempoolTransactionsRequest,
+  GetMempoolTransactionsResponse
+} from "externals/grpc/model/mempool_pb";
+import { MempoolServiceClient } from "externals/grpc/service/mempoolServiceClientPb";
 
 @Injectable({
   providedIn: "root"
 })
 export class TransactionService {
-  srvClient: TransactionServiceClient;
-
-  constructor() {
-    this.srvClient = new TransactionServiceClient(environment.grpcUrl);
-  }
+  transactionSrvClient: TransactionServiceClient;
+  mempoolSrvClient: MempoolServiceClient;
 
   getAll(
     account: string,
@@ -36,7 +39,11 @@ export class TransactionService {
       request.setAccountaddress(account);
       request.setTransactiontype(1);
 
-      this.srvClient.getTransactions(
+      const transactionSrvClient = new TransactionServiceClient(
+        environment.grpcUrl
+      );
+
+      transactionSrvClient.getTransactions(
         request,
         null,
         (err, response: GetTransactionsResponse) => {
@@ -79,7 +86,11 @@ export class TransactionService {
       const request = new GetTransactionRequest();
       request.setId(transId);
 
-      this.srvClient.getTransaction(
+      const transactionSrvClient = new TransactionServiceClient(
+        environment.grpcUrl
+      );
+
+      transactionSrvClient.getTransaction(
         request,
         null,
         (err, response: Transaction) => {
@@ -108,6 +119,55 @@ export class TransactionService {
           };
 
           resolve(transaction);
+        }
+      );
+    });
+  }
+
+  getPendingTransaction(address: string): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const pagination = new Pagination();
+      pagination.setOrderby(OrderBy.DESC);
+
+      const request = new GetMempoolTransactionsRequest();
+      request.setPagination(pagination);
+      request.setAddress(address);
+
+      const mempoolSrvClient = new MempoolServiceClient(environment.grpcUrl);
+
+      mempoolSrvClient.getMempoolTransactions(
+        request,
+        null,
+        (err, response: GetMempoolTransactionsResponse) => {
+          if (err) return reject(err);
+
+          let originTx = response.toObject().mempooltransactionsList;
+
+          let transactions = originTx.map(tx => {
+            const bytes = Buffer.from(tx.transactionbytes.toString(), "base64");
+
+            const friendAddress =
+              tx.senderaccountaddress == address
+                ? tx.recipientaccountaddress
+                : tx.senderaccountaddress;
+            const type =
+              tx.senderaccountaddress == address ? "send" : "receive";
+
+            const amount = readInt64(bytes, 121);
+            const fee = readInt64(bytes, 109);
+
+            return {
+              id: tx.id,
+              type: type,
+              sender: tx.senderaccountaddress,
+              recipient: tx.recipientaccountaddress,
+              amount,
+              fee,
+              transactionDate: new Date(parseInt(tx.arrivaltimestamp) * 1000)
+            };
+          });
+
+          resolve(transactions);
         }
       );
     });
