@@ -1,22 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { Transaction } from "src/app/Interfaces/transaction";
-import { ActivatedRoute, Params, Router } from "@angular/router";
-import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
-import { TransactionService } from "src/app/services/transaction.service";
-import { ActiveAccountService } from "src/app/services/active-account.service";
-import { AccountService } from "src/services/account.service";
+import { Component, OnInit } from '@angular/core';
+import { Transaction } from 'src/app/Interfaces/transaction';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { TransactionService } from 'src/app/services/transaction.service';
+import { ActiveAccountService } from 'src/app/services/active-account.service';
+import { AccountService } from 'src/services/account.service';
 
 @Component({
-  selector: "app-transaction-detail",
-  templateUrl: "./transaction-detail.page.html",
-  styleUrls: ["./transaction-detail.page.scss"]
+  selector: 'app-transaction-detail',
+  templateUrl: './transaction-detail.page.html',
+  styleUrls: ['./transaction-detail.page.scss']
 })
 export class TransactionDetailPage implements OnInit {
   transaction: Transaction = {
     id: null,
     type: null,
-    sender: "",
-    recipient: "",
+    sender: '',
+    recipient: '',
     amount: 0,
     fee: 0,
     total: 0,
@@ -47,9 +46,9 @@ export class TransactionDetailPage implements OnInit {
   }
 
   async transactionDetail(transId) {
-    const transactionObj = await (<any>(
-      this.transactionSrv.getOne(transId, this.accountAddress)
-    ));
+    const transactionObj = await ((
+      this.transactionSrv.getTransaction(transId)
+    ) as any);
 
     this.transaction = {
       id: transactionObj.id,

@@ -6,7 +6,7 @@ import {
   MenuController,
   ModalController
 } from '@ionic/angular';
-import { GRPCService } from 'src/services/grpc.service';
+import { TransactionService } from 'src/app/services/transaction.service';
 import { publicKeyToAddress } from 'src/helpers/converters';
 import { Storage } from '@ionic/storage';
 import { QrScannerService } from 'src/app/qr-scanner/qr-scanner.service';
@@ -33,7 +33,7 @@ export class TabSendPage implements OnInit{
   constructor(
     private storage: Storage,
     @Inject('nacl.sign') private sign: any,
-    private grpcService: GRPCService,
+    private transactionService: TransactionService,
     private toastController: ToastController,
     private accountService: AccountService,
     private menuController: MenuController,
@@ -160,9 +160,9 @@ export class TabSendPage implements OnInit{
       header: 'Confirmation!',
       message: '<div>From:</br><strong>' + this.shortAddress(this.sender) + '</strong></br></br>'
       + 'To:</br><strong>' + this.shortAddress(this.recipient) + '</strong></br></br>'
-      + 'Amount:</br><strong>' + this.amount + '</strong></br></br>'
-      + 'Fee:</br><strong>' + this.fee + '</strong></br></br>'
-      + 'Total:</br><strong>' + (this.amount + this.fee) + '</strong></br></br>'
+      + 'Amount:</br><strong>' + Number(this.amount) + '</strong></br></br>'
+      + 'Fee:</br><strong>' + Number(this.fee) + '</strong></br></br>'
+      + 'Total:</br><strong>' + (Number(this.amount) + Number(this.fee)) + '</strong></br></br>'
       + '</div>',
       buttons: [
         {
@@ -264,7 +264,7 @@ export class TabSendPage implements OnInit{
     console.log(bytesWithSign.value);
 
 
-    await this.grpcService.postTransaction(
+    await this.transactionService.postTransaction(
       bytesWithSign.value
     ).then((resolveTx) => {
 

@@ -1,170 +1,282 @@
-import { Injectable } from "@angular/core";
-import { TransactionServiceClient } from "../grpc/service/transactionServiceClientPb";
-import { MempoolServiceClient } from "../grpc/service/mempoolServiceClientPb";
+import { Injectable } from '@angular/core';
+import { grpc } from '@improbable-eng/grpc-web';
 
 import {
   GetTransactionsRequest,
   GetTransactionsResponse,
+  GetTransactionRequest,
+  Transaction as TransactionResponse,
   PostTransactionRequest,
   PostTransactionResponse,
-  GetTransactionRequest,
-  Transaction
-} from "../grpc/model/transaction_pb";
+} from '../grpc/model/transaction_pb';
+import {
+  GetMempoolTransactionsRequest,
+  GetMempoolTransactionsResponse,
+} from '../grpc/model/mempool_pb';
+import { TransactionService as TransactionServ } from '../grpc/service/transaction_pb_service';
+import { MempoolService } from '../grpc/service/mempool_pb_service';
 
-import { MempoolTransaction, GetMempoolTransactionsRequest, GetMempoolTransactionsResponse } from '../grpc/model/mempool_pb';
+import { environment } from '../../environments/environment';
+import { Pagination, OrderBy } from '../grpc/model/pagination_pb';
+import { readInt64 } from 'src/helpers/converters';
+import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../grpc/model/accountBalance_pb';
+import { AccountBalanceService } from '../grpc/service/accountBalance_pb_service';
 
-import { readInt64 } from "src/helpers/converters";
+
+export interface Transaction {
+  id: string;
+  alias: string;
+  address: string;
+  sender: string;
+  recipient: string;
+  timestamp: number;
+  fee: number;
+  type: string;
+  amount: number;
+  blockId: string;
+  height: number;
+  transactionIndex: number;
+}
+
+export interface Transactions {
+  total: number;
+  transactions: Transaction[];
+}
+
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class TransactionService {
-  grpcUrl = "http://18.139.3.139:7001";
-
-  srvClient: TransactionServiceClient;
-  mempoolClient: MempoolServiceClient;
+  srvClient: TransactionService;
+  mempoolClient: MempoolService;
 
   constructor() {
-    this.srvClient = new TransactionServiceClient(this.grpcUrl, null, null);
-    this.mempoolClient = new MempoolServiceClient(this.grpcUrl, null, null);
+
   }
 
 
-  getUnconfirmTransactions(address: string): Promise<any[]> {
+  getUnconfirmTransaction(address: string) {
+
     return new Promise((resolve, reject) => {
       const request = new GetMempoolTransactionsRequest();
-      request.setLimit(10);
-      request.setPage(1);
+      const pagination = new Pagination();
+      pagination.setOrderby(OrderBy.DESC);
       request.setAddress(address);
+      request.setPagination(pagination);
 
-      this.mempoolClient.getMempoolTransactions(
-        request,
-        null,
-        (err, response: GetMempoolTransactionsResponse) => {
-          if (err) {
-            return reject(err);
-          }
+      grpc.invoke(MempoolService.GetMempoolTransactions, {
+        request: request,
+        host: environment.grpcUrl,
+        onMessage: (message: GetMempoolTransactionsResponse) => {
+          // recreate list of transactions
+          let transactions = message
+            .toObject()
+            .mempooltransactionsList.map(tx => {
+              const bytes = Buffer.from(
+                tx.transactionbytes.toString(),
+                'base64'
+              );
 
-          const originTx = response.toObject().mempooltransactionsList;
+              const amount = readInt64(bytes, 121);
+              const fee = readInt64(bytes, 109);
 
-          const transactions = originTx.map(tx => {
-            const bytes = Buffer.from(
-              tx.transactionbytes.toString(),
-              'base64'
-            );
+              const friendAddress =
+                tx.senderaccountaddress == address
+                  ? tx.recipientaccountaddress
+                  : tx.senderaccountaddress;
+              const type =
+                tx.senderaccountaddress == address ? 'send' : 'receive';
+              const alias = '';
 
-            const trxAmount = readInt64(bytes, 121);
-            const trxFee = readInt64(bytes, 109);
-
-            const friendAddress =
-            tx.senderaccountaddress === address
-              ? tx.recipientaccountaddress
-              : tx.senderaccountaddress;
-
-            const trxType = tx.senderaccountaddress === address ? 'send' : 'receive';
-            const trxAlias = 'Alias-';
-            //  this.contactServ.getContact(friendAddress).alias || '';
-
-            return {
-                alias: trxAlias,
+              return {
+                alias: alias,
                 address: friendAddress,
-                type: trxType,
-                timestamp: parseInt(tx.arrivaltimestamp, 10) * 1000,
-                fee: trxFee,
-                amount: trxAmount,
+                type: type,
+                timestamp: parseInt(tx.arrivaltimestamp) * 1000,
+                fee: fee,
+                amount: amount,
               };
-
-          });
+            });
 
           resolve(transactions);
-        }
-      );
-
+        },
+        onEnd: (
+          code: grpc.Code,
+          msg: string | undefined,
+          trailers: grpc.Metadata
+        ) => {
+          if (code != grpc.Code.OK) reject(msg);
+        },
+      });
     });
   }
 
-  getAll(account: string): Promise<any[]> {
-
+  getAccountTransaction(
+    page: number,
+    limit: number,
+    address: string
+  ) {
+    // const address = this.authServ.currAddress;
     return new Promise((resolve, reject) => {
       const request = new GetTransactionsRequest();
-      request.setLimit(10);
-      request.setPage(1);
-      request.setAccountaddress(account);
+      const pagination = new Pagination();
+      pagination.setLimit(limit);
+      pagination.setPage(page);
+      pagination.setOrderby(OrderBy.DESC);
+      request.setAccountaddress(address);
+      request.setPagination(pagination);
+      request.setTransactiontype(1);
 
-      this.srvClient.getTransactions(
-        request,
-        null,
-        (err, response: GetTransactionsResponse) => {
-          if (err) return reject(err);
+      grpc.invoke(TransactionServ.GetTransactions, {
+        request: request,
+        host: environment.grpcUrl,
+        onMessage: (message: GetTransactionsResponse) => {
+          // recreate list of transactions
+          let transactions: Transaction[] = message
+            .toObject()
+            .transactionsList.map(tx => {
+              const bytes = Buffer.from(
+                tx.transactionbodybytes.toString(),
+                'base64'
+              );
+              const amount = readInt64(bytes, 0);
+              const friendAddress =
+                tx.senderaccountaddress == address
+                  ? tx.recipientaccountaddress
+                  : tx.senderaccountaddress;
+              const type =
+                tx.senderaccountaddress == address ? 'send' : 'receive';
+              const alias = '';
 
-          let originTx = response.toObject().transactionsList;
+              return {
+                id: tx.id,
+                alias: alias,
+                address: friendAddress,
+                type: type,
+                timestamp: parseInt(tx.timestamp) * 1000,
+                fee: parseInt(tx.fee),
+                amount: amount,
+                blockId: tx.blockid,
+                height: tx.height,
+                transactionIndex: tx.transactionindex,
+                sender: '',
+                recipient: '',
+              };
+            });
 
-          let transactions = originTx.map(tx => {
-            const bytes = Buffer.from(
-              tx.transactionbodybytes.toString(),
-              "base64"
-            );
-            const amount = readInt64(bytes, 0);
-            const friendAddress =
-              tx.senderaccountaddress == account
-                ? tx.recipientaccountaddress
-                : tx.senderaccountaddress;
-            const type =
-              tx.senderaccountaddress == account ? "send" : "receive";
-
-            return {
-              id: tx.id,
-              type: type,
-              sender: tx.senderaccountaddress,
-              recipient: tx.recipientaccountaddress,
-              amount: amount,
-              fee: parseInt(tx.fee),
-              transactionDate: new Date(parseInt(tx.timestamp) * 1000)
-            };
+          resolve({
+            total: message.toObject().total,
+            transactions: transactions,
           });
-
-          resolve(transactions);
-        }
-      );
+        },
+        onEnd: (
+          code: grpc.Code,
+          msg: string | undefined,
+          trailers: grpc.Metadata
+        ) => {
+          if (code != grpc.Code.OK) reject(msg);
+        },
+      });
     });
   }
 
-  getOne(transId: string, account: string): Promise<any> {
+
+  getTransaction(id) {
     return new Promise((resolve, reject) => {
       const request = new GetTransactionRequest();
-      request.setId(transId);
+      request.setId(id);
 
-      this.srvClient.getTransaction(
-        request,
-        null,
-        (err, response: Transaction) => {
-          if (err) return reject(err);
-
-          const _transaction = response.toObject();
+      grpc.invoke(TransactionServ.GetTransaction, {
+        request: request,
+        host: environment.grpcUrl,
+        onMessage: (message: TransactionResponse) => {
+          let tx = message.toObject();
 
           const bytes = Buffer.from(
-            _transaction.transactionbodybytes.toString(),
-            "base64"
+            tx.transactionbodybytes.toString(),
+            'base64'
           );
-
-          const type =
-            _transaction.senderaccountaddress == account ? "send" : "receive";
-
           const amount = readInt64(bytes, 0);
 
-          const transaction = {
-            id: _transaction.id,
-            type: type,
-            fee: parseInt(_transaction.fee),
+          resolve({
+            id: tx.id,
+            alias: '',
+            address: '',
+            type: '',
+            timestamp: parseInt(tx.timestamp) * 1000,
+            fee: parseInt(tx.fee),
             amount: amount,
-            sender: _transaction.senderaccountaddress,
-            recipient: _transaction.recipientaccountaddress,
-            transactionDate: new Date(parseInt(_transaction.timestamp) * 1000)
-          };
-
-          resolve(transaction);
-        }
-      );
+            blockId: tx.blockid,
+            height: tx.height,
+            transactionIndex: tx.transactionindex,
+            sender: tx.senderaccountaddress,
+            recipient: tx.recipientaccountaddress,
+          });
+        },
+        onEnd: (
+          code: grpc.Code,
+          msg: string | undefined,
+          trailers: grpc.Metadata
+        ) => {
+          if (code != grpc.Code.OK) reject(msg);
+        },
+      });
     });
   }
+
+  postTransaction(txBytes) {
+    return new Promise((resolve, reject) => {
+      const request = new PostTransactionRequest();
+      request.setTransactionbytes(txBytes);
+
+      grpc.invoke(TransactionServ.PostTransaction, {
+        request: request,
+        host: environment.grpcUrl,
+        onMessage: (message: PostTransactionResponse) => {
+          resolve(message.toObject());
+        },
+        onEnd: (
+          code: grpc.Code,
+          msg: string | undefined,
+          trailers: grpc.Metadata
+        ) => {
+          if (code != grpc.Code.OK) reject(msg);
+        },
+      });
+    });
+  }
+
+  getAccountBalance(address: string) {
+    // const address = this.authServ.currAddress;
+    return new Promise((resolve, reject) => {
+      const request = new GetAccountBalanceRequest();
+      request.setAccountaddress(address);
+      grpc.invoke(AccountBalanceService.GetAccountBalance, {
+        request: request,
+        host: environment.grpcUrl,
+        onMessage: (message: GetAccountBalanceResponse) => {
+          resolve(message.toObject());
+        },
+        onEnd: (
+          code: grpc.Code,
+          msg: string | undefined,
+          trailers: grpc.Metadata
+        ) => {
+          if (code == grpc.Code.Unknown) {
+            const firstValue = {
+              accountbalance: {
+                spendablebalance: 0,
+                balance: 0,
+              },
+            };
+            return resolve(firstValue);
+          } else if (code != grpc.Code.OK) reject(msg);
+        },
+      });
+    });
+  }
+
+  convertTransaction() { }
+
 }
