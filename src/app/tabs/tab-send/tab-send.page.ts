@@ -57,7 +57,7 @@ export class TabSendPage implements OnInit{
   }
 
   shortAddress(addrs: string) {
-    return addrs.substring(1, 10) + '...' +  addrs.substring(addrs.length - 10, addrs.length);
+    return addrs.substring(0, 10) + '...' +  addrs.substring(addrs.length - 10, addrs.length);
   }
 
   async inputPIN() {

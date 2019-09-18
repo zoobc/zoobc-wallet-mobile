@@ -52,7 +52,7 @@ export class TabReceivePage {
   // Share Options
   async openSharing() {
     this.platform.ready().then(async () => {
-      await this.socialSharing.share('My ZooBC address: '  +  this.account.address).then(() => {
+      await this.socialSharing.share(this.account.address).then(() => {
       }).catch((err) => {
         console.log(err);
       });

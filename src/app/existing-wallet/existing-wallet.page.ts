@@ -25,7 +25,7 @@ export class ExistingWalletPage implements OnInit {
 
   openExistingWallet() {
     const lengthPassphrase = this.passphrase.split(" ").length;
-    if (this.passphrase && lengthPassphrase === 12) {
+    if (this.passphrase && lengthPassphrase === 12 || this.passphrase && lengthPassphrase === 24) {
       const privateKey = this.mnemonicService.mnemonic.toSeed(this.passphrase);
 
       this.createAccSrv.setPassphrase(this.passphrase);

@@ -12,6 +12,7 @@ import {
   GetAccountBalanceResponse,
   AccountBalance as AB,
 } from 'src/app/grpc/model/accountBalance_pb';
+import { ActiveAccountService } from 'src/app/services/active-account.service';
 
 type AccountBalance = AB.AsObject;
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
@@ -44,29 +45,41 @@ export class TabDashboardPage implements OnInit {
     private router: Router,
     private menuController: MenuController,
     private navCtrl: NavController,
+    private activeAccountSrv: ActiveAccountService,
     private storage: Storage,
     private accountService: AccountService,
     private transactionServ: TransactionService
   ) {
       this.isLoadingBalance = true;
+
+      this.activeAccountSrv.accountSubject.subscribe({
+      next: v => {
+        this.account.accountName = v.accountName;
+        this.account.address = this.accountService.getAccountAddress(v);
+        this.account.shortadress = this.shortAddress(this.account.address);
+        this.getBalance();
+        this.getTransactions();
+      }
+    });
+
   }
 
   shortAddress(addrs: string) {
     return addrs.substring(0, 10).concat('...').concat(addrs.substring(addrs.length - 10, addrs.length));
   }
 
-  async doRefresh(event) {
+  doRefresh(event) {
     this.loadData();
     setTimeout(() => {
       event.target.complete();
     }, 2000);
   }
 
-  async ionViewDidEnter() {
+   ionViewDidEnter() {
     this.loadData();
   }
 
-  async ngOnInit() {
+   ngOnInit() {
     this.loadData();
   }
 
@@ -83,7 +96,7 @@ export class TabDashboardPage implements OnInit {
   getTransactions() {
     this.isLoadingRecentTx = true;
     this.transactionServ
-      .getAccountTransaction(1, 5, this.account.address )
+      .getAccountTransaction(1, 100, this.account.address )
       .then((res: Transactions) => {
         this.totalTx = res.total;
         this.recentTx = res.transactions;
