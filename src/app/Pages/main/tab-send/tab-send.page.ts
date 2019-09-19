@@ -3,7 +3,8 @@ import {
   ToastController,
   MenuController,
   ModalController,
-  NavController
+  NavController,
+  AlertController
 } from "@ionic/angular";
 import { GRPCService } from "src/app/Services/grpc.service";
 import { SendMoneyTx } from "src/helpers/serializers";
@@ -66,7 +67,8 @@ export class TabSendPage implements OnInit {
     private formBuilder: FormBuilder,
     private currencySrv: CurrencyService,
     private addressBookSrv: AddressBookService,
-    private selectAddressSrv: SelectAddressService
+    private selectAddressSrv: SelectAddressService,
+    private alertCtrl: AlertController
   ) {
     // this.sender = this.getAddress();
   }
@@ -260,7 +262,7 @@ export class TabSendPage implements OnInit {
     );
 
     if (resolveTx) {
-      this.transactionToast("Money Sent");
+      this.presentAlertTransactionSuccess();
 
       this.resetForm();
 
@@ -270,12 +272,14 @@ export class TabSendPage implements OnInit {
     }
   }
 
-  async transactionToast(message) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 2000
+  async presentAlertTransactionSuccess() {
+    const alert = await this.alertCtrl.create({
+      header: "Success",
+      message: "Money Sent",
+      buttons: ["OK"]
     });
-    toast.present();
+
+    await alert.present();
   }
 
   ionViewWillEnter() {
