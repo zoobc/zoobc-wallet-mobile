@@ -62,8 +62,8 @@ export class TabSendPage implements OnInit{
 
   async inputPIN() {
     const alert = await this.alertController.create({
-      cssClass: 'popup-pin',
-      header: 'Input your PIN!',
+      cssClass: 'alert-zbc',
+      header: 'PIN Confirmation!',
       inputs: [
         {
           name: 'pin',
@@ -156,13 +156,13 @@ export class TabSendPage implements OnInit{
 
   async showConfirmation() {
     const alert = await this.alertController.create({
-      cssClass: 'popup-pin',
-      header: 'Confirmation!',
+      cssClass: 'alert-zbc',
+      header: 'Confirmation',
       message: '<div>From:</br><strong>' + this.shortAddress(this.sender) + '</strong></br></br>'
       + 'To:</br><strong>' + this.shortAddress(this.recipient) + '</strong></br></br>'
       + 'Amount:</br><strong>' + Number(this.amount) + '</strong></br></br>'
       + 'Fee:</br><strong>' + Number(this.fee) + '</strong></br></br>'
-      + 'Total:</br><strong>' + (Number(this.amount) + Number(this.fee)) + '</strong></br></br>'
+      + 'Total:</br><strong>' + (Number(this.amount) + Number(this.fee)).toFixed(8) + '</strong></br></br>'
       + '</div>',
       buttons: [
         {
