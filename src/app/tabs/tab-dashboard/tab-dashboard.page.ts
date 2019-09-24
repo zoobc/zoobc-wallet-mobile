@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {
   MenuController,
-  NavController
+  NavController,
+  AlertController
 } from '@ionic/angular';
 import { AuthService } from 'src/services/auth-service';
 import { Router } from '@angular/router';
@@ -33,8 +34,8 @@ export class TabDashboardPage implements OnInit {
   public isLoadingBalance = true;
   public isLoadingRecentTx = true;
 
-  public transactions: any[] = [];
-  public pendingtrxs: any[] = [];
+  // public transactions: any[] = [];
+  // public pendingtrxs: any[] = [];
 
   totalTx = 0;
   recentTx: Transaction[];
@@ -48,7 +49,8 @@ export class TabDashboardPage implements OnInit {
     private activeAccountSrv: ActiveAccountService,
     private storage: Storage,
     private accountService: AccountService,
-    private transactionServ: TransactionService
+    private transactionServ: TransactionService,
+    private alertController: AlertController
   ) {
       this.isLoadingBalance = true;
 
@@ -141,9 +143,56 @@ export class TabDashboardPage implements OnInit {
     this.navCtrl.navigateForward('list-account');
   }
 
-  openDetailTransction(index) {
-    const transObj = this.transactions[index];
-    const transId = transObj.id;
+  openDetailUnconfirm(index){
+    const trxUnconfirm = this.unconfirmTx[index];
+    console.log('======== Unconfirm: ', trxUnconfirm);
+    this.showUnconfirmDetail(trxUnconfirm);
+  }
+
+  openDetailTransction( transId) {
     this.router.navigate(['transaction/' + transId]);
   }
+
+  timeConverter(unixTimestamp: number){
+    const a = new Date(unixTimestamp * 1000);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const year = a.getFullYear();
+    const month = months[a.getMonth()];
+    const date = a.getDate();
+    const hour = a.getHours();
+    const min = a.getMinutes();
+    const sec = a.getSeconds();
+    const time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+    return time;
+  }
+
+  async showUnconfirmDetail(trx: any) {
+    const formattedTime = this.timeConverter(trx.timestamp);
+
+    const typeTrx = trx.type === 'send' ? 'Send to' : 'Receive from ';
+    const alert = await this.alertController.create({
+      cssClass: 'alert-zbc',
+      header: 'Detail',
+      message: '<div>'
+      + 'Date:</br><strong>' + formattedTime +  '</strong></br></br>'
+      + '' + typeTrx + '</br><strong>' + trx.address + '</strong></br></br>'
+      + 'Amount:</br><strong>' + (Number(trx.amount) / 1e8) + '</strong></br></br>'
+      + 'Fee:</br><strong>' + (Number(trx.fee) / 1e8) + '</strong></br></br>'
+      + 'Total:</br><strong>' + ((Number(trx.amount) + Number(trx.fee)) / 1e8) + '</strong></br></br>'
+      + 'Status:</br><b>' + 'Pending' + '</b></br></br>'
+      + '</div>',
+      buttons: [
+        {
+          text: 'Close',
+          handler: () => {
+            console.log('Confirm Okay');
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+
 }
