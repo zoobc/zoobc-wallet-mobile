@@ -203,7 +203,7 @@ export class TransactionService {
             id: tx.id,
             alias: '',
             address: '',
-            type: '',
+            type: tx.transactiontype,
             timestamp: parseInt(tx.timestamp) * 1000,
             fee: parseInt(tx.fee),
             amount: amount,
