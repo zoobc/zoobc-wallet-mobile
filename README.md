@@ -21,21 +21,19 @@ How to build
 
 #1. ionic cordova build android --prod --release
 
-cd  /home/jhonkus/PROJECTS_WALLET/WALLET_MOBILE_DEMO/zoobc-wallet-mobile/platforms/android/app/build/outputs/apk/release/
+cd  zoobc-wallet-mobile/platforms/android/app/build/outputs/apk/release/
 
 #2. keytool -genkey -v -keystore zoobc-release-key.keystore -alias zoobc_wallet -keyalg RSA -keysize 2048 -validity 10000
 
-password 12345678
+password 123jkjkh
 
 keytool -importkeystore -srckeystore zoobc-release-key.keystore -destkeystore zoobc-release-key.keystore -deststoretype pkcs12
 
 #3. jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore zoobc-release-key.keystore app-release-unsigned.apk zoobc_wallet
 
-/home/jhonkus/Android/Sdk/build-tools/29.0.1/zipalign -v 4 app-release-unsigned.apk zoobc.apk
+/Android/Sdk/build-tools/29.0.1/zipalign -v 4 app-release-unsigned.apk zoobc.apk
 
-cd  /home/jhonkus/PROJECTS_WALLET/WALLET_MOBILE_DEMO/zoobc-wallet-mobile
-
-
+cd  /zoobc-wallet-mobile
 
 
 
@@ -273,4 +271,11 @@ newest SDK which was the one that had the license accepted).
 -->`
 
 
+
+1.Upgrade your android SDK api to 28 or 29.
+2.Below change into your config.xml 
+**Change** 
+<engine name="android" spec="7.1.4" />
+ **to**
+<engine name="android" spec="8.0.0" />
 

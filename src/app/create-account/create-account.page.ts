@@ -35,13 +35,13 @@ export class CreateAccountPage implements OnInit {
     const passphrase = await this.storage.get("passphrase");
     const accounts = await this.storage.get("accounts");
     const { bip32RootKey } = this.keyringService.calcBip32RootKeyFromSeed(
-      "SPN",
+      "ZBC",
       passphrase,
       null
     );
 
     this.account = this.keyringService.calcForDerivationPathForCoin(
-      "SPN",
+      "ZBC",
       accounts.length,
       0,
       bip32RootKey
