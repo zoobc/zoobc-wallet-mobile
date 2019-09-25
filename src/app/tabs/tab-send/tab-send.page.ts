@@ -7,7 +7,7 @@ import {
   ModalController
 } from '@ionic/angular';
 import { TransactionService } from 'src/app/services/transaction.service';
-import { publicKeyToAddress } from 'src/helpers/converters';
+import { publicKeyToAddress, base64ToByteArray } from 'src/helpers/converters';
 import { Storage } from '@ionic/storage';
 import { QrScannerService } from 'src/app/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -57,6 +57,11 @@ export class TabSendPage implements OnInit{
   }
 
   shortAddress(addrs: string) {
+    console.log('==== oke =====');
+
+    if (addrs === '') {
+      return '-';
+    }
     return addrs.substring(0, 10) + '...' +  addrs.substring(addrs.length - 10, addrs.length);
   }
 
@@ -114,6 +119,7 @@ export class TabSendPage implements OnInit{
   }
 
   ngOnInit() {
+    this.amount = 0;
     this.activeRoute.queryParams.subscribe(params => {
       this.recipient = JSON.parse(params.address);
       console.log('== From: ', this.recipient);
@@ -154,7 +160,69 @@ export class TabSendPage implements OnInit{
     toast.present();
   }
 
+
+
   async showConfirmation() {
+
+    console.log(' ----- enter show confirmation ');
+
+    if (!this.recipient) {
+      this.transactionToast('Recipient address is mandatory!');
+      return;
+    }
+
+    if (this.recipient.trim().length > 44) {
+      this.transactionToast('Recipient address not valid!');
+      return;
+    }
+
+    if (this.recipient.trim().length < 44) {
+      this.transactionToast('Recipient address not valid!');
+      return;
+    }
+
+    const addressBytes = base64ToByteArray(this.recipient);
+    if (addressBytes.length !== 33){
+      this.transactionToast('Recipient address not valid!');
+      return;
+    }
+
+    const dest = this.recipient;
+
+
+    if (!this.amount) {
+      this.transactionToast('Amount is not valid!');
+      this.amount = 0;
+      return;
+    }
+
+    if (isNaN(this.amount)) {
+      this.transactionToast('Amount is not valid!');
+    }
+
+    if (this.amount <= 0) {
+      this.transactionToast('Amount must greater then 0!');
+    }
+
+    const amount = this.amount;
+
+    if (!this.fee) {
+      this.transactionToast('Fee cannot  0');
+      this.fee = 0;
+      return;
+    }
+    const fee = this.fee;
+
+    console.log('=== Amount:', amount);
+    console.log('=== Fee:', fee);
+    console.log('=== Dest:', dest);
+
+    if (amount + fee > 200) {
+      this.transactionToast('balance is not enough');
+      return;
+    }
+
+
     const alert = await this.alertController.create({
       cssClass: 'alert-zbc',
       header: 'Confirmation',
@@ -332,5 +400,8 @@ export class TabSendPage implements OnInit{
     return await modal.present();
   }
 
-  submit() {}
+  submit() {
+
+    console.log('----- form bro ----');
+  }
 }
