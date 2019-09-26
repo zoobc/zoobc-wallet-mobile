@@ -7,51 +7,73 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list class="info-list">
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Sender Address" | translate }}</p>
-        <p class="info-desc">{{ transaction.sender }}</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Recipient Address" | translate }}</p>
-        <p class="info-desc">{{ transaction.recipient }}</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Amount" | translate }}</p>
-        <p class="info-desc">{{ transaction.amount/1e8 }} ZBC</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Amount" | translate }} USD</p>
-        <p class="info-desc">{{ transaction.amount/1e8 }} USD</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Fee" | translate }}</p>
-        <p class="info-desc">{{ transaction.fee/1e8 }} ZBC</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Fee" | translate }} </p>
-        <p class="info-desc">{{ transaction.fee/1e8 }} USD</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Transaction Date" | translate }}</p>
-        <p class="info-desc">
-          {{ transaction.transactionDate | date: "medium" }}
-        </p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+<ion-content class="page-transaction-detail zbc-content-style-1">
+  <div class="content-inner ion-padding-top ion-padding-bottom">
+    <ion-list class="info-list">
+      <ion-item>
+        <ion-label>
+          <p class="info-label">{{ "Transaction Id" | translate }}</p>
+          <p class="info-desc">{{ transaction.id }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <p class="info-label">{{ "Block Id" | translate }}</p>
+          <p class="info-desc">{{ transaction.blockId }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <p class="info-label">{{ "Sender Address" | translate }}</p>
+          <p class="info-desc desc-title" *ngIf="transaction.senderName">
+            {{ transaction.senderName }}
+          </p>
+          <p class="info-desc">{{ transaction.sender }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <p class="info-label">{{ "Recipient Address" | translate }}</p>
+          <p class="info-desc desc-title" *ngIf="transaction.recipientName">
+            {{ transaction.recipientName }}
+          </p>
+          <p class="info-desc">{{ transaction.recipient }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          {{ "Amount" | translate }}
+        </ion-label>
+        <ion-label class="ion-text-right">
+          <p class="info-desc desc-main-amount">
+            {{ transaction.amount / 1e8 }} ZBC
+          </p>
+          <p class="info-desc desc-sub-amount">
+            {{ transaction.amount / 1e8 | activeCurrencyRate$ | async }}
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          {{ "Fee" | translate }}
+        </ion-label>
+        <ion-label class="ion-text-right">
+          <p class="info-desc desc-main-amount">
+            {{ transaction.fee / 1e8 }} ZBC
+          </p>
+          <p class="info-desc desc-sub-amount">
+            {{ transaction.fee / 1e8 | activeCurrencyRate$ | async }}
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>
+          <p class="info-label">{{ "Transaction Date" | translate }}</p>
+          <p class="info-desc">
+            {{ transaction.transactionDate | date: "medium" }}
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-content>

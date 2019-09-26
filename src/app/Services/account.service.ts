@@ -156,4 +156,20 @@ export class AccountService {
     );
     return publicKey;
   }
+
+  async getAddressName(address: string) {
+    const addresses: any = await this.getAll();
+
+    if (addresses === null) return "";
+
+    const index = addresses.findIndex((addr: Account) => {
+      return addr.address === address;
+    });
+
+    if (index >= 0) {
+      return addresses[index].name;
+    } else {
+      return "";
+    }
+  }
 }

@@ -110,6 +110,7 @@ export class TransactionService {
 
           const transaction = {
             id: _transaction.id,
+            blockId: _transaction.blockid,
             type: type,
             fee: parseInt(_transaction.fee),
             amount: amount,

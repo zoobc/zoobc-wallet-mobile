@@ -1,0 +1,15 @@
+.page-transaction-detail {
+  .info-desc {
+    &.desc-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    &.desc-main-amount {
+      font-size: 1.2rem;
+    }
+    &.desc-sub-amount {
+      font-size: 0.8rem;
+    }
+  }
+}
