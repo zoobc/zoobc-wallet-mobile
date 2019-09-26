@@ -14,6 +14,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from 'src/services/account.service';
 import { AddressBookModalComponent } from './address-book-modal/address-book-modal.component';
 import { BytesMaker } from 'src/helpers/BytesMaker';
+import {
+  GetAccountBalanceResponse,
+  AccountBalance as AB,
+} from 'src/app/grpc/model/accountBalance_pb';
+import { ActiveAccountService } from 'src/app/services/active-account.service';
+
+type AccountBalance = AB.AsObject;
+type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
 @Component({
   selector: 'app-tab-send',
@@ -29,6 +37,12 @@ export class TabSendPage implements OnInit{
   recipient: any;
   amount: any;
   fee: any;
+  balance: any;
+
+  public accountBalance: AccountBalance;
+  public isLoadingBalance = true;
+  public isLoadingRecentTx = true;
+
 
   constructor(
     private storage: Storage,
@@ -36,6 +50,7 @@ export class TabSendPage implements OnInit{
     private transactionService: TransactionService,
     private toastController: ToastController,
     private accountService: AccountService,
+    private activeAccountSrv: ActiveAccountService,
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
     private router: Router,
@@ -45,6 +60,19 @@ export class TabSendPage implements OnInit{
     private activeRoute: ActivatedRoute,
     public loadingController: LoadingController
   ) {
+
+    this.getAddress();
+    this.getBalance();
+
+    // this.activeAccountSrv.accountSubject.subscribe({
+    //   next: v => {
+    //     this.account.accountName = v.accountName;
+    //     this.account.address = this.accountService.getAccountAddress(v);
+    //     this.account.shortadress = this.shortAddress(this.account.address);
+    //     this.getBalance();
+    //   }
+    // });
+
   }
 
   openMenu() {
@@ -64,6 +92,17 @@ export class TabSendPage implements OnInit{
     }
     return addrs.substring(0, 10) + '...' +  addrs.substring(addrs.length - 10, addrs.length);
   }
+
+
+  getBalance() {
+    this.isLoadingBalance = true;
+    this.transactionService.getAccountBalance(this.sender).then((data: AccountBalanceList) => {
+      this.accountBalance = data.accountbalance;
+      this.balance = this.accountBalance.spendablebalance;
+      this.isLoadingBalance = false;
+    });
+  }
+
 
   async inputPIN() {
     const alert = await this.alertController.create({
@@ -119,11 +158,15 @@ export class TabSendPage implements OnInit{
   }
 
   ngOnInit() {
+    this.isLoadingBalance = true;
     this.amount = 0;
     this.activeRoute.queryParams.subscribe(params => {
       this.recipient = JSON.parse(params.address);
       console.log('== From: ', this.recipient);
     });
+    this.getAddress();
+    this.getBalance();
+
   }
 
   async login(e: any) {
@@ -165,6 +208,7 @@ export class TabSendPage implements OnInit{
   async showConfirmation() {
 
     console.log(' ----- enter show confirmation ');
+    this.getBalance();
 
     if (!this.recipient) {
       this.transactionToast('Recipient address is mandatory!');
@@ -191,13 +235,13 @@ export class TabSendPage implements OnInit{
 
 
     if (!this.amount) {
-      this.transactionToast('Amount is not valid!');
+      this.transactionToast('Amount is not valid! must greater then 0!');
       this.amount = 0;
       return;
     }
 
     if (isNaN(this.amount)) {
-      this.transactionToast('Amount is not valid!');
+      this.transactionToast('Amount is not valid! must greater then 0!');
     }
 
     if (this.amount <= 0) {
@@ -207,7 +251,7 @@ export class TabSendPage implements OnInit{
     const amount = this.amount;
 
     if (!this.fee) {
-      this.transactionToast('Fee cannot  0');
+      this.transactionToast('Please select fee!');
       this.fee = 0;
       return;
     }
@@ -217,8 +261,15 @@ export class TabSendPage implements OnInit{
     console.log('=== Fee:', fee);
     console.log('=== Dest:', dest);
 
-    if (amount + fee > 200) {
-      this.transactionToast('balance is not enough');
+    console.log('=== Balance:', this.balance / 1e8);
+
+    //this.balance = 1.2;
+
+    const total = (Number(amount) + Number(fee));
+    console.log('-- Total: ', total);
+
+    if (total >  Number(this.balance) / 1e8) {
+      this.transactionToast('balance is not enough, your balance: ' + Number(this.balance) / 1e8);
       return;
     }
 
@@ -365,6 +416,7 @@ export class TabSendPage implements OnInit{
 
   ionViewWillEnter() {
     this.getAddress();
+    this.getBalance();
   }
 
   scanQrCode() {
