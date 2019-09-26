@@ -34,7 +34,9 @@
     "@ionic-native/core": "^5.10.0",
     "@ionic-native/diagnostic": "^5.13.0",
     "@ionic-native/file": "^5.14.0",
+    "@ionic-native/http": "^5.14.0",
     "@ionic-native/network": "^5.10.0",
+    "@ionic-native/network-interface": "^5.14.0",
     "@ionic-native/qr-scanner": "^5.8.0",
     "@ionic-native/social-sharing": "^5.14.0",
     "@ionic-native/splash-screen": "^5.0.0",
@@ -50,9 +52,12 @@
     "chart.js": "^2.8.0",
     "cordova-android": "^8.1.0",
     "cordova-clipboard": "1.2.1",
+    "cordova-plugin-advanced-http": "^2.1.1",
     "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-network-information": "2.0.2",
+    "cordova-plugin-networkinterface": "^2.0.0",
+    "cordova-plugin-ping": "^0.4.0",
     "cordova-plugin-qrscanner": "3.0.1",
     "cordova-plugin-x-socialsharing": "^5.4.7",
     "cordova.plugins.diagnostic": "^5.0.0",
@@ -133,7 +138,12 @@
       "cordova-plugin-android-permissions": {},
       "cordova.plugins.diagnostic": {
         "ANDROID_SUPPORT_VERSION": "28.+"
-      }
+      },
+      "cordova-plugin-ping": {},
+      "cordova-plugin-advanced-http": {
+        "OKHTTP_VERSION": "3.10.0"
+      },
+      "cordova-plugin-networkinterface": {}
     },
     "platforms": [
       "android"
