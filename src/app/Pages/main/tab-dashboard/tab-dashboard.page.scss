@@ -51,6 +51,15 @@
       .sub-balance {
         --color: rgba(255, 255, 255, 0.7);
         font-size: 0.9rem;
+
+        > div {
+          display: flex;
+          align-items: center;
+
+          ion-icon {
+            margin-left: 0.2rem;
+          }
+        }
       }
     }
 

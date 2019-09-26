@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.languageService.setInitialAppLanguage();
-      this.currencyService.getCurrencyRates();
+      //this.currencyService.getCurrencyRates();
       this.splashScreen.hide();
     });
   }

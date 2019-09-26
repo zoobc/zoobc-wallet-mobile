@@ -26,8 +26,8 @@
         </ion-item>
       </div>
 
-      <ion-item lines="none" class="ion-no-padding balance-item">
-        <img class="logo" src="assets/images/logo-white.png" />
+      <ion-item class="ion-no-padding balance-item">
+        <img class="logo" slot="start" src="assets/images/logo-white.png" />
         <ion-label>
           <ion-label class="balance-title">
             Balance
@@ -35,11 +35,16 @@
           <ion-label class="main-balance"
             >{{ balance / 1e8 | number: "0.0-4" }} ZBC</ion-label
           >
-          <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
+          <ion-label class="sub-balance"
+            ><div appCurrencySelector>
+              {{ balance / 1e8 | activeCurrencyRate$ | async }}
+              <ion-icon name="arrow-dropdown"></ion-icon>
+            </div>
+          </ion-label>
         </ion-label>
       </ion-item>
 
-      <ion-item lines="none" class="ion-no-padding balance-item">
+      <ion-item lines="none" button="false" class="ion-no-padding balance-item">
         <img class="logo" src="assets/images/logo-white.png" />
         <ion-label>
           <ion-label class="balance-title">
@@ -48,7 +53,12 @@
           <ion-label class="main-balance"
             >{{ spendablebalance / 1e8 | number: "0.0-4" }} ZBC</ion-label
           >
-          <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
+          <ion-label class="sub-balance">
+            <div appCurrencySelector>
+              {{ spendablebalance / 1e8 | activeCurrencyRate$ | async }}
+              <ion-icon name="arrow-dropdown"></ion-icon>
+            </div>
+          </ion-label>
         </ion-label>
       </ion-item>
     </ion-card-content>
