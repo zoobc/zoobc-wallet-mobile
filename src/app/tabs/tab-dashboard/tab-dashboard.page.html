@@ -30,12 +30,10 @@
       </ion-refresher-content>
   </ion-refresher>
 
+ 
   <ion-card class="card-balance">
     <ion-card-content>
-      
-
-      <ion-grid>
-        
+      <ion-grid>        
         <ion-row >
           <ion-col  size="12" text-center>
               <h2 class="account-name" (click)="openListAccount()"><span >{{ account.accountName }}</span> <span><ion-icon style = "margin-left:10px;" name="arrow-dropdown"></ion-icon></span></h2>
@@ -53,9 +51,12 @@
           <ion-label class="balance-title">
             Balance
           </ion-label>
-          <ion-label class="main-balance" *ngIf="!isLoadingBalance">{{ accountBalance.balance/1e8 | number: '0.0-4' }} ZBC</ion-label>
+          <ion-label class="main-balance" >{{ accountBalance.balance/1e8 | number: '0.0-4' }} ZBC</ion-label>
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
+        <div *ngIf="isLoadingBalance">
+            <ion-spinner name="lines-small"></ion-spinner>
+        </div>      
       </ion-item>
 
       <ion-item lines="none" class="ion-no-padding balance-item">
@@ -64,16 +65,27 @@
           <ion-label class="balance-title">
             Spendable Balance
           </ion-label>
-          <ion-label class="main-balance" *ngIf="!isLoadingBalance">{{ accountBalance.spendablebalance/1e8 | number: '0.0-4' }} ZBC</ion-label>
+          <ion-label class="main-balance" >{{ accountBalance.spendablebalance/1e8 | number: '0.0-4' }} ZBC</ion-label>
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
+        <div *ngIf="isLoadingBalance">
+            <ion-spinner name="lines-small"></ion-spinner>
+        </div>        
+      
       </ion-item>
     </ion-card-content>
   </ion-card>
 
+  <div *ngIf="isLoadingBalance">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
+
+  <ion-label *ngIf="isError" color="danger" text-center><h2>Fail connect to services. Please try again!</h2></ion-label> 
+
   <p class="title-section ion-padding-horizontal">
     {{ "Recent Transaction(s)" | translate }}
   </p>
+
   <ion-list class="ion-margin-top list-transaction">
     <ion-item
       *ngFor="let pendingtrx of unconfirmTx; let i = index"

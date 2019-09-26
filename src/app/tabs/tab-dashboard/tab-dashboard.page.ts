@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {
   MenuController,
   NavController,
-  AlertController
+  AlertController,
+  ToastController
 } from '@ionic/angular';
 import { AuthService } from 'src/services/auth-service';
 import { Router } from '@angular/router';
@@ -40,6 +41,7 @@ export class TabDashboardPage implements OnInit {
   totalTx = 0;
   recentTx: Transaction[];
   unconfirmTx: Transaction[];
+  isError = false;
 
   constructor(
     private authService: AuthService,
@@ -50,9 +52,19 @@ export class TabDashboardPage implements OnInit {
     private storage: Storage,
     private accountService: AccountService,
     private transactionServ: TransactionService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    public toastController: ToastController
   ) {
       this.isLoadingBalance = true;
+
+      this.accountBalance =  {
+        accountaddress: '',
+        blockheight: 0,
+        spendablebalance: '0',
+        balance: '0',
+        poprevenue: '',
+        latest: false
+      };
 
       this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
@@ -86,6 +98,9 @@ export class TabDashboardPage implements OnInit {
   }
 
   async loadData() {
+
+    this.isError = false;
+
     const account = await this.storage.get('active_account');
     this.account.accountName = account.accountName;
     this.account.address = this.accountService.getAccountAddress(account);
@@ -110,11 +125,38 @@ export class TabDashboardPage implements OnInit {
       .then((res: Transaction[]) => (this.unconfirmTx = res));
   }
 
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Your settings have been saved.',
+      duration: 2000
+    });
+    toast.present();
+  }
+
+
+  async alertServerDown() {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      subHeader: 'Connection error',
+      message: 'Please try again in a few minuts.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+
   getBalance() {
+    this.isError = false;
+
     this.isLoadingBalance = true;
     this.transactionServ.getAccountBalance(this.account.address).then((data: AccountBalanceList) => {
       this.accountBalance = data.accountbalance;
       this.isLoadingBalance = false;
+    }).catch((error) => {
+      this.isLoadingBalance = false;
+      this.isError = true;
+      console.error(" ==== ada eror", error);
     });
   }
 
