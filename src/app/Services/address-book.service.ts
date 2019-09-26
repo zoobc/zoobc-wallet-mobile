@@ -95,4 +95,20 @@ export class AddressBookService {
     addresses.splice(index, 1);
     await this.storage.set("addresses", addresses);
   }
+
+  async getAddressName(address: string) {
+    const addresses = await this.getAll();
+
+    if (addresses === null) return "";
+
+    const index = addresses.findIndex((addr: AddressBook) => {
+      return addr.address === address;
+    });
+
+    if (index >= 0) {
+      return addresses[index].name;
+    } else {
+      return "";
+    }
+  }
 }

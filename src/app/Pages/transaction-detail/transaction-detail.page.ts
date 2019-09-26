@@ -5,6 +5,7 @@ import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller"
 import { TransactionService } from "src/app/Services/transaction.service";
 import { ActiveAccountService } from "src/app/Services/active-account.service";
 import { AccountService } from "src/app/Services/account.service";
+import { AddressBookService } from "src/app/Services/address-book.service";
 
 @Component({
   selector: "app-transaction-detail",
@@ -28,13 +29,14 @@ export class TransactionDetailPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private transactionSrv: TransactionService,
     private activeAccountSrv: ActiveAccountService,
-    private accountService: AccountService
+    private accountSrv: AccountService,
+    private addressBookSrv: AddressBookService
   ) {}
 
   ngOnInit() {
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
-        this.accountAddress = this.accountService.getAccountAddress(v);
+        this.accountAddress = this.accountSrv.getAccountAddress(v);
       }
     });
 
@@ -52,9 +54,14 @@ export class TransactionDetailPage implements OnInit {
 
     this.transaction = {
       id: transactionObj.id,
+      blockId: transactionObj.blockId,
       type: transactionObj.type,
       sender: transactionObj.sender,
+      senderName: await this.accountSrv.getAddressName(transactionObj.sender),
       recipient: transactionObj.recipient,
+      recipientName: await this.addressBookSrv.getAddressName(
+        transactionObj.recipient
+      ),
       amount: transactionObj.amount,
       fee: transactionObj.fee,
       transactionDate: new Date()
