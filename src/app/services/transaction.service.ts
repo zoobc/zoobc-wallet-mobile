@@ -263,15 +263,16 @@ export class TransactionService {
           msg: string | undefined,
           trailers: grpc.Metadata
         ) => {
-          if (code == grpc.Code.Unknown) {
-            const firstValue = {
-              accountbalance: {
-                spendablebalance: 0,
-                balance: 0,
-              },
-            };
-            return resolve(firstValue);
-          } else if (code != grpc.Code.OK) reject(msg);
+          if (code === grpc.Code.Unknown) {
+            reject(msg);
+            // const firstValue = {
+            //   accountbalance: {
+            //     spendablebalance: 0,
+            //     balance: 0,
+            //   },
+            // };
+            // return resolve(firstValue);
+          } else if (code !== grpc.Code.OK) { reject(msg); }
         },
       });
     });
