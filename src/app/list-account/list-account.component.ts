@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { NavController, ModalController } from "@ionic/angular";
+import { NavController, ModalController, ToastController } from "@ionic/angular";
 import { ModalCreateAccountComponent } from "./modal-create-account/modal-create-account.component";
 import { Storage } from "@ionic/storage";
 import { AccountService } from "src/services/account.service";
@@ -16,6 +16,7 @@ export class ListAccountComponent implements OnInit {
     public modalController: ModalController,
     private storage: Storage,
     private accountService: AccountService,
+    private toastController: ToastController,
     private activeAccountSrv: ActiveAccountService
   ) {}
 
@@ -46,6 +47,37 @@ export class ListAccountComponent implements OnInit {
       this.activeAccountSrv.setActiveAccount(activeAccount);
       this.navtrl.pop();
     });
+  }
+
+  copyAddress(index){
+
+    const account = this.accountsRaw[index];
+
+    console.log('Copy address: ', account);
+
+    const val = this.accountService.getAccountAddress(account);
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+
+    this.copySuccess();
+  }
+
+  async copySuccess() {
+    const toast = await this.toastController.create({
+      message: 'Your address copied to clipboard.',
+      duration: 2000
+    });
+
+    toast.present();
   }
 
   createNewAccount() {

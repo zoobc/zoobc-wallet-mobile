@@ -17,7 +17,7 @@ export class ModalCreateAccountComponent implements OnInit {
   ) {}
 
   account: any;
-  accountName: String;
+  accountName: string;
   accounts = [];
 
   coinCode = "ZBC - Zoobc";
