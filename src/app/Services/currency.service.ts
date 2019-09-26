@@ -1,28 +1,21 @@
 import { Injectable } from "@angular/core";
-import axios from "axios";
 import { Storage } from "@ionic/storage";
-import { RATES, SELECTED_CURRENCY } from "src/environments/variable.const";
+import { currencyRates } from "src/app/app.config";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
 export class CurrencyService {
-  _rates = {
-    ZBC: 1,
-    USD: 3,
-    IDR: 42135
-  };
+  _rates = currencyRates;
 
-  constructor(private storage: Storage) {}
+  activeCurrencySubject: BehaviorSubject<any>;
 
-  async getCurrencyRates() {
-    const { data } = await axios.get(
-      "https://api.exchangeratesapi.io/latest?base=USD&symbols=USD,IDR"
-    );
-    await this.storage.set(RATES, data.rates);
+  constructor(private storage: Storage) {
+    this.activeCurrencySubject = new BehaviorSubject("USD");
   }
 
-  convertCurrency(price, currFrom, currTo) {
+  convertCurrency(price: number, currFrom: string, currTo: string) {
     if (currFrom === currTo) {
       return price * 1;
     } else {
@@ -33,7 +26,8 @@ export class CurrencyService {
     }
   }
 
-  async setCurrency(currency) {
-    await this.storage.set(SELECTED_CURRENCY, currency);
+  async setActiveCurrency(currency: string) {
+    await this.storage.set("selected_currency", currency);
+    this.activeCurrencySubject.next(currency);
   }
 }

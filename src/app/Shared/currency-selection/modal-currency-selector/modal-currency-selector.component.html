@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Select Currency</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item button (click)="selectCurrency('USD')"
+      ><ion-label>United State Dollars (USD)</ion-label></ion-item
+    >
+    <ion-item button (click)="selectCurrency('IDR')"
+      ><ion-label>Indonesia Rupiahs (IDR)</ion-label></ion-item
+    >
+  </ion-list>
+</ion-content>

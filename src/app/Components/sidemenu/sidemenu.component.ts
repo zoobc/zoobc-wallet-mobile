@@ -97,7 +97,7 @@ export class SidemenuComponent implements OnInit {
 
   selectActiveCurrency() {
     if (this.accountSrv) {
-      this.currencyService.setCurrency(this.activeCurrency);
+      this.currencyService.setActiveCurrency(this.activeCurrency);
     }
   }
 
