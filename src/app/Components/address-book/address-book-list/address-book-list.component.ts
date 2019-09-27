@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { AddressBook } from "src/app/Interfaces/address-book";
 import { AddressBookService } from "src/app/services/address-book.service";
-import { ModalController } from "@ionic/angular";
+import { ModalController, ToastController } from "@ionic/angular";
 import { AddressBookFormComponent } from "../address-book-form/address-book-form.component";
 
 @Component({
@@ -16,6 +16,7 @@ export class AddressBookListComponent implements OnInit {
 
   constructor(
     private addressBookSrv: AddressBookService,
+    private toastController: ToastController,
     private modalController: ModalController
   ) {}
 
@@ -32,6 +33,33 @@ export class AddressBookListComponent implements OnInit {
         });
       }
     }
+  }
+
+  copyAddress(index){
+
+    const val =   this.addresses[index];
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val.address;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+
+    this.copySuccess();
+  }
+
+  async copySuccess() {
+    const toast = await this.toastController.create({
+      message: 'Your address copied to clipboard.',
+      duration: 2000
+    });
+
+    toast.present();
   }
 
   selectAddress(index) {

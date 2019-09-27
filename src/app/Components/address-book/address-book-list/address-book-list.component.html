@@ -17,16 +17,15 @@
     </ion-list-header>
     <ion-item
       *ngFor="let address of addresses; let i = index"
-      button
-      (click)="selectAddress(i)"
-    >
-      <ion-label>
+      button>
+      <ion-label (click)="selectAddress(i)">
         <div class="title">{{ address.name }}</div>
         <div class="address">{{ address.address }}</div>
         <div class="created">
           Created: {{ address.created | date: "short" }}
         </div>
       </ion-label>
+      <ion-icon slot="end" name="copy" (click)="copyAddress(i)"></ion-icon>
     </ion-item>
   </ion-list>
 </div>
