@@ -31,12 +31,11 @@ export class TabDashboardPage implements OnInit {
     shortadress: ''
   };
 
-  public accountBalance: AccountBalance;
+  public accountBalance: any;
+
   public isLoadingBalance = true;
   public isLoadingRecentTx = true;
 
-  // public transactions: any[] = [];
-  // public pendingtrxs: any[] = [];
 
   totalTx = 0;
   recentTx: Transaction[];
@@ -60,8 +59,8 @@ export class TabDashboardPage implements OnInit {
       this.accountBalance =  {
         accountaddress: '',
         blockheight: 0,
-        spendablebalance: '0',
-        balance: '0',
+        spendablebalance: 0,
+        balance: 0,
         poprevenue: '',
         latest: false
       };
@@ -125,27 +124,6 @@ export class TabDashboardPage implements OnInit {
       .then((res: Transaction[]) => (this.unconfirmTx = res));
   }
 
-  async presentToast() {
-    const toast = await this.toastController.create({
-      message: 'Your settings have been saved.',
-      duration: 2000
-    });
-    toast.present();
-  }
-
-
-  async alertServerDown() {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      subHeader: 'Connection error',
-      message: 'Please try again in a few minuts.',
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
-
-
   getBalance() {
     this.isError = false;
 
@@ -154,8 +132,12 @@ export class TabDashboardPage implements OnInit {
       this.accountBalance = data.accountbalance;
       this.isLoadingBalance = false;
     }).catch((error) => {
+
+      if (error !== 'error: account not found'){
+        this.isError = true;
+      }
+
       this.isLoadingBalance = false;
-      this.isError = true;
       console.error(" ==== ada eror", error);
     });
   }
@@ -195,8 +177,8 @@ export class TabDashboardPage implements OnInit {
     this.router.navigate(['transaction/' + transId]);
   }
 
-  timeConverter(unixTimestamp: number){
-    const a = new Date(unixTimestamp * 1000);
+  timeConverter(unixTimestamp: number) {
+    const a = new Date(unixTimestamp);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const year = a.getFullYear();
     const month = months[a.getMonth()];
@@ -209,6 +191,8 @@ export class TabDashboardPage implements OnInit {
   }
 
   async showUnconfirmDetail(trx: any) {
+    console.log('--- timestamp: ' + trx.timestamp);
+
     const formattedTime = this.timeConverter(trx.timestamp);
 
     const typeTrx = trx.type === 'send' ? 'Send to' : 'Receive from ';
