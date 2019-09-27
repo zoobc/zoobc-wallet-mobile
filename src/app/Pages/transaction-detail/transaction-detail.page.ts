@@ -3,7 +3,7 @@ import { Transaction } from 'src/app/Interfaces/transaction';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { TransactionService } from 'src/app/services/transaction.service';
 import { ActiveAccountService } from 'src/app/services/active-account.service';
-import { AccountService } from 'src/services/account.service';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
   selector: 'app-transaction-detail',

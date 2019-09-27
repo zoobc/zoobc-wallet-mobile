@@ -2,16 +2,16 @@ import { Component, OnInit } from "@angular/core";
 import { MenuController, NavController } from "@ionic/angular";
 import { Router } from "@angular/router";
 import { Storage } from "@ionic/storage";
-import { ObservableService } from "src/services/observable.service";
+import { ObservableService } from "src/app/services/observable.service";
 import {
   ACTIVE_ACCOUNT,
   LANGUAGES,
   SELECTED_LANGUAGE,
   CURRENCIES
 } from "src/environments/variable.const";
-import { AccountService } from "src/services/account.service";
-import { LanguageService } from "src/services/language.service";
-import { CurrencyService } from "src/services/currency.service";
+import { AccountService } from "src/app/services/account.service";
+import { LanguageService } from "src/app/services/language.service";
+import { CurrencyService } from "src/app/services/currency.service";
 import { ActiveAccountService } from "src/app/services/active-account.service";
 
 @Component({

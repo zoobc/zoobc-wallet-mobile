@@ -4,7 +4,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
 import { MenuController, ToastController, ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { AccountService } from 'src/services/account.service';
+import { AccountService } from 'src/app/services/account.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ActiveAccountService } from 'src/app/services/active-account.service';
 

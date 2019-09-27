@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { ChartService } from 'src/services/chart.service';
+import { ChartService } from 'src/app/services/chart.service';
 import { Chart } from 'chart.js';
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
 

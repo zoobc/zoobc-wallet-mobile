@@ -3,11 +3,11 @@ import { Component, OnInit } from "@angular/core";
 import { Platform, ToastController } from "@ionic/angular";
 import { SplashScreen } from "@ionic-native/splash-screen/ngx";
 import { StatusBar } from "@ionic-native/status-bar/ngx";
-import { LanguageService } from "src/services/language.service";
+import { LanguageService } from "src/app/services/language.service";
 import { AboutPage } from "./about/about.page";
 import { Network } from "@ionic-native/network/ngx";
 import { TranslateService } from "@ngx-translate/core";
-import { CurrencyService } from "src/services/currency.service";
+import { CurrencyService } from "src/app/services/currency.service";
 
 @Component({
   selector: "app-root",

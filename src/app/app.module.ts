@@ -15,7 +15,7 @@ import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { NgxsModule } from '@ngxs/store';
 import { Network } from '@ionic-native/network/ngx';
 import { sign as naclSign } from 'tweetnacl';
-import { ObservableService } from 'src/services/observable.service';
+import { ObservableService } from 'src/app/services/observable.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { QrScannerComponent } from './qr-scanner/qr-scanner.component';

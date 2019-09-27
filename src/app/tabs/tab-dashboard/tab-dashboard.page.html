@@ -51,7 +51,7 @@
           <ion-label class="balance-title">
             Balance
           </ion-label>
-          <ion-label class="main-balance" >{{ accountBalance.balance/1e8 | number: '0.0-4' }} ZBC</ion-label>
+          <ion-label class="main-balance" >{{ accountBalance.balance/1e8 | number: '0.0-6' }} ZBC</ion-label>
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
         <div *ngIf="isLoadingBalance">
@@ -65,7 +65,7 @@
           <ion-label class="balance-title">
             Spendable Balance
           </ion-label>
-          <ion-label class="main-balance" >{{ accountBalance.spendablebalance/1e8 | number: '0.0-4' }} ZBC</ion-label>
+          <ion-label class="main-balance" >{{ accountBalance.spendablebalance/1e8 | number: '0.0-6' }} ZBC</ion-label>
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
         <div *ngIf="isLoadingBalance">
@@ -98,13 +98,15 @@
             <ion-label class="title">
               {{ pendingtrx.address }}
             </ion-label>
-            <ion-label class="date">{{
+            <ion-label class="date" style="font-size: 0.7em">{{
               pendingtrx.timestamp | date: "short"
-            }} <span style="color:green">pending</span></ion-label>
+            }} <span style="color:green">pending</span>
+              <ion-spinner name="lines-small"></ion-spinner>
+          </ion-label>
           </ion-col>
           <ion-col size="5" class="ion-text-end">
             <ion-label class="amount {{ pendingtrx.type }}" style="color:gray">
-              {{ pendingtrx.amount / 1e8 | number: '0.0-4' }} <span style="color:grey">ZBC</span>
+              {{ pendingtrx.amount / 1e8 | number: '0.0-6' }} <span style="color:grey">ZBC</span>
             </ion-label>
           </ion-col>
         </ion-row>
@@ -123,13 +125,13 @@
             <ion-label class="title">
               {{ transaction.address }}
             </ion-label>
-            <ion-label class="date">{{
+            <ion-label class="date" style="font-size: 0.7em">{{
               transaction.timestamp | date: "short"
             }}</ion-label>
           </ion-col>
           <ion-col size="5" class="ion-text-end">
             <ion-label class="amount {{ transaction.type }}">
-              {{ transaction.amount / 1e8 | number: '0.0-4' }} <span style="color:grey">ZBC</span>
+              {{ transaction.amount / 1e8 | number: '0.0-6' }} <span style="color:grey">ZBC</span>
             </ion-label>
           </ion-col>
         </ion-row>

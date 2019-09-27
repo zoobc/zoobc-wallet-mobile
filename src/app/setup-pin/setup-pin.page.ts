@@ -2,9 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { Storage } from "@ionic/storage";
 import sha512 from "crypto-js/sha512";
 import { Router } from "@angular/router";
-import { AuthService } from "src/services/auth-service";
-import { CryptoService } from "src/services/crypto.service";
-import { ConverterService } from "src/services/converter.service";
+import { AuthService } from "src/app/services/auth-service";
+import { CryptoService } from "src/app/services/crypto.service";
+import { ConverterService } from "src/app/services/converter.service";
 import { CreateAccountService } from "../services/create-account.service";
 import { NavController } from "@ionic/angular";
 

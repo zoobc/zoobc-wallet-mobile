@@ -11,10 +11,16 @@
 
 <ion-content class="page-send" padding="true">
   <form #form="ngForm" (ngSubmit)="submit()">
+    <div *ngIf="isLoadingBalance">
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </div>
     <div class="f-group">
       <ion-item lines="none">
-        <ion-label position="stacked">{{ "From" | translate }}:</ion-label>
+        <ion-label position="stacked">From:</ion-label>
         <ion-input [(ngModel)]="sender" name="sender" readonly autocomplete="on" autocorrect="on"></ion-input>
+      </ion-item>
+      <ion-item>
+          <ion-label color="primary" *ngIf="!isLoadingBalance">Balance: {{ balance/1e8 | number: '0.0-6' }}</ion-label>
       </ion-item>
     </div>
 
@@ -23,8 +29,11 @@
         <ion-row align-items-end justify-content-between>
           <ion-col class="ion-text-start">
             <ion-item lines="none">
-              <ion-label position="stacked">{{ "Pay to" | translate }}:</ion-label>
+              <ion-label position="stacked">{{ "Pay to" | translate }}: <span style="color:red">*</span></ion-label>
               <ion-input name="recipient" type="text" [(ngModel)]="recipient" ngModel required></ion-input>
+            </ion-item>
+            <ion-item *ngIf="!isRecipientValid">
+                <ion-label color="danger" >{{ recipientMsg }}</ion-label>
             </ion-item>
           </ion-col>
           <ion-col class="ion-text-end" size="4">
@@ -49,14 +58,20 @@
 
     <div class="f-group">
       <ion-item lines="none">
-        <ion-label position="stacked">{{ "Amount" | translate }}:</ion-label>
-        <ion-input name="amount" type="number" [(ngModel)]="amount" required></ion-input>
+        <ion-label position="stacked">{{ "Amount" | translate }}:</ion-label> <label color="danger">*</label>
+        <ion-input name="amount" maxlength="12" type="number" [(ngModel)]="amount" required></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!isAmountValid">
+          <ion-label color="danger" >{{ amountMsg }}</ion-label>
       </ion-item>
     </div>
 
     <div class="f-group">
         <ion-item>
           <ion-label style="font-size:0.75em;margin-left:0em;text-align: left" slot="start" >Transaction Fee</ion-label>
+        </ion-item>
+        <ion-item *ngIf="!isFeeValid">
+            <ion-label color="danger">Select one transaction fee!</ion-label>
         </ion-item>
         <ion-radio-group [(ngModel)]="fee" name="fee" required>
           <ion-item>
@@ -84,7 +99,7 @@
     </div>
 
     <div padding>
-      <ion-button color="secondary" (click)="showConfirmation()" expand="block"><b>{{ "Send" | translate }}</b>
+      <ion-button color="secondary" *ngIf ="!isLoadingBalance" (click)="showConfirmation()" expand="block"><b>{{ "Send" | translate }}</b>
       </ion-button>
     </div>
 

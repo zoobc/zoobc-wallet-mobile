@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
-import { AuthService } from "src/services/auth-service";
+import { AuthService } from "src/app/services/auth-service";
 import { QrScannerComponent } from "./qr-scanner/qr-scanner.component";
 
 const routes: Routes = [
@@ -43,10 +43,6 @@ const routes: Routes = [
     path: "create-account",
     loadChildren:
       "./create-account/create-account.module#CreateAccountPageModule"
-  },
-  {
-    path: "node-admin",
-    loadChildren: "./node-admin/node-admin.module#NodeAdminModule"
   },
   {
     path: "feedback",

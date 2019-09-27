@@ -5,9 +5,9 @@ import {
   AlertController,
   ToastController
 } from '@ionic/angular';
-import { AuthService } from 'src/services/auth-service';
+import { AuthService } from 'src/app/services/auth-service';
 import { Router } from '@angular/router';
-import { AccountService } from 'src/services/account.service';
+import { AccountService } from 'src/app/services/account.service';
 import { Storage } from '@ionic/storage';
 import { TransactionService, Transactions, Transaction } from 'src/app/services/transaction.service';
 import {
@@ -133,11 +133,31 @@ export class TabDashboardPage implements OnInit {
       this.isLoadingBalance = false;
     }).catch((error) => {
 
-      if (error !== 'error: account not found'){
+      if (error === 'error: account not found'){
+        this.accountBalance =  {
+          accountaddress: '',
+          blockheight: 0,
+          spendablebalance: 0,
+          balance: 0,
+          poprevenue: '',
+          latest: false
+        };
+        this.isError = false;
+
+      } else if (error === 'Response closed without headers') {
+        this.accountBalance =  {
+          accountaddress: '',
+          blockheight: 0,
+          spendablebalance: 0,
+          balance: 0,
+          poprevenue: '',
+          latest: false
+        };
         this.isError = true;
       }
-
+      
       this.isLoadingBalance = false;
+
       console.error(" ==== ada eror", error);
     });
   }
