@@ -15,14 +15,14 @@
   <ng-template [ngIf]="pagePosition == 3">
     <ion-content class="page-generate-passphrase">
       <p class="ion-text-center">Confirm your PIN</p>
-      <app-pin (onChange)="confirmPin($event)"></app-pin>
+      <app-pin (keyup)="confirmPin($event)"></app-pin>
     </ion-content>
   </ng-template>
 
   <ng-template [ngIf]="pagePosition == 2">
     <ion-content class="page-generate-passphrase">
       <p class="ion-text-center">Setup your PIN</p>
-      <app-pin (onChange)="setupPin($event)"></app-pin>
+      <app-pin (keyup)="setupPin($event)"></app-pin>
     </ion-content>
   </ng-template>
 
