@@ -1,10 +1,10 @@
 <ion-header>
-    <ion-toolbar color="primary">
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
-      </ion-buttons>
-      <ion-title>About ZooBc Wallet</ion-title>  
-    </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>About ZooBc Wallet</ion-title>
+  </ion-toolbar>
 </ion-header>
 
 
@@ -20,24 +20,52 @@
         <h2>Version</h2>
         <p>PRE ALPHA</p>
       </ion-label>
-    </ion-item>  
+    </ion-item>
   </ion-list>
 
-  
+
   <ion-list>
     <ion-list-header>
-      Online
+      Changelog
     </ion-list-header>
 
     <ion-item>
       <ion-label>
-        <p>Term of Use</p>
+        <h4>27 September</h4>
+
+        <ul>
+          <li>Fix loading when service  down</li>
+          <li>Add Pin with delete one character</li>
+          <li>Fix Timestamp in pending transaction detail</li>
+          <li>Allow copy address in address book</li>
+        </ul>
+
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label>
-        <p>Privacy Policy</p>
+
+        <h4>26 September</h4>
+
+        <ul>
+          <li>Add loading indicator when service down error message</li>
+          <li>Allow copy address in account list</li>
+        </ul>
+
+
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+
+        <h4>25 September</h4>
+
+        <ul>
+          <li>Send Form, Add validation recipiont address length = 44, amount, transaction fee</li>
+        </ul>
+
       </ion-label>
     </ion-item>
   </ion-list>
