@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Chart</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="welcome-card">
+    <ion-card-header>
+      <ion-card-title>Trending Chart</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+
+      <ion-item>
+        <ion-label>
+          Price:
+          <span style="vertical-align:top;margin-right: 10px">USD</span>
+          <span style="vertical-align:top;font-size:1.8em; margin-right: 10px;">{{price | number}}</span>
+          <span style="vertical-align:top; margin-right: 10px">
+            <ion-icon name="arrow-dropup" style="color: green"></ion-icon><span style="color: green">1.1%</span>
+          </span>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>Rank: <strong>{{rank | number}}</strong> </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>Marketcap: <strong>{{marketcap | currency:"USD":true:"1.0"}}</strong> </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>Volume: <strong>{{volume | currency:"USD":true:"1.0"}}</strong> </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-item padding style="text-align: center">
+    <ion-button shape="round" fill="outline" (click)="dailyChart()">Day</ion-button>
+    <ion-button shape="round" fill="outline" (click)="weeklyChart()">Week</ion-button>
+    <ion-button shape="round" fill="outline" (click)="monthlyChart()">Month</ion-button>
+  </ion-item>
+
+
+  <ion-card class="welcome-card">
+    <ion-card-header>
+      <ion-card-title>Price Chart</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #hrzLineChart></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="welcome-card">
+    <ion-card-header>
+      <ion-card-title>OHLC Chart</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <google-chart [data]="candlestickChart"></google-chart>
+    </ion-card-content>
+  </ion-card>
+
+
+
+</ion-content>
