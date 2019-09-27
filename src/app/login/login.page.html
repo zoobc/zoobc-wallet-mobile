@@ -5,6 +5,6 @@
       {{ "Please Enter Your Pin" | translate }}
     </p>
 
-    <app-pin (onChange)="login($event)"></app-pin>
+    <app-pin (keyup)="login($event)"></app-pin>
   </div>
 </ion-content>
