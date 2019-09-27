@@ -14,7 +14,7 @@ export class PinComponent implements OnInit {
 
   obs: any;
 
-  @Output() onChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() keyup: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() {
     this.dots = Array(6).fill(null).map((x, i) => i);
@@ -28,13 +28,21 @@ export class PinComponent implements OnInit {
     this.pin = "";
   }
 
+  clearOne(){
+    let l = this.pin.length;
+    if (l > 0) {
+      l =  l - 1;
+    }
+    this.pin = this.pin.substring(0, l);
+  }
+
   handleInput(pin: string) {
 
     this.pin += pin;
 
     if (this.pin.length === 6) {
       this.obs = new Observable(observer => {
-        this.onChange.emit({
+        this.keyup.emit({
           observer,
           pin: this.pin
         })
