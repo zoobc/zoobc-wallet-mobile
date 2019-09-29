@@ -31,6 +31,8 @@ export class TabDashboardPage implements OnInit {
     shortadress: ''
   };
 
+  errorMsg = '';
+
   public accountBalance: any;
 
   public isLoadingBalance = true;
@@ -88,12 +90,13 @@ export class TabDashboardPage implements OnInit {
     }, 2000);
   }
 
-   ionViewDidEnter() {
+  ionViewDidEnter() {
     this.loadData();
+    //setInterval(this.loadData, 2 * 1000);
   }
 
-   ngOnInit() {
-    this.loadData();
+  ngOnInit() {
+    //this.loadData();
   }
 
   async loadData() {
@@ -127,38 +130,46 @@ export class TabDashboardPage implements OnInit {
   getBalance() {
     this.isError = false;
 
+    const date1 = new Date();
+
     this.isLoadingBalance = true;
     this.transactionServ.getAccountBalance(this.account.address).then((data: AccountBalanceList) => {
       this.accountBalance = data.accountbalance;
       this.isLoadingBalance = false;
     }).catch((error) => {
 
-      if (error === 'error: account not found'){
-        this.accountBalance =  {
-          accountaddress: '',
-          blockheight: 0,
-          spendablebalance: 0,
-          balance: 0,
-          poprevenue: '',
-          latest: false
-        };
-        this.isError = false;
-
-      } else if (error === 'Response closed without headers') {
-        this.accountBalance =  {
-          accountaddress: '',
-          blockheight: 0,
-          spendablebalance: 0,
-          balance: 0,
-          poprevenue: '',
-          latest: false
-        };
-        this.isError = true;
-      }
-      
       this.isLoadingBalance = false;
+      this.accountBalance =  {
+        accountaddress: '',
+        blockheight: 0,
+        spendablebalance: 0,
+        balance: 0,
+        poprevenue: '',
+        latest: false
+      };
+      this.errorMsg = '';
+      this.isError = false;
+      if (error === 'error: account not found') {
+        // do something here
+      } else if (error === 'Response closed without headers') {
+        const date2 = new Date();
+        const diff =  date2.getTime() - date1.getTime();
+        console.log('== diff: ', diff);
+        if (diff < 50000) {
+          this.errorMsg = 'Look like no internet connection!';
+        } else {
+          this.errorMsg = 'Fail connect to service, please try again later!';
+        }
 
-      console.error(" ==== ada eror", error);
+        this.isError = true;
+      } else if (error === 'all SubConns are in TransientFailure') {
+        // do something here
+      } else {
+
+      }
+
+
+      console.error(' ==== have error: ', error);
     });
   }
 

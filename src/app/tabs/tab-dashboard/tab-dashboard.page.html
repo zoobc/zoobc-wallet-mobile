@@ -80,7 +80,7 @@
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
 
-  <ion-label *ngIf="isError" color="danger" text-center><h2>Fail connect to services. Please try again!</h2></ion-label> 
+  <ion-label *ngIf="isError" color="danger" text-center><h2>{{ errorMsg }}</h2></ion-label> 
 
   <p class="title-section ion-padding-horizontal">
     {{ "Recent Transaction(s)" | translate }}
