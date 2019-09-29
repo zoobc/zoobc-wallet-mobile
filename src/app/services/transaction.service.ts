@@ -21,6 +21,7 @@ import { Pagination, OrderBy } from '../grpc/model/pagination_pb';
 import { readInt64 } from 'src/app/helpers/converters';
 import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../grpc/model/accountBalance_pb';
 import { AccountBalanceService } from '../grpc/service/accountBalance_pb_service';
+import { AddressBookService } from './address-book.service';
 
 
 export interface Transaction {
@@ -50,8 +51,9 @@ export interface Transactions {
 export class TransactionService {
   srvClient: TransactionService;
   mempoolClient: MempoolService;
+  alladdress: any;
 
-  constructor() {
+  constructor(private addressBookSrv: AddressBookService) {
 
   }
 
@@ -66,11 +68,11 @@ export class TransactionService {
       request.setPagination(pagination);
 
       grpc.invoke(MempoolService.GetMempoolTransactions, {
-        request: request,
+        request,
         host: environment.grpcUrl,
         onMessage: (message: GetMempoolTransactionsResponse) => {
           // recreate list of transactions
-          let transactions = message
+          const transactions = message
             .toObject()
             .mempooltransactionsList.map(tx => {
               const bytes = Buffer.from(
@@ -82,20 +84,20 @@ export class TransactionService {
               const fee = readInt64(bytes, 109);
 
               const friendAddress =
-                tx.senderaccountaddress == address
+                tx.senderaccountaddress === address
                   ? tx.recipientaccountaddress
                   : tx.senderaccountaddress;
               const type =
-                tx.senderaccountaddress == address ? 'send' : 'receive';
+                tx.senderaccountaddress === address ? 'send' : 'receive';
               const alias = '';
 
               return {
-                alias: alias,
+                alias,
                 address: friendAddress,
-                type: type,
-                timestamp: parseInt(tx.arrivaltimestamp) * 1000,
-                fee: fee,
-                amount: amount,
+                type,
+                timestamp: parseInt(tx.arrivaltimestamp, 10) * 1000,
+                fee,
+                amount,
               };
             });
 
@@ -106,7 +108,7 @@ export class TransactionService {
           msg: string | undefined,
           trailers: grpc.Metadata
         ) => {
-          if (code != grpc.Code.OK) reject(msg);
+          if (code !== grpc.Code.OK) { reject(msg); }
         },
       });
     });
@@ -117,6 +119,9 @@ export class TransactionService {
     limit: number,
     address: string
   ) {
+
+    this.alladdress = this.addressBookSrv.getAll();
+
     // const address = this.authServ.currAddress;
     return new Promise((resolve, reject) => {
       const request = new GetTransactionsRequest();
@@ -129,11 +134,11 @@ export class TransactionService {
       request.setTransactiontype(1);
 
       grpc.invoke(TransactionServ.GetTransactions, {
-        request: request,
+        request,
         host: environment.grpcUrl,
         onMessage: (message: GetTransactionsResponse) => {
           // recreate list of transactions
-          let transactions: Transaction[] = message
+          const transactions: Transaction[] = message
             .toObject()
             .transactionsList.map(tx => {
               const bytes = Buffer.from(
@@ -142,21 +147,22 @@ export class TransactionService {
               );
               const amount = readInt64(bytes, 0);
               const friendAddress =
-                tx.senderaccountaddress == address
+                tx.senderaccountaddress === address
                   ? tx.recipientaccountaddress
                   : tx.senderaccountaddress;
               const type =
-                tx.senderaccountaddress == address ? 'send' : 'receive';
+                tx.senderaccountaddress === address ? 'send' : 'receive';
               const alias = '';
+
 
               return {
                 id: tx.id,
-                alias: alias,
-                address: friendAddress,
-                type: type,
-                timestamp: parseInt(tx.timestamp) * 1000,
-                fee: parseInt(tx.fee),
-                amount: amount,
+                alias,
+                address: this.getNameByAddress(friendAddress),
+                type,
+                timestamp: parseInt(tx.timestamp, 10) * 1000,
+                fee: Number(tx.fee),
+                amount,
                 blockId: tx.blockid,
                 height: tx.height,
                 transactionIndex: tx.transactionindex,
@@ -167,7 +173,7 @@ export class TransactionService {
 
           resolve({
             total: message.toObject().total,
-            transactions: transactions,
+            transactions,
           });
         },
         onEnd: (
@@ -175,10 +181,20 @@ export class TransactionService {
           msg: string | undefined,
           trailers: grpc.Metadata
         ) => {
-          if (code != grpc.Code.OK) reject(msg);
+          if (code !== grpc.Code.OK) { reject(msg); }
         },
       });
     });
+  }
+
+  getNameByAddress(address: string) {
+    let name = address;
+    this.alladdress.forEach((obj: { name: any; address: string; }) => {
+      if (String(address).valueOf() === String(obj.address).valueOf()) {
+        name = obj.name;
+      }
+    });
+    return name;
   }
 
 
@@ -188,10 +204,10 @@ export class TransactionService {
       request.setId(id);
 
       grpc.invoke(TransactionServ.GetTransaction, {
-        request: request,
+        request,
         host: environment.grpcUrl,
         onMessage: (message: TransactionResponse) => {
-          let tx = message.toObject();
+          const tx = message.toObject();
 
           const bytes = Buffer.from(
             tx.transactionbodybytes.toString(),
@@ -204,9 +220,9 @@ export class TransactionService {
             alias: '',
             address: '',
             type: tx.transactiontype,
-            timestamp: parseInt(tx.timestamp) * 1000,
-            fee: parseInt(tx.fee),
-            amount: amount,
+            timestamp: parseInt(tx.timestamp, 10) * 1000,
+            fee: Number(tx.fee),
+            amount,
             blockId: tx.blockid,
             height: tx.height,
             transactionIndex: tx.transactionindex,
@@ -219,7 +235,7 @@ export class TransactionService {
           msg: string | undefined,
           trailers: grpc.Metadata
         ) => {
-          if (code != grpc.Code.OK) reject(msg);
+          if (code !== grpc.Code.OK) { reject(msg); }
         },
       });
     });
@@ -231,7 +247,7 @@ export class TransactionService {
       request.setTransactionbytes(txBytes);
 
       grpc.invoke(TransactionServ.PostTransaction, {
-        request: request,
+        request,
         host: environment.grpcUrl,
         onMessage: (message: PostTransactionResponse) => {
           resolve(message.toObject());
@@ -241,7 +257,7 @@ export class TransactionService {
           msg: string | undefined,
           trailers: grpc.Metadata
         ) => {
-          if (code != grpc.Code.OK) reject(msg);
+          if (code !== grpc.Code.OK) { reject(msg); }
         },
       });
     });
@@ -253,7 +269,7 @@ export class TransactionService {
       const request = new GetAccountBalanceRequest();
       request.setAccountaddress(address);
       grpc.invoke(AccountBalanceService.GetAccountBalance, {
-        request: request,
+        request,
         host: environment.grpcUrl,
         onMessage: (message: GetAccountBalanceResponse) => {
           resolve(message.toObject());
@@ -265,13 +281,6 @@ export class TransactionService {
         ) => {
           if (code === grpc.Code.Unknown) {
             reject(msg);
-            // const firstValue = {
-            //   accountbalance: {
-            //     spendablebalance: 0,
-            //     balance: 0,
-            //   },
-            // };
-            // return resolve(firstValue);
           } else if (code !== grpc.Code.OK) { reject(msg); }
         },
       });
