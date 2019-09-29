@@ -4,7 +4,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { TabDashboardPage } from "./tab-dashboard.page";
-import { ComponentsModule } from "src/components/components.module";
+import { ComponentsModule } from "src/app/Components/components.module";
 import { TranslateModule } from "@ngx-translate/core";
 import { Network } from "@ionic-native/network/ngx";
 import { PipeModule } from "src/pipe/pipe.module";

@@ -1,6 +1,6 @@
 
 import {NgModule} from '@angular/core';
-import { PinComponent } from './pin/pin.component';
+import { PinComponent } from './pin/pin.component'; 
 import { IonicModule } from '@ionic/angular';
 import { SidemenuComponent } from './sidemenu/sidemenu.component';
 import { FormsModule } from '@angular/forms';

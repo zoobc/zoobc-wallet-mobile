@@ -7,7 +7,7 @@ import { IonicModule } from "@ionic/angular";
 
 import { GeneratePassphrasePage } from "./generate-passphrase.page";
 import { CreateNewStepsComponent } from "../partials/create-new-steps/create-new-steps.component";
-import { ComponentsModule } from "src/components/components.module";
+import { ComponentsModule } from "src/app/Components/components.module";
 
 const routes: Routes = [
   {
