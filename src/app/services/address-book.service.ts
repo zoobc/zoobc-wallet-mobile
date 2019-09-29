@@ -1,34 +1,37 @@
-import { Injectable } from "@angular/core";
-import { Storage } from "@ionic/storage";
-import { AddressBook } from "../Interfaces/address-book";
+import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
+
 export class AddressBookService {
-  constructor(private storage: Storage) {}
+  private STORAGE_NAME = 'addresses';
+
+  constructor(private storage: Storage) { }
 
   async getAll() {
-    const addresses = await this.storage.get("addresses");
+    const addresses = await this.storage.get(this.STORAGE_NAME);
     return addresses;
   }
 
   async insert(name: string, address: string) {
-    const _addresses = await this.getAll();
-    const addresses = _addresses ? _addresses : [];
+    let allAddress = await this.getAll();
+    if (!allAddress) {
+      allAddress = [];
+    }
 
-    const addressObj = {
-      name: name,
-      address: address,
+    allAddress.push({
+      name,
+      address,
       created: new Date()
-    };
+    });
 
-    //await this.storage.set("addresses", [...addresses, addressObj]);
-
-    addresses.push(addressObj);
-
-    await this.storage.set("addresses", addresses);
-
-    return addressObj;
+    await this.storage.set(this.STORAGE_NAME, allAddress);
   }
+
+  async update(addresses: any) {
+    await this.storage.set(this.STORAGE_NAME, addresses);
+  }
+
 }

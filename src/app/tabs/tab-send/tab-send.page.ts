@@ -7,13 +7,13 @@ import {
   ModalController
 } from '@ionic/angular';
 import { TransactionService } from 'src/app/services/transaction.service';
-import { publicKeyToAddress, base64ToByteArray } from 'src/helpers/converters';
+import { publicKeyToAddress, base64ToByteArray } from 'src/app/helpers/converters';
 import { Storage } from '@ionic/storage';
 import { QrScannerService } from 'src/app/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { AddressBookModalComponent } from './address-book-modal/address-book-modal.component';
-import { BytesMaker } from 'src/helpers/BytesMaker';
+import { BytesMaker } from 'src/app/helpers/BytesMaker';
 import {
   GetAccountBalanceResponse,
   AccountBalance as AB,
@@ -101,6 +101,32 @@ export class TabSendPage implements OnInit{
     return addrs.substring(0, 10) + '...' +  addrs.substring(addrs.length - 10, addrs.length);
   }
 
+  validateRecipient() {
+
+    if (!this.recipient) {
+      this.isRecipientValid = false;
+      this.recipientMsg = 'Recipient is empty!';
+    }
+
+    if (this.isRecipientValid && this.recipient.trim().length > 44) {
+      this.isRecipientValid = false;
+      this.recipientMsg = 'Recipient is not valid!';
+    }
+
+    if (this.isRecipientValid && this.recipient.trim().length < 44) {
+      this.isRecipientValid = false;
+      this.recipientMsg = 'Recipient is not valid!';
+    }
+
+    if (this.isRecipientValid) {
+      const addressBytes = base64ToByteArray(this.recipient);
+      if (this.isRecipientValid && addressBytes.length !== 33) {
+        this.isRecipientValid = false;
+        this.recipientMsg = 'Recipient is not valid!';
+      }
+    }
+
+  }
 
   getBalance() {
     this.isLoadingBalance = true;
@@ -208,7 +234,6 @@ export class TabSendPage implements OnInit{
 
   }
 
-
   async failedToast() {
     const toast = await this.toastController.create({
       message: 'PIN not match',
@@ -230,33 +255,11 @@ export class TabSendPage implements OnInit{
 
     this.getBalance();
 
-    if (!this.recipient) {
-      this.isRecipientValid = false;
-      this.recipientMsg = 'Recipient is empty!';
-    }
-
-    if (this.isRecipientValid && this.recipient.trim().length > 44) {
-      this.isRecipientValid = false;
-      this.recipientMsg = 'Recipient is not valid!';
-    }
-
-    if (this.isRecipientValid && this.recipient.trim().length < 44) {
-      this.isRecipientValid = false;
-      this.recipientMsg = 'Recipient is not valid!';
-    }
-
-    if (this.isRecipientValid) {
-      const addressBytes = base64ToByteArray(this.recipient);
-      if (this.isRecipientValid && addressBytes.length !== 33) {
-        this.isRecipientValid = false;
-        this.recipientMsg = 'Recipient is not valid!';
-      }
-    }
+    //validate recipient
+    this.validateRecipient();
 
     if (!this.amount) {
       this.amount = 0;
-      // this.isAmountValid = false;
-      // this.amountMsg = 'Amount is 1 not valid!';
     }
 
     if (this.isAmountValid && isNaN(this.amount)) {
@@ -348,33 +351,9 @@ export class TabSendPage implements OnInit{
     });
     await loading.present();
 
-
     const { derivationPrivKey: accountSeed } = this.account.accountProps;
     console.log('this.account.accountProps: ', this.account.accountProps);
     const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed);
-
-    // const balance = await this.grpcService.getAccountBalance();
-
-    // if (balance > this.account + this.fee) {
-    //   const tx = new SendMoneyTx();
-    //   tx.senderPublicKey = publicKey;
-    //   tx.recipientPublicKey = addressToPublicKey(this.recipient);
-    //   tx.amount = this.amount;
-    //   tx.fee = this.fee;
-    //   tx.timestamp = Date.now() / 1000;
-    //   const txBytes = tx.toBytes();
-
-    //   const signature = this.sign.detached(txBytes, secretKey);
-    //   txBytes.set(signature, 123);
-
-    //   const resolveTx = await this.grpcService.postTransaction(txBytes);
-
-    //   if (resolveTx) {
-    //     this.transactionToast('Money Sent');
-    //   }
-    // } else {
-    //   this.transactionToast('Balance not enough');
-    // }
 
     const sender = Buffer.from(publicKeyToAddress(publicKey), 'utf-8');
     const recepient = Buffer.from(this.recipient, 'utf-8');

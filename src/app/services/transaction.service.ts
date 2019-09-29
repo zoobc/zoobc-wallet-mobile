@@ -18,7 +18,7 @@ import { MempoolService } from '../grpc/service/mempool_pb_service';
 
 import { environment } from '../../environments/environment';
 import { Pagination, OrderBy } from '../grpc/model/pagination_pb';
-import { readInt64 } from 'src/helpers/converters';
+import { readInt64 } from 'src/app/helpers/converters';
 import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../grpc/model/accountBalance_pb';
 import { AccountBalanceService } from '../grpc/service/accountBalance_pb_service';
 

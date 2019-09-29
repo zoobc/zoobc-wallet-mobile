@@ -1,7 +1,7 @@
 <ion-fab ion-fab vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button color="tertiary" (click)="createNewAddress()"
-    ><ion-icon name="add"></ion-icon
-  ></ion-fab-button>
+  <ion-fab-button color="tertiary" (click)="createNewAddress()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
 </ion-fab>
 
 <div class="address-book-list">
@@ -14,18 +14,19 @@
   <ion-list *ngIf="addresses && addresses.length >= 1; else noData">
     <ion-list-header>
       <ion-label>Here is the list of all your addresses book</ion-label>
-    </ion-list-header>
-    <ion-item
-      *ngFor="let address of addresses; let i = index"
-      button>
-      <ion-label (click)="selectAddress(i)">
-        <div class="title">{{ address.name }}</div>
-        <div class="address">{{ address.address }}</div>
-        <div class="created">
-          Created: {{ address.created | date: "short" }}
-        </div>
-      </ion-label>
-      <ion-icon slot="end" name="copy" (click)="copyAddress(i)"></ion-icon>
-    </ion-item>
+    </ion-list-header>  
+    <ion-item-sliding *ngFor="let address of addresses; let i = index">
+      <ion-item>
+        <ion-label (click)="selectAddress(i)">
+          <div class="title">{{ address.name }}</div>
+          <div class="address">{{ address.address }}</div>
+        </ion-label>
+        <ion-icon slot="end" name="copy" (click)="copyAddress(i)"></ion-icon>
+      </ion-item>
+      <ion-item-options>
+          <button danger (click)="editAddress(i)" class="tool"><ion-icon name="create"></ion-icon> Edit</button>
+          <button danger (click)="deleteAddress(i)" class="tool"><ion-icon name="trash"></ion-icon> Delete</button>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 </div>

@@ -1,18 +1,17 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
-import { AddressBook } from "src/app/Interfaces/address-book";
-import { AddressBookService } from "src/app/services/address-book.service";
-import { ModalController, ToastController } from "@ionic/angular";
-import { AddressBookFormComponent } from "../address-book-form/address-book-form.component";
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { AddressBookService } from 'src/app/services/address-book.service';
+import { ModalController, ToastController } from '@ionic/angular';
+import { AddressBookFormComponent } from '../address-book-form/address-book-form.component';
 
 @Component({
-  selector: "app-address-book-list",
-  templateUrl: "./address-book-list.component.html",
-  styleUrls: ["./address-book-list.component.scss"]
+  selector: 'app-address-book-list',
+  templateUrl: './address-book-list.component.html',
+  styleUrls: ['./address-book-list.component.scss']
 })
 export class AddressBookListComponent implements OnInit {
   @Output() itemClicked = new EventEmitter<string>();
 
-  addresses: AddressBook[] = [];
+  addresses = [];
 
   constructor(
     private addressBookSrv: AddressBookService,
@@ -21,21 +20,14 @@ export class AddressBookListComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const addresses = await this.addressBookSrv.getAll();
-
-    if (addresses) {
-      for (let i = 0; i < addresses.length; i++) {
-        const { name, address, created } = addresses[i];
-        this.addresses.push(<AddressBook>{
-          name,
-          address,
-          created
-        });
-      }
+    const alladdress = await this.addressBookSrv.getAll();
+    console.log("===== All Address:", alladdress);
+    if (alladdress) {
+      this.addresses = alladdress;
     }
   }
 
-  copyAddress(index){
+  copyAddress(index: string | number) {
 
     const val =   this.addresses[index];
     const selBox = document.createElement('textarea');
@@ -62,9 +54,27 @@ export class AddressBookListComponent implements OnInit {
     toast.present();
   }
 
-  selectAddress(index) {
+  selectAddress(index: number) {
+  
     const address = this.addresses[index];
+
+    console.log("===== All Address:", address);
+
+
     this.itemClicked.emit(address.address);
+  }
+
+  editAddress(index: string | number) {
+
+    const address = this.addresses[index];
+    console.log("===== All Address:", address);
+
+
+  }
+
+  deleteAddress(index: number) {
+    this.addresses.splice(index, 1);
+    this.addressBookSrv.update(this.addresses);
   }
 
   createNewAddress() {

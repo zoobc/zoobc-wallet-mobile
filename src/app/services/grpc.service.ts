@@ -14,7 +14,7 @@ import {
   PostTransactionRequest,
   PostTransactionResponse
 } from "src/app/grpc/model/transaction_pb";
-import { readInt64 } from "src/helpers/converters";
+import { readInt64 } from "src/app/helpers/converters";
 
 @Injectable({
   providedIn: "root"
