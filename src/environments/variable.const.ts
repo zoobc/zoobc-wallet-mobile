@@ -4,8 +4,20 @@ export const ACTIVE_ACCOUNT = 'ACTIVE_ACCOUNT';
 export const SELECTED_LANGUAGE = 'SELECTED_LANGUAGE';
 export const LANGUAGES = [
   {
+    country: 'Arabic',
+    code: 'ar'
+  },
+  {
     country: 'English',
     code: 'en'
+  },
+  {
+    country: 'French',
+    code: 'fr'
+  },
+  {
+    country: 'Italy',
+    code: 'it'
   },
   {
     country: 'Indonesia',
