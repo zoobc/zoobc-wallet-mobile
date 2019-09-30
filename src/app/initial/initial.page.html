@@ -4,20 +4,18 @@
       <img src="assets/images/logo-white.png" />
     </div>
 
-    <div class="welcome-text ion-text-center">
-      <span class="text1">Wellcome to ZooBC Wallet.</span><br />
-      <span class="text2"
-        >Please choose<br />one of signin methods bellow.</span
-      >
+    <div class="welcome"-text ion-text-center">
+      <span class="text1">{{ "Wellcome to ZooBC Wallet." | translate }}</span><br />
+      <span class="text2">{{ "Please choose" | translate }} <br /> {{ "one of signin methods bellow" | translate }}.</span>
     </div>
 
     <div class="btn-container">
       <ion-button expand="block"  color="tertiary" routerLink="/create-wallet"
-        >Create New Wallet</ion-button
+        ><b>{{ "Create New Wallet" | translate }} </b></ion-button
       >
-      <span>OR</span>
+      <span>{{ "OR" | translate }}</span>
       <ion-button expand="block" color="secondary" routerLink="/existing-wallet"
-        >Open Existing Wallet</ion-button
+        ><b>{{ "Open Existing Wallet" | translate }} </b></ion-button
       >
     </div>
   </div>
