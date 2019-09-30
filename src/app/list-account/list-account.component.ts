@@ -1,14 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import { NavController, ModalController, ToastController } from "@ionic/angular";
-import { ModalCreateAccountComponent } from "./modal-create-account/modal-create-account.component";
-import { Storage } from "@ionic/storage";
-import { AccountService } from "src/app/services/account.service";
-import { ActiveAccountService } from "../services/active-account.service";
+import { Component, OnInit } from '@angular/core';
+import { NavController, ModalController, ToastController } from '@ionic/angular';
+import { ModalCreateAccountComponent } from './modal-create-account/modal-create-account.component';
+import { Storage } from '@ionic/storage';
+import { AccountService } from 'src/app/services/account.service';
+import { ActiveAccountService } from '../services/active-account.service';
 
 @Component({
-  selector: "app-list-account",
-  templateUrl: "./list-account.component.html",
-  styleUrls: ["./list-account.component.scss"]
+  selector: 'app-list-account',
+  templateUrl: './list-account.component.html',
+  styleUrls: ['./list-account.component.scss']
 })
 export class ListAccountComponent implements OnInit {
   constructor(
@@ -25,11 +25,15 @@ export class ListAccountComponent implements OnInit {
   accountsRaw = [];
 
   ngOnInit() {
-    this.storage.get("accounts").then(data => {
-      console.log("__data", data);
+    this.loadData();
+  }
+
+  loadData() {
+    this.storage.get('accounts').then(data => {
+      console.log('__data', data);
 
       this.accountsRaw = data;
-      this.accounts = data.map(acc => {
+      this.accounts = data.map((acc: { accountName: any; created: any; }) => {
         const { accountName, created } = acc;
         return {
           accountName,
@@ -43,13 +47,13 @@ export class ListAccountComponent implements OnInit {
   accountClicked(index) {
     const activeAccount = this.accountsRaw[index];
 
-    this.storage.set("active_account", activeAccount).then(() => {
+    this.storage.set('active_account', activeAccount).then(() => {
       this.activeAccountSrv.setActiveAccount(activeAccount);
       this.navtrl.pop();
     });
   }
 
-  copyAddress(index){
+  copyAddress(index) {
 
     const account = this.accountsRaw[index];
 
@@ -81,24 +85,39 @@ export class ListAccountComponent implements OnInit {
   }
 
   createNewAccount() {
-    this.presentModal();
+    this.presentModal({accountName: '', address: ''}, 0, 'new');
   }
 
-  async presentModal() {
+  editName(index: number) {
+    const account = this.accountsRaw[index];
+    console.log('==== edited address: ', account);
+    this.presentModal(account, index, 'edit');
+  }
+
+  async presentModal(arg: any, idx: number, trxMode: string) {
     const modal = await this.modalController.create({
-      component: ModalCreateAccountComponent
+      component: ModalCreateAccountComponent,
+      componentProps: {
+        accountName: arg.accountName,
+        address: arg.address,
+        mode: trxMode,
+        index: idx
+      }
     });
 
     modal.onDidDismiss().then((returnVal: any) => {
-      if (returnVal.data.account) {
-        const account = returnVal.data.account;
+      this.loadData();
 
-        this.accountsRaw.push(account);
-        this.accounts.push({
-          accountName: account.accountName,
-          address: this.accountService.getAccountAddress(account)
-        });
-      }
+      // if (returnVal.data.account) {
+      //   const account = returnVal.data.account;
+
+      //   this.accountsRaw.push(account);
+      //   this.accounts.push({
+      //     accountName: account.accountName,
+      //     address: this.accountService.getAccountAddress(account)
+      //   });
+      // }
+
     });
 
     return await modal.present();
