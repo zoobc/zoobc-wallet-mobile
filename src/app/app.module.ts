@@ -1,17 +1,17 @@
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { RouteReuseStrategy } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouteReuseStrategy } from '@angular/router';
 
-import { IonicModule, IonicRouteStrategy } from "@ionic/angular";
-import { SplashScreen } from "@ionic-native/splash-screen/ngx";
-import { StatusBar } from "@ionic-native/status-bar/ngx";
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
 
-import { AppConfigModule } from "./app-config.module";
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { FormsModule } from "@angular/forms";
-import { IonicStorageModule } from "@ionic/storage";
-import { HttpClientModule, HttpClient } from "@angular/common/http";
+import { AppConfigModule } from './app-config.module';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { FormsModule } from '@angular/forms';
+import { IonicStorageModule } from '@ionic/storage';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { NgxsModule } from '@ngxs/store';
 import { Network } from '@ionic-native/network/ngx';
 import { sign as naclSign } from 'tweetnacl';
@@ -21,10 +21,10 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { LanguageService } from '../app/services/language.service';
 
-import { from } from 'rxjs';
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/languages/locales/', '.json');
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -51,12 +51,12 @@ export function createTranslateLoader(http: HttpClient) {
     Network,
     StatusBar,
     SplashScreen,
+    LanguageService,
     QRScanner,
     SocialSharing,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: "global", useFactory: () => window },
-    { provide: "nacl.sign", useFactory: () => naclSign },
-    // { provide: "supercop", useFactory: () => supercop },
+    { provide: 'global', useFactory: () => window },
+    { provide: 'nacl.sign', useFactory: () => naclSign },
     ObservableService
   ],
   bootstrap: [AppComponent]
