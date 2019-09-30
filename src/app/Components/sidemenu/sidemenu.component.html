@@ -1,7 +1,7 @@
 <ion-menu type="overlay" menuId="mainMenu">
   <ion-header>
     <ion-toolbar color="primary">
-      <ion-title>Others</ion-title>
+      <ion-title>{{ "Others" | translate }}</ion-title>
     </ion-toolbar>
   </ion-header>
   <ion-content>
@@ -10,7 +10,7 @@
       <ion-item (click)="openAddresBook()" button>
         <ion-icon name="book"></ion-icon>
         <ion-label>
-          Address Book
+          {{ "Address Book" | translate }}
         </ion-label>
       </ion-item>
 
@@ -49,28 +49,21 @@
         <ion-icon name="notifications"></ion-icon>
         <ion-label (click)="openNotifications()">Notifications</ion-label>
       </ion-item>
-   
+    -->
 
-      
+
       <ion-item>
         <ion-icon name="globe"></ion-icon>
         <ion-label>{{ "Language" | translate }}</ion-label>
-        <ion-select
-          interface="action-sheet"
-          [(ngModel)]="activeLanguage"
-          (ionChange)="selectActiveLanguage()"
-        >
-          <ion-select-option
-            *ngFor="let language of languages; let i = index"
-            value="{{ language.code }}"
-          >
-            {{ language.country }}</ion-select-option
-          >
+        <ion-select interface="popover" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
+          <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
+            {{ language.country }}
+          </ion-select-option>
         </ion-select>
       </ion-item>
-   -->
-   
-      <!--
+
+
+      <!--       
       <ion-item>
         <ion-icon name="logo-usd"></ion-icon>
         <ion-label>{{ "Currency" | translate }}</ion-label>
@@ -86,24 +79,22 @@
             {{ currency.code }} - {{ currency.country }}</ion-select-option
           >
         </ion-select>
-      </ion-item>
-    </ion-list>
+      </ion-item> -->
+      <!-- </ion-list>
 
-    <ion-list>
-
-      -->
+    <ion-list> -->
 
       <ion-item>
         <ion-icon name="help-circle-outline"></ion-icon>
         <ion-label (click)="openHelpSupport()">
-          Help & Support
+          {{ "Help & Support" | translate }}
         </ion-label>
       </ion-item>
- 
+
       <ion-item>
         <ion-icon name="information-circle-outline"></ion-icon>
         <ion-label (click)="openAboutView()">
-          About ZooBC Wallet
+          {{ "About this wallet" | translate }}
         </ion-label>
       </ion-item>
 
@@ -112,7 +103,7 @@
   <ion-footer>
     <ion-toolbar>
       <ion-button expand="block" (click)="logout()" color="tertiary">
-        <b>Log out</b>
+        <b>{{ "Log out" | translate }}</b>
       </ion-button>
     </ion-toolbar>
   </ion-footer>
