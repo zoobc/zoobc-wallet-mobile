@@ -16,12 +16,16 @@ export const LANGUAGES = [
     code: 'fr'
   },
   {
-    country: 'Italy',
+    country: 'Indonesia',
+    code: 'id'
+  },
+  {
+    country: 'Italian',
     code: 'it'
   },
   {
-    country: 'Indonesia',
-    code: 'id'
+    country: 'Malay',
+    code: 'my'
   }
 ];
 
