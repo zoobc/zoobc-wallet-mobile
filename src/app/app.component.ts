@@ -1,22 +1,22 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 
-import { Platform, ToastController } from "@ionic/angular";
-import { SplashScreen } from "@ionic-native/splash-screen/ngx";
-import { StatusBar } from "@ionic-native/status-bar/ngx";
-import { LanguageService } from "src/app/services/language.service";
-import { AboutPage } from "./Pages/about/about.page";
-import { Network } from "@ionic-native/network/ngx";
-import { TranslateService } from "@ngx-translate/core";
-import { CurrencyService } from "src/app/services/currency.service";
+import { Platform, ToastController } from '@ionic/angular';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { LanguageService } from 'src/app/services/language.service';
+import { AboutPage } from './Pages/about/about.page';
+import { Network } from '@ionic-native/network/ngx';
+import { TranslateService } from '@ngx-translate/core';
+import { CurrencyService } from 'src/app/services/currency.service';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "app.component.html"
+  selector: 'app-root',
+  templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit {
   public rootPage: any = AboutPage;
 
-  private connectionText = "";
+  private connectionText = '';
 
   constructor(
     private platform: Platform,
@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
     });
 
     this.translateService
-      .get("Please check your connection")
+      .get('Please check internet connection')
       .subscribe((res: string) => {
         this.connectionText = res;
       });
