@@ -47,7 +47,7 @@ export class AddressBookFormComponent implements OnInit {
     let i = 0;
     this.addresses.forEach(obj => {
       if (String(name).valueOf() === String(obj.name).valueOf()) {
-        this.validationMessage = 'Name is exist, with address:' + obj.address;
+        this.validationMessage = '<p>Name is exist, with address:<br/>' + obj.address + '</p>';
         if (this.mode === 'edit') {
           if (i !== this.index) {
             finded = true;
@@ -69,7 +69,7 @@ export class AddressBookFormComponent implements OnInit {
     let i = 0;
     this.addresses.forEach(obj => {
       if (String(address).valueOf() === String(obj.address).valueOf()) {
-        this.validationMessage = 'Address is exist, with name:' + obj.name;
+        this.validationMessage = '<p>Address is exist, with name:<br/>' + obj.name + '</p>';
         if (this.mode === 'edit') {
           if (i !== this.index) {
             finded = true;

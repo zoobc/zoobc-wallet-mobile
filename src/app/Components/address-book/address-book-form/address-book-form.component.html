@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Add New Address</ion-title>
+    <ion-title *ngIf="mode==='new'">Create New Account</ion-title>
+    <ion-title *ngIf="mode==='edit'">Edit Account</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -39,7 +40,7 @@
       </ion-item>
 
       <ion-item>
-        <ion-label *ngIf="!isAddressValid" color="danger" style="font-size: 0.8em;color:red">{{ validationMessage }}</ion-label>
+        <span *ngIf="!isAddressValid" style="font-size: 0.8em;color:red" [innerHTML]="validationMessage"></span>
       </ion-item>
     </ion-list>
 
@@ -49,8 +50,8 @@
         <ion-row>
             <ion-col col-6> 
               <ion-button
-                expand="block"
-                color="tertiary"
+                expand="block"style="color:red;font-size: 0.8em"
+                color="tertiary"style="color:red;font-size: 0.8em"
                 (click)="closeModal()"
                 fill="outline"
                 expand="block"><b>Cancel</b>
@@ -62,7 +63,9 @@
                 color="secondary"
                 (click)="addAddress()"
                 type="submit"
-                expand="block"><b>Save</b>
+                expand="block">
+                <span *ngIf="mode==='new'"><b>Save</b></span>
+                <span *ngIf="mode==='edit'"><b>Update</b></span>
               </ion-button>        
             </ion-col>
         </ion-row>
