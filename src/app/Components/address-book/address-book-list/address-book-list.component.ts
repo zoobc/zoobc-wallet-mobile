@@ -20,8 +20,11 @@ export class AddressBookListComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.getAllAddress();
+  }
+
+  async getAllAddress() {
     const alladdress = await this.addressBookSrv.getAll();
-    console.log("===== All Address:", alladdress);
     if (alladdress) {
       this.addresses = alladdress;
     }
@@ -55,21 +58,13 @@ export class AddressBookListComponent implements OnInit {
   }
 
   selectAddress(index: number) {
-  
     const address = this.addresses[index];
-
-    console.log("===== All Address:", address);
-
-
     this.itemClicked.emit(address.address);
   }
 
-  editAddress(index: string | number) {
-
+  editAddress(index: number) {
     const address = this.addresses[index];
-    console.log("===== All Address:", address);
-
-
+    this.presentModal(address, index, 'edit');
   }
 
   deleteAddress(index: number) {
@@ -78,20 +73,22 @@ export class AddressBookListComponent implements OnInit {
   }
 
   createNewAddress() {
-    this.presentModal();
+    this.presentModal({name: '', address: ''}, 0, 'new');
   }
 
-  async presentModal() {
+  async presentModal(arg: any, idx: number, trxMode: string) {
     const modal = await this.modalController.create({
-      component: AddressBookFormComponent
+      component: AddressBookFormComponent,
+      componentProps: {
+        name: arg.name,
+        address: arg.address,
+        mode: trxMode,
+        index: idx
+      }
     });
 
     modal.onDidDismiss().then((returnVal: any) => {
-      if (returnVal.data.addressObj) {
-        const addressObj = returnVal.data.addressObj;
-
-        this.addresses.push(addressObj);
-      }
+      this.getAllAddress();
     });
 
     return await modal.present();

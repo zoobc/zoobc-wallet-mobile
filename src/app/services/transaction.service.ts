@@ -60,6 +60,9 @@ export class TransactionService {
 
   getUnconfirmTransaction(address: string) {
 
+    const addresses = this.addressBookSrv.getAll();
+    console.log(' ===== addresses: ', addresses);
+
     return new Promise((resolve, reject) => {
       const request = new GetMempoolTransactionsRequest();
       const pagination = new Pagination();
@@ -93,7 +96,7 @@ export class TransactionService {
 
               return {
                 alias,
-                address: friendAddress,
+                address: this.getNameByAddress(friendAddress, addresses),
                 type,
                 timestamp: parseInt(tx.arrivaltimestamp, 10) * 1000,
                 fee,
@@ -120,7 +123,8 @@ export class TransactionService {
     address: string
   ) {
 
-    this.alladdress = this.addressBookSrv.getAll();
+    const addresses = this.addressBookSrv.getAll();
+    console.log(' ===== addresses: ', addresses);
 
     // const address = this.authServ.currAddress;
     return new Promise((resolve, reject) => {
@@ -158,7 +162,7 @@ export class TransactionService {
               return {
                 id: tx.id,
                 alias,
-                address: this.getNameByAddress(friendAddress),
+                address: this.getNameByAddress(friendAddress, addresses),
                 type,
                 timestamp: parseInt(tx.timestamp, 10) * 1000,
                 fee: Number(tx.fee),
@@ -187,18 +191,22 @@ export class TransactionService {
     });
   }
 
-  getNameByAddress(address: string) {
+  getNameByAddress(address: string, alldress: any) {
     let name = address;
-    this.alladdress.forEach((obj: { name: any; address: string; }) => {
-      if (String(address).valueOf() === String(obj.address).valueOf()) {
-        name = obj.name;
-      }
-    });
+    if (alldress) {
+      alldress.__zone_symbol__value.forEach((obj: { name: any; address: string; }) => {
+        if (String(address).valueOf() === String(obj.address).valueOf()) {
+          name = obj.name;
+        }
+      });
+    }
     return name;
   }
 
-
   getTransaction(id) {
+
+    const addresses = this.addressBookSrv.getAll();
+
     return new Promise((resolve, reject) => {
       const request = new GetTransactionRequest();
       request.setId(id);
@@ -226,8 +234,8 @@ export class TransactionService {
             blockId: tx.blockid,
             height: tx.height,
             transactionIndex: tx.transactionindex,
-            sender: tx.senderaccountaddress,
-            recipient: tx.recipientaccountaddress,
+            sender: this.getNameByAddress(tx.senderaccountaddress, addresses),
+            recipient: this.getNameByAddress(tx.recipientaccountaddress, addresses),
           });
         },
         onEnd: (

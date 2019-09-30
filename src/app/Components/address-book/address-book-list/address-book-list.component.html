@@ -12,9 +12,6 @@
   </ng-template>
 
   <ion-list *ngIf="addresses && addresses.length >= 1; else noData">
-    <ion-list-header>
-      <ion-label>Here is the list of all your addresses book</ion-label>
-    </ion-list-header>  
     <ion-item-sliding *ngFor="let address of addresses; let i = index">
       <ion-item>
         <ion-label (click)="selectAddress(i)">

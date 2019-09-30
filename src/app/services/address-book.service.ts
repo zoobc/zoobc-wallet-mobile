@@ -11,8 +11,34 @@ export class AddressBookService {
   constructor(private storage: Storage) { }
 
   async getAll() {
-    const addresses = await this.storage.get(this.STORAGE_NAME);
+    const addresses = await this.storage.get(this.STORAGE_NAME).catch(error => {
+      console.log(error);
+    });
     return addresses;
+  }
+
+
+  async getNameByAddress(address: string){
+    const addresses = await this.getAll();
+    let name = '';
+    addresses.forEach( (obj: { name: any; address: string; }) => {
+      if (String(address).valueOf() === String(obj.address).valueOf()) {
+        name = obj.name;
+      }
+    });
+    return name;
+  }
+
+
+  async updateByIndex(name: string, address: string, idx: number) {
+    const allAddress = await this.getAll();
+    allAddress[idx] = {
+      name,
+      address,
+      created: new Date()
+    };
+
+    await this.update(allAddress);
   }
 
   async insert(name: string, address: string) {
@@ -27,11 +53,13 @@ export class AddressBookService {
       created: new Date()
     });
 
-    await this.storage.set(this.STORAGE_NAME, allAddress);
+    await this.update(allAddress);
   }
 
   async update(addresses: any) {
-    await this.storage.set(this.STORAGE_NAME, addresses);
+    await this.storage.set(this.STORAGE_NAME, addresses).catch(error => {
+      console.log(error);
+    });
   }
 
 }

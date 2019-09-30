@@ -6,9 +6,9 @@ import { Subject } from "rxjs";
 })
 export class ActiveAccountService {
   account: any = {
-    accountName: "",
-    address: "",
-    created: ""
+    accountName: '',
+    address: '',
+    created: ''
   };
 
   constructor() {}
