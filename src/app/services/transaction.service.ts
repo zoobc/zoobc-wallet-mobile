@@ -193,7 +193,9 @@ export class TransactionService {
 
   getNameByAddress(address: string, alldress: any) {
     let name = address;
-    if (alldress) {
+    if (alldress && alldress.__zone_symbol__value) {
+      console.log('=== Name: ', alldress.__zone_symbol__value);
+
       alldress.__zone_symbol__value.forEach((obj: { name: any; address: string; }) => {
         if (String(address).valueOf() === String(obj.address).valueOf()) {
           name = obj.name;
