@@ -49,7 +49,7 @@
         <img class="logo" src="assets/images/logo-white.png" />
         <ion-label>
           <ion-label class="balance-title">
-            Balance
+            {{ "Balance" | translate }}
           </ion-label>
           <ion-label class="main-balance" >{{ accountBalance.balance/1e8 | number: '0.0-6' }} ZBC</ion-label>
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
@@ -63,7 +63,7 @@
         <img class="logo" src="assets/images/logo-white.png" />
         <ion-label>
           <ion-label class="balance-title">
-            Spendable Balance
+            {{ "Spendable Balance" | translate }} 
           </ion-label>
           <ion-label class="main-balance" >{{ accountBalance.spendablebalance/1e8 | number: '0.0-6' }} ZBC</ion-label>
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
