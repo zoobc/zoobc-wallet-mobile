@@ -18,26 +18,13 @@
         --inner-padding-end: 0;
     }
 
+    .ion-label{
+        font-size: 1.4em;
+    }
+
     .btn-icon{
         background-color: transparent;
         font-size: 1.6rem;
     }
 
-    .popup-pin {
-        width: 90%;
-        margin-top: 10px;
-        height: 80%;
-     }
-     ion-label{
-         font-size: 0.7em;
-     }
-
-    popup-pin {
-        width: 95%;
-        height: 80%;
-     }
-
-    ion-input{
-        border-bottom: 1px solid #D8D8D8;
-    }
 }
