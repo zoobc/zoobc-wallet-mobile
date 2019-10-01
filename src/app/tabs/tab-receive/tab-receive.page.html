@@ -5,7 +5,7 @@
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Receive ZBC</ion-title>
+    <ion-title>{{ "Receive" | translate }} ZBC</ion-title>
 
     <ion-buttons slot="end">
       <ion-button (click)="openSharing()">
@@ -22,6 +22,6 @@
     <img style="width: 100%;" [src]="account.qrCode" />
   </div>
   <p class="note">
-    show this qrcode to your friend to transfer money to your account
+    {{ "show this qrcode to your friend to transfer money to your account" | translate }}
   </p>
 </ion-content>

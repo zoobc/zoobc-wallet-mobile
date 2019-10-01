@@ -2,29 +2,22 @@
   <div>
     <div>
       <h3 class="title ion-text-center">
-        Please enter your 24 words
+        {{ "Please enter your 24 words" | translate }}
       </h3>
     </div>
 
     <div>
-      <ion-textarea
-        rows="5"
-        auto-grow="true"
-        [(ngModel)]="passphrase"
-        placeholder="Please enter your 24 words"
-      ></ion-textarea>
+      <ion-textarea rows="5" auto-grow="true" [(ngModel)]="passphrase"
+        placeholder="{{ 'Please enter your 24 words' | translate }}"></ion-textarea>
 
       <div class="existing-wallet-button">
-        <ion-button expand="block" color="secondary" (click)="openExistingWallet()"
-          >Open Wallet</ion-button
-        >
+        <ion-button expand="block" color="secondary" (click)="openExistingWallet()">{{ "Open Wallet" | translate }}
+        </ion-button>
       </div>
     </div>
 
     <div class="btn-container">
-      <ion-button expand="block" fill="outline" color="grey" (click)="goback()"
-        >Back</ion-button
-      >
+      <ion-button expand="block" fill="outline" color="grey" (click)="goback()">{{ "Back" | translate }}</ion-button>
     </div>
   </div>
 </ion-content>

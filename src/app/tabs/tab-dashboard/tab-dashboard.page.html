@@ -19,31 +19,30 @@
 </ion-header>
 
 
-<ion-content class="page-dashboard">  
+<ion-content class="page-dashboard">
   <!-- Custom Refresher Content -->
   <ion-refresher slot="fixed" style="background: #ffffff;" (ionRefresh)="doRefresh($event)">
-      <ion-refresher-content
-        pullingIcon="arrow-dropdown"
-        pullingText="Pull to refresh"
-        refreshingSpinner="circles"
-        refreshingText="Refreshing...">
-      </ion-refresher-content>
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
+      refreshingText="{{ 'Refreshing' | translate }} ...">
+    </ion-refresher-content>
   </ion-refresher>
 
- 
+
   <ion-card class="card-balance">
     <ion-card-content>
-      <ion-grid>        
-        <ion-row >
-          <ion-col  size="12" text-center>
-              <h2 class="account-name" (click)="openListAccount()"><span >{{ account.accountName }}</span> <span><ion-icon style = "margin-left:10px;" name="arrow-dropdown"></ion-icon></span></h2>
-              <ion-label sytle="margin-bottom:20px;" (click)="openListAccount()">{{ account.shortadress }}</ion-label>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" text-center>
+            <h2 class="account-name" (click)="openListAccount()"><span>{{ account.accountName }}</span> <span>
+                <ion-icon style="margin-left:10px;" name="arrow-dropdown"></ion-icon>
+              </span></h2>
+            <ion-label sytle="margin-bottom:20px;" (click)="openListAccount()">{{ account.shortadress }}</ion-label>
           </ion-col>
         </ion-row>
-      
+
       </ion-grid>
 
-      
+
 
       <ion-item lines="none" class="ion-no-padding balance-item">
         <img class="logo" src="assets/images/logo-white.png" />
@@ -51,45 +50,45 @@
           <ion-label class="balance-title">
             {{ "Balance" | translate }}
           </ion-label>
-          <ion-label class="main-balance" >{{ accountBalance.balance/1e8 | number: '0.0-6' }} ZBC</ion-label>
+          <ion-label class="main-balance">{{ accountBalance.balance/1e8 | number: '0.0-6' }} ZBC</ion-label>
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
         <div *ngIf="isLoadingBalance">
-            <ion-spinner name="lines-small"></ion-spinner>
-        </div>      
+          <ion-spinner name="lines-small"></ion-spinner>
+        </div>
       </ion-item>
 
       <ion-item lines="none" class="ion-no-padding balance-item">
         <img class="logo" src="assets/images/logo-white.png" />
         <ion-label>
           <ion-label class="balance-title">
-            {{ "Spendable Balance" | translate }} 
+            {{ "Spendable Balance" | translate }}
           </ion-label>
-          <ion-label class="main-balance" >{{ accountBalance.spendablebalance/1e8 | number: '0.0-6' }} ZBC</ion-label>
+          <ion-label class="main-balance">{{ accountBalance.spendablebalance/1e8 | number: '0.0-6' }} ZBC</ion-label>
           <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
         </ion-label>
         <div *ngIf="isLoadingBalance">
-            <ion-spinner name="lines-small"></ion-spinner>
-        </div>        
-      
+          <ion-spinner name="lines-small"></ion-spinner>
+        </div>
+
       </ion-item>
     </ion-card-content>
   </ion-card>
 
   <div *ngIf="isLoadingBalance">
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
 
-  <ion-label *ngIf="isError" color="danger" text-center><h2>{{ errorMsg }}</h2></ion-label> 
+  <ion-label *ngIf="isError" color="danger" text-center>
+    <h2>{{ errorMsg }}</h2>
+  </ion-label>
 
   <p class="title-section ion-padding-horizontal">
     {{ "Recent Transaction(s)" | translate }}
   </p>
 
   <ion-list class="ion-margin-top list-transaction">
-    <ion-item
-      *ngFor="let pendingtrx of unconfirmTx; let i = index"
-      button  (click)="openDetailUnconfirm(i)">
+    <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button (click)="openDetailUnconfirm(i)">
 
 
       <ion-label>
@@ -102,7 +101,7 @@
               pendingtrx.timestamp | date: "short"
             }} <span style="color:green">pending</span>
               <ion-spinner name="lines-small"></ion-spinner>
-          </ion-label>
+            </ion-label>
           </ion-col>
           <ion-col size="5" class="ion-text-end">
             <ion-label class="amount {{ pendingtrx.type }}" style="color:gray">
@@ -113,12 +112,8 @@
       </ion-label>
 
     </ion-item>
-    
-    <ion-item
-      *ngFor="let transaction of recentTx; let i = index"
-      button
-      (click)="openDetailTransction(transaction.id)"
-    >
+
+    <ion-item *ngFor="let transaction of recentTx; let i = index" button (click)="openDetailTransction(transaction.id)">
       <ion-label>
         <ion-row class="ion-justify-content-between">
           <ion-col size="7">

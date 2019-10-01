@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
     </ion-buttons>
-    <ion-title>Create New Account</ion-title>
+    <ion-title>{{ "Create New Account" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -14,14 +14,14 @@
 
   <ng-template [ngIf]="pagePosition == 3">
     <ion-content class="page-generate-passphrase">
-      <p class="ion-text-center">Confirm your PIN</p>
+      <p class="ion-text-center">{{ "Confirm your PIN" | translate }}</p>
       <app-pin (keyup)="confirmPin($event)"></app-pin>
     </ion-content>
   </ng-template>
 
   <ng-template [ngIf]="pagePosition == 2">
     <ion-content class="page-generate-passphrase">
-      <p class="ion-text-center">Setup your PIN</p>
+      <p class="ion-text-center">{{ "Setup your PIN" | translate }}</p>
       <app-pin (keyup)="setupPin($event)"></app-pin>
     </ion-content>
   </ng-template>
@@ -43,7 +43,7 @@
             class="btn-action"
             expand="block"
             (click)="copyToClipboard()"
-            ><ion-icon name="copy"></ion-icon>Copy Passphrase</ion-button
+            ><ion-icon name="copy"></ion-icon>{{ "Copy Passphrase" | translate }}</ion-button
           >
         </ion-col>
         <ion-col>
@@ -53,15 +53,15 @@
             expand="block"
             (click)="generatePassphrase()"
           >
-            <ion-icon name="refresh-circle"></ion-icon> Regenerate
+            <ion-icon name="refresh-circle"></ion-icon> {{ "Regenerate" | translate }}
           </ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
 
     <div class="warning ion-margin-horizontal">
-      Remember: Never tell your passphrase. If you lose it, you lose access to
-      your account!
+      {{ "Remember: Never tell your passphrase. If you lose it, you lose access to
+      your account!" | translate }}
     </div>
 
     <div class="ion-margin-horizontal checklist">
@@ -69,7 +69,7 @@
         <ion-checkbox [(ngModel)]="writtenDown"></ion-checkbox>
       </div>
       <span
-        >I have written down or otherwise securely stored my passphrase</span
+        >{{ "I have written down or otherwise securely stored my passphrase" | translate }}</span
       >
     </div>
 
@@ -77,7 +77,7 @@
       <div>
         <ion-checkbox [(ngModel)]="terms"></ion-checkbox>
       </div>
-      <span>I agree to the terms & conditions </span>
+      <span>{{ "I agree to the terms & conditions" | translate }} </span>
     </div>
 
     <div class="footer-generate-passphrase" text-center style="margin-bottom:20px;">
@@ -87,7 +87,7 @@
         expand="block"
         (click)="setPagePosition(2)"
         *ngIf="!isPinSetup"
-        disabled="{{ !(writtenDown && terms) }}"><b>Setup PIN</b></ion-button
+        disabled="{{ !(writtenDown && terms) }}"><b>{{ "Setup PIN" | translate }}</b></ion-button
       >
     </div>
   </ng-template>
