@@ -3,11 +3,16 @@ export const ACTIVE_ACCOUNT = 'ACTIVE_ACCOUNT';
 // Language
 export const SELECTED_LANGUAGE = 'SELECTED_LANGUAGE';
 export const LANGUAGES = [
-  // {
-  //   country: 'Arabic',
-  //   code: 'ar',
-  //   img: 'assets/images/lang/ar.png'
-  // },
+  {
+    country: 'Arabic',
+    code: 'ar',
+    img: 'assets/images/lang/ar.png'
+  },
+  {
+    country: 'Croacia',
+    code: 'hr',
+    img: 'assets/images/lang/hr.png'
+  },
   {
     country: 'English',
     code: 'en',
@@ -17,6 +22,11 @@ export const LANGUAGES = [
     country: 'French',
     code: 'fr',
     img: 'assets/images/lang/fr.png'
+  },
+  {
+    country: 'Hindi',
+    code: 'hi',
+    img: 'assets/images/lang/hi.png'
   },
   {
     country: 'Indonesia',
@@ -32,6 +42,11 @@ export const LANGUAGES = [
     country: 'Malay',
     code: 'ms',
     img: 'assets/images/lang/ms.png'
+  },
+  {
+    country: 'Thai',
+    code: 'th',
+    img: 'assets/images/lang/th.png'
   }
 ];
 
