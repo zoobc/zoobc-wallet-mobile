@@ -5,6 +5,7 @@ import { CreateAccountService } from "../../Services/create-account.service";
 import { AuthService } from "src/app/Services/auth-service";
 import { SetupPinService } from "src/app/Services/setup-pin.service";
 import { AccountService } from "src/app/Services/account.service";
+import * as bip39 from "bip39";
 
 @Component({
   selector: "app-generate-passphrase",
@@ -60,8 +61,10 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   async generatePassphrase() {
-    const passphrase = this.keyringService.generateRandomPhrase().phrase;
-    this.passphrase = passphrase;
+    //const passphrase = this.keyringService.generateRandomPhrase().phrase;
+    //this.passphrase = passphrase;
+    const mnemonic = bip39.generateMnemonic(256);
+    this.passphrase = mnemonic;
   }
 
   copyToClipboard() {
