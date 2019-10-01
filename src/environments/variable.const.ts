@@ -3,29 +3,35 @@ export const ACTIVE_ACCOUNT = 'ACTIVE_ACCOUNT';
 // Language
 export const SELECTED_LANGUAGE = 'SELECTED_LANGUAGE';
 export const LANGUAGES = [
-  {
-    country: 'Arabic',
-    code: 'ar'
-  },
+  // {
+  //   country: 'Arabic',
+  //   code: 'ar',
+  //   img: 'assets/images/lang/ar.png'
+  // },
   {
     country: 'English',
-    code: 'en'
+    code: 'en',
+    img: 'assets/images/lang/en.png'
   },
   {
     country: 'French',
-    code: 'fr'
+    code: 'fr',
+    img: 'assets/images/lang/fr.png'
   },
   {
     country: 'Indonesia',
-    code: 'id'
+    code: 'id',
+    img: 'assets/images/lang/id.png'
   },
   {
     country: 'Italian',
-    code: 'it'
+    code: 'it',
+    img: 'assets/images/lang/it.png'
   },
   {
     country: 'Malay',
-    code: 'my'
+    code: 'ms',
+    img: 'assets/images/lang/ms.png'
   }
 ];
 

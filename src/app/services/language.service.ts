@@ -29,13 +29,6 @@ export class LanguageService {
     });
   }
 
-  getLanguages() {
-    return [
-      { text: 'English', value: 'en', img: 'assets/imgs/en.png' },
-      { text: 'German', value: 'de', img: 'assets/imgs/de.png' }
-    ];
-  }
-
   setLanguage(lng: string) {
     this.translate.use(lng);
     this.selected = lng;
