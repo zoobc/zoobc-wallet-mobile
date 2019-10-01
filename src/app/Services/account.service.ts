@@ -77,7 +77,8 @@ export class AccountService {
         null,
         (err, response: GetAccountBalanceResponse) => {
           if (err) {
-            if (err.code == 2) {
+            if (err.code == 5) {
+              //account not found
               return resolve({
                 accountbalance: {
                   balance: 0,
@@ -131,6 +132,7 @@ export class AccountService {
     await this.storage.set("accounts", accountsInsert);
 
     const address = this.getAccountAddress(accountProps);
+
     const _balance: any = await this.getAccountBalance(address);
 
     return {
