@@ -7,7 +7,7 @@ import {
   publicKeyToAddress,
   addressToPublicKey
 } from "../../../helpers/converters";
-import { SendMoneyTx } from "../../../helpers/serializers";
+//import { SendMoneyTx } from "../../../helpers/serializers";
 import { GRPCService } from "src/app/Services/grpc.service";
 
 // import { calcBip32ExtendedKey } from '../Services/keyring.service';
@@ -30,6 +30,7 @@ export class TestPage implements OnInit {
     console.log("bip44 coinName:", coinName);
   }
 
+  /*
   async testService() {
     let { phrase } = this.keyringService.generateRandomPhrase();
     console.log("new phrase:", phrase);
@@ -103,5 +104,5 @@ export class TestPage implements OnInit {
 
     const resolveTx = await this.grpcService.postTransaction(txBytes);
     console.log("resolveTx:", resolveTx);
-  }
+  }*/
 }

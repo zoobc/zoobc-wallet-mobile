@@ -1,29 +1,34 @@
 import { NgModule } from "@angular/core";
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
-import { AuthService } from "src/app/Services/auth-service";
+import { AuthGuard } from "./Guards/auth.guard";
+import { HasAccountGuard } from "./Guards/has-account.guard";
 
 const routes: Routes = [
   {
     path: "",
     loadChildren: "./Pages/main/main.module#MainPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "qr-scanner",
     loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "about",
     loadChildren: "./Pages/about/about.module#AboutPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "selectwallet",
     loadChildren:
       "./Pages/selectwallet/selectwallet.module#SelectwalletPageModule"
   },
-  { path: "login", loadChildren: "./Pages/login/login.module#LoginPageModule" },
+  {
+    path: "login",
+    loadChildren: "./Pages/login/login.module#LoginPageModule",
+    canActivate: [HasAccountGuard]
+  },
   {
     path: "create-wallet",
     loadChildren:
@@ -50,68 +55,64 @@ const routes: Routes = [
   },
   { path: "test", loadChildren: "./Pages/test/test.module#TestPageModule" },
   {
-    path: "create-account",
-    loadChildren:
-      "./Pages/create-account/create-account.module#CreateAccountPageModule"
-  },
-  {
     path: "node-admin",
     loadChildren: "./Pages/node-admin/node-admin.module#NodeAdminModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "feedback",
     loadChildren: "./Pages/feedback/feedback.module#FeedbackPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "help",
     loadChildren: "./Pages/help/help.module#HelpPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "notifications",
     loadChildren:
       "./Pages/notifications/notifications.module#NotificationsPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "chart",
     loadChildren: "./Pages/chart/chart.module#ChartPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "list-account",
-    loadChildren: "./Pages/list-account/list-account.module#ListAccountModule"
+    loadChildren: "./Pages/list-account/list-account.module#ListAccountModule",
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "address-book",
     loadChildren:
       "./Pages/address-book/address-book.module#AddressBookPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "select-address",
     loadChildren:
       "./Pages/select-address/select-address.module#SelectAddressPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "transaction",
     loadChildren:
       "./Pages/transaction/transaction.module#TransactionPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "transaction/:transId",
     loadChildren:
       "./Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "qr-scanner",
     loadChildren: "./Pages/qr-scanner/qr-scanner.module#QrScannerPageModule",
-    canActivate: [AuthService]
+    canActivate: [HasAccountGuard, AuthGuard]
   },
   {
     path: "setup-pin",
@@ -120,7 +121,8 @@ const routes: Routes = [
   {
     path: "select-address",
     loadChildren:
-      "./Pages/select-address/select-address.module#SelectAddressPageModule"
+      "./Pages/select-address/select-address.module#SelectAddressPageModule",
+    canActivate: [HasAccountGuard, AuthGuard]
   }
 ];
 @NgModule({

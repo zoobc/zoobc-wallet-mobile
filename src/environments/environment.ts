@@ -6,8 +6,9 @@ export const environment = {
   production: false,
   mnemonicLanguage: "english",
   mnemonicNumWords: 12,
-  coinCode: "ZBC - Zoobc",
-  grpcUrl: "http://18.139.3.139:7001"
+  coinCode: "ZBC",
+  grpcUrl: "http://18.139.3.139:7001",
+  secretLogin: "SEcr3tL061N!"
 };
 
 /*

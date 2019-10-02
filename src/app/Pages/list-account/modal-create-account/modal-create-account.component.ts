@@ -41,11 +41,10 @@ export class ModalCreateAccountComponent implements OnInit {
 
   async save() {
     if (this.formAccount.dirty && this.formAccount.valid) {
-      const passphrase = await this.storage.get("passphrase");
-      const account = await this.accountSrv.generateAccount(passphrase);
+      //const passphrase = await this.storage.get("passphrase");
+      //const account = await this.accountSrv.generateAccount(passphrase);
       const dataAccount = await this.accountSrv.insert(
-        this.formAccount.get("name").value,
-        account
+        this.formAccount.get("name").value
       );
 
       this.modalCtrl.dismiss({

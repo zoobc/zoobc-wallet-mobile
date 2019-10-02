@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthService } from "src/app/Services/auth-service";
 import { ToastController, NavController } from "@ionic/angular";
+import { AccountService } from "src/app/Services/account.service";
 
 @Component({
   selector: "app-login",
@@ -9,6 +10,7 @@ import { ToastController, NavController } from "@ionic/angular";
 })
 export class LoginPage implements OnInit {
   constructor(
+    private accountSrv: AccountService,
     private authService: AuthService,
     private navCtrl: NavController,
     private toastController: ToastController
@@ -19,8 +21,11 @@ export class LoginPage implements OnInit {
   async login(e: any) {
     const { observer, pin } = e;
 
-    const isUserLoggedIn = await this.authService.login(pin);
-    if (isUserLoggedIn) {
+    const authData = await this.authService.login(pin);
+
+    if (authData) {
+      this.accountSrv.masterSeed = authData.masterSeed;
+
       this.navCtrl.navigateRoot("main/dashboard");
 
       setTimeout(() => {

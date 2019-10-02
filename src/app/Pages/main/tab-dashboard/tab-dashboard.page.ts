@@ -157,7 +157,7 @@ export class TabDashboardPage implements OnInit {
   }
 
   async getAccountBalance() {
-    const active_account = await this.storage.get("active_account");
+    const active_account = await this.accountSrv.getActiveAccount();
 
     const account = await (<any>(
       this.accountSrv.getAccountBalance(active_account.address)

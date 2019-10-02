@@ -1,5 +1,6 @@
-import { default as JSBI } from "jsbi";
 import * as BN from "bn.js";
+
+declare const Buffer;
 
 export function hexToByteArray(hexStr: string): Uint8Array {
   return new Uint8Array(
@@ -24,9 +25,13 @@ export function byteArrayToHex(
 /*
  * See: https://developers.google.com/web/updates/2014/08/Easier-ArrayBuffer-String-conversion-with-the-Encoding-API
  */
-export function stringToByteArray(str: string): Uint8Array {
-  const encoder = new TextEncoder();
-  return encoder.encode(str);
+export function stringToByteArray(str: string): any {
+  let bytes = [];
+  for (let i = 0; i < str.length; ++i) {
+    const code = str.charCodeAt(i);
+    bytes = bytes.concat([code]);
+  }
+  return bytes;
 }
 
 export function byteArrayToString(
@@ -50,8 +55,6 @@ export function base64ToByteArray(base64Str: string): Uint8Array {
 export function byteArrayToBase64(
   bytes: ArrayBuffer | ArrayBufferView | Array<number>
 ): string {
-  // const byteArray = bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : ArrayBuffer.isView(bytes) ? new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength) : Uint8Array.from(bytes);
-  // return btoa([].reduce.call(byteArray, (acc, byte) => acc + String.fromCharCode(byte), ''));
   const buf =
     bytes instanceof ArrayBuffer
       ? Buffer.from(bytes)
@@ -109,7 +112,6 @@ export function publicKeyToAddress(
 
 export function addressToPublicKey(address: string): Uint8Array {
   const addressBytes = base64ToByteArray(fromBase64Url(address));
-  // return addressBytes.subarray(0, addressBytes.length - 1);
   return new Uint8Array(
     addressBytes.buffer,
     addressBytes.byteOffset,
@@ -133,94 +135,6 @@ export function getAddressChecksum(
   }
   return Uint8Array.from([a]);
 }
-
-// DataView polyfills
-function __makeDataViewSetter(funcName, viewFuncName) {
-  const viewSetFunc = DataView.prototype[`set${viewFuncName}`];
-  if (typeof viewSetFunc === "undefined") {
-    throw Error("Making DataView setter with invalid view function name.");
-  }
-
-  const fn = function(view, byteOffset, value, littleEndian) {
-    if (value.constructor !== JSBI) {
-      throw TypeError("Value needs to be JSBI");
-    }
-    // Set 64 bit number as two 32 bit numbers.
-    // The lower/higher (depending on endianess)
-    // number has an offset of 4 bytes (32/8).
-    const signBit = value.sign ? 1 << 31 : 0;
-    const lowWord = value.__unsignedDigit(0) - (value.sign ? 1 : 0);
-    viewSetFunc.call(
-      // DataView.set{Int|Uint}32
-      view,
-      littleEndian ? byteOffset : 4 + byteOffset,
-      lowWord,
-      littleEndian
-    );
-    const highWord =
-      (value.__unsignedDigit(1) | signBit) + (value.sign ? 1 : 0);
-    viewSetFunc.call(
-      // DataView.set{Int|Uint}32
-      view,
-      littleEndian ? 4 + byteOffset : byteOffset,
-      highWord,
-      littleEndian
-    );
-  };
-  Object.defineProperty(fn, "name", { value: funcName });
-  return fn;
-}
-
-function __makeDataViewGetter(funcName, viewFuncName) {
-  const viewGetFunc = DataView.prototype[`get${viewFuncName}`];
-  if (typeof viewGetFunc === "undefined") {
-    throw Error("Making DataView getter with invalid view function name.");
-  }
-
-  const fn = function(view, byteOffset, littleEndian) {
-    // Get 64 bit number as two 32 bit numbers.
-    // The lower/higher (depending on endianess)
-    // number has an offset of 4 bytes (32/8).
-    const lowWord = viewGetFunc.call(
-      // DataView.get{Int|Uint}32
-      view,
-      littleEndian ? byteOffset : 4 + byteOffset,
-      littleEndian
-    );
-    const highWord = viewGetFunc.call(
-      // DataView.get{Int|Uint}32
-      view,
-      littleEndian ? 4 + byteOffset : byteOffset,
-      littleEndian
-    );
-    const sign = highWord < 0;
-    const signBit = sign ? 1 << 31 : 0;
-    const result = new (JSBI as any)(2, sign);
-    result.__setDigit(0, (lowWord >>> 0) + (sign ? 1 : 0));
-    result.__setDigit(1, (highWord - (sign ? 1 : 0)) ^ signBit);
-    return result;
-  };
-  Object.defineProperty(fn, "name", { value: funcName });
-  return fn;
-}
-
-// DataView polyfills
-export const dataViewSetBigUint64 = __makeDataViewSetter(
-  "DataViewSetBigUint64",
-  "Uint32"
-);
-export const dataViewSetBigInt64 = __makeDataViewSetter(
-  "DataViewSetBigInt64",
-  "Int32"
-);
-export const dataViewGetBigUint64 = __makeDataViewGetter(
-  "DataViewGetBigInt64",
-  "Uint32"
-);
-export const dataViewGetBigInt64 = __makeDataViewGetter(
-  "DataViewGetBigInt64",
-  "Int32"
-);
 
 export function BigInt(number: number, base?, endian?): BN {
   return new BN(number, base, endian);

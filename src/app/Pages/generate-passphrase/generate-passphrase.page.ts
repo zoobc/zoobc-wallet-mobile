@@ -6,6 +6,8 @@ import { AuthService } from "src/app/Services/auth-service";
 import { SetupPinService } from "src/app/Services/setup-pin.service";
 import { AccountService } from "src/app/Services/account.service";
 import * as bip39 from "bip39";
+import { toBase64Url } from "src/helpers/converters";
+import { GetChecksumByte } from "src/helpers/utils";
 
 @Component({
   selector: "app-generate-passphrase",
@@ -40,17 +42,25 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   async setPin(pin: string) {
-    this.createAccSrv.pin = pin;
-    await this.createAccSrv.createAccount();
-
-    const accountProps = await this.accountSrv.generateAccount(
+    const masterSeed = await this.accountSrv.setRootKey(
       this.createAccSrv.passphrase
     );
-    const account = await this.accountSrv.insert("Account 1", accountProps);
+
+    const dataSignUp = {
+      masterSeed
+    };
+
+    await this.authSrv.signUp(dataSignUp, pin);
+
+    this.accountSrv.masterSeed = masterSeed;
+
+    const account = await this.accountSrv.insert("Account 1");
+
     this.accountSrv.setActiveAccount(account);
 
-    const loginStatus = await this.authSrv.login(pin);
-    if (loginStatus) {
+    const authData = await this.authSrv.login(pin);
+
+    if (authData) {
       this.navCtrl.navigateRoot("main/dashboard");
     }
   }

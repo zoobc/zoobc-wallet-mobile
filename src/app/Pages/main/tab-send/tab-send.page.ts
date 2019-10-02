@@ -7,7 +7,7 @@ import {
   AlertController
 } from "@ionic/angular";
 import { GRPCService } from "src/app/Services/grpc.service";
-import { SendMoneyTx } from "src/helpers/serializers";
+//import { SendMoneyTx } from "src/helpers/serializers";
 import { addressToPublicKey, publicKeyToAddress } from "src/helpers/converters";
 import { Storage } from "@ionic/storage";
 import { Router } from "@angular/router";

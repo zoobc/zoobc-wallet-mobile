@@ -26,9 +26,4 @@ export class CreateAccountService {
   set pin(value: string) {
     this._pin = value;
   }
-
-  async createAccount() {
-    await this.storage.set("passphrase", this._passphrase);
-    await this.storage.set("pin", sha512(this._pin).toString());
-  }
 }
