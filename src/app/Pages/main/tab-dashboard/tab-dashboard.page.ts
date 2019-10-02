@@ -1,20 +1,15 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
   LoadingController,
   MenuController,
-  NavController,
-  ModalController
+  NavController
 } from "@ionic/angular";
 import { RestapiService } from "../../../Services/restapi.service";
 import { AuthService } from "src/app/Services/auth-service";
-import { Router, NavigationExtras } from "@angular/router";
 import { AccountService } from "src/app/Services/account.service";
 import { GRPCService } from "src/app/Services/grpc.service";
 import { Storage } from "@ionic/storage";
 import { ActiveAccountService } from "src/app/Services/active-account.service";
-import { Observable } from "rxjs";
-import * as moment from "moment";
-import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
 import { TransactionService } from "src/app/Services/transaction.service";
 import { Account } from "src/app/Interfaces/account";
 

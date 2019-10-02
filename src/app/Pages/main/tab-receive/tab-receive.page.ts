@@ -12,12 +12,12 @@ import { ActiveAccountService } from "src/app/Services/active-account.service";
   templateUrl: "tab-receive.page.html",
   styleUrls: ["tab-receive.page.scss"]
 })
-export class TabReceivePage {
+export class TabReceivePage implements OnInit {
   encodeData: string;
   qrCodeUrl: any;
 
   account = {
-    accountName: "",
+    name: "",
     address: "",
     qrCode: ""
   };
@@ -27,18 +27,25 @@ export class TabReceivePage {
     private toastController: ToastController,
     private menuController: MenuController,
     private storage: Storage,
-    private accountService: AccountService,
+    private accountSrv: AccountService,
     private activeAccountSrv: ActiveAccountService
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        //const address = this.accountService.getAccountAddress(v);
-        const address = v.address;
-        this.account.accountName = v.accountName;
-        this.account.address = address;
-        this.account.qrCode = this.createQR(address);
+      next: account => {
+        this.account.name = account.name;
+        this.account.address = account.address;
+
+        this.account.qrCode = this.createQR(account.address);
       }
     });
+  }
+
+  async ngOnInit() {
+    const activeAccount = await this.accountSrv.getActiveAccount();
+
+    this.account.name = activeAccount.name;
+    this.account.address = activeAccount.address;
+    this.account.qrCode = this.createQR(activeAccount.address);
   }
 
   openMenu() {
@@ -78,20 +85,4 @@ export class TabReceivePage {
     qrCode.make();
     return qrCode.createDataURL(4, 8);
   }
-
-  async getActiveAccount() {
-    const activeAccount = await this.storage.get("active_account");
-    //const address = this.accountService.getAccountAddress(activeAccount);
-    const address = activeAccount.address;
-
-    this.account.accountName = activeAccount.accountName;
-    this.account.address = address;
-    this.account.qrCode = this.createQR(address);
-  }
-
-  async ionViewDidEnter() {
-    this.getActiveAccount();
-  }
-
-  onInit() {}
 }
