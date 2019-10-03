@@ -3,8 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="mode==='new'">Create New Account</ion-title>
-    <ion-title *ngIf="mode==='edit'">Edit Account</ion-title>
+    <ion-title *ngIf="mode==='new'">{{ "Add New Address" | translate }}</ion-title>
+    <ion-title *ngIf="mode==='edit'">{{ "Edit Address" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -20,7 +20,7 @@
       <ion-item>
         <ion-input
           padding="false"
-          placeholder="Please type the name"
+          placeholder="{{ 'Please type the name' | translate }}"
           [(ngModel)]="name"
           name="name"
           autocomplete="on"
@@ -30,7 +30,7 @@
       <ion-item>
         <ion-input
           padding="false"
-          placeholder="Please type the address"
+          placeholder="{{ 'Please type the address' | translate }}"
           [(ngModel)]="address"
           name="address"
           autocomplete="on"
@@ -39,8 +39,8 @@
 
       </ion-item>
 
-      <ion-item>
-        <span *ngIf="!isAddressValid" style="font-size: 0.8em;color:red" [innerHTML]="validationMessage"></span>
+      <ion-item *ngIf="!isAddressValid" lines="none">
+        <span  style="font-size: 0.8em;color:red" [innerHTML]="validationMessage"></span>
       </ion-item>
     </ion-list>
 
@@ -54,7 +54,7 @@
                 color="tertiary"style="color:red;font-size: 0.8em"
                 (click)="closeModal()"
                 fill="outline"
-                expand="block"><b>Cancel</b>
+                expand="block">{{ "Cancel" | translate }}
               </ion-button>
             </ion-col>
           
@@ -64,8 +64,8 @@
                 (click)="addAddress()"
                 type="submit"
                 expand="block">
-                <span *ngIf="mode==='new'"><b>Save</b></span>
-                <span *ngIf="mode==='edit'"><b>Update</b></span>
+                <span *ngIf="mode==='new'">{{ "Save" | translate }}</span>
+                <span *ngIf="mode==='edit'">{{ "Update" | translate }}</span>
               </ion-button>        
             </ion-col>
         </ion-row>
