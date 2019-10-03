@@ -13,10 +13,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "grpc:build": "protoc --plugin=\"protoc-gen-ts='node_modules/.bin/protoc-gen-ts'\" --grpc-web_out=\"import_style=typescript,mode=grpcwebtext:src/grpc/generated\" --js_out=\"import_style=commonjs,binary:src/grpc/generated\" src/grpc/schema/service/*.proto --proto_path=src/grpc/schema && protoc --plugin=\"protoc-gen-ts='node_modules/.bin/protoc-gen-ts'\" --grpc-web_out=\"import_style=typescript,mode=grpcwebtext:src/grpc/generated\" --js_out=\"import_style=commonjs,binary:src/grpc/generated\" src/grpc/schema/model/*.proto --proto_path=src/grpc/schema",
-    "s1": "protoc --proto_path=./src/app/grpc ./src/app/grpc/service/service.proto --js_out=import_style=commonjs:./src/app/grpc --grpc-web_out=import_style=commonjs,mode=grpcweb:./src/app/grpc",
-    "s1s": "protoc --proto_path=./src/app/grpc ./src/app/grpc/service/service.proto --js_out=import_style=typescript:./src/app/grpc --grpc-web_out=import_style=typescript,mode=grpcweb:./src/app/grpc",
-    "c1": "protoc --proto_path=./src/app/grpc ./src/app/grpc/model/model.proto --js_out=import_style=commonjs:./src/app/grpc --grpc-web_out=import_style=commonjs,mode=grpcweb:./src/app/grpc",
-    "c1s": "protoc --proto_path=./src/app/grpc ./src/app/grpc/model/model.proto --js_out=import_style=typescript:./src/app/grpc --grpc-web_out=import_style=typescript,mode=grpcweb:./src/app/grpc",
     "compile-proto": "sh compile-proto.sh"
   },
   "private": true,
