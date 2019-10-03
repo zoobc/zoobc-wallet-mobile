@@ -111,6 +111,40 @@ a {
   }
 }
 
+
+.select-zbc {
+    // Applies a text wrap on ion options
+  .alert-tappable.alert-radio {
+    height: auto;
+    contain: content;
+  }
+
+  .alert-radio-label.sc-ion-alert-md{
+    white-space: normal;
+  }
+
+  .alert-radio-label.sc-ion-alert-ios {
+    white-space: normal;
+  }
+
+  .div.alert-radio-label.sc-ion-alert-md{
+    white-space: normal;
+  }
+
+  .div.alert-radio-label.sc-ion-alert-ios {
+    white-space: normal;
+  }
+
+
+  div.alert-radio-label.sc-ion-alert-md{
+    white-space: normal;
+  }
+
+  div.alert-radio-label.sc-ion-alert-ios {
+    white-space: normal;
+  }
+}
+
 .alert-zbc {
 
   .alert-head {
