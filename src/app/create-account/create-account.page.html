@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
     </ion-buttons>
-    <ion-title>Create New Account</ion-title>
+    <ion-title>{{ "Create New Account" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -32,7 +32,7 @@
                 color="tertiary"
                 (click)="closeModal()"
                 fill="outline"
-                expand="block"><b>Cancel</b>
+                expand="block">{{ "Cancel" | translate }}
               </ion-button>
             </ion-col>
           
@@ -41,7 +41,7 @@
                 color="primary"
                 (click)="createAccount()"
                 type="submit"
-                expand="block"><b>Save</b>
+                expand="block">{{ "Save" | translate }}
               </ion-button>        
             </ion-col>
         </ion-row>
