@@ -5,106 +5,129 @@
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <!-- <ion-buttons slot="end">
+      <button (click)="scanQrCode()" style="margin-right: 10px;">
+        <ion-icon name="qr-scanner"></ion-icon>
+      </button>
+      <button (click)="openAddresses()" style="margin-right: 10px;">
+        <ion-icon name="bookmarks"></ion-icon>
+      </button>
+    </ion-buttons> -->
     <ion-title>{{ "Send" | translate }} ZBC</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-send" padding="true">
+<ion-content fullscreen>
+  <div *ngIf="isLoadingBalance">
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
+  <div *ngIf="errorMsg">
+    <ion-label  style="color: red">{{ errorMsg }}</ion-label>
+  </div>
+
   <form #form="ngForm" (ngSubmit)="submit()">
-    <div *ngIf="isLoadingBalance">
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
-    </div>
-    <div class="f-group">
-      <ion-item lines="none">
-        <ion-label position="stacked" style="font-size: 1.2em">{{ "From" | translate }}:</ion-label>
-        <ion-input [(ngModel)]="sender" name="sender" readonly autocomplete="on" autocorrect="on"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label color="primary" *ngIf="!isLoadingBalance">{{ "Balance" | translate }} :
-          {{ balance/1e8 | number: '0.0-6' }}</ion-label>
-      </ion-item>
-    </div>
+    <ion-grid>
 
-    <div class="f-group">
-      <ion-grid>
-        <ion-row align-items-end justify-content-between>
-          <ion-col class="ion-text-start">
-            <ion-item lines="none">
-              <ion-label position="stacked" style="font-size: 1.2em">{{ "Pay to" | translate }}: <span
-                  style="color:red">*</span></ion-label>
-              <ion-input name="recipient" type="text" (change)="validateRecipient()" [(ngModel)]="recipient" ngModel
-                required></ion-input>
-            </ion-item>
-            <ion-item *ngIf="!isRecipientValid">
-              <ion-label color="danger">{{ recipientMsg }}</ion-label>
-            </ion-item>
-          </ion-col>
-          <ion-col class="ion-text-end" size="4">
-            <ion-grid>
-              <ion-row nowrap align-items-end>
-                <ion-col size="6">
-                  <button (click)="scanQrCode()" class="btn-icon">
-                    <ion-icon name="qr-scanner"></ion-icon>
-                  </button>
-                </ion-col>
-                <ion-col size="6">
-                  <button class="btn-icon" (click)="openAddresses()">
-                    <ion-icon name="bookmarks"></ion-icon>
-                  </button>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
+      <ion-row>
+        <ion-col>
 
-    <div class="f-group">
-      <ion-item lines="none">
-        <ion-label position="stacked" style="font-size: 1.2em">{{ "Amount" | translate }}:</ion-label> <label
-          color="danger">*</label>
-        <ion-input name="amount" maxlength="12" type="number" [(ngModel)]="amount" required></ion-input>
-      </ion-item>
-      <ion-item *ngIf="!isAmountValid">
-        <ion-label color="danger">{{ amountMsg }}</ion-label>
-      </ion-item>
-    </div>
+          <ion-item lines="none" style="margin-bottom: 0px;">
+            <ion-label position="stacked" class="stacked">
+              {{ "From account" | translate }} </ion-label>
+            <ion-select class="select-zbc" [(ngModel)]="account" (ngModelChange)="myFun(account)" *ngIf="!isLoadingBalance" placeholder="-- Select Account --"
+              interface="popover" name="account" >
+              <ion-select-option class="select-zbc" *ngFor="let acc of allAccounts" [value]="acc">
+                {{ acc.name }} | {{acc.balance | number: '0.0-6'}} ZBC
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
 
-    <div class="f-group">
-      <ion-item>
-        <ion-label style="font-size:0.8em;margin-left:0em;text-align: left" slot="start">
-          {{ "Transaction Fee" | translate }}</ion-label>
-      </ion-item>
-      <ion-item *ngIf="!isFeeValid">
-        <ion-label color="danger" style="font-size: 0.8em;">{{ "Select one transaction fee" | translate }}!</ion-label>
-      </ion-item>
-      <ion-radio-group [(ngModel)]="fee" name="fee" required>
-        <ion-item>
-          <ion-label style="font-size:0.8em">Slow (0.00005 ZBC)</ion-label>
-          <ion-radio style="font-size:0.8em" slot="start" value="0.00005"></ion-radio>
-        </ion-item>
-        <ion-item>
-          <ion-label style="font-size:0.8em">Average (0.00015 ZBC)</ion-label>
-          <ion-radio style="font-size:0.8em" slot="start" value="0.00015" checked></ion-radio>
-        </ion-item>
-        <ion-item>
-          <ion-label style="font-size:0.8em">Fast (0.00025 ZBC)</ion-label>
-          <ion-radio style="font-size:0.8em" slot="start" value="0.00025"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-    </div>
+          <ion-item>
+            <ion-label *ngIf="!isLoadingBalance">
+              <span style="font-size: 0.9rem;">
+                {{ account.shortAddress }}
+              </span>
+              <!-- <span *ngIf="!isLoadingBalance">
+                {{ "Balance" | translate }}:{{ balance/1e8 | number: '0.0-6' }}
+              </span> -->
+            </ion-label>
+          </ion-item>
 
-    <div padding>
-      <ion-button color="secondary" *ngIf="!isLoadingBalance" (click)="showConfirmation()" expand="block">
-        <b>{{ "Send" | translate }}</b>
-      </ion-button>
-      <ion-button disabled color="secondary" *ngIf="isLoadingBalance" (click)="showConfirmation()" expand="block">
-          <b>{{ "Send" | translate }}</b>
-      </ion-button>  
-    </div>
+          <ion-item-divider lines="none" style="border: 0px;">
+            <ion-buttons slot="end">
+              <button (click)="scanQrCode()" style="margin-right: 10px;">
+                <ion-icon name="qr-scanner"></ion-icon>
+              </button>
+              <button (click)="openAddresses()" style="margin-right: 10px;">
+                <ion-icon name="bookmarks"></ion-icon>
+              </button>
+            </ion-buttons>
+          </ion-item-divider>
 
-    <ion-item>
-      <ion-label>{{ status }}</ion-label>
-    </ion-item>
+          <ion-item>
+            <ion-label position="stacked" class="stacked">
+              {{ "Pay to" | translate }} <ion-text color="danger">*</ion-text>
+            </ion-label>
+            <ion-textarea autofocus="true" rows="2" debounce=1 maxlength=60 wrap='hard' required placeholder="{{'Enter recipient address'|translate}} ..." 
+              name="recipient" type="text" (ionChange)="validateRecipient()" [(ngModel)]="recipient" ngModel required>
+            </ion-textarea>
+          </ion-item>
+          <ion-item lines="none" *ngIf="!isRecipientValid">
+            <ion-label class="displayerror">{{ "Address is not valid" | translate }}!</ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item >
+            <ion-label position="stacked" class="stacked">
+              {{ "Amount" | translate }} <ion-text color="danger">*</ion-text>
+            </ion-label>
+            <ion-input placeholder="{{'Enter amount'|translate}} ..." (ionChange)="validateAmount()" required name="amount" maxlength="12" type="number" [(ngModel)]="amount"
+              required></ion-input>
+          </ion-item>
+          <ion-item lines="none" *ngIf="!isAmountValid">
+            <ion-label color="danger" class="displayerror">{{ amountMsg }}!</ion-label>
+            <!-- <ion-label color="danger">{{ amountMsg }}</ion-label> -->
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item lines="none">
+            <ion-label position="stacked" class="stacked">
+              {{ "Transaction Fee" | translate }} <ion-text color="danger">*</ion-text></ion-label>
+            <ion-select interface="popover" name="fee" [(ngModel)]="fee" (ngModelChange)="changeFee(fee)">
+              <ion-select-option *ngFor="let trxFee of allFees" [value]="trxFee">
+                  {{ trxFee.name }} | {{trxFee.fee }} ZBC
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item  *ngIf="!isFeeValid">
+            <ion-label  class="displayerror">{{ "Select one transaction fee" | translate }}!
+            </ion-label> 
+          </ion-item>
+          <ion-item-divider style="border:none" lines="none">
+
+          </ion-item-divider>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-button color="tertiary" *ngIf="!isLoadingBalance" (click)="showConfirmation()" expand="block">
+            {{ "Send" | translate }}
+          </ion-button>
+          <ion-button disabled color="tertiary" *ngIf="isLoadingBalance" (click)="showConfirmation()" expand="block">
+            {{ "Send" | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </form>
+
+
+
 </ion-content>

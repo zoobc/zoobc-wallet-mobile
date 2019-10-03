@@ -14,13 +14,21 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { AddressBookModalComponent } from './address-book-modal/address-book-modal.component';
 import { BytesMaker } from 'src/app/helpers/BytesMaker';
-import {
-  GetAccountBalanceResponse,
-  AccountBalance as AB,
-} from 'src/app/grpc/model/accountBalance_pb';
+import { GetAccountBalanceResponse} from 'src/app/grpc/model/accountBalance_pb';
 import { ActiveAccountService } from 'src/app/services/active-account.service';
 
-type AccountBalance = AB.AsObject;
+interface AccountInfo {
+  name: string;
+  address: string;
+  shortAddress: string;
+  balance: number;
+}
+
+interface TrxFee {
+  name: string;
+  fee: number;
+}
+
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
 @Component({
@@ -28,26 +36,28 @@ type AccountBalanceList = GetAccountBalanceResponse.AsObject;
   templateUrl: 'tab-send.page.html',
   styleUrls: ['tab-send.page.scss']
 })
-export class TabSendPage implements OnInit{
+
+export class TabSendPage implements OnInit {
   rootPage: any;
   status: any;
-  register: any;
+  activeAccount: any;
   account: any;
-  sender: any;
   recipient: any;
-  amount = 0;
-  fee = 0;
-  balance: any;
+  amount: number;
+  fee: any;
+
+  allFees = [];
 
   isAmountValid = true;
   isFeeValid = true;
   isRecipientValid = true;
   isBalanceValid = true;
-
+  accountName = '';
   recipientMsg = '';
-  amountMsg =  '';
+  amountMsg = '';
+  allAccounts = [];
+  errorMsg: string;
 
-  public accountBalance: AccountBalance;
   public isLoadingBalance = true;
   public isLoadingRecentTx = true;
 
@@ -69,83 +79,170 @@ export class TabSendPage implements OnInit{
     public loadingController: LoadingController
   ) {
 
-    this.balance = 0;
+    // get active account
+    console.log('=== on constructor: ');
+    this.getActiveAccount();
 
-    this.getAddress();
-    this.getBalance();
+    const trxFee1: TrxFee  = {
+      name: 'Slow',
+      fee: 0.00005
+    };
 
-    this.activeAccountSrv.accountSubject.subscribe({
-       next: v => {
-         this.account.accountName = v.accountName;
-         this.account.address = this.accountService.getAccountAddress(v);
-         this.account.shortadress = this.shortAddress(this.account.address);
-         this.getBalance();
-         this.getAddress();
-       }
-     });
+    const trxFee2: TrxFee  = {
+      name: 'Average',
+      fee: 0.00015
+    };
+
+    const trxFee3: TrxFee  = {
+      name: 'Fast',
+      fee: 0.00025
+    };
+
+    this.allFees.push(trxFee1);
+    this.allFees.push(trxFee2);
+    this.allFees.push(trxFee3);
+    this.fee = trxFee2;
+
+
+
+
+    // this.activeAccountSrv.accountSubject.subscribe({
+    //    next: v => {
+    //      this.account.accountName = v.accountName;
+    //      this.account.address = this.accountService.getAccountAddress(v);
+    //      this.account.shortadress = this.makeShortAddress(this.account.address);
+    //      this.getBalance();
+    //      this.getActiveAccount();
+    //    }
+    //  });
   }
 
   openMenu() {
     this.menuController.open('mainMenu');
   }
 
-  async getAddress() {
-    this.account = await this.storage.get('active_account');
-    this.sender = this.accountService.getAccountAddress(this.account);
+  async getActiveAccount() {
+    this.activeAccount = await this.accountService.getActiveAccount();
+    console.log('==== activeAccount: ', this.activeAccount);
   }
 
-  shortAddress(addrs: string) {
-    if (addrs === '') {
-      return '-';
+  async getAllAccounts() {
+    this.allAccounts = [];
+    this.errorMsg = '';
+    console.log('-- start: ');
+
+    let i = 0;
+
+    const alls = await this.accountService.getAll();
+    for (const acc of alls) {
+      console.log('-- urutan: ' + i);
+      this.isLoadingBalance = true;
+
+      const addr = this.accountService.getAccountAddress(acc);
+      const tempAcc: AccountInfo  = {
+        name: acc.accountName,
+        address: addr,
+        shortAddress: this.makeShortAddress(addr),
+        balance: 0
+      };
+
+      await this.transactionService.getAccountBalance(addr).then((data: AccountBalanceList) => {
+        if (data.accountbalance && data.accountbalance.spendablebalance) {
+          const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
+          tempAcc.balance = blnc;
+        }
+      }).catch((error) => {
+        if (error !== 'account not found') {
+          this.errorMsg = error;
+        }
+        tempAcc.balance = 0;
+      }).finally(() => {
+        console.log('-- urutan: ' + i + '-b');
+        console.log('--- acc name: ', acc.accountName);
+        console.log('--- acc addr: ', addr);
+        console.log('--- acc Balance: ', tempAcc.balance);
+        // this.isLoadingBalance = false;
+        const activeAddress = this.accountService.getAccountAddress(this.activeAccount);
+        if (addr === activeAddress && acc.accountName === this.activeAccount.accountName) {
+          this.account = tempAcc;
+        }
+        this.allAccounts.push(tempAcc);
+      });
+      i++;
     }
-    return addrs.substring(0, 10) + '...' +  addrs.substring(addrs.length - 10, addrs.length);
+
+    console.log('-- end: ');
+    // finaly set false
+    this.isLoadingBalance = false;
+
   }
+
+
+  makeShortAddress(addrs: string) {
+    if (addrs === '' || addrs.length < 24) {
+      return addrs;
+    }
+    return addrs.substring(0, 10) + '...' + addrs.substring(addrs.length - 10, addrs.length);
+  }
+
+
+  validateAmount() {
+    this.isAmountValid = true;
+    this.amountMsg = 'Amount is not allowed!';
+
+    if (!this.amount) {
+      this.isAmountValid = true;
+      return;
+      //this.amount = 0;
+    }
+
+    if (this.isAmountValid && isNaN(this.amount)) {
+      this.isAmountValid = false;
+    }
+
+    if (this.isAmountValid && this.amount <= 0) {
+      this.isAmountValid = false;
+    }
+
+    if (!this.isLoadingBalance) {
+      console.log("== Fee:", this.fee.fee);
+      console.log("== Balance:", this.account.balance);
+
+      console.log("== amount:", this.amount);
+
+      if (this.isAmountValid && this.account.balance > ( this.amount + this.fee.fee)) {
+        this.amountMsg = 'Insufficient balance';
+        this.isAmountValid = false;
+      }
+    }
+
+  }
+
+  // resetForm(){
+  //   this.isRecipientValid = true;
+  //   this.isAmountValid = true;
+  //   this.fee = this.allFees[1];
+  // }
 
   validateRecipient() {
-
+    this.isRecipientValid = true;
+    this.recipientMsg = 'Address is not valid!';
     if (!this.recipient) {
-      this.isRecipientValid = false;
-      this.recipientMsg = 'Recipient is empty!';
+      this.isRecipientValid = true;
+      return;
     }
 
-    if (this.isRecipientValid && this.recipient.trim().length > 44) {
+    if (this.isRecipientValid && this.recipient.length !== 44) {
       this.isRecipientValid = false;
-      this.recipientMsg = 'Recipient is not valid!';
-    }
-
-    if (this.isRecipientValid && this.recipient.trim().length < 44) {
-      this.isRecipientValid = false;
-      this.recipientMsg = 'Recipient is not valid!';
     }
 
     if (this.isRecipientValid) {
       const addressBytes = base64ToByteArray(this.recipient);
       if (this.isRecipientValid && addressBytes.length !== 33) {
         this.isRecipientValid = false;
-        this.recipientMsg = 'Recipient is not valid!';
       }
     }
-
   }
-
-  getBalance() {
-    this.isLoadingBalance = true;
-    this.transactionService.getAccountBalance(this.sender).then((data: AccountBalanceList) => {
-      this.accountBalance = data.accountbalance;
-      this.balance = this.accountBalance.spendablebalance;
-      this.isLoadingBalance = false;
-    }).catch((error) => {
-      this.isLoadingBalance = false;
-      if (error === 'error: account not found'){
-        this.balance = 0;
-      } else if (error === 'Response closed without headers') {
-        this.balance = 0;
-      }
-      this.isLoadingBalance = false;
-
-    });
-  }
-
 
   async inputPIN() {
     const alert = await this.alertController.create({
@@ -200,15 +297,18 @@ export class TabSendPage implements OnInit{
     await alert.present();
   }
 
-  ngOnInit() {
-    this.isLoadingBalance = true;
-    this.amount = 0;
+  getRecipientFromScanner() {
     this.activeRoute.queryParams.subscribe(params => {
-      this.recipient = JSON.parse(params.address);
-      console.log('== From: ', this.recipient);
+      if (params.address) {
+        this.recipient = JSON.parse(params.address);
+        console.log('== From: ', this.recipient);
+      }
     });
-    this.getAddress();
-    this.getBalance();
+  }
+
+  ngOnInit() {
+
+    this.getRecipientFromScanner();
 
   }
 
@@ -219,7 +319,7 @@ export class TabSendPage implements OnInit{
     const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
       this.sendMoney();
-     // this.router.navigate(["tabs"]);
+      // this.router.navigate(["tabs"]);
 
       setTimeout(() => {
         console.log('wait a secon');
@@ -253,31 +353,15 @@ export class TabSendPage implements OnInit{
     this.recipientMsg = '';
     this.amountMsg = '';
 
-    this.getBalance();
-
-    //validate recipient
+    // validate recipient
     this.validateRecipient();
-
-    if (!this.amount) {
-      this.amount = 0;
-    }
-
-    if (this.isAmountValid && isNaN(this.amount)) {
-      this.isAmountValid = false;
-      this.amountMsg = 'Amount is  not valid!';
-    }
-
-    if (this.isAmountValid && this.amount <= 0) {
-      this.isAmountValid = false;
-      this.amountMsg = 'Amount less than minimum allowed!';
-    }
+    this.validateAmount();
 
     if (!this.fee) {
       this.isFeeValid = false;
-      this.fee = 0;
     }
 
-    if (!this.isRecipientValid || !this.isAmountValid || !this.isFeeValid) {
+    if (!this.amount || !this.recipient || !this.isRecipientValid || !this.isAmountValid || !this.isFeeValid) {
       return;
     }
 
@@ -288,39 +372,37 @@ export class TabSendPage implements OnInit{
 
     if (amount > 0 && amount < 0.000001) {
       this.isAmountValid = false;
-      this.amountMsg = 'Amount less than minimum allowed!';
       return;
     }
 
     if (this.amount === 0) {
       this.isAmountValid = false;
-      this.amountMsg = 'Amount less than minimum allowed!';
       return;
     }
 
     console.log('=== Amount:', amount);
     console.log('=== Fee:', fee);
     console.log('=== Dest:', dest);
-    console.log('=== Balance:', this.balance / 1e8);
+    console.log('=== Balance:', this.account.balance / 1e8);
 
     const total = (Number(amount) + Number(fee));
     console.log('-- Total: ', total);
 
-    if (total >  Number(this.balance) / 1e8) {
+    if (total > Number(this.account.balance) / 1e8) {
       this.isAmountValid = false;
-      this.amountMsg = 'Balance is not enough, balance: ' + Number(this.balance) / 1e8;
+      this.amountMsg = 'Insuficient balance';
       return;
     }
 
     const alert = await this.alertController.create({
       cssClass: 'alert-zbc',
       header: 'Confirmation',
-      message: '<div>From:</br><strong>' + this.shortAddress(this.sender) + '</strong></br></br>'
-      + 'To:</br><strong>' + this.shortAddress(this.recipient) + '</strong></br></br>'
-      + 'Amount:</br><strong>' + Number(this.amount) + '</strong></br></br>'
-      + 'Fee:</br><strong>' + Number(this.fee) + '</strong></br></br>'
-      + 'Total:</br><strong>' + (Number(this.amount) + Number(this.fee)).toFixed(8) + '</strong></br></br>'
-      + '</div>',
+      message: '<div>From:</br><strong>' + this.makeShortAddress(this.account.address) + '</strong></br></br>'
+        + 'To:</br><strong>' + this.makeShortAddress(this.recipient) + '</strong></br></br>'
+        + 'Amount:</br><strong>' + Number(this.amount) + '</strong></br></br>'
+        + 'Fee:</br><strong>' + Number(this.fee) + '</strong></br></br>'
+        + 'Total:</br><strong>' + (Number(this.amount) + Number(this.fee)).toFixed(8) + '</strong></br></br>'
+        + '</div>',
       buttons: [
         {
           text: 'Cancel',
@@ -401,7 +483,7 @@ export class TabSendPage implements OnInit{
       bytesWithSign.value
     ).then((resolveTx) => {
 
-      console.log('========= response from grpc: ',  resolveTx);
+      console.log('========= response from grpc: ', resolveTx);
       if (resolveTx) {
         loading.dismiss();
         this.transactionToast('Transaction Submited!');
@@ -412,12 +494,21 @@ export class TabSendPage implements OnInit{
         this.router.navigateByUrl('/tabs/dashboard');
 
         return;
-      }}
+      }
+    }
     );
 
 
     loading.dismiss();
 
+  }
+
+  myFun( accounts: any) {
+    console.log('=== accounts: ', this.account );
+  }
+
+  changeFee(fee: number) {
+    console.log('=== Fee: ', fee );
   }
 
   async transactionToast(msg) {
@@ -429,8 +520,11 @@ export class TabSendPage implements OnInit{
   }
 
   ionViewWillEnter() {
-    this.getAddress();
-    this.getBalance();
+    // get active account
+    console.log("=== on ionViewWillEnter: ");
+    this.getActiveAccount();
+    this.getAllAccounts();
+
   }
 
   scanQrCode() {
@@ -441,11 +535,11 @@ export class TabSendPage implements OnInit{
   }
 
   goDashboard() {
-    this.router.navigate(['/tabs/dashboard'])
+    this.router.navigate(['/tabs/dashboard']);
   }
 
   confirmSend() {
-    this.router.navigate(['sendconfirm'])
+    this.router.navigate(['sendconfirm']);
   }
 
   openAddresses() {
@@ -458,7 +552,7 @@ export class TabSendPage implements OnInit{
     });
 
     modal.onDidDismiss().then((returnVal: any) => {
-      if (returnVal.data.address) {
+      if (returnVal && returnVal.data && returnVal.data.address) {
         this.recipient = returnVal.data.address;
       }
     });
@@ -468,6 +562,6 @@ export class TabSendPage implements OnInit{
 
   submit() {
 
-    console.log('----- form bro ----');
+    console.log('----- form submited ----');
   }
 }
