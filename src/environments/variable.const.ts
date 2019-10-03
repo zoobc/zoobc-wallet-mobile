@@ -1,17 +1,13 @@
 export const ACTIVE_ACCOUNT = 'ACTIVE_ACCOUNT';
 
+
 // Language
 export const SELECTED_LANGUAGE = 'SELECTED_LANGUAGE';
 export const LANGUAGES = [
   {
-    country: 'Arabic',
+    country: 'العربية',
     code: 'ar',
     img: 'assets/images/lang/ar.png'
-  },
-  {
-    country: 'Croacia',
-    code: 'hr',
-    img: 'assets/images/lang/hr.png'
   },
   {
     country: 'English',
@@ -19,22 +15,27 @@ export const LANGUAGES = [
     img: 'assets/images/lang/en.png'
   },
   {
-    country: 'French',
+    country: 'Français',
     code: 'fr',
     img: 'assets/images/lang/fr.png'
   },
   {
-    country: 'Hindi',
+    country: 'हिन्दी',
     code: 'hi',
     img: 'assets/images/lang/hi.png'
   },
   {
-    country: 'Indonesia',
+    country: 'Hrvatski',
+    code: 'hr',
+    img: 'assets/images/lang/hr.png'
+  },
+  {
+    country: 'Bahasa Indonesia',
     code: 'id',
     img: 'assets/images/lang/id.png'
   },
   {
-    country: 'Italian',
+    country: 'Italiano',
     code: 'it',
     img: 'assets/images/lang/it.png'
   },
@@ -44,7 +45,22 @@ export const LANGUAGES = [
     img: 'assets/images/lang/ms.png'
   },
   {
-    country: 'Thai',
+    country: '日本語',
+    code: 'ja',
+    img: 'assets/images/lang/ja.png'
+  },
+  {
+    country: 'Русский',
+    code: 'ru',
+    img: 'assets/images/lang/ru.png'
+  },
+  {
+    country: '中文',
+    code: 'zh',
+    img: 'assets/images/lang/zh.png'
+  },
+  {
+    country: 'ไทย',
     code: 'th',
     img: 'assets/images/lang/th.png'
   }
