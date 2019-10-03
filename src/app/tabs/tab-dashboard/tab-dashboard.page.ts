@@ -56,18 +56,18 @@ export class TabDashboardPage implements OnInit {
     private alertController: AlertController,
     public toastController: ToastController
   ) {
-      this.isLoadingBalance = true;
+    this.isLoadingBalance = true;
 
-      this.accountBalance =  {
-        accountaddress: '',
-        blockheight: 0,
-        spendablebalance: 0,
-        balance: 0,
-        poprevenue: '',
-        latest: false
-      };
+    this.accountBalance = {
+      accountaddress: '',
+      blockheight: 0,
+      spendablebalance: 0,
+      balance: 0,
+      poprevenue: '',
+      latest: false
+    };
 
-      this.activeAccountSrv.accountSubject.subscribe({
+    this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
         this.account.accountName = v.accountName;
         this.account.address = this.accountService.getAccountAddress(v);
@@ -92,11 +92,11 @@ export class TabDashboardPage implements OnInit {
 
   ionViewDidEnter() {
     this.loadData();
-    //setInterval(this.loadData, 2 * 1000);
+    // setInterval(this.loadData, 2 * 1000);
   }
 
   ngOnInit() {
-    //this.loadData();
+    // this.loadData();
   }
 
   async loadData() {
@@ -112,34 +112,36 @@ export class TabDashboardPage implements OnInit {
     this.getTransactions();
   }
 
-  getTransactions() {
+  async getTransactions() {
     this.isLoadingRecentTx = true;
-    this.transactionServ
-      .getAccountTransaction(1, 100, this.account.address )
+
+
+    await this.transactionServ
+      .getUnconfirmTransaction(this.account.address)
+      .then((res: Transaction[]) => (this.unconfirmTx = res)).finally(() => {
+        // wait until unconirm transaction finish.
+        // this.isLoadingRecentTx = false;
+      });
+
+    await this.transactionServ
+      .getAccountTransaction(1, 100, this.account.address)
       .then((res: Transactions) => {
         this.totalTx = res.total;
         this.recentTx = res.transactions;
+      }).finally(() => {
         this.isLoadingRecentTx = false;
       });
 
-    this.transactionServ
-      .getUnconfirmTransaction(this.account.address)
-      .then((res: Transaction[]) => (this.unconfirmTx = res));
   }
 
-  getBalance() {
+  async getBalance() {
     this.isError = false;
-
     const date1 = new Date();
-
     this.isLoadingBalance = true;
-    this.transactionServ.getAccountBalance(this.account.address).then((data: AccountBalanceList) => {
+    await this.transactionServ.getAccountBalance(this.account.address).then((data: AccountBalanceList) => {
       this.accountBalance = data.accountbalance;
-      this.isLoadingBalance = false;
     }).catch((error) => {
-
-      this.isLoadingBalance = false;
-      this.accountBalance =  {
+      this.accountBalance = {
         accountaddress: '',
         blockheight: 0,
         spendablebalance: 0,
@@ -153,12 +155,12 @@ export class TabDashboardPage implements OnInit {
         // do something here
       } else if (error === 'Response closed without headers') {
         const date2 = new Date();
-        const diff =  date2.getTime() - date1.getTime();
+        const diff = date2.getTime() - date1.getTime();
         console.log('== diff: ', diff);
-        if (diff < 50000) {
-          this.errorMsg = 'Look like no internet connection!';
+        if (diff < 5000) {
+          this.errorMsg = 'Please check internet connection!';
         } else {
-          this.errorMsg = 'Fail connect to service, please try again later!';
+          this.errorMsg = 'Fail connect to services, please try again later!';
         }
 
         this.isError = true;
@@ -170,6 +172,8 @@ export class TabDashboardPage implements OnInit {
 
 
       console.error(' ==== have error: ', error);
+    }).finally(() => {
+      this.isLoadingBalance = false;
     });
   }
 
@@ -198,13 +202,13 @@ export class TabDashboardPage implements OnInit {
     this.navCtrl.navigateForward('list-account');
   }
 
-  openDetailUnconfirm(index){
+  openDetailUnconfirm(index) {
     const trxUnconfirm = this.unconfirmTx[index];
     console.log('======== Unconfirm: ', trxUnconfirm);
     this.showUnconfirmDetail(trxUnconfirm);
   }
 
-  openDetailTransction( transId) {
+  openDetailTransction(transId) {
     this.router.navigate(['transaction/' + transId]);
   }
 
@@ -217,7 +221,7 @@ export class TabDashboardPage implements OnInit {
     const hour = a.getHours();
     const min = a.getMinutes();
     const sec = a.getSeconds();
-    const time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+    const time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
     return time;
   }
 
@@ -231,13 +235,13 @@ export class TabDashboardPage implements OnInit {
       cssClass: 'alert-zbc',
       header: 'Detail',
       message: '<div>'
-      + 'Date:</br><strong>' + formattedTime +  '</strong></br></br>'
-      + '' + typeTrx + '</br><strong>' + trx.address + '</strong></br></br>'
-      + 'Amount:</br><strong>' + (Number(trx.amount) / 1e8) + '</strong></br></br>'
-      + 'Fee:</br><strong>' + (Number(trx.fee) / 1e8) + '</strong></br></br>'
-      + 'Total:</br><strong>' + ((Number(trx.amount) + Number(trx.fee)) / 1e8) + '</strong></br></br>'
-      + 'Status:</br><b>' + 'Pending' + '</b></br></br>'
-      + '</div>',
+        + 'Date:</br><strong>' + formattedTime + '</strong></br></br>'
+        + '' + typeTrx + '</br><strong>' + trx.address + '</strong></br></br>'
+        + 'Amount:</br><strong>' + (Number(trx.amount) / 1e8) + '</strong></br></br>'
+        + 'Fee:</br><strong>' + (Number(trx.fee) / 1e8) + '</strong></br></br>'
+        + 'Total:</br><strong>' + ((Number(trx.amount) + Number(trx.fee)) / 1e8) + '</strong></br></br>'
+        + 'Status:</br><b>' + 'Pending' + '</b></br></br>'
+        + '</div>',
       buttons: [
         {
           text: 'Close',
