@@ -3,49 +3,36 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="mode==='new'">Create New Account</ion-title>
-    <ion-title *ngIf="mode==='edit'">Edit Account</ion-title>
-
+    <ion-title *ngIf="mode==='new'">{{ "Create New Account" | translate }}</ion-title>
+    <ion-title *ngIf="mode==='edit'">{{ "Edit Account" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="create-account-page">
     <ion-list padding>
-      <!--
       <ion-item>
-        <ion-label>Mode: {{mode}} , Index: {{index}}</ion-label>
+        <ion-label position="stacked">{{ "Account Name" | translate }}</ion-label>
+        <ion-input padding="false" placeholder="{{ 'Please enter your account name' | translate }}" [(ngModel)]="accountName"
+          name="sender" autocomplete="on" autocorrect="on"></ion-input>
       </ion-item>
-      -->
-      <ion-item>
-        <ion-input padding="false" placeholder="Please enter your account name" [(ngModel)]="accountName" name="sender"
-          autocomplete="on" autocorrect="on"></ion-input>
-      </ion-item>
-      <ion-item>
+      <ion-item *ngIf="!isNameValid" lines="none">
         <span style="color:red;font-size: 0.8em" [innerHTML]="validationMessage"></span>
       </ion-item>
     </ion-list>
 
-
-
     <div padding>
-
       <ion-row>
         <ion-col col-6>
-          <ion-button expand="block" color="tertiary" (click)="closeModal()" fill="outline" expand="block"><b>Cancel</b>
-          </ion-button>
+          <ion-button expand="block" color="tertiary" (click)="closeModal()" fill="outline" expand="block">{{ "Cancel" | translate }}</ion-button>
         </ion-col>
-
         <ion-col col-6>
           <ion-button color="secondary" (click)="createOrUpdateAccount()" type="submit" expand="block">
-            <span *ngIf="mode==='new'"><b>Save</b></span>
-            <span *ngIf="mode==='edit'"><b>Update</b></span>
+            <span *ngIf="mode==='new'">{{"Save"|translate}}</span>
+            <span *ngIf="mode==='edit'">{{"Update"|translate}}</span>
           </ion-button>
         </ion-col>
       </ion-row>
-
     </div>
-
-
   </div>
 </ion-content>
