@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
     </ion-buttons>
-    <ion-title>List Account</ion-title>
+    <ion-title>{{ "List of Account" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,13 +16,13 @@
   <div class="list-account-page">
     <ng-template #noData>
       <ion-item lines="none">
-        <ion-label>You dont have any address</ion-label>
+        <ion-label>{{ "You dont have any address" | translate }}</ion-label>
       </ion-item>
     </ng-template>
 
     <ion-list *ngIf="accounts.length >= 1; else noData">
       <ion-list-header>
-        <ion-label><span>Tap the address to select.</span></ion-label>
+        <ion-label><span>{{"Tap list to switch account" | translate}}.</span></ion-label>
       </ion-list-header>
      
       <ion-item-sliding *ngFor="let account of accounts; let i = index">
@@ -31,13 +31,13 @@
           <div class="title">{{ account.accountName }}</div>
           <div class="address">{{ account.address }}</div>
           <div class="created">
-            Created: {{ account.created | date: "short" }} 
+            {{"Created"|translate}}: {{ account.created | date: "short" }} 
           </div>
         </ion-label>
         <ion-icon slot="end" name="copy" (click)="copyAddress(i)"></ion-icon>
       </ion-item>
       <ion-item-options>
-          <button color="success" (click)="editName(i)" class="tool"><ion-icon name="create"></ion-icon> Edit</button>
+          <button color="success" (click)="editName(i)" class="tool"><ion-icon name="create"></ion-icon>{{ "Edit" | translate}}</button>
       </ion-item-options>
     </ion-item-sliding>
 
