@@ -13,7 +13,7 @@
 
   <div class="">
     <div class="logo-container">
-      <img src="assets/images/logo-white.png" />
+      <img src="assets/images/logo-color.png" />
     </div>
 
     <div class="welcome-text ion-text-center">
@@ -23,11 +23,11 @@
     </div>
 
     <div class="btn-container">
-      <ion-button expand="block" color="tertiary" routerLink="/create-wallet"><b>{{ "Create New Wallet" | translate }}
-        </b></ion-button>
+      <ion-button expand="block" color="tertiary" routerLink="/create-wallet">
+        {{ "Create New Wallet" | translate }}</ion-button>
       <span>{{ "OR" | translate }}</span>
       <ion-button expand="block" color="secondary" routerLink="/existing-wallet">
-        <b>{{ "Open Existing Wallet" | translate }} </b></ion-button>
+        {{ "Open Existing Wallet" | translate }} </ion-button>
     </div>
   </div>
 </ion-content>
