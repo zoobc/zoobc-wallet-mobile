@@ -9,22 +9,50 @@
 
   ion-list-header {
     --background: var(--ion-color-grey);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-right: 1rem;
+
+    ion-label {
+      font-size: 0.8rem;
+    }
   }
 
   ion-item {
-    .title {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
+    > ion-label {
+      display: flex;
+      justify-content: space-between;
     }
-    .address {
-      font-size: 1.2rem;
-      color: var(--ion-color-success);
-      margin-bottom: 0.5rem;
-      white-space: normal;
-      font-family: "Montserrat-Bold";
+
+    .item-left {
+      .title {
+        font-size: 0.8rem;
+        margin-bottom: 0.2rem;
+        color: #333;
+      }
+      .address {
+        font-size: 1rem;
+        color: var(--ion-color-success);
+        margin-bottom: 0.5rem;
+        font-family: "Montserrat-Bold";
+      }
     }
-    .created {
-      font-size: 0.6rem;
+    .item-right {
+      flex-shrink: 0;
+      text-align: right;
+      padding-left: 0.8rem;
+
+      .main-balance {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+        font-family: "Montserrat-Bold";
+        color: #333;
+      }
+
+      .sub-balance {
+        font-size: 0.8rem;
+        color: #666;
+      }
     }
   }
 }

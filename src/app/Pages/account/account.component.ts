@@ -1,9 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { NavController, ModalController } from "@ionic/angular";
-import { ModalCreateAccountComponent } from "./modal-create-account/modal-create-account.component";
+import { NavController, ModalController, IonItemSliding } from "@ionic/angular";
+import { ModalFormAccountComponent } from "./modal-form-account/modal-form-account.component";
 import { AccountService } from "src/app/Services/account.service";
 import { ActiveAccountService } from "../../Services/active-account.service";
 import { Account } from "src/app/Interfaces/account";
+import { SocialSharing } from "@ionic-native/social-sharing/ngx";
+import { Subject } from "rxjs";
 
 @Component({
   selector: "app-account",
@@ -15,15 +17,22 @@ export class AccountComponent implements OnInit {
     private navtrl: NavController,
     private modalController: ModalController,
     private accountSrv: AccountService,
-    private activeAccountSrv: ActiveAccountService
+    private activeAccountSrv: ActiveAccountService,
+    private socialSharing: SocialSharing
   ) {}
 
   //items: Account[] = [];
+
+  onSubmit: Subject<any>;
 
   items: any[] = [];
 
   async ngOnInit() {
     this.items = await this.accountSrv.getAll();
+  }
+
+  share(address) {
+    this.socialSharing.share(address);
   }
 
   itemClicked(index) {
@@ -36,20 +45,49 @@ export class AccountComponent implements OnInit {
   }
 
   createNewAccount() {
-    this.presentModal();
-  }
+    this.onSubmit = new Subject<any>();
 
-  async presentModal() {
-    const modal = await this.modalController.create({
-      component: ModalCreateAccountComponent
+    this.onSubmit.subscribe(acc => {
+      this.items.push(acc);
     });
 
-    modal.onDidDismiss().then((returnVal: any) => {
-      if (returnVal.data.account) {
-        const account = returnVal.data.account;
+    this.presentModal(null);
+  }
 
-        this.items.push(account);
-      }
+  editAccount(index, slidingItem: IonItemSliding) {
+    this.onSubmit = new Subject<any>();
+
+    this.onSubmit.subscribe(acc => {
+      this.items[index].name = acc.name;
+      slidingItem.close();
+    });
+
+    const item = this.items[index];
+
+    const props = {
+      title: "Edit Account",
+      type: "edit",
+      item
+    };
+    this.presentModal(props);
+  }
+
+  async presentModal(componentProps) {
+    const conf: any = {
+      component: ModalFormAccountComponent
+    };
+
+    if (componentProps) {
+      conf.componentProps = componentProps;
+    }
+
+    const modal = await this.modalController.create(conf);
+
+    modal.onDidDismiss().then((returnVal: any) => {
+      const account = returnVal.data.account;
+
+      this.onSubmit.next(account);
+      this.onSubmit.unsubscribe();
     });
 
     return await modal.present();

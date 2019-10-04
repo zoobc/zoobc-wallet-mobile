@@ -4,7 +4,9 @@ import { AccountComponent } from "./account.component";
 import { IonicModule } from "@ionic/angular";
 import { Routes, RouterModule } from "@angular/router";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { ModalCreateAccountComponent } from "./modal-create-account/modal-create-account.component";
+import { ModalFormAccountComponent } from "./modal-form-account/modal-form-account.component";
+import { SocialSharing } from "@ionic-native/social-sharing/ngx";
+import { CurrencySelectionModule } from "src/app/Shared/currency-selection/currency-selection.module";
 
 const routes: Routes = [
   {
@@ -14,14 +16,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AccountComponent, ModalCreateAccountComponent],
-  entryComponents: [ModalCreateAccountComponent],
+  declarations: [AccountComponent, ModalFormAccountComponent],
+  entryComponents: [ModalFormAccountComponent],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
-  ]
+    RouterModule.forChild(routes),
+    CurrencySelectionModule
+  ],
+  providers: [SocialSharing]
 })
 export class AccountModule {}

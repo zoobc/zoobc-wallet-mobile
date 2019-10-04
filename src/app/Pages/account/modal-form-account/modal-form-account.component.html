@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="arrow-round-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ title }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="zbc-content-style-1">
+  <form [formGroup]="formAccount" (submit)="save()">
+    <div class="content-inner create-account-page">
+      <div class="zbc-form-item">
+        <ion-item lines="none">
+          <ion-input
+            padding="false"
+            placeholder="Please enter your account name"
+            formControlName="name"
+          ></ion-input>
+        </ion-item>
+      </div>
+    </div>
+
+    <ion-button
+      [disabled]="!formAccount.valid"
+      expand="full"
+      color="primary"
+      type="submit"
+      class="zbc-button-full ion-margin-top"
+      >Create Account
+    </ion-button>
+
+    <div class="ion-text-center">
+      <ion-button
+        class="zbc-button-full ion-margin-top ion-margin-auto"
+        fill="clear"
+        color="medium"
+        (click)="closeModal()"
+        type="button"
+        >Close
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

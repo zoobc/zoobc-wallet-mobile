@@ -34,7 +34,7 @@ export class AccountService {
 
     const acountPromises = accounts.map(async acc => {
       const { name, address, created } = acc;
-      const accountProps = acc.accountProps;
+
       const balanceObj: any = await this.getAccountBalance(address);
       const balance = balanceObj.accountbalance.balance;
 
@@ -42,7 +42,6 @@ export class AccountService {
         name,
         address,
         balance,
-        accountProps,
         created
       };
     });
@@ -160,6 +159,20 @@ export class AccountService {
     await this.storage.set("ACCOUNTS", accountsInsert);
 
     return account;
+  }
+
+  async update(address, name: string): Promise<any> {
+    const accounts = await this.rawData();
+
+    const index = accounts.findIndex(acc => {
+      return acc.address == address;
+    });
+
+    accounts[index].name = name;
+
+    this.storage.set("ACCOUNTS", accounts);
+
+    return accounts[index];
   }
 
   getAccountAddress(accountProps) {
