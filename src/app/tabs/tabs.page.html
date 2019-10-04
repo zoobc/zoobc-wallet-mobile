@@ -17,7 +17,7 @@
       <ion-label>{{ "Receive" | translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="send">
+    <ion-tab-button (click)="sendCoin()">
       <ion-icon name="arrow-round-up"></ion-icon>
       <ion-label>{{ "Send" | translate }}</ion-label>
     </ion-tab-button>

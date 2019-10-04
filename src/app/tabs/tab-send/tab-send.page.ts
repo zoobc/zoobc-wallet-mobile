@@ -14,14 +14,19 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { AddressBookModalComponent } from './address-book-modal/address-book-modal.component';
 import { BytesMaker } from 'src/app/helpers/BytesMaker';
-import { GetAccountBalanceResponse} from 'src/app/grpc/model/accountBalance_pb';
+import { GetAccountBalanceResponse } from 'src/app/grpc/model/accountBalance_pb';
 import { ActiveAccountService } from 'src/app/services/active-account.service';
+import { SenddetailPage } from 'src/app/Modals/senddetail/senddetail.page';
+import { EnterpinsendPage } from 'src/app/Modals/enterpinsend/enterpinsend.page';
+import { TrxstatusPage } from 'src/app/Modals/trxstatus/trxstatus.page';
+
 
 interface AccountInfo {
   name: string;
   address: string;
   shortAddress: string;
   balance: number;
+  accountProps: any;
 }
 
 interface TrxFee {
@@ -38,6 +43,7 @@ type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 })
 
 export class TabSendPage implements OnInit {
+
   rootPage: any;
   status: any;
   activeAccount: any;
@@ -82,29 +88,7 @@ export class TabSendPage implements OnInit {
     // get active account
     console.log('=== on constructor: ');
     this.getActiveAccount();
-
-    const trxFee1: TrxFee  = {
-      name: 'Slow',
-      fee: 0.00005
-    };
-
-    const trxFee2: TrxFee  = {
-      name: 'Average',
-      fee: 0.00015
-    };
-
-    const trxFee3: TrxFee  = {
-      name: 'Fast',
-      fee: 0.00025
-    };
-
-    this.allFees.push(trxFee1);
-    this.allFees.push(trxFee2);
-    this.allFees.push(trxFee3);
-    this.fee = trxFee2;
-
-
-
+    this.createTransactionFees();
 
     // this.activeAccountSrv.accountSubject.subscribe({
     //    next: v => {
@@ -121,12 +105,36 @@ export class TabSendPage implements OnInit {
     this.menuController.open('mainMenu');
   }
 
+  createTransactionFees() {
+    const trxFee1: TrxFee = {
+      name: 'Slow',
+      fee: 0.00005
+    };
+
+    const trxFee2: TrxFee = {
+      name: 'Average',
+      fee: 0.00015
+    };
+
+    const trxFee3: TrxFee = {
+      name: 'Fast',
+      fee: 0.00025
+    };
+
+    this.allFees.push(trxFee1);
+    this.allFees.push(trxFee2);
+    this.allFees.push(trxFee3);
+    this.fee = trxFee2;
+
+  }
+
   async getActiveAccount() {
     this.activeAccount = await this.accountService.getActiveAccount();
     console.log('==== activeAccount: ', this.activeAccount);
   }
 
   async getAllAccounts() {
+    const date1 = new Date();
     this.allAccounts = [];
     this.errorMsg = '';
     console.log('-- start: ');
@@ -139,11 +147,12 @@ export class TabSendPage implements OnInit {
       this.isLoadingBalance = true;
 
       const addr = this.accountService.getAccountAddress(acc);
-      const tempAcc: AccountInfo  = {
+      const tempAcc: AccountInfo = {
         name: acc.accountName,
         address: addr,
         shortAddress: this.makeShortAddress(addr),
-        balance: 0
+        balance: 0,
+        accountProps: acc.accountProps
       };
 
       await this.transactionService.getAccountBalance(addr).then((data: AccountBalanceList) => {
@@ -152,9 +161,30 @@ export class TabSendPage implements OnInit {
           tempAcc.balance = blnc;
         }
       }).catch((error) => {
-        if (error !== 'account not found') {
-          this.errorMsg = error;
+
+        console.log('===== eror', error);
+
+
+        const date2 = new Date();
+        const diff = date2.getTime() - date1.getTime();
+        console.log('== diff: ', diff);
+
+        // all SubConns are in TransientFailure
+        if (error === 'error: account not found') {
+          // do something here
+          this.errorMsg = '';
+        } else if (error === 'Response closed without headers') {
+          if (diff < 5000) {
+            this.errorMsg = 'Please check internet connection!';
+          } else {
+            this.errorMsg = 'Fail connect to services, please try again later!';
+          }
+        } else if (error === 'all SubConns are in TransientFailure'){
+          this.errorMsg = '';
+        } else {
+          this.errorMsg = '';
         }
+
         tempAcc.balance = 0;
       }).finally(() => {
         console.log('-- urutan: ' + i + '-b');
@@ -193,36 +223,34 @@ export class TabSendPage implements OnInit {
     if (!this.amount) {
       this.isAmountValid = true;
       return;
-      //this.amount = 0;
     }
 
     if (this.isAmountValid && isNaN(this.amount)) {
       this.isAmountValid = false;
+      return;
     }
 
     if (this.isAmountValid && this.amount <= 0) {
       this.isAmountValid = false;
+      return;
     }
 
     if (!this.isLoadingBalance) {
-      console.log("== Fee:", this.fee.fee);
-      console.log("== Balance:", this.account.balance);
+      console.log('== Fee:', this.fee.fee);
+      console.log('== Balance:', this.account.balance);
 
-      console.log("== amount:", this.amount);
+      console.log('== amount:', this.amount);
 
-      if (this.isAmountValid && this.account.balance > ( this.amount + this.fee.fee)) {
+      console.log('== this.isAmountValid:', this.isAmountValid);
+
+      if (this.isAmountValid && (this.amount + this.fee.fee) > this.account.balance) {
         this.amountMsg = 'Insufficient balance';
         this.isAmountValid = false;
+        return;
       }
     }
 
   }
-
-  // resetForm(){
-  //   this.isRecipientValid = true;
-  //   this.isAmountValid = true;
-  //   this.fee = this.allFees[1];
-  // }
 
   validateRecipient() {
     this.isRecipientValid = true;
@@ -234,67 +262,34 @@ export class TabSendPage implements OnInit {
 
     if (this.isRecipientValid && this.recipient.length !== 44) {
       this.isRecipientValid = false;
+      return;
     }
 
     if (this.isRecipientValid) {
       const addressBytes = base64ToByteArray(this.recipient);
       if (this.isRecipientValid && addressBytes.length !== 33) {
         this.isRecipientValid = false;
+        return;
       }
     }
   }
 
   async inputPIN() {
-    const alert = await this.alertController.create({
-      cssClass: 'alert-zbc',
-      header: 'PIN Confirmation!',
-      inputs: [
-        {
-          name: 'pin',
-          type: 'password',
-          placeholder: '6 digits number'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel');
-          }
-        }, {
-          text: 'Ok',
-          handler: (data) => {
-            console.log(JSON.stringify(data));
 
-            if ('' === data.pin) {
-              console.log('empty pin: ' + data.pin);
-              this.failedToast();
-              return;
-            }
+    const pinmodal = await this.modalController.create({
+      component: EnterpinsendPage,
+      componentProps: {
 
-            if (data.pin.length < 6) {
-              console.log(' pin length: ' + data.pin.length);
-              this.failedToast();
-              return;
-            }
-
-
-            if (data.pin.length > 6) {
-              console.log(' pin length: ' + data.pin.length);
-              this.failedToast();
-              return;
-            }
-
-            console.log(data.pin);
-            this.login(data);
-          }
-        }
-      ]
+      }
     });
 
-    await alert.present();
+    pinmodal.onDidDismiss().then((returnedData) => {
+      console.log(returnedData);
+      if (returnedData && returnedData.data === 1) {
+        this.sendMoney();
+      }
+    });
+    return await pinmodal.present();
   }
 
   getRecipientFromScanner() {
@@ -307,46 +302,10 @@ export class TabSendPage implements OnInit {
   }
 
   ngOnInit() {
-
     this.getRecipientFromScanner();
-
   }
-
-  async login(e: any) {
-
-    const { observer, pin } = e;
-
-    const isUserLoggedIn = await this.authService.login(pin);
-    if (isUserLoggedIn) {
-      this.sendMoney();
-      // this.router.navigate(["tabs"]);
-
-      setTimeout(() => {
-        console.log('wait a secon');
-      }, 1000);
-
-    } else {
-      setTimeout(() => {
-        console.log('wait a secon');
-        this.failedToast();
-      }, 1000);
-    }
-
-  }
-
-  async failedToast() {
-    const toast = await this.toastController.create({
-      message: 'PIN not match',
-      duration: 2000
-    });
-    toast.present();
-  }
-
-
 
   async showConfirmation() {
-
-
     this.isAmountValid = true;
     this.isFeeValid = true;
     this.isRecipientValid = true;
@@ -394,34 +353,34 @@ export class TabSendPage implements OnInit {
       return;
     }
 
-    const alert = await this.alertController.create({
-      cssClass: 'alert-zbc',
-      header: 'Confirmation',
-      message: '<div>From:</br><strong>' + this.makeShortAddress(this.account.address) + '</strong></br></br>'
-        + 'To:</br><strong>' + this.makeShortAddress(this.recipient) + '</strong></br></br>'
-        + 'Amount:</br><strong>' + Number(this.amount) + '</strong></br></br>'
-        + 'Fee:</br><strong>' + Number(this.fee) + '</strong></br></br>'
-        + 'Total:</br><strong>' + (Number(this.amount) + Number(this.fee)).toFixed(8) + '</strong></br></br>'
-        + '</div>',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
-          }
-        }, {
-          text: 'Ok',
-          handler: () => {
-            console.log('Confirm Okay');
-            this.inputPIN();
-          }
-        }
-      ]
+    // if validation success show modal
+
+    let modalResult: any;
+
+    const modalDetail = await this.modalController.create({
+      component: SenddetailPage,
+      componentProps: {
+        trxFee: this.fee.fee,
+        trxAmount: Number(this.amount),
+        trxBalance: this.account.balance,
+        trxSender: this.account.address,
+        trxRecipient: this.recipient
+      }
     });
 
-    await alert.present();
+    modalDetail.onDidDismiss().then((dataReturned) => {
+      if (dataReturned) {
+        modalResult = dataReturned.data;
+        if (dataReturned.data === 1) {
+          console.log('==  detail accepted');
+          this.inputPIN();
+        } else {
+          console.log('==  detail closed');
+        }
+      }
+    });
+
+    return await modalDetail.present();
   }
 
   async sendMoney() {
@@ -429,7 +388,7 @@ export class TabSendPage implements OnInit {
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
-      duration: 5000
+      duration: 50000
     });
     await loading.present();
 
@@ -440,7 +399,7 @@ export class TabSendPage implements OnInit {
     const sender = Buffer.from(publicKeyToAddress(publicKey), 'utf-8');
     const recepient = Buffer.from(this.recipient, 'utf-8');
     const amount = this.amount * 1e8;
-    const fee = this.fee * 1e8;
+    const fee = this.fee.fee * 1e8;
     const timestamp = Math.trunc(Date.now() / 1000);
 
     const bytes = new BytesMaker(129);
@@ -482,48 +441,84 @@ export class TabSendPage implements OnInit {
     await this.transactionService.postTransaction(
       bytesWithSign.value
     ).then((resolveTx) => {
-
       console.log('========= response from grpc: ', resolveTx);
       if (resolveTx) {
         loading.dismiss();
-        this.transactionToast('Transaction Submited!');
         this.recipient = '';
         this.amount = 0;
-        this.fee = 0;
 
-        this.router.navigateByUrl('/tabs/dashboard');
-
+        this.showSuccessMessage();
+        //this.router.navigateByUrl('/tabs/dashboard');
         return;
       }
     }
-    );
+    ).catch((error) => {
+      console.log('==== Have eroor when submiting:', error);
+      this.showErrorMessage(error);
+    }
+
+    ).finally(() => {
+
+
+    });
 
 
     loading.dismiss();
 
   }
+  async showErrorMessage(error) {
+    const modal = await this.modalController.create({
+      component: TrxstatusPage,
+      componentProps: {
+        msg: error,
+        status: false
+      }
+    });
 
-  myFun( accounts: any) {
-    console.log('=== accounts: ', this.account );
+    modal.onDidDismiss().then((returnedData) => {
+      console.log(returnedData);
+    });
+
+    return await modal.present();
+  }
+
+  async showSuccessMessage() {
+    const modal = await this.modalController.create({
+      component: TrxstatusPage,
+      componentProps: {
+        msg: 'transaction succes',
+        status: true
+      }
+    });
+
+    modal.onDidDismiss().then((returnedData) => {
+      console.log(returnedData);
+    });
+
+    return await modal.present();
+  }
+
+  switchAccount(accounts: any) {
+    console.log('=== accounts: ', this.account);
+    this.isAmountValid = true;
+    this.isRecipientValid = true;
+    this.amount = null;
   }
 
   changeFee(fee: number) {
-    console.log('=== Fee: ', fee );
-  }
-
-  async transactionToast(msg) {
-    const toast = await this.toastController.create({
-      message: msg,
-      duration: 5000
-    });
-    toast.present();
+    console.log('=== Fee: ', fee);
   }
 
   ionViewWillEnter() {
     // get active account
-    console.log("=== on ionViewWillEnter: ");
+    console.log('=== on ionViewWillEnter: ');
     this.getActiveAccount();
     this.getAllAccounts();
+
+
+    // temporary
+    this.recipient = 'mz1KVJRc34dat8uwPsBG_Beplqhz1gvN379kL5yDtQXB';
+    this.amount = 0.001;
 
   }
 
@@ -561,7 +556,6 @@ export class TabSendPage implements OnInit {
   }
 
   submit() {
-
     console.log('----- form submited ----');
   }
 }

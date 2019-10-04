@@ -17,7 +17,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen>
+<ion-content>
   <div *ngIf="isLoadingBalance">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
@@ -34,7 +34,7 @@
           <ion-item lines="none" style="margin-bottom: 0px;">
             <ion-label position="stacked" class="stacked">
               {{ "From account" | translate }} </ion-label>
-            <ion-select class="select-zbc" [(ngModel)]="account" (ngModelChange)="myFun(account)" *ngIf="!isLoadingBalance" placeholder="-- Select Account --"
+            <ion-select class="select-zbc" [(ngModel)]="account" (ngModelChange)="switchAccount(account)" *ngIf="!isLoadingBalance" placeholder="-- Select Account --"
               interface="popover" name="account" >
               <ion-select-option class="select-zbc" *ngFor="let acc of allAccounts" [value]="acc">
                 {{ acc.name }} | {{acc.balance | number: '0.0-6'}} ZBC
@@ -45,7 +45,7 @@
           <ion-item>
             <ion-label *ngIf="!isLoadingBalance">
               <span style="font-size: 0.9rem;">
-                {{ account.shortAddress }}
+              {{"Address" | translate}}:  {{ account.shortAddress }}
               </span>
               <!-- <span *ngIf="!isLoadingBalance">
                 {{ "Balance" | translate }}:{{ balance/1e8 | number: '0.0-6' }}
@@ -70,6 +70,7 @@
             </ion-label>
             <ion-textarea autofocus="true" rows="2" debounce=1 maxlength=60 wrap='hard' required placeholder="{{'Enter recipient address'|translate}} ..." 
               name="recipient" type="text" (ionChange)="validateRecipient()" [(ngModel)]="recipient" ngModel required>
+             
             </ion-textarea>
           </ion-item>
           <ion-item lines="none" *ngIf="!isRecipientValid">
@@ -84,7 +85,7 @@
             <ion-label position="stacked" class="stacked">
               {{ "Amount" | translate }} <ion-text color="danger">*</ion-text>
             </ion-label>
-            <ion-input placeholder="{{'Enter amount'|translate}} ..." (ionChange)="validateAmount()" required name="amount" maxlength="12" type="number" [(ngModel)]="amount"
+            <ion-input value='0.01' placeholder="{{'Enter amount'|translate}} ..." (ionChange)="validateAmount()" required name="amount" maxlength="12" type="number" [(ngModel)]="amount"
               required></ion-input>
           </ion-item>
           <ion-item lines="none" *ngIf="!isAmountValid">
