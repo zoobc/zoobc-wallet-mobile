@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "Send" | translate }} ZBC</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div *ngIf="isLoadingBalance">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </div>
+    <div *ngIf="errorMsg">
+      <ion-label  style="color: red">{{ errorMsg }}</ion-label>
+    </div>  
+
+</ion-content>
