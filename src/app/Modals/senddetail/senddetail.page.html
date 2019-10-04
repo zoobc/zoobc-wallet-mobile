@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ "Confirm" | translate }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel();">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-item lines="none">
+      <ion-label class="ion-text-wrap">
+        <ion-text color="medium" class="ion-text-uppercase">
+          <h3>{{ "From account" | translate }}</h3>
+        </ion-text>
+        <ion-text color="secondary">
+          <p>{{ trxSender }}</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <ion-text color="medium" class="ion-text-uppercase">
+          <h3>{{ "Balance" | translate }}</h3>
+        </ion-text>
+        <ion-text color="secondary">
+          <p>{{ trxBalance }}</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item-divider>
+      <ion-label>{{ "Transfer Detail" | translate }}</ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <ion-text color="medium" class="ion-text-uppercase">
+          <h3>{{"Recipient Address"|translate}}</h3>
+        </ion-text>
+        <ion-text color="dark">
+          <p>{{ trxRecipient }}</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <ion-text color="medium" class="ion-text-uppercase">
+          <h3>{{ "Amount" | translate }}</h3>
+        </ion-text>
+        <ion-text color="dark">
+          <p>{{ trxAmount }} ZBC</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <ion-text color="medium" class="ion-text-uppercase">
+          <h3>{{ "Transaction Fee" | translate }}</h3>
+        </ion-text>
+        <ion-text color="dark">
+          <p>{{ trxFee }} ZBC</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="cancel()" expand="block" fill="outline" color="tertiary">{{ "Cancel" | translate }}
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="confirm()" expand="block" color="tertiary">{{ "Confirm" | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
