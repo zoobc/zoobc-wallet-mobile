@@ -121,6 +121,8 @@ export class TabDashboardPage implements OnInit {
       .then((res: Transaction[]) => (this.unconfirmTx = res)).finally(() => {
         // wait until unconirm transaction finish.
         // this.isLoadingRecentTx = false;
+      }).catch((error) => {
+        console.log('===== eroor getUnconfirmTransaction:', error);
       });
 
     await this.transactionServ
@@ -130,6 +132,8 @@ export class TabDashboardPage implements OnInit {
         this.recentTx = res.transactions;
       }).finally(() => {
         this.isLoadingRecentTx = false;
+      }).catch((error) => {
+        console.log('===== eroor getAccountTransaction:', error);
       });
 
   }
