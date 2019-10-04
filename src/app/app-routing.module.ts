@@ -72,7 +72,12 @@ const routes: Routes = [
     loadChildren:
       './Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule'
   },
-  { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule' }
+  { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule' },
+  { path: 'senddetail', loadChildren: './Modals/senddetail/senddetail.module#SenddetailPageModule' },
+  { path: 'enterpinsend', loadChildren: './Modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },  { path: 'trxstatus', loadChildren: './Modals/trxstatus/trxstatus.module#TrxstatusPageModule' },
+  { path: 'sendcoin', loadChildren: './Pages/sendcoin/sendcoin.module#SendcoinPageModule' }
+
+
 
 
 ];

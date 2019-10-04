@@ -30,7 +30,7 @@ export const LANGUAGES = [
     img: 'assets/images/lang/hr.png'
   },
   {
-    country: 'Bahasa Indonesia',
+    country: 'Indonesia',
     code: 'id',
     img: 'assets/images/lang/id.png'
   },

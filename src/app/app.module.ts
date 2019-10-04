@@ -22,6 +22,10 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { LanguageService } from '../app/services/language.service';
+import { SenddetailPageModule } from './Modals/senddetail/senddetail.module';
+import { TrxstatusPageModule } from './Modals/trxstatus/trxstatus.module';
+import { EnterpinsendPageModule } from './Modals/enterpinsend/enterpinsend.module';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -39,6 +43,9 @@ export function createTranslateLoader(http: HttpClient) {
     FormsModule,
     HttpClientModule,
     NgxsModule.forRoot(),
+    SenddetailPageModule,
+    TrxstatusPageModule,
+    EnterpinsendPageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
