@@ -35,7 +35,7 @@ export class ExistingWalletPage implements OnInit {
   }
 
   async submit(pin: string) {
-    await this.storage.clear();
+    await this.authSrv.clearAccount();
 
     const masterSeed = await this.accountSrv.setRootKey(
       this.createAccSrv.passphrase

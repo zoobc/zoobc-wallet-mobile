@@ -42,6 +42,8 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   async setPin(pin: string) {
+    await this.authSrv.clearAccount();
+
     const masterSeed = await this.accountSrv.setRootKey(
       this.createAccSrv.passphrase
     );
@@ -71,8 +73,6 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   async generatePassphrase() {
-    //const passphrase = this.keyringService.generateRandomPhrase().phrase;
-    //this.passphrase = passphrase;
     const mnemonic = bip39.generateMnemonic(256);
     this.passphrase = mnemonic;
   }

@@ -111,4 +111,10 @@ export class AuthService {
   async logout() {
     this._isLoggedIn = false;
   }
+
+  async clearAccount() {
+    await this.storage.remove("ACCOUNTS");
+    await this.storage.remove("ACTIVE_ACCOUNT");
+    await this.storage.remove("AUTH_DATA");
+  }
 }
