@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ "Transaction Status" | translate }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="close();">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+
+  <div class="">
+      <div style="width: 80% auto; height: 80%;" text-center large margin-vertical>
+      <img src="assets/images/checked.png" />
+    </div>
+
+    <div class="welcome-text ion-text-center">
+      <span class="text1">{{ "Transaction Success" | translate }}!</span><br />
+      <span class="text2">{{ "Transaction Send Successfully" | translate }} <br />
+        {{ "usually need a few seconds to processed!" | translate }}.</span>
+    </div>
+  </div>
+
+
+</ion-content>
