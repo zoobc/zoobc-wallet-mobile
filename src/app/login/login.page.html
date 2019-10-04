@@ -1,10 +1,12 @@
 <ion-content>
   <div class="login">
-
     <p class="intro-text ion-text-center">
       {{ "Please Enter Your PIN" | translate }}
+      <br/>
+      <span></span>
     </p>
-
+    <p *ngIf="!loginFail">&nbsp;</p>
+    <p *ngIf="loginFail" text-center style="color:red">{{ "Invalid PIN" | translate }}</p>
     <app-pin (keyup)="login($event)"></app-pin>
   </div>
 </ion-content>
