@@ -134,8 +134,8 @@ export class TabDashboardPage implements OnInit {
     );
   }
 
-  openListAccount() {
-    this.navCtrl.navigateForward("list-account");
+  openAccount() {
+    this.navCtrl.navigateForward("account");
   }
 
   openchart() {

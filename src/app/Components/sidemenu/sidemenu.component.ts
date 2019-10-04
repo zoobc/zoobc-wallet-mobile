@@ -59,8 +59,8 @@ export class SidemenuComponent implements OnInit {
     this.navCtrl.navigateForward("about");
   }
 
-  openListAccount() {
-    this.navCtrl.navigateForward("list-account");
+  openAccount() {
+    this.navCtrl.navigateForward("account");
   }
 
   openAddresBook() {

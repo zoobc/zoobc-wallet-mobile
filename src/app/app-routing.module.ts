@@ -81,8 +81,8 @@ const routes: Routes = [
     canActivate: [HasAccountGuard, AuthGuard]
   },
   {
-    path: "list-account",
-    loadChildren: "./Pages/list-account/list-account.module#ListAccountModule",
+    path: "account",
+    loadChildren: "./Pages/account/account.module#AccountModule",
     canActivate: [HasAccountGuard, AuthGuard]
   },
   {

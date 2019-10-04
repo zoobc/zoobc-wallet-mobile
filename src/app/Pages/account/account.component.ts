@@ -6,11 +6,11 @@ import { ActiveAccountService } from "../../Services/active-account.service";
 import { Account } from "src/app/Interfaces/account";
 
 @Component({
-  selector: "app-list-account",
-  templateUrl: "./list-account.component.html",
-  styleUrls: ["./list-account.component.scss"]
+  selector: "app-account",
+  templateUrl: "./account.component.html",
+  styleUrls: ["./account.component.scss"]
 })
-export class ListAccountComponent implements OnInit {
+export class AccountComponent implements OnInit {
   constructor(
     private navtrl: NavController,
     private modalController: ModalController,

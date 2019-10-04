@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ListAccountComponent } from "./list-account.component";
+import { AccountComponent } from "./account.component";
 import { IonicModule } from "@ionic/angular";
 import { Routes, RouterModule } from "@angular/router";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -9,12 +9,12 @@ import { ModalCreateAccountComponent } from "./modal-create-account/modal-create
 const routes: Routes = [
   {
     path: "",
-    component: ListAccountComponent
+    component: AccountComponent
   }
 ];
 
 @NgModule({
-  declarations: [ListAccountComponent, ModalCreateAccountComponent],
+  declarations: [AccountComponent, ModalCreateAccountComponent],
   entryComponents: [ModalCreateAccountComponent],
   imports: [
     CommonModule,
@@ -24,4 +24,4 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ]
 })
-export class ListAccountModule {}
+export class AccountModule {}
