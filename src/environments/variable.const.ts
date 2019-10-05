@@ -8,11 +8,37 @@ export const LANGUAGES = [
     country: 'العربية',
     code: 'ar',
     img: 'assets/images/lang/ar.png'
+  }
+  ,
+  {
+    country: 'ελληνικά',
+    code: 'el',
+    img: 'assets/images/lang/el.png'
+  },
+  {
+    country: 'Dansk',
+    code: 'da',
+    img: 'assets/images/lang/da.png'
+  },
+  {
+    country: 'Deutsche',
+    code: 'de',
+    img: 'assets/images/lang/de.png'
   },
   {
     country: 'English',
     code: 'en',
     img: 'assets/images/lang/en.png'
+  },
+  {
+    country: 'Español',
+    code: 'es',
+    img: 'assets/images/lang/es.png'
+  },
+  {
+    country: 'Suomi',
+    code: 'fi',
+    img: 'assets/images/lang/fi.png'
   },
   {
     country: 'Français',
@@ -25,9 +51,19 @@ export const LANGUAGES = [
     img: 'assets/images/lang/hi.png'
   },
   {
+    country: 'Hebrew',
+    code: 'he',
+    img: 'assets/images/lang/he.png'
+  },
+  {
     country: 'Hrvatski',
     code: 'hr',
     img: 'assets/images/lang/hr.png'
+  },
+  {
+    country: 'Hungarian',
+    code: 'hu',
+    img: 'assets/images/lang/hu.png'
   },
   {
     country: 'Indonesia',
@@ -40,9 +76,29 @@ export const LANGUAGES = [
     img: 'assets/images/lang/it.png'
   },
   {
+    country: '한국어',
+    code: 'ko',
+    img: 'assets/images/lang/ko.png'
+  },
+  {
     country: 'Malay',
     code: 'ms',
     img: 'assets/images/lang/ms.png'
+  },
+  {
+    country: 'Nederlands',
+    code: 'nl',
+    img: 'assets/images/lang/nl.png'
+  },
+  {
+    country: 'Norwegian',
+    code: 'no',
+    img: 'assets/images/lang/no.png'
+  },
+  {
+    country: 'Português',
+    code: 'pt',
+    img: 'assets/images/lang/pt.png'
   },
   {
     country: '日本語',
@@ -55,7 +111,27 @@ export const LANGUAGES = [
     img: 'assets/images/lang/ru.png'
   },
   {
-    country: '中文',
+    country: 'Slovenčina',
+    code: 'sl',
+    img: 'assets/images/lang/sl.png'
+  },
+  {
+    country: 'Swedish',
+    code: 'sv',
+    img: 'assets/images/lang/sv.png'
+  },
+  {
+    country: 'Polskie',
+    code: 'pl',
+    img: 'assets/images/lang/pl.png'
+  },
+  {
+    country: 'Limba română',
+    code: 'ro',
+    img: 'assets/images/lang/ro.png'
+  },
+  {
+    country: '中文(简体)',
     code: 'zh',
     img: 'assets/images/lang/zh.png'
   },
@@ -63,6 +139,16 @@ export const LANGUAGES = [
     country: 'ไทย',
     code: 'th',
     img: 'assets/images/lang/th.png'
+  },
+  {
+    country: 'Tiếng Việt',
+    code: 'vi',
+    img: 'assets/images/lang/vi.png'
+  },
+  {
+    country: 'Türkçe',
+    code: 'tr',
+    img: 'assets/images/lang/tr.png'
   }
 ];
 
