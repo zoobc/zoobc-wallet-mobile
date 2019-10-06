@@ -28,6 +28,7 @@ export class GeneratePassphrasePage implements OnInit {
   pagePosition: number = 1;
   pageStep: number = 1;
   tempPin: string = '';
+  public loginFail = false;
 
   constructor(
     private keyringService: KeyringService,
@@ -50,13 +51,27 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   setupPin(event: any) {
+    console.log('====event:', event);
+    this.loginFail = false;
+    const { first } = event;
+    // set loginFail false && clear error message
+    if (first === true) {
+       return;
+    }
     this.tempPin = event.pin;
     this.pagePosition++;
     this.pageStep++;
   }
 
   async confirmPin(event: any) {
-    const pin = event.pin;
+    console.log('====event:', event);
+    const { observer, pin, first } = event;
+    this.loginFail = false;
+    // set loginFail false && clear error message
+    if (first === true) {
+       return;
+    }
+    //const pin = event.pin;
     if (this.tempPin === pin) {
       this.createAccSrv.setPassphrase(this.passphrase);
       this.createAccSrv.setPin(pin);
@@ -66,7 +81,11 @@ export class GeneratePassphrasePage implements OnInit {
         this.navCtrl.navigateForward('/');
       }
     } else {
-      this.presentToast('Your Pin is not same');
+      this.loginFail = true;
+      //this.presentToast('Your Pin is not same');
+      setTimeout(() => {
+        observer.next(true);
+       }, 1000);
     }
   }
 

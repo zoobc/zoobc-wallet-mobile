@@ -15,6 +15,8 @@
   <ng-template [ngIf]="pagePosition == 3">
     <ion-content class="page-generate-passphrase">
       <p class="ion-text-center">{{ "Confirm your PIN" | translate }}</p>
+      <p *ngIf="!loginFail">&nbsp;</p>
+      <p *ngIf="loginFail" class="ion-text-center" style="color:red">{{ "Invalid PIN" | translate }}</p>  
       <app-pin (keyup)="confirmPin($event)"></app-pin>
     </ion-content>
   </ng-template>
@@ -22,6 +24,7 @@
   <ng-template [ngIf]="pagePosition == 2">
     <ion-content class="page-generate-passphrase">
       <p class="ion-text-center">{{ "Setup your PIN" | translate }}</p>
+      <p>&nbsp;</p>
       <app-pin (keyup)="setupPin($event)"></app-pin>
     </ion-content>
   </ng-template>
@@ -80,7 +83,7 @@
       <span>{{ "I agree to the terms & conditions" | translate }} </span>
     </div>
 
-    <div class="footer-generate-passphrase" text-center style="margin-top:20px;">
+    <div class="footer-generate-passphrase" class="ion-text-center" style="margin-top:20px;">
       <ion-button
         color="tertiary"
         class="ion-margin-horizontal btn-submit"
