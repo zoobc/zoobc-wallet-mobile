@@ -23,12 +23,10 @@ export class LoginPage implements OnInit {
     const { observer, pin, first } = e;
 
     // set loginFail false && clear error message
+    this.loginFail = false;
     if (first === true) {
-       this.loginFail = false;
        return;
     }
-
-    this.loginFail = false;
     const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
       this.router.navigate(['tabs']);
@@ -36,10 +34,10 @@ export class LoginPage implements OnInit {
         observer.next(true);
       }, 500);
     } else {
+      this.loginFail = true;
       setTimeout(() => {
         observer.next(true);
-        this.loginFail = true;
-       }, 500);
+       }, 1000);
     }
   }
 
