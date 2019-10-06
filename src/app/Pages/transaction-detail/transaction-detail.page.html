@@ -24,12 +24,14 @@
         <p class="info-label">{{ "Sender Address" | translate }}</p>
         <p class="info-desc">{{ transaction.sender }}</p>
       </ion-label>
+      <ion-icon slot="end" name="copy" (click)="copyAddress(transaction.sender)"></ion-icon>
     </ion-item>
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "Recipient Address" | translate }}</p>
         <p class="info-desc">{{ transaction.recipient }}</p>
       </ion-label>
+      <ion-icon slot="end" name="copy" (click)="copyAddress(transaction.recipient)"></ion-icon>
     </ion-item>
     <ion-item>
       <ion-label>
