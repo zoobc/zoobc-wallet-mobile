@@ -19,6 +19,41 @@ export class GeneratePassphrasePage implements OnInit {
   terms = false;
   passphrase: string;
 
+  languages = [
+    {
+      key: "english",
+      name: "English"
+    },
+    {
+      key: "italian",
+      name: "Italian"
+    },
+    {
+      key: "french",
+      name: "French"
+    },
+    {
+      key: "spanish",
+      name: "Spanish"
+    },
+    {
+      key: "japanese",
+      name: "Japan"
+    },
+    {
+      key: "chinese_simplified",
+      name: "Chinese Simplified"
+    },
+    {
+      key: "chinese_traditional",
+      name: "Chinese Traditional"
+    },
+    {
+      key: "korean",
+      name: "Korean"
+    }
+  ];
+
   constructor(
     private keyringService: KeyringService,
     private toastController: ToastController,
@@ -32,6 +67,9 @@ export class GeneratePassphrasePage implements OnInit {
   ngOnInit() {
     this.generatePassphrase();
 
+    const wordlists = bip39.wordlists;
+    console.log("__wordlists", wordlists);
+
     this.setupPinSrv.setupPinSubject.subscribe(data => {
       const { status, pin } = data;
 
@@ -39,6 +77,11 @@ export class GeneratePassphrasePage implements OnInit {
         this.setPin(pin);
       }
     });
+  }
+
+  onLanguageChanged(v) {
+    bip39.setDefaultWordlist(v);
+    this.generatePassphrase();
   }
 
   async setPin(pin: string) {
@@ -75,6 +118,8 @@ export class GeneratePassphrasePage implements OnInit {
   async generatePassphrase() {
     const mnemonic = bip39.generateMnemonic(256);
     this.passphrase = mnemonic;
+
+    this.writtenDown = false;
   }
 
   copyToClipboard() {
