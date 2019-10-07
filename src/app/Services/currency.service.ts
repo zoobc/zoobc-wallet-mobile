@@ -9,10 +9,15 @@ import { BehaviorSubject } from "rxjs";
 export class CurrencyService {
   _rates = currencyRates;
 
+  _activeCurrency = "";
+
   activeCurrencySubject: BehaviorSubject<any>;
 
+  defaultCurrency = "USD";
+
   constructor(private storage: Storage) {
-    this.activeCurrencySubject = new BehaviorSubject("USD");
+    this.activeCurrencySubject = new BehaviorSubject(this.defaultCurrency);
+    this._activeCurrency = this.defaultCurrency;
   }
 
   convertCurrency(price: number, currFrom: string, currTo: string) {
@@ -26,8 +31,14 @@ export class CurrencyService {
     }
   }
 
-  async setActiveCurrency(currency: string) {
-    await this.storage.set("selected_currency", currency);
-    this.activeCurrencySubject.next(currency);
+  set activeCurrency(value) {
+    this.storage.set("selected_currency", value).then(() => {
+      this._activeCurrency = value;
+      this.activeCurrencySubject.next(value);
+    });
+  }
+
+  get activeCurrency() {
+    return this._activeCurrency;
   }
 }
