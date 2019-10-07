@@ -191,6 +191,14 @@ export class TransactionService {
     });
   }
 
+  makeAddressShort(addrs: string) {
+    if (addrs.length < 21){
+      return addrs;
+    }
+
+    return addrs.substring(0, 10).concat('...').concat(addrs.substring(addrs.length - 10, addrs.length));
+  }
+
   getNameByAddress(address: string, alldress: any) {
     let name = address;
     if (alldress && alldress.__zone_symbol__value) {
@@ -201,6 +209,8 @@ export class TransactionService {
           name = obj.name;
         }
       });
+    }else{
+      name = this.makeAddressShort(address);
     }
     return name;
   }
