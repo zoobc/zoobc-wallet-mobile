@@ -13,6 +13,7 @@ export class QrScannerComponent implements OnInit {
 
   public from = '';
 
+  txtAddress = '';
 
   constructor(private qrScanner: QRScanner, private navCtrl: NavController,
               private qrScannerSrv: QrScannerService, private activeRoute: ActivatedRoute, private toastController: ToastController) { }
@@ -25,15 +26,26 @@ export class QrScannerComponent implements OnInit {
   }
 
   ionViewWillLeave() {
+    this.qrScannerSrv.setResult(this.txtAddress);
     try {
       this.qrScanner.hide();
       this.qrScanner.destroy();
     } catch (e) {
-
     }
+
+    if (this.from && this.from === 'tabscan') {
+      // if scanner trigered from tabscan, after scan redirect to scan page.
+      const navigationExtras: NavigationExtras = {
+        queryParams: {
+          address: JSON.stringify(this.txtAddress)
+        }
+      };
+      this.navCtrl.navigateForward(['/sendcoin'], navigationExtras);
+    }
+
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
 
     this.activeRoute.queryParams.subscribe(params => {
       this.from = JSON.parse(params.from);
@@ -45,25 +57,11 @@ export class QrScannerComponent implements OnInit {
         if (status.authorized) {
           // start scanning
           const scanSub = this.qrScanner.scan().subscribe(async (text: string) => {
-            this.qrScanner.hide().then();
+            this.txtAddress =  text;
             scanSub.unsubscribe();
-            this.qrScannerSrv.setResult(text);
             this.navCtrl.pop();
-
-
-            // if scanner trigered from tabscan, after scan redirect to scan page.
-            // if ('tabscan' === this.from) {
-            const navigationExtras: NavigationExtras = {
-                queryParams: {
-                  address: JSON.stringify(text)
-                }
-              };
-            this.navCtrl.navigateForward(['/tabs/send'], navigationExtras);
-
           });
-
-          this.qrScanner.show().then();
-
+          this.qrScanner.show();
         } else if (status.denied) {
           // camera permission was permanently denied
           // you must use QRScanner.openSettings() method to guide the user to the settings page
