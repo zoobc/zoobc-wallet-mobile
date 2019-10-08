@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/services/address-book.service';
-import { ModalController, NumericValueAccessor } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { base64ToByteArray } from 'src/app/helpers/converters';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
+import { NavigationExtras} from '@angular/router';
+import { QrScannerService } from 'src/app/qr-scanner/qr-scanner.service';
 
 @Component({
   selector: 'app-address-book-form',
@@ -21,6 +23,8 @@ export class AddressBookFormComponent implements OnInit {
   constructor(
     private addressBookSrv: AddressBookService,
     private qrScanner: QRScanner,
+    private qrScannerSrv: QrScannerService,
+    private navCtrl: NavController,
     private modalController: ModalController
   ) { }
 
@@ -32,6 +36,22 @@ export class AddressBookFormComponent implements OnInit {
 
   async ngOnInit() {
     this.getAllAddress();
+  }
+
+
+  async openScanner() {
+
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+          from: JSON.stringify('addressbook')
+      }
+    };
+
+    this.navCtrl.navigateForward(['/qr-scanner'], navigationExtras);
+
+    this.qrScannerSrv.listen().subscribe( (addrss: string) => {
+        this.address = addrss;
+    });
   }
 
   async getAllAddress() {
