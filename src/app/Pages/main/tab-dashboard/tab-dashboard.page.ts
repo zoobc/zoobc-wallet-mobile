@@ -12,6 +12,7 @@ import { Storage } from "@ionic/storage";
 import { ActiveAccountService } from "src/app/Services/active-account.service";
 import { TransactionService } from "src/app/Services/transaction.service";
 import { Account } from "src/app/Interfaces/account";
+import { ThemeService } from "src/app/Services/theme.service";
 
 @Component({
   selector: "app-tab-dashboard",
@@ -50,7 +51,8 @@ export class TabDashboardPage implements OnInit {
     private storage: Storage,
     private accountSrv: AccountService,
     private activeAccountSrv: ActiveAccountService,
-    private transactionSrv: TransactionService
+    private transactionSrv: TransactionService,
+    private themeSrv: ThemeService
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
       next: account => {

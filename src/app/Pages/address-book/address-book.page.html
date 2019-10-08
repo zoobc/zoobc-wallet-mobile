@@ -7,9 +7,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="grey">
+<ion-content color="background">
   <ion-fab ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="createNewAddress()"
+    <ion-fab-button color="tertiary" (click)="createNewAddress()"
       ><ion-icon name="add"></ion-icon
     ></ion-fab-button>
   </ion-fab>
@@ -21,7 +21,10 @@
       </ion-item>
     </ng-template>
 
-    <ion-list *ngIf="addresses && addresses.length >= 1; else noData">
+    <ion-list
+      *ngIf="addresses && addresses.length >= 1; else noData"
+      color="primary"
+    >
       <ion-list-header>
         <ion-label>Here is the list of all your addresses book</ion-label>
       </ion-list-header>
@@ -29,7 +32,7 @@
         *ngFor="let address of addresses; let i = index"
         id="address-book-{{ i }}"
       >
-        <ion-item button (click)="selectAddress(i)">
+        <ion-item button (click)="selectAddress(i)" color="primary">
           <ion-label>
             <div class="title">{{ address.name }}</div>
             <div class="address">{{ address.address }}</div>

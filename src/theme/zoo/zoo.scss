@@ -1,0 +1,41 @@
+.theme-zoo {
+  .bg-style-1 {
+    background: rgb(18, 44, 100) !important;
+    background: -moz-linear-gradient(
+      0deg,
+      rgba(18, 44, 100, 1) 0%,
+      rgba(24, 59, 133, 1) 100%
+    ) !important;
+    background: -webkit-linear-gradient(
+      0deg,
+      rgba(18, 44, 100, 1) 0%,
+      rgba(24, 59, 133, 1) 100%
+    ) !important;
+    background: linear-gradient(
+      0deg,
+      rgba(18, 44, 100, 1) 0%,
+      rgba(24, 59, 133, 1) 100%
+    ) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#122c64",endColorstr="#183b85",GradientType=1);
+  }
+
+  .bg-style-2 {
+    background: rgb(120, 10, 109);
+    background: -moz-linear-gradient(
+      0deg,
+      rgba(120, 10, 109, 1) 0%,
+      rgba(24, 59, 133, 1) 100%
+    );
+    background: -webkit-linear-gradient(
+      0deg,
+      rgba(120, 10, 109, 1) 0%,
+      rgba(24, 59, 133, 1) 100%
+    );
+    background: linear-gradient(
+      0deg,
+      rgba(120, 10, 109, 1) 0%,
+      rgba(24, 59, 133, 1) 100%
+    );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#780a6d",endColorstr="#183b85",GradientType=1);
+  }
+}

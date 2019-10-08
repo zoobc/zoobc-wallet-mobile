@@ -1,8 +1,22 @@
-.page-dashboard {
-  --background: #f9fafb;
+$colors: (
+  primary: #488aff,
+  secondary: #32db64,
+  danger: #f53d3d,
+  light: #f4f4f4,
+  dark: #222,
+  twitter: (
+    base: #55acee,
+    contrast: #ffffff
+  )
+);
 
+.page-dashboard {
   font-family: "Gotham-Light";
 
+  .trans-container {
+    background-color: #fff;
+    margin-top: -20px;
+  }
   .selected-account {
     ion-item {
       --background: transparent;
@@ -26,9 +40,8 @@
     text-transform: uppercase;
   }
 
-  .card-balance {
-    --background: linear-gradient(90deg, #0288d1, #26c6da);
-    --color: #fff;
+  .balance-container {
+    padding-bottom: 60px;
 
     .balance-item {
       --background: transparent;

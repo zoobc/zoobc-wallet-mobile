@@ -14,6 +14,7 @@ import { LanguageService } from "src/app/Services/language.service";
 import { CurrencyService } from "src/app/Services/currency.service";
 import { ActiveAccountService } from "src/app/Services/active-account.service";
 import { Account } from "src/app/Interfaces/account";
+import { ThemeService } from "src/app/Services/theme.service";
 
 @Component({
   selector: "app-sidemenu",
@@ -36,7 +37,8 @@ export class SidemenuComponent implements OnInit {
     private languageService: LanguageService,
     private navCtrl: NavController,
     private currencyService: CurrencyService,
-    private activeAccountSrv: ActiveAccountService
+    private activeAccountSrv: ActiveAccountService,
+    private themeSrv: ThemeService
   ) {
     this.activeAccountSrv.accountSubject.subscribe({
       next: (acc: Account) => {
@@ -93,6 +95,10 @@ export class SidemenuComponent implements OnInit {
 
   logout() {
     this.navCtrl.navigateForward("login");
+  }
+
+  setActiveTheme(value) {
+    this.themeSrv.theme = value;
   }
 
   selectActiveCurrency() {
