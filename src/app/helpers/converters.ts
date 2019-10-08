@@ -42,6 +42,15 @@ export function byteArrayToString(
   return decoder.decode(byteArray);
 }
 
+
+export function makeShortAddress(addrs: string) {
+  if (addrs.length < 21){
+      return addrs;
+  }
+  return addrs.substring(0, 10).concat('...').concat(addrs.substring(addrs.length - 10, addrs.length));
+}
+
+
 export function base64ToByteArray(base64Str: string): Uint8Array {
   const buf = new Buffer(base64Str, "base64");
   return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
