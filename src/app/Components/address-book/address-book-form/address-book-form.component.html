@@ -5,6 +5,11 @@
     </ion-buttons>
     <ion-title *ngIf="mode==='new'">{{ "Add New Address" | translate }}</ion-title>
     <ion-title *ngIf="mode==='edit'">{{ "Edit Address" | translate }}</ion-title>
+    <ion-buttons slot="end">
+        <ion-button (click) = "openScanner();">
+          <ion-icon name="qr-scanner" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-buttons>  
   </ion-toolbar>
 </ion-header>
 
