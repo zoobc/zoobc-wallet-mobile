@@ -21,6 +21,10 @@ const routes: Routes = [
     loadChildren: './create-wallet/create-wallet.module#CreateWalletPageModule'
   },
   {
+    path: 'existing-wallet',
+    loadChildren: './existing-wallet/existing-wallet.module#ExistingWalletPageModule'
+  },
+  {
     path: 'generate-passphrase',
     loadChildren:
       './generate-passphrase/generate-passphrase.module#GeneratePassphrasePageModule'
@@ -34,11 +38,6 @@ const routes: Routes = [
     loadChildren: './setup-pin/setup-pin.module#SetupPinPageModule'
   },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
-  {
-    path: 'existing-wallet',
-    loadChildren:
-      './existing-wallet/existing-wallet.module#ExistingWalletPageModule'
-  },
   {
     path: 'create-account',
     loadChildren:
@@ -74,11 +73,11 @@ const routes: Routes = [
   },
   { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule' },
   { path: 'senddetail', loadChildren: './Modals/senddetail/senddetail.module#SenddetailPageModule' },
-  { path: 'enterpinsend', loadChildren: './Modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },  { path: 'trxstatus', loadChildren: './Modals/trxstatus/trxstatus.module#TrxstatusPageModule' },
-  { path: 'sendcoin', loadChildren: './Pages/sendcoin/sendcoin.module#SendcoinPageModule' }
-
-
-
+  { path: 'enterpinsend', loadChildren: './Modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },
+  { path: 'trxstatus', loadChildren: './Modals/trxstatus/trxstatus.module#TrxstatusPageModule' },
+  // { path: 'sendcoin', loadChildren: './Pages/sendcoin/sendcoin.module#SendcoinPageModule' },
+  { path: 'sendcoin', loadChildren: './tabs/tab-send/tab-send.module#TabSendPageModule' },
+  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },
 
 ];
 @NgModule({
