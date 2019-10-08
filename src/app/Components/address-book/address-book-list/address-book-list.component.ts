@@ -1,26 +1,45 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { AddressBookService } from 'src/app/services/address-book.service';
-import { ModalController, ToastController } from '@ionic/angular';
-import { AddressBookFormComponent } from '../address-book-form/address-book-form.component';
+import { ToastController} from '@ionic/angular';
+import { NavigationExtras, Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-address-book-list',
   templateUrl: './address-book-list.component.html',
   styleUrls: ['./address-book-list.component.scss']
 })
-export class AddressBookListComponent implements OnInit {
+export class AddressBookListComponent implements OnInit, OnDestroy {
   @Output() itemClicked = new EventEmitter<string>();
 
   addresses = [];
+  navigationSubscription: any;
 
   constructor(
+    private router: Router,
     private addressBookSrv: AddressBookService,
-    private toastController: ToastController,
-    private modalController: ModalController
-  ) {}
+    private toastController: ToastController
+  ) {
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      if (e instanceof NavigationEnd) {
+        console.log('=== NavigationEnd');
+        this.getAllAddress();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.navigationSubscription) {
+       this.navigationSubscription.unsubscribe();
+    }
+  }
 
   async ngOnInit() {
+    console.log('=== ngOninit');
     this.getAllAddress();
+  }
+
+  ionViewWillEnter(){
+    console.log('=== ionViewWillEnter');
   }
 
   async getAllAddress() {
@@ -64,7 +83,7 @@ export class AddressBookListComponent implements OnInit {
 
   editAddress(index: number) {
     const address = this.addresses[index];
-    this.presentModal(address, index, 'edit');
+    this.openAddressdForm(address, index, 'edit');
   }
 
   deleteAddress(index: number) {
@@ -73,24 +92,18 @@ export class AddressBookListComponent implements OnInit {
   }
 
   createNewAddress() {
-    this.presentModal({name: '', address: ''}, 0, 'new');
+    this.openAddressdForm({name: '', address: ''}, 0, 'new');
   }
 
-  async presentModal(arg: any, idx: number, trxMode: string) {
-    const modal = await this.modalController.create({
-      component: AddressBookFormComponent,
-      componentProps: {
+  async openAddressdForm(arg: any, idx: number, trxMode: string) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
         name: arg.name,
         address: arg.address,
         mode: trxMode,
         index: idx
       }
-    });
-
-    modal.onDidDismiss().then((returnVal: any) => {
-      this.getAllAddress();
-    });
-
-    return await modal.present();
+    };
+    this.router.navigate(['/add-address'], navigationExtras);
   }
 }
