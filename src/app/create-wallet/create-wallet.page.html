@@ -1,4 +1,4 @@
-<ion-content padding class="create-wallet-page">
+<ion-content class="create-wallet-page ion-padding">
   <div>
     <div>
       <h3 class="title ion-text-center">
@@ -12,15 +12,11 @@
         multiple devices. It's very important you write this down." | translate }}
       </p>
 
-      <ion-button expand="block" color="tertiary" routerLink="/generate-passphrase"
-        >{{ "Generate Passphrase" | translate }}</ion-button
-      >
+      <ion-button expand="block" color="tertiary" routerLink="/generate-passphrase">{{ "Generate Passphrase" | translate }}</ion-button>
     </div>
 
     <div class="btn-container">
-      <ion-button (click)="goback()" expand="block" fill="outline" color="grey"
-        >{{ "Back" | translate }}</ion-button
-      >
+      <ion-button (click)="goback()" expand="block" fill="outline" color="grey">{{ "Back" | translate }}</ion-button>
     </div>
   </div>
 </ion-content>
