@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController, NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { ObservableService } from 'src/app/services/observable.service';
 import {
-  ACTIVE_ACCOUNT,
   LANGUAGES,
   SELECTED_LANGUAGE,
   CURRENCIES
@@ -32,10 +30,8 @@ export class SidemenuComponent implements OnInit {
     private menuController: MenuController,
     private router: Router,
     private storage: Storage,
-    private Obs: ObservableService,
     private accountService: AccountService,
     private languageService: LanguageService,
-    private navCtrl: NavController,
     private currencyService: CurrencyService,
     private activeAccountSrv: ActiveAccountService
   ) {
@@ -51,38 +47,39 @@ export class SidemenuComponent implements OnInit {
     this.languages = LANGUAGES;
     this.activeLanguage = await this.storage.get(SELECTED_LANGUAGE);
     this.currencies = CURRENCIES;
-
     const account = await this.storage.get('active_account');
-
     this.activeAccount = account.accountName;
   }
 
   openAboutView() {
-    this.navCtrl.navigateForward('about');
+    this.menuController.close('mainMenu');
+    this.router.navigateByUrl('/about');
   }
 
   openListAccount() {
-    this.navCtrl.navigateForward('list-account');
+    this.router.navigateByUrl('/list-account');
   }
 
   openAddresBook() {
-    this.navCtrl.navigateForward('address-book');
+    this.menuController.close('mainMenu');
+    this.router.navigateByUrl('/address-book');
   }
 
   openSendFeedbak() {
-    this.navCtrl.navigateForward('feedback');
+    this.router.navigateByUrl('/feedback');
   }
 
   openHelpSupport() {
-    this.navCtrl.navigateForward('help');
+    this.menuController.close('mainMenu');
+    this.router.navigateByUrl('/help');
   }
 
   openNodeAdmin() {
-    this.navCtrl.navigateForward('node-admin');
+    this.router.navigateByUrl('/node-admin');
   }
 
   openNotifications() {
-    this.navCtrl.navigateForward('notifications');
+    this.router.navigateByUrl('/notifications');
   }
 
   openMenu() {
