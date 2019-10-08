@@ -1,9 +1,8 @@
 <ion-header no-border>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button (click)="openMenu()">
-        <ion-icon slot="icon-only" name="menu"></ion-icon>
-      </ion-button>
+      <ion-back-button>
+      </ion-back-button>
     </ion-buttons>
     <!-- <ion-buttons slot="end">
       <button (click)="scanQrCode()" style="margin-right: 10px;">
@@ -44,7 +43,7 @@
 
           <ion-item>
             <ion-label *ngIf="!isLoadingBalance">
-              <span style="font-size: 0.9rem;">
+              <span style="font-size: 0.9rem; font-weight: bold">
               {{"Address" | translate}}:  {{ account.shortAddress }}
               </span>
               <!-- <span *ngIf="!isLoadingBalance">
@@ -68,8 +67,8 @@
             <ion-label position="stacked" class="stacked">
               {{ "Pay to" | translate }} <ion-text color="danger">*</ion-text>
             </ion-label>
-            <ion-textarea autofocus="true" rows="2" debounce=1 maxlength=60 wrap='hard' required placeholder="{{'Enter recipient address'|translate}} ..." 
-              name="recipient" type="text" (ionChange)="validateRecipient()" [(ngModel)]="recipient" ngModel required>
+            <ion-textarea rows="3" debounce=1 maxlength=60 wrap='hard' required placeholder="{{'Enter recipient address'|translate}} ..." 
+              name="recipient" type="text" style="font-weight: bold" (ionChange)="validateRecipient()" [(ngModel)]="recipient" ngModel required>
              
             </ion-textarea>
           </ion-item>
@@ -85,7 +84,7 @@
             <ion-label position="stacked" class="stacked">
               {{ "Amount" | translate }} <ion-text color="danger">*</ion-text>
             </ion-label>
-            <ion-input value='0.01' placeholder="{{'Enter amount'|translate}} ..." (ionChange)="validateAmount()" required name="amount" maxlength="12" type="number" [(ngModel)]="amount"
+            <ion-input value='0.01' style="font-weight: bold" placeholder="{{'Enter amount'|translate}} ..." (ionChange)="validateAmount()" required name="amount" maxlength="12" type="number" [(ngModel)]="amount"
               required></ion-input>
           </ion-item>
           <ion-item lines="none" *ngIf="!isAmountValid">
@@ -119,10 +118,10 @@
       <ion-row>
         <ion-col>
           <ion-button color="tertiary" *ngIf="!isLoadingBalance" (click)="showConfirmation()" expand="block">
-            {{ "Send" | translate }}
+            {{ "Next" | translate }}
           </ion-button>
           <ion-button disabled color="tertiary" *ngIf="isLoadingBalance" (click)="showConfirmation()" expand="block">
-            {{ "Send" | translate }}
+            {{ "Next" | translate }}
           </ion-button>
         </ion-col>
       </ion-row>

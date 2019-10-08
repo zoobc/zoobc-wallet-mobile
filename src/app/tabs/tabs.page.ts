@@ -70,13 +70,4 @@ export class TabsPage {
     this.navCtrl.navigateForward(['/qr-scanner'], navigationExtras);
   }
 
-  sendCoin(){
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-          from: JSON.stringify('tabscan')
-      }
-    };
-    this.navCtrl.navigateForward(['/sendcoin'], navigationExtras);
-  }
-
 }

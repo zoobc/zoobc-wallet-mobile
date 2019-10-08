@@ -7,7 +7,7 @@ import {
   ModalController
 } from '@ionic/angular';
 import { TransactionService } from 'src/app/services/transaction.service';
-import { publicKeyToAddress, base64ToByteArray } from 'src/app/helpers/converters';
+import { publicKeyToAddress, base64ToByteArray, makeShortAddress } from 'src/app/helpers/converters';
 import { Storage } from '@ionic/storage';
 import { QrScannerService } from 'src/app/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -150,7 +150,7 @@ export class TabSendPage implements OnInit {
       const tempAcc: AccountInfo = {
         name: acc.accountName,
         address: addr,
-        shortAddress: this.makeShortAddress(addr),
+        shortAddress: makeShortAddress(addr),
         balance: 0,
         accountProps: acc.accountProps
       };
@@ -205,14 +205,6 @@ export class TabSendPage implements OnInit {
     // finaly set false
     this.isLoadingBalance = false;
 
-  }
-
-
-  makeShortAddress(addrs: string) {
-    if (addrs === '' || addrs.length < 24) {
-      return addrs;
-    }
-    return addrs.substring(0, 10) + '...' + addrs.substring(addrs.length - 10, addrs.length);
   }
 
 
@@ -517,7 +509,7 @@ export class TabSendPage implements OnInit {
 
 
     // temporary
-    this.recipient = 'mz1KVJRc34dat8uwPsBG_Beplqhz1gvN379kL5yDtQXB';
+    // this.recipient = 'mz1KVJRc34dat8uwPsBG_Beplqhz1gvN379kL5yDtQXB';
     this.amount = 0.001;
 
   }
