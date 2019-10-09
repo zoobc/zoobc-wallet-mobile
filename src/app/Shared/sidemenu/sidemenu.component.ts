@@ -1,8 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { MenuController, NavController } from "@ionic/angular";
-import { Router } from "@angular/router";
 import { Storage } from "@ionic/storage";
-import { ObservableService } from "src/app/Services/observable.service";
 import {
   ACTIVE_ACCOUNT,
   LANGUAGES,

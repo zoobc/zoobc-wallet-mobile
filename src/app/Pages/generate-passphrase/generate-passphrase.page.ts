@@ -2,12 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { KeyringService } from "../../Services/keyring.service";
 import { ToastController, NavController } from "@ionic/angular";
 import { CreateAccountService } from "../../Services/create-account.service";
-import { AuthService } from "src/app/Services/auth-service";
 import { SetupPinService } from "src/app/Services/setup-pin.service";
 import { AccountService } from "src/app/Services/account.service";
 import * as bip39 from "bip39";
-import { toBase64Url } from "src/app/Helpers/converters";
-import { GetChecksumByte } from "src/app/Helpers/utils";
+import { AuthService } from "src/app/Services/auth.service";
 
 @Component({
   selector: "app-generate-passphrase",

@@ -17,10 +17,8 @@ import { Network } from "@ionic-native/network/ngx";
 
 // import * as supercop from 'supercop.wasm';
 import { sign as naclSign } from "tweetnacl";
-import { ObservableService } from "src/app/Services/observable.service";
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { AboutPage } from "./Pages/about/about.page";
 import { QRScanner } from "@ionic-native/qr-scanner/ngx";
 
 export function createTranslateLoader(http: HttpClient) {
@@ -54,9 +52,8 @@ export function createTranslateLoader(http: HttpClient) {
     QRScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: "global", useFactory: () => window },
-    { provide: "nacl.sign", useFactory: () => naclSign },
+    { provide: "nacl.sign", useFactory: () => naclSign }
     // { provide: "supercop", useFactory: () => supercop },
-    ObservableService
   ],
   bootstrap: [AppComponent]
 })

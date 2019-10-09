@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+
 import { Storage } from "@ionic/storage";
 import * as CryptoJS from "crypto-js";
 import { environment } from "src/environments/environment";
@@ -7,9 +8,9 @@ import { environment } from "src/environments/environment";
   providedIn: "root"
 })
 export class AuthService {
-  private _isLoggedIn = false;
-
   constructor(private storage: Storage) {}
+
+  private _isLoggedIn = false;
 
   get isLoggedIn(): boolean {
     return this._isLoggedIn;

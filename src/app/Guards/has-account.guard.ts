@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { CanActivate } from "@angular/router";
-import { AuthService } from "../Services/auth-service";
 import { NavController } from "@ionic/angular";
+import { AuthService } from "../Services/auth.service";
 
 @Injectable({
   providedIn: "root"

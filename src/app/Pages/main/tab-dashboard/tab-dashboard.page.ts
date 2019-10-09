@@ -4,14 +4,11 @@ import {
   MenuController,
   NavController
 } from "@ionic/angular";
-import { RestapiService } from "../../../Services/restapi.service";
-import { AuthService } from "src/app/Services/auth-service";
 import { AccountService } from "src/app/Services/account.service";
-import { GRPCService } from "src/app/Services/grpc.service";
-import { Storage } from "@ionic/storage";
 import { ActiveAccountService } from "src/app/Services/active-account.service";
 import { TransactionService } from "src/app/Services/transaction.service";
 import { Account } from "src/app/Interfaces/account";
+import { AuthService } from "src/app/Services/auth.service";
 
 @Component({
   selector: "app-tab-dashboard",
@@ -41,13 +38,10 @@ export class TabDashboardPage implements OnInit {
   pendingTransactions: any[] = [];
 
   constructor(
-    private apiservice: RestapiService,
     private loadingController: LoadingController,
     private authService: AuthService,
     private menuController: MenuController,
     private navCtrl: NavController,
-    private grpcService: GRPCService,
-    private storage: Storage,
     private accountSrv: AccountService,
     private activeAccountSrv: ActiveAccountService,
     private transactionSrv: TransactionService
@@ -68,9 +62,6 @@ export class TabDashboardPage implements OnInit {
   }
 
   async ngOnInit() {
-    //this.getBalance(this.publicKey);
-    //this.getTransaction(this.publicKey);
-
     this.loadData();
   }
 
@@ -92,46 +83,6 @@ export class TabDashboardPage implements OnInit {
 
   goToTransaction() {
     this.navCtrl.navigateForward("transaction");
-  }
-
-  async getBalance(pKey: string) {
-    const loading = await this.loadingController.create({
-      message: "Loading"
-    });
-    await loading.present();
-    this.apiservice.getBalance(pKey).subscribe(
-      res => {
-        console.log(res);
-        this.data1 = res[0];
-        this.balance = this.data1["data"];
-        loading.dismiss();
-      },
-      err => {
-        console.log(err);
-        loading.dismiss();
-      }
-    );
-  }
-
-  async getTransaction(pKey: string) {
-    const loading = await this.loadingController.create({
-      message: "Loading"
-    });
-    await loading.present();
-    this.apiservice.getAccountTransactions(pKey).subscribe(
-      res => {
-        console.log(res);
-        this.data2 = res[0];
-        this.transactions = this.data2["transactions"];
-        loading.dismiss();
-
-        console.log("__res", res);
-      },
-      err => {
-        console.log("__resErr", err);
-        loading.dismiss();
-      }
-    );
   }
 
   openAccount() {
