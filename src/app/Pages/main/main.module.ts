@@ -7,7 +7,7 @@ import { MainPageRoutingModule } from "./main.router.module";
 
 import { MainPage } from "./main.page";
 import { TranslateModule } from "@ngx-translate/core";
-import { SidemenuModule } from "src/app/Components/sidemenu/sidemenu.module";
+import { SidemenuModule } from "src/app/Shared/sidemenu/sidemenu.module";
 
 @NgModule({
   imports: [

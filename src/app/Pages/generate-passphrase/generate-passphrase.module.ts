@@ -6,8 +6,8 @@ import { Routes, RouterModule } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
 
 import { GeneratePassphrasePage } from "./generate-passphrase.page";
-import { CreateNewStepsComponent } from "../../Components/create-new-steps/create-new-steps.component";
-import { PinModule } from "src/app/Components/pin/pin.module";
+import { CreateNewStepsComponent } from "../../Shared/create-new-steps/create-new-steps.component";
+import { PinModule } from "src/app/Shared/pin/pin.module";
 
 const routes: Routes = [
   {

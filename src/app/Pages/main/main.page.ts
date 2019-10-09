@@ -2,7 +2,7 @@ import { Component, ViewChild } from "@angular/core";
 import { Storage } from "@ionic/storage";
 import { Router } from "@angular/router";
 import { IonTabs } from "@ionic/angular";
-import { SidemenuComponent } from "src/app/Components/sidemenu/sidemenu.component";
+import { SidemenuComponent } from "src/app/Shared/sidemenu/sidemenu.component";
 
 @Component({
   selector: "app-main",
