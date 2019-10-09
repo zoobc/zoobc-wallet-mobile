@@ -10,7 +10,6 @@ import {
 import { AccountService } from "src/app/Services/account.service";
 import { LanguageService } from "src/app/Services/language.service";
 import { CurrencyService } from "src/app/Services/currency.service";
-import { ActiveAccountService } from "src/app/Services/active-account.service";
 import { Account } from "src/app/Interfaces/account";
 
 @Component({
@@ -33,10 +32,9 @@ export class SidemenuComponent implements OnInit {
     private accountSrv: AccountService,
     private languageService: LanguageService,
     private navCtrl: NavController,
-    private currencyService: CurrencyService,
-    private activeAccountSrv: ActiveAccountService
+    private currencyService: CurrencyService
   ) {
-    this.activeAccountSrv.accountSubject.subscribe({
+    this.accountSrv.activeAccountSubject.subscribe({
       next: (acc: Account) => {
         this.activeAccount = acc.name;
       }

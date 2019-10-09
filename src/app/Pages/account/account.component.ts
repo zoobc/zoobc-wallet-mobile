@@ -2,8 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { NavController, ModalController, IonItemSliding } from "@ionic/angular";
 import { ModalFormAccountComponent } from "./modal-form-account/modal-form-account.component";
 import { AccountService } from "src/app/Services/account.service";
-import { ActiveAccountService } from "../../Services/active-account.service";
-import { Account } from "src/app/Interfaces/account";
 import { SocialSharing } from "@ionic-native/social-sharing/ngx";
 import { Subject } from "rxjs";
 
@@ -17,7 +15,7 @@ export class AccountComponent implements OnInit {
     private navtrl: NavController,
     private modalController: ModalController,
     private accountSrv: AccountService,
-    private activeAccountSrv: ActiveAccountService,
+    //private activeAccountSrv: ActiveAccountService,
     private socialSharing: SocialSharing
   ) {}
 
@@ -39,7 +37,6 @@ export class AccountComponent implements OnInit {
     const account = this.items[index];
 
     this.accountSrv.setActiveAccount(account).then(() => {
-      this.activeAccountSrv.setActiveAccount(account);
       this.navtrl.pop();
     });
   }

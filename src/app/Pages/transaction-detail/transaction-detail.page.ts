@@ -1,9 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Transaction } from "src/app/Interfaces/transaction";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
 import { TransactionService } from "src/app/Services/transaction.service";
-import { ActiveAccountService } from "src/app/Services/active-account.service";
 import { AccountService } from "src/app/Services/account.service";
 import { AddressBookService } from "src/app/Services/address-book.service";
 
@@ -28,13 +26,12 @@ export class TransactionDetailPage implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private transactionSrv: TransactionService,
-    private activeAccountSrv: ActiveAccountService,
     private accountSrv: AccountService,
     private addressBookSrv: AddressBookService
   ) {}
 
   ngOnInit() {
-    this.activeAccountSrv.accountSubject.subscribe({
+    this.accountSrv.activeAccountSubject.subscribe({
       next: v => {
         this.accountAddress = this.accountSrv.getAccountAddress(v);
       }

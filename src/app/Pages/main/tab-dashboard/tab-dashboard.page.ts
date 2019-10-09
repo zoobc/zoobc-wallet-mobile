@@ -5,7 +5,6 @@ import {
   NavController
 } from "@ionic/angular";
 import { AccountService } from "src/app/Services/account.service";
-import { ActiveAccountService } from "src/app/Services/active-account.service";
 import { TransactionService } from "src/app/Services/transaction.service";
 import { Account } from "src/app/Interfaces/account";
 import { AuthService } from "src/app/Services/auth.service";
@@ -43,10 +42,9 @@ export class TabDashboardPage implements OnInit {
     private menuController: MenuController,
     private navCtrl: NavController,
     private accountSrv: AccountService,
-    private activeAccountSrv: ActiveAccountService,
     private transactionSrv: TransactionService
   ) {
-    this.activeAccountSrv.accountSubject.subscribe({
+    this.accountSrv.activeAccountSubject.subscribe({
       next: account => {
         this.account.name = account.name;
         this.account.address = account.address;

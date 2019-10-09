@@ -11,18 +11,21 @@ import {
 } from "externals/grpc/model/accountBalance_pb";
 import { AccountBalanceServiceClient } from "externals/grpc/service/accountBalanceServiceClientPb";
 import { GetAddressFromPublicKey } from "src/app/Helpers/utils";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
 export class AccountService {
-  private _masterSeed: string = "";
-
   constructor(
     @Inject("nacl.sign") private sign: any,
     private storage: Storage,
     private keyringSrv: KeyringService
   ) {}
+
+  private _masterSeed: string = "";
+
+  public activeAccountSubject: Subject<any> = new Subject<any>();
 
   async rawData() {
     return await this.storage.get("ACCOUNTS");
@@ -70,6 +73,9 @@ export class AccountService {
 
   async setActiveAccount(account: Account) {
     await this.storage.set("ACTIVE_ACCOUNT", account);
+
+    this.activeAccountSubject.next(account);
+
     return account;
   }
 
