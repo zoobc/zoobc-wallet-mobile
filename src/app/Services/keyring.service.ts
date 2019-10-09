@@ -10,9 +10,9 @@ import {
   getDerivationPath,
   findDerivationPathErrors,
   displayBip32Info
-} from "../../helpers/childkeys";
+} from "../helpers/childkeys";
 
-import { findCoin } from "../../helpers/coins";
+import { findCoin } from "../helpers/coins";
 
 const NOT_IMPLEMENTED = "Not Implemented";
 

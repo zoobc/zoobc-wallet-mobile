@@ -8,12 +8,15 @@ import {
 } from "@ionic/angular";
 import { GRPCService } from "src/app/Services/grpc.service";
 //import { SendMoneyTx } from "src/helpers/serializers";
-import { addressToPublicKey, publicKeyToAddress } from "src/helpers/converters";
+import {
+  addressToPublicKey,
+  publicKeyToAddress
+} from "src/app/helpers/converters";
 import { Storage } from "@ionic/storage";
 import { Router } from "@angular/router";
 import { AccountService } from "src/app/Services/account.service";
 import { KeyringService } from "src/app/Services/keyring.service";
-import { BytesMaker } from "src/helpers/BytesMaker";
+import { BytesMaker } from "src/app/Helpers/BytesMaker";
 import { QrScannerService } from "src/app/Services/qr-scanner.service";
 import { ModalConfirmationComponent } from "./modal-confirmation/modal-confirmation.component";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";

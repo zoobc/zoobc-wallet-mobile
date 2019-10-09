@@ -6,7 +6,7 @@ import {
   byteArrayToHex,
   publicKeyToAddress,
   addressToPublicKey
-} from "../../../helpers/converters";
+} from "../../helpers/converters";
 //import { SendMoneyTx } from "../../../helpers/serializers";
 import { GRPCService } from "src/app/Services/grpc.service";
 

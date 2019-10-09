@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { readInt64 } from "src/helpers/converters";
+import { readInt64 } from "src/app/helpers/converters";
 import { environment } from "src/environments/environment";
 import { TransactionServiceClient } from "externals/grpc/service/transactionServiceClientPb";
 import { Pagination, OrderBy } from "externals/grpc/model/pagination_pb";
