@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { ACTIVE_ACCOUNT } from "src/environments/variable.const";
 import { Storage } from "@ionic/storage";
 import { AccountService } from "./account.service";
-import { readInt64 } from "src/app/helpers/converters";
+import { readInt64 } from "src/app/Helpers/converters";
 import { AccountBalanceServiceClient } from "externals/grpc/service/accountBalanceServiceClientPb";
 import { TransactionServiceClient } from "externals/grpc/service/transactionServiceClientPb";
 import {

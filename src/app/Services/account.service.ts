@@ -1,5 +1,5 @@
 import { Injectable, Inject } from "@angular/core";
-import { publicKeyToAddress } from "src/app/helpers/converters";
+import { publicKeyToAddress } from "src/app/Helpers/converters";
 import { Storage } from "@ionic/storage";
 
 import { environment } from "src/environments/environment";
@@ -10,7 +10,7 @@ import {
   GetAccountBalanceResponse
 } from "externals/grpc/model/accountBalance_pb";
 import { AccountBalanceServiceClient } from "externals/grpc/service/accountBalanceServiceClientPb";
-import { GetAddressFromPublicKey } from "src/app/helpers/utils";
+import { GetAddressFromPublicKey } from "src/app/Helpers/utils";
 
 @Injectable({
   providedIn: "root"

@@ -6,8 +6,8 @@ import { AuthService } from "src/app/Services/auth-service";
 import { SetupPinService } from "src/app/Services/setup-pin.service";
 import { AccountService } from "src/app/Services/account.service";
 import * as bip39 from "bip39";
-import { toBase64Url } from "src/app/helpers/converters";
-import { GetChecksumByte } from "src/app/helpers/utils";
+import { toBase64Url } from "src/app/Helpers/converters";
+import { GetChecksumByte } from "src/app/Helpers/utils";
 
 @Component({
   selector: "app-generate-passphrase",

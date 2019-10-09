@@ -6,8 +6,8 @@ import {
   byteArrayToHex,
   publicKeyToAddress,
   addressToPublicKey
-} from "../../helpers/converters";
-//import { SendMoneyTx } from "../../../helpers/serializers";
+} from "../../Helpers/converters";
+//import { SendMoneyTx } from "../../../Helpers/serializers";
 import { GRPCService } from "src/app/Services/grpc.service";
 
 // import { calcBip32ExtendedKey } from '../Services/keyring.service';

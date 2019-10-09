@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@angular/core";
 
 import { environment } from "../../environments/environment";
-import { hexToByteArray } from "../helpers/converters";
+import { hexToByteArray } from "../Helpers/converters";
 
 const INVALID_ENTROPY = "Invalid entropy";
 const INVALID_RNG = "This browser does not support strong randomness";
