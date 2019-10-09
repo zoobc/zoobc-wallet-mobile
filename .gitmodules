@@ -9,10 +9,6 @@
 [submodule "src/assets/languages"]
 	path = src/assets/languages
 	url = https://github.com/zoobc/zoobc-language-files.git
-[submodule "proto"]
-	path = externals/proto
-	url = https://github.com/zoobc/zoobc-schema
-	branch = develop
 [submodule "externals/grpc"]
 	path = externals/grpc
 	url = https://github.com/zoobc/zoobc-grpc-ts.git
