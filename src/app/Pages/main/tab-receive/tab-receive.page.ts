@@ -5,6 +5,7 @@ import { MenuController, ToastController } from "@ionic/angular";
 import { Storage } from "@ionic/storage";
 import { AccountService } from "src/app/Services/account.service";
 import { Clipboard } from "@ionic-native/clipboard/ngx";
+import { SocialSharing } from "@ionic-native/social-sharing/ngx";
 
 @Component({
   selector: "app-tab-receive",
@@ -26,7 +27,8 @@ export class TabReceivePage implements OnInit {
     private toastController: ToastController,
     private menuController: MenuController,
     private storage: Storage,
-    private accountSrv: AccountService
+    private accountSrv: AccountService,
+    private socialSharing: SocialSharing
   ) {
     this.accountSrv.activeAccountSubject.subscribe({
       next: account => {
@@ -36,6 +38,10 @@ export class TabReceivePage implements OnInit {
         this.account.qrCode = this.createQR(account.address);
       }
     });
+  }
+
+  share() {
+    this.socialSharing.share(this.account.address);
   }
 
   async ngOnInit() {

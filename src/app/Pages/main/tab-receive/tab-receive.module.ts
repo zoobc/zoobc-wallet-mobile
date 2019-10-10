@@ -7,6 +7,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { TabReceivePage } from "./tab-receive.page";
 import { Clipboard } from "@ionic-native/clipboard/ngx";
 import { AddressElipsisModule } from "src/app/Shared/address-elipsis/address-elipsis.module";
+import { SocialSharing } from "@ionic-native/social-sharing/ngx";
 
 @NgModule({
   imports: [
@@ -17,7 +18,7 @@ import { AddressElipsisModule } from "src/app/Shared/address-elipsis/address-eli
     RouterModule.forChild([{ path: "", component: TabReceivePage }]),
     AddressElipsisModule
   ],
-  providers: [Clipboard],
+  providers: [Clipboard, SocialSharing],
   declarations: [TabReceivePage]
 })
 export class TabReceivePageModule {}
