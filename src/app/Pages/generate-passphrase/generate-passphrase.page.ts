@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { KeyringService } from "../../Services/keyring.service";
 import { ToastController, NavController } from "@ionic/angular";
 import { CreateAccountService } from "../../Services/create-account.service";
 import { SetupPinService } from "src/app/Services/setup-pin.service";
@@ -53,7 +52,6 @@ export class GeneratePassphrasePage implements OnInit {
   ];
 
   constructor(
-    private keyringService: KeyringService,
     private toastController: ToastController,
     private createAccSrv: CreateAccountService,
     private navCtrl: NavController,
@@ -66,7 +64,6 @@ export class GeneratePassphrasePage implements OnInit {
     this.generatePassphrase();
 
     const wordlists = bip39.wordlists;
-    console.log("__wordlists", wordlists);
 
     this.setupPinSrv.setupPinSubject.subscribe(data => {
       const { status, pin } = data;

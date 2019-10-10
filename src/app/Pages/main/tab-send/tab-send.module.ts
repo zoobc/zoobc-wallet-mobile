@@ -9,6 +9,8 @@ import { QRScanner } from "@ionic-native/qr-scanner/ngx";
 import { SidemenuModule } from "src/app/Shared/sidemenu/sidemenu.module";
 import { FormSelectAccountModule } from "src/app/Shared/forms/form-select-account/form-select-account.module";
 import { ModalConfirmationComponent } from "./modal-confirmation/modal-confirmation.component";
+import { PinModule } from "src/app/Shared/pin/pin.module";
+import { ModalPinComponent } from "./modal-pin/modal-pin.component";
 
 @NgModule({
   imports: [
@@ -19,10 +21,11 @@ import { ModalConfirmationComponent } from "./modal-confirmation/modal-confirmat
     SidemenuModule,
     TranslateModule,
     RouterModule.forChild([{ path: "", component: TabSendPage }]),
-    FormSelectAccountModule
+    FormSelectAccountModule,
+    PinModule
   ],
   providers: [QRScanner],
-  declarations: [TabSendPage, ModalConfirmationComponent],
-  entryComponents: [ModalConfirmationComponent]
+  declarations: [TabSendPage, ModalConfirmationComponent, ModalPinComponent],
+  entryComponents: [ModalConfirmationComponent, ModalPinComponent]
 })
 export class TabSendPageModule {}

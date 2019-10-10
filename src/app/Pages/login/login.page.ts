@@ -21,9 +21,9 @@ export class LoginPage implements OnInit {
   async login(e: any) {
     const { observer, pin } = e;
 
-    const authData = await this.authService.login(pin);
+    try {
+      const authData = await this.authService.login(pin);
 
-    if (authData) {
       this.accountSrv.masterSeed = authData.masterSeed;
 
       this.navCtrl.navigateRoot("main/dashboard");
@@ -31,10 +31,10 @@ export class LoginPage implements OnInit {
       setTimeout(() => {
         observer.next("");
       }, 500);
-    } else {
+    } catch (err) {
       setTimeout(() => {
         observer.next("");
-        this.failedToast();
+        this.failedToast(err);
       }, 500);
     }
   }
@@ -43,9 +43,14 @@ export class LoginPage implements OnInit {
     this.navCtrl.navigateForward("initial");
   }
 
-  async failedToast() {
+  async failedToast(err) {
+    let message = "";
+    if (err === "not match") {
+      message = "Pin is not match!";
+    }
+
     const toast = await this.toastController.create({
-      message: "Unlock Failed",
+      message: message,
       duration: 2000
     });
     toast.present();

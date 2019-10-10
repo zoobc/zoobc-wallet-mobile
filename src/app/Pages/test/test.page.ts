@@ -8,7 +8,6 @@ import {
   addressToPublicKey
 } from "../../Helpers/converters";
 //import { SendMoneyTx } from "../../../Helpers/serializers";
-import { GRPCService } from "src/app/Services/grpc.service";
 
 // import { calcBip32ExtendedKey } from '../Services/keyring.service';
 
@@ -22,8 +21,7 @@ const coinName = "SPN";
 export class TestPage implements OnInit {
   constructor(
     private keyringService: KeyringService,
-    @Inject("nacl.sign") private sign: any,
-    private grpcService: GRPCService
+    @Inject("nacl.sign") private sign: any
   ) {}
 
   ngOnInit() {

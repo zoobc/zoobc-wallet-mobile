@@ -82,31 +82,46 @@ export class AuthService {
     return true;
   }
 
-  async login(pin): Promise<any> {
+  async getAuthData(pin): Promise<any> {
     const encryptedPin = this.encriptPin(pin);
 
-    let _return = null;
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        let _return = null;
 
-    try {
-      const authDataString = await this.storage.get("AUTH_DATA");
+        const authDataString = await this.storage.get("AUTH_DATA");
 
-      const authData = CryptoJS.AES.decrypt(
-        authDataString,
-        encryptedPin
-      ).toString(CryptoJS.enc.Utf8);
+        const authData = CryptoJS.AES.decrypt(
+          authDataString,
+          encryptedPin
+        ).toString(CryptoJS.enc.Utf8);
 
-      if (!authData) throw "not match";
+        _return = JSON.parse(authData);
 
-      //await this.setAuthToken(); //if using storage
+        resolve(_return);
+      } catch (err) {
+        reject("not match");
+      }
+    });
 
-      this._isLoggedIn = true;
+    return promise;
+  }
 
-      _return = JSON.parse(authData);
-    } catch (e) {
-      _return = "error";
-    } finally {
-      return _return;
-    }
+  login(pin): Promise<any> {
+    const promise = new Promise((resolve, reject) => {
+      this.getAuthData(pin).then(
+        data => {
+          this._isLoggedIn = true;
+          //await this.setAuthToken(); //if using storage
+          resolve(data);
+        },
+        err => {
+          reject(err);
+        }
+      );
+    });
+
+    return promise;
   }
 
   async logout() {
