@@ -59,7 +59,7 @@ export class TabDashboardPage implements OnInit {
     this.loadData();
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.loadData();
   }
 
@@ -69,6 +69,12 @@ export class TabDashboardPage implements OnInit {
     this.getAccountBalance();
     this.getAccountTransaction();
     this.getPendingTransactions();
+  }
+
+  async refreshData(refresher) {
+    await this.loadData();
+
+    refresher.complete();
   }
 
   goToSend() {
