@@ -19,6 +19,7 @@ import { ActiveAccountService } from 'src/app/services/active-account.service';
 import { SenddetailPage } from 'src/app/Modals/senddetail/senddetail.page';
 import { EnterpinsendPage } from 'src/app/Modals/enterpinsend/enterpinsend.page';
 import { TrxstatusPage } from 'src/app/Modals/trxstatus/trxstatus.page';
+import { TranslateService } from '@ngx-translate/core';
 
 
 interface AccountInfo {
@@ -78,7 +79,7 @@ export class TabSendPage implements OnInit {
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
     private router: Router,
-    private authService: AuthService,
+    private translateServ: TranslateService,
     private modalController: ModalController,
     public alertController: AlertController,
     private activeRoute: ActivatedRoute,
@@ -90,15 +91,15 @@ export class TabSendPage implements OnInit {
     this.getActiveAccount();
     this.createTransactionFees();
 
-    // this.activeAccountSrv.accountSubject.subscribe({
-    //    next: v => {
-    //      this.account.accountName = v.accountName;
-    //      this.account.address = this.accountService.getAccountAddress(v);
-    //      this.account.shortadress = this.makeShortAddress(this.account.address);
-    //      this.getBalance();
-    //      this.getActiveAccount();
-    //    }
-    //  });
+    this.activeAccountSrv.accountSubject.subscribe({
+       next: v => {
+         this.account.accountName = v.accountName;
+         this.account.address = this.accountService.getAccountAddress(v);
+         this.account.shortadress = makeShortAddress(this.account.address);
+         this.getActiveAccount();
+         //this.getAllAccounts();
+       }
+     });
   }
 
   openMenu() {
@@ -210,10 +211,10 @@ export class TabSendPage implements OnInit {
 
   validateAmount() {
     this.isAmountValid = true;
-    this.amountMsg = 'Amount is not allowed!';
+    this.amountMsg = this.translateServ.instant('Amount is not allowed');
 
     if (!this.amount) {
-      this.isAmountValid = true;
+      this.isAmountValid = false;
       return;
     }
 
@@ -236,7 +237,7 @@ export class TabSendPage implements OnInit {
       console.log('== this.isAmountValid:', this.isAmountValid);
 
       if (this.isAmountValid && (this.amount + this.fee.fee) > this.account.balance) {
-        this.amountMsg = 'Insufficient balance';
+        this.amountMsg = this.translateServ.instant('Insufficient balance');
         this.isAmountValid = false;
         return;
       }
@@ -246,9 +247,9 @@ export class TabSendPage implements OnInit {
 
   validateRecipient() {
     this.isRecipientValid = true;
-    this.recipientMsg = 'Address is not valid!';
+    this.recipientMsg = this.translateServ.instant('Address is not valid!');
     if (!this.recipient) {
-      this.isRecipientValid = true;
+      this.isRecipientValid = false;
       return;
     }
 
@@ -321,7 +322,7 @@ export class TabSendPage implements OnInit {
     const amount = this.amount;
     const dest = this.recipient;
 
-    if (amount > 0 && amount < 0.000001) {
+    if (amount > 0 && amount < 0.000000001) {
       this.isAmountValid = false;
       return;
     }
@@ -435,7 +436,6 @@ export class TabSendPage implements OnInit {
     ).then((resolveTx) => {
       console.log('========= response from grpc: ', resolveTx);
       if (resolveTx) {
-        loading.dismiss();
         this.recipient = '';
         this.amount = 0;
 
@@ -448,14 +448,12 @@ export class TabSendPage implements OnInit {
       console.log('==== Have eroor when submiting:', error);
       this.showErrorMessage(error);
     }
-
     ).finally(() => {
-
-
+      loading.dismiss();
     });
 
 
-    loading.dismiss();
+    //loading.dismiss();
 
   }
   async showErrorMessage(error) {
@@ -499,6 +497,7 @@ export class TabSendPage implements OnInit {
 
   changeFee(fee: number) {
     console.log('=== Fee: ', fee);
+    this.validateAmount();
   }
 
   ionViewWillEnter() {
@@ -510,7 +509,7 @@ export class TabSendPage implements OnInit {
 
     // temporary
     // this.recipient = 'mz1KVJRc34dat8uwPsBG_Beplqhz1gvN379kL5yDtQXB';
-    this.amount = 0.001;
+    // this.amount = 0.001;
 
   }
 
