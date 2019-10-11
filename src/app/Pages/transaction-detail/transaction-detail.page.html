@@ -1,9 +1,11 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-circle"></ion-icon>
+      </ion-button>
     </ion-buttons>
-    <ion-title>Transaction Detail</ion-title>
+    <ion-title>{{ "Transaction Detail" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -14,22 +16,30 @@
       <ion-label>
         <p class="info-label">{{ "Transaction Date" | translate }}</p>
         <p class="info-desc">
-          {{ transaction.transactionDate | date: "medium" }}
+          {{ transaction.timestamp | date: "medium" }}
         </p>
       </ion-label>
     </ion-item>
+    <ion-item>
+        <ion-label>
+          <p class="info-label">{{ "Transaction Type" | translate }}</p>
+          <p class="info-desc">
+            {{ transaction.type }}
+          </p>
+        </ion-label>
+      </ion-item>
 
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "Sender Address" | translate }}</p>
-        <p class="info-desc">{{ transaction.sender }}</p>
+        <p class="info-address">{{ transaction.sender }}</p>
       </ion-label>
       <ion-icon slot="end" name="copy" (click)="copyAddress(transaction.sender)"></ion-icon>
     </ion-item>
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "Recipient Address" | translate }}</p>
-        <p class="info-desc">{{ transaction.recipient }}</p>
+        <p class=".info-address">{{ transaction.recipient }}</p>
       </ion-label>
       <ion-icon slot="end" name="copy" (click)="copyAddress(transaction.recipient)"></ion-icon>
     </ion-item>
@@ -62,7 +72,7 @@
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "Status" | translate }}</p>
-        <p class="info-desc">Confirmed</p>
+        <p class="info-desc">{{ status }}</p>
       </ion-label>
     </ion-item>
 
@@ -73,5 +83,16 @@
         <p class="info-desc">{{ transaction.fee / 1e8 }} ZBC</p>
       </ion-label>
     </ion-item> -->
+
   </ion-list>
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button (click)="close()" color="tertiary">{{ "Close" | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>

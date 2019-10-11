@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Transaction } from 'src/app/Interfaces/transaction';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { TransactionService } from 'src/app/services/transaction.service';
-import { ActiveAccountService } from 'src/app/services/active-account.service';
-import { AccountService } from 'src/app/services/account.service';
-import { ToastController } from '@ionic/angular';
+import { ToastController, NavParams, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -14,71 +10,48 @@ import { ToastController } from '@ionic/angular';
 export class TransactionDetailPage implements OnInit {
   transaction: Transaction = {
     id: null,
+    address: null,
     type: null,
     sender: '',
     recipient: '',
     amount: 0,
     fee: 0,
     total: 0,
-    transactionDate: null
+    timestamp: null
   };
-
-  accountAddress: string;
+  account: any;
+  status: string;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
-    private transactionSrv: TransactionService,
-    private activeAccountSrv: ActiveAccountService,
     private toastController: ToastController,
-    private accountService: AccountService
-  ) {}
+    private navParams: NavParams,
+    public modalCtrl: ModalController,
+  ) {
+
+  }
 
   ngOnInit() {
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        this.accountAddress = this.accountService.getAccountAddress(v);
-      }
-    });
 
-    this.activatedRoute.params.subscribe(params => {
-      if (params.transId) {
-        this.transactionDetail(params.transId);
-      }
-    });
+    console.table(' params console1 === ', this.navParams);
+
+    if (this.navParams && this.navParams.data) {
+      this.transaction = this.navParams.data.transaction;
+      this.account = this.navParams.data.account;
+      this.status = this.navParams.data.status;
+    }
+
+    if (this.transaction.type === 'send') {
+      this.transaction.sender = this.account.address;
+      this.transaction.recipient = this.transaction.address;
+    } else if (this.transaction.type === 'receive') {
+      this.transaction.sender = this.transaction.address;
+      this.transaction.recipient = this.account.address;
+    }
+    this.transaction.total = this.transaction.amount + this.transaction.fee;
+    console.log('----- Transacdtion total: ', this.transaction.total);
   }
 
-  async transactionDetail(transId) {
-    const transactionObj = await ((
-      this.transactionSrv.getTransaction(transId)
-    ) as any);
-
-    this.transaction = {
-      id: transactionObj.id,
-      type: transactionObj.type,
-      sender: transactionObj.sender,
-      recipient: transactionObj.recipient,
-      amount: transactionObj.amount,
-      fee: transactionObj.fee,
-      total: (transactionObj.amount + transactionObj.fee),
-      transactionDate: new Date()
-    };
-
-    // For testing copy address
-    // this.transaction = {
-    //   id: 'transactionObj.id',
-    //   type: 'transactionObj.type',
-    //   sender: 'transactionObj.sender',
-    //   recipient: 'transactionObj.recipient',
-    //   amount: 10,
-    //   fee: 3,
-    //   total: 13,
-    //   transactionDate: new Date()
-    // };
-    // console.log('====== TRansaction:', this.transaction);
-
-  }
-
-  async copyAddress(address:string) {
+  async copyAddress(address: string) {
 
     console.log('Copy address: ', address);
     const selBox = document.createElement('textarea');
@@ -99,7 +72,10 @@ export class TransactionDetailPage implements OnInit {
     });
 
     toast.present();
-}
+  }
 
+  async close() {
+    await this.modalCtrl.dismiss();
+  }
 
 }
