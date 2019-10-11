@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { KeyringService } from 'src/app/core/keyring.service';
+import { KeyringService } from 'src/app/services/keyring.service';
 import { AccountService } from 'src/app/services/account.service';
 
 @Component({

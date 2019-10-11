@@ -1,13 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { KeyringService } from '../core/keyring.service';
+import { KeyringService } from '../services/keyring.service';
 import { ToastController, NavController } from '@ionic/angular';
-import { MnemonicsService } from '../core/mnemonics.service';
+import { MnemonicsService } from '../services/mnemonics.service';
 import { Storage } from '@ionic/storage';
 import { CryptoService } from 'src/app/services/crypto.service';
 import { ConverterService } from 'src/app/services/converter.service';
 import { Router } from '@angular/router';
 import { ObservableService } from 'src/app/services/observable.service';
-import { ACTIVE_ACCOUNT } from 'src/environments/variable.const';
 import { CreateAccountService } from '../services/create-account.service';
 import { AuthService } from 'src/app/services/auth-service';
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MnemonicsService } from "../core/mnemonics.service";
+import { MnemonicsService } from "../services/mnemonics.service";
 import { ToastController, NavController } from "@ionic/angular";
 import { Router } from "@angular/router";
 import { Storage } from "@ionic/storage";
@@ -13,7 +13,7 @@ import { CreateAccountService } from "../services/create-account.service";
 export class ExistingWalletPage implements OnInit {
   passphrase;
   constructor(
-    private mnemonicService: MnemonicsService,
+    private mnemonicServ: MnemonicsService,
     private toastController: ToastController,
     private router: Router,
     private storage: Storage,
@@ -24,13 +24,22 @@ export class ExistingWalletPage implements OnInit {
   ngOnInit() {}
 
   openExistingWallet() {
+
+    // const valid = this.mnemonicServ.validateMnemonic(
+    //   this.passphraseField.value
+    // );
+    // const mnemonicNumLength = this.passphraseField.value.split(' ').length;
+    // if (mnemonicNumLength != this.mnemonicWordLengtEnv) {
+    //   this.passphraseField.setErrors({ lengthMnemonic: true });
+    // }
+
     const lengthPassphrase = this.passphrase.split(" ").length;
     if (this.passphrase && lengthPassphrase === 12 || this.passphrase && lengthPassphrase === 24) {
-      const privateKey = this.mnemonicService.mnemonic.toSeed(this.passphrase);
+      const privateKey = this.mnemonicServ.mnemonic.toSeed(this.passphrase);
 
       this.createAccSrv.setPassphrase(this.passphrase);
 
-      //this.storage.set("private_key", privateKey);
+      // this.storage.set("private_key", privateKey);
       this.router.navigate(["/setup-pin"]);
     } else {
       this.errorToast();

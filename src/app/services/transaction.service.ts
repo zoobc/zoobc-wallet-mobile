@@ -18,7 +18,7 @@ import { MempoolService } from '../grpc/service/mempool_pb_service';
 
 import { environment } from '../../environments/environment';
 import { Pagination, OrderBy } from '../grpc/model/pagination_pb';
-import { readInt64 } from 'src/app/helpers/converters';
+import { readInt64, makeShortAddress } from 'src/app/helpers/converters';
 import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../grpc/model/accountBalance_pb';
 import { AccountBalanceService } from '../grpc/service/accountBalance_pb_service';
 import { AddressBookService } from './address-book.service';
@@ -191,16 +191,8 @@ export class TransactionService {
     });
   }
 
-  makeAddressShort(addrs: string) {
-    if (addrs.length < 21){
-      return addrs;
-    }
-
-    return addrs.substring(0, 10).concat('...').concat(addrs.substring(addrs.length - 10, addrs.length));
-  }
-
   getNameByAddress(address: string, alldress: any) {
-    let name = address;
+    let name = makeShortAddress(address);
     if (alldress && alldress.__zone_symbol__value) {
       console.log('=== Name: ', alldress.__zone_symbol__value);
 
@@ -209,8 +201,6 @@ export class TransactionService {
           name = obj.name;
         }
       });
-    }else{
-      name = this.makeAddressShort(address);
     }
     return name;
   }
