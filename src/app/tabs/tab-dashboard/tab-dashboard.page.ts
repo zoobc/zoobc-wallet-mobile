@@ -3,7 +3,9 @@ import {
   MenuController,
   NavController,
   AlertController,
-  ToastController
+  ToastController,
+  LoadingController,
+  ModalController
 } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth-service';
 import { Router } from '@angular/router';
@@ -15,8 +17,10 @@ import {
   AccountBalance as AB,
 } from 'src/app/grpc/model/accountBalance_pb';
 import { ActiveAccountService } from 'src/app/services/active-account.service';
+import { TranslateService } from '@ngx-translate/core';
+import { makeShortAddress, timeConverter } from 'src/app/helpers/converters';
+import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 
-type AccountBalance = AB.AsObject;
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
 @Component({
@@ -31,32 +35,64 @@ export class TabDashboardPage implements OnInit {
     shortadress: ''
   };
 
-  errorMsg = '';
+  public errorMsg: string;
+  public offset: number;
 
   public accountBalance: any;
+  public isLoadingBalance: boolean;
+  public isLoadingRecentTx: boolean;
 
-  public isLoadingBalance = true;
-  public isLoadingRecentTx = true;
-
-
-  totalTx = 0;
-  recentTx: Transaction[];
-  unconfirmTx: Transaction[];
-  isError = false;
+  public totalTx: number;
+  public recentTx: Transaction[];
+  public unconfirmTx: Transaction[];
+  public isError = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
+    public modalCtrl: ModalController,
     private menuController: MenuController,
+    public loadingController: LoadingController,
     private navCtrl: NavController,
     private activeAccountSrv: ActiveAccountService,
     private storage: Storage,
     private accountService: AccountService,
     private transactionServ: TransactionService,
+    private translateServ: TranslateService,
     private alertController: AlertController,
     public toastController: ToastController
   ) {
-    this.isLoadingBalance = true;
+
+    this.activeAccountSrv.accountSubject.subscribe({
+      next: v => {
+        this.account.accountName = v.accountName;
+        this.account.address = this.accountService.getAccountAddress(v);
+        this.account.shortadress = makeShortAddress(this.account.address);
+        this.loadData();
+      }
+    });
+
+    this.loadData();
+  }
+
+  doRefresh(event) {
+    this.loadData();
+
+    setTimeout(() => {
+      event.target.complete();
+    }, 2000);
+
+  }
+
+  ionViewDidEnter() {
+    this.loadData();
+  }
+
+  ngOnInit() {
+    // this.loadData();
+  }
+
+  async loadData() {
 
     this.accountBalance = {
       accountaddress: '',
@@ -67,54 +103,55 @@ export class TabDashboardPage implements OnInit {
       latest: false
     };
 
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        this.account.accountName = v.accountName;
-        this.account.address = this.accountService.getAccountAddress(v);
-        this.account.shortadress = this.shortAddress(this.account.address);
-        this.getBalance();
-        this.getTransactions();
-      }
-    });
-
-  }
-
-  shortAddress(addrs: string) {
-    return addrs.substring(0, 10).concat('...').concat(addrs.substring(addrs.length - 10, addrs.length));
-  }
-
-  doRefresh(event) {
-    this.loadData();
-    setTimeout(() => {
-      event.target.complete();
-    }, 2000);
-  }
-
-  ionViewDidEnter() {
-    this.loadData();
-    // setInterval(this.loadData, 2 * 1000);
-  }
-
-  ngOnInit() {
-    // this.loadData();
-  }
-
-  async loadData() {
-
+    this.errorMsg = '';
+    this.offset = 1;
+    this.accountBalance = 0;
+    this.isLoadingBalance = true;
+    this.isLoadingRecentTx = true;
+    this.totalTx = 0;
+    this.recentTx = [];
+    this.unconfirmTx = [];
     this.isError = false;
 
     const account = await this.storage.get('active_account');
     this.account.accountName = account.accountName;
     this.account.address = this.accountService.getAccountAddress(account);
-    this.account.shortadress = this.shortAddress(this.account.address);
+    this.account.shortadress = makeShortAddress(this.account.address);
 
     this.getBalance();
     this.getTransactions();
   }
 
+  async loadMoreData(event) {
+
+    console.log('==== this.offset:', this.offset);
+
+    if (this.recentTx.length >= this.totalTx) {
+      event.target.complete();
+      console.log(' === all loaded', this.recentTx.length + ' - ' + this.totalTx );
+      return; // event.target.disabled = true;
+    }
+
+    setTimeout(async () => {
+      await this.transactionServ
+        .getAccountTransaction(++this.offset, 5, this.account.address)
+        .then((res: Transactions) => {
+          this.totalTx = res.total;
+          this.recentTx.push(...res.transactions);
+        }).finally(() => {
+          this.isLoadingRecentTx = false;
+          event.target.complete();
+        }).catch((error) => {
+          event.target.complete();
+          console.log('===== eroor getAccountTransaction:', error);
+        });
+
+    }, 500);
+
+  }
+
   async getTransactions() {
     this.isLoadingRecentTx = true;
-
 
     await this.transactionServ
       .getUnconfirmTransaction(this.account.address)
@@ -126,7 +163,7 @@ export class TabDashboardPage implements OnInit {
       });
 
     await this.transactionServ
-      .getAccountTransaction(1, 100, this.account.address)
+      .getAccountTransaction(this.offset, 5, this.account.address)
       .then((res: Transactions) => {
         this.totalTx = res.total;
         this.recentTx = res.transactions;
@@ -174,7 +211,6 @@ export class TabDashboardPage implements OnInit {
 
       }
 
-
       console.error(' ==== have error: ', error);
     }).finally(() => {
       this.isLoadingBalance = false;
@@ -206,58 +242,33 @@ export class TabDashboardPage implements OnInit {
     this.navCtrl.navigateForward('list-account');
   }
 
-  openDetailUnconfirm(index) {
-    const trxUnconfirm = this.unconfirmTx[index];
-    console.log('======== Unconfirm: ', trxUnconfirm);
-    this.showUnconfirmDetail(trxUnconfirm);
+  async openDetailUnconfirm(index) {
+    const trx = this.unconfirmTx[index];
+    this.showLoadingProgress(trx, 'pending');
   }
 
-  openDetailTransction(transId) {
-    this.router.navigate(['transaction/' + transId]);
+  async openDetailTransction(trx) {
+    this.showLoadingProgress(trx, 'confirm');
   }
 
-  timeConverter(unixTimestamp: number) {
-    const a = new Date(unixTimestamp);
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const year = a.getFullYear();
-    const month = months[a.getMonth()];
-    const date = a.getDate();
-    const hour = a.getHours();
-    const min = a.getMinutes();
-    const sec = a.getSeconds();
-    const time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
-    return time;
-  }
-
-  async showUnconfirmDetail(trx: any) {
-    console.log('--- timestamp: ' + trx.timestamp);
-
-    const formattedTime = this.timeConverter(trx.timestamp);
-
-    const typeTrx = trx.type === 'send' ? 'Send to' : 'Receive from ';
-    const alert = await this.alertController.create({
-      cssClass: 'alert-zbc',
-      header: 'Detail',
-      message: '<div>'
-        + 'Date:</br><strong>' + formattedTime + '</strong></br></br>'
-        + '' + typeTrx + '</br><strong>' + trx.address + '</strong></br></br>'
-        + 'Amount:</br><strong>' + (Number(trx.amount) / 1e8) + '</strong></br></br>'
-        + 'Fee:</br><strong>' + (Number(trx.fee) / 1e8) + '</strong></br></br>'
-        + 'Total:</br><strong>' + ((Number(trx.amount) + Number(trx.fee)) / 1e8) + '</strong></br></br>'
-        + 'Status:</br><b>' + 'Pending' + '</b></br></br>'
-        + '</div>',
-      buttons: [
-        {
-          text: 'Close',
-          handler: () => {
-            console.log('Confirm Okay');
-          }
-        }
-      ]
+  async showLoadingProgress(trx: any, trxStatus: string) {
+    this.loadingController.create({
+      message: 'Loading ...',
+      duration: 200
+    }).then((res) => {
+      res.present();
     });
 
-    await alert.present();
+    const modal = await this.modalCtrl.create({
+      component: TransactionDetailPage,
+      cssClass: 'modal-ZBC',
+      componentProps: {
+        transaction: trx,
+        account: this.account,
+        status: trxStatus
+      }
+    });
+    await modal.present();
+
   }
-
-
 }

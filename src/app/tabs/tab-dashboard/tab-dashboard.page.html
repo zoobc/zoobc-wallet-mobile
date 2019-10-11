@@ -88,7 +88,7 @@
   </p>
 
   <ion-list class="ion-margin-top list-transaction">
-    <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button (click)="openDetailUnconfirm(i)">
+    <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
       <ion-icon *ngIf="pendingtrx.type==='send'" name="arrow-round-up" color="light"></ion-icon>
       <ion-icon *ngIf="pendingtrx.type!=='send'" name="arrow-round-down" color="light"></ion-icon>
       <ion-label>
@@ -113,7 +113,7 @@
 
     </ion-item>
 
-    <ion-item *ngFor="let transaction of recentTx; let i = index" button (click)="openDetailTransction(transaction.id)">
+    <ion-item *ngFor="let transaction of recentTx; let i = index" button (click)="openDetailTransction(transaction)">
       <ion-icon *ngIf="transaction.type==='send'" name="arrow-round-up" color="danger"></ion-icon>
       <ion-icon *ngIf="transaction.type!=='send'" name="arrow-round-down" color="success"></ion-icon>
       <ion-label>
