@@ -17,10 +17,17 @@
 </ion-header>
 
 <ion-content class="page-qrcode" padding="true">
-  <p class="address" style="color:#83b4f3" (click)="tapAddress()">{{ account.shortadress }}</p>
-  <div class="qrcode-container">
-    <img style="width: 100%;" [src]="account.qrCode" />
-  </div>
+
+
+  <ion-card *ngIf="createdCode">
+          <ion-card-content>
+            <ngx-qrcode [qrc-value]="createdCode"></ngx-qrcode>           
+            <p class="address" (click)="tapAddress()">{{ createdCode }}
+                <ion-icon name="copy"></ion-icon></p>
+            
+          </ion-card-content>
+  </ion-card>
+
   <p class="note">
     {{ "show this qrcode to your friend to transfer money to your account" | translate }}
   </p>

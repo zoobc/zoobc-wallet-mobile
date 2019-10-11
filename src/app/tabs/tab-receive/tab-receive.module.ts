@@ -6,12 +6,14 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { TabReceivePage } from './tab-receive.page';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
+    NgxQRCodeModule,
     TranslateModule,
     RouterModule.forChild([{ path: '', component: TabReceivePage }])
   ],

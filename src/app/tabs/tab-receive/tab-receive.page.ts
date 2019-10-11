@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { AccountService } from 'src/app/services/account.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ActiveAccountService } from 'src/app/services/active-account.service';
+import { makeShortAddress } from 'src/app/helpers/converters';
 
 @Component({
   selector: 'app-tab-receive',
@@ -14,6 +15,8 @@ import { ActiveAccountService } from 'src/app/services/active-account.service';
   styleUrls: ['tab-receive.page.scss']
 })
 export class TabReceivePage {
+
+  createdCode: string;
   encodeData: string;
   qrCodeUrl: any;
   account = {
@@ -36,10 +39,10 @@ export class TabReceivePage {
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
         const address = this.accountService.getAccountAddress(v);
-        this.account.shortadress = this.shortAddress(address);
+        this.account.shortadress = makeShortAddress(address);
         this.account.accountName = v.accountName;
         this.account.address = address;
-        this.account.qrCode = this.createQR(address);
+        this.createQR(address);
       }
     });
   }
@@ -86,25 +89,23 @@ export class TabReceivePage {
     toast.present();
   }
 
-  shortAddress(addrs: string) {
-    return addrs.substring(0, 10).concat('...').concat(addrs.substring(addrs.length - 10, addrs.length));
-  }
 
 
   createQR(value: string) {
-    const qrCode = qrcode(8, 'L');
-    qrCode.addData(value);
-    qrCode.make();
-    return qrCode.createDataURL(4, 8);
+    this.createdCode = value;
+    // const qrCode = qrcode(8, 'L');
+    // qrCode.addData(value);
+    // qrCode.make();
+    // return qrCode.createDataURL(4, 8);
   }
 
   async getActiveAccount() {
     const activeAccount = await this.storage.get('active_account');
     const address = this.accountService.getAccountAddress(activeAccount);
-    this.account.shortadress = this.shortAddress(address);
+    this.account.shortadress = makeShortAddress(address);
     this.account.accountName = activeAccount.accountName;
     this.account.address = address;
-    this.account.qrCode = this.createQR(address);
+    this.createQR(address);
   }
 
   async ionViewDidEnter() {
