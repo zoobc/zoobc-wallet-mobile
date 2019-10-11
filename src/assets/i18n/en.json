@@ -12,6 +12,7 @@
 	"Back": "Back",
 	"Balance": "Balance",
 	"Cancel": "Cancel",
+	"Close": "Close",
 	"Confirm": "Confirm",
 	"Confirm your PIN": "Confirm your PIN",
 	"Copy Passphrase": "Copy",
@@ -38,6 +39,7 @@
 	"Language": "Language",
 	"List of Account": "List of accounts",
 	"Log out": "Log out",
+	"New Transaction": "New Transaction",
 	"OR": "OR",
 	"Open Existing Wallet": "Restore Wallet",
 	"Open Wallet": "Open Wallet",
@@ -57,7 +59,7 @@
 	"Remember: Never tell your passphrase. If you lose it, you lose access to your account!": "Remember: Never tell your passphrase. If you lose it, you lose access to your account!",
 	"Save": "Save",
 	"Scan": "Scan",
-	"Select one transaction fee": "Select one transaction fee",
+	"Select one transaction fee": "Select transaction fees",
 	"Send": "Send",
 	"Sender Address": "Sender Address",
 	"Setup PIN": "Setup PIN",
@@ -71,6 +73,8 @@
 	"Transaction Date": "Transaction Date",
 	"Transaction Fee": "Transaction Fees",
 	"Transaction Status": "Transaction Status",
+	"Transaction Successful": "Transaction Successful",
+	"Transaction will need a few seconds to confirmed": "Transaction will need a few seconds to be confirmed",
 	"Transfer Detail": "Transfer Detail",
 	"Update": "Update",
 	"Wallets": "Wallet",
@@ -78,5 +82,5 @@
 	"Welcome to ZooBC Wallet.": "Welcome to ZooBC Wallet.",
 	"You dont have any address": "You don't have an address yet",
 	"one of signin methods bellow": "one of sign in methods bellow",
-	"show this qrcode to your friend to transfer money to your account": "Show this qrcode to your friend to transfer money to your account"
+	"show this qrcode to your friend to transfer money to your account": "Show this qrcode to your friend to transfer ZooBC to your account"
 }
