@@ -25,7 +25,8 @@ import { LanguageService } from '../app/services/language.service';
 import { SenddetailPageModule } from './Modals/senddetail/senddetail.module';
 import { TrxstatusPageModule } from './Modals/trxstatus/trxstatus.module';
 import { EnterpinsendPageModule } from './Modals/enterpinsend/enterpinsend.module';
-
+import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -35,6 +36,7 @@ export function createTranslateLoader(http: HttpClient) {
   declarations: [AppComponent, QrScannerComponent],
   entryComponents: [],
   imports: [
+    NgxQRCodeModule,
     BrowserModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
@@ -44,6 +46,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     NgxsModule.forRoot(),
     SenddetailPageModule,
+    TransactionDetailPageModule,
     TrxstatusPageModule,
     EnterpinsendPageModule,
     TranslateModule.forRoot({
