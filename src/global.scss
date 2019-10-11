@@ -66,7 +66,12 @@ a {
     font-size: 0.8rem;
   }
   .info-desc {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  .info-address {
+    width: auto;
+    font-size: x-small;
     color: #333;
   }
 }
@@ -74,8 +79,8 @@ a {
 .separator {
   border-bottom: 1px solid #dedede;
   height: 0;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .bg-grey {
@@ -190,3 +195,12 @@ a {
   }
 }
 
+
+.modal-ZBC
+{
+    //opacity: 0.9 !important;
+    .modal-wrapper 
+    {
+      max-height: 90%;
+    }
+}
