@@ -1,5 +1,5 @@
-import { default as JSBI } from "jsbi";
-import * as BN from "bn.js";
+import { default as JSBI } from 'jsbi';
+import * as BN from 'bn.js';
 
 export function hexToByteArray(hexStr: string): Uint8Array {
   return new Uint8Array(
@@ -7,52 +7,64 @@ export function hexToByteArray(hexStr: string): Uint8Array {
   );
 }
 
-export function byteArrayToHex(
-  bytes: ArrayBuffer | ArrayBufferView | Array<number>
-): string {
-  const byteArray =
-    bytes instanceof ArrayBuffer
-      ? new Uint8Array(bytes)
-      : ArrayBuffer.isView(bytes)
-      ? new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength)
-      : Uint8Array.from(bytes);
-  return Array.prototype.map
-    .call(byteArray, byte => byte.toString(16).padStart(2, "0"))
-    .join("");
-}
+// export function byteArrayToHex(
+//   bytes: ArrayBuffer | ArrayBufferView | Array<number>
+// ): string {
+//   const byteArray =
+//     bytes instanceof ArrayBuffer
+//       ? new Uint8Array(bytes)
+//       : ArrayBuffer.isView(bytes)
+//       ? new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+//       : Uint8Array.from(bytes);
+//   return Array.prototype.map
+//     .call(byteArray, byte => byte.toString(16).padStart(2, '0'))
+//     .join('');
+// }
 
 /*
  * See: https://developers.google.com/web/updates/2014/08/Easier-ArrayBuffer-String-conversion-with-the-Encoding-API
  */
-export function stringToByteArray(str: string): Uint8Array {
-  const encoder = new TextEncoder();
-  return encoder.encode(str);
-}
+// export function stringToByteArray(str: string): Uint8Array {
+//   const encoder = new TextEncoder();
+//   return encoder.encode(str);
+// }
 
-export function byteArrayToString(
-  bytes: ArrayBuffer | ArrayBufferView | Array<number>
-): string {
-  const byteArray =
-    bytes instanceof ArrayBuffer
-      ? bytes
-      : ArrayBuffer.isView(bytes)
-      ? bytes
-      : Uint8Array.from(bytes);
-  const decoder = new TextDecoder();
-  return decoder.decode(byteArray);
-}
+// export function byteArrayToString(
+//   bytes: ArrayBuffer | ArrayBufferView | Array<number>
+// ): string {
+//   const byteArray =
+//     bytes instanceof ArrayBuffer
+//       ? bytes
+//       : ArrayBuffer.isView(bytes)
+//       ? bytes
+//       : Uint8Array.from(bytes);
+//   const decoder = new TextDecoder();
+//   return decoder.decode(byteArray);
+// }
 
+export function timeConverter(unixTimestamp: number) {
+  const a = new Date(unixTimestamp);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const year = a.getFullYear();
+  const month = months[a.getMonth()];
+  const date = a.getDate();
+  const hour = a.getHours();
+  const min = a.getMinutes();
+  const sec = a.getSeconds();
+  const time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+  return time;
+}
 
 export function makeShortAddress(addrs: string) {
-  if (addrs.length < 21){
+  if (addrs.length < 21) {
       return addrs;
   }
-  return addrs.substring(0, 10).concat('...').concat(addrs.substring(addrs.length - 10, addrs.length));
+  return addrs.substring(0, 6).concat('...').concat(addrs.substring(addrs.length - 6, addrs.length));
 }
 
 
 export function base64ToByteArray(base64Str: string): Uint8Array {
-  const buf = new Buffer(base64Str, "base64");
+  const buf = Buffer.from(base64Str, 'base64');
   return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
 }
 
@@ -67,29 +79,29 @@ export function byteArrayToBase64(
       : ArrayBuffer.isView(bytes)
       ? Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength)
       : Buffer.from(bytes);
-  return buf.toString("base64");
+  return buf.toString('base64');
 }
 
 export function toBase64Url(base64Str: string): string {
-  return base64Str.replace(/\+/g, "-").replace(/\//g, "_");
+  return base64Str.replace(/\+/g, '-').replace(/\//g, '_');
 }
 
-export function fromBase64Url(base64Str: string): string {
-  return base64Str.replace(/\-/g, "+").replace(/\_/g, "/");
-}
+// export function fromBase64Url(base64Str: string): string {
+//   return base64Str.replace(/\-/g, '+').replace(/\_/g, '/');
+// }
 
 export function mergeByteArrays(
   resultConstructor,
   arrays: Array<ArrayBufferView | number[]>
 ) {
-  let totalLength = arrays.reduce(
+  const totalLength = arrays.reduce(
     (acc, arr) =>
       ((arr as ArrayBufferView).byteLength || (arr as number[]).length) + acc,
     0
   );
-  let result = new resultConstructor(totalLength);
+  const result = new resultConstructor(totalLength);
   let offset = 0;
-  for (let arr of arrays) {
+  for (const arr of arrays) {
     const len = (arr as ArrayBufferView).byteLength || (arr as number[]).length;
     result.set(arr, offset);
     offset += len;
@@ -101,7 +113,7 @@ export function publicKeyToAddress(
   hexOrBytes: string | ArrayBuffer | ArrayBufferView | Array<number>
 ): string {
   const bytes =
-    typeof hexOrBytes === "string"
+    typeof hexOrBytes === 'string'
       ? hexToByteArray(hexOrBytes)
       : hexOrBytes instanceof ArrayBuffer
       ? new Uint8Array(hexOrBytes)
@@ -116,15 +128,15 @@ export function publicKeyToAddress(
   return toBase64Url(byteArrayToBase64(addressBytes));
 }
 
-export function addressToPublicKey(address: string): Uint8Array {
-  const addressBytes = base64ToByteArray(fromBase64Url(address));
-  // return addressBytes.subarray(0, addressBytes.length - 1);
-  return new Uint8Array(
-    addressBytes.buffer,
-    addressBytes.byteOffset,
-    addressBytes.byteLength - 1
-  );
-}
+// export function addressToPublicKey(address: string): Uint8Array {
+//   const addressBytes = base64ToByteArray(fromBase64Url(address));
+//   // return addressBytes.subarray(0, addressBytes.length - 1);
+//   return new Uint8Array(
+//     addressBytes.buffer,
+//     addressBytes.byteOffset,
+//     addressBytes.byteLength - 1
+//   );
+// }
 
 export function getAddressChecksum(
   bytes: ArrayBuffer | ArrayBufferView | Array<number>
@@ -143,16 +155,16 @@ export function getAddressChecksum(
   return Uint8Array.from([a]);
 }
 
-// DataView polyfills
+// // DataView polyfills
 function __makeDataViewSetter(funcName, viewFuncName) {
   const viewSetFunc = DataView.prototype[`set${viewFuncName}`];
-  if (typeof viewSetFunc === "undefined") {
-    throw Error("Making DataView setter with invalid view function name.");
+  if (typeof viewSetFunc === 'undefined') {
+    throw Error('Making DataView setter with invalid view function name.');
   }
 
   const fn = function(view, byteOffset, value, littleEndian) {
     if (value.constructor !== JSBI) {
-      throw TypeError("Value needs to be JSBI");
+      throw TypeError('Value needs to be JSBI');
     }
     // Set 64 bit number as two 32 bit numbers.
     // The lower/higher (depending on endianess)
@@ -176,14 +188,14 @@ function __makeDataViewSetter(funcName, viewFuncName) {
       littleEndian
     );
   };
-  Object.defineProperty(fn, "name", { value: funcName });
+  Object.defineProperty(fn, 'name', { value: funcName });
   return fn;
 }
 
 function __makeDataViewGetter(funcName, viewFuncName) {
   const viewGetFunc = DataView.prototype[`get${viewFuncName}`];
-  if (typeof viewGetFunc === "undefined") {
-    throw Error("Making DataView getter with invalid view function name.");
+  if (typeof viewGetFunc === 'undefined') {
+    throw Error('Making DataView getter with invalid view function name.');
   }
 
   const fn = function(view, byteOffset, littleEndian) {
@@ -209,39 +221,40 @@ function __makeDataViewGetter(funcName, viewFuncName) {
     result.__setDigit(1, (highWord - (sign ? 1 : 0)) ^ signBit);
     return result;
   };
-  Object.defineProperty(fn, "name", { value: funcName });
+  Object.defineProperty(fn, 'name', { value: funcName });
   return fn;
 }
 
 // DataView polyfills
 export const dataViewSetBigUint64 = __makeDataViewSetter(
-  "DataViewSetBigUint64",
-  "Uint32"
+  'DataViewSetBigUint64',
+  'Uint32'
 );
 export const dataViewSetBigInt64 = __makeDataViewSetter(
-  "DataViewSetBigInt64",
-  "Int32"
-);
-export const dataViewGetBigUint64 = __makeDataViewGetter(
-  "DataViewGetBigInt64",
-  "Uint32"
-);
-export const dataViewGetBigInt64 = __makeDataViewGetter(
-  "DataViewGetBigInt64",
-  "Int32"
+  'DataViewSetBigInt64',
+  'Int32'
 );
 
-export function BigInt(number: number, base?, endian?): BN {
-  return new BN(number, base, endian);
+export const dataViewGetBigUint64 = __makeDataViewGetter(
+  'DataViewGetBigInt64',
+  'Uint32'
+);
+export const dataViewGetBigInt64 = __makeDataViewGetter(
+  'DataViewGetBigInt64',
+  'Int32'
+);
+
+export function BigInt(arg: number, base?, endian?): BN {
+  return new BN(arg, base, endian);
 }
 
 export function bigintToByteArray(bn: BN): Uint8Array {
-  return bn.toArrayLike(Uint8Array, "le", 8);
+  return bn.toArrayLike(Uint8Array, 'le', 8);
 }
 
 export function readInt64(buff, offset) {
-  var buff1 = buff.readUInt32LE(offset);
-  var buff2 = buff.readUInt32LE(offset + 4);
-  if (!(buff2 & 0x80000000)) return buff1 + 0x100000000 * buff2;
+  const buff1 = buff.readUInt32LE(offset);
+  const buff2 = buff.readUInt32LE(offset + 4);
+  if (!(buff2 & 0x80000000)) { return buff1 + 0x100000000 * buff2; }
   return -((~buff2 >>> 0) * 0x100000000 + (~buff1 >>> 0) + 1);
 }
