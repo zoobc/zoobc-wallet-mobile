@@ -71,12 +71,16 @@ const routes: Routes = [
     loadChildren:
       './Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule'
   },
-  { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule' },
-  { path: 'senddetail', loadChildren: './Modals/senddetail/senddetail.module#SenddetailPageModule' },
+  { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule',
+  canActivate: [AuthService] },
+  { path: 'senddetail', loadChildren: './Modals/senddetail/senddetail.module#SenddetailPageModule',
+  canActivate: [AuthService] },
   { path: 'enterpinsend', loadChildren: './Modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },
-  { path: 'trxstatus', loadChildren: './Modals/trxstatus/trxstatus.module#TrxstatusPageModule' },
+  { path: 'trxstatus', loadChildren: './Modals/trxstatus/trxstatus.module#TrxstatusPageModule',
+  canActivate: [AuthService] },
   // { path: 'sendcoin', loadChildren: './Pages/sendcoin/sendcoin.module#SendcoinPageModule' },
-  { path: 'sendcoin', loadChildren: './tabs/tab-send/tab-send.module#TabSendPageModule' },
+  { path: 'sendcoin', loadChildren: './tabs/tab-send/tab-send.module#TabSendPageModule',
+   canActivate: [AuthService] },
   { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },
 
 ];
