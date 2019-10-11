@@ -1,28 +1,49 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary"  hideBackButton="true">
     <ion-title>{{ "Transaction Status" | translate }}</ion-title>
-    <ion-buttons slot="start">
-      <ion-button (click)="close();">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="ion-padding">
+  
+  <ion-grid  style="margin-top:10%;">
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <img *ngIf="status" src="assets/images/checked.png" style="width:100px"/>
+        <img *ngIf="!status" src="assets/images/cancel.png" style="width:100px"/>
+      </ion-col>  
+    </ion-row> 
+    
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-text color="dark">
+            <h3 *ngIf="!status">{{ "Transaction Fail" | translate }}</h3>
+            <h3 *ngIf="status">{{ "Transaction Successful" | translate }}</h3>
+        </ion-text>
+      </ion-col>  
+    </ion-row>
+    <ion-row>
+        <ion-col class="ion-text-center">
+            <ion-text *ngIf="status"color="dark">{{ "Transaction will need a few seconds to confirmed" | translate }}.</ion-text>
+            <ion-text *ngIf="!status" color="dark">{{ "Please check your balance, and try again!" | translate }}.</ion-text>   
+        </ion-col>  
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        &nbsp;
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="ion-text-center">
+          <ion-button color="tertiary" fill="outline" expand="block" (click)="close();">{{ "Close" | translate }}</ion-button>
+      </ion-col>
+      <ion-col class="ion-text-center">
+          <ion-button color="tertiary"  expand="block" (click)="newTrx();">{{ "New Transaction" | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
 
 
-  <div class="">
-      <div style="width: 80% auto; height: 80%;" text-center large margin-vertical>
-      <img src="assets/images/checked.png" />
-    </div>
-
-    <div class="welcome-text ion-text-center">
-      <span class="text1">{{ "Transaction Success" | translate }}!</span><br />
-      <span class="text2">{{ "Transaction Send Successfully" | translate }} <br />
-        {{ "usually need a few seconds to processed!" | translate }}.</span>
-    </div>
-  </div>
-
-
+  </ion-grid>
 </ion-content>

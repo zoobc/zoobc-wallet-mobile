@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trxstatus',
@@ -10,7 +11,7 @@ export class TrxstatusPage implements OnInit {
   status = true;
   msg = '';
 
-  constructor(private modalController: ModalController, private navParams: NavParams) { }
+  constructor(private modalController: ModalController, private navParams: NavParams, private router: Router) { }
 
   ngOnInit() {
     this.status = this.navParams.data.status;
@@ -18,7 +19,16 @@ export class TrxstatusPage implements OnInit {
   }
 
   async close() {
-    await this.modalController.dismiss(0);
+    this.router.navigateByUrl('/tabs');
+    this.modalController.dismiss(); // close modal
+    console.log('============= status closed --- ');
+  }
+
+
+  async newTrx() {
+    this.router.navigateByUrl('/sendcoin');
+    this.modalController.dismiss(); // close modal
+    console.log('============= status transaction new ');
   }
 
 }

@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="secondary">
     <ion-title>{{ "Please Enter Your PIN" | translate }}</ion-title>
     <ion-buttons slot="start">
       <ion-button (click)="cancel();">
@@ -9,15 +9,21 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-    <!-- <p class="intro-text ion-text-center">
-        Send To xxxx amount 90000
-    </p> -->
-    <p *ngIf="isLoginValid">&nbsp;</p>
-    <p *ngIf="!isLoginValid" text-center style="color:red">{{ "Invalid PIN" | translate }}</p>
-    <div style="width: 80% auto; height: 80%;" text-center large margin-vertical>
-      <app-pin (keyup)="login($event)"></app-pin>
-      <ion-button (click)="cancel()">Cancel</ion-button>
-    </div>
+<ion-content class="ion-padding">
+    
+  <p *ngIf="isLoginValid">&nbsp;</p>
+    <p *ngIf="!isLoginValid" class="ion-text-center" style="color:red">{{ "Invalid PIN" | translate }}</p>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col class="ion-text-center">
+            <app-pin (keyup)="login($event)"></app-pin>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col class="ion-text-center">
+              <ion-button (click)="cancel()" expand="block" color="tertiary">{{ "Cancel" | translate }}</ion-button>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
 </ion-content>
-  
