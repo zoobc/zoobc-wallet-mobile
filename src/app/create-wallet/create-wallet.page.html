@@ -1,22 +1,38 @@
-<ion-content class="create-wallet-page ion-padding">
-  <div>
-    <div>
-      <h3 class="title ion-text-center">
-        {{ "We're about to generate your very own passphrase" | translate }}
-      </h3>
-    </div>
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "Generate Passphrase" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-    <div class="description ion-text-center">
-      <p>
-        {{ "This keeps your account secure, and lets you open your wallet on
-        multiple devices. It's very important you write this down." | translate }}
-      </p>
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+          <ion-text class="ion-text-center">
+            <h3>
+              {{ "We're about to generate your very own passphrase" | translate }}
+            </h3>
+          </ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+          <ion-text class="ion-text-center">
+              <p>{{ "This keeps your account secure, and lets you open your wallet on
+                multiple devices. It's very important you write this down." | translate }}
+              </p>     
+          </ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="tertiary" routerLink="/generate-passphrase">
+          {{ "Generate Passphrase" | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-      <ion-button expand="block" color="tertiary" routerLink="/generate-passphrase">{{ "Generate Passphrase" | translate }}</ion-button>
-    </div>
-
-    <div class="btn-container">
-      <ion-button (click)="goback()" expand="block" fill="outline" color="grey">{{ "Back" | translate }}</ion-button>
-    </div>
-  </div>
 </ion-content>
