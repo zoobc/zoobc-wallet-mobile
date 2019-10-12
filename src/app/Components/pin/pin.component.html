@@ -1,6 +1,6 @@
 <div class="pins-container">
   <div class="ion-margin-vertical ion-text-center">
-    <ion-icon *ngFor="let dot of dots" [name]="pin.length > dot ? 'radio-button-on' : 'radio-button-off'">
+    <ion-icon class="pin-bullet" *ngFor="let dot of dots" [name]="pin.length > dot ? 'radio-button-on' : 'radio-button-off'">
     </ion-icon>
   </div>
 
