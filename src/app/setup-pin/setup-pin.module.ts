@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { SetupPinPage } from './setup-pin.page';
 import { ComponentsModule } from 'src/app/Components/components.module';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 const routes: Routes = [
   {
@@ -20,6 +22,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    TranslateModule,
     RouterModule.forChild(routes),
     ComponentsModule
   ],

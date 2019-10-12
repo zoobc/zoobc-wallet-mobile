@@ -1,5 +1,35 @@
-<ion-content>
+<ion-content class="ion-padding">
+    
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-center">
+              <p *ngIf="isPinEqual">&nbsp;</p>
+              <p *ngIf="!isPinEqual" class="ion-text-center" style="color:red">{{ "PIN is not Equal" | translate }}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="pageNumber == 0">
+          <ion-col class="ion-text-center" >
+              <ion-label>Create your PIN</ion-label>
+              <app-pin (keyup)="pinConfirm($event)"></app-pin>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="pageNumber == 1">
+            <ion-col class="ion-text-center" >
+                <ion-label>PIN Confirmation</ion-label>
+                <app-pin (keyup)="savePin($event)"></app-pin>
+            </ion-col>
+          </ion-row>
+        <ion-row>
+            <ion-col class="ion-text-center">
+                <ion-button (click)="cancel()" expand="block" color="tertiary">{{ "Cancel" | translate }}</ion-button>
+            </ion-col>
+        </ion-row>
+      </ion-grid>
+  </ion-content>
+
+<!-- <ion-content>
   <div class="setup-pin">
     <app-pin (keyup)="savePin($event)"></app-pin>
   </div>
-</ion-content>
+</ion-content> -->
+

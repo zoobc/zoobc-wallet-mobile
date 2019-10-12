@@ -1,81 +1,88 @@
-import { Component, OnInit } from "@angular/core";
-import { Storage } from "@ionic/storage";
-import sha512 from "crypto-js/sha512";
-import { Router } from "@angular/router";
-import { AuthService } from "src/app/services/auth-service";
-import { CryptoService } from "src/app/services/crypto.service";
-import { ConverterService } from "src/app/services/converter.service";
-import { CreateAccountService } from "../services/create-account.service";
-import { NavController } from "@ionic/angular";
+import { Component, OnInit } from '@angular/core';
+import { Storage } from '@ionic/storage';
+import { AuthService } from 'src/app/services/auth-service';
+import { CreateAccountService } from '../services/create-account.service';
+import { NavController, ModalController } from '@ionic/angular';
 
 @Component({
-  selector: "app-setup-pin",
-  templateUrl: "./setup-pin.page.html",
-  styleUrls: ["./setup-pin.page.scss"]
+  selector: 'app-setup-pin',
+  templateUrl: './setup-pin.page.html',
+  styleUrls: ['./setup-pin.page.scss']
 })
 export class SetupPinPage implements OnInit {
   private pin: number;
+  private strTempPin: string;
+  private strPin: string;
+  public pageNumber: number;
+  public isPinEqual: boolean;
 
   constructor(
     private storage: Storage,
-    private router: Router,
-    private authService: AuthService,
-    private cryptoService: CryptoService,
-    private converterService: ConverterService,
+    private modalCtrl: ModalController,
     private createAccSrv: CreateAccountService,
     private navCtrl: NavController,
     private authSrv: AuthService
-  ) {}
-
-  ngOnInit() {
-    // this.storeKey();
+  ) {
+    this.strTempPin = '';
+    this.strPin = '';
+    this.isPinEqual = true;
   }
 
-  // async storeKey() {
-  //   const seedHex = await this.storage.get('private_key');
+  ngOnInit() {
+  }
 
-  //   const privKeyUint8 = await this.cryptoService.rootKeyFromSeed(this.converterService.hexToArrayByte(seedHex))
-  //   const pinUint8 = this.converterService.stringToArrayByte(this.pin)
+  async cancel() {
+    await this.modalCtrl.dismiss(0);
+  }
 
-  //   const keyAlgo = {
-  //     name: 'AES-GCM',
-  //     length: 256,
-  //   }
+  ionViewWillEnter() {
+    this.pageNumber = 0;
+  }
 
-  //   const opts = {
-  //     format: 'jwk',
-  //     keyAlgo,
-  //     wrapAlgo: {
-  //       name: 'AES-GCM',
-  //       iv: this.cryptoService.genInitVector(),
-  //     },
-  //     deriveAlgo: this.cryptoService.genDeriveAlgo(),
-  //   }
+  async pinConfirm(e) {
+    console.log('---', e);
+    const { pin, first } = e;
 
-  //   const wrappedKey = await this.cryptoService.wrapKeyWithPin(privKeyUint8, pinUint8, opts)
-  //   // this.cryptoService.wrapKeyWithPin()
+    if (first === true) {
+      return;
+    }
 
-  //   this.storage.set('encrypted_key', [wrappedKey])
-  // }
+    this.strTempPin = pin;
+    console.log('====== first PIN', this.strTempPin);
+    this.pageNumber++;
+  }
 
   async savePin(e) {
-    const { observer, pin } = e;
+    this.isPinEqual = true;
+    console.log('---', e);
+    const { observer, pin, first } = e;
 
-    setTimeout(() => {
-      observer.next(true);
-    }, 500);
+    if (first === true) {
+      return;
+    }
 
-    const encryptedPin = sha512(pin.toString()).toString();
-    await this.storage.set("pin", pin.toString());
-    //const isUserLoggedIn = await this.authService.login(pin);
+    this.strPin = pin;
 
-    ///
-    const _pin = pin.toString(); //encryptedPin;
-    this.createAccSrv.setPin(_pin);
+    console.log('====== 1 first PIN', this.strTempPin);
+    console.log('====== 1 confirm PIN', this.strPin);
+
+
+    if (this.strPin !== this.strTempPin) {
+      setTimeout(() => {
+        this.isPinEqual = false;
+        observer.next(true);
+      }, 500);
+      return;
+    }
+
+    await this.storage.set('pin', pin.toString());
+    const strPIN = pin.toString();
+    this.createAccSrv.setPin(strPIN);
     await this.createAccSrv.createAccount();
-    const loginStatus = await this.authSrv.login(_pin);
+    const loginStatus = await this.authSrv.login(strPIN);
     if (loginStatus) {
-      this.navCtrl.navigateForward("/");
+      this.navCtrl.navigateForward('/');
+      this.modalCtrl.dismiss(1);
     }
   }
 }
