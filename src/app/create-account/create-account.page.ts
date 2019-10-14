@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Storage } from "@ionic/storage";
-import { KeyringService } from "../core/keyring.service";
+import { KeyringService } from "../services/keyring.service";
 import { Router } from "@angular/router";
 import { NavController, ModalController } from "@ionic/angular";
 
