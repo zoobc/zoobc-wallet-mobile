@@ -1,12 +1,8 @@
 <ion-content>
   <div class="login">
-    <p class="intro-text ion-text-center">
-      {{ "Please Enter Your PIN" | translate }}
-      <br/>
-      <span></span>
-    </p>
-    <p *ngIf="!loginFail">&nbsp;</p>
-    <p *ngIf="loginFail" class="ion-text-center" style="color:red">{{ "Invalid PIN" | translate }}</p>
+    <p class="intro-text ion-text-center">{{ "Please Enter Your PIN" | translate }}</p>
+    <p style = "margin: 0px" *ngIf="!loginFail">&nbsp;</p>
+    <p style = "margin: 0px" *ngIf="loginFail" class="ion-text-center" style="color:red">{{ "Invalid PIN" | translate }}</p>
     <app-pin (keyup)="login($event)"></app-pin>
   </div>
 </ion-content>
