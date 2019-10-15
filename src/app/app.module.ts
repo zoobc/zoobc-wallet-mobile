@@ -27,6 +27,8 @@ import { TrxstatusPageModule } from './Modals/trxstatus/trxstatus.module';
 import { EnterpinsendPageModule } from './Modals/enterpinsend/enterpinsend.module';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { SetupPinPageModule } from './setup-pin/setup-pin.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -48,6 +50,7 @@ export function createTranslateLoader(http: HttpClient) {
     SenddetailPageModule,
     TransactionDetailPageModule,
     TrxstatusPageModule,
+    SetupPinPageModule,
     EnterpinsendPageModule,
     TranslateModule.forRoot({
       loader: {
@@ -67,6 +70,7 @@ export function createTranslateLoader(http: HttpClient) {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: 'global', useFactory: () => window },
     { provide: 'nacl.sign', useFactory: () => naclSign },
+    OneSignal,
     ObservableService
   ],
   bootstrap: [AppComponent]
