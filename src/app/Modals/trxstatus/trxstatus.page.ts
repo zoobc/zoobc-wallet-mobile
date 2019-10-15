@@ -19,7 +19,9 @@ export class TrxstatusPage implements OnInit {
   }
 
   async close() {
-    this.router.navigateByUrl('/tabs');
+    if (this.status){
+      this.router.navigateByUrl('/tabs');
+    }
     this.modalController.dismiss(); // close modal
     console.log('============= status closed --- ');
   }
