@@ -242,16 +242,16 @@ export class TabDashboardPage implements OnInit {
     this.navCtrl.navigateForward('list-account');
   }
 
-  async openDetailUnconfirm(index) {
-    const trx = this.unconfirmTx[index];
-    this.showLoadingProgress(trx, 'pending');
+  async openDetailUnconfirm(trx) {
+    // const trx = this.unconfirmTx[index];
+    this.loadDetailTransaction(trx, 'pending');
   }
 
   async openDetailTransction(trx) {
-    this.showLoadingProgress(trx, 'confirm');
+    this.loadDetailTransaction(trx, 'confirm');
   }
 
-  async showLoadingProgress(trx: any, trxStatus: string) {
+  async loadDetailTransaction(trx: any, trxStatus: string) {
     this.loadingController.create({
       message: 'Loading ...',
       duration: 200

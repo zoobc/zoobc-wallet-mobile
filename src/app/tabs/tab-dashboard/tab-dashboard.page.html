@@ -94,9 +94,12 @@
       <ion-label>
         <ion-row class="ion-justify-content-between">
           <ion-col size="7">
-            <ion-label class="title">
-              {{ pendingtrx.address }}
+            <ion-label *ngIf="pendingtrx.name" class="title">
+              {{ pendingtrx.name }}
             </ion-label>
+            <ion-label *ngIf="!pendingtrx.name" class="title">
+                {{ pendingtrx.shortaddress }}
+              </ion-label>
             <ion-label class="date" style="font-size: 0.7em">{{
               pendingtrx.timestamp | date: "short"
             }} <span style="color:orange">{{ "Pending" | translate }}</span>
@@ -119,9 +122,12 @@
       <ion-label>
         <ion-row class="ion-justify-content-between">
           <ion-col size="7">
-            <ion-label class="title">
-              {{ transaction.address }}
+            <ion-label *ngIf="transaction.name" class="title">
+              {{ transaction.name }}
             </ion-label>
+            <ion-label *ngIf="!transaction.name" class="title">
+                {{ transaction.shortaddress }}
+              </ion-label>
             <ion-label class="date" style="font-size: 0.7em">{{
               transaction.timestamp | date: "short"
             }}</ion-label>
