@@ -1,23 +1,67 @@
-<ion-content class="existing-wallet-page ion-padding">
-  <div>
-    <div>
-      <h3 class="title ion-text-center">
-        {{ "Please enter your 24 words" | translate }}
-      </h3>
-    </div>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "Open Existing Wallet" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-    <div>
-      <ion-textarea rows="5" auto-grow="true" [(ngModel)]="passphrase"
-        placeholder="{{ 'Please enter your 24 words' | translate }}"></ion-textarea>
+<ion-content>
+  <ion-grid class="outer-content">
+    <ion-row class="ion-align-items-center outer-content">
+      <ion-col></ion-col>
+      <ion-col class="ion-align-self-center" size="12" size-md="8" size-lg="6" size-xl="4">
+        <!--start content -->
 
-      <div class="existing-wallet-button">
-        <ion-button expand="block" color="secondary" (click)="openExistingWallet()">{{ "Open Wallet" | translate }}
-        </ion-button>
-      </div>
-    </div>
+        <ion-grid>
 
-    <div class="btn-container">
-      <ion-button expand="block" fill="outline" color="grey" (click)="goback()">{{ "Back" | translate }}</ion-button>
-    </div>
-  </div>
+          <ion-row>
+            <ion-col>
+              <div class="ion-text-center">
+                <ion-text>
+                <h3>
+                  {{ "Please enter your 24 words" | translate }}
+                </h3>
+                </ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <div class="ion-text-center">
+                <ion-text *ngIf="errorMsg" class="errormsg">{{errorMsg}} </ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+
+          <ion-row style="height: 250px;">
+            <ion-col>
+              <div class="ion-text-center">
+                <ion-textarea rows="10" auto-grow="true" [(ngModel)]="passphrase"
+                  placeholder="{{ 'Please enter your 24 words' | translate }}" (keyup)="onChangeMnemonic()">
+                </ion-textarea>
+                <ion-text>Number of words: {{wordCounter}}</ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+          
+          <ion-row>
+            <ion-col>
+              <div class="ion-text-center" style="margin: 20px;">
+                <ion-button expand="block" color="secondary" (click)="openExistingWallet()">
+                  {{ "Open Wallet" | translate }}
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
+
+        </ion-grid>
+
+        <!--end content -->
+      </ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

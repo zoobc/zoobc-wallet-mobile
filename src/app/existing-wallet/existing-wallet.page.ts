@@ -1,58 +1,116 @@
-import { Component, OnInit } from "@angular/core";
-import { MnemonicsService } from "../services/mnemonics.service";
-import { ToastController, NavController } from "@ionic/angular";
-import { Router } from "@angular/router";
-import { Storage } from "@ionic/storage";
-import { CreateAccountService } from "../services/create-account.service";
+import { Component, OnInit } from '@angular/core';
+import { MnemonicsService } from '../services/mnemonics.service';
+import { NavController, ModalController } from '@ionic/angular';
+import { CreateAccountService } from '../services/create-account.service';
+import { environment } from 'src/environments/environment';
+import { AuthService } from '../services/auth-service';
+import { SetupPinPage } from '../setup-pin/setup-pin.page';
 
 @Component({
-  selector: "app-existing-wallet",
-  templateUrl: "./existing-wallet.page.html",
-  styleUrls: ["./existing-wallet.page.scss"]
+  selector: 'app-existing-wallet',
+  templateUrl: './existing-wallet.page.html',
+  styleUrls: ['./existing-wallet.page.scss']
 })
 export class ExistingWalletPage implements OnInit {
-  passphrase;
+  public passphrase: any;
+  public errorMsg: string;
+  private isValidPhrase: boolean;
+  public wordCounter: number;
+  public mnemonicWordLengtEnv: number = environment.mnemonicNumWords;
+  public loginFail = false;
+
   constructor(
     private mnemonicServ: MnemonicsService,
-    private toastController: ToastController,
-    private router: Router,
-    private storage: Storage,
     private navCtrl: NavController,
+    private authSrv: AuthService,
+    private modalController: ModalController,
     private createAccSrv: CreateAccountService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.errorMsg = '';
+    this.isValidPhrase = true;
+    this.wordCounter = 0;
+  }
 
-  openExistingWallet() {
+  onChangeMnemonic() {
+    console.log('===== this.passphraseField', this.passphrase);
 
-    // const valid = this.mnemonicServ.validateMnemonic(
-    //   this.passphraseField.value
-    // );
-    // const mnemonicNumLength = this.passphraseField.value.split(' ').length;
-    // if (mnemonicNumLength != this.mnemonicWordLengtEnv) {
-    //   this.passphraseField.setErrors({ lengthMnemonic: true });
-    // }
+    if (!this.passphrase) {
+      this.errorMsg = '';
+      return;
+    }
 
-    const lengthPassphrase = this.passphrase.split(" ").length;
-    if (this.passphrase && lengthPassphrase === 12 || this.passphrase && lengthPassphrase === 24) {
-      const privateKey = this.mnemonicServ.mnemonic.toSeed(this.passphrase);
+    this.isValidPhrase = this.mnemonicServ.validateMnemonic(this.passphrase);
+    console.log('===== this.isValidPhrase', this.isValidPhrase);
 
-      this.createAccSrv.setPassphrase(this.passphrase);
+    const mnemonicNumLength = this.passphrase.trim().split(' ').length;
+    this.wordCounter = mnemonicNumLength;
+ 
+    if (!this.isValidPhrase) {
+      if (mnemonicNumLength < 1) {
+        this.errorMsg = '';
+      } else {
+        this.errorMsg = 'Passphrase not valid';
+      }
 
-      // this.storage.set("private_key", privateKey);
-      this.router.navigate(["/setup-pin"]);
     } else {
-      this.errorToast();
+      this.errorMsg = '';
     }
   }
 
-  async errorToast() {
-    const toast = await this.toastController.create({
-      message: "Error",
-      duration: 2000
-    });
-    toast.present();
+  openExistingWallet() {
+
+    if (!this.passphrase) {
+      this.errorMsg = 'Passphrase is ruquired!';
+      return;
+    }
+
+    this.isValidPhrase = this.mnemonicServ.validateMnemonic(this.passphrase);
+    if (!this.isValidPhrase) {
+      this.errorMsg = 'Passphrase is not valid';
+      return;
+    }
+    this.errorMsg = '';
+
+    this.inputPIN();
   }
+
+
+  async savePIN(pin: string) {
+    console.log('==== Pin:', pin);
+
+    console.log('==== this.passphrase:', this.passphrase);
+    this.createAccSrv.setPassphrase(this.passphrase);
+
+    console.log('==== setPin:', pin);
+    await this.createAccSrv.setPin(pin);
+    await this.createAccSrv.createAccount();
+
+    const loginStatus = await this.authSrv.login(pin);
+    console.log('==== loginstatus: ', loginStatus);
+    if (loginStatus) {
+      this.navCtrl.navigateForward('/');
+    }
+  }
+
+  async inputPIN() {
+    const pinmodal = await this.modalController.create({
+      component: SetupPinPage
+    });
+
+    pinmodal.onDidDismiss().then((returnedData) => {
+      console.log('============= returned Data: ', returnedData);
+      if (returnedData && returnedData.data && returnedData.data.length === 6) {
+        this.savePIN(returnedData.data);
+      } else {
+        console.log('==== PIN canceled ');
+      }
+    });
+
+    return await pinmodal.present();
+  }
+
 
   goback() {
     this.navCtrl.pop();
