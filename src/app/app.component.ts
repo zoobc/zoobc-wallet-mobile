@@ -72,8 +72,8 @@ export class AppComponent implements OnInit {
 
   setupPush() {
     this.oneSignal.startInit(environment.signalID, environment.appID);
-    this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
-    // this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.Notification);
+    // this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
+    this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.Notification);
     this.oneSignal.handleNotificationReceived().subscribe(data => {
       const msg = data.payload.body;
       const title = data.payload.title;
