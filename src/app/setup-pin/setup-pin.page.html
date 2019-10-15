@@ -1,35 +1,40 @@
-<ion-content class="ion-padding">
+<ion-content>
+    <ion-grid class="outer-content">
+      <ion-row class="ion-align-items-center outer-content">
+        <ion-col></ion-col>
+        <ion-col class="ion-align-self-center" size="12" size-md="8" size-lg="6" size-xl="4">
+          <!--start content -->
+  
     
       <ion-grid>
-        <ion-row>
-          <ion-col class="ion-text-center">
-              <p *ngIf="isPinEqual">&nbsp;</p>
-              <p *ngIf="!isPinEqual" class="ion-text-center" style="color:red">{{ "PIN is not Equal" | translate }}</p>
-          </ion-col>
-        </ion-row>
         <ion-row *ngIf="pageNumber == 0">
           <ion-col class="ion-text-center" >
-              <ion-label>Create your PIN</ion-label>
+              <ion-label>
+                <p class="pin-title">{{ "Setup your PIN" | translate }}</ion-label>
               <app-pin (keyup)="pinConfirm($event)"></app-pin>
           </ion-col>
         </ion-row>
         <ion-row *ngIf="pageNumber == 1">
             <ion-col class="ion-text-center" >
-                <ion-label>PIN Confirmation</ion-label>
+                <ion-label>
+                    <p class="pin-title">{{ "Confirm your PIN" | translate }} </p> 
+                    <p *ngIf="isPinEqual">&nbsp;</p>
+                    <p *ngIf="!isPinEqual" class="errormsg">{{ "PIN is not Equal" | translate }}</p>
+                  </ion-label>
                 <app-pin (keyup)="savePin($event)"></app-pin>
             </ion-col>
           </ion-row>
         <ion-row>
             <ion-col class="ion-text-center">
-                <ion-button (click)="cancel()" expand="block" color="tertiary">{{ "Cancel" | translate }}</ion-button>
+                <ion-button (click)="cancel()" color="tertiary">{{ "Cancel" | translate }}</ion-button>
             </ion-col>
         </ion-row>
       </ion-grid>
-  </ion-content>
 
-<!-- <ion-content>
-  <div class="setup-pin">
-    <app-pin (keyup)="savePin($event)"></app-pin>
-  </div>
-</ion-content> -->
 
+        <!--end content -->
+      </ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -15,6 +15,7 @@ export class SetupPinPage implements OnInit {
   private strPin: string;
   public pageNumber: number;
   public isPinEqual: boolean;
+  public passphrase: string;
 
   constructor(
     private storage: Storage,
@@ -29,10 +30,11 @@ export class SetupPinPage implements OnInit {
   }
 
   ngOnInit() {
+    console.log('================ this passphrase: ', this.passphrase);
   }
 
   async cancel() {
-    await this.modalCtrl.dismiss(0);
+    await this.modalCtrl.dismiss('');
   }
 
   ionViewWillEnter() {
@@ -75,14 +77,18 @@ export class SetupPinPage implements OnInit {
       return;
     }
 
-    await this.storage.set('pin', pin.toString());
-    const strPIN = pin.toString();
-    this.createAccSrv.setPin(strPIN);
-    await this.createAccSrv.createAccount();
-    const loginStatus = await this.authSrv.login(strPIN);
-    if (loginStatus) {
-      this.navCtrl.navigateForward('/');
-      this.modalCtrl.dismiss(1);
-    }
+    // this.storage.set(PIN_STORAGE, pin.toString());
+    // const strPIN = pin.toString();
+    // this.createAccSrv.setPin(strPIN);
+    // this.createAccSrv.createAccount();
+
+    // const loginStatus = await this.authSrv.login(strPIN);
+    // if (loginStatus) {
+    //   this.navCtrl.navigateForward('/');
+    //   this.modalCtrl.dismiss(1);
+    // }
+
+    this.modalCtrl.dismiss(pin);
+
   }
 }
