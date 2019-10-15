@@ -47,7 +47,7 @@ export class AddAddressPage implements OnInit {
     }
   }
 
-  isNameExists(name: string) {
+  isNameExists(name: string, address: string) {
     this.validationMessage = '';
     let finded = false;
     let i = 0;
@@ -55,9 +55,14 @@ export class AddAddressPage implements OnInit {
       if (String(name).valueOf() === String(obj.name).valueOf()) {
         this.validationMessage = '<p>Name is exist, with address:<br/>' + obj.address + '</p>';
         if (this.mode === 'edit') {
-          if (i !== this.index) {
+
+          if (String(address).valueOf() !== String(obj.address).valueOf()){
             finded = true;
           }
+
+          // if (i !== this.index) {
+          //   finded = true;
+          // }
         } else {
           finded = true;
         }
@@ -68,7 +73,8 @@ export class AddAddressPage implements OnInit {
     return finded;
   }
 
-  isAddressExists(address: string) {
+
+  isAddressExists(address: string, name: string) {
     this.validationMessage = '';
     let finded = false;
 
@@ -77,9 +83,15 @@ export class AddAddressPage implements OnInit {
       if (String(address).valueOf() === String(obj.address).valueOf()) {
         this.validationMessage = '<p>Address is exist, with name:<br/>' + obj.name + '</p>';
         if (this.mode === 'edit') {
-          if (i !== this.index) {
+
+          if (String(name).valueOf() !== String(obj.name).valueOf()){
             finded = true;
           }
+
+          // if (i !== this.index) {
+          //   finded = true;
+          // }
+
         } else {
           finded = true;
         }
@@ -133,13 +145,13 @@ export class AddAddressPage implements OnInit {
       return;
     }
 
-    if (this.isNameExists(this.name)) {
+    if (this.isNameExists(this.name, this.address)) {
       console.log('== name exist: ', this.name);
       this.isAddressValid = false;
       return;
     }
 
-    if (this.isAddressExists(this.address)) {
+    if (this.isAddressExists(this.address, this.name)) {
       console.log('== Address exist: ', this.address);
       this.isAddressValid = false;
       return;
