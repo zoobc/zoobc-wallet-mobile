@@ -279,3 +279,24 @@ newest SDK which was the one that had the license accepted).
  **to**
 <engine name="android" spec="8.0.0" />
 
+
+FireBase:
+
+ionic cordova plugin add cordova-plugin-firebasex
+npm install @ionic-native/firebase-x
+
+import { FirebaseX } from "@ionic-native/firebase-x/ngx";
+constructor(private firebase: FirebaseX)
+ 
+this.firebase.getToken().then(token => console.log(`The token is ${token}`))
+this.firebase.onMessageReceived().subscribe(data => console.log(`FCM message: ${data}`));
+
+
+Note:
+https://github.com/dpa99c/cordova-android-play-services-gradle-release#installation
+
+https://www.npmjs.com/package/cordova-plugin-firebasex#ionic-4
+
+https://github.com/dpa99c/cordova-plugin-androidx-adapter
+
+https://github.com/dpa99c/cordova-plugin-androidx
