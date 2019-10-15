@@ -96,7 +96,11 @@ export class TransactionService {
 
               return {
                 alias,
-                address: this.getNameByAddress(friendAddress, addresses),
+                sender: tx.senderaccountaddress,
+                recipient: tx.recipientaccountaddress,
+                name: this.getNameByAddress(friendAddress, addresses),
+                shortaddress: makeShortAddress(friendAddress),
+                address: friendAddress,
                 type,
                 timestamp: parseInt(tx.arrivaltimestamp, 10) * 1000,
                 fee,
@@ -162,7 +166,9 @@ export class TransactionService {
               return {
                 id: tx.id,
                 alias,
-                address: this.getNameByAddress(friendAddress, addresses),
+                name: this.getNameByAddress(friendAddress, addresses),
+                shortaddress: makeShortAddress(friendAddress),
+                address: friendAddress,
                 type,
                 timestamp: parseInt(tx.timestamp, 10) * 1000,
                 fee: Number(tx.fee),
@@ -192,7 +198,7 @@ export class TransactionService {
   }
 
   getNameByAddress(address: string, alldress: any) {
-    let name = makeShortAddress(address);
+    let name = '';
     if (alldress && alldress.__zone_symbol__value) {
       console.log('=== Name: ', alldress.__zone_symbol__value);
 
