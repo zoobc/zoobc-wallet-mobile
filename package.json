@@ -33,7 +33,6 @@
     "@ionic-native/http": "^5.14.0",
     "@ionic-native/network": "^5.10.0",
     "@ionic-native/network-interface": "^5.14.0",
-    "@ionic-native/onesignal": "^5.15.0",
     "@ionic-native/qr-scanner": "^5.15.0",
     "@ionic-native/social-sharing": "^5.14.0",
     "@ionic-native/splash-screen": "^5.0.0",
@@ -73,7 +72,6 @@
     "ngx-qrcode2": "0.0.9",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",
-    "onesignal-cordova-plugin": "^2.6.0",
     "qrcode-generator": "^1.4.3",
     "rxjs": "^6.5.2",
     "stream": "0.0.2",
@@ -139,8 +137,7 @@
       "cordova.plugins.diagnostic": {
         "ANDROID_SUPPORT_VERSION": "28.+"
       },
-      "cordova-plugin-networkinterface": {},
-      "onesignal-cordova-plugin": {}
+      "cordova-plugin-networkinterface": {}
     },
     "platforms": [
       "android"
