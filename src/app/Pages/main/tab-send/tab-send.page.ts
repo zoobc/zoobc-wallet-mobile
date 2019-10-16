@@ -73,9 +73,22 @@ export class TabSendPage implements OnInit {
     private selectAddressSrv: SelectAddressService,
     private alertCtrl: AlertController,
     private keyringSrv: KeyringService
-  ) {
-    // this.sender = this.getAddress();
-  }
+  ) {}
+
+  fees = [
+    {
+      title: "Slow",
+      value: 0.00005
+    },
+    {
+      title: "Average",
+      value: 0.00015
+    },
+    {
+      title: "Fast",
+      value: 0.00025
+    }
+  ];
 
   ngOnInit() {
     this.sendForm = this.formBuilder.group({
@@ -137,6 +150,21 @@ export class TabSendPage implements OnInit {
   onFeeKeyUp(event) {
     const fee = this.sendForm.get("fee").value;
     const feeCurr = this.sendForm.get("feeCurr").value;
+    this.conversionValue.fee.ZBC = this.currencySrv.convertCurrency(
+      fee,
+      feeCurr,
+      "ZBC"
+    );
+    this.conversionValue.fee.USD = this.currencySrv.convertCurrency(
+      fee,
+      feeCurr,
+      "USD"
+    );
+  }
+
+  onFeeChanged(value) {
+    const fee = value;
+    const feeCurr = "ZBC";
     this.conversionValue.fee.ZBC = this.currencySrv.convertCurrency(
       fee,
       feeCurr,

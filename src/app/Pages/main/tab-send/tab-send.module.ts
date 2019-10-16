@@ -11,6 +11,7 @@ import { FormSelectAccountModule } from "src/app/Shared/forms/form-select-accoun
 import { ModalConfirmationComponent } from "./modal-confirmation/modal-confirmation.component";
 import { PinModule } from "src/app/Shared/pin/pin.module";
 import { ModalPinComponent } from "./modal-pin/modal-pin.component";
+import { FormFeeModule } from "src/app/Shared/forms/form-fee/form-fee.module";
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { ModalPinComponent } from "./modal-pin/modal-pin.component";
     TranslateModule,
     RouterModule.forChild([{ path: "", component: TabSendPage }]),
     FormSelectAccountModule,
+    FormFeeModule,
     PinModule
   ],
   providers: [QRScanner],
