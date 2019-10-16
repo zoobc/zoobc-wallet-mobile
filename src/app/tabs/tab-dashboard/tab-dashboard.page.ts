@@ -8,7 +8,7 @@ import {
   ModalController
 } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth-service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { Storage } from '@ionic/storage';
 import { TransactionService, Transactions, Transaction } from 'src/app/services/transaction.service';
@@ -46,6 +46,7 @@ export class TabDashboardPage implements OnInit {
   public recentTx: Transaction[];
   public unconfirmTx: Transaction[];
   public isError = false;
+  navigationSubscription: any;
 
   constructor(
     private authService: AuthService,
@@ -68,6 +69,13 @@ export class TabDashboardPage implements OnInit {
         this.account.accountName = v.accountName;
         this.account.address = this.accountService.getAccountAddress(v);
         this.account.shortadress = makeShortAddress(this.account.address);
+        this.loadData();
+      }
+    });
+
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      if (e instanceof NavigationEnd) {
+        console.log('=== NavigationEnd');
         this.loadData();
       }
     });

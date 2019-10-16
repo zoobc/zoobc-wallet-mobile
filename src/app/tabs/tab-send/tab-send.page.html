@@ -105,6 +105,12 @@
               </ion-select-option>
             </ion-select>
           </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Custom Fee</ion-label>
+            <ion-toggle slot="start" [(ngModel)]="customeChecked" (ionChange)="customfeeChecked()" color="light" name="customeChecked"></ion-toggle>
+            <ion-input *ngIf="customeChecked" placeholder="{{'Enter amount'|translate}} ..." (ionChange)="validateCustomFee()" required name="customfee" maxlength="12" type="number" [(ngModel)]="customfee"
+            required></ion-input>
+          </ion-item>
           <ion-item  *ngIf="!isFeeValid">
             <ion-label  class="displayerror">{{ "Select one transaction fee" | translate }}!
             </ion-label> 

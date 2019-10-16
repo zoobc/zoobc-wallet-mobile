@@ -52,7 +52,7 @@ export class TabSendPage implements OnInit {
   recipient: any;
   amount: number;
   fee: any;
-
+  customfee: number;
   allFees = [];
 
   isAmountValid = true;
@@ -64,6 +64,7 @@ export class TabSendPage implements OnInit {
   amountMsg = '';
   allAccounts = [];
   errorMsg: string;
+  customeChecked: false;
 
   public isLoadingBalance = true;
   public isLoadingRecentTx = true;
@@ -73,7 +74,6 @@ export class TabSendPage implements OnInit {
     private storage: Storage,
     @Inject('nacl.sign') private sign: any,
     private transactionService: TransactionService,
-    private toastController: ToastController,
     private accountService: AccountService,
     private activeAccountSrv: ActiveAccountService,
     private menuController: MenuController,
@@ -97,7 +97,7 @@ export class TabSendPage implements OnInit {
          this.account.address = this.accountService.getAccountAddress(v);
          this.account.shortadress = makeShortAddress(this.account.address);
          this.getActiveAccount();
-         //this.getAllAccounts();
+         this.getAllAccounts();
        }
      });
   }
@@ -196,6 +196,7 @@ export class TabSendPage implements OnInit {
         const activeAddress = this.accountService.getAccountAddress(this.activeAccount);
         if (addr === activeAddress && acc.accountName === this.activeAccount.accountName) {
           this.account = tempAcc;
+          this.account.balance = tempAcc.balance;
         }
         this.allAccounts.push(tempAcc);
       });
@@ -209,15 +210,49 @@ export class TabSendPage implements OnInit {
   }
 
 
+  customfeeChecked() {
+      console.log('==== custome fee', this.customfee);
+      if (this.customeChecked) {
+        this.customfee = 0.00005;
+
+        const custFee: TrxFee = {
+          name: 'Custom',
+          fee: this.customfee
+        };
+        this.fee = custFee;
+      } else {
+        this.fee = this.allFees[1];
+      }
+
+      console.log('=== customeChecked', this.customeChecked);
+  }
+
+  validateCustomFee() {
+
+    if (this.customfee && this.customfee > 0) {
+      this.isFeeValid = true;
+      const custFee: TrxFee = {
+        name: 'Custom',
+        fee: this.customfee
+      };
+      this.fee = custFee;
+
+    } else {
+      this.isFeeValid = false;
+    }
+    console.log('==== Fee');
+  }
+
   validateAmount() {
     this.isAmountValid = true;
-    this.amountMsg = this.translateServ.instant('Amount is not allowed');
-
+    this.amountMsg = '';
     if (!this.amount) {
+      this.amountMsg = 'Amount is empty';
       this.isAmountValid = false;
       return;
     }
 
+    this.amountMsg = this.translateServ.instant('Amount is not allowed');
     if (this.isAmountValid && isNaN(this.amount)) {
       this.isAmountValid = false;
       return;
@@ -335,12 +370,12 @@ export class TabSendPage implements OnInit {
     console.log('=== Amount:', amount);
     console.log('=== Fee:', fee);
     console.log('=== Dest:', dest);
-    console.log('=== Balance:', this.account.balance / 1e8);
+    console.log('=== Balance:', this.account.balance);
 
     const total = (Number(amount) + Number(fee));
     console.log('-- Total: ', total);
 
-    if (total > Number(this.account.balance) / 1e8) {
+    if (total > Number(this.account.balance)) {
       this.isAmountValid = false;
       this.amountMsg = 'Insuficient balance';
       return;
@@ -497,6 +532,7 @@ export class TabSendPage implements OnInit {
 
   changeFee(fee: number) {
     console.log('=== Fee: ', fee);
+    this.customeChecked = false;
     this.validateAmount();
   }
 
