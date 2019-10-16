@@ -1,5 +1,56 @@
 ## Change Log
 
+
+##### 16 October 2019 18:00
+
+*   Add custom Fee in send money.
+*   Bug fixing in send money.
+*   Bug fixing in load more.
+
+
+##### 14 October 2019 18:00
+
+*   Add PIN confirmation in Open Existing Wallet.
+*   Add better validation in open existing wallet
+*   Make full address on transaction detail
+
+
+##### 11 October 2019 18:00
+
+*   Modify Confirm Transaction detail, make information more detail.
+*   Modify Pending Transaction detail, make information more detail.
+
+
+##### 10 October 2019 18:00
+
+*   Add back button and restore wallet and create wallet.
+*   Arange services from core to services folder, and refactor some page.ts.
+*   Delete some function that no more used by other pages.
+
+
+##### 9 October 2019 18:00
+
+*   Add Screen: Transaction confirmation screen.
+*   Add some translation in Transaction confirmation screen.
+*   Bug fix dashboard, balance not change after switch account.
+*   Fix some deprecated CSS.
+
+
+##### 7 October 2019 18:00
+
+*   Modify dashboard add sign arrow for transaction history
+*   Add Load More on transaction hitory, will load 5 transactions each load.
+*   Fix some deprecated CSS.
+*   Change error msg when wrong PIN, use label instead toast.
+
+
+##### 4 October 2019 20:30
+
+*   Change PIN in send coin screen
+*   Add barcode scanner when add address book.
+*   Add additional language: Spanish, Portugis ...
+
+
 ##### 3 October 2019 20:30
 
 *   Modify generate passphrase to make screen without scroll
