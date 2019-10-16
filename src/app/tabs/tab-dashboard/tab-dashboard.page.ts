@@ -135,9 +135,9 @@ export class TabDashboardPage implements OnInit {
     console.log('==== this.offset:', this.offset);
 
     if (this.recentTx.length >= this.totalTx) {
-      event.target.complete();
+      // event.target.complete();
       console.log(' === all loaded', this.recentTx.length + ' - ' + this.totalTx );
-      return; // event.target.disabled = true;
+      // event.target.disabled = true;
     }
 
     setTimeout(async () => {
