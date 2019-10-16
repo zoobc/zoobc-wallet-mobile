@@ -8,9 +8,23 @@
 </ion-header>
 
 <ion-content class="page-generate-passphrase">
-  <p class="ion-margin-horizontal  ion-text-center your-passphrase">
-    Your Passphrase:
-  </p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Select language of passphrase</ion-label>
+      <ion-select
+        #langSelect
+        placeholder="Select One"
+        interface="popover"
+        (ionChange)="onLanguageChanged(langSelect.value)"
+      >
+        <ion-select-option
+          value="{{ lang.key }}"
+          *ngFor="let lang of languages"
+          >{{ lang.name }}</ion-select-option
+        >
+      </ion-select>
+    </ion-item>
+  </ion-list>
 
   <ion-card class="card-passphrase ion-margin-horizontal">
     <ion-card-content>

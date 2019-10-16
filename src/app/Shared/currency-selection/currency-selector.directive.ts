@@ -6,7 +6,7 @@ import { ModalController } from "@ionic/angular";
   selector: "[appCurrencySelector]"
 })
 export class CurrencySelectorDirective {
-  constructor(private el: ElementRef, private modalCtrl: ModalController) {}
+  constructor(private modalCtrl: ModalController) {}
 
   @HostListener("click", ["$event"]) onClick($event) {
     this.presentModalCurrencySelection();
@@ -14,7 +14,8 @@ export class CurrencySelectorDirective {
 
   async presentModalCurrencySelection() {
     const modal = await this.modalCtrl.create({
-      component: ModalCurrencySelectorComponent
+      component: ModalCurrencySelectorComponent,
+      cssClass: "modal-currency-selector"
     });
     return await modal.present();
   }

@@ -6,9 +6,8 @@ import {
   byteArrayToHex,
   publicKeyToAddress,
   addressToPublicKey
-} from "../../../helpers/converters";
-import { SendMoneyTx } from "../../../helpers/serializers";
-import { GRPCService } from "src/app/Services/grpc.service";
+} from "../../Helpers/converters";
+//import { SendMoneyTx } from "../../../Helpers/serializers";
 
 // import { calcBip32ExtendedKey } from '../Services/keyring.service';
 
@@ -22,14 +21,14 @@ const coinName = "SPN";
 export class TestPage implements OnInit {
   constructor(
     private keyringService: KeyringService,
-    @Inject("nacl.sign") private sign: any,
-    private grpcService: GRPCService
+    @Inject("nacl.sign") private sign: any
   ) {}
 
   ngOnInit() {
     console.log("bip44 coinName:", coinName);
   }
 
+  /*
   async testService() {
     let { phrase } = this.keyringService.generateRandomPhrase();
     console.log("new phrase:", phrase);
@@ -103,5 +102,5 @@ export class TestPage implements OnInit {
 
     const resolveTx = await this.grpcService.postTransaction(txBytes);
     console.log("resolveTx:", resolveTx);
-  }
+  }*/
 }

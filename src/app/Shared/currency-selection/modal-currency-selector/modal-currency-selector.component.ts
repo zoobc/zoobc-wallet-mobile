@@ -8,19 +8,23 @@ import { CurrencyService } from "src/app/Services/currency.service";
   styleUrls: ["./modal-currency-selector.component.scss"]
 })
 export class ModalCurrencySelectorComponent implements OnInit {
+  activeCurrency = null;
+
   constructor(
     private modalCtrl: ModalController,
     private currencySrv: CurrencyService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.activeCurrency = this.currencySrv.activeCurrency;
+  }
 
   close() {
     this.modalCtrl.dismiss();
   }
 
   selectCurrency(currency: string) {
-    this.currencySrv.setActiveCurrency(currency);
+    this.currencySrv.activeCurrency = currency;
     this.modalCtrl.dismiss();
   }
 }

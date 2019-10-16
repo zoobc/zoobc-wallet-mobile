@@ -1,0 +1,31 @@
+<div class="form-fee">
+  <div class="buttons-container">
+    <ion-button
+      class="button-item"
+      *ngFor="let fee of _fees; let index = index"
+      (click)="onFeeClicked(index)"
+      [color]="buttonColors[index] ? buttonColors[index] : 'medium'"
+    >
+      <div>
+        <span class="fee"> {{ fee.title }}</span>
+        <span class="value">{{ fee.value }}</span>
+      </div>
+    </ion-button>
+  </div>
+
+  <ion-grid>
+    <ion-item lines="none" (click)="toggleCustomFee()">
+      <ion-checkbox slot="start" [(ngModel)]="customFee"></ion-checkbox>
+      <ion-label>
+        Use custom fee
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none" *ngIf="customFee">
+      <ion-input
+        (ionChange)="onFeeKeyUp($event)"
+        placeholder="Enter fee"
+        type="number"
+      ></ion-input>
+    </ion-item>
+  </ion-grid>
+</div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { AuthService } from "src/app/Services/auth-service";
 import { ToastController, NavController } from "@ionic/angular";
+import { AccountService } from "src/app/Services/account.service";
+import { AuthService } from "src/app/Services/auth.service";
 
 @Component({
   selector: "app-login",
@@ -9,6 +10,7 @@ import { ToastController, NavController } from "@ionic/angular";
 })
 export class LoginPage implements OnInit {
   constructor(
+    private accountSrv: AccountService,
     private authService: AuthService,
     private navCtrl: NavController,
     private toastController: ToastController
@@ -19,17 +21,20 @@ export class LoginPage implements OnInit {
   async login(e: any) {
     const { observer, pin } = e;
 
-    const isUserLoggedIn = await this.authService.login(pin);
-    if (isUserLoggedIn) {
+    try {
+      const authData = await this.authService.login(pin);
+
+      this.accountSrv.masterSeed = authData.masterSeed;
+
       this.navCtrl.navigateRoot("main/dashboard");
 
       setTimeout(() => {
         observer.next("");
       }, 500);
-    } else {
+    } catch (err) {
       setTimeout(() => {
         observer.next("");
-        this.failedToast();
+        this.failedToast(err);
       }, 500);
     }
   }
@@ -38,9 +43,14 @@ export class LoginPage implements OnInit {
     this.navCtrl.navigateForward("initial");
   }
 
-  async failedToast() {
+  async failedToast(err) {
+    let message = "";
+    if (err === "not match") {
+      message = "Pin is not match!";
+    }
+
     const toast = await this.toastController.create({
-      message: "Unlock Failed",
+      message: message,
       duration: 2000
     });
     toast.present();

@@ -1,5 +1,5 @@
 import { Injectable, Inject } from "@angular/core";
-import { publicKeyToAddress } from "src/helpers/converters";
+import { publicKeyToAddress } from "src/app/Helpers/converters";
 import { Storage } from "@ionic/storage";
 
 import { environment } from "src/environments/environment";
@@ -10,6 +10,8 @@ import {
   GetAccountBalanceResponse
 } from "externals/grpc/model/accountBalance_pb";
 import { AccountBalanceServiceClient } from "externals/grpc/service/accountBalanceServiceClientPb";
+import { GetAddressFromPublicKey } from "src/app/Helpers/utils";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -21,8 +23,12 @@ export class AccountService {
     private keyringSrv: KeyringService
   ) {}
 
+  private _masterSeed: string = "";
+
+  public activeAccountSubject: Subject<any> = new Subject<any>();
+
   async rawData() {
-    return await this.storage.get("accounts");
+    return await this.storage.get("ACCOUNTS");
   }
 
   //async getAll(): Promise<Account[]> {
@@ -30,9 +36,8 @@ export class AccountService {
     const accounts = await this.rawData();
 
     const acountPromises = accounts.map(async acc => {
-      const { name, created } = acc;
-      const address = this.getAccountAddress(acc.accountProps);
-      const accountProps = acc.accountProps;
+      const { name, address, path } = acc;
+
       const balanceObj: any = await this.getAccountBalance(address);
       const balance = balanceObj.accountbalance.balance;
 
@@ -40,29 +45,37 @@ export class AccountService {
         name,
         address,
         balance,
-        accountProps,
-        created
+        path
       };
     });
 
     return Promise.all(acountPromises);
   }
 
-  async getActiveAccount(): Promise<Account> {
-    const active_account = await this.storage.get("active_account");
-    const { name, balance, address, accountProps, created } = active_account;
+  get masterSeed(): string {
+    return this._masterSeed;
+  }
+
+  set masterSeed(value: string) {
+    this._masterSeed = value;
+  }
+
+  async getActiveAccount(): Promise<any> {
+    const active_account = await this.storage.get("ACTIVE_ACCOUNT");
+    const { name, balance = 0, address } = active_account;
 
     return {
       name,
       balance,
-      address,
-      accountProps,
-      created
+      address
     };
   }
 
   async setActiveAccount(account: Account) {
-    await this.storage.set("active_account", account);
+    await this.storage.set("ACTIVE_ACCOUNT", account);
+
+    this.activeAccountSubject.next(account);
+
     return account;
   }
 
@@ -77,7 +90,8 @@ export class AccountService {
         null,
         (err, response: GetAccountBalanceResponse) => {
           if (err) {
-            if (err.code == 2) {
+            if (err.code == 5) {
+              //account not found
               return resolve({
                 accountbalance: {
                   balance: 0,
@@ -94,52 +108,77 @@ export class AccountService {
     });
   }
 
-  async generateAccount(passphrase) {
-    const accounts = await this.storage.get("accounts");
+  async setRootKey(passphrase) {
     const coinCode = environment.coinCode;
+    const pass = "p4ssphr4se";
 
-    const { bip32RootKey } = this.keyringSrv.calcBip32RootKeyFromSeed(
+    const { seed } = this.keyringSrv.calcBip32RootKeyFromMnemonic(
       coinCode,
       passphrase,
-      null
+      pass
     );
 
-    const account = this.keyringSrv.calcForDerivationPathForCoin(
-      coinCode,
-      accounts ? accounts.length : 0,
-      0,
-      bip32RootKey
-    );
-
-    return account;
+    return seed;
   }
 
-  async insert(name: string, accountProps: any): Promise<Account> {
+  async insert(name: string): Promise<any> {
     const accounts = await this.rawData();
+
+    const coinCode = environment.coinCode;
 
     const account = {
       name,
-      accountProps,
-      created: new Date()
+      path: null,
+      address: null
     };
+
+    for (let i = 0; i < 20; i++) {
+      if (
+        accounts &&
+        accounts.findIndex(acc => {
+          return parseInt(acc.path) === i;
+        }) < 0
+      ) {
+        account.path = i;
+        break;
+      } else {
+        account.path = 0;
+      }
+    }
+
+    const masterSeed = Buffer.from(this.masterSeed, "hex");
+
+    this.keyringSrv.calcBip32RootKeyFromSeed(coinCode, masterSeed);
+
+    const childSeed = this.keyringSrv.calcForDerivationPathForCoin(
+      coinCode,
+      account.path
+    );
+
+    account.address = GetAddressFromPublicKey(childSeed.publicKey);
 
     let accountsInsert = [account];
     if (accounts) {
       accountsInsert = [...accounts, account];
     }
 
-    await this.storage.set("accounts", accountsInsert);
+    await this.storage.set("ACCOUNTS", accountsInsert);
 
-    const address = this.getAccountAddress(accountProps);
-    const _balance: any = await this.getAccountBalance(address);
+    return account;
+  }
 
-    return {
-      name: account.name,
-      address,
-      balance: _balance.accountbalance.balance,
-      accountProps,
-      created: account.created
-    };
+  async update(address, name: string): Promise<any> {
+    const accounts = await this.rawData();
+
+    const index = accounts.findIndex(acc => {
+      return acc.address == address;
+    });
+
+    accounts[index].name = name;
+
+    this.storage.set("ACCOUNTS", accounts);
+
+    return accounts[index];
   }
 
   getAccountAddress(accountProps) {

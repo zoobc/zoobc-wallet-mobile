@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="arrow-round-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Enter your Pin</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="zbc-content-style-1">
+  <app-pin (onChange)="confirm($event)"></app-pin>
+</ion-content>

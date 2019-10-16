@@ -8,11 +8,7 @@
 </ion-header>
 
 <ion-content class="zbc-content-style-1">
-  <form
-    [formGroup]="addressForm"
-    (ngSubmit)="onSubmit(addressForm.value)"
-    #myForm="ngForm"
-  >
+  <form [formGroup]="addressForm" (ngSubmit)="onSubmit(addressForm.value)">
     <div class="content-inner add-address-page">
       <div class="zbc-form-item">
         <ion-item lines="none">

@@ -6,12 +6,23 @@
       </ion-button>
     </ion-buttons>
     <ion-title>Receive Money</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="share()">
+        <ion-icon slot="icon-only" name="share"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="page-qrcode zbc-content-style-1">
   <div class="content-inner ion-padding-top ion-padding-bottom">
-    <p class="address" (click)="tapAddress()">{{ account.address }}</p>
+    <p
+      class="address"
+      (click)="tapAddress()"
+      appAddressElipsis
+      [address]="account.address"
+    ></p>
+
     <p class="note">
       tap your address above to copy then paste it to your friend
     </p>

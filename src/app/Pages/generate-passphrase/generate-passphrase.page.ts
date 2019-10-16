@@ -1,10 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { KeyringService } from "../../Services/keyring.service";
 import { ToastController, NavController } from "@ionic/angular";
 import { CreateAccountService } from "../../Services/create-account.service";
-import { AuthService } from "src/app/Services/auth-service";
 import { SetupPinService } from "src/app/Services/setup-pin.service";
 import { AccountService } from "src/app/Services/account.service";
+import * as bip39 from "bip39";
+import { AuthService } from "src/app/Services/auth.service";
 
 @Component({
   selector: "app-generate-passphrase",
@@ -16,8 +16,42 @@ export class GeneratePassphrasePage implements OnInit {
   terms = false;
   passphrase: string;
 
+  languages = [
+    {
+      key: "english",
+      name: "English"
+    },
+    {
+      key: "italian",
+      name: "Italian"
+    },
+    {
+      key: "french",
+      name: "French"
+    },
+    {
+      key: "spanish",
+      name: "Spanish"
+    },
+    {
+      key: "japanese",
+      name: "Japan"
+    },
+    {
+      key: "chinese_simplified",
+      name: "Chinese Simplified"
+    },
+    {
+      key: "chinese_traditional",
+      name: "Chinese Traditional"
+    },
+    {
+      key: "korean",
+      name: "Korean"
+    }
+  ];
+
   constructor(
-    private keyringService: KeyringService,
     private toastController: ToastController,
     private createAccSrv: CreateAccountService,
     private navCtrl: NavController,
@@ -29,6 +63,8 @@ export class GeneratePassphrasePage implements OnInit {
   ngOnInit() {
     this.generatePassphrase();
 
+    const wordlists = bip39.wordlists;
+
     this.setupPinSrv.setupPinSubject.subscribe(data => {
       const { status, pin } = data;
 
@@ -38,18 +74,33 @@ export class GeneratePassphrasePage implements OnInit {
     });
   }
 
-  async setPin(pin: string) {
-    this.createAccSrv.pin = pin;
-    await this.createAccSrv.createAccount();
+  onLanguageChanged(v) {
+    bip39.setDefaultWordlist(v);
+    this.generatePassphrase();
+  }
 
-    const accountProps = await this.accountSrv.generateAccount(
+  async setPin(pin: string) {
+    await this.authSrv.clearAccount();
+
+    const masterSeed = await this.accountSrv.setRootKey(
       this.createAccSrv.passphrase
     );
-    const account = await this.accountSrv.insert("Account 1", accountProps);
+
+    const dataSignUp = {
+      masterSeed
+    };
+
+    await this.authSrv.signUp(dataSignUp, pin);
+
+    this.accountSrv.masterSeed = masterSeed;
+
+    const account = await this.accountSrv.insert("Account 1");
+
     this.accountSrv.setActiveAccount(account);
 
-    const loginStatus = await this.authSrv.login(pin);
-    if (loginStatus) {
+    const authData = await this.authSrv.login(pin);
+
+    if (authData) {
       this.navCtrl.navigateRoot("main/dashboard");
     }
   }
@@ -60,8 +111,10 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   async generatePassphrase() {
-    const passphrase = this.keyringService.generateRandomPhrase().phrase;
-    this.passphrase = passphrase;
+    const mnemonic = bip39.generateMnemonic(256);
+    this.passphrase = mnemonic;
+
+    this.writtenDown = false;
   }
 
   copyToClipboard() {

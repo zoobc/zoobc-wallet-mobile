@@ -7,7 +7,7 @@ import { IonicModule } from "@ionic/angular";
 
 import { LoginPage } from "./login.page";
 import { TranslateModule } from "@ngx-translate/core";
-import { PinModule } from "src/app/Components/pin/pin.module";
+import { PinModule } from "src/app/Shared/pin/pin.module";
 
 const routes: Routes = [
   {

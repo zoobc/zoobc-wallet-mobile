@@ -10,6 +10,10 @@
 </ion-header>
 
 <ion-content class="page-dashboard">
+  <ion-refresher slot="fixed" #refresher (ionRefresh)="refreshData(refresher)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-card class="card-balance">
     <ion-card-content>
       <div class="selected-account">
@@ -17,7 +21,7 @@
           lines="none"
           button="true"
           detail="true"
-          (click)="openListAccount()"
+          (click)="openAccount()"
         >
           <ion-label
             ><h2 class="account-name">{{ account.name }}</h2>
@@ -109,7 +113,6 @@
       </ion-item>
     </ng-template>
   </ion-list>
-
   <p class="title-section ion-padding-horizontal">
     {{ "Recent Transaction" | translate }}
   </p>

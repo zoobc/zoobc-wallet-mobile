@@ -1,0 +1,88 @@
+<ion-menu type="overlay" menuId="mainMenu">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>{{ "Settings" | translate }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-list-header> Menu</ion-list-header>
+
+      <ion-item (click)="openAccount()" button>
+        <ion-icon name="contact"></ion-icon>
+        <ion-label>
+          {{ "Account" | translate }}
+        </ion-label>
+        <ion-label>
+          {{ activeAccount }}
+        </ion-label>
+      </ion-item>
+
+      <ion-item (click)="openAddresBook()" button lines="none">
+        <ion-icon name="book"></ion-icon>
+        <ion-label>
+          Address Book
+        </ion-label>
+      </ion-item>
+
+      <ion-list-header>
+        Preferences
+      </ion-list-header>
+      <ion-item>
+        <ion-icon name="globe"></ion-icon>
+        <ion-label>{{ "Language" | translate }}</ion-label>
+        <ion-select
+          interface="action-sheet"
+          [(ngModel)]="activeLanguage"
+          (ionChange)="selectActiveLanguage()"
+        >
+          <ion-select-option
+            *ngFor="let language of languages; let i = index"
+            value="{{ language.code }}"
+          >
+            {{ language.country }}</ion-select-option
+          >
+        </ion-select>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-icon name="logo-usd"></ion-icon>
+        <ion-label>{{ "Currency" | translate }}</ion-label>
+        <ion-select
+          interface="action-sheet"
+          [(ngModel)]="activeCurrency"
+          (ionChange)="selectActiveCurrency()"
+        >
+          <ion-select-option
+            *ngFor="let currency of currencies; let i = index"
+            value="{{ currency.code }}"
+          >
+            {{ currency.code }} - {{ currency.country }}</ion-select-option
+          >
+        </ion-select>
+      </ion-item>
+      <ion-list-header> Others</ion-list-header>
+      <ion-item button>
+        <ion-icon name="help-circle-outline"></ion-icon>
+        <ion-label (click)="openHelpSupport()">
+          Help & Support
+        </ion-label>
+      </ion-item>
+      <ion-item button>
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <ion-label (click)="openAboutView()">
+          About ZooBC Wallet
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+  <ion-footer>
+    <ion-toolbar>
+      <ion-button expand="block" (click)="logout()" color="danger">
+        Log out
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer>
+</ion-menu>
+
+<ion-router-outlet main></ion-router-outlet>

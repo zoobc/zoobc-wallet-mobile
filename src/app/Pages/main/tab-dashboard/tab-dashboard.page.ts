@@ -1,22 +1,13 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
   LoadingController,
   MenuController,
-  NavController,
-  ModalController
+  NavController
 } from "@ionic/angular";
-import { RestapiService } from "../../../Services/restapi.service";
-import { AuthService } from "src/app/Services/auth-service";
-import { Router, NavigationExtras } from "@angular/router";
 import { AccountService } from "src/app/Services/account.service";
-import { GRPCService } from "src/app/Services/grpc.service";
-import { Storage } from "@ionic/storage";
-import { ActiveAccountService } from "src/app/Services/active-account.service";
-import { Observable } from "rxjs";
-import * as moment from "moment";
-import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
 import { TransactionService } from "src/app/Services/transaction.service";
 import { Account } from "src/app/Interfaces/account";
+import { AuthService } from "src/app/Services/auth.service";
 
 @Component({
   selector: "app-tab-dashboard",
@@ -46,18 +37,14 @@ export class TabDashboardPage implements OnInit {
   pendingTransactions: any[] = [];
 
   constructor(
-    private apiservice: RestapiService,
     private loadingController: LoadingController,
     private authService: AuthService,
     private menuController: MenuController,
     private navCtrl: NavController,
-    private grpcService: GRPCService,
-    private storage: Storage,
     private accountSrv: AccountService,
-    private activeAccountSrv: ActiveAccountService,
     private transactionSrv: TransactionService
   ) {
-    this.activeAccountSrv.accountSubject.subscribe({
+    this.accountSrv.activeAccountSubject.subscribe({
       next: account => {
         this.account.name = account.name;
         this.account.address = account.address;
@@ -72,10 +59,7 @@ export class TabDashboardPage implements OnInit {
     this.loadData();
   }
 
-  async ngOnInit() {
-    //this.getBalance(this.publicKey);
-    //this.getTransaction(this.publicKey);
-
+  ngOnInit() {
     this.loadData();
   }
 
@@ -85,6 +69,12 @@ export class TabDashboardPage implements OnInit {
     this.getAccountBalance();
     this.getAccountTransaction();
     this.getPendingTransactions();
+  }
+
+  async refreshData(refresher) {
+    await this.loadData();
+
+    refresher.complete();
   }
 
   goToSend() {
@@ -99,48 +89,8 @@ export class TabDashboardPage implements OnInit {
     this.navCtrl.navigateForward("transaction");
   }
 
-  async getBalance(pKey: string) {
-    const loading = await this.loadingController.create({
-      message: "Loading"
-    });
-    await loading.present();
-    this.apiservice.getBalance(pKey).subscribe(
-      res => {
-        console.log(res);
-        this.data1 = res[0];
-        this.balance = this.data1["data"];
-        loading.dismiss();
-      },
-      err => {
-        console.log(err);
-        loading.dismiss();
-      }
-    );
-  }
-
-  async getTransaction(pKey: string) {
-    const loading = await this.loadingController.create({
-      message: "Loading"
-    });
-    await loading.present();
-    this.apiservice.getAccountTransactions(pKey).subscribe(
-      res => {
-        console.log(res);
-        this.data2 = res[0];
-        this.transactions = this.data2["transactions"];
-        loading.dismiss();
-
-        console.log("__res", res);
-      },
-      err => {
-        console.log("__resErr", err);
-        loading.dismiss();
-      }
-    );
-  }
-
-  openListAccount() {
-    this.navCtrl.navigateForward("list-account");
+  openAccount() {
+    this.navCtrl.navigateForward("account");
   }
 
   openchart() {
@@ -157,7 +107,7 @@ export class TabDashboardPage implements OnInit {
   }
 
   async getAccountBalance() {
-    const active_account = await this.storage.get("active_account");
+    const active_account = await this.accountSrv.getActiveAccount();
 
     const account = await (<any>(
       this.accountSrv.getAccountBalance(active_account.address)

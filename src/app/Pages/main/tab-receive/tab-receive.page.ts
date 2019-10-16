@@ -5,19 +5,19 @@ import { MenuController, ToastController } from "@ionic/angular";
 import { Storage } from "@ionic/storage";
 import { AccountService } from "src/app/Services/account.service";
 import { Clipboard } from "@ionic-native/clipboard/ngx";
-import { ActiveAccountService } from "src/app/Services/active-account.service";
+import { SocialSharing } from "@ionic-native/social-sharing/ngx";
 
 @Component({
   selector: "app-tab-receive",
   templateUrl: "tab-receive.page.html",
   styleUrls: ["tab-receive.page.scss"]
 })
-export class TabReceivePage {
+export class TabReceivePage implements OnInit {
   encodeData: string;
   qrCodeUrl: any;
 
   account = {
-    accountName: "",
+    name: "",
     address: "",
     qrCode: ""
   };
@@ -27,18 +27,29 @@ export class TabReceivePage {
     private toastController: ToastController,
     private menuController: MenuController,
     private storage: Storage,
-    private accountService: AccountService,
-    private activeAccountSrv: ActiveAccountService
+    private accountSrv: AccountService,
+    private socialSharing: SocialSharing
   ) {
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        //const address = this.accountService.getAccountAddress(v);
-        const address = v.address;
-        this.account.accountName = v.accountName;
-        this.account.address = address;
-        this.account.qrCode = this.createQR(address);
+    this.accountSrv.activeAccountSubject.subscribe({
+      next: account => {
+        this.account.name = account.name;
+        this.account.address = account.address;
+
+        this.account.qrCode = this.createQR(account.address);
       }
     });
+  }
+
+  share() {
+    this.socialSharing.share(this.account.address);
+  }
+
+  async ngOnInit() {
+    const activeAccount = await this.accountSrv.getActiveAccount();
+
+    this.account.name = activeAccount.name;
+    this.account.address = activeAccount.address;
+    this.account.qrCode = this.createQR(activeAccount.address);
   }
 
   openMenu() {
@@ -78,20 +89,4 @@ export class TabReceivePage {
     qrCode.make();
     return qrCode.createDataURL(4, 8);
   }
-
-  async getActiveAccount() {
-    const activeAccount = await this.storage.get("active_account");
-    //const address = this.accountService.getAccountAddress(activeAccount);
-    const address = activeAccount.address;
-
-    this.account.accountName = activeAccount.accountName;
-    this.account.address = address;
-    this.account.qrCode = this.createQR(address);
-  }
-
-  async ionViewDidEnter() {
-    this.getActiveAccount();
-  }
-
-  onInit() {}
 }
