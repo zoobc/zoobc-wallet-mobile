@@ -51,6 +51,10 @@ export class SidemenuComponent implements OnInit {
     this.activeAccount = account.accountName;
   }
 
+  revealPassphrase() {
+      //
+  }
+
   openAboutView() {
     this.menuController.close('mainMenu');
     this.router.navigateByUrl('/about');

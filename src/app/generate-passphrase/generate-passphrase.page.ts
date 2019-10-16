@@ -1,15 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { KeyringService } from '../services/keyring.service';
 import { ToastController, NavController } from '@ionic/angular';
-import { MnemonicsService } from '../services/mnemonics.service';
 import { Storage } from '@ionic/storage';
-import { CryptoService } from 'src/app/services/crypto.service';
-import { ConverterService } from 'src/app/services/converter.service';
-import { Router } from '@angular/router';
-import { ObservableService } from 'src/app/services/observable.service';
 import { CreateAccountService } from '../services/create-account.service';
 import { AuthService } from 'src/app/services/auth-service';
-
+import { doEncrypt, doDecrypt } from '../helpers/converters';
+import CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-generate-passphrase',
@@ -32,20 +28,15 @@ export class GeneratePassphrasePage implements OnInit {
   constructor(
     private keyringService: KeyringService,
     private toastController: ToastController,
-    private mnemonicsService: MnemonicsService,
-    private storage: Storage,
-    private cryptoService: CryptoService,
-    private converterService: ConverterService,
-    private Obs: ObservableService,
-    private router: Router,
     private createAccSrv: CreateAccountService,
     private navCtrl: NavController,
     private authSrv: AuthService,
+    private storage: Storage,
     @Inject('nacl.sign') private sign: any
   ) {}
 
   ngOnInit() {
-    //this.checkSetupPin();
+    // this.checkSetupPin();
     this.generatePassphrase();
   }
 
@@ -70,10 +61,13 @@ export class GeneratePassphrasePage implements OnInit {
     if (first === true) {
        return;
     }
-    //const pin = event.pin;
+    // const pin = event.pin;
     if (this.tempPin === pin) {
       this.createAccSrv.setPassphrase(this.passphrase);
       this.createAccSrv.setPin(pin);
+
+      this.savePassphrase(pin, this.passphrase);
+
       await this.createAccSrv.createAccount();
       const loginStatus = await this.authSrv.login(pin);
       if (loginStatus) {
@@ -87,6 +81,21 @@ export class GeneratePassphrasePage implements OnInit {
        }, 1000);
     }
   }
+
+
+  async savePassphrase(PIN: any, passphrase: any) {
+
+    console.log('=== PIN', PIN);
+    console.log('==== passphrase:', passphrase);
+    const encrypted = doEncrypt(passphrase, PIN);
+    console.log('===== encrypted: ', encrypted);
+    await this.storage.set('PASS_STORAGE', encrypted);
+
+    const decrypted =  doDecrypt(encrypted, PIN);
+    console.log('===== decrypted: ', decrypted.toString(CryptoJS.enc.Utf8));
+
+  }
+
 
   setPagePosition(value) {
     this.pagePosition = value;

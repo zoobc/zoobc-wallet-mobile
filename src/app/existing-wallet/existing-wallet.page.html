@@ -7,61 +7,26 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid class="outer-content">
-    <ion-row class="ion-align-items-center outer-content">
-      <ion-col></ion-col>
-      <ion-col class="ion-align-self-center" size="12" size-md="8" size-lg="6" size-xl="4">
-        <!--start content -->
-
-        <ion-grid>
-
-          <ion-row>
-            <ion-col>
-              <div class="ion-text-center">
-                <ion-text>
-                <h3>
-                  {{ "Please enter your 24 words" | translate }}
-                </h3>
-                </ion-text>
-              </div>
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col>
-              <div class="ion-text-center">
-                <ion-text *ngIf="errorMsg" class="errormsg" style="color:red">{{errorMsg}} </ion-text>
-              </div>
-            </ion-col>
-          </ion-row>
-
-          <ion-row style="height: 250px;">
-            <ion-col>
-              <div class="ion-text-center">
-                <ion-textarea rows="10" auto-grow="true" [(ngModel)]="passphrase"
-                  placeholder="{{ 'Please enter your 24 words' | translate }}" (keyup)="onChangeMnemonic()">
-                </ion-textarea>
-                <ion-text>Number of words: {{wordCounter}}</ion-text>
-              </div>
-            </ion-col>
-          </ion-row>
-          
-          <ion-row>
-            <ion-col>
-              <div class="ion-text-center" style="margin: 20px;">
-                <ion-button expand="block" color="secondary" (click)="openExistingWallet()">
-                  {{ "Open Wallet" | translate }}
-                </ion-button>
-              </div>
-            </ion-col>
-          </ion-row>
-
-        </ion-grid>
-
-        <!--end content -->
-      </ion-col>
-      <ion-col></ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content class="existing-wallet-page ion-padding">
+  <div style="vertical-align: top">
+    <div>
+      <h3 class="title ion-text-center">
+        {{ "Please enter your 24 words" | translate }}
+      </h3>
+    </div>
+    <div class="ion-text-center">
+      <ion-text *ngIf="errorMsg" class="errormsg" style="color:#f68989">{{errorMsg}} </ion-text>
+    </div>
+    <div>
+      <ion-text>Number of words: {{wordCounter}}</ion-text><br/>
+      <ion-textarea rows="10" auto-grow="true" [(ngModel)]="passphrase"
+        placeholder="{{ 'Please enter your 24 words' | translate }}" (keyup)="onChangeMnemonic()"></ion-textarea>
+      <div class="existing-wallet-button">
+        <ion-button expand="block" color="secondary" (click)="openExistingWallet()">{{ "Open Wallet" | translate }}
+        </ion-button>
+      </div>
+    </div>
+    <div style="height: 100px">
+    </div>
+  </div>
 </ion-content>

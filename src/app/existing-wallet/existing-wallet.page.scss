@@ -1,9 +1,22 @@
-ion-textarea {
-  --color: #333;
-  --border-radius: 10px;
-  margin-bottom: 1rem;
-}
+@import "../../assets/scss/main.scss";
 
-.errormsg{
-  color: 'red';
+.existing-wallet-page {
+  @include background;
+  flex-direction: column;
+
+  & > div {
+    @include flex-init;
+    @include flex-direction(column);
+    @include justify-content(space-around);
+
+    height: 100%;
+  }
+
+  ion-textarea {
+    --background: #fff;
+    --color: #333;
+    --border-radius: 10px;
+
+    margin-bottom: 1rem;
+  }
 }

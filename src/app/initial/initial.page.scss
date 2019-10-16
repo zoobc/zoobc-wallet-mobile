@@ -1,6 +1,7 @@
 @import "../../assets/scss/mixins/_mixins";
 
 .initial-page {
+  @include background;
   
   & > div {
     @include flex-init;
@@ -14,15 +15,12 @@
         font-size: 1.2rem;
         margin-bottom: 0.5rem;
         display: inline-block;
-        color: var(--text-color);
       }
       .text2 {
         font-size: 0.8rem;
-        color: var(--text-color);
       }
     }
 
-    
     .btn-container {
       ion-button {
         width: 100%;
@@ -32,7 +30,6 @@
         display: block;
         text-align: center;
         margin-top: 1rem;
-        color: var(--text-color);
         margin-bottom: 1rem;
       }
     }

@@ -5,4 +5,5 @@ export const environment = {
   mnemonicNumWords: 24,
   signalID: '790fe50a-589d-40c7-92af-683582d40acf',
   appID: '482874041634',
+  salt: 'iwillgotomoon'
 };

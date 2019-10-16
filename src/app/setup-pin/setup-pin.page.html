@@ -10,14 +10,14 @@
         <ion-row *ngIf="pageNumber == 0">
           <ion-col class="ion-text-center" >
               <ion-label>
-                <p class="pin-title">{{ "Setup your PIN" | translate }}</ion-label>
+                <p class="pin-title" style="margin-top:40px;">{{ "Setup your PIN" | translate }}</ion-label>
               <app-pin (keyup)="pinConfirm($event)"></app-pin>
           </ion-col>
         </ion-row>
         <ion-row *ngIf="pageNumber == 1">
             <ion-col class="ion-text-center" >
                 <ion-label>
-                    <p class="pin-title">{{ "Confirm your PIN" | translate }} </p> 
+                    <p class="pin-title"  style="margin-top:40px;">{{ "Confirm your PIN" | translate }} </p> 
                     <p *ngIf="isPinEqual">&nbsp;</p>
                     <p *ngIf="!isPinEqual" class="errormsg">{{ "PIN is not Equal" | translate }}</p>
                   </ion-label>

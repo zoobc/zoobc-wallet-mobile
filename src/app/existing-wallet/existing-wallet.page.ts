@@ -5,6 +5,8 @@ import { CreateAccountService } from '../services/create-account.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../services/auth-service';
 import { SetupPinPage } from '../setup-pin/setup-pin.page';
+import { doEncrypt} from '../helpers/converters';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-existing-wallet',
@@ -23,6 +25,7 @@ export class ExistingWalletPage implements OnInit {
     private mnemonicServ: MnemonicsService,
     private navCtrl: NavController,
     private authSrv: AuthService,
+    private storage: Storage,
     private modalController: ModalController,
     private createAccSrv: CreateAccountService
   ) {}
@@ -33,6 +36,9 @@ export class ExistingWalletPage implements OnInit {
     this.wordCounter = 0;
   }
 
+
+
+  
   onChangeMnemonic() {
     console.log('===== this.passphraseField', this.passphrase);
 
@@ -102,13 +108,30 @@ export class ExistingWalletPage implements OnInit {
     pinmodal.onDidDismiss().then((returnedData) => {
       console.log('============= returned Data: ', returnedData);
       if (returnedData && returnedData.data && returnedData.data.length === 6) {
-        this.savePIN(returnedData.data);
+
+        const PIN = returnedData.data;
+        this.savePassphrase(PIN, this.passphrase);
+        this.savePIN(PIN);
+
       } else {
         console.log('==== PIN canceled ');
       }
     });
 
     return await pinmodal.present();
+  }
+
+  async savePassphrase(PIN: any, passphrase: any) {
+
+    console.log('=== PIN', PIN);
+    console.log('==== passphrase:', passphrase);
+    const encrypted = doEncrypt(passphrase, PIN);
+    console.log('===== encrypted: ', encrypted);
+    await this.storage.set('PASS_STORAGE', encrypted);
+
+    // const decrypted =  doDecrypt(encrypted, PIN);
+    // console.log('===== decrypted: ', decrypted.toString(CryptoJS.enc.Utf8));
+
   }
 
 

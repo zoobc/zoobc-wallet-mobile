@@ -1,10 +1,56 @@
 import { default as JSBI } from 'jsbi';
 import * as BN from 'bn.js';
+import CryptoJS from 'crypto-js';
 
 export function hexToByteArray(hexStr: string): Uint8Array {
   return new Uint8Array(
     hexStr.match(/[\da-f]{2}/gi).map(byte => parseInt(byte, 16))
   );
+}
+
+const keySiz = 256;
+const ivSize = 128;
+const iteration = 100;
+
+export function doEncrypt(msg, pass) {
+  const salt = CryptoJS.lib.WordArray.random(ivSize / 8);
+
+  const key = CryptoJS.PBKDF2(pass, salt, {
+      keySize: keySiz / 32,
+      iterations: iteration
+    });
+
+  const iv1 = CryptoJS.lib.WordArray.random(ivSize / 8);
+
+  const encrypted = CryptoJS.AES.encrypt(msg, key, {
+    iv: iv1,
+    padding: CryptoJS.pad.Pkcs7,
+    mode: CryptoJS.mode.CBC
+  });
+
+  // salt, iv will be hex 32 in length
+  // append them to the ciphertext for use  in decryption
+  const transitmessage = salt.toString() + iv1.toString() + encrypted.toString();
+  return transitmessage;
+}
+
+export function doDecrypt(transitmessage, pass) {
+  const salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
+  const iv2 = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32));
+  const encrypted = transitmessage.substring(64);
+
+  const key = CryptoJS.PBKDF2(pass, salt, {
+      keySize: keySiz / 32,
+      iterations: iteration
+    });
+
+  const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+    iv: iv2,
+    padding: CryptoJS.pad.Pkcs7,
+    mode: CryptoJS.mode.CBC
+  });
+
+  return decrypted;
 }
 
 // export function byteArrayToHex(
