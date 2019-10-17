@@ -344,17 +344,15 @@ export class TabSendPage implements OnInit {
     await alert.present();
   }
 
-  ionViewWillEnter() {
-    //this.getAddress();
-  }
-
   scanQrCode() {
     this.navCtrl.navigateForward("qr-scanner");
 
-    this.qrScannerSrv.listen().subscribe((str: string) => {
+    const _scanQrCode = this.qrScannerSrv.listen().subscribe((str: string) => {
       this.sendForm.patchValue({
         recipient: str
       });
+
+      _scanQrCode.unsubscribe();
     });
   }
 
