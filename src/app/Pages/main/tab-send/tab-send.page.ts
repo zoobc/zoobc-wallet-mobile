@@ -4,7 +4,8 @@ import {
   MenuController,
   ModalController,
   NavController,
-  AlertController
+  AlertController,
+  NavParams
 } from "@ionic/angular";
 import {
   addressToPublicKey,
@@ -12,7 +13,7 @@ import {
   byteArrayToHex
 } from "src/app/Helpers/converters";
 import { Storage } from "@ionic/storage";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { AccountService } from "src/app/Services/account.service";
 import { KeyringService } from "src/app/Services/keyring.service";
 import { BytesMaker } from "src/app/Helpers/BytesMaker";
@@ -72,7 +73,8 @@ export class TabSendPage implements OnInit {
     private addressBookSrv: AddressBookService,
     private selectAddressSrv: SelectAddressService,
     private alertCtrl: AlertController,
-    private keyringSrv: KeyringService
+    private keyringSrv: KeyringService,
+    private route: ActivatedRoute
   ) {}
 
   fees = [
@@ -106,6 +108,14 @@ export class TabSendPage implements OnInit {
       ),
       saveToAddreesBook: false,
       alias: ""
+    });
+
+    this.route.queryParams.subscribe(param => {
+      if (param.recipient) {
+        this.sendForm.patchValue({
+          recipient: param.recipient
+        });
+      }
     });
 
     this.sendForm

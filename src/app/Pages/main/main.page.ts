@@ -1,8 +1,7 @@
 import { Component, ViewChild } from "@angular/core";
-import { Storage } from "@ionic/storage";
-import { Router } from "@angular/router";
-import { IonTabs } from "@ionic/angular";
-import { SidemenuComponent } from "src/app/Shared/sidemenu/sidemenu.component";
+import { IonTabs, NavController } from "@ionic/angular";
+import { QrScannerService } from "src/app/Services/qr-scanner.service";
+import { NavigationOptions } from "@ionic/angular/dist/providers/nav-controller";
 
 @Component({
   selector: "app-main",
@@ -10,8 +9,6 @@ import { SidemenuComponent } from "src/app/Shared/sidemenu/sidemenu.component";
   styleUrls: ["main.page.scss"]
 })
 export class MainPage {
-  @ViewChild(SidemenuComponent) sidemenu: SidemenuComponent;
-
   @ViewChild("myTabs") tabRef: IonTabs;
 
   seeTabs = true;
@@ -24,5 +21,24 @@ export class MainPage {
     }
   }
 
-  constructor(private router: Router) {}
+  constructor(
+    private navCtrl: NavController,
+    private qrScannerSrv: QrScannerService
+  ) {}
+
+  async scanQrCode() {
+    this.navCtrl.navigateForward("qr-scanner");
+
+    this.qrScannerSrv.listen().subscribe((str: string) => {
+      setTimeout(() => {
+        const params: NavigationOptions = {
+          queryParams: {
+            recipient: str
+          }
+        };
+
+        this.navCtrl.navigateForward("main/send", params);
+      });
+    });
+  }
 }
