@@ -4,7 +4,7 @@ import { NavController, ModalController } from '@ionic/angular';
 import { CreateAccountService } from 'src/app/services/create-account.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth-service';
-import { SetupPinPage } from 'src/app/setup-pin/setup-pin.page';
+import { SetupPinPage } from 'src/app/Pages/setup-pin/setup-pin.page';
 import { doEncrypt} from 'src/app/helpers/converters';
 import { Storage } from '@ionic/storage';
 

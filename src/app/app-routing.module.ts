@@ -6,7 +6,7 @@ import { QrScannerComponent } from './Pages/qr-scanner/qr-scanner.component';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './tabs/tabs.module#TabsPageModule',
+    loadChildren: './Pages/tabs/tabs.module#TabsPageModule',
     canActivate: [AuthService]
   },
   { path: 'qr-scanner', component: QrScannerComponent },
@@ -31,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'setup-pin',
-    loadChildren: './setup-pin/setup-pin.module#SetupPinPageModule'
+    loadChildren: './Pages/setup-pin/setup-pin.module#SetupPinPageModule'
   },
   {
     path: 'create-account',
@@ -73,8 +73,7 @@ const routes: Routes = [
   { path: 'enterpinsend', loadChildren: './Modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },
   { path: 'trxstatus', loadChildren: './Modals/trxstatus/trxstatus.module#TrxstatusPageModule',
   canActivate: [AuthService] },
-  // { path: 'sendcoin', loadChildren: './Pages/sendcoin/sendcoin.module#SendcoinPageModule' },
-  { path: 'sendcoin', loadChildren: './tabs/tab-send/tab-send.module#TabSendPageModule',
+  { path: 'sendcoin', loadChildren: './Pages/tabs/tab-send/tab-send.module#TabSendPageModule',
    canActivate: [AuthService] },
   { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },
   { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule' },

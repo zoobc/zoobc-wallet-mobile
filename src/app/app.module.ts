@@ -27,7 +27,7 @@ import { TrxstatusPageModule } from './Modals/trxstatus/trxstatus.module';
 import { EnterpinsendPageModule } from './Modals/enterpinsend/enterpinsend.module';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
-import { SetupPinPageModule } from './setup-pin/setup-pin.module';
+import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');

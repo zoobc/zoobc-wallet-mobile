@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { AuthService } from 'src/app/services/auth-service';
-import { CreateAccountService } from '../services/create-account.service';
+import { CreateAccountService } from 'src/app/services/create-account.service';
 import { NavController, ModalController } from '@ionic/angular';
 
 @Component({
