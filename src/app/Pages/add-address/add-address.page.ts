@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/services/address-book.service';
 import { base64ToByteArray } from 'src/app/helpers/converters';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { QrScannerService } from 'src/app/qr-scanner/qr-scanner.service';
-import { NavController, ToastController } from '@ionic/angular';
+import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 
 @Component({
   selector: 'app-add-address',

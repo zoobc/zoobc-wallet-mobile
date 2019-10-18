@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthService } from 'src/app/services/auth-service';
-import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
+import { QrScannerComponent } from './Pages/qr-scanner/qr-scanner.component';
 
 const routes: Routes = [
   {
@@ -11,14 +11,10 @@ const routes: Routes = [
   },
   { path: 'qr-scanner', component: QrScannerComponent },
   { path: 'about', loadChildren: './Pages/about/about.module#AboutPageModule' },
-  {
-    path: 'selectwallet',
-    loadChildren: './selectwallet/selectwallet.module#SelectwalletPageModule'
-  },
   { path: 'login', loadChildren: './Pages/login/login.module#LoginPageModule' },
   {
     path: 'create-wallet',
-    loadChildren: './create-wallet/create-wallet.module#CreateWalletPageModule'
+    loadChildren: './Pages/create-wallet/create-wallet.module#CreateWalletPageModule'
   },
   {
     path: 'existing-wallet',
@@ -27,7 +23,7 @@ const routes: Routes = [
   {
     path: 'generate-passphrase',
     loadChildren:
-      './generate-passphrase/generate-passphrase.module#GeneratePassphrasePageModule'
+      './Pages/generate-passphrase/generate-passphrase.module#GeneratePassphrasePageModule'
   },
   {
     path: 'initial',
