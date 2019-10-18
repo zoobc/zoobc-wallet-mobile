@@ -2,7 +2,7 @@ import { Component, ViewChild } from "@angular/core";
 import { SidemenuComponent } from "src/app/Components/sidemenu/sidemenu.component";
 import { NavigationExtras, Router } from "@angular/router";
 import { IonTabs, NavController, ToastController } from "@ionic/angular";
-import { QrScannerService } from '../qr-scanner/qr-scanner.service';
+import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 
 @Component({
   selector: "app-tabs",

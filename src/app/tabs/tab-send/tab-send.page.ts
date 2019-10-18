@@ -1,15 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { LoadingController, AlertController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth-service';
 import {
-  ToastController,
   MenuController,
   ModalController
 } from '@ionic/angular';
 import { TransactionService } from 'src/app/services/transaction.service';
 import { publicKeyToAddress, base64ToByteArray, makeShortAddress } from 'src/app/helpers/converters';
 import { Storage } from '@ionic/storage';
-import { QrScannerService } from 'src/app/qr-scanner/qr-scanner.service';
+import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { AddressBookModalComponent } from './address-book-modal/address-book-modal.component';
