@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LanguageService } from 'src/app/services/language.service';
+import { LanguageService } from 'src/app/Services/language.service';
 import { LANGUAGES } from 'src/environments/variable.const';
 import { TranslateService } from '@ngx-translate/core';
 

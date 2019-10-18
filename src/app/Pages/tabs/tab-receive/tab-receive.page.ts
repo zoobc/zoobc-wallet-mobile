@@ -4,9 +4,9 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
 import { MenuController, ToastController, ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/Services/account.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { ActiveAccountService } from 'src/app/services/active-account.service';
+import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { makeShortAddress } from 'src/app/helpers/converters';
 
 @Component({

@@ -4,14 +4,6 @@
       <ion-back-button>
       </ion-back-button>
     </ion-buttons>
-    <!-- <ion-buttons slot="end">
-      <button (click)="scanQrCode()" style="margin-right: 10px;">
-        <ion-icon name="qr-scanner"></ion-icon>
-      </button>
-      <button (click)="openAddresses()" style="margin-right: 10px;">
-        <ion-icon name="bookmarks"></ion-icon>
-      </button>
-    </ion-buttons> -->
     <ion-title>{{ "Send" | translate }} ZBC</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -46,9 +38,6 @@
               <span style="font-size: 0.9rem; font-weight: bold">
               {{"Address" | translate}}:  {{ account.shortAddress }}
               </span>
-              <!-- <span *ngIf="!isLoadingBalance">
-                {{ "Balance" | translate }}:{{ balance/1e8 | number: '0.0-6' }}
-              </span> -->
             </ion-label>
           </ion-item>
 
@@ -89,7 +78,6 @@
           </ion-item>
           <ion-item lines="none" *ngIf="!isAmountValid">
             <ion-label color="danger" class="displayerror">{{ amountMsg }}!</ion-label>
-            <!-- <ion-label color="danger">{{ amountMsg }}</ion-label> -->
           </ion-item>
         </ion-col>
       </ion-row>
@@ -133,7 +121,5 @@
       </ion-row>
     </ion-grid>
   </form>
-
-
 
 </ion-content>

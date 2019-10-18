@@ -4,16 +4,16 @@ import {
   MenuController,
   ModalController
 } from '@ionic/angular';
-import { TransactionService } from 'src/app/services/transaction.service';
+import { TransactionService } from 'src/app/Services/transaction.service';
 import { publicKeyToAddress, base64ToByteArray, makeShortAddress } from 'src/app/helpers/converters';
 import { Storage } from '@ionic/storage';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/Services/account.service';
 import { AddressBookModalComponent } from './address-book-modal/address-book-modal.component';
 import { BytesMaker } from 'src/app/helpers/BytesMaker';
 import { GetAccountBalanceResponse } from 'src/app/grpc/model/accountBalance_pb';
-import { ActiveAccountService } from 'src/app/services/active-account.service';
+import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { SenddetailPage } from 'src/app/Pages/Modals/senddetail/senddetail.page';
 import { EnterpinsendPage } from 'src/app/Pages/Modals/enterpinsend/enterpinsend.page';
 import { TrxstatusPage } from 'src/app/Pages/Modals/trxstatus/trxstatus.page';
@@ -36,12 +36,12 @@ interface TrxFee {
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
 @Component({
-  selector: 'app-tab-send',
-  templateUrl: 'tab-send.page.html',
-  styleUrls: ['tab-send.page.scss']
+  selector: 'app-send-coin',
+  templateUrl: 'send-coin.page.html',
+  styleUrls: ['send-coin.page.scss']
 })
 
-export class TabSendPage implements OnInit {
+export class SendCoinPage implements OnInit {
 
   rootPage: any;
   status: any;

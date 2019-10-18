@@ -7,10 +7,10 @@ import {
   SELECTED_LANGUAGE,
   CURRENCIES
 } from 'src/environments/variable.const';
-import { AccountService } from 'src/app/services/account.service';
-import { LanguageService } from 'src/app/services/language.service';
-import { CurrencyService } from 'src/app/services/currency.service';
-import { ActiveAccountService } from 'src/app/services/active-account.service';
+import { AccountService } from 'src/app/Services/account.service';
+import { LanguageService } from 'src/app/Services/language.service';
+import { CurrencyService } from 'src/app/Services/currency.service';
+import { ActiveAccountService } from 'src/app/Services/active-account.service';
 
 @Component({
   selector: 'app-sidemenu',

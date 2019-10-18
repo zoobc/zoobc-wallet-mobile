@@ -1,821 +1,820 @@
-import { Injectable, Inject } from "@angular/core";
-
-import { MnemonicsService } from "./mnemonics.service";
-import { APP_CONFIG, AppConfig } from "../app-config.module";
-
-import * as bip32 from "../../../externals/bip32";
-import { BIP32Interface } from "../../../externals/bip32";
-export { BIP32Interface } from "../../../externals/bip32";
+import { Injectable, Inject } from '@angular/core';
+import { MnemonicsService } from './mnemonics.service';
+import { APP_CONFIG, AppConfig } from '../app-config.module';
+import * as bip32 from '../../../externals/bip32';
+import { BIP32Interface } from '../../../externals/bip32';
+// tslint:disable-next-line: max-line-length
+const node: BIP32Interface = bip32.fromBase58('xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi');
+const child: BIP32Interface = node.derivePath('m/0/0');
 
 export const coins: Array<CoinInterface> = [
   {
-    name: "AC - Asiacoin",
-    network: "asiacoin",
+    name: 'AC - Asiacoin',
+    network: 'asiacoin',
     coinValue: 51
   },
   {
-    name: "ACC - Adcoin",
-    network: "adcoin",
+    name: 'ACC - Adcoin',
+    network: 'adcoin',
     coinValue: 161
   },
   {
-    name: "AUR - Auroracoin",
-    network: "auroracoin",
+    name: 'AUR - Auroracoin',
+    network: 'auroracoin',
     coinValue: 85
   },
   {
-    name: "AXE - Axe",
-    network: "axe",
+    name: 'AXE - Axe',
+    network: 'axe',
     coinValue: 4242
   },
   {
-    name: "ANON - ANON",
-    network: "anon",
+    name: 'ANON - ANON',
+    network: 'anon',
     coinValue: 220
   },
   {
-    name: "BOLI - Bolivarcoin",
-    network: "bolivarcoin",
+    name: 'BOLI - Bolivarcoin',
+    network: 'bolivarcoin',
     coinValue: 278
   },
   {
-    name: "BCA - Bitcoin Atom",
-    network: "atom",
+    name: 'BCA - Bitcoin Atom',
+    network: 'atom',
     coinValue: 185
   },
   {
-    name: "BCH - Bitcoin Cash",
-    network: "bitcoin",
-    // DOM.bitcoinCashAddressTypeContainer.removeClass("hidden");
+    name: 'BCH - Bitcoin Cash',
+    network: 'bitcoin',
     coinValue: 145
   },
   {
-    name: "BEET - Beetlecoin",
-    network: "beetlecoin",
+    name: 'BEET - Beetlecoin',
+    network: 'beetlecoin',
     coinValue: 800
   },
   {
-    name: "BELA - Belacoin",
-    network: "belacoin",
+    name: 'BELA - Belacoin',
+    network: 'belacoin',
     coinValue: 73
   },
   {
-    name: "BLK - BlackCoin",
-    network: "blackcoin",
+    name: 'BLK - BlackCoin',
+    network: 'blackcoin',
     coinValue: 10
   },
   {
-    name: "BND - Blocknode",
-    network: "blocknode",
+    name: 'BND - Blocknode',
+    network: 'blocknode',
     coinValue: 2941
   },
   {
-    name: "tBND - Blocknode Testnet",
-    network: "blocknode_testnet",
+    name: 'tBND - Blocknode Testnet',
+    network: 'blocknode_testnet',
     coinValue: 1
   },
   {
-    name: "BRIT - Britcoin",
-    network: "britcoin",
+    name: 'BRIT - Britcoin',
+    network: 'britcoin',
     coinValue: 70
   },
   {
-    name: "BSD - Bitsend",
-    network: "bitsend",
+    name: 'BSD - Bitsend',
+    network: 'bitsend',
     coinValue: 91
   },
   {
-    name: "BST - BlockStamp",
-    network: "blockstamp",
+    name: 'BST - BlockStamp',
+    network: 'blockstamp',
     coinValue: 254
   },
   {
-    name: "BTA - Bata",
-    network: "bata",
+    name: 'BTA - Bata',
+    network: 'bata',
     coinValue: 89
   },
   {
-    name: "BTC - Bitcoin",
-    network: "bitcoin",
+    name: 'BTC - Bitcoin',
+    network: 'bitcoin',
     coinValue: 0
   },
   {
-    name: "BTC - Bitcoin Testnet",
-    network: "testnet",
+    name: 'BTC - Bitcoin Testnet',
+    network: 'testnet',
     coinValue: 1
   },
   {
-    name: "BITG - Bitcoin Green",
-    network: "bitcoingreen",
+    name: 'BITG - Bitcoin Green',
+    network: 'bitcoingreen',
     coinValue: 222
   },
   {
-    name: "BTCP - Bitcoin Private",
-    network: "bitcoinprivate",
+    name: 'BTCP - Bitcoin Private',
+    network: 'bitcoinprivate',
     coinValue: 183
   },
   {
-    name: "BTCZ - Bitcoinz",
-    network: "bitcoinz",
+    name: 'BTCZ - Bitcoinz',
+    network: 'bitcoinz',
     coinValue: 177
   },
   {
-    name: "BTDX - BitCloud",
-    network: "bitcloud",
+    name: 'BTDX - BitCloud',
+    network: 'bitcloud',
     coinValue: 218
   },
   {
-    name: "BTG - Bitcoin Gold",
-    network: "bgold",
+    name: 'BTG - Bitcoin Gold',
+    network: 'bgold',
     coinValue: 156
   },
   {
-    name: "BTX - Bitcore",
-    network: "bitcore",
+    name: 'BTX - Bitcore',
+    network: 'bitcore',
     coinValue: 160
   },
   {
-    name: "CCN - Cannacoin",
-    network: "cannacoin",
+    name: 'CCN - Cannacoin',
+    network: 'cannacoin',
     coinValue: 19
   },
   {
-    name: "CESC - Cryptoescudo",
-    network: "cannacoin",
+    name: 'CESC - Cryptoescudo',
+    network: 'cannacoin',
     coinValue: 111
   },
   {
-    name: "CDN - Canadaecoin",
-    network: "canadaecoin",
+    name: 'CDN - Canadaecoin',
+    network: 'canadaecoin',
     coinValue: 34
   },
   {
-    name: "CLAM - Clams",
-    network: "clam",
+    name: 'CLAM - Clams',
+    network: 'clam',
     coinValue: 23
   },
   {
-    name: "CLO - Callisto",
+    name: 'CLO - Callisto',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 820
   },
   {
-    name: "CLUB - Clubcoin",
-    network: "clubcoin",
+    name: 'CLUB - Clubcoin',
+    network: 'clubcoin',
     coinValue: 79
   },
   {
-    name: "CMP - Compcoin",
-    network: "compcoin",
+    name: 'CMP - Compcoin',
+    network: 'compcoin',
     coinValue: 71
   },
   {
-    name: "CRAVE - Crave",
-    network: "crave",
+    name: 'CRAVE - Crave',
+    network: 'crave',
     coinValue: 186
   },
   {
-    name: "CRW - Crown (Legacy)",
-    network: "crown",
+    name: 'CRW - Crown (Legacy)',
+    network: 'crown',
     coinValue: 72
   },
   {
-    name: "CRW - Crown",
-    network: "crown",
+    name: 'CRW - Crown',
+    network: 'crown',
     coinValue: 72
   },
   {
-    name: "DASH - Dash",
-    network: "dash",
+    name: 'DASH - Dash',
+    network: 'dash',
     coinValue: 5
   },
   {
-    name: "DASH - Dash Testnet",
-    network: "dashtn",
+    name: 'DASH - Dash Testnet',
+    network: 'dashtn',
     coinValue: 1
   },
   {
-    name: "DFC - Defcoin",
-    network: "defcoin",
+    name: 'DFC - Defcoin',
+    network: 'defcoin',
     coinValue: 1337
   },
   {
-    name: "DGB - Digibyte",
-    network: "digibyte",
+    name: 'DGB - Digibyte',
+    network: 'digibyte',
     coinValue: 20
   },
   {
-    name: "DGC - Digitalcoin",
-    network: "digitalcoin",
+    name: 'DGC - Digitalcoin',
+    network: 'digitalcoin',
     coinValue: 18
   },
   {
-    name: "DMD - Diamond",
-    network: "diamond",
+    name: 'DMD - Diamond',
+    network: 'diamond',
     coinValue: 152
   },
   {
-    name: "DNR - Denarius",
-    network: "denarius",
+    name: 'DNR - Denarius',
+    network: 'denarius',
     coinValue: 116
   },
   {
-    name: "DOGE - Dogecoin",
-    network: "dogecoin",
+    name: 'DOGE - Dogecoin',
+    network: 'dogecoin',
     coinValue: 3
   },
   {
-    name: "DXN - DEXON",
-    network: "bitcoin",
+    name: 'DXN - DEXON',
+    network: 'bitcoin',
     coinValue: 237
   },
   {
-    name: "ECN - Ecoin",
-    network: "ecoin",
+    name: 'ECN - Ecoin',
+    network: 'ecoin',
     coinValue: 115
   },
   {
-    name: "EDRC - Edrcoin",
-    network: "edrcoin",
+    name: 'EDRC - Edrcoin',
+    network: 'edrcoin',
     coinValue: 56
   },
   {
-    name: "EFL - Egulden",
-    network: "egulden",
+    name: 'EFL - Egulden',
+    network: 'egulden',
     coinValue: 78
   },
   {
-    name: "ELLA - Ellaism",
+    name: 'ELLA - Ellaism',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 163
   },
   {
-    name: "EMC2 - Einsteinium",
-    network: "einsteinium",
+    name: 'EMC2 - Einsteinium',
+    network: 'einsteinium',
     coinValue: 41
   },
   {
-    name: "ERC - Europecoin",
-    network: "europecoin",
+    name: 'ERC - Europecoin',
+    network: 'europecoin',
     coinValue: 151
   },
   {
-    name: "ESN - Ethersocial Network",
+    name: 'ESN - Ethersocial Network',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 31102
   },
   {
-    name: "ETC - Ethereum Classic",
+    name: 'ETC - Ethereum Classic',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 61
   },
   {
-    name: "ETH - Ethereum",
-    network: "bitcoin",
+    name: 'ETH - Ethereum',
+    network: 'bitcoin',
     coinValue: 60
   },
   {
-    name: "EXCL - Exclusivecoin",
-    network: "exclusivecoin",
+    name: 'EXCL - Exclusivecoin',
+    network: 'exclusivecoin',
     coinValue: 190
   },
   {
-    name: "EXCC - ExchangeCoin",
-    network: "exchangecoin",
+    name: 'EXCC - ExchangeCoin',
+    network: 'exchangecoin',
     coinValue: 0
   },
   {
-    name: "EXP - Expanse",
+    name: 'EXP - Expanse',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 40
   },
   {
-    name: "FJC - Fujicoin",
-    network: "fujicoin",
+    name: 'FJC - Fujicoin',
+    network: 'fujicoin',
     coinValue: 75
   },
   {
-    name: "FLASH - Flashcoin",
-    network: "flashcoin",
+    name: 'FLASH - Flashcoin',
+    network: 'flashcoin',
     coinValue: 120
   },
   {
-    name: "FRST - Firstcoin",
-    network: "firstcoin",
+    name: 'FRST - Firstcoin',
+    network: 'firstcoin',
     coinValue: 167
   },
   {
-    name: "FTC - Feathercoin",
-    network: "feathercoin",
+    name: 'FTC - Feathercoin',
+    network: 'feathercoin',
     coinValue: 8
   },
   {
-    name: "GAME - GameCredits",
-    network: "game",
+    name: 'GAME - GameCredits',
+    network: 'game',
     coinValue: 101
   },
   {
-    name: "GBX - Gobyte",
-    network: "gobyte",
+    name: 'GBX - Gobyte',
+    network: 'gobyte',
     coinValue: 176
   },
   {
-    name: "GCR - GCRCoin",
-    network: "gcr",
+    name: 'GCR - GCRCoin',
+    network: 'gcr',
     coinValue: 79
   },
   {
-    name: "GRC - Gridcoin",
-    network: "gridcoin",
+    name: 'GRC - Gridcoin',
+    network: 'gridcoin',
     coinValue: 84
   },
   {
-    name: "HNC - Helleniccoin",
-    network: "helleniccoin",
+    name: 'HNC - Helleniccoin',
+    network: 'helleniccoin',
     coinValue: 168
   },
   {
-    name: "HUSH - Hush",
-    network: "hush",
+    name: 'HUSH - Hush',
+    network: 'hush',
     coinValue: 197
   },
   {
-    name: "INSN - Insane",
-    network: "insane",
+    name: 'INSN - Insane',
+    network: 'insane',
     coinValue: 68
   },
   {
-    name: "IOP - Iop",
-    network: "iop",
+    name: 'IOP - Iop',
+    network: 'iop',
     coinValue: 66
   },
   {
-    name: "IXC - Ixcoin",
-    network: "ixcoin",
+    name: 'IXC - Ixcoin',
+    network: 'ixcoin',
     coinValue: 86
   },
   {
-    name: "JBS - Jumbucks",
-    network: "jumbucks",
+    name: 'JBS - Jumbucks',
+    network: 'jumbucks',
     coinValue: 26
   },
   {
-    name: "KMD - Komodo",
+    name: 'KMD - Komodo',
     bip49available: false,
-    network: "komodo",
+    network: 'komodo',
     coinValue: 141
   },
   {
-    name: "KOBO - Kobocoin",
+    name: 'KOBO - Kobocoin',
     bip49available: false,
-    network: "kobocoin",
+    network: 'kobocoin',
     coinValue: 196
   },
   {
-    name: "LBC - Library Credits",
-    network: "lbry",
+    name: 'LBC - Library Credits',
+    network: 'lbry',
     coinValue: 140
   },
   {
-    name: "LCC - Litecoincash",
-    network: "litecoincash",
+    name: 'LCC - Litecoincash',
+    network: 'litecoincash',
     coinValue: 192
   },
   {
-    name: "LDCN - Landcoin",
-    network: "landcoin",
+    name: 'LDCN - Landcoin',
+    network: 'landcoin',
     coinValue: 63
   },
   {
-    name: "LINX - Linx",
-    network: "linx",
+    name: 'LINX - Linx',
+    network: 'linx',
     coinValue: 114
   },
   {
-    name: "LKR - Lkrcoin",
+    name: 'LKR - Lkrcoin',
     segwitAvailable: false,
-    network: "lkrcoin",
+    network: 'lkrcoin',
     coinValue: 557
   },
   {
-    name: "LTC - Litecoin",
-    network: "litecoin",
+    name: 'LTC - Litecoin',
+    network: 'litecoin',
     coinValue: 2
     // DOM.litecoinLtubContainer.removeClass("hidden");
   },
   {
-    name: "LTZ - LitecoinZ",
-    network: "litecoinz",
+    name: 'LTZ - LitecoinZ',
+    network: 'litecoinz',
     coinValue: 221
   },
   {
-    name: "LYNX - Lynx",
-    network: "lynx",
+    name: 'LYNX - Lynx',
+    network: 'lynx',
     coinValue: 191
   },
   {
-    name: "MAZA - Maza",
-    network: "maza",
+    name: 'MAZA - Maza',
+    network: 'maza',
     coinValue: 13
   },
   {
-    name: "MEC - Megacoin",
-    network: "megacoin",
+    name: 'MEC - Megacoin',
+    network: 'megacoin',
     coinValue: 217
   },
   {
-    name: "MIX - MIX",
+    name: 'MIX - MIX',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 76
   },
   {
-    name: "MNX - Minexcoin",
-    network: "minexcoin",
+    name: 'MNX - Minexcoin',
+    network: 'minexcoin',
     coinValue: 182
   },
   {
-    name: "MONA - Monacoin",
-    network: "monacoin",
+    name: 'MONA - Monacoin',
+    network: 'monacoin',
     coinValue: 22
   },
   {
-    name: "MUSIC - Musicoin",
+    name: 'MUSIC - Musicoin',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 184
   },
   {
-    name: "NAV - Navcoin",
-    network: "navcoin",
+    name: 'NAV - Navcoin',
+    network: 'navcoin',
     coinValue: 130
   },
   {
-    name: "NAS - Nebulas",
-    network: "bitcoin",
+    name: 'NAS - Nebulas',
+    network: 'bitcoin',
     coinValue: 2718
   },
   {
-    name: "NEBL - Neblio",
-    network: "neblio",
+    name: 'NEBL - Neblio',
+    network: 'neblio',
     coinValue: 146
   },
   {
-    name: "NEOS - Neoscoin",
-    network: "neoscoin",
+    name: 'NEOS - Neoscoin',
+    network: 'neoscoin',
     coinValue: 25
   },
   {
-    name: "NIX - NIX Platform",
-    network: "nix",
+    name: 'NIX - NIX Platform',
+    network: 'nix',
     coinValue: 400
   },
   {
-    name: "NLG - Gulden",
-    network: "gulden",
+    name: 'NLG - Gulden',
+    network: 'gulden',
     coinValue: 87
   },
   {
-    name: "NMC - Namecoin",
-    network: "namecoin",
+    name: 'NMC - Namecoin',
+    network: 'namecoin',
     coinValue: 7
   },
   {
-    name: "NRG - Energi",
-    network: "energi",
+    name: 'NRG - Energi',
+    network: 'energi',
     coinValue: 204
   },
   {
-    name: "NRO - Neurocoin",
-    network: "neurocoin",
+    name: 'NRO - Neurocoin',
+    network: 'neurocoin',
     coinValue: 110
   },
   {
-    name: "NSR - Nushares",
-    network: "nushares",
+    name: 'NSR - Nushares',
+    network: 'nushares',
     coinValue: 11
   },
   {
-    name: "NYC - Newyorkc",
-    network: "newyorkc",
+    name: 'NYC - Newyorkc',
+    network: 'newyorkc',
     coinValue: 179
   },
   {
-    name: "NVC - Novacoin",
-    network: "novacoin",
+    name: 'NVC - Novacoin',
+    network: 'novacoin',
     coinValue: 50
   },
   {
-    name: "OK - Okcash",
-    network: "okcash",
+    name: 'OK - Okcash',
+    network: 'okcash',
     coinValue: 69
   },
   {
-    name: "OMNI - Omnicore",
-    network: "omnicore",
+    name: 'OMNI - Omnicore',
+    network: 'omnicore',
     coinValue: 200
   },
   {
-    name: "ONION - DeepOnion",
-    network: "deeponion",
+    name: 'ONION - DeepOnion',
+    network: 'deeponion',
     coinValue: 305
   },
   {
-    name: "ONX - Onixcoin",
-    network: "onixcoin",
+    name: 'ONX - Onixcoin',
+    network: 'onixcoin',
     coinValue: 174
   },
   {
-    name: "PHR - Phore",
-    network: "phore",
+    name: 'PHR - Phore',
+    network: 'phore',
     coinValue: 444
   },
   {
-    name: "PINK - Pinkcoin",
-    network: "pinkcoin",
+    name: 'PINK - Pinkcoin',
+    network: 'pinkcoin',
     coinValue: 117
   },
   {
-    name: "PIRL - Pirl",
+    name: 'PIRL - Pirl',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 164
   },
   {
-    name: "PIVX - PIVX",
-    network: "pivx",
+    name: 'PIVX - PIVX',
+    network: 'pivx',
     coinValue: 119
   },
   {
-    name: "PIVX - PIVX Testnet",
-    network: "pivxtestnet",
+    name: 'PIVX - PIVX Testnet',
+    network: 'pivxtestnet',
     coinValue: 1
   },
   {
-    name: "POA - Poa",
+    name: 'POA - Poa',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 178
   },
   {
-    name: "POSW - POSWcoin",
-    network: "poswcoin",
+    name: 'POSW - POSWcoin',
+    network: 'poswcoin',
     coinValue: 47
   },
   {
-    name: "POT - Potcoin",
-    network: "potcoin",
+    name: 'POT - Potcoin',
+    network: 'potcoin',
     coinValue: 81
   },
   {
-    name: "PPC - Peercoin",
-    network: "peercoin",
+    name: 'PPC - Peercoin',
+    network: 'peercoin',
     coinValue: 6
   },
   {
-    name: "PRJ - ProjectCoin",
-    network: "projectcoin",
+    name: 'PRJ - ProjectCoin',
+    network: 'projectcoin',
     coinValue: 533
   },
   {
-    name: "PSB - Pesobit",
-    network: "pesobit",
+    name: 'PSB - Pesobit',
+    network: 'pesobit',
     coinValue: 62
   },
   {
-    name: "PUT - Putincoin",
-    network: "putincoin",
+    name: 'PUT - Putincoin',
+    network: 'putincoin',
     coinValue: 122
   },
   {
-    name: "RVN - Ravencoin",
-    network: "ravencoin",
+    name: 'RVN - Ravencoin',
+    network: 'ravencoin',
     coinValue: 175
   },
   {
-    name: "RBY - Rubycoin",
-    network: "rubycoin",
+    name: 'RBY - Rubycoin',
+    network: 'rubycoin',
     coinValue: 16
   },
   {
-    name: "RDD - Reddcoin",
-    network: "reddcoin",
+    name: 'RDD - Reddcoin',
+    network: 'reddcoin',
     coinValue: 4
   },
   {
-    name: "RVR - RevolutionVR",
-    network: "revolutionvr",
+    name: 'RVR - RevolutionVR',
+    network: 'revolutionvr',
     coinValue: 129
   },
   {
-    name: "SAFE - Safecoin",
-    network: "safecoin",
+    name: 'SAFE - Safecoin',
+    network: 'safecoin',
     coinValue: 19165
   },
   {
-    name: "SLS - Salus",
-    network: "salus",
+    name: 'SLS - Salus',
+    network: 'salus',
     coinValue: 63
   },
   {
-    name: "SDC - ShadowCash",
-    network: "shadow",
+    name: 'SDC - ShadowCash',
+    network: 'shadow',
     coinValue: 35
   },
   {
-    name: "SDC - ShadowCash Testnet",
-    network: "shadowtn",
+    name: 'SDC - ShadowCash Testnet',
+    network: 'shadowtn',
     coinValue: 1
   },
   {
-    name: "SLM - Slimcoin",
-    network: "slimcoin",
+    name: 'SLM - Slimcoin',
+    network: 'slimcoin',
     coinValue: 63
   },
   {
-    name: "SLM - Slimcoin Testnet",
-    network: "slimcointn",
+    name: 'SLM - Slimcoin Testnet',
+    network: 'slimcointn',
     coinValue: 111
   },
   {
-    name: "SLP - Simple Ledger Protocol",
-    network: "bitcoin",
+    name: 'SLP - Simple Ledger Protocol',
+    network: 'bitcoin',
     // DOM.bitcoinCashAddressTypeContainer.removeClass("hidden");
     coinValue: 245
   },
   {
-    name: "SLR - Solarcoin",
-    network: "solarcoin",
+    name: 'SLR - Solarcoin',
+    network: 'solarcoin',
     coinValue: 58
   },
   {
-    name: "SMLY - Smileycoin",
-    network: "smileycoin",
+    name: 'SMLY - Smileycoin',
+    network: 'smileycoin',
     coinValue: 59
   },
   {
-    name: "STASH - Stash",
-    network: "stash",
+    name: 'STASH - Stash',
+    network: 'stash',
     coinValue: 0xc0c0
   },
   {
-    name: "STASH - Stash Testnet",
-    network: "stashtn",
+    name: 'STASH - Stash Testnet',
+    network: 'stashtn',
     coinValue: 0xcafe
   },
   {
-    name: "STRAT - Stratis",
-    network: "stratis",
+    name: 'STRAT - Stratis',
+    network: 'stratis',
     coinValue: 105
   },
   {
-    name: "TSTRAT - Stratis Testnet",
-    network: "stratistest",
+    name: 'TSTRAT - Stratis Testnet',
+    network: 'stratistest',
     coinValue: 105
   },
   {
-    name: "SYS - Syscoin",
-    network: "syscoin",
+    name: 'SYS - Syscoin',
+    network: 'syscoin',
     coinValue: 57
   },
   {
-    name: "THC - Hempcoin",
-    network: "hempcoin",
+    name: 'THC - Hempcoin',
+    network: 'hempcoin',
     coinValue: 113
   },
   {
-    name: "TOA - Toa",
-    network: "toa",
+    name: 'TOA - Toa',
+    network: 'toa',
     coinValue: 159
   },
   {
-    name: "USC - Ultimatesecurecash",
-    network: "ultimatesecurecash",
+    name: 'USC - Ultimatesecurecash',
+    network: 'ultimatesecurecash',
     coinValue: 112
   },
   {
-    name: "USNBT - NuBits",
-    network: "nubits",
+    name: 'USNBT - NuBits',
+    network: 'nubits',
     coinValue: 12
   },
   {
-    name: "UNO - Unobtanium",
-    network: "unobtanium",
+    name: 'UNO - Unobtanium',
+    network: 'unobtanium',
     coinValue: 92
   },
   {
-    name: "VASH - Vpncoin",
-    network: "vpncoin",
+    name: 'VASH - Vpncoin',
+    network: 'vpncoin',
     coinValue: 33
   },
   {
-    name: "VIA - Viacoin",
-    network: "viacoin",
+    name: 'VIA - Viacoin',
+    network: 'viacoin',
     coinValue: 14
   },
   {
-    name: "VIA - Viacoin Testnet",
-    network: "viacointestnet",
+    name: 'VIA - Viacoin Testnet',
+    network: 'viacointestnet',
     coinValue: 1
   },
   {
-    name: "VIVO - Vivo",
-    network: "vivo",
+    name: 'VIVO - Vivo',
+    network: 'vivo',
     coinValue: 166
   },
   {
-    name: "VTC - Vertcoin",
-    network: "vertcoin",
+    name: 'VTC - Vertcoin',
+    network: 'vertcoin',
     coinValue: 28
   },
   {
-    name: "WC - Wincoin",
-    network: "wincoin",
+    name: 'WC - Wincoin',
+    network: 'wincoin',
     coinValue: 181
   },
   {
-    name: "XAX - Artax",
-    network: "artax",
+    name: 'XAX - Artax',
+    network: 'artax',
     coinValue: 219
   },
   {
-    name: "XBC - Bitcoinplus",
-    network: "bitcoinplus",
+    name: 'XBC - Bitcoinplus',
+    network: 'bitcoinplus',
     coinValue: 65
   },
   {
-    name: "XMY - Myriadcoin",
-    network: "myriadcoin",
+    name: 'XMY - Myriadcoin',
+    network: 'myriadcoin',
     coinValue: 90
   },
   {
-    name: "XRP - Ripple",
-    network: "bitcoin",
+    name: 'XRP - Ripple',
+    network: 'bitcoin',
     coinValue: 144
   },
   {
-    name: "XVC - Vcash",
-    network: "vcash",
+    name: 'XVC - Vcash',
+    network: 'vcash',
     coinValue: 127
   },
   {
-    name: "XVG - Verge",
-    network: "verge",
+    name: 'XVG - Verge',
+    network: 'verge',
     coinValue: 77
   },
   {
-    name: "XUEZ - Xuez",
+    name: 'XUEZ - Xuez',
     segwitAvailable: false,
-    network: "xuez",
+    network: 'xuez',
     coinValue: 225
   },
   {
-    name: "XWC - Whitecoin",
-    network: "whitecoin",
+    name: 'XWC - Whitecoin',
+    network: 'whitecoin',
     coinValue: 155
   },
   {
-    name: "XZC - Zcoin",
-    network: "zcoin",
+    name: 'XZC - Zcoin',
+    network: 'zcoin',
     coinValue: 136
   },
   {
-    name: "ZCL - Zclassic",
-    network: "zclassic",
+    name: 'ZCL - Zclassic',
+    network: 'zclassic',
     coinValue: 147
   },
   {
-    name: "ZEC - Zcash",
-    network: "zcash",
+    name: 'ZEC - Zcash',
+    network: 'zcash',
     coinValue: 133
   },
   {
-    name: "ZEN - Zencash",
-    network: "zencash",
+    name: 'ZEN - Zencash',
+    network: 'zencash',
     coinValue: 121
   },
   {
-    name: "XLM - Stellar",
+    name: 'XLM - Stellar',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 148,
     purposeValue: 44,
-    derivationStandard: "sep5",
-    curveName: "ed25519"
+    derivationStandard: 'sep5',
+    curveName: 'ed25519'
   },
   {
-    name: "ZBC - Zoobc",
+    name: 'ZBC - Zoobc',
     segwitAvailable: false,
-    network: "bitcoin",
+    network: 'bitcoin',
     coinValue: 148,
     purposeValue: 44,
-    derivationStandard: "sep5",
-    curveName: "ed25519"
+    derivationStandard: 'sep5',
+    curveName: 'ed25519'
   }
 ];
 
@@ -827,13 +826,13 @@ interface CoinInterface {
   coinValue: number;
   purposeValue?: number;
   derivationStandard?:
-    | "sep5"
-    | "bip32"
-    | "bip44"
-    | "bip49"
-    | "bip84"
-    | "bip141";
-  curveName?: "secp256k1" | "P-256" | "ed25519";
+    | 'sep5'
+    | 'bip32'
+    | 'bip44'
+    | 'bip49'
+    | 'bip84'
+    | 'bip141';
+  curveName?: 'secp256k1' | 'P-256' | 'ed25519';
 }
 
 interface Network {
@@ -850,20 +849,20 @@ interface Network {
 
 export function getCoin(coinName: string): CoinInterface {
   const coinConfig = coins.find(c => c.name.startsWith(coinName));
-  if (!coinConfig) throw new Error("coin not found");
+  if (!coinConfig) { throw new Error('coin not found'); }
   return coinConfig;
 }
 
 export function hasStrongRandom() {
-  return "crypto" in window && window["crypto"] !== null;
+  return 'crypto' in window && window.crypto !== null;
 }
 
 export function uint8ArrayToHex(a) {
-  let s = "";
+  let s = '';
   for (let i = 0; i < a.length; i++) {
     let h = a[i].toString(16);
     while (h.length < 2) {
-      h = "0" + h;
+      h = '0' + h;
     }
     s = s + h;
   }
@@ -880,23 +879,23 @@ export function parseIntNoNaN(val, defaultVal: number) {
 
 export function calcBip32ExtendedKey(
   path: string,
-  bip32RootKey: BIP32Interface,
-  curveName: "secp256k1" | "P-256" | "ed25519"
-): BIP32Interface {
+  bip32RootKey: bip32.BIP32Interface,
+  curveName: 'secp256k1' | 'P-256' | 'ed25519'
+): bip32.BIP32Interface {
   // Check there's a root key to derive from
   if (!bip32RootKey) {
     return bip32RootKey;
   }
   var extendedKey = bip32RootKey;
   // Derive the key from the path
-  var pathBits = path.split("/");
+  var pathBits = path.split('/');
   for (var i = 0; i < pathBits.length; i++) {
     var bit = pathBits[i];
     var index = parseInt(bit);
     if (isNaN(index)) {
       continue;
     }
-    var hardened = bit[bit.length - 1] == "'";
+    var hardened = bit[bit.length - 1] == '\'';
     var isPriv = !extendedKey.isNeutered();
     var invalidDerivationPath = hardened && !isPriv;
     if (invalidDerivationPath) {
@@ -911,14 +910,14 @@ export function calcBip32ExtendedKey(
 }
 
 export function displayBip32Info(
-  bip32RootKey: BIP32Interface,
-  bip32ExtendedKey: BIP32Interface
+  bip32RootKey: bip32.BIP32Interface,
+  bip32ExtendedKey: bip32.BIP32Interface
 ) {
   // Display the key
   // DOM.seed.val(seed);
   const rootKey = bip32RootKey.toBase58();
   // DOM.rootKey.val(rootKey);
-  let xprvkeyB58 = "NA";
+  let xprvkeyB58 = 'NA';
   if (!bip32ExtendedKey.isNeutered()) {
     xprvkeyB58 = bip32ExtendedKey.toBase58();
   }
@@ -945,76 +944,76 @@ export function getDerivationPath(
   accountValue: string,
   changeValue: string
 ): string {
-  if (derivationStandard === "sep5") {
+  if (derivationStandard === 'sep5') {
     var purpose = parseIntNoNaN(purposeValue, 44);
     var coin = parseIntNoNaN(coinValue, 0);
     var account = parseIntNoNaN(accountValue, 0);
-    var path = "m/";
-    path += purpose + "'/";
-    path += coin + "'/";
-    path += account + "'";
+    var path = 'm/';
+    path += purpose + '\'/';
+    path += coin + '\'/';
+    path += account + '\'';
     return path;
     // DOM.bip44path.val(path);
     // var derivationPath = DOM.bip44path.val();
     // console.log("Using derivation path from BIP44 tab: " + derivationPath);
     // return derivationPath;
-  } else if (derivationStandard === "bip44") {
+  } else if (derivationStandard === 'bip44') {
     var purpose = parseIntNoNaN(purposeValue, 44);
     var coin = parseIntNoNaN(coinValue, 0);
     var account = parseIntNoNaN(accountValue, 0);
     var change = parseIntNoNaN(changeValue, 0);
-    var path = "m/";
-    path += purpose + "'/";
-    path += coin + "'/";
-    path += account + "'/";
+    var path = 'm/';
+    path += purpose + '\'/';
+    path += coin + '\'/';
+    path += account + '\'/';
     path += change;
     return path;
     // DOM.bip44path.val(path);
     // var derivationPath = DOM.bip44path.val();
     // console.log("Using derivation path from BIP44 tab: " + derivationPath);
     // return derivationPath;
-  } else if (derivationStandard === "bip49") {
+  } else if (derivationStandard === 'bip49') {
     var purpose = parseIntNoNaN(purposeValue, 49);
     var coin = parseIntNoNaN(coinValue, 0);
     var account = parseIntNoNaN(accountValue, 0);
     var change = parseIntNoNaN(changeValue, 0);
-    var path = "m/";
-    path += purpose + "'/";
-    path += coin + "'/";
-    path += account + "'/";
+    var path = 'm/';
+    path += purpose + '\'/';
+    path += coin + '\'/';
+    path += account + '\'/';
     path += change;
     return path;
     // DOM.bip49path.val(path);
     // var derivationPath = DOM.bip49path.val();
     // console.log("Using derivation path from BIP49 tab: " + derivationPath);
     // return derivationPath;
-  } else if (derivationStandard === "bip84") {
+  } else if (derivationStandard === 'bip84') {
     var purpose = parseIntNoNaN(purposeValue, 84);
     var coin = parseIntNoNaN(coinValue, 0);
     var account = parseIntNoNaN(accountValue, 0);
     var change = parseIntNoNaN(changeValue, 0);
-    var path = "m/";
-    path += purpose + "'/";
-    path += coin + "'/";
-    path += account + "'/";
+    var path = 'm/';
+    path += purpose + '\'/';
+    path += coin + '\'/';
+    path += account + '\'/';
     path += change;
     return path;
     // DOM.bip84path.val(path);
     // var derivationPath = DOM.bip84path.val();
     // console.log("Using derivation path from BIP84 tab: " + derivationPath);
     // return derivationPath;
-  } else if (derivationStandard === "bip32") {
+  } else if (derivationStandard === 'bip32') {
     return null;
     // var derivationPath = DOM.bip32path.val();
     // console.log("Using derivation path from BIP32 tab: " + derivationPath);
     // return derivationPath;
-  } else if (derivationStandard === "bip141") {
+  } else if (derivationStandard === 'bip141') {
     return null;
     // var derivationPath = DOM.bip141path.val();
     // console.log("Using derivation path from BIP141 tab: " + derivationPath);
     // return derivationPath;
   } else {
-    console.log("Unknown derivation path");
+    console.log('Unknown derivation path');
   }
 }
 
@@ -1026,41 +1025,41 @@ export function findDerivationPathErrors(path: string) {
   // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#extended-keys
   var maxDepth = 255; // TODO verify this!!
   var maxIndexValue = Math.pow(2, 31); // TODO verify this!!
-  if (path[0] != "m") {
-    return "First character must be 'm'";
+  if (path[0] != 'm') {
+    return 'First character must be \'m\'';
   }
   if (path.length > 1) {
-    if (path[1] != "/") {
-      return "Separator must be '/'";
+    if (path[1] != '/') {
+      return 'Separator must be \'/\'';
     }
-    var indexes = path.split("/");
+    var indexes = path.split('/');
     if (indexes.length > maxDepth) {
       return (
-        "Derivation depth is " +
+        'Derivation depth is ' +
         indexes.length +
-        ", must be less than " +
+        ', must be less than ' +
         maxDepth
       );
     }
     for (var depth = 1; depth < indexes.length; depth++) {
       var index = indexes[depth];
-      var invalidChars = index.replace(/^[0-9]+'?$/g, "");
+      var invalidChars = index.replace(/^[0-9]+'?$/g, '');
       if (invalidChars.length > 0) {
         return (
-          "Invalid characters " + invalidChars + " found at depth " + depth
+          'Invalid characters ' + invalidChars + ' found at depth ' + depth
         );
       }
-      var indexValue = parseInt(index.replace("'", ""));
+      var indexValue = parseInt(index.replace('\'', ''));
       if (isNaN(depth)) {
-        return "Invalid number at depth " + depth;
+        return 'Invalid number at depth ' + depth;
       }
       if (indexValue > maxIndexValue) {
         return (
-          "Value of " +
+          'Value of ' +
           indexValue +
-          " at depth " +
+          ' at depth ' +
           depth +
-          " must be less than " +
+          ' must be less than ' +
           maxIndexValue
         );
       }
@@ -1086,7 +1085,7 @@ export function findDerivationPathErrors(path: string) {
 // }
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class KeyringService {
   // Each (hardware) wallet has only one seed. The seed can be represented in words.
@@ -1103,13 +1102,13 @@ export class KeyringService {
    * The seed is in hexadecimal format
    */
   private seed: string;
-  private bip32RootKey: BIP32Interface;
-  private bip32ExtendedKey: BIP32Interface;
+  private bip32RootKey: bip32.BIP32Interface;
+  private bip32ExtendedKey: bip32.BIP32Interface;
 
   constructor(
     private mnemonicsService: MnemonicsService,
     @Inject(APP_CONFIG) private config: AppConfig,
-    @Inject("global") private global: any
+    @Inject('global') private global: any
   ) {}
 
   getNetwork(networkName: string): Network {
@@ -1117,7 +1116,7 @@ export class KeyringService {
       networkName
     ];
     if (!networkConfig) {
-      throw new Error("network not found in bitcoinjs' list");
+      throw new Error('network not found in bitcoinjs\' list');
     }
     return networkConfig;
   }
@@ -1126,7 +1125,7 @@ export class KeyringService {
     numWords = this.config.mnemonicNumWords
   ): { [key: string]: string } {
     if (!hasStrongRandom()) {
-      const errorText = "This browser does not support strong randomness";
+      const errorText = 'This browser does not support strong randomness';
       throw new Error(errorText);
     }
 
@@ -1148,7 +1147,7 @@ export class KeyringService {
     return {
       phrase: words,
       entropy: entropyHex,
-      entropyMnemonicLength: "raw"
+      entropyMnemonicLength: 'raw'
     };
   }
 
@@ -1157,10 +1156,10 @@ export class KeyringService {
     phrase: string,
     passphrase: string
   ) {
-    const { network: networkName, curveName = "secp256k1" } = getCoin(coinName);
+    const { network: networkName, curveName = 'secp256k1' } = getCoin(coinName);
     this.seed = this.mnemonicsService.mnemonic.toSeed(phrase, passphrase);
     this.bip32RootKey = bip32.fromSeed(
-      Buffer.from(this.seed, "hex"),
+      Buffer.from(this.seed, 'hex'),
       this.getNetwork(networkName),
       curveName
     );
@@ -1174,12 +1173,12 @@ export class KeyringService {
     coinName: string,
     accountValue: number,
     changeValue: 0 | 1 = 0,
-    bip32RootKey: BIP32Interface = this.bip32RootKey
+    bip32RootKey: bip32.BIP32Interface = this.bip32RootKey
   ) {
     const {
-      curveName = "secp256k1",
-      derivationStandard = "bip44",
-      purposeValue = "44",
+      curveName = 'secp256k1',
+      derivationStandard = 'bip44',
+      purposeValue = '44',
       coinValue
     } = getCoin(coinName);
 
@@ -1195,13 +1194,13 @@ export class KeyringService {
   }
 
   calcForDerivationPath(
-    curveName: "secp256k1" | "P-256" | "ed25519",
+    curveName: 'secp256k1' | 'P-256' | 'ed25519',
     derivationStandard: string,
     purposeValue: string,
     coinValue: string,
     accountValue: string,
-    changeValue: string = "0",
-    bip32RootKey: BIP32Interface = this.bip32RootKey
+    changeValue: string = '0',
+    bip32RootKey: bip32.BIP32Interface = this.bip32RootKey
   ) {
     // clearDerivedKeys();
     // clearAddressesList();
@@ -1234,16 +1233,16 @@ export class KeyringService {
       bip32RootKey,
       curveName
     );
-    if (["sep5", "bip44", "bip49", "bip84"].includes(derivationStandard)) {
+    if (['sep5', 'bip44', 'bip49', 'bip84'].includes(derivationStandard)) {
       // Calculate the account extended keys
-      const extraSliceTo = ["bip44", "bip49", "bip84"].includes(
+      const extraSliceTo = ['bip44', 'bip49', 'bip84'].includes(
         derivationStandard
       )
         ? 1
         : 0;
       const accountPath = derivationPath.slice(
         0,
-        derivationPath.lastIndexOf("/") + extraSliceTo
+        derivationPath.lastIndexOf('/') + extraSliceTo
       );
       const accountExtendedKey = calcBip32ExtendedKey(
         accountPath,

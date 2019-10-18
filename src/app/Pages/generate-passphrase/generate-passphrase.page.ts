@@ -1,9 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { KeyringService } from 'src/app/services/keyring.service';
+import { KeyringService } from 'src/app/Services/keyring.service';
 import { ToastController, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { CreateAccountService } from 'src/app/services/create-account.service';
-import { AuthService } from 'src/app/services/auth-service';
+import { CreateAccountService } from 'src/app/Services/create-account.service';
+import { AuthService } from 'src/app/Services/auth-service';
 
 @Component({
   selector: 'app-generate-passphrase',

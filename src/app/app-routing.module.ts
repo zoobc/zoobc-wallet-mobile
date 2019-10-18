@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthService } from 'src/app/services/auth-service';
+import { AuthService } from 'src/app/Services/auth-service';
 import { QrScannerComponent } from './Pages/qr-scanner/qr-scanner.component';
 
 const routes: Routes = [
@@ -71,7 +71,7 @@ const routes: Routes = [
   { path: 'enterpinsend', loadChildren: './Pages/Modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },
   { path: 'trxstatus', loadChildren: './Pages/Modals/trxstatus/trxstatus.module#TrxstatusPageModule',
   canActivate: [AuthService] },
-  { path: 'sendcoin', loadChildren: './Pages/send-coin/tab-send.module#TabSendPageModule',
+  { path: 'sendcoin', loadChildren: './Pages/send-coin/send-coin.module#SendCoinPageModule',
    canActivate: [AuthService] },
   { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },
 

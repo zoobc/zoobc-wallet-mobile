@@ -7,16 +7,16 @@ import {
   LoadingController,
   ModalController
 } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth-service';
+import { AuthService } from 'src/app/Services/auth-service';
 import { Router, NavigationEnd } from '@angular/router';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/Services/account.service';
 import { Storage } from '@ionic/storage';
-import { TransactionService, Transactions, Transaction } from 'src/app/services/transaction.service';
+import { TransactionService, Transactions, Transaction } from 'src/app/Services/transaction.service';
 import {
   GetAccountBalanceResponse,
   AccountBalance as AB,
 } from 'src/app/grpc/model/accountBalance_pb';
-import { ActiveAccountService } from 'src/app/services/active-account.service';
+import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { TranslateService } from '@ngx-translate/core';
 import { makeShortAddress, timeConverter } from 'src/app/helpers/converters';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';

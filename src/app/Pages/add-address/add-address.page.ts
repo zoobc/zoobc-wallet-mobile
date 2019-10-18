@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AddressBookService } from 'src/app/services/address-book.service';
+import { AddressBookService } from 'src/app/Services/address-book.service';
 import { base64ToByteArray } from 'src/app/helpers/converters';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
