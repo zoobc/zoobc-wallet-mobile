@@ -3,7 +3,7 @@
     <ion-item>
       <!-- <ion-icon name="globe"></ion-icon> -->
       <!-- <ion-label>{{ "Language" | translate }}</ion-label> -->
-      <ion-select interface="popover" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
+      <ion-select interface="alert" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
         <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
           {{ language.country }}
         </ion-select-option>

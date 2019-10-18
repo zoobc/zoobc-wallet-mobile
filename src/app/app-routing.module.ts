@@ -15,7 +15,7 @@ const routes: Routes = [
     path: 'selectwallet',
     loadChildren: './selectwallet/selectwallet.module#SelectwalletPageModule'
   },
-  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
+  { path: 'login', loadChildren: './Pages/login/login.module#LoginPageModule' },
   {
     path: 'create-wallet',
     loadChildren: './create-wallet/create-wallet.module#CreateWalletPageModule'
@@ -31,13 +31,12 @@ const routes: Routes = [
   },
   {
     path: 'initial',
-    loadChildren: './initial/initial.module#InitialPageModule'
+    loadChildren: './Pages/initial/initial.module#InitialPageModule'
   },
   {
     path: 'setup-pin',
     loadChildren: './setup-pin/setup-pin.module#SetupPinPageModule'
   },
-  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
   {
     path: 'create-account',
     loadChildren:
