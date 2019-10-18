@@ -18,7 +18,7 @@ import { sign as naclSign } from 'tweetnacl';
 import { ObservableService } from 'src/app/services/observable.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
+import { QrScannerComponent } from 'src/app/Pages/qr-scanner/qr-scanner.component';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { LanguageService } from '../app/services/language.service';
