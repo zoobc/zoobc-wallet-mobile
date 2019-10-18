@@ -52,7 +52,8 @@ export class SidemenuComponent implements OnInit {
   }
 
   revealPassphrase() {
-      //
+    this.menuController.close('mainMenu');
+    this.router.navigateByUrl('/backup-phrase'); //
   }
 
   openAboutView() {
