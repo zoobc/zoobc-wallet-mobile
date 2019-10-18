@@ -1,6 +1,5 @@
 import { default as JSBI } from 'jsbi';
 import * as BN from 'bn.js';
-import CryptoJS from 'crypto-js';
 
 export function hexToByteArray(hexStr: string): Uint8Array {
   return new Uint8Array(
@@ -8,85 +7,6 @@ export function hexToByteArray(hexStr: string): Uint8Array {
   );
 }
 
-const keySiz = 256;
-const ivSize = 128;
-const iteration = 100;
-
-export function doEncrypt(msg, pass) {
-  const salt = CryptoJS.lib.WordArray.random(ivSize / 8);
-
-  const key = CryptoJS.PBKDF2(pass, salt, {
-      keySize: keySiz / 32,
-      iterations: iteration
-    });
-
-  const iv1 = CryptoJS.lib.WordArray.random(ivSize / 8);
-
-  const encrypted = CryptoJS.AES.encrypt(msg, key, {
-    iv: iv1,
-    padding: CryptoJS.pad.Pkcs7,
-    mode: CryptoJS.mode.CBC
-  });
-
-  // salt, iv will be hex 32 in length
-  // append them to the ciphertext for use  in decryption
-  const transitmessage = salt.toString() + iv1.toString() + encrypted.toString();
-  return transitmessage;
-}
-
-export function doDecrypt(transitmessage, pass) {
-  const salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
-  const iv2 = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32));
-  const encrypted = transitmessage.substring(64);
-
-  const key = CryptoJS.PBKDF2(pass, salt, {
-      keySize: keySiz / 32,
-      iterations: iteration
-    });
-
-  const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
-    iv: iv2,
-    padding: CryptoJS.pad.Pkcs7,
-    mode: CryptoJS.mode.CBC
-  });
-
-  return decrypted;
-}
-
-// export function byteArrayToHex(
-//   bytes: ArrayBuffer | ArrayBufferView | Array<number>
-// ): string {
-//   const byteArray =
-//     bytes instanceof ArrayBuffer
-//       ? new Uint8Array(bytes)
-//       : ArrayBuffer.isView(bytes)
-//       ? new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength)
-//       : Uint8Array.from(bytes);
-//   return Array.prototype.map
-//     .call(byteArray, byte => byte.toString(16).padStart(2, '0'))
-//     .join('');
-// }
-
-/*
- * See: https://developers.google.com/web/updates/2014/08/Easier-ArrayBuffer-String-conversion-with-the-Encoding-API
- */
-// export function stringToByteArray(str: string): Uint8Array {
-//   const encoder = new TextEncoder();
-//   return encoder.encode(str);
-// }
-
-// export function byteArrayToString(
-//   bytes: ArrayBuffer | ArrayBufferView | Array<number>
-// ): string {
-//   const byteArray =
-//     bytes instanceof ArrayBuffer
-//       ? bytes
-//       : ArrayBuffer.isView(bytes)
-//       ? bytes
-//       : Uint8Array.from(bytes);
-//   const decoder = new TextDecoder();
-//   return decoder.decode(byteArray);
-// }
 
 export function timeConverter(unixTimestamp: number) {
   const a = new Date(unixTimestamp);
@@ -117,8 +37,6 @@ export function base64ToByteArray(base64Str: string): Uint8Array {
 export function byteArrayToBase64(
   bytes: ArrayBuffer | ArrayBufferView | Array<number>
 ): string {
-  // const byteArray = bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : ArrayBuffer.isView(bytes) ? new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength) : Uint8Array.from(bytes);
-  // return btoa([].reduce.call(byteArray, (acc, byte) => acc + String.fromCharCode(byte), ''));
   const buf =
     bytes instanceof ArrayBuffer
       ? Buffer.from(bytes)
@@ -131,10 +49,6 @@ export function byteArrayToBase64(
 export function toBase64Url(base64Str: string): string {
   return base64Str.replace(/\+/g, '-').replace(/\//g, '_');
 }
-
-// export function fromBase64Url(base64Str: string): string {
-//   return base64Str.replace(/\-/g, '+').replace(/\_/g, '/');
-// }
 
 export function mergeByteArrays(
   resultConstructor,
@@ -174,16 +88,6 @@ export function publicKeyToAddress(
   return toBase64Url(byteArrayToBase64(addressBytes));
 }
 
-// export function addressToPublicKey(address: string): Uint8Array {
-//   const addressBytes = base64ToByteArray(fromBase64Url(address));
-//   // return addressBytes.subarray(0, addressBytes.length - 1);
-//   return new Uint8Array(
-//     addressBytes.buffer,
-//     addressBytes.byteOffset,
-//     addressBytes.byteLength - 1
-//   );
-// }
-
 export function getAddressChecksum(
   bytes: ArrayBuffer | ArrayBufferView | Array<number>
 ): Uint8Array {
@@ -212,9 +116,7 @@ function __makeDataViewSetter(funcName, viewFuncName) {
     if (value.constructor !== JSBI) {
       throw TypeError('Value needs to be JSBI');
     }
-    // Set 64 bit number as two 32 bit numbers.
-    // The lower/higher (depending on endianess)
-    // number has an offset of 4 bytes (32/8).
+
     const signBit = value.sign ? 1 << 31 : 0;
     const lowWord = value.__unsignedDigit(0) - (value.sign ? 1 : 0);
     viewSetFunc.call(

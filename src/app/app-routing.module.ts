@@ -66,18 +66,14 @@ const routes: Routes = [
     loadChildren:
       './Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule'
   },
-  { path: 'sendconfirm', loadChildren: './Pages/sendconfirm/sendconfirm.module#SendconfirmPageModule',
+  { path: 'senddetail', loadChildren: './Pages/Modals/senddetail/senddetail.module#SenddetailPageModule',
   canActivate: [AuthService] },
-  { path: 'senddetail', loadChildren: './Modals/senddetail/senddetail.module#SenddetailPageModule',
+  { path: 'enterpinsend', loadChildren: './Pages/Modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },
+  { path: 'trxstatus', loadChildren: './Pages/Modals/trxstatus/trxstatus.module#TrxstatusPageModule',
   canActivate: [AuthService] },
-  { path: 'enterpinsend', loadChildren: './Modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },
-  { path: 'trxstatus', loadChildren: './Modals/trxstatus/trxstatus.module#TrxstatusPageModule',
-  canActivate: [AuthService] },
-  { path: 'sendcoin', loadChildren: './Pages/tabs/tab-send/tab-send.module#TabSendPageModule',
+  { path: 'sendcoin', loadChildren: './Pages/send-coin/tab-send.module#TabSendPageModule',
    canActivate: [AuthService] },
   { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },
-  { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule' },
-
 
 ];
 @NgModule({

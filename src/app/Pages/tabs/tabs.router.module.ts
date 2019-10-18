@@ -26,15 +26,6 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'send',
-        children: [
-          {
-            path: '',
-            loadChildren: './tab-send/tab-send.module#TabSendPageModule'
-          }
-        ]
-      },
-      {
         path: '',
         redirectTo: '/tabs/dashboard',
         pathMatch: 'full'

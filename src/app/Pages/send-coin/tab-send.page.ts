@@ -14,9 +14,9 @@ import { AddressBookModalComponent } from './address-book-modal/address-book-mod
 import { BytesMaker } from 'src/app/helpers/BytesMaker';
 import { GetAccountBalanceResponse } from 'src/app/grpc/model/accountBalance_pb';
 import { ActiveAccountService } from 'src/app/services/active-account.service';
-import { SenddetailPage } from 'src/app/Modals/senddetail/senddetail.page';
-import { EnterpinsendPage } from 'src/app/Modals/enterpinsend/enterpinsend.page';
-import { TrxstatusPage } from 'src/app/Modals/trxstatus/trxstatus.page';
+import { SenddetailPage } from 'src/app/Pages/Modals/senddetail/senddetail.page';
+import { EnterpinsendPage } from 'src/app/Pages/Modals/enterpinsend/enterpinsend.page';
+import { TrxstatusPage } from 'src/app/Pages/Modals/trxstatus/trxstatus.page';
 import { TranslateService } from '@ngx-translate/core';
 
 

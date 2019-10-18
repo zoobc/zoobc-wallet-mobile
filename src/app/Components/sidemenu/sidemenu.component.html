@@ -6,59 +6,13 @@
   </ion-header>
   <ion-content class="ion-padding">
     <ion-list>
-      <!-- <ion-list-header> </ion-list-header> -->
+
       <ion-item lines="none" (click)="openAddresBook()" button>
         <ion-icon name="book"></ion-icon>
         <ion-label>
           {{ "Address Book" | translate }}
         </ion-label>
       </ion-item>
-
-      <ion-item lines="none" (click)="revealPassphrase()" button>
-        <ion-icon name="book"></ion-icon>
-        <ion-label>
-          {{ "Reveal Passphrase" | translate }}
-        </ion-label>
-      </ion-item>
-
-      
-      <!--
-      <ion-item (click)="openNodeAdmin()" button>
-        <ion-icon name="git-network"></ion-icon>
-        <ion-label>
-          {{ "Node Admin" | translate }}
-        </ion-label>
-      </ion-item>
-
-
-      <ion-item (click)="openSendFeedbak()" button>
-        <ion-icon name="mail"></ion-icon>
-        <ion-label>
-          Send Feedback
-        </ion-label>
-      </ion-item>
-
-      <ion-item>
-        <ion-icon name="heart-empty"></ion-icon>
-        <ion-label>
-          Share ZooBC Wallet
-        </ion-label>
-      </ion-item>
-
-    </ion-list>
-
-
-    <ion-list>
-      <ion-list-header>
-        Preferences
-      </ion-list-header>
-   
-      <ion-item>
-        <ion-icon name="notifications"></ion-icon>
-        <ion-label (click)="openNotifications()">Notifications</ion-label>
-      </ion-item>
-    -->
-
 
       <ion-item lines="none">
         <ion-icon name="globe"></ion-icon>
@@ -70,34 +24,13 @@
         </ion-select>
       </ion-item>
 
-
-      <!--       
-      <ion-item>
-        <ion-icon name="logo-usd"></ion-icon>
-        <ion-label>{{ "Currency" | translate }}</ion-label>
-        <ion-select
-          interface="action-sheet"
-          [(ngModel)]="activeCurrency"
-          (ionChange)="selectActiveCurrency()"
-        >
-          <ion-select-option
-            *ngFor="let currency of currencies; let i = index"
-            value="{{ currency.code }}"
-          >
-            {{ currency.code }} - {{ currency.country }}</ion-select-option
-          >
-        </ion-select>
-      </ion-item> -->
-      <!-- </ion-list>
-
-    <ion-list> -->
-
       <ion-item lines="none">
         <ion-icon name="help-circle-outline"></ion-icon>
         <ion-label  class="text" (click)="openHelpSupport()">
           {{ "Help & Support" | translate }}
         </ion-label>
       </ion-item>
+      
       <ion-item lines="none">
         <ion-icon name="information-circle-outline"></ion-icon>
         <ion-label (click)="openAboutView()">

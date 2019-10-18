@@ -5,7 +5,6 @@ import { CreateAccountService } from 'src/app/services/create-account.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/setup-pin/setup-pin.page';
-import { doEncrypt} from 'src/app/helpers/converters';
 import { Storage } from '@ionic/storage';
 
 @Component({
@@ -110,7 +109,6 @@ export class ExistingWalletPage implements OnInit {
       if (returnedData && returnedData.data && returnedData.data.length === 6) {
 
         const PIN = returnedData.data;
-        this.savePassphrase(PIN, this.passphrase);
         this.savePIN(PIN);
 
       } else {
@@ -119,19 +117,6 @@ export class ExistingWalletPage implements OnInit {
     });
 
     return await pinmodal.present();
-  }
-
-  async savePassphrase(PIN: any, passphrase: any) {
-
-    console.log('=== PIN', PIN);
-    console.log('==== passphrase:', passphrase);
-    const encrypted = doEncrypt(passphrase, PIN);
-    console.log('===== encrypted: ', encrypted);
-    await this.storage.set('PASS_STORAGE', encrypted);
-
-    // const decrypted =  doDecrypt(encrypted, PIN);
-    // console.log('===== decrypted: ', decrypted.toString(CryptoJS.enc.Utf8));
-
   }
 
 

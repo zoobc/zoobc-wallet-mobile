@@ -47,6 +47,7 @@
     "bn.js": "^5.0.0",
     "chart.js": "^2.8.0",
     "cordova-android": "^8.1.0",
+    "cordova-android-support-gradle-release": "^3.0.1",
     "cordova-clipboard": "1.2.1",
     "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-file": "^6.0.2",
@@ -63,7 +64,6 @@
     "elliptic": "^6.4.1",
     "es6-promise-plugin": "^4.2.2",
     "google-protobuf": "^3.8.0",
-    "ionic": "5.2.5",
     "jayson": "^3.0.2",
     "jsbi": "^2.0.5",
     "moment": "^2.24.0",
@@ -137,7 +137,10 @@
       "cordova.plugins.diagnostic": {
         "ANDROID_SUPPORT_VERSION": "28.+"
       },
-      "cordova-plugin-networkinterface": {}
+      "cordova-plugin-networkinterface": {},
+      "cordova-android-support-gradle-release": {
+        "ANDROID_SUPPORT_VERSION": "27.+"
+      }
     },
     "platforms": [
       "android"
