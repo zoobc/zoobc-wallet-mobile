@@ -40,7 +40,7 @@ const routes: Routes = [
   {
     path: 'create-account',
     loadChildren:
-      './create-account/create-account.module#CreateAccountPageModule'
+      './Pages/create-account/create-account.module#CreateAccountPageModule'
   },
   {
     path: 'feedback',
@@ -54,7 +54,7 @@ const routes: Routes = [
   { path: 'chart', loadChildren: './Pages/chart/chart.module#ChartPageModule' },
   {
     path: 'list-account',
-    loadChildren: './list-account/list-account.module#ListAccountModule'
+    loadChildren: './Pages/list-account/list-account.module#ListAccountModule'
   },
   {
     path: 'address-book',
