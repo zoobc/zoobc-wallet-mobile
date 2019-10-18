@@ -1,10 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { KeyringService } from '../services/keyring.service';
+import { KeyringService } from 'src/app/services/keyring.service';
 import { ToastController, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { CreateAccountService } from '../services/create-account.service';
+import { CreateAccountService } from 'src/app/services/create-account.service';
 import { AuthService } from 'src/app/services/auth-service';
-import { doEncrypt, doDecrypt } from '../helpers/converters';
+import { doEncrypt, doDecrypt } from 'src/app/helpers/converters';
 import CryptoJS from 'crypto-js';
 
 @Component({
@@ -17,12 +17,10 @@ export class GeneratePassphrasePage implements OnInit {
   terms = false;
   passphrase: string;
   isPinSetup = false;
-
   private account;
-
-  pagePosition: number = 1;
-  pageStep: number = 1;
-  tempPin: string = '';
+  pagePosition = 1;
+  pageStep = 1;
+  tempPin = '';
   public loginFail = false;
 
   constructor(
@@ -65,9 +63,7 @@ export class GeneratePassphrasePage implements OnInit {
     if (this.tempPin === pin) {
       this.createAccSrv.setPassphrase(this.passphrase);
       this.createAccSrv.setPin(pin);
-
       this.savePassphrase(pin, this.passphrase);
-
       await this.createAccSrv.createAccount();
       const loginStatus = await this.authSrv.login(pin);
       if (loginStatus) {
@@ -75,7 +71,7 @@ export class GeneratePassphrasePage implements OnInit {
       }
     } else {
       this.loginFail = true;
-      //this.presentToast('Your Pin is not same');
+      // this.presentToast('Your Pin is not same');
       setTimeout(() => {
         observer.next(true);
        }, 1000);
@@ -84,64 +80,18 @@ export class GeneratePassphrasePage implements OnInit {
 
 
   async savePassphrase(PIN: any, passphrase: any) {
-
     console.log('=== PIN', PIN);
     console.log('==== passphrase:', passphrase);
     const encrypted = doEncrypt(passphrase, PIN);
     console.log('===== encrypted: ', encrypted);
     await this.storage.set('PASS_STORAGE', encrypted);
-
     const decrypted =  doDecrypt(encrypted, PIN);
     console.log('===== decrypted: ', decrypted.toString(CryptoJS.enc.Utf8));
-
   }
-
 
   setPagePosition(value) {
     this.pagePosition = value;
   }
-
-  /*
-  async checkSetupPin() {
-    const pin = await this.storage.get('pin');
-    if (pin) {
-      this.isPinSetup = true;
-    } else {
-      this.isPinSetup = false;
-    }
-  }*/
-
-  /*
-  async goToAccount() {
-    // const pin = await this.storage.get('pin')
-    const savedKey = await this.storage.get('accounts');
-    // const privKeyUint8 = await this.cryptoService.rootKeyFromSeed(this.converterService.hexToArrayByte(this.passphrase))
-    // const pinUint8 = this.converterService.stringToArrayByte(pin)
-
-    // const keyAlgo = {
-    //   name: 'AES-GCM',
-    //   length: 256,
-    // }
-
-    // const opts = {
-    //   format: 'jwk',
-    //   keyAlgo,
-    //   wrapAlgo: {
-    //     name: 'AES-GCM',
-    //     iv: this.cryptoService.genInitVector(),
-    //   },
-    //   deriveAlgo: this.cryptoService.genDeriveAlgo(),
-    // }
-
-    // const wrappedKey = await this.cryptoService.wrapKeyWithPin(privKeyUint8, pinUint8, opts)
-
-    this.storage.set('accounts', [...savedKey, this.account]);
-    this.router.navigate(['/']);
-  }
-
-  async goToSetupPin() {
-    this.router.navigate(['/setup-pin']);
-  }*/
 
   async generatePassphrase() {
     const passphrase = this.keyringService.generateRandomPhrase().phrase;
@@ -151,7 +101,7 @@ export class GeneratePassphrasePage implements OnInit {
   copyToClipboard() {
     const val = this.passphrase;
 
-    let selBox = document.createElement('textarea');
+    const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';
     selBox.style.top = '0';
@@ -166,17 +116,17 @@ export class GeneratePassphrasePage implements OnInit {
     this.presentToast('Passphrase copied to clipboard');
   }
 
-  async presentToast(message: string) {
+  async presentToast(msg: string) {
     const toast = await this.toastController.create({
-      message: message,
+      message: msg,
       duration: 2000
     });
     toast.present();
   }
 
   ionViewDidLeave(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
     this.writtenDown = false;
     this.terms = false;
   }

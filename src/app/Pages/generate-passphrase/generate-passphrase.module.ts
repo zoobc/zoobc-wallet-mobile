@@ -6,7 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { GeneratePassphrasePage } from './generate-passphrase.page';
-import { CreateNewStepsComponent } from '../partials/create-new-steps/create-new-steps.component';
+import { CreateNewStepsComponent } from 'src/app/partials/create-new-steps/create-new-steps.component';
 import { ComponentsModule } from 'src/app/Components/components.module';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
