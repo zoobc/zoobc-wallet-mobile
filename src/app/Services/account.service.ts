@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { publicKeyToAddress } from 'src/app/helpers/converters';
+import { publicKeyToAddress } from 'src/app/Helpers/converters';
 import { Storage } from '@ionic/storage';
 
 @Injectable({

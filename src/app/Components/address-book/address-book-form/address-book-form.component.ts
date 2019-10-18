@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ModalController, NavController } from '@ionic/angular';
-import { base64ToByteArray } from 'src/app/helpers/converters';
+import { base64ToByteArray } from 'src/app/Helpers/converters';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { NavigationExtras} from '@angular/router';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';

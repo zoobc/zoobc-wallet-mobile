@@ -15,10 +15,10 @@ import { TransactionService, Transactions, Transaction } from 'src/app/Services/
 import {
   GetAccountBalanceResponse,
   AccountBalance as AB,
-} from 'src/app/grpc/model/accountBalance_pb';
+} from 'src/app/Grpc/model/accountBalance_pb';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { TranslateService } from '@ngx-translate/core';
-import { makeShortAddress, timeConverter } from 'src/app/helpers/converters';
+import { makeShortAddress } from 'src/app/Helpers/converters';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;

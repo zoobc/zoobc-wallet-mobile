@@ -7,7 +7,7 @@ import { Storage } from '@ionic/storage';
 import { AccountService } from 'src/app/Services/account.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { makeShortAddress } from 'src/app/helpers/converters';
+import { makeShortAddress } from 'src/app/Helpers/converters';
 
 @Component({
   selector: 'app-tab-receive',

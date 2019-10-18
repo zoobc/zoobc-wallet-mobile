@@ -8,19 +8,19 @@ import {
   Transaction as TransactionResponse,
   PostTransactionRequest,
   PostTransactionResponse,
-} from '../grpc/model/transaction_pb';
+} from '../Grpc/model/transaction_pb';
 import {
   GetMempoolTransactionsRequest,
   GetMempoolTransactionsResponse,
-} from '../grpc/model/mempool_pb';
-import { TransactionService as TransactionServ } from '../grpc/service/transaction_pb_service';
-import { MempoolService } from '../grpc/service/mempool_pb_service';
+} from '../Grpc/model/mempool_pb';
+import { TransactionService as TransactionServ } from '../Grpc/service/transaction_pb_service';
+import { MempoolService } from '../Grpc/service/mempool_pb_service';
 
 import { environment } from '../../environments/environment';
-import { Pagination, OrderBy } from '../grpc/model/pagination_pb';
-import { readInt64, makeShortAddress } from 'src/app/helpers/converters';
-import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../grpc/model/accountBalance_pb';
-import { AccountBalanceService } from '../grpc/service/accountBalance_pb_service';
+import { Pagination, OrderBy } from '../Grpc/model/pagination_pb';
+import { readInt64, makeShortAddress } from 'src/app/Helpers/converters';
+import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../Grpc/model/accountBalance_pb';
+import { AccountBalanceService } from '../Grpc/service/accountBalance_pb_service';
 import { AddressBookService } from './address-book.service';
 
 
