@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { MnemonicsService } from '../services/mnemonics.service';
+import { MnemonicsService } from 'src/app/services/mnemonics.service';
 import { NavController, ModalController } from '@ionic/angular';
-import { CreateAccountService } from '../services/create-account.service';
+import { CreateAccountService } from 'src/app/services/create-account.service';
 import { environment } from 'src/environments/environment';
-import { AuthService } from '../services/auth-service';
-import { SetupPinPage } from '../setup-pin/setup-pin.page';
-import { doEncrypt} from '../helpers/converters';
+import { AuthService } from 'src/app/services/auth-service';
+import { SetupPinPage } from 'src/app/setup-pin/setup-pin.page';
+import { doEncrypt} from 'src/app/helpers/converters';
 import { Storage } from '@ionic/storage';
 
 @Component({

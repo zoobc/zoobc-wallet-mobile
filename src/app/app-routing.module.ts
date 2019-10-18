@@ -22,7 +22,7 @@ const routes: Routes = [
   },
   {
     path: 'existing-wallet',
-    loadChildren: './existing-wallet/existing-wallet.module#ExistingWalletPageModule'
+    loadChildren: './Pages/existing-wallet/existing-wallet.module#ExistingWalletPageModule'
   },
   {
     path: 'generate-passphrase',
@@ -81,7 +81,8 @@ const routes: Routes = [
   // { path: 'sendcoin', loadChildren: './Pages/sendcoin/sendcoin.module#SendcoinPageModule' },
   { path: 'sendcoin', loadChildren: './tabs/tab-send/tab-send.module#TabSendPageModule',
    canActivate: [AuthService] },
-  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },  { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule' },
+  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },
+  { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule' },
 
 
 ];
