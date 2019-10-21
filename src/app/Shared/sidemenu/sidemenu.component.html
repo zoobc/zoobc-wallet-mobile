@@ -32,7 +32,7 @@
         <ion-icon name="globe"></ion-icon>
         <ion-label>{{ "Language" | translate }}</ion-label>
         <ion-select
-          interface="action-sheet"
+          interface="popover"
           [(ngModel)]="activeLanguage"
           (ionChange)="selectActiveLanguage()"
         >
