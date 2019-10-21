@@ -10,6 +10,119 @@
 
 <ion-content>
   <div *ngIf="isLoadingBalance">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>From Account</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-item *ngIf="account" (click)="openListAccount('sender')">
+      <ion-label>
+        <h3>{{"Name" | translate}}:  {{ account.accountName }}</h3>
+        <p>{{"Address" | translate}}:  {{ account.address }}</p>
+        <p>Balance: <span>{{ account.balance }} ZBC</span></p>
+      </ion-label>
+      <ion-icon name="arrow-dropdown" slot="end"></ion-icon>
+    </ion-item>
+
+  </ion-card>
+
+  <ion-card>
+    <ion-item>
+      <ion-icon name="bookmarks" (click)="openAddresses()" slot="end"></ion-icon>
+      <ion-icon name="qr-scanner" (click)="scanQrCode()" slot="end"></ion-icon>
+      <ion-icon name="albums" slot="end" (click)="openListAccount('recipient')"></ion-icon>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-label position="stacked">
+        {{ "Pay to" | translate }} <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-textarea rows="3" debounce=1 maxlength=60 wrap='hard' required placeholder="{{'Enter recipient address'|translate}} ..." 
+        name="recipient" type="text" style="font-weight: bold" (ionChange)="validateRecipient()" [(ngModel)]="recipient" ngModel required>
+        
+      </ion-textarea>
+    </ion-item>
+
+    <ion-item lines="none" *ngIf="!isRecipientValid">
+      <ion-label color="danger">Recipient {{ "Address is not valid" | translate }}!</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{ "Amount" | translate }} </ion-label>
+      <ion-input></ion-input>
+    </ion-item>
+    <ion-item lines="none" *ngIf="!isAmountValid">
+        <ion-label color="danger" class="displayerror">{{ amountMsg }}!</ion-label>
+    </ion-item>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-label position="stacked" class="stacked">
+        {{ "Transaction Fee" | translate }} <ion-text color="danger">*</ion-text>
+      </ion-label>
+    </ion-card-header>
+    <div id="container">
+
+     
+      <div id="inner">
+        <ion-button class="twolines" *ngFor="let trxFee of allFees" (click)="changeFee(0.001);">
+          <p>{{ trxFee.name }} <br/> 
+            {{trxFee.fee }} ZBC<br/>
+            0.00015 USD
+          </p>
+        </ion-button>
+<!-- 
+        <ion-button class="twolines" (click)="changeFee(0.005);">
+          <p>Average <br/>
+            0.005 ZBC<br />
+            0.00015 USD<br/>
+          </p>
+        </ion-button>
+
+        <ion-button class="twolines" (click)="changeFee(0.01);">
+          <p>Fast<br />
+            0.01 ZBC<br/>
+            0.006 USD
+          </p>
+        </ion-button> -->
+
+      </div>
+
+      <ion-item>
+        <ion-toggle slot="start" [(ngModel)]="customeChecked" (ionChange)="customfeeChecked()" color="light" name="customeChecked"></ion-toggle>
+        <ion-label>Custom Fee</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-input *ngIf="customeChecked" placeholder="{{'Enter amount'|translate}} ..." (ionChange)="validateCustomFee()" required name="customfee" maxlength="12" type="number" [(ngModel)]="customfee"
+        required></ion-input>
+      </ion-item>
+      <ion-item  *ngIf="!isFeeValid">
+          <ion-label  color="danger">{{ "Select one transaction fee" | translate }} or input custom fee!
+          </ion-label> 
+      </ion-item>
+      <ion-item-divider style="border:none" lines="none">
+      </ion-item-divider>
+    </div>
+  </ion-card>
+
+  <div style="text-align:center" style="padding:20px;">
+        <ion-button color="tertiary" *ngIf="!isLoadingBalance" (click)="showConfirmation()" style="width: 100%" expand="block">
+          {{ "Next" | translate }}
+        </ion-button>
+        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance" (click)="showConfirmation()" style="width: 100%" expand="block">
+          {{ "Next" | translate }}
+        </ion-button>
+  </div>
+
+</ion-content>
+
+<!-- 
+<ion-content>
+  <div *ngIf="isLoadingBalance">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
   <div *ngIf="errorMsg">
@@ -122,4 +235,4 @@
     </ion-grid>
   </form>
 
-</ion-content>
+</ion-content> -->

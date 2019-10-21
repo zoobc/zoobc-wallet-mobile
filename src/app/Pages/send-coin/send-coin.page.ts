@@ -8,9 +8,8 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { publicKeyToAddress, base64ToByteArray, makeShortAddress } from 'src/app/Helpers/converters';
 import { Storage } from '@ionic/storage';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd, NavigationExtras } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
-import { AddressBookModalComponent } from './address-book-modal/address-book-modal.component';
 import { BytesMaker } from 'src/app/Helpers/BytesMaker';
 import { GetAccountBalanceResponse } from 'src/app/Grpc/model/accountBalance_pb';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
@@ -18,6 +17,7 @@ import { SenddetailPage } from 'src/app/Pages/Modals/senddetail/senddetail.page'
 import { EnterpinsendPage } from 'src/app/Pages/Modals/enterpinsend/enterpinsend.page';
 import { TrxstatusPage } from 'src/app/Pages/Modals/trxstatus/trxstatus.page';
 import { TranslateService } from '@ngx-translate/core';
+import { AddressBookService } from 'src/app/Services/address-book.service';
 
 
 interface AccountInfo {
@@ -77,31 +77,53 @@ export class SendCoinPage implements OnInit {
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
     private router: Router,
+    public addressbookSrv: AddressBookService,
     private translateServ: TranslateService,
     private modalController: ModalController,
     public alertController: AlertController,
     private activeRoute: ActivatedRoute,
     public loadingController: LoadingController
   ) {
-
-    // get active account
-    console.log('=== on constructor: ');
     this.getActiveAccount();
-    this.createTransactionFees();
-
     this.activeAccountSrv.accountSubject.subscribe({
        next: v => {
-         this.account.accountName = v.accountName;
+         console.log('==========v:', v);
+         this.account = v;
          this.account.address = this.accountService.getAccountAddress(v);
          this.account.shortadress = makeShortAddress(this.account.address);
-         this.getActiveAccount();
-         this.getAllAccounts();
+         this.getAccountBalance(this.account.address);
        }
      });
+
+    this.addressbookSrv.addressSubject.subscribe({
+      next: v => {
+        console.log('===== address Subject subscrive ', v);
+        this.recipient = v;
+      }
+    });
+
+    this.activeAccountSrv.recipientSubject.subscribe({
+      next: v => {
+        console.log('===== recipient Subject subscrive ', v);
+        this.recipient = v;
+      }
+    });
+
+
   }
 
   openMenu() {
     this.menuController.open('mainMenu');
+  }
+
+  openListAccount(arg: string) {
+    console.log('==== arg send coin:', arg);
+    const navigationExtras: NavigationExtras = {
+      state: {
+        forWhat: arg
+      }
+    };
+    this.router.navigate(['list-account'], navigationExtras);
   }
 
   createTransactionFees() {
@@ -120,93 +142,56 @@ export class SendCoinPage implements OnInit {
       fee: 0.00025
     };
 
-    this.allFees.push(trxFee1);
-    this.allFees.push(trxFee2);
-    this.allFees.push(trxFee3);
+    this.allFees = [trxFee1, trxFee2, trxFee3];
     this.fee = trxFee2;
 
   }
 
   async getActiveAccount() {
-    this.activeAccount = await this.accountService.getActiveAccount();
-    console.log('==== activeAccount: ', this.activeAccount);
+    await this.accountService.getActiveAccount().then(acc => {
+      console.log('==============ACC:', acc);
+      this.account = acc;
+      this.account.address = this.accountService.getAccountAddress(acc);
+      this.account.shortadress = makeShortAddress(this.account.address);
+      this.getAccountBalance(this.account.address);
+    });
   }
 
-  async getAllAccounts() {
+  async getAccountBalance(addr: string){
+    this.isLoadingBalance = true;
     const date1 = new Date();
-    this.allAccounts = [];
-    this.errorMsg = '';
-    console.log('-- start: ');
+    await this.transactionService.getAccountBalance(addr).then((data: AccountBalanceList) => {
+      if (data.accountbalance && data.accountbalance.spendablebalance) {
+        const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
+        this.account.balance = blnc;
+      }
+    }).catch((error) => {
+      console.log('===== eror', error);
+      const date2 = new Date();
+      const diff = date2.getTime() - date1.getTime();
+      console.log('== diff: ', diff);
 
-    let i = 0;
-
-    const alls = await this.accountService.getAll();
-    for (const acc of alls) {
-      console.log('-- urutan: ' + i);
-      this.isLoadingBalance = true;
-
-      const addr = this.accountService.getAccountAddress(acc);
-      const tempAcc: AccountInfo = {
-        name: acc.accountName,
-        address: addr,
-        shortAddress: makeShortAddress(addr),
-        balance: 0,
-        accountProps: acc.accountProps
-      };
-
-      await this.transactionService.getAccountBalance(addr).then((data: AccountBalanceList) => {
-        if (data.accountbalance && data.accountbalance.spendablebalance) {
-          const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
-          tempAcc.balance = blnc;
-        }
-      }).catch((error) => {
-
-        console.log('===== eror', error);
-
-
-        const date2 = new Date();
-        const diff = date2.getTime() - date1.getTime();
-        console.log('== diff: ', diff);
-
-        // all SubConns are in TransientFailure
-        if (error === 'error: account not found') {
-          // do something here
-          this.errorMsg = '';
-        } else if (error === 'Response closed without headers') {
-          if (diff < 5000) {
-            this.errorMsg = 'Please check internet connection!';
-          } else {
-            this.errorMsg = 'Fail connect to services, please try again later!';
-          }
-        } else if (error === 'all SubConns are in TransientFailure'){
-          this.errorMsg = '';
+      // all SubConns are in TransientFailure
+      if (error === 'error: account not found') {
+        // do something here
+        this.errorMsg = '';
+      } else if (error === 'Response closed without headers') {
+        if (diff < 5000) {
+          this.errorMsg = 'Please check internet connection!';
         } else {
-          this.errorMsg = '';
+          this.errorMsg = 'Fail connect to services, please try again later!';
         }
-
-        tempAcc.balance = 0;
-      }).finally(() => {
-        console.log('-- urutan: ' + i + '-b');
-        console.log('--- acc name: ', acc.accountName);
-        console.log('--- acc addr: ', addr);
-        console.log('--- acc Balance: ', tempAcc.balance);
-        // this.isLoadingBalance = false;
-        const activeAddress = this.accountService.getAccountAddress(this.activeAccount);
-        if (addr === activeAddress && acc.accountName === this.activeAccount.accountName) {
-          this.account = tempAcc;
-          this.account.balance = tempAcc.balance;
-        }
-        this.allAccounts.push(tempAcc);
-      });
-      i++;
-    }
-
-    console.log('-- end: ');
-    // finaly set false
-    this.isLoadingBalance = false;
-
+      } else if (error === 'all SubConns are in TransientFailure'){
+        this.errorMsg = '';
+      } else {
+        this.errorMsg = '';
+      }
+      this.account.balance = 0;
+    }).finally(() => {
+      this.isLoadingBalance = false;
+      console.log('===== BALANCE:', this.account.balance);
+    });
   }
-
 
   customfeeChecked() {
       console.log('==== custome fee', this.customfee);
@@ -328,7 +313,9 @@ export class SendCoinPage implements OnInit {
   }
 
   ngOnInit() {
+    console.log('=== on constructor: ');
     this.getRecipientFromScanner();
+    this.createTransactionFees();
   }
 
   async showConfirmation() {
@@ -535,16 +522,7 @@ export class SendCoinPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // get active account
-    console.log('=== on ionViewWillEnter: ');
-    this.getActiveAccount();
-    this.getAllAccounts();
-
-
-    // temporary
-    // this.recipient = 'mz1KVJRc34dat8uwPsBG_Beplqhz1gvN379kL5yDtQXB';
-    // this.amount = 0.001;
-
+    console.log('====== account did: ', this.account);
   }
 
   scanQrCode() {
@@ -563,21 +541,7 @@ export class SendCoinPage implements OnInit {
   }
 
   openAddresses() {
-    this.presentModalAddressesList();
-  }
-
-  async presentModalAddressesList() {
-    const modal = await this.modalController.create({
-      component: AddressBookModalComponent
-    });
-
-    modal.onDidDismiss().then((returnVal: any) => {
-      if (returnVal && returnVal.data && returnVal.data.address) {
-        this.recipient = returnVal.data.address;
-      }
-    });
-
-    return await modal.present();
+    this.router.navigateByUrl('/address-book');
   }
 
   submit() {

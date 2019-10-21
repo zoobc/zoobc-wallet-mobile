@@ -4,6 +4,8 @@ import { ModalCreateAccountComponent } from './modal-create-account/modal-create
 import { Storage } from '@ionic/storage';
 import { AccountService } from 'src/app/Services/account.service';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-list-account',
@@ -11,17 +13,34 @@ import { ActiveAccountService } from 'src/app/Services/active-account.service';
   styleUrls: ['./list-account.component.scss']
 })
 export class ListAccountComponent implements OnInit {
+
+  private forWhat: string;
+
   constructor(
+    private location: Location,
     private navtrl: NavController,
-    public modalController: ModalController,
+    private modalController: ModalController,
     private storage: Storage,
+    private route: ActivatedRoute,
+    private router: Router,
     private accountService: AccountService,
     private toastController: ToastController,
     private activeAccountSrv: ActiveAccountService
-  ) {}
+  ) {
+
+    this.route.queryParams.subscribe(params => {
+      console.log('==== params received:', params);
+ 
+      if (this.router.getCurrentNavigation().extras.state) {
+        console.log('==== state received:', this.router.getCurrentNavigation().extras.state);
+        this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
+        console.log(' ===  this.forwat:', this.forWhat);
+      }
+    });
+
+  }
 
   accounts: any = [];
-
   accountsRaw = [];
 
   ngOnInit() {
@@ -44,13 +63,26 @@ export class ListAccountComponent implements OnInit {
     });
   }
 
-  accountClicked(index) {
+  accountClicked(index: number) {
     const activeAccount = this.accountsRaw[index];
+    console.log('======= active Account clicked 1: ', activeAccount);
 
-    this.storage.set('active_account', activeAccount).then(() => {
-      this.activeAccountSrv.setActiveAccount(activeAccount);
-      this.navtrl.pop();
-    });
+    console.log('===== forwat accountClicked 2:', this.forWhat);
+
+    if (this.forWhat === 'sender' || this.forWhat === 'account' ){
+      this.activeAccountSrv.setForWhat(this.forWhat);
+      this.storage.set('active_account', activeAccount).then(() => {
+        this.activeAccountSrv.setActiveAccount(activeAccount);
+        this.location.back();
+      });
+
+    } else if (this.forWhat === 'recipient') {
+      this.activeAccountSrv.setForWhat(this.forWhat);
+      const address = this.accountService.getAccountAddress(activeAccount);
+      this.activeAccountSrv.setRecipient(address);
+      this.location.back();
+    }
+
   }
 
   copyAddress(index) {

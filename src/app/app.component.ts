@@ -8,7 +8,6 @@ import { AboutPage } from './Pages/about/about.page';
 import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { CurrencyService } from 'src/app/Services/currency.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',

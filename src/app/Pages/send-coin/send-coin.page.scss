@@ -1,36 +1,109 @@
-.page-send{
+ion-icon{
+    font-size: 2.0rem;
+}
 
-    ion-grid{
-        --ion-grid-padding: 0;
-    }
+.buttonfee{
+    width: 80px;
+    border: 1px solid;
+    background:#cccccc;
+    margin: 5px;
+    height: 60px;
+}
 
-    ion-col{
-        --ion-grid-column-padding: 0;
-    }
+#container {
+    background-color: #ffffff;
+    overflow: hidden;
 
-    ion-item{
-        --padding-start: 0;
-        --inner-padding-end: 0;
+    .twolines{
+        .button-inner {
+            flex-flow: column;
+        }
     }
+    
+}
+ 
+  
+ion-button{
+    font-size: 0.7em;
+    width: 30%;
 
-    .ion-label{
-        font-size: 1.4em;
-    }
-
-    .btn-icon{
-        background-color: transparent;
-        font-size: 1.6rem;
-    }
+    --background-focused: red;
+    --background-hover: black;
+    --background-click: yellow;
+    // --background: blue;
+    --background-activated: green;
 
 }
 
-.stacked{
-    font-size:1.2em;
-    margin-bottom:12px;
-    color:rgb(78, 77, 77);
-}
+// ion-button:hover{
+//     background: green; 
+//     --background-focused: #ffffff;
+//     --background-hover: #ffffff;
+//     --background-click: #DDDEDE;
+//     --background: #fff;
+//     --background-activated: #fff;
 
-.displayerror{
-    font-size:0.8em;
-    color:red;
-}
+// }
+
+// ion-button:active{
+//     background: red; 
+//     --background-focused: #ffffff;
+//     --background-hover: #ffffff;
+//     --background-click: #DDDEDE;
+//     --background: #fff;
+//     --background-activated: #fff;
+
+// }
+
+
+// ion-button:focus{
+//     background: yellow; 
+//     --background-focused: #ffffff;
+//     --background-hover: #ffffff;
+//     --background-click: #DDDEDE;
+//     --background: #fff;
+//     --background-activated: #fff;
+
+// }
+
+
+
+
+
+
+// .page-send{
+
+//     ion-grid{
+//         --ion-grid-padding: 0;
+//     }
+
+//     ion-col{
+//         --ion-grid-column-padding: 0;
+//     }
+
+//     ion-item{
+//         --padding-start: 0;
+//         --inner-padding-end: 0;
+//     }
+
+//     .ion-label{
+//         font-size: 1.4em;
+//     }
+
+//     .btn-icon{
+//         background-color: transparent;
+//         font-size: 1.6rem;
+//     }
+
+// }
+
+// .stacked{
+//     font-size:1.2em;
+//     margin-bottom:12px;
+//     color:rgb(78, 77, 77);
+// }
+
+// .displayerror{
+//     font-size:0.8em;
+//     color:red;
+// }

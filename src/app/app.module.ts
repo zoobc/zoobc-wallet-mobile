@@ -28,6 +28,7 @@ import { EnterpinsendPageModule } from './Pages/Modals/enterpinsend/enterpinsend
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
 import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';
+import { AddressBookService } from './Services/address-book.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -64,6 +65,7 @@ export function createTranslateLoader(http: HttpClient) {
     StatusBar,
     SplashScreen,
     LanguageService,
+    AddressBookService,
     QRScanner,
     SocialSharing,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

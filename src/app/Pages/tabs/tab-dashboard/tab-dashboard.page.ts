@@ -8,7 +8,7 @@ import {
   ModalController
 } from '@ionic/angular';
 import { AuthService } from 'src/app/Services/auth-service';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, NavigationExtras } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
 import { Storage } from '@ionic/storage';
 import { TransactionService, Transactions, Transaction } from 'src/app/Services/transaction.service';
@@ -46,7 +46,7 @@ export class TabDashboardPage implements OnInit {
   public recentTx: Transaction[];
   public unconfirmTx: Transaction[];
   public isError = false;
-  navigationSubscription: any;
+  public navigationSubscription: any;
 
   constructor(
     private authService: AuthService,
@@ -66,10 +66,12 @@ export class TabDashboardPage implements OnInit {
 
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
-        this.account.accountName = v.accountName;
-        this.account.address = this.accountService.getAccountAddress(v);
-        this.account.shortadress = makeShortAddress(this.account.address);
-        this.loadData();
+        if (v){
+          this.account.accountName = v.accountName;
+          this.account.address = this.accountService.getAccountAddress(v);
+          this.account.shortadress = makeShortAddress(this.account.address);
+          this.loadData();
+        }
       }
     });
 
@@ -122,9 +124,13 @@ export class TabDashboardPage implements OnInit {
     this.isError = false;
 
     const account = await this.storage.get('active_account');
-    this.account.accountName = account.accountName;
-    this.account.address = this.accountService.getAccountAddress(account);
-    this.account.shortadress = makeShortAddress(this.account.address);
+    console.log('==== Active account:', account);
+
+    if (account){
+      this.account.accountName = account.accountName;
+      this.account.address = this.accountService.getAccountAddress(account);
+      this.account.shortadress = makeShortAddress(this.account.address);
+    }
 
     this.getBalance();
     this.getTransactions();
@@ -247,7 +253,12 @@ export class TabDashboardPage implements OnInit {
   }
 
   openListAccount() {
-    this.navCtrl.navigateForward('list-account');
+    const navigationExtras: NavigationExtras = {
+      state: {
+        forWhat: 'account'
+      }
+    };
+    this.router.navigate(['list-account'], navigationExtras);
   }
 
   async openDetailUnconfirm(trx) {

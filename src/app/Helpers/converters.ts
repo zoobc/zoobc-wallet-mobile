@@ -1,6 +1,8 @@
 import { default as JSBI } from 'jsbi';
 import * as BN from 'bn.js';
 
+const base58 = require('base58-encode');
+
 export function hexToByteArray(hexStr: string): Uint8Array {
   return new Uint8Array(
     hexStr.match(/[\da-f]{2}/gi).map(byte => parseInt(byte, 16))
@@ -85,7 +87,7 @@ export function publicKeyToAddress(
     bytes,
     getAddressChecksum(bytes)
   ]);
-  return toBase64Url(byteArrayToBase64(addressBytes));
+  return base58(addressBytes);
 }
 
 export function getAddressChecksum(
@@ -112,7 +114,7 @@ function __makeDataViewSetter(funcName, viewFuncName) {
     throw Error('Making DataView setter with invalid view function name.');
   }
 
-  const fn = function(view, byteOffset, value, littleEndian) {
+  const fn = (view, byteOffset, value, littleEndian) => {
     if (value.constructor !== JSBI) {
       throw TypeError('Value needs to be JSBI');
     }
@@ -146,7 +148,7 @@ function __makeDataViewGetter(funcName, viewFuncName) {
     throw Error('Making DataView getter with invalid view function name.');
   }
 
-  const fn = function(view, byteOffset, littleEndian) {
+  const fn = (view, byteOffset, littleEndian) => {
     // Get 64 bit number as two 32 bit numbers.
     // The lower/higher (depending on endianess)
     // number has an offset of 4 bytes (32/8).

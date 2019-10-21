@@ -3,6 +3,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { base64ToByteArray } from 'src/app/Helpers/converters';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-add-address',
@@ -20,6 +21,7 @@ export class AddAddressPage implements OnInit {
   validationMessage = '';
 
   constructor(
+    private location: Location,
     private addressBookSrv: AddressBookService,
     private qrScannerSrv: QrScannerService,
     private activeRoute: ActivatedRoute,
@@ -171,8 +173,12 @@ export class AddAddressPage implements OnInit {
         );
       }
 
-      this.router.navigateByUrl('/address-book');
+      // this.router.navigateByUrl('/address-book');
+      this.location.back();
     }
   }
 
+  cancel() {
+    this.location.back();
+  }
 }

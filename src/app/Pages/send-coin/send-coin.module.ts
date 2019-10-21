@@ -8,7 +8,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SendCoinPage } from './send-coin.page';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { AddressBookComponentModule } from 'src/app/Components/address-book/address-book.module';
-import { AddressBookModalComponent } from './address-book-modal/address-book-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
@@ -23,7 +22,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     AddressBookComponentModule
   ],
   providers: [QRScanner],
-  declarations: [SendCoinPage, AddressBookModalComponent],
-  entryComponents: [AddressBookModalComponent]
+  declarations: [SendCoinPage]
 })
 export class SendCoinPageModule {}

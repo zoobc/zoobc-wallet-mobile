@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,22 @@ import { Storage } from '@ionic/storage';
 export class AddressBookService {
   private STORAGE_NAME = 'addresses';
 
-  constructor(private storage: Storage) { }
+  private selectedAddress: string;
+
+  public addressSubject: Subject<any> = new Subject<any>();
+
+  public getSelectedAddress() {
+    return this.selectedAddress;
+  }
+  public setSelectedAddress(value) {
+    this.selectedAddress = value;
+    this.addressSubject.next(this.selectedAddress);
+    console.log('===== selectedAddress :', this.selectedAddress);
+  }
+
+  constructor(private storage: Storage) {
+    this.selectedAddress = '';
+  }
 
   async getAll() {
     const addresses = await this.storage.get(this.STORAGE_NAME).catch(error => {
