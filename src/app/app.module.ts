@@ -22,9 +22,7 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { QRScanner } from "@ionic-native/qr-scanner/ngx";
 
 export function createTranslateLoader(http: HttpClient) {
-  // using submodules repository use this:
-  //return new TranslateHttpLoader(http, "assets/languages/locales/", ".json");
-  return new TranslateHttpLoader(http, "assets/i18n/", ".json");
+  return new TranslateHttpLoader(http, "assets/languages/locales/", ".json");
 }
 
 @NgModule({
