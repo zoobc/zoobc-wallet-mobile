@@ -5,7 +5,7 @@ import {
   RouterStateSnapshot
 } from "@angular/router";
 import { NavController } from "@ionic/angular";
-import { AuthService } from "../Services/auth-service";
+import { AuthService } from "../Services/auth.service";
 
 @Injectable({
   providedIn: "root"

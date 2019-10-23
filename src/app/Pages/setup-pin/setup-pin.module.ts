@@ -6,7 +6,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
 
 import { SetupPinPage } from "./setup-pin.page";
-import { PinModule } from "src/app/Components/pin/pin.module";
+import { PinModule } from "src/app/Shared/pin/pin.module";
 
 const routes: Routes = [
   {

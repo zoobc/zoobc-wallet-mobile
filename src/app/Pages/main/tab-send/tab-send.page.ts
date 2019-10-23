@@ -4,16 +4,19 @@ import {
   MenuController,
   ModalController,
   NavController,
-  AlertController
+  AlertController,
+  NavParams
 } from "@ionic/angular";
-import { GRPCService } from "src/app/Services/grpc.service";
-//import { SendMoneyTx } from "src/helpers/serializers";
-import { addressToPublicKey, publicKeyToAddress } from "src/helpers/converters";
+import {
+  addressToPublicKey,
+  publicKeyToAddress,
+  byteArrayToHex
+} from "src/app/Helpers/converters";
 import { Storage } from "@ionic/storage";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { AccountService } from "src/app/Services/account.service";
 import { KeyringService } from "src/app/Services/keyring.service";
-import { BytesMaker } from "src/helpers/BytesMaker";
+import { BytesMaker } from "src/app/Helpers/BytesMaker";
 import { QrScannerService } from "src/app/Services/qr-scanner.service";
 import { ModalConfirmationComponent } from "./modal-confirmation/modal-confirmation.component";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
@@ -22,6 +25,8 @@ import { Account } from "src/app/Interfaces/account";
 import { AddressBookService } from "src/app/Services/address-book.service";
 import { SelectAddressService } from "src/app/Services/select-address.service";
 import { environment } from "src/environments/environment";
+import { TransactionService } from "src/app/Services/transaction.service";
+import { ModalPinComponent } from "./modal-pin/modal-pin.component";
 
 @Component({
   selector: "app-tab-send",
@@ -56,22 +61,36 @@ export class TabSendPage implements OnInit {
   constructor(
     private storage: Storage,
     @Inject("nacl.sign") private sign: any,
-    private grpcService: GRPCService,
+    private transactionSrv: TransactionService,
     private toastController: ToastController,
     private accountService: AccountService,
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
     private navCtrl: NavController,
     private modalController: ModalController,
-    private keyringServ: KeyringService,
     private formBuilder: FormBuilder,
     private currencySrv: CurrencyService,
     private addressBookSrv: AddressBookService,
     private selectAddressSrv: SelectAddressService,
-    private alertCtrl: AlertController
-  ) {
-    // this.sender = this.getAddress();
-  }
+    private alertCtrl: AlertController,
+    private keyringSrv: KeyringService,
+    private route: ActivatedRoute
+  ) {}
+
+  fees = [
+    {
+      title: "Slow",
+      value: 0.00005
+    },
+    {
+      title: "Average",
+      value: 0.00015
+    },
+    {
+      title: "Fast",
+      value: 0.00025
+    }
+  ];
 
   ngOnInit() {
     this.sendForm = this.formBuilder.group({
@@ -89,6 +108,14 @@ export class TabSendPage implements OnInit {
       ),
       saveToAddreesBook: false,
       alias: ""
+    });
+
+    this.route.queryParams.subscribe(param => {
+      if (param.recipient) {
+        this.sendForm.patchValue({
+          recipient: param.recipient
+        });
+      }
     });
 
     this.sendForm
@@ -145,6 +172,21 @@ export class TabSendPage implements OnInit {
     );
   }
 
+  onFeeChanged(value) {
+    const fee = value;
+    const feeCurr = "ZBC";
+    this.conversionValue.fee.ZBC = this.currencySrv.convertCurrency(
+      fee,
+      feeCurr,
+      "ZBC"
+    );
+    this.conversionValue.fee.USD = this.currencySrv.convertCurrency(
+      fee,
+      feeCurr,
+      "USD"
+    );
+  }
+
   async presentConfirmationModal() {
     const senderValue = this.sendForm.get("sender").value;
     const modal = await this.modalController.create({
@@ -165,7 +207,21 @@ export class TabSendPage implements OnInit {
 
     modal.onDidDismiss().then((returnVal: any) => {
       if (returnVal.data && returnVal.data.confirm) {
-        this.confirm();
+        this.presentPinModal();
+      }
+    });
+
+    return await modal.present();
+  }
+
+  async presentPinModal() {
+    const modal = await this.modalController.create({
+      component: ModalPinComponent
+    });
+
+    modal.onDidDismiss().then((returnVal: any) => {
+      if (returnVal.data && returnVal.data.confirm && returnVal.data.authData) {
+        this.confirm(returnVal.data.authData);
       }
     });
 
@@ -190,13 +246,21 @@ export class TabSendPage implements OnInit {
     }
   }
 
-  async confirm() {
-    const selectedAccount: Account = this.sendForm.get("sender").value;
-    const { accountProps } = selectedAccount;
+  async confirm(authData) {
+    const selectedAccount: any = this.sendForm.get("sender").value;
 
-    const { derivationPrivKey: accountSeed } = accountProps;
+    const masterSeed = Buffer.from(authData.masterSeed, "hex");
 
-    const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed);
+    const coinCode = environment.coinCode;
+
+    this.keyringSrv.calcBip32RootKeyFromSeed(coinCode, masterSeed);
+
+    const childSeed = this.keyringSrv.calcForDerivationPathForCoin(
+      coinCode,
+      selectedAccount.path
+    );
+
+    const publicKey = byteArrayToHex(childSeed.publicKey);
 
     //form value
     const sender = Buffer.from(publicKeyToAddress(publicKey), "utf-8");
@@ -244,9 +308,7 @@ export class TabSendPage implements OnInit {
     // tx body (amount)
     bytes.write8Bytes(amount);
 
-    const signature = this.sign.detached(bytes.value, secretKey);
-
-    //let signature = childSeed.sign(bytes.value);
+    const signature = childSeed.sign(bytes.value);
 
     let bytesWithSign = new BytesMaker(197);
 
@@ -257,7 +319,7 @@ export class TabSendPage implements OnInit {
     // set signature
     bytesWithSign.write(signature, 64);
 
-    const resolveTx = await this.grpcService.postTransaction(
+    const resolveTx = await this.transactionSrv.postTransaction(
       bytesWithSign.value
     );
 
@@ -282,17 +344,15 @@ export class TabSendPage implements OnInit {
     await alert.present();
   }
 
-  ionViewWillEnter() {
-    //this.getAddress();
-  }
-
   scanQrCode() {
     this.navCtrl.navigateForward("qr-scanner");
 
-    this.qrScannerSrv.listen().subscribe((str: string) => {
+    const _scanQrCode = this.qrScannerSrv.listen().subscribe((str: string) => {
       this.sendForm.patchValue({
         recipient: str
       });
+
+      _scanQrCode.unsubscribe();
     });
   }
 

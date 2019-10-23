@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { RestapiService } from "src/app/Services/restapi.service";
-import { LoadingController, NavController } from "@ionic/angular";
+import { NavController } from "@ionic/angular";
 import { TransactionService } from "src/app/Services/transaction.service";
 import { Account } from "src/app/Interfaces/account";
 import { AccountService } from "src/app/Services/account.service";

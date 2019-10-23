@@ -10,6 +10,9 @@
 </ion-header>
 
 <ion-content class="page-dashboard" color="background">
+  <ion-refresher slot="fixed" #refresher (ionRefresh)="refreshData(refresher)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <div class="balance-container bg-style-2 ion-padding">
     <div class="selected-account">
       <ion-item

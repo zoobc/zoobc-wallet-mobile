@@ -1,0 +1,87 @@
+<div class="pins-container">
+  <div text-center large margin-vertical>
+    <ion-icon
+      *ngFor="let dot of dots"
+      [name]="pin.length > dot ? 'radio-button-on' : 'radio-button-off'"
+    >
+    </ion-icon>
+  </div>
+
+  <div class="pad-container">
+    <ion-grid>
+      <ion-row justify-content-center>
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(1)"
+            >1</ion-button
+          ></ion-col
+        >
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(2)"
+            >2</ion-button
+          ></ion-col
+        >
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(3)"
+            >3</ion-button
+          ></ion-col
+        >
+      </ion-row>
+
+      <ion-row justify-content-center>
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(4)"
+            >4</ion-button
+          ></ion-col
+        >
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(5)"
+            >5</ion-button
+          ></ion-col
+        >
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(6)"
+            >6</ion-button
+          ></ion-col
+        >
+      </ion-row>
+      <ion-row justify-content-center>
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(7)"
+            >7</ion-button
+          ></ion-col
+        >
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(8)"
+            >8</ion-button
+          ></ion-col
+        >
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(9)"
+            >9</ion-button
+          ></ion-col
+        >
+      </ion-row>
+      <ion-row justify-content-center>
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="clear()">
+            <ion-icon name="trash"></ion-icon></ion-button
+        ></ion-col>
+        <ion-col
+          ><ion-button color="light" expand="block" (click)="handleInput(0)"
+            >0</ion-button
+          ></ion-col
+        >
+        <ion-col>
+          <ion-button
+            color="light"
+            ion-item
+            expand="block"
+            (click)="backSpace()"
+          >
+            <ion-icon name="backspace"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</div>

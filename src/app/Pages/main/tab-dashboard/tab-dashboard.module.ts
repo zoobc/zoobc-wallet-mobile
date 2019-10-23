@@ -6,8 +6,7 @@ import { FormsModule } from "@angular/forms";
 import { TabDashboardPage } from "./tab-dashboard.page";
 import { TranslateModule } from "@ngx-translate/core";
 import { Network } from "@ionic-native/network/ngx";
-import { PipeModule } from "src/pipe/pipe.module";
-import { SidemenuModule } from "src/app/Components/sidemenu/sidemenu.module";
+import { SidemenuModule } from "src/app/Shared/sidemenu/sidemenu.module";
 import { CalendarDateModule } from "src/app/Shared/calendar-date/calendar-date.module";
 import { CurrencySelectionModule } from "src/app/Shared/currency-selection/currency-selection.module";
 
@@ -18,7 +17,6 @@ import { CurrencySelectionModule } from "src/app/Shared/currency-selection/curre
     FormsModule,
     TranslateModule,
     RouterModule.forChild([{ path: "", component: TabDashboardPage }]),
-    PipeModule,
     SidemenuModule,
     CalendarDateModule,
     CurrencySelectionModule

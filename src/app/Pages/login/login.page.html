@@ -1,14 +1,21 @@
 <ion-content class="page-login bg-style-1" color="background-bg-style-1">
   <div class="login">
-    <div class="logo-container">
-      <img src="assets/images/logo.svg" />
-    </div>
-
     <div class="ion-margin-top  ion-text-center">
       {{ "Please Enter Your Pin" | translate }}
     </div>
 
-    <app-pin (onChange)="login($event)"></app-pin>
+    <div class="ion-margin-top ion-text-center" *ngIf="loading">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <div *ngIf="errorPin" class="ion-margin-top ion-text-center error-pin">
+      {{ errorPin }}
+    </div>
+
+    <app-pin
+      (onChange)="login($event)"
+      (onTouched)="onPinTouched($event)"
+    ></app-pin>
 
     <ion-button
       routerLink="/initial"

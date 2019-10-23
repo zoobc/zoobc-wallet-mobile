@@ -1,5 +1,5 @@
 import { Injectable, Inject } from "@angular/core";
-import { publicKeyToAddress } from "src/helpers/converters";
+import { publicKeyToAddress } from "src/app/Helpers/converters";
 import { Storage } from "@ionic/storage";
 
 import { environment } from "src/environments/environment";
@@ -10,19 +10,22 @@ import {
   GetAccountBalanceResponse
 } from "externals/grpc/model/accountBalance_pb";
 import { AccountBalanceServiceClient } from "externals/grpc/service/accountBalanceServiceClientPb";
-import { GetAddressFromPublicKey } from "src/helpers/utils";
+import { GetAddressFromPublicKey } from "src/app/Helpers/utils";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
 export class AccountService {
-  private _masterSeed: string = "";
-
   constructor(
     @Inject("nacl.sign") private sign: any,
     private storage: Storage,
     private keyringSrv: KeyringService
   ) {}
+
+  private _masterSeed: string = "";
+
+  public activeAccountSubject: Subject<any> = new Subject<any>();
 
   async rawData() {
     return await this.storage.get("ACCOUNTS");
@@ -33,7 +36,7 @@ export class AccountService {
     const accounts = await this.rawData();
 
     const acountPromises = accounts.map(async acc => {
-      const { name, address, created } = acc;
+      const { name, address, path } = acc;
 
       const balanceObj: any = await this.getAccountBalance(address);
       const balance = balanceObj.accountbalance.balance;
@@ -42,7 +45,7 @@ export class AccountService {
         name,
         address,
         balance,
-        created
+        path
       };
     });
 
@@ -70,6 +73,9 @@ export class AccountService {
 
   async setActiveAccount(account: Account) {
     await this.storage.set("ACTIVE_ACCOUNT", account);
+
+    this.activeAccountSubject.next(account);
+
     return account;
   }
 

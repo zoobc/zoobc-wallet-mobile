@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { readInt64 } from "src/helpers/converters";
+import { readInt64 } from "src/app/Helpers/converters";
 import { environment } from "src/environments/environment";
 import { TransactionServiceClient } from "externals/grpc/service/transactionServiceClientPb";
 import { Pagination, OrderBy } from "externals/grpc/model/pagination_pb";
@@ -8,7 +8,9 @@ import {
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetTransactionRequest,
-  Transaction
+  Transaction,
+  PostTransactionRequest,
+  PostTransactionResponse
 } from "externals/grpc/model/transaction_pb";
 import {
   GetMempoolTransactionRequest,
@@ -169,6 +171,49 @@ export class TransactionService {
           });
 
           resolve(transactions);
+        }
+      );
+    });
+  }
+
+  postTransaction(txBytes) {
+    this.transactionSrvClient = new TransactionServiceClient(
+      environment.grpcUrl,
+      null
+    );
+    // return this.http.post(`${this.apiUrl}/sendMoney`, data);
+
+    return new Promise((resolve, reject) => {
+      // const {
+      //   recipient,
+      //   amount,
+      //   fee,
+      //   from,
+      //   senderPublicKey,
+      //   signatureHash,
+      //   timestamp
+      // } = data;
+      // let dataString = `${recipient}${amount}${fee}${from}${senderPublicKey}${signatureHash}${timestamp}`;
+      // let dataSHA = sha512.sha512(dataString);
+
+      // const binary_string = window.atob(dataSHA);
+      // const len = binary_string.length;
+      // const dataBytes = new Uint8Array(len);
+      // for (let i = 0; i < len; i++) {
+      //   dataBytes[i] = binary_string.charCodeAt(i);
+      // }
+
+      const request = new PostTransactionRequest();
+      request.setTransactionbytes(txBytes);
+
+      this.transactionSrvClient.postTransaction(
+        request,
+        null,
+        (err, response: PostTransactionResponse) => {
+          if (err) return reject(err);
+
+          console.log(response.toObject());
+          resolve(response.toObject());
         }
       );
     });

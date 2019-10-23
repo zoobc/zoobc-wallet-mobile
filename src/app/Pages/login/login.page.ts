@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { AuthService } from "src/app/Services/auth-service";
-import { ToastController, NavController } from "@ionic/angular";
+import { NavController } from "@ionic/angular";
 import { AccountService } from "src/app/Services/account.service";
+import { AuthService } from "src/app/Services/auth.service";
 
 @Component({
   selector: "app-login",
@@ -12,42 +12,50 @@ export class LoginPage implements OnInit {
   constructor(
     private accountSrv: AccountService,
     private authService: AuthService,
-    private navCtrl: NavController,
-    private toastController: ToastController
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {}
 
+  errorPin = "";
+
+  loading = false;
+
   async login(e: any) {
     const { observer, pin } = e;
 
-    const authData = await this.authService.login(pin);
+    this.loading = true;
 
-    if (authData) {
+    try {
+      const authData = await this.authService.login(pin);
+
       this.accountSrv.masterSeed = authData.masterSeed;
 
       this.navCtrl.navigateRoot("main/dashboard");
 
       setTimeout(() => {
+        this.loading = false;
+
         observer.next("");
       }, 500);
-    } else {
+    } catch (err) {
       setTimeout(() => {
+        this.loading = false;
+
         observer.next("");
-        this.failedToast();
+
+        if (err === "not match") {
+          this.errorPin = "Pin is not match!";
+        }
       }, 500);
     }
   }
 
-  createAccount() {
-    this.navCtrl.navigateForward("initial");
+  onPinTouched() {
+    this.errorPin = "";
   }
 
-  async failedToast() {
-    const toast = await this.toastController.create({
-      message: "Unlock Failed",
-      duration: 2000
-    });
-    toast.present();
+  createAccount() {
+    this.navCtrl.navigateForward("initial");
   }
 }

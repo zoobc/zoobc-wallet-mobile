@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 import { NodeAdminComponent } from "./node-admin.component";
 import { IonicModule } from "@ionic/angular";
-import { SidemenuModule } from "src/app/Components/sidemenu/sidemenu.module";
+import { SidemenuModule } from "src/app/Shared/sidemenu/sidemenu.module";
 
 const routes: Routes = [
   {

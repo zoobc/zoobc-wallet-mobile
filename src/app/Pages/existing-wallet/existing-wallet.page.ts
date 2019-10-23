@@ -2,10 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { ToastController, NavController } from "@ionic/angular";
 import { CreateAccountService } from "../../Services/create-account.service";
 import { SetupPinService } from "src/app/Services/setup-pin.service";
-import { AuthService } from "src/app/Services/auth-service";
 import { AccountService } from "src/app/Services/account.service";
 import * as bip39 from "bip39";
 import { Storage } from "@ionic/storage";
+import { AuthService } from "src/app/Services/auth.service";
 
 @Component({
   selector: "app-existing-wallet",
