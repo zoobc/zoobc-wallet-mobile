@@ -22,7 +22,7 @@ export class AuthService {
   private pinSetting = {
     salt: "salt",
     keySize: 8,
-    iterations: 10000
+    iterations: 99
   };
 
   encriptPin(pin) {
@@ -83,10 +83,10 @@ export class AuthService {
   }
 
   async getAuthData(pin): Promise<any> {
-    const encryptedPin = this.encriptPin(pin);
-
     const promise = new Promise(async (resolve, reject) => {
       try {
+        const encryptedPin = this.encriptPin(pin);
+
         let _return = null;
 
         const authDataString = await this.storage.get("AUTH_DATA");
