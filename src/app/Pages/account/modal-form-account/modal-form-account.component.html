@@ -9,11 +9,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="background" class="zbc-content-style-1">
+<ion-content color="content-darker">
   <form [formGroup]="formAccount" (submit)="save()">
-    <div class="content-inner create-account-page">
-      <div class="zbc-form-item">
-        <ion-item lines="none" color="background">
+    <div class="ion-padding-top ion-padding-bottom form-item-container">
+      <div class="form-item">
+        <ion-label class="label">Account Name</ion-label>
+        <ion-item lines="none" color="content-default">
           <ion-input
             padding="false"
             placeholder="Please enter your account name"
@@ -25,16 +26,16 @@
 
     <ion-button
       [disabled]="!formAccount.valid"
-      expand="full"
+      expand="block"
       color="primary"
       type="submit"
-      class="zbc-button-full ion-margin-top"
+      class="ion-margin-start ion-margin-end ion-margin-top"
       >Create Account
     </ion-button>
 
     <div class="ion-text-center">
       <ion-button
-        class="zbc-button-full ion-margin-top ion-margin-auto"
+        class=" ion-margin-top ion-margin-auto"
         fill="clear"
         color="medium"
         (click)="closeModal()"

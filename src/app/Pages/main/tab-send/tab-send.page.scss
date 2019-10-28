@@ -1,12 +1,8 @@
-.zbc-label {
-  font-size: 0.75rem;
-}
-
 .page-send {
-  .zbc-form-item {
+  .form-item {
     .amount {
       .primary-amount {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
         margin-bottom: 0.2rem;
       }
       .secondary-amount {
@@ -14,6 +10,25 @@
         margin-bottom: 0.2rem;
       }
     }
+
+    &.form-amount {
+      ion-item {
+        align-items: center;
+      }
+      ion-input {
+        font-size: 1.6rem;
+      }
+    }
+  }
+
+  .btn-search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    margin-left: 1rem;
+    background-color: transparent;
   }
 
   .save-address-button {
@@ -23,10 +38,6 @@
     span {
       margin-left: 0.4rem;
     }
-  }
-
-  .label {
-    font-size: 0.8rem;
   }
 
   .account {

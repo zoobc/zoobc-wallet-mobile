@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-dashboard" color="background">
+<ion-content class="page-dashboard" color="content-default">
   <ion-refresher slot="fixed" #refresher (ionRefresh)="refreshData(refresher)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -65,7 +65,7 @@
     </ion-item>
   </div>
 
-  <ion-card no-padding class="trans-container" color="background">
+  <ion-card no-padding class="trans-container" color="content-default">
     <ion-card-content>
       <p class="title-section ion-padding-horizontal">
         {{ "Pending Transaction" | translate }}

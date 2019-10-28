@@ -5,7 +5,8 @@ import {
   ModalController,
   NavController,
   AlertController,
-  NavParams
+  NavParams,
+  ActionSheetController
 } from "@ionic/angular";
 import {
   addressToPublicKey,
@@ -60,7 +61,6 @@ export class TabSendPage implements OnInit {
 
   constructor(
     private storage: Storage,
-    @Inject("nacl.sign") private sign: any,
     private transactionSrv: TransactionService,
     private toastController: ToastController,
     private accountService: AccountService,
@@ -74,7 +74,8 @@ export class TabSendPage implements OnInit {
     private selectAddressSrv: SelectAddressService,
     private alertCtrl: AlertController,
     private keyringSrv: KeyringService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private actionSheetCtrl: ActionSheetController
   ) {}
 
   fees = [
@@ -185,6 +186,45 @@ export class TabSendPage implements OnInit {
       feeCurr,
       "USD"
     );
+  }
+
+  async presentRecipientActionSheet() {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: "Recipient",
+      buttons: [
+        {
+          text: "Scan Qrcode",
+          role: "destructive",
+          icon: "qr-scanner",
+          handler: () => {
+            this.scanQrCode();
+          }
+        },
+        {
+          text: "From address book",
+          icon: "bookmarks",
+          handler: () => {
+            this.openAddresses();
+          }
+        },
+        {
+          text: "From account",
+          icon: "person",
+          handler: () => {
+            alert("not available yet");
+          }
+        },
+        {
+          text: "Cancel",
+          icon: "close",
+          role: "cancel",
+          handler: () => {
+            console.log("Cancel clicked");
+          }
+        }
+      ]
+    });
+    await actionSheet.present();
   }
 
   async presentConfirmationModal() {

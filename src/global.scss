@@ -143,35 +143,51 @@ a {
   }
 }
 
-.account-item {
-  h3 {
+ion-title {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.form-item-container {
+  margin-bottom: 0.8rem;
+}
+
+.note {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.7rem;
+}
+
+.form-item {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  margin-left: 16px;
+  margin-right: 16px;
+  /*margin-bottom: 1.2rem;*/
+
+  &.no-border {
+    border-bottom-style: none;
+  }
+
+  & + .error {
+    font-size: 0.9rem;
+    color: red;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .label {
+    margin-top: 0;
     font-size: 0.8rem;
-    color: #898989;
-    margin-bottom: 0.2rem;
+
+    margin-bottom: 0;
   }
 
-  .address {
-    margin-bottom: 0.2rem;
+  ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
   }
-
-  .balance {
-    font-size: 0.7rem;
-    color: green;
-  }
-}
-
-.zbc-content-style-1 {
-  --background: #efefef;
-  --padding-top: 1.4rem;
-  --padding-bottom: 1.4rem;
-
-  .content-inner {
-    /*background-color: #fff;*/
-  }
-}
-
-.zbc-form-item {
-  border-bottom: 1px solid #dedede;
 
   &.last {
     border-bottom: none;
@@ -196,12 +212,6 @@ a {
   --box-shadow: none;
   margin-left: 0;
   margin-right: 0;
-}
-
-.form-error-text {
-  font-size: 0.8rem;
-  color: red;
-  margin-top: 0.3rem;
 }
 
 .address-book-list {
