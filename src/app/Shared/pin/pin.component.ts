@@ -42,7 +42,7 @@ export class PinComponent implements OnInit {
     this.pin = this.pin.substring(0, l);
   }
 
-  handleInput(pin: string) {
+  handleInput(pin: number) {
     this.pin += pin;
 
     if (this.pin.length >= 1) {

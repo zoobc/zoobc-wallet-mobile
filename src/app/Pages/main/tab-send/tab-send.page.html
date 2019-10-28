@@ -92,14 +92,14 @@
         <ion-item color="content-default" lines="none">
           <ion-input
             placeholder="Enter amount"
-            (ionChange)="onAmountKeyUp($event)"
+            (ionChange)="onAmountKeyUp()"
             formControlName="amount"
             type="number"
           ></ion-input>
           <ion-select
             formControlName="amountCurr"
             placeholder="Currency"
-            (ionChange)="onAmountKeyUp($event)"
+            (ionChange)="onAmountKeyUp()"
             interface="action-sheet"
           >
             <ion-select-option value="ZBC">ZBC</ion-select-option>
