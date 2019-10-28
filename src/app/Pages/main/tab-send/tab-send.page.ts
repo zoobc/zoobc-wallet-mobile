@@ -52,14 +52,16 @@ export class TabSendPage implements OnInit {
 
   conversionValue = {
     amount: {
-      ZBC: 0,
-      USD: 0
+      ZBC: 0
     },
     fee: {
-      ZBC: 0,
-      USD: 0
+      ZBC: 0
     }
   };
+
+  activeCurrency;
+
+  activeCurrenctSubject;
 
   formSubmitted: boolean = false;
 
@@ -139,6 +141,23 @@ export class TabSendPage implements OnInit {
       
   }
 
+  ionViewWillEnter() {
+    this.activeCurrenctSubject = this.currencySrv.activeCurrencySubject.subscribe(
+      currency => {
+        this.activeCurrency = currency;
+
+        this.onAmountKeyUp();
+
+        const feeValue = this.sendForm.get("fee").value;
+        this.onFeeChanged(feeValue);
+      }
+    );
+  }
+
+  ionViewWillLeave() {
+    this.activeCurrenctSubject.unsubscribe();
+  }
+
   openMenu() {
     this.menuController.open("mainMenu");
   }
@@ -148,7 +167,7 @@ export class TabSendPage implements OnInit {
     this.sender = this.accountService.getAccountAddress(this.account);
   }
 
-  onAmountKeyUp(event) {
+  onAmountKeyUp() {
     const amount = this.sendForm.get("amount").value;
     const amountCurr = this.sendForm.get("amountCurr").value;
     this.conversionValue.amount.ZBC = this.currencySrv.convertCurrency(
@@ -156,25 +175,12 @@ export class TabSendPage implements OnInit {
       amountCurr,
       "ZBC"
     );
-    this.conversionValue.amount.USD = this.currencySrv.convertCurrency(
+    this.conversionValue.amount[
+      this.activeCurrency
+    ] = this.currencySrv.convertCurrency(
       amount,
       amountCurr,
-      "USD"
-    );
-  }
-
-  onFeeKeyUp(event) {
-    const fee = this.sendForm.get("fee").value;
-    const feeCurr = this.sendForm.get("feeCurr").value;
-    this.conversionValue.fee.ZBC = this.currencySrv.convertCurrency(
-      fee,
-      feeCurr,
-      "ZBC"
-    );
-    this.conversionValue.fee.USD = this.currencySrv.convertCurrency(
-      fee,
-      feeCurr,
-      "USD"
+      this.activeCurrency
     );
   }
 
@@ -186,11 +192,9 @@ export class TabSendPage implements OnInit {
       feeCurr,
       "ZBC"
     );
-    this.conversionValue.fee.USD = this.currencySrv.convertCurrency(
-      fee,
-      feeCurr,
-      "USD"
-    );
+    this.conversionValue.fee[
+      this.activeCurrency
+    ] = this.currencySrv.convertCurrency(fee, feeCurr, this.activeCurrency);
   }
 
   async presentRecipientActionSheet() {
@@ -241,11 +245,11 @@ export class TabSendPage implements OnInit {
         recipient: this.sendForm.get("recipient").value,
         amount: {
           ZBC: this.conversionValue.amount.ZBC,
-          USD: this.conversionValue.amount.USD
+          USD: this.conversionValue.amount[this.activeCurrency]
         },
         fee: {
           ZBC: this.conversionValue.fee.ZBC,
-          USD: this.conversionValue.fee.USD
+          USD: this.conversionValue.fee[this.activeCurrency]
         }
       }
     });

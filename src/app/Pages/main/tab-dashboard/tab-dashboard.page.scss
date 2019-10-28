@@ -21,12 +21,22 @@ $colors: (
     ion-item {
       --background: transparent;
       --color: #fff;
+      text-align: center;
       font-size: 0.8rem;
       margin-bottom: 0.8rem;
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 5px;
-      h2 {
-        font-size: 1.2rem;
+
+      .account-name {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        h2 {
+          font-size: 1.2rem;
+        }
+
+        ion-icon {
+          margin-left: 10px;
+        }
       }
     }
   }
