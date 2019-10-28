@@ -27,6 +27,8 @@ export class SidemenuComponent implements OnInit {
   activeCurrency = "USD";
   currencies = [];
 
+  activeCurrencySubject;
+
   constructor(
     private menuController: MenuController,
     private storage: Storage,
@@ -51,6 +53,12 @@ export class SidemenuComponent implements OnInit {
     const account: Account = await this.accountSrv.getActiveAccount();
 
     this.activeAccount = account.name;
+
+    this.activeCurrencySubject = this.currencyService.activeCurrencySubject.subscribe(
+      currency => {
+        this.activeCurrency = currency;
+      }
+    );
   }
 
   openAboutView() {
