@@ -129,18 +129,12 @@
         >
         or
         <strong
-          >{{ conversionValue.amount.USD | number: "1.2-2" }} in USD</strong
+          >{{
+            conversionValue.amount[this.activeCurrency] | number: "1.2-2"
+          }}
+          in {{ this.activeCurrency }}</strong
         >
       </div>
-
-      <!--<div class="ion-padding-start ion-padding-end amount ion-text-right">
-        <div class="primary-amount">
-          {{ conversionValue.amount.ZBC | number: "1.2-2" }} ZBC
-        </div>
-        <div class="secondary-amount">
-          {{ conversionValue.amount.USD | number: "1.2-2" }} USD
-        </div>
-      </div>-->
     </div>
 
     <div class="ion-padding-top ion-padding-bottom form-item-container">
@@ -170,7 +164,10 @@
         The fee will be
         <strong>{{ conversionValue.fee.ZBC | number: "1.2-5" }} in ZBC</strong>
         or
-        <strong>{{ conversionValue.fee.USD | number: "1.2-5" }} in USD</strong>
+        <strong
+          >{{ conversionValue.fee[this.activeCurrency] | number: "1.2-5" }} in
+          {{ this.activeCurrency }}</strong
+        >
       </div>
     </div>
 
