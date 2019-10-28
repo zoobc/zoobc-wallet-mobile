@@ -41,7 +41,11 @@ export class TabSendPage implements OnInit {
   account: any;
   sender: any;
   recipient: any;
-  amount: any;
+  amount =  {
+    ZBC: 0,
+    USD: 0
+  };
+
   fee: any;
 
   sendForm;
@@ -132,6 +136,7 @@ export class TabSendPage implements OnInit {
 
         alias.updateValueAndValidity();
       });
+      
   }
 
   openMenu() {
