@@ -15,16 +15,16 @@
   </ion-refresher>
   <div class="balance-container bg-style-2 ion-padding">
     <div class="selected-account">
-      <ion-item
-        lines="none"
-        button="true"
-        detail="true"
-        (click)="openAccount()"
-      >
-        <ion-label
-          ><h2 class="account-name">{{ account.name }}</h2>
-          {{ account.address }}</ion-label
-        >
+      <ion-item lines="none" button="true" (click)="openAccount()">
+        <ion-label>
+          <div class="account-name">
+            <h2>
+              {{ account.name }}
+            </h2>
+            <ion-icon name="ios-arrow-down"></ion-icon>
+          </div>
+          <span appAddressElipsis [address]="account.address"></span
+        ></ion-label>
       </ion-item>
     </div>
 
