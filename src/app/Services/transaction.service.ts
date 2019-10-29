@@ -53,7 +53,7 @@ export class TransactionService {
   srvClient: TransactionService;
   mempoolClient: MempoolService;
   alladdress: any;
-  private rpcUrl = 'http://192.168.20.248:7001';
+  private rpcUrl = environment.grpcUrl;
 
   public sendMoneySubject: Subject<any> = new Subject<any>();
 
@@ -61,11 +61,6 @@ export class TransactionService {
 
   }
 
-
-  setRpcUrl(arg: string){
-    this.rpcUrl = 'http://' + arg + ':7001';
-    console.log('======RpcUrl: ', this.rpcUrl);
-  }
 
   getRpcUrl() {
     return this.rpcUrl;
