@@ -13,9 +13,7 @@
   <form [formGroup]="sendForm" (ngSubmit)="onSubmit()">
     <div class="ion-padding-top ion-padding-bottom form-item-container">
       <div class="form-item">
-        <p class="label">
-          {{ "Account" || translate }}
-        </p>
+        <p class="label">{{ "Account" | translate }}</p>
         <ion-item button="true" color="content-default" lines="none">
           <ion-label>
             <form-select-account formControlName="sender"></form-select-account>
@@ -94,14 +92,14 @@
         <ion-item color="content-default" lines="none">
           <ion-input
             placeholder="Enter amount"
-            (ionChange)="onAmountKeyUp($event)"
+            (ionChange)="onAmountKeyUp()"
             formControlName="amount"
             type="number"
           ></ion-input>
           <ion-select
             formControlName="amountCurr"
             placeholder="Currency"
-            (ionChange)="onAmountKeyUp($event)"
+            (ionChange)="onAmountKeyUp()"
             interface="action-sheet"
           >
             <ion-select-option value="ZBC">ZBC</ion-select-option>
@@ -139,9 +137,7 @@
 
     <div class="ion-padding-top ion-padding-bottom form-item-container">
       <div class="form-item">
-        <ion-label class="label">
-          {{ "Fee" || translate }}
-        </ion-label>
+        <ion-label class="label">{{ "Fee" | translate }}</ion-label>
 
         <form-fee
           placeholder="0.005"

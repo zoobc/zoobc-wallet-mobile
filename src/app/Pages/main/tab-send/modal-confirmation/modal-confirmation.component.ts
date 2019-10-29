@@ -9,7 +9,10 @@ import { ModalController, NavParams } from "@ionic/angular";
 export class ModalConfirmationComponent implements OnInit {
   sender: string;
   recipient: string;
-  amount: number;
+  amount =  {
+    ZBC: 0,
+    USD: 0
+  };
   fee: number;
 
   constructor(

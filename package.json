@@ -123,7 +123,9 @@
       "cordova-plugin-qrscanner": {},
       "cordova-clipboard": {},
       "cordova-plugin-network-information": {},
-      "cordova-plugin-x-socialsharing": {},
+      "cordova-plugin-x-socialsharing": {
+        "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
+      },
       "cordova-plugin-file": {}
     },
     "platforms": [

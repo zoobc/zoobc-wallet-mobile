@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import { NavController } from "@ionic/angular";
-import { AccountService } from "src/app/Services/account.service";
-import { AuthService } from "src/app/Services/auth.service";
+import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
+import { AccountService } from 'src/app/Services/account.service';
+import { AuthService } from 'src/app/Services/auth.service';
 
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.page.html",
-  styleUrls: ["./login.page.scss"]
+  selector: 'app-login',
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss']
 })
 export class LoginPage implements OnInit {
   constructor(
@@ -17,7 +17,7 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {}
 
-  errorPin = "";
+  errorPin = '';
 
   loading = false;
 
@@ -31,31 +31,32 @@ export class LoginPage implements OnInit {
 
       this.accountSrv.masterSeed = authData.masterSeed;
 
-      this.navCtrl.navigateRoot("main/dashboard");
+      this.navCtrl.navigateRoot('main/dashboard');
 
       setTimeout(() => {
         this.loading = false;
 
-        observer.next("");
+        observer.next('');
       }, 500);
     } catch (err) {
       setTimeout(() => {
         this.loading = false;
 
-        observer.next("");
+        observer.next('');
 
-        if (err === "not match") {
-          this.errorPin = "Pin is not match!";
+        if (err === 'not match') {
+          this.errorPin = 'Pin is not match!';
         }
       }, 500);
     }
   }
 
-  onPinTouched() {
-    this.errorPin = "";
+  onPinTouched(arg: any) {
+    console.log(arg);
+    this.errorPin = '';
   }
 
   createAccount() {
-    this.navCtrl.navigateForward("initial");
+    this.navCtrl.navigateForward('initial');
   }
 }
