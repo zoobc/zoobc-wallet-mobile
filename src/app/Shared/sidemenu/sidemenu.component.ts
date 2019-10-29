@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MenuController, NavController } from "@ionic/angular";
+import { MenuController, NavController, AlertController } from "@ionic/angular";
 import { Storage } from "@ionic/storage";
 import {
   ACTIVE_ACCOUNT,
@@ -36,7 +36,8 @@ export class SidemenuComponent implements OnInit {
     private languageService: LanguageService,
     private navCtrl: NavController,
     private currencyService: CurrencyService,
-    private themeSrv: ThemeService
+    private themeSrv: ThemeService,
+    private alertCtrl: AlertController
   ) {
     this.accountSrv.activeAccountSubject.subscribe({
       next: (acc: Account) => {
@@ -97,8 +98,26 @@ export class SidemenuComponent implements OnInit {
     this.navCtrl.navigateForward("create-account");
   }
 
-  logout() {
-    this.navCtrl.navigateForward("login");
+  async logout() {
+    const alert = await this.alertCtrl.create({
+      header: "Confirmation!",
+      message: "Are you sure want to logout?",
+      buttons: [
+        {
+          text: "Cancel",
+          role: "cancel",
+          handler: blah => {}
+        },
+        {
+          text: "Yes",
+          handler: () => {
+            this.navCtrl.navigateForward("login");
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   setActiveTheme(value) {
