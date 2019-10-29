@@ -1,15 +1,8 @@
 <div class="form-fee">
   <ion-radio-group>
-    <ion-item
-      color="content-default"
-      *ngFor="let fee of _fees; let index = index"
-    >
-      <ion-label>{{ fee.title }} - {{ fee.value }}</ion-label>
-      <ion-radio
-        slot="start"
-        [value]="fee.value"
-        (ionSelect)="onFeeChange(index)"
-      ></ion-radio>
+    <ion-item color="content-default" *ngFor="let fee of _fees; let index = index">
+      <ion-label>{{ fee.title }} - {{ fee.value }} ZBC</ion-label>
+      <ion-radio slot="start" [value]="fee.value" (ionSelect)="onFeeChange(index)"></ion-radio>
     </ion-item>
 
     <ion-item color="content-default" lines="none" (click)="toggleCustomFee()">
@@ -21,10 +14,6 @@
   </ion-radio-group>
 
   <ion-item color="content-default" lines="none" *ngIf="customFee">
-    <ion-input
-      (ionChange)="onFeeKeyUp($event)"
-      placeholder="Enter fee"
-      type="number"
-    ></ion-input>
+    <ion-input (ionChange)="onFeeKeyUp($event)" placeholder="Enter fee" type="number"></ion-input>
   </ion-item>
 </div>
