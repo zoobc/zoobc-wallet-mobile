@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.languageService.setInitialAppLanguage();
-      this.currencyService.getCurrencyRates();
+      // this.currencyService.getCurrencyRates();
 
       if (this.platform.is('cordova')) {
 

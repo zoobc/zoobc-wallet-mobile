@@ -66,10 +66,10 @@ const routes: Routes = [
     loadChildren:
       './Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule'
   },
-  { path: 'senddetail', loadChildren: './Pages/Modals/senddetail/senddetail.module#SenddetailPageModule',
+  { path: 'senddetail', loadChildren: './Pages/send-coin/modals/senddetail/senddetail.module#SenddetailPageModule',
   canActivate: [AuthService] },
-  { path: 'enterpinsend', loadChildren: './Pages/Modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },
-  { path: 'trxstatus', loadChildren: './Pages/Modals/trxstatus/trxstatus.module#TrxstatusPageModule',
+  { path: 'enterpinsend', loadChildren: './Pages/send-coin/modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule' },
+  { path: 'trxstatus', loadChildren: './Pages/send-coin/modals/trxstatus/trxstatus.module#TrxstatusPageModule',
   canActivate: [AuthService] },
   { path: 'sendcoin', loadChildren: './Pages/send-coin/send-coin.module#SendCoinPageModule',
    canActivate: [AuthService] },

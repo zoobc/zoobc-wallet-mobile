@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {
   MenuController,
   NavController,
-  AlertController,
   ToastController,
   LoadingController,
   ModalController
@@ -17,9 +16,10 @@ import {
   AccountBalance as AB,
 } from 'src/app/Grpc/model/accountBalance_pb';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { TranslateService } from '@ngx-translate/core';
 import { makeShortAddress } from 'src/app/Helpers/converters';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
+import { CurrencyService, Currency } from 'src/app/Services/currency.service';
+import { environment } from 'src/environments/environment';
 
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
@@ -37,10 +37,15 @@ export class TabDashboardPage implements OnInit {
 
   public errorMsg: string;
   public offset: number;
-
+  
   public accountBalance: any;
   public isLoadingBalance: boolean;
   public isLoadingRecentTx: boolean;
+
+  public currencyRate: Currency = {
+    name: 'USD',
+    value: environment.zbcPriceInUSD,
+  };
 
   public totalTx: number;
   public recentTx: Transaction[];
@@ -59,14 +64,14 @@ export class TabDashboardPage implements OnInit {
     private storage: Storage,
     private accountService: AccountService,
     private transactionServ: TransactionService,
-    private translateServ: TranslateService,
-    private alertController: AlertController,
+    private currencyServ: CurrencyService,
     public toastController: ToastController
   ) {
 
+    // if account changed
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
-        if (v){
+        if (v) {
           this.account.accountName = v.accountName;
           this.account.address = this.accountService.getAccountAddress(v);
           this.account.shortadress = makeShortAddress(this.account.address);
@@ -75,17 +80,22 @@ export class TabDashboardPage implements OnInit {
       }
     });
 
-    this.navigationSubscription = this.router.events.subscribe((e: any) => {
-      if (e instanceof NavigationEnd) {
-        console.log('=== NavigationEnd');
+    // if post send money reload data
+    this.transactionServ.sendMoneySubject.subscribe( () => {
         this.loadData();
       }
+    );
+
+    // if currency changed
+    this.currencyServ.currencySubject.subscribe((rate: Currency) => {
+      this.currencyRate = rate;
     });
 
     this.loadData();
   }
 
-  doRefresh(event) {
+  doRefresh(event: any) {
+    this.showLoading();
     this.loadData();
 
     setTimeout(() => {
@@ -95,12 +105,14 @@ export class TabDashboardPage implements OnInit {
   }
 
   ionViewDidEnter() {
+    console.log('========== get Rpc Url: ', this.transactionServ.getRpcUrl());
     this.loadData();
   }
 
   ngOnInit() {
-    // this.loadData();
+
   }
+
 
   async loadData() {
 
@@ -126,7 +138,7 @@ export class TabDashboardPage implements OnInit {
     const account = await this.storage.get('active_account');
     console.log('==== Active account:', account);
 
-    if (account){
+    if (account) {
       this.account.accountName = account.accountName;
       this.account.address = this.accountService.getAccountAddress(account);
       this.account.shortadress = makeShortAddress(this.account.address);
@@ -134,6 +146,8 @@ export class TabDashboardPage implements OnInit {
 
     this.getBalance();
     this.getTransactions();
+
+    this.currencyRate = this.currencyServ.getRate();
   }
 
   async loadMoreData(event) {
@@ -142,7 +156,7 @@ export class TabDashboardPage implements OnInit {
 
     if (this.recentTx.length >= this.totalTx) {
       // event.target.complete();
-      console.log(' === all loaded', this.recentTx.length + ' - ' + this.totalTx );
+      console.log(' === all loaded', this.recentTx.length + ' - ' + this.totalTx);
       // event.target.disabled = true;
     }
 
@@ -170,7 +184,7 @@ export class TabDashboardPage implements OnInit {
     await this.transactionServ
       .getUnconfirmTransaction(this.account.address)
       .then((res: Transaction[]) => (this.unconfirmTx = res)).finally(() => {
-        // wait until unconirm transaction finish.
+        // wait until unconfirm transaction loading finish.
         // this.isLoadingRecentTx = false;
       }).catch((error) => {
         console.log('===== eroor getUnconfirmTransaction:', error);
@@ -262,7 +276,6 @@ export class TabDashboardPage implements OnInit {
   }
 
   async openDetailUnconfirm(trx) {
-    // const trx = this.unconfirmTx[index];
     this.loadDetailTransaction(trx, 'pending');
   }
 
@@ -270,13 +283,18 @@ export class TabDashboardPage implements OnInit {
     this.loadDetailTransaction(trx, 'confirm');
   }
 
-  async loadDetailTransaction(trx: any, trxStatus: string) {
+  showLoading() {
     this.loadingController.create({
       message: 'Loading ...',
       duration: 200
     }).then((res) => {
       res.present();
     });
+  }
+
+  async loadDetailTransaction(trx: any, trxStatus: string) {
+
+    this.showLoading();
 
     const modal = await this.modalCtrl.create({
       component: TransactionDetailPage,

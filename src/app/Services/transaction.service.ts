@@ -22,6 +22,7 @@ import { readInt64, makeShortAddress } from 'src/app/Helpers/converters';
 import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../Grpc/model/accountBalance_pb';
 import { AccountBalanceService } from '../Grpc/service/accountBalance_pb_service';
 import { AddressBookService } from './address-book.service';
+import { Subject } from 'rxjs';
 
 
 export interface Transaction {
@@ -52,11 +53,23 @@ export class TransactionService {
   srvClient: TransactionService;
   mempoolClient: MempoolService;
   alladdress: any;
+  private rpcUrl = 'http://192.168.20.248:7001';
+
+  public sendMoneySubject: Subject<any> = new Subject<any>();
 
   constructor(private addressBookSrv: AddressBookService) {
 
   }
 
+
+  setRpcUrl(arg: string){
+    this.rpcUrl = 'http://' + arg + ':7001';
+    console.log('======RpcUrl: ', this.rpcUrl);
+  }
+
+  getRpcUrl() {
+    return this.rpcUrl;
+  }
 
   getUnconfirmTransaction(address: string) {
 
@@ -72,7 +85,7 @@ export class TransactionService {
 
       grpc.invoke(MempoolService.GetMempoolTransactions, {
         request,
-        host: environment.grpcUrl,
+        host: this.rpcUrl,
         onMessage: (message: GetMempoolTransactionsResponse) => {
           // recreate list of transactions
           const transactions = message
@@ -143,7 +156,7 @@ export class TransactionService {
 
       grpc.invoke(TransactionServ.GetTransactions, {
         request,
-        host: environment.grpcUrl,
+        host: this.rpcUrl,
         onMessage: (message: GetTransactionsResponse) => {
           // recreate list of transactions
           const transactions: Transaction[] = message
@@ -221,7 +234,7 @@ export class TransactionService {
 
       grpc.invoke(TransactionServ.GetTransaction, {
         request,
-        host: environment.grpcUrl,
+        host: this.rpcUrl,
         onMessage: (message: TransactionResponse) => {
           const tx = message.toObject();
 
@@ -257,14 +270,16 @@ export class TransactionService {
     });
   }
 
-  postTransaction(txBytes) {
+  postTransaction(txBytes: any ) {
+
+    console.log('============ postTransaction rpcURL:', this.rpcUrl);
+
     return new Promise((resolve, reject) => {
       const request = new PostTransactionRequest();
       request.setTransactionbytes(txBytes);
-
       grpc.invoke(TransactionServ.PostTransaction, {
         request,
-        host: environment.grpcUrl,
+        host: this.rpcUrl,
         onMessage: (message: PostTransactionResponse) => {
           resolve(message.toObject());
         },
@@ -273,10 +288,19 @@ export class TransactionService {
           msg: string | undefined,
           trailers: grpc.Metadata
         ) => {
-          if (code !== grpc.Code.OK) { reject(msg); }
+          if (code !== grpc.Code.OK) { 
+            reject(msg);
+          }
         },
       });
-    });
+    }).finally( () => {
+        console.log('=========== finally on post Transaction');
+        this.sendMoneySubject.next();
+      }
+    );
+    // .catch((error) => {
+    //     console.log('===== eroor:', error);
+    // });
   }
 
   getAccountBalance(address: string) {
@@ -286,7 +310,7 @@ export class TransactionService {
       request.setAccountaddress(address);
       grpc.invoke(AccountBalanceService.GetAccountBalance, {
         request,
-        host: environment.grpcUrl,
+        host: this.rpcUrl,
         onMessage: (message: GetAccountBalanceResponse) => {
           resolve(message.toObject());
         },

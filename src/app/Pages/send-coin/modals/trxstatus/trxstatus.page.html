@@ -24,8 +24,8 @@
     </ion-row>
     <ion-row>
         <ion-col class="ion-text-center">
-            <ion-text *ngIf="status"color="dark">{{ "Transaction will need a few seconds to confirmed" | translate }}.</ion-text>
-            <ion-text *ngIf="!status" color="dark">{{ "Please try again later!" | translate }}.</ion-text>   
+            <ion-text *ngIf="status" color="dark">{{ "Transaction will need a few seconds to confirmed" | translate }}.</ion-text>
+            <ion-text *ngIf="!status" color="danger">{{ msg }}.</ion-text>   
         </ion-col>  
     </ion-row>
 

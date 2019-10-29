@@ -1,5 +1,5 @@
 export const ACTIVE_ACCOUNT = 'ACTIVE_ACCOUNT';
-
+export const CURRENCY_RATE_STORAGE = 'rate';
 
 // Language
 export const SELECTED_LANGUAGE = 'SELECTED_LANGUAGE';

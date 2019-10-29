@@ -25,6 +25,23 @@
       </ion-item>
 
       <ion-item lines="none">
+        <ion-icon name="logo-usd"></ion-icon>
+        <ion-label>{{ "Currency" | translate }}</ion-label>
+        <ion-select
+          interface="popover"
+          [(ngModel)]="activeCurrency"
+          (ionChange)="changeRate()"
+        >
+          <ion-select-option
+            *ngFor="let rate of currencyRates; let idx = index"
+            value="{{ rate.name }}"
+          >
+          {{ rate.name }} - {{ rate.value }}</ion-select-option
+          >
+        </ion-select>
+      </ion-item>
+
+      <ion-item lines="none">
         <ion-icon name="help-circle-outline"></ion-icon>
         <ion-label  class="text" (click)="openHelpSupport()">
           {{ "Help & Support" | translate }}

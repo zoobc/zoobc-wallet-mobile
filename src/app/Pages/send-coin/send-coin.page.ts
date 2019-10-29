@@ -13,11 +13,13 @@ import { AccountService } from 'src/app/Services/account.service';
 import { BytesMaker } from 'src/app/Helpers/BytesMaker';
 import { GetAccountBalanceResponse } from 'src/app/Grpc/model/accountBalance_pb';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { SenddetailPage } from 'src/app/Pages/Modals/senddetail/senddetail.page';
-import { EnterpinsendPage } from 'src/app/Pages/Modals/enterpinsend/enterpinsend.page';
-import { TrxstatusPage } from 'src/app/Pages/Modals/trxstatus/trxstatus.page';
+import { SenddetailPage } from 'src/app/Pages/send-coin/modals/senddetail/senddetail.page';
+import { EnterpinsendPage } from 'src/app/Pages/send-coin/modals/enterpinsend/enterpinsend.page';
+import { TrxstatusPage } from 'src/app/Pages/send-coin/modals/trxstatus/trxstatus.page';
 import { TranslateService } from '@ngx-translate/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
+import { Currency, CurrencyService } from 'src/app/Services/currency.service';
+import { environment } from 'src/environments/environment';
 
 
 interface AccountInfo {
@@ -64,6 +66,11 @@ export class SendCoinPage implements OnInit {
   errorMsg: string;
   customeChecked: false;
 
+  public currencyRate: Currency = {
+    name: 'USD',
+    value: environment.zbcPriceInUSD,
+  };
+
   public isLoadingBalance = true;
   public isLoadingRecentTx = true;
 
@@ -77,6 +84,7 @@ export class SendCoinPage implements OnInit {
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
     private router: Router,
+    private currencyServ: CurrencyService,
     public addressbookSrv: AddressBookService,
     private translateServ: TranslateService,
     private modalController: ModalController,
@@ -109,6 +117,10 @@ export class SendCoinPage implements OnInit {
       }
     });
 
+    // if currency changed
+    this.currencyServ.currencySubject.subscribe((rate: Currency) => {
+        this.currencyRate = rate;
+    });
 
   }
 
@@ -316,6 +328,7 @@ export class SendCoinPage implements OnInit {
     console.log('=== on constructor: ');
     this.getRecipientFromScanner();
     this.createTransactionFees();
+    this.currencyRate = this.currencyServ.getRate();
   }
 
   async showConfirmation() {
@@ -460,7 +473,6 @@ export class SendCoinPage implements OnInit {
         this.amount = 0;
 
         this.showSuccessMessage();
-        //this.router.navigateByUrl('/tabs/dashboard');
         return;
       }
     }
@@ -515,8 +527,10 @@ export class SendCoinPage implements OnInit {
     this.amount = null;
   }
 
-  changeFee(fee: number) {
-    console.log('=== Fee: ', fee);
+  changeFee(arg: number) {
+    this.fee = arg;
+    console.log('======= changeFee Fee: ', arg);
+
     this.customeChecked = false;
     this.validateAmount();
   }

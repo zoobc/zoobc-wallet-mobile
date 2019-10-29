@@ -22,9 +22,9 @@ import { QrScannerComponent } from 'src/app/Pages/qr-scanner/qr-scanner.componen
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { LanguageService } from './Services/language.service';
-import { SenddetailPageModule } from './Pages/Modals/senddetail/senddetail.module';
-import { TrxstatusPageModule } from './Pages/Modals/trxstatus/trxstatus.module';
-import { EnterpinsendPageModule } from './Pages/Modals/enterpinsend/enterpinsend.module';
+import { SenddetailPageModule } from './Pages/send-coin/modals/senddetail/senddetail.module';
+import { TrxstatusPageModule } from './Pages/send-coin/modals/trxstatus/trxstatus.module';
+import { EnterpinsendPageModule } from './Pages/send-coin/modals/enterpinsend/enterpinsend.module';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
 import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';

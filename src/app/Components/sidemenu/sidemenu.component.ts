@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuController, NavController } from '@ionic/angular';
+import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import {
   LANGUAGES,
-  SELECTED_LANGUAGE,
-  CURRENCIES
+  SELECTED_LANGUAGE
 } from 'src/environments/variable.const';
-import { AccountService } from 'src/app/Services/account.service';
 import { LanguageService } from 'src/app/Services/language.service';
-import { CurrencyService } from 'src/app/Services/currency.service';
+import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-sidemenu',
@@ -18,19 +17,24 @@ import { ActiveAccountService } from 'src/app/Services/active-account.service';
   styleUrls: ['./sidemenu.component.scss']
 })
 export class SidemenuComponent implements OnInit {
-  accounts = [];
-  languages = [];
-  activeLanguage = 'en';
-  activeAccount = '';
+  public accounts = [];
+  public languages = [];
+  public activeLanguage = 'en';
+  public activeCurrency = 'USD';
+  public activeAccount = '';
 
-  activeCurrency = 'USD';
-  currencies = [];
+  public currencyRate: Currency = {
+    name: '',
+    value: 0,
+  };
+
+  public currencyRates: Currency[];
+
 
   constructor(
     private menuController: MenuController,
     private router: Router,
     private storage: Storage,
-    private accountService: AccountService,
     private languageService: LanguageService,
     private currencyService: CurrencyService,
     private activeAccountSrv: ActiveAccountService
@@ -43,10 +47,13 @@ export class SidemenuComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.getCurrencyRates();
+
+    this.currencyRate = this.currencyService.getRate();
+
     this.getActiveAccount();
     this.languages = LANGUAGES;
     this.activeLanguage = await this.storage.get(SELECTED_LANGUAGE);
-    this.currencies = CURRENCIES;
     const account = await this.storage.get('active_account');
     this.activeAccount = account.accountName;
   }
@@ -99,14 +106,49 @@ export class SidemenuComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  selectActiveCurrency() {
-    if (this.accountService) {
-      this.currencyService.setCurrency(this.activeCurrency);
-    }
+  getCurrencyRates() {
+    this.currencyService.getCurrencyRateFromThirdParty().subscribe((res: any) => {
+      console.log('============== Rec:', res);
+
+      const rates = Object.keys(res.rates).map(currencyName => {
+        const rate = {
+          name: currencyName,
+          value: res.rates[currencyName] * (environment.zbcPriceInUSD),
+        };
+        if (this.currencyRate.name === currencyName) {
+          this.currencyRate.value = rate.value;
+        }
+        return rate;
+      });
+      rates.sort((a, b) => {
+        if (a.name < b.name) { return -1; }
+        if (a.name > b.name) { return 1; }
+      });
+
+      this.currencyRates = rates;
+
+      console.log('==== getCurrencyRates curency rates: ', this.currencyRates );
+    });
+  }
+
+
+  changeRate() {
+    console.log('============= activeCurrency:', this.activeCurrency);
+    this.setCurrencyRate(this.activeCurrency);
+    this.currencyService.changeRate(this.currencyRate);
+    console.log('================ this.currencyRate', this.currencyRate);
+  }
+
+  setCurrencyRate(currCode: string) {
+    this.currencyRates.forEach((rate) => {
+      if (rate && rate.name === currCode) {
+        this.currencyRate = rate;
+      }
+    });
   }
 
   selectActiveLanguage() {
-    console.log('this.activeLanguage', this.activeLanguage);
+    console.log('=============== this.activeLanguage', this.activeLanguage);
     this.languageService.setLanguage(this.activeLanguage);
   }
 

@@ -5,18 +5,12 @@
 export const environment = {
   production: false,
   grpcUrl: 'http://18.139.3.139:5001',
+  currencyRateUrl: 'https://api.exchangeratesapi.io/latest?base=USD',
   mnemonicLanguage: 'english',
   mnemonicNumWords: 24,
   signalID: '790fe50a-589d-40c7-92af-683582d40acf',
   appID: '482874041634',
+  zbcPriceInUSD: 10,
   salt: 'iwillgotomoon'
 };
 
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.

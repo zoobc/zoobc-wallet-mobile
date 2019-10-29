@@ -1,30 +1,51 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
-import { Storage } from '@ionic/storage';
-import { RATES, SELECTED_CURRENCY } from 'src/environments/variable.const';
+import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs';
+
+import { environment } from 'src/environments/environment.prod';
+import { CURRENCY_RATE_STORAGE } from 'src/environments/variable.const';
+
+export interface Currency {
+  name: string;
+  value: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrencyService {
-  constructor(private storage: Storage) {}
+  public currencySubject: Subject<any> = new Subject<any>();
+  public currentRate: Currency;
+  // private openexchangerates = '7104c503e36947abba35d66d1ee66d35';
 
-  async getCurrencyRates() {
-    const { data } = await axios.get(
-      'https://api.exchangeratesapi.io/latest?base=USD&symbols=USD,IDR'
-    );
-    await this.storage.set(RATES, data.rates);
-  }
+  constructor(private http: HttpClient) {
 
-  async convertCurrency(price, currency) {
-    const rates = await this.storage.get(RATES);
-
-    if (rates[currency.toUpperCase()]) {
-      return price * rates[currency.toUpperCase()];
+    // get current rate from storage.
+    let prevRate = JSON.parse(localStorage.getItem(CURRENCY_RATE_STORAGE));
+    if (!prevRate) {
+      prevRate = { name: 'USD', value: 1 };
     }
+    this.currentRate = prevRate;
   }
 
-  async setCurrency(currency) {
-    await this.storage.set(SELECTED_CURRENCY, currency);
+  setRate(arg: any){
+    this.currentRate = arg;
+  }
+
+  getRate() {
+    return this.currentRate;
+  }
+
+  getCurrencyRateFromThirdParty() {
+    return this.http.get(environment.currencyRateUrl);
+  }
+
+  changeRate(arg: Currency) {
+    // set current rate to arg
+    this.setRate(arg);
+    // broadcast to subsriber
+    this.currencySubject.next(this.getRate());
+    // set to local storage
+    localStorage.setItem(CURRENCY_RATE_STORAGE, JSON.stringify(this.getRate()));
   }
 }

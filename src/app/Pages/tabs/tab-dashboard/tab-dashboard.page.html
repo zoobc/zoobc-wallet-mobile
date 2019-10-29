@@ -5,19 +5,9 @@
         <ion-icon slot="icon-only" name="menu"></ion-icon>
       </ion-button>
     </ion-buttons>
-
     <ion-title>ZooBC</ion-title>
-
-    <!--
-    <ion-buttons slot="end">
-      <ion-button (click)="loadData()">
-        <ion-icon slot="icon-only" name="refresh"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    -->
   </ion-toolbar>
 </ion-header>
-
 
 <ion-content class="page-dashboard">
   <!-- Custom Refresher Content -->
@@ -51,7 +41,17 @@
             {{ "Balance" | translate }}
           </ion-label>
           <ion-label class="main-balance">{{ accountBalance.balance/1e8 | number: '0.0-6' }} ZBC</ion-label>
-          <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
+          <ion-label class="sub-balance">
+
+            <span *ngIf="!isLoadingBalance">
+              {{
+                (accountBalance.balance / 1e8) * currencyRate.value
+                  | number: '0.0-2'
+              }}
+            </span>
+            <span> {{ currencyRate.name }}</span>
+
+          </ion-label>
         </ion-label>
         <div *ngIf="isLoadingBalance">
           <ion-spinner name="lines-small"></ion-spinner>
@@ -65,7 +65,15 @@
             {{ "Spendable Balance" | translate }}
           </ion-label>
           <ion-label class="main-balance">{{ accountBalance.spendablebalance/1e8 | number: '0.0-6' }} ZBC</ion-label>
-          <!-- <ion-label class="sub-balance">-1,800.0 USD</ion-label> -->
+          <ion-label class="sub-balance">
+              <span *ngIf="!isLoadingBalance">
+                  {{
+                    (accountBalance.spendablebalance / 1e8) * currencyRate.value
+                      | number: '0.0-2'
+                  }}
+                </span>
+                <span> {{ currencyRate.name }}</span>
+          </ion-label>
         </ion-label>
         <div *ngIf="isLoadingBalance">
           <ion-spinner name="lines-small"></ion-spinner>

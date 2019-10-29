@@ -48,6 +48,17 @@ export function byteArrayToBase64(
   return buf.toString('base64');
 }
 
+export function byteArrayToBase58(
+  bytes: ArrayBuffer | ArrayBufferView | Array<number>
+): string {
+  const buf =
+    bytes instanceof ArrayBuffer
+      ? Buffer.from(bytes)
+      : ArrayBuffer.isView(bytes)
+      ? Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+      : Buffer.from(bytes);
+  return base58(bytes);
+}
 export function toBase64Url(base64Str: string): string {
   return base64Str.replace(/\+/g, '-').replace(/\//g, '_');
 }
@@ -87,7 +98,7 @@ export function publicKeyToAddress(
     bytes,
     getAddressChecksum(bytes)
   ]);
-  return base58(addressBytes);
+  return toBase64Url(byteArrayToBase64(addressBytes));
 }
 
 export function getAddressChecksum(
