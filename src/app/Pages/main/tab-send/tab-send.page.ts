@@ -20,7 +20,12 @@ import { KeyringService } from "src/app/Services/keyring.service";
 import { BytesMaker } from "src/app/Helpers/BytesMaker";
 import { QrScannerService } from "src/app/Services/qr-scanner.service";
 import { ModalConfirmationComponent } from "./modal-confirmation/modal-confirmation.component";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import {
+  FormBuilder,
+  FormControl,
+  Validators,
+  FormGroup
+} from "@angular/forms";
 import { CurrencyService } from "src/app/Services/currency.service";
 import { Account } from "src/app/Interfaces/account";
 import { AddressBookService } from "src/app/Services/address-book.service";
@@ -41,7 +46,7 @@ export class TabSendPage implements OnInit {
   account: any;
   sender: any;
   recipient: any;
-  amount =  {
+  amount = {
     ZBC: 0,
     USD: 0
   };
@@ -114,7 +119,14 @@ export class TabSendPage implements OnInit {
         Validators.compose([Validators.required])
       ),
       saveToAddreesBook: false,
-      alias: ""
+      alias: "",
+      useApprover: false,
+      approver: new FormGroup({
+        address: new FormControl(""),
+        commision: new FormControl(""),
+        timeout: new FormControl(""),
+        instructions: new FormControl("")
+      })
     });
 
     this.route.queryParams.subscribe(param => {
@@ -138,7 +150,6 @@ export class TabSendPage implements OnInit {
 
         alias.updateValueAndValidity();
       });
-      
   }
 
   ionViewWillEnter() {
