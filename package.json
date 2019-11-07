@@ -4,16 +4,13 @@
   "author": "Zoobc Wallet Team",
   "homepage": "https://zoobc.com/",
   "scripts": {
-    "postinstall": "git submodule update --init --recursive && cd externals/bip32 && npm install --ignore-scripts",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "build:ios": "cordova build ios --buildFlag='-UseModernBuildSystem=0'",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "grpc:build": "protoc --plugin=\"protoc-gen-ts='node_modules/.bin/protoc-gen-ts'\" --grpc-web_out=\"import_style=typescript,mode=grpcwebtext:src/grpc/generated\" --js_out=\"import_style=commonjs,binary:src/grpc/generated\" src/grpc/schema/service/*.proto --proto_path=src/grpc/schema && protoc --plugin=\"protoc-gen-ts='node_modules/.bin/protoc-gen-ts'\" --grpc-web_out=\"import_style=typescript,mode=grpcwebtext:src/grpc/generated\" --js_out=\"import_style=commonjs,binary:src/grpc/generated\" src/grpc/schema/model/*.proto --proto_path=src/grpc/schema",
-    "compile-proto": "sh compile-proto.sh"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
