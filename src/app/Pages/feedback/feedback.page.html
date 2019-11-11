@@ -1,13 +1,57 @@
 <ion-header>
-    <ion-toolbar color="primary">
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
-      </ion-buttons>
-      <ion-title>Feedback</ion-title>  
-    </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Feedback</ion-title>
+  </ion-toolbar>
 </ion-header>
 
+<ion-content>
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="stacked">Acc Address:</ion-label>
+          <ion-textarea rows="3" placeholder="Enter Address" [(ngModel)]="AccAddress" readonly></ion-textarea>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <!-- <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="stacked">Name:</ion-label>
+          <ion-input placeholder="Enter Name" [(ngModel)]="Name" readonly></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row> -->
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="stacked">Comment:</ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center>
+        <!-- <ion-button type="submit" expand="block">Submit</ion-button> -->
+        <ion-button expand="block" (click)="CreateRecord()" [disabled]="!Name || !AccAddress || !Comment">
+          {{ "Submit" | translate }}
+        </ion-button>
+      </ion-col>
+    </ion-row>
 
+    <ion-row>
+      <ion-col text-center>
+        <ion-button expand="block" color="light" routerLink="/list-feedback">
+          {{ "Show All Feedback" | translate }}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<!-- 
 <ion-content padding>
   <form >
     <ion-list lines="full" class="ion-no-margin ion-no-padding">
@@ -51,4 +95,4 @@
 
 
   </form>
-</ion-content>
+</ion-content> -->
