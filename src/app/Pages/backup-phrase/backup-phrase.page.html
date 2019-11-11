@@ -1,9 +1,28 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>backup-phrase</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "Backup Phrase" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+
+  
+    <div *ngSwitchCase=1>
+
+      <ion-text color="secondary">
+        <h1>Backup Phrase</h1>
+      </ion-text>
+      <p>
+        For your security, Blockchain does not keep any passwords on file. The following 24 word Backup Phrase will
+        give you access to your funds in case you lose your password. Be sure to write it on a piece of paper and to
+        keep
+        it somewhere safe and secure.
+      </p>
+      <ion-button expand="block" (click)="backupClick();">{{ "Reveal seed words" | translate }}</ion-button>
+
+    </div>
 
 </ion-content>
