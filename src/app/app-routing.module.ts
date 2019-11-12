@@ -123,6 +123,11 @@ const routes: Routes = [
     loadChildren:
       "./Pages/select-address/select-address.module#SelectAddressPageModule",
     canActivate: [HasAccountGuard, AuthGuard]
+  },
+  {
+    path: "my-task",
+    loadChildren: "./Pages/my-task/my-task.module#MyTaskPageModule",
+    canActivate: [HasAccountGuard, AuthGuard]
   }
 ];
 @NgModule({
