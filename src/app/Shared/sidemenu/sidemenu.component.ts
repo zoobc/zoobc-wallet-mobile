@@ -78,6 +78,10 @@ export class SidemenuComponent implements OnInit {
     this.navCtrl.navigateForward("my-task");
   }
 
+  openApps() {
+    this.navCtrl.navigateForward("apps");
+  }
+
   openSendFeedbak() {
     this.navCtrl.navigateForward("feedback");
   }

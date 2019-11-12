@@ -128,6 +128,11 @@ const routes: Routes = [
     path: "my-task",
     loadChildren: "./Pages/my-task/my-task.module#MyTaskPageModule",
     canActivate: [HasAccountGuard, AuthGuard]
+  },
+  {
+    path: "apps",
+    loadChildren: "./Pages/apps/apps.module#AppsPageModule",
+    canActivate: [HasAccountGuard, AuthGuard]
   }
 ];
 @NgModule({
