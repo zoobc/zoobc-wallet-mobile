@@ -1,0 +1,21 @@
+.my-task-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 20px;
+
+  h2 {
+    color: #333;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .time {
+    font-size: 0.8rem;
+  }
+
+  .amount {
+    color: green;
+    font-weight: 700;
+  }
+}
