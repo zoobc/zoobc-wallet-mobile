@@ -21,6 +21,12 @@
         keep
         it somewhere safe and secure.
       </p>
+      <div *ngSwitchCase=2>
+        <p>
+          If you ever change device, you will need this seed phrase to access your accounts. Save them
+          somewhere safe and secret.
+        </p>
+      </div>  
       <ion-button expand="block" (click)="backupClick();">{{ "Reveal seed words" | translate }}</ion-button>
 
     </div>
