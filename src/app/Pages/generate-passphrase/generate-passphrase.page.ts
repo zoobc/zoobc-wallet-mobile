@@ -15,7 +15,6 @@ export class GeneratePassphrasePage implements OnInit {
   writtenDown = false;
   terms = false;
   passphrase: string;
-
   languages = [
     {
       key: "english",

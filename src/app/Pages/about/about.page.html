@@ -1,13 +1,15 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="main/dashboard"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>About ZooBc Wallet</ion-title>
+    <ion-title>{{"About this wallet"|translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content>
+
   <ion-list>
     <ion-list-header>
       Release Information
@@ -16,65 +18,227 @@
     <ion-item>
       <ion-label>
         <h2>Version</h2>
-        <p>wallet 7.15</p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>
-        <h2>Copyright</h2>
-        <p>@2019, the ZooBC Wallet developers</p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>
-        <h2>License</h2>
-        <p>GPL/MIT/....?</p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>
-        <h2>Source Code</h2>
-        <p>https://github/.....</p>
+        <p>PRE ALPHA</p>
       </ion-label>
     </ion-item>
   </ion-list>
+
 
   <ion-list>
     <ion-list-header>
-      This app is using ...
+      Changelog
     </ion-list-header>
 
     <ion-item>
-      <ion-label>
-        <p>Ionic Framework</p>
-      </ion-label>
+        <span>
+          <h5>16 October 2019 18:00</h5>
+          <ul>
+            <li>Add custom Fee in send money.</li>
+            <li>Bug fixing in send money.</li>
+            <li>Bug fixing in load more.</li>
+          </ul>
+        </span>
+    </ion-item>  
+
+    <ion-item>
+        <span>
+          <h5>14 October 2019 18:00</h5>
+          <ul>
+            <li>Add PIN confirmation in Open Existing Wallet.</li>
+            <li>Add better validation in open existing wallet</li>
+            <li>Make full address on transaction detail</li>
+          </ul>
+        </span>
+    </ion-item>  
+
+    <ion-item>
+      <span>
+        <h5>11 October 2019 18:00</h5>
+        <ul>
+          <li>Modify Confirm Transaction detail, make information more detail.</li>
+          <li>Modify Pending Transaction detail, make information more detail.</li>
+        </ul>
+      </span>
     </ion-item>
 
     <ion-item>
-      <ion-label>
-        <p>Angular Framework</p>
-      </ion-label>
+      <span>
+        <h5>10 October 2019 18:00</h5>
+        <ul>
+          <li>Add back button and restore wallet and create wallet.</li>
+          <li>Arange services from core to services folder, and refactor some page.ts.</li>
+          <li>Delete some function that no more used by other pages.</li>
+        </ul>
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <span>
+        <h5>9 October 2019 18:00</h5>
+        <ul>
+          <li>Add Screen: Transaction confirmation screen.</li>
+          <li>Add some translation in Transaction confirmation screen.</li>
+          <li>Bug fix dashboard, balance not change after switch account.</li>
+          <li>Fix some deprecated CSS.</li>
+        </ul>
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <span>
+        <h5>7 October 2019 18:00</h5>
+        <ul>
+          <li>Modify dashboard add sign arrow for transaction history</li>
+          <li>Add Load More on transaction hitory, will load 5 transactions each load.</li>
+          <li>Fix some deprecated CSS.</li>
+          <li>Change error msg when wrong PIN, use label instead toast.</li>
+        </ul>
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <span>
+        <h5>4 October 2019 20:30</h5>
+
+        <ul>
+          <li>Change PIN in send coin screen</li>
+          <li>Add barcode scanner when add address book.</li>
+          <li>Add additional language: Spanish, Portugis ... </li>
+        </ul>
+
+      </span>
+    </ion-item>
+
+
+
+    <ion-item>
+      <span>
+        <h5>3 October 2019 20:30</h5>
+
+        <ul>
+          <li>Modify generate passphrase to make screen without scroll</li>
+          <li>Add additional language: Japan, China, Rusia </li>
+          <li>Modify send screen, allow select account as sender.</li>
+        </ul>
+
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <span>
+        <h5>2 October 2019 13:30</h5>
+
+        <ul>
+          <li>Modify initial Screen to make screen without scroll</li>
+          <li>Remove unwanted component in Add address book and add component.</li>
+          <li>Add translation in some screen.</li>
+        </ul>
+
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <span>
+        <h5>1 October 2019 15:25</h5>
+
+        <ul>
+          <li>Add some language: Italian, French, Hindi, Arabic, Croatian, Malay, Thai, Indonesia </li>
+          <li>Can Edit Account Name in account list. Address not allowed to edit.
+            if account that edited is Active account then need refresh in dashboard.</li>
+        </ul>
+
+      </span>
+    </ion-item>
+
+
+    <ion-item>
+      <span>
+        <h5>30 September 2019 20:00</h5>
+
+        <ul>
+          <li>
+            Give different title Label for New and Edit Form, if Create New Account, form title is 'Create New Account',
+            and Button title is 'Save'.
+            if do Edit Account, title of form is 'Edit Account' and button title is 'Update'.
+          </li>
+        </ul>
+
+      </span>
+    </ion-item>
+
+
+    <ion-item>
+      <span>
+        <h5>30 September 2019 12:49</h5>
+
+        <ul>
+          <li>Address book can add, edit delete</li>
+          <li>Swipe left in item to edit or delete</li>
+          <li>Transaction list with Name, if available in address book.</li>
+          <li>Fix typo 'Recieve' change to 'Receive' in tab Receive.</li>
+          <li>Better error msg if no internet or service down. For service down (node down) need wait arround 2 minutes.
+          </li>
+        </ul>
+
+      </span>
+    </ion-item>
+
+
+    <ion-item>
+      <span>
+        <h5>27 September 2019 20:09</h5>
+
+        <ul>
+          <li>Minimum transfer is 0.000001</li>
+          <li>Amount less than 0.000001 will round to 0</li>
+          <li>Error message in send form improved!</li>
+          <li>Add Balance in send form.</li>
+          <li>Fix bug when switch account to new address.</li>
+        </ul>
+
+      </span>
+    </ion-item>
+
+
+    <ion-item>
+      <span>
+        <h5>27 September</h5>
+
+        <ul>
+          <li>Fix loading when service down</li>
+          <li>Add Pin with delete one character</li>
+          <li>Fix Timestamp in pending transaction detail</li>
+          <li>Allow copy address in address book</li>
+        </ul>
+
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <span>
+
+        <h5>26 September</h5>
+
+        <ul>
+          <li>Add loading indicator when service down error message</li>
+          <li>Allow copy address in account list</li>
+        </ul>
+
+
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <span>
+
+        <h5>25 September</h5>
+
+        <ul>
+          <li>Send Form, Add validation recipiont address length = 44, amount, transaction fee</li>
+        </ul>
+
+      </span>
     </ion-item>
   </ion-list>
 
-  <ion-list>
-    <ion-list-header>
-      Online
-    </ion-list-header>
-
-    <ion-item>
-      <ion-label>
-        <p>Term of Use</p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>
-        <p>Privacy Policy</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
 </ion-content>

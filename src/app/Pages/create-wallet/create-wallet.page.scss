@@ -1,8 +1,6 @@
 @import "../../../assets/scss/main.scss";
 
 .create-wallet-page {
-  @include background;
-
   & > div {
     @include flex-init;
     @include flex-direction(column);

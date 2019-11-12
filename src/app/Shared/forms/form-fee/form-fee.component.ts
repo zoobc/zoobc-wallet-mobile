@@ -29,8 +29,6 @@ export class FormFeeComponent implements OnInit, ControlValueAccessor {
 
   customFee: boolean = false;
 
-  buttonColors: string[] = [];
-
   @Input() set fees(value) {
     this._fees = value;
   }
@@ -39,10 +37,7 @@ export class FormFeeComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {}
 
-  onFeeClicked(index) {
-    this.buttonColors = [];
-    this.buttonColors[index] = "primary";
-
+  onFeeChange(index) {
     const fee = this._fees[index].value;
     this.customFee = false;
 
@@ -57,8 +52,6 @@ export class FormFeeComponent implements OnInit, ControlValueAccessor {
   }
 
   toggleCustomFee() {
-    this.buttonColors = [];
-
     this.changed.emit(0);
     this.changeData(0);
   }

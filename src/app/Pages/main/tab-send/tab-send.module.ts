@@ -15,12 +15,12 @@ import { FormFeeModule } from "src/app/Shared/forms/form-fee/form-fee.module";
 
 @NgModule({
   imports: [
+    TranslateModule,
     IonicModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     SidemenuModule,
-    TranslateModule,
     RouterModule.forChild([{ path: "", component: TabSendPage }]),
     FormSelectAccountModule,
     FormFeeModule,

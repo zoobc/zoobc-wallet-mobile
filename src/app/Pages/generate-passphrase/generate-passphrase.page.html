@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header no-border>
+  <ion-toolbar no-border color="primary">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="main/dashboard"></ion-back-button>
     </ion-buttons>
@@ -7,10 +7,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-generate-passphrase">
-  <ion-list>
-    <ion-item>
-      <ion-label>Select language of passphrase</ion-label>
+<ion-content class="page-generate-passphrase" color="content-default">
+  <div class="passphrase-container bg-style-2 ion-padding">
+    <ion-item color="content-bg-style-2" no-padding lines="none">
+      <ion-label>Language of passphrase</ion-label>
       <ion-select
         #langSelect
         placeholder="Select One"
@@ -24,13 +24,16 @@
         >
       </ion-select>
     </ion-item>
-  </ion-list>
 
-  <ion-card class="card-passphrase ion-margin-horizontal">
-    <ion-card-content>
-      <p class="passphrase">{{ passphrase }}</p>
-    </ion-card-content>
-  </ion-card>
+    <ion-card
+      class="card-passphrase ion-margin-horizontal"
+      color="content-bg-style-2"
+    >
+      <ion-card-content>
+        <p class="passphrase">{{ passphrase }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
 
   <ion-grid>
     <ion-row>
@@ -83,7 +86,6 @@
       class="ion-margin-horizontal btn-submit"
       expand="block"
       (click)="setupPin()"
-      *ngIf="!isPinSetup"
       disabled="{{ !(writtenDown && terms) }}"
       >Setup PIN</ion-button
     >

@@ -4,10 +4,11 @@ import { ModalListAccountComponent } from "./modal-list-account/modal-list-accou
 import { IonicModule } from "@ionic/angular";
 import { FormsModule } from "@angular/forms";
 import { FormSelectAccountComponent } from "./form-select-account.component";
+import { CurrencySelectionModule } from "../../currency-selection/currency-selection.module";
 
 @NgModule({
   declarations: [ModalListAccountComponent, FormSelectAccountComponent],
-  imports: [CommonModule, IonicModule, FormsModule],
+  imports: [CommonModule, IonicModule, FormsModule, CurrencySelectionModule],
   entryComponents: [ModalListAccountComponent],
   exports: [FormSelectAccountComponent]
 })

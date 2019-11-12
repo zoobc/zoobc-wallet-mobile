@@ -29,6 +29,7 @@
       flex-grow: 0;
       flex-basis: 86px;
     }
+
     ion-button {
       height: 76px;
       width: 76px;
@@ -36,16 +37,7 @@
       margin-right: auto;
       font-size: 1.4rem;
 
-      --color: #333;
-      --color-activated: #333;
-      --ripple-color: #333;
-      --background: #fff;
-      --background-activated: #fff;
       --border-radius: 45px;
-      --box-shadow: none;
-      --border-color: #dedede;
-      --border-focused: red;
-      --border-style: solid;
     }
 
     .btn-text {

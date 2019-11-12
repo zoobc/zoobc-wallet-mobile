@@ -1,4 +1,8 @@
-<ion-content padding class="create-wallet-page">
+<ion-content
+  color="content-bg-style-1"
+  padding
+  class="create-wallet-page bg-style-1"
+>
   <div>
     <div>
       <h3 class="title ion-text-center">
@@ -12,13 +16,16 @@
         multiple devices. It's very important you write this down.
       </p>
 
-      <ion-button expand="block" color="grey" routerLink="/generate-passphrase"
+      <ion-button
+        expand="block"
+        color="secondary"
+        routerLink="/generate-passphrase"
         >Generate Passphrase</ion-button
       >
     </div>
 
     <div class="btn-container">
-      <ion-button (click)="goback()" expand="block" fill="outline" color="grey"
+      <ion-button (click)="goback()" expand="block" color="primary"
         >Back</ion-button
       >
     </div>

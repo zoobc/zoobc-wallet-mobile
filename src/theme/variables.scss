@@ -2,14 +2,15 @@
 // http://ionicframework.com/docs/theming/
 
 /** Ionic CSS Variables **/
+
 :root {
   /** primary **/
-  --ion-color-primary: #01aad8;
+  --ion-color-primary: #3885bd;
   --ion-color-primary-rgb: 2, 136, 209;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #01aad8;
-  --ion-color-primary-tint: #01aad8;
+  --ion-color-primary-shade: #3885bd;
+  --ion-color-primary-tint: #3885bd;
 
   /** secondary **/
   --ion-color-secondary: #81207f;
@@ -83,8 +84,20 @@
   --ion-color-grey-shade: #eaeaea;
   --ion-color-grey-tint: #eaeaea;
 
+  --main-background: #f2f2f2;
+
   --ion-font-family: "montserratregular";
+
   --font-family-title: "Montserrat-Bold";
+
+  .ion-color-background {
+    --ion-color-base: #f2f2f2 !important;
+    //--ion-color-base-rgb: var(--ion-color-grey-rgb) !important;
+    --ion-color-contrast: #6c6c6c !important;
+    //--ion-color-contrast-rgb: var(--ion-color-grey-contrast-rgb) !important;
+    --ion-color-shade: #f2f2f2 !important;
+    --ion-color-tint: #f2f2f2 !important;
+  }
 }
 
 .ion-color-grey {

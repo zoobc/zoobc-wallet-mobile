@@ -1,0 +1,82 @@
+.theme-zoo {
+  /** primary **/
+  --ion-color-primary: #183b85;
+  --ion-color-primary-rgb: 2, 136, 209;
+  --ion-color-primary-contrast: #f2f2f2;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #19366c;
+  --ion-color-primary-tint: #183b85;
+
+  /** secondary **/
+  --ion-color-secondary: #a43588;
+  --ion-color-secondary-rgb: 129, 32, 127;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #780a6d;
+  --ion-color-secondary-tint: #ef02b4;
+
+  --main-background: var(--ion-color-primary);
+
+  .ion-color-content-default {
+    --ion-color-base: #f2f2f2;
+    --ion-color-base-rgb: 242, 242, 242;
+    --ion-color-contrast: #5e5e5e;
+    --ion-color-contrast-rgb: 94, 94, 94;
+    --ion-color-shade: #f2f2f2;
+    --ion-color-tint: #f2f2f2;
+  }
+
+  .ion-color-content-darker {
+    --ion-color-base: #dddede;
+    --ion-color-base-rgb: 242, 242, 242;
+    --ion-color-contrast: #5e5e5e;
+    --ion-color-contrast-rgb: 94, 94, 94;
+    --ion-color-shade: #f2f2f2;
+    --ion-color-tint: #f2f2f2;
+  }
+
+  .ion-color-content-bg-style-1 {
+    --ion-color-base: none;
+    --ion-color-base-rgb: none;
+    --ion-color-contrast: #f2f2f2;
+    --ion-color-contrast-rgb: 242, 242, 242;
+    --ion-color-shade: none;
+    --ion-color-tint: none;
+  }
+
+  .ion-color-content-bg-style-2 {
+    --ion-color-base: none;
+    --ion-color-base-rgb: var(--ion-color-primary-rgb);
+    --ion-color-contrast: #f2f2f2;
+    --ion-color-contrast-rgb: 242, 242, 242;
+    --ion-color-shade: none;
+    --ion-color-tint: none;
+  }
+
+  .ion-color-sidemenu {
+    --ion-color-base: #f2f2f2;
+    // --ion-color-base-rgb: 112, 68, 255;
+    --ion-color-contrast: #183b85;
+    // --ion-color-contrast-rgb: 255, 255, 255;
+    --ion-color-shade: #c4c4c4;
+    --ion-color-tint: #c4c4c4;
+  }
+
+  .ion-color-bottombar {
+    --ion-color-base: #0b224e !important;
+    --ion-color-base-rgb: 112, 68, 255 !important;
+    --ion-color-contrast: #f2f2f2 !important;
+    --ion-color-contrast-rgb: 255, 255, 255 !important;
+    --ion-color-shade: #0b224e !important;
+    --ion-color-tint: #0b224e !important;
+  }
+
+  .ion-color-pin-button {
+    --ion-color-base: #0b224e !important;
+    --ion-color-base-rgb: 112, 68, 255 !important;
+    --ion-color-contrast: #f2f2f2 !important;
+    --ion-color-contrast-rgb: 255, 255, 255 !important;
+    --ion-color-shade: #0b224e !important;
+    --ion-color-tint: #0b224e !important;
+  }
+}

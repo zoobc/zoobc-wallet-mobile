@@ -8,6 +8,8 @@ import { AboutPage } from "./Pages/about/about.page";
 import { Network } from "@ionic-native/network/ngx";
 import { TranslateService } from "@ngx-translate/core";
 import { CurrencyService } from "src/app/Services/currency.service";
+import { ThemeService } from "./Services/theme.service";
+import { environment } from "../environments/environment";
 
 @Component({
   selector: "app-root",
@@ -18,6 +20,9 @@ export class AppComponent implements OnInit {
 
   private connectionText = "";
 
+  private themeClassPrefix = "theme-";
+  defaultClassTheme: string = this.themeClassPrefix + environment.defaultTheme;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -26,7 +31,8 @@ export class AppComponent implements OnInit {
     private toastController: ToastController,
     private network: Network,
     private translateService: TranslateService,
-    private currencyService: CurrencyService
+    private currencyService: CurrencyService,
+    private themeSrv: ThemeService
   ) {
     this.initializeApp();
   }
@@ -49,6 +55,10 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.themeSrv.themeSubject.subscribe(value => {
+      this.defaultClassTheme = this.themeClassPrefix + value;
+    });
+
     this.network.onDisconnect().subscribe(() => {
       this.presentNoConnectionToast();
     });

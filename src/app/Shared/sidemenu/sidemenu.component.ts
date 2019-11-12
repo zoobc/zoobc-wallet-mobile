@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MenuController, NavController } from "@ionic/angular";
+import { MenuController, NavController, AlertController } from "@ionic/angular";
 import { Storage } from "@ionic/storage";
 import {
   ACTIVE_ACCOUNT,
@@ -11,6 +11,7 @@ import { AccountService } from "src/app/Services/account.service";
 import { LanguageService } from "src/app/Services/language.service";
 import { CurrencyService } from "src/app/Services/currency.service";
 import { Account } from "src/app/Interfaces/account";
+import { ThemeService } from "src/app/Services/theme.service";
 
 @Component({
   selector: "app-sidemenu",
@@ -26,13 +27,17 @@ export class SidemenuComponent implements OnInit {
   activeCurrency = "USD";
   currencies = [];
 
+  activeCurrencySubject;
+
   constructor(
     private menuController: MenuController,
     private storage: Storage,
     private accountSrv: AccountService,
     private languageService: LanguageService,
     private navCtrl: NavController,
-    private currencyService: CurrencyService
+    private currencyService: CurrencyService,
+    private themeSrv: ThemeService,
+    private alertCtrl: AlertController
   ) {
     this.accountSrv.activeAccountSubject.subscribe({
       next: (acc: Account) => {
@@ -49,6 +54,12 @@ export class SidemenuComponent implements OnInit {
     const account: Account = await this.accountSrv.getActiveAccount();
 
     this.activeAccount = account.name;
+
+    this.activeCurrencySubject = this.currencyService.activeCurrencySubject.subscribe(
+      currency => {
+        this.activeCurrency = currency;
+      }
+    );
   }
 
   openAboutView() {
@@ -87,8 +98,30 @@ export class SidemenuComponent implements OnInit {
     this.navCtrl.navigateForward("create-account");
   }
 
-  logout() {
-    this.navCtrl.navigateForward("login");
+  async logout() {
+    const alert = await this.alertCtrl.create({
+      header: "Confirmation!",
+      message: "Are you sure want to logout?",
+      buttons: [
+        {
+          text: "Cancel",
+          role: "cancel",
+          handler: blah => {}
+        },
+        {
+          text: "Yes",
+          handler: () => {
+            this.navCtrl.navigateForward("login");
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  setActiveTheme(value) {
+    this.themeSrv.theme = value;
   }
 
   selectActiveCurrency() {

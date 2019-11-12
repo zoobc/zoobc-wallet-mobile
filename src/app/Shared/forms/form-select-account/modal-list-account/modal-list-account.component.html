@@ -10,11 +10,7 @@
 </ion-header>
 
 <ion-content color="grey" class="modal-list-account">
-  <ion-item
-    *ngFor="let item of items; let i = index"
-    button="true"
-    (click)="selectItem(i)"
-  >
+  <ion-item *ngFor="let item of items; let i = index" button="true" (click)="selectItem(i)">
     <ion-label>
       <h3>{{ item.name }}</h3>
       <ion-text color="primary">
@@ -24,7 +20,7 @@
       </ion-text>
       <ion-text color="success">
         <ion-label>
-          <p class="balance">{{ item.balance }} ZBC (USD 20)</p>
+          <p class="balance">{{ item.balance }} ZBC ({{ item.balance / 1e8 | activeCurrencyRate$ | async }})</p>
         </ion-label>
       </ion-text>
     </ion-label>

@@ -7,6 +7,7 @@ import {
 import { AccountService } from "src/app/Services/account.service";
 import { TransactionService } from "src/app/Services/transaction.service";
 import { Account } from "src/app/Interfaces/account";
+import { ThemeService } from "src/app/Services/theme.service";
 import { AuthService } from "src/app/Services/auth.service";
 
 @Component({
@@ -42,7 +43,8 @@ export class TabDashboardPage implements OnInit {
     private menuController: MenuController,
     private navCtrl: NavController,
     private accountSrv: AccountService,
-    private transactionSrv: TransactionService
+    private transactionSrv: TransactionService,
+    private themeSrv: ThemeService
   ) {
     this.accountSrv.activeAccountSubject.subscribe({
       next: account => {

@@ -37,7 +37,25 @@
                 "input": "src/theme/variables.scss"
               },
               {
+                "input": "src/theme/zoo/variables.scss"
+              },
+              {
+                "input": "src/theme/dark/variables.scss"
+              },
+              {
+                "input": "src/theme/light/variables.scss"
+              },
+              {
                 "input": "src/global.scss"
+              },
+              {
+                "input": "src/theme/zoo/zoo.scss"
+              },
+              {
+                "input": "src/theme/dark/dark.scss"
+              },
+              {
+                "input": "src/theme/light/light.scss"
               }
             ],
             "scripts": [
