@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "Apps" | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div style="text-align: center;">
+    <h5>(Coming Soon)</h5>
+  </div>
+  <ion-list>
+    <ion-item (click)="showSellApp()">
+      <ion-thumbnail slot="start">
+        <img src="../../../assets/images/logo.png">
+      </ion-thumbnail>
+      <ion-label>
+        <h3>Sell ZooBC</h3>
+        <p>Buy and sell zoobc app</p>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="showListOtherApp()">
+      <ion-thumbnail slot="start">
+        <img src="../../../assets/images/logo.png">
+      </ion-thumbnail>
+      <ion-label>
+        <h3>Other Apps</h3>
+        <p>Other ZooBC cool apps</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
