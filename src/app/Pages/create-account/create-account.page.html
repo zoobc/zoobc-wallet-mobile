@@ -1,9 +1,14 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{ "Create New Account" | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+        <ion-button routerLink="/feedback">
+          Feedback
+        </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -29,7 +34,7 @@
             <ion-col col-6> 
               <ion-button
                 expand="block"
-                color="tertiary"
+                color="secondary"
                 (click)="closeModal()"
                 fill="outline"
                 expand="block">{{ "Cancel" | translate }}

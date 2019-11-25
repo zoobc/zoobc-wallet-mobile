@@ -3,29 +3,68 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Create New Wallet" | translate }}</ion-title>
+    <ion-title *ngIf="mode==='new'">{{ "Add New Address" | translate }}</ion-title>
+    <ion-title *ngIf="mode==='edit'">{{ "Edit Address Name" | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="create-wallet-page ion-padding">
-  <div>
-    <div>
-      <h3 class="title ion-text-center">
-        {{ "We're about to generate your very own passphrase" | translate }}
-      </h3>
-    </div>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label position="stacked">{{ "Name" | translate }}</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input placeholder="{{ 'Please type the name' | translate }}" [(ngModel)]="name" name="name"
+          autocomplete="on" autocorrect="on"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-8 align-self-end>
+        <ion-label position="stacked">{{ "Address" | translate }}</ion-label>
+      </ion-col>
+      <ion-col col-4 align-self-end class="ion-text-right btnScanner">
+        <ion-icon name="qr-scanner" (click)="scanQRCode();"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-textarea *ngIf="mode==='new'" rows="3" placeholder="{{ 'Please type the address' | translate }}"
+          [(ngModel)]="address" name="address" autocomplete="on" autocorrect="on">
+        </ion-textarea>
 
-    <div class="description ion-text-center">
-      <p>
-        {{ "This keeps your account secure, and lets you open your wallet on
-        multiple devices. It's very important you write this down." | translate }}
-      </p>
+        <ion-textarea *ngIf="mode==='edit'" rows="3" readonly placeholder="{{ 'Please type the address' | translate }}"
+          [(ngModel)]="address" name="address" autocomplete="on" autocorrect="on">
+        </ion-textarea>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-label color="danger">{{validationMessage}}&nbsp;</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button strong color="secondary" (click)="saveAddress()" type="submit" expand="block">
+          <span *ngIf="mode==='new'">{{ "Save" | translate }}</span>
+          <span *ngIf="mode==='edit'">{{ "Update" | translate }}</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col>
+          <ion-button expand="block" [routerLink]="['/address-book']" fill="outline" expand="block">
+            {{ "Cancel" | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>  
+  </ion-grid>
 
-      <ion-button expand="block" color="tertiary" routerLink="/generate-passphrase">{{ "Generate Passphrase" | translate }}</ion-button>
-    </div>
-
-    <div class="btn-container">
-      <ion-button (click)="goback()" expand="block" fill="outline" color="grey">{{ "Back" | translate }}</ion-button>
-    </div>
-  </div>
 </ion-content>
