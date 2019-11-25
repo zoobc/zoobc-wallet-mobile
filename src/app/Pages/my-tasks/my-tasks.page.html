@@ -1,13 +1,43 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{"My Taks" | translate}} (Coming Soon)</ion-title>
+    <ion-title>My Tasks</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+<ion-content>
+  <div style="text-align: center;">
+    <h5>(Coming Soon)</h5>
+  </div>
 
-<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item routerLink="/task-detail">
+      <span style='font-size:2em; margin-right: 5px;'>
+        <ion-icon name="open" slot="start"></ion-icon>
+      </span>
+      <ion-label>
+        <h3>Approval-Send Money</h3>
+        <p>3 weeks ago</p>
+      </ion-label>
+      <ion-badge color="danger" slot="end"><span style="color:#ffffff">10 ZBC</span></ion-badge>
+    </ion-item>
+    <ion-item (click)="showTaskDetail()">
+      <span style='font-size:2em; margin-right: 5px;'>
+        <ion-icon name="open" slot="start"></ion-icon>
+      </span>
+      <ion-label>
+        <h3>Approval-Multi Signature</h3>
+        <p>3 weeks ago</p>
+      </ion-label>
+      <ion-badge color="success" slot="end"><span style="color:#ffffff">5 ZBC</span></ion-badge>
+    </ion-item>
+  </ion-list>
 
 </ion-content>

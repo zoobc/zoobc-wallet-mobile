@@ -4,6 +4,11 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{ "Open Existing Wallet" | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+        <ion-button routerLink="/feedback">
+          Feedback
+        </ion-button>
+    </ion-buttons>     
   </ion-toolbar>
 </ion-header>
 
@@ -15,14 +20,14 @@
       </h3>
     </div>
     <div class="ion-text-center">
-      <ion-text *ngIf="errorMsg" class="errormsg" style="color:#f68989">{{errorMsg}} </ion-text>
+      <ion-text *ngIf="errorMsg" class="errormsg" color="danger">{{errorMsg}} </ion-text>
     </div>
     <div>
       <ion-text>Number of words: {{wordCounter}}</ion-text><br/>
       <ion-textarea rows="10" auto-grow="true" [(ngModel)]="passphrase"
-        placeholder="{{ 'Please enter your 24 words' | translate }}" (keyup)="onChangeMnemonic()"></ion-textarea>
+        placeholder="{{ 'Please enter your 24 words' | translate }}" (ionChange)="onChangeMnemonic()"></ion-textarea>
       <div class="existing-wallet-button">
-        <ion-button expand="block" color="secondary" (click)="openExistingWallet()">{{ "Open Wallet" | translate }}
+        <ion-button expand="block" color="light" (click)="openExistingWallet()">{{ "Open Wallet" | translate }}
         </ion-button>
       </div>
     </div>
