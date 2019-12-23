@@ -8,26 +8,17 @@ import { AlertController } from '@ionic/angular';
 })
 export class MyTasksPage implements OnInit {
 
-  constructor(private alertController: AlertController) { }
-
+  constructor(private alertCtrl: AlertController, private alertController: AlertController) {}
   ngOnInit() {
   }
 
-  showTasks(){
-    this.presentAlert();
-  }
 
-  showTasksMultisig() {
-    this.presentAlert();
-  }
-  async presentAlert() {
-    const alert = await this.alertController.create({
-      header: 'Coming soon',
-      //  subHeader: 'Coming soon',
-      message: 'This feature not available yet.',
-      buttons: ['OK']
+  async showTaskDetail() {
+    const alert = await this.alertCtrl.create({
+      header: 'Coming Soon!',
+      message: 'Feature will available soon',
+      buttons: ['Close']
     });
-
     await alert.present();
   }
 
