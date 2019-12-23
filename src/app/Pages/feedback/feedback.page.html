@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>Feedback</ion-title>
   </ion-toolbar>
@@ -9,27 +9,48 @@
 
 <ion-content>
   <ion-grid fixed>
-    <ion-row>
+    <!-- <ion-row>
       <ion-col>
         <ion-item>
           <ion-label position="stacked">Acc Address:</ion-label>
           <ion-textarea rows="3" placeholder="Enter Address" [(ngModel)]="AccAddress" readonly></ion-textarea>
         </ion-item>
       </ion-col>
-    </ion-row>
-    <!-- <ion-row>
-      <ion-col>
-        <ion-item>
-          <ion-label position="stacked">Name:</ion-label>
-          <ion-input placeholder="Enter Name" [(ngModel)]="Name" readonly></ion-input>
-        </ion-item>
-      </ion-col>
     </ion-row> -->
     <ion-row>
       <ion-col>
         <ion-item>
-          <ion-label position="stacked">Comment:</ion-label>
+          <ion-label position="stacked">Name:</ion-label>
+          <ion-input placeholder="Enter Name" [(ngModel)]="Name"></ion-input>
         </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="stacked">Email:</ion-label>
+          <ion-input type="email" name="email" [(ngModel)]="Email" placeholder="Enter email"
+          pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="stacked">Comment:</ion-label>
+          <ion-textarea [(ngModel)]="Comment" placeholder="Enter Comment here..." rows="6"></ion-textarea>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="isSending">
+      <ion-col>
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="errorMsg">
+      <ion-col class="ion-text-center">
+        <ion-label color="danger">Message: <br/> {{errorMsg}}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -40,13 +61,64 @@
         </ion-button>
       </ion-col>
     </ion-row>
-
     <ion-row>
+      <ion-col text-center>
+        <ion-text color="danger" *ngIf="msgerror">{{msgerror}}</ion-text>
+      </ion-col>
+    </ion-row>
+
+    <!-- <ion-row>
       <ion-col text-center>
         <ion-button expand="block" color="light" routerLink="/list-feedback">
           {{ "Show All Feedback" | translate }}
         </ion-button>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
   </ion-grid>
 </ion-content>
+
+<!-- 
+<ion-content padding>
+  <form >
+    <ion-list lines="full" class="ion-no-margin ion-no-padding">
+      <ion-item>
+        <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text"></ion-input>
+      </ion-item>
+
+
+      <ion-item>
+        <ion-label position="stacked">Subject<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Message<ion-text color="danger">*</ion-text></ion-label>
+        <ion-textarea rows="4"></ion-textarea>
+      </ion-item>
+    </ion-list>
+
+
+    <div padding>
+
+        <ion-row>          
+            <ion-col col-12 text-center>
+                <ion-button
+                color="secondary"
+                (click)="addAddress()"
+                type="submit"
+                expand="block"><b>Submit</b>
+              </ion-button>        
+            </ion-col>
+        </ion-row>
+    
+    </div>
+
+
+  </form>
+</ion-content> -->
