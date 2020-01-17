@@ -37,7 +37,11 @@ export class CurrencyService {
   }
 
   getCurrencyRateFromThirdParty() {
-    return this.http.get(environment.currencyRateUrl);
+    return this.http.get(environment.openExchangeUrl + '/latest.json?app_id=7104c503e36947abba35d66d1ee66d35');
+  }
+
+  getCurrencyListFromThirdParty() {
+    return this.http.get(environment.openExchangeUrl + '/currencies.json');
   }
 
   changeRate(arg: Currency) {
