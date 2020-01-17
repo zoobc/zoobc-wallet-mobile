@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { SelectAddressService } from './select-address.service';
 
-describe('SelectAddressService', () => {
+import { ActiveAccountService } from './active-account.service';
+
+describe('ActiveAccountService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: SelectAddressService = TestBed.get(SelectAddressService);
+    const service: ActiveAccountService = TestBed.get(ActiveAccountService);
     expect(service).toBeTruthy();
   });
 });

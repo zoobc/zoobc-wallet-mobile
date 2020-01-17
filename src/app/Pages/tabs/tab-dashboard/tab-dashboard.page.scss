@@ -1,45 +1,7 @@
-$colors: (
-  primary: #488aff,
-  secondary: #32db64,
-  danger: #f53d3d,
-  light: #f4f4f4,
-  dark: #222,
-  twitter: (
-    base: #55acee,
-    contrast: #ffffff
-  )
-);
-
 .page-dashboard {
+  --background: #f9fafb;
+
   font-family: "Gotham-Light";
-
-  .trans-container {
-    background-color: #fff;
-    margin-top: -20px;
-  }
-  .selected-account {
-    ion-item {
-      --background: transparent;
-      --color: #fff;
-      text-align: center;
-      font-size: 0.8rem;
-      margin-bottom: 0.8rem;
-
-      .account-name {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        h2 {
-          font-size: 1.2rem;
-        }
-
-        ion-icon {
-          margin-left: 10px;
-        }
-      }
-    }
-  }
 
   .title-section {
     margin-top: 1.6rem;
@@ -50,7 +12,6 @@ $colors: (
     text-transform: uppercase;
   }
 
-<<<<<<< HEAD:src/app/Pages/tabs/tab-dashboard/tab-dashboard.page.scss
   .my-width{
 		width:600px;
   }
@@ -63,10 +24,6 @@ $colors: (
   .card-balance {
     --background: linear-gradient(90deg, #3f619C, #A43786);
     --color: #fff;
-=======
-  .balance-container {
-    padding-bottom: 60px;
->>>>>>> 6238c45f96fc4bae2649c7e0732f0d4889d420ae:src/app/Pages/main/tab-dashboard/tab-dashboard.page.scss
 
     .balance-item {
       --background: transparent;
@@ -89,15 +46,6 @@ $colors: (
       .sub-balance {
         --color: rgba(255, 255, 255, 0.7);
         font-size: 0.9rem;
-
-        > div {
-          display: flex;
-          align-items: center;
-
-          ion-icon {
-            margin-left: 0.2rem;
-          }
-        }
       }
     }
 

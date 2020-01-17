@@ -8,6 +8,7 @@ var model_empty_pb = require("../model/empty_pb");
 var model_block_pb = require("../model/block_pb");
 var model_blockchain_pb = require("../model/blockchain_pb");
 var model_transaction_pb = require("../model/transaction_pb");
+var model_receipt_pb = require("../model/receipt_pb");
 var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var P2PCommunication = (function () {
@@ -49,7 +50,7 @@ P2PCommunication.SendBlock = {
   requestStream: false,
   responseStream: false,
   requestType: model_block_pb.SendBlockRequest,
-  responseType: model_block_pb.SendBlockResponse
+  responseType: model_receipt_pb.Receipt
 };
 
 P2PCommunication.SendTransaction = {
@@ -58,7 +59,7 @@ P2PCommunication.SendTransaction = {
   requestStream: false,
   responseStream: false,
   requestType: model_transaction_pb.SendTransactionRequest,
-  responseType: model_transaction_pb.SendTransactionResponse
+  responseType: model_receipt_pb.Receipt
 };
 
 P2PCommunication.GetCumulativeDifficulty = {

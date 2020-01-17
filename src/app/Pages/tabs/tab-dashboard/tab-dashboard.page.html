@@ -91,11 +91,10 @@
     <h2>{{ errorMsg }}</h2>
   </ion-label>
 
-  <p class="title-section ion-padding-horizontal">
-    {{ "Recent Transaction(s)" | translate }}
+  <p *ngIf="unconfirmTx && unconfirmTx.length > 0" class="title-section ion-padding-horizontal">
+    {{ "Queue" | translate }} ({{unconfirmTx.length}})
   </p>
-
-  <ion-list class="ion-margin-top list-transaction">
+  <ion-list *ngIf="unconfirmTx && unconfirmTx.length > 0" class="ion-margin-top list-transaction">
     <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
       <ion-icon *ngIf="pendingtrx.type==='send'" name="arrow-round-up" color="light"></ion-icon>
       <ion-icon *ngIf="pendingtrx.type!=='send'" name="arrow-round-down" color="light"></ion-icon>
@@ -121,9 +120,13 @@
           </ion-col>
         </ion-row>
       </ion-label>
-
     </ion-item>
+  </ion-list>
 
+  <p class="title-section ion-padding-horizontal">
+    {{ "History" | translate }}
+  </p>
+  <ion-list class="ion-margin-top list-transaction">
     <ion-item *ngFor="let transaction of recentTx; let i = index" button (click)="openDetailTransction(transaction)">
       <ion-icon *ngIf="transaction.type==='send'" name="arrow-round-up" color="danger"></ion-icon>
       <ion-icon *ngIf="transaction.type!=='send'" name="arrow-round-down" color="success"></ion-icon>

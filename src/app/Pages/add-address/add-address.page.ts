@@ -14,10 +14,13 @@ export class AddAddressPage implements OnInit {
 
   name: string;
   address: string;
+  oldName: string;
+  oldAddress: string;
   mode: string;
   index: number;
   addresses = [];
   isAddressValid = true;
+  isNameValid = true;
   validationMessage = '';
 
   constructor(
@@ -36,6 +39,9 @@ export class AddAddressPage implements OnInit {
       this.mode = params.mode;
       this.name = params.name;
       this.address = params.address;
+
+      this.oldName = params.name;
+      this.oldAddress = params.address;
     });
 
     this.getAllAddress();
@@ -51,24 +57,12 @@ export class AddAddressPage implements OnInit {
   isNameExists(name: string, address: string) {
     this.validationMessage = '';
     let finded = false;
-    let i = 0;
     this.addresses.forEach(obj => {
-      if (String(name).valueOf() === String(obj.name).valueOf()) {
+      if (String(name).valueOf() === String(obj.name).valueOf() &&
+        String(address).valueOf() !== String(obj.address).valueOf()) {
         this.validationMessage = '<p>Name is exist, with address:<br/>' + obj.address + '</p>';
-        if (this.mode === 'edit') {
-
-          if (String(address).valueOf() !== String(obj.address).valueOf()){
-            finded = true;
-          }
-
-          // if (i !== this.index) {
-          //   finded = true;
-          // }
-        } else {
-          finded = true;
-        }
+        finded = true;
       }
-      i++;
     });
 
     return finded;
@@ -79,25 +73,12 @@ export class AddAddressPage implements OnInit {
     this.validationMessage = '';
     let finded = false;
 
-    let i = 0;
     this.addresses.forEach(obj => {
       if (String(address).valueOf() === String(obj.address).valueOf()) {
         this.validationMessage = '<p>Address is exist, with name:<br/>' + obj.name + '</p>';
-        if (this.mode === 'edit') {
-
-          if (String(name).valueOf() !== String(obj.name).valueOf()){
-            finded = true;
-          }
-
-          // if (i !== this.index) {
-          //   finded = true;
-          // }
-
-        } else {
-          finded = true;
-        }
+        finded = true;
       }
-      i++;
+
     });
     return finded;
   }
@@ -105,77 +86,104 @@ export class AddAddressPage implements OnInit {
   scanQRCode() {
     const navigationExtras: NavigationExtras = {
       queryParams: {
-          from: JSON.stringify('addressbook')
+        from: JSON.stringify('addressbook')
       }
     };
 
     this.router.navigateByUrl('/qr-scanner', navigationExtras);
-    this.qrScannerSrv.listen().subscribe( (addrss: string) => {
-        this.address = addrss;
+    this.qrScannerSrv.listen().subscribe((addrss: string) => {
+      this.address = addrss;
     });
   }
 
   async saveAddress() {
+
     console.log('======= saveAddress Mode: ', this.mode);
     this.isAddressValid = true;
+    this.isNameValid = true;
+
     if (!this.name) {
       console.log('== name is empty');
       this.validationMessage = 'Name is empty';
-      this.isAddressValid = false;
+      this.isNameValid = false;
       return;
     }
 
-    if (!this.address) {
-      console.log('== name exist: ', this.name);
-      this.validationMessage = 'Address is empty';
-      this.isAddressValid = false;
-      return;
-    }
+    if (this.mode === 'edit') {
 
-    if (this.address.length !== 44) {
-      console.log('== name exist: ', this.name);
-      this.validationMessage = 'Address is not valid';
-      this.isAddressValid = false;
-      return;
-    }
-
-    const addressBytes = base64ToByteArray(this.address);
-    if (addressBytes.length !== 33) {
-      this.isAddressValid = false;
-      this.validationMessage = 'Address is not valid!';
-      return;
-    }
-
-    if (this.isNameExists(this.name, this.address)) {
-      console.log('== name exist: ', this.name);
-      this.isAddressValid = false;
-      return;
-    }
-
-    if (this.isAddressExists(this.address, this.name)) {
-      console.log('== Address exist: ', this.address);
-      this.isAddressValid = false;
-      return;
-    }
-
-    if (this.isAddressValid) {
-
-      if (this.mode === 'edit') {
-        await this.addressBookSrv.updateByIndex(
-          this.name,
-          this.address,
-          this.index
-        );
-      } else {
-        await this.addressBookSrv.insert(
-          this.name,
-          this.address
-        );
+      // check if nothing changed
+      if (this.name === this.oldName) {
+        console.log('Nothing changed ');
+        this.location.back();
+        return;
       }
 
-      // this.router.navigateByUrl('/address-book');
-      this.location.back();
+      // check if name exists
+      if (this.isNameExists(this.name, this.address)) {
+        console.log('== name exist: ', this.name);
+        this.validationMessage = 'Name is Exists';
+        this.isNameValid = false;
+        return;
+      }
+
+      // upddate data
+      if (this.isNameValid) {
+        await this.addressBookSrv.updateByIndex(
+          this.name,
+          this.oldAddress,
+          this.index
+        );
+        this.location.back();
+      }
+
+    } else if (this.mode === 'new') {
+
+      if (this.isNameExists(this.name, this.address)) {
+        console.log('== name exist: ', this.name);
+        this.validationMessage = 'Name is exists';
+        this.isNameValid = false;
+        return;
+      }
+
+      if (!this.address) {
+        console.log('== address is empty: ');
+        this.validationMessage = 'Address is empty';
+        this.isAddressValid = false;
+        return;
+      }
+
+      if (this.address.length !== 44) {
+        console.log('== address length: ', this.address.length);
+        this.validationMessage = 'Address is not valid!';
+        this.isAddressValid = false;
+        return;
+      }
+
+      const addressBytes = base64ToByteArray(this.address);
+      if (addressBytes.length !== 33) {
+        this.isAddressValid = false;
+        this.validationMessage = 'Address is not valid!';
+        return;
+      }
+
+      if (this.isAddressExists(this.address, this.name)) {
+        console.log('== Address exist: ', this.address);
+        this.isAddressValid = false;
+        return;
+      }
+
+      if (this.isAddressValid && this.isNameValid) {
+        await this.addressBookSrv.insert(
+           this.name,
+           this.address
+         );
+        this.location.back();
+        return;
+     }
+ 
+
     }
+
   }
 
   cancel() {

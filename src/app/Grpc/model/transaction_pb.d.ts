@@ -4,8 +4,6 @@
 import * as jspb from "google-protobuf";
 import * as model_proofOfOwnership_pb from "../model/proofOfOwnership_pb";
 import * as model_pagination_pb from "../model/pagination_pb";
-import * as model_batchReceipt_pb from "../model/batchReceipt_pb";
-import * as model_nodeRegistration_pb from "../model/nodeRegistration_pb";
 
 export class Transaction extends jspb.Message {
   getVersion(): number;
@@ -191,10 +189,8 @@ export class NodeRegistrationTransactionBody extends jspb.Message {
   getAccountaddress(): string;
   setAccountaddress(value: string): void;
 
-  hasNodeaddress(): boolean;
-  clearNodeaddress(): void;
-  getNodeaddress(): model_nodeRegistration_pb.NodeAddress | undefined;
-  setNodeaddress(value?: model_nodeRegistration_pb.NodeAddress): void;
+  getNodeaddress(): string;
+  setNodeaddress(value: string): void;
 
   getLockedbalance(): string;
   setLockedbalance(value: string): void;
@@ -218,7 +214,7 @@ export namespace NodeRegistrationTransactionBody {
   export type AsObject = {
     nodepublickey: Uint8Array | string,
     accountaddress: string,
-    nodeaddress?: model_nodeRegistration_pb.NodeAddress.AsObject,
+    nodeaddress: string,
     lockedbalance: string,
     poown?: model_proofOfOwnership_pb.ProofOfOwnership.AsObject,
   }
@@ -230,10 +226,8 @@ export class UpdateNodeRegistrationTransactionBody extends jspb.Message {
   getNodepublickey_asB64(): string;
   setNodepublickey(value: Uint8Array | string): void;
 
-  hasNodeaddress(): boolean;
-  clearNodeaddress(): void;
-  getNodeaddress(): model_nodeRegistration_pb.NodeAddress | undefined;
-  setNodeaddress(value?: model_nodeRegistration_pb.NodeAddress): void;
+  getNodeaddress(): string;
+  setNodeaddress(value: string): void;
 
   getLockedbalance(): string;
   setLockedbalance(value: string): void;
@@ -256,7 +250,7 @@ export class UpdateNodeRegistrationTransactionBody extends jspb.Message {
 export namespace UpdateNodeRegistrationTransactionBody {
   export type AsObject = {
     nodepublickey: Uint8Array | string,
-    nodeaddress?: model_nodeRegistration_pb.NodeAddress.AsObject,
+    nodeaddress: string,
     lockedbalance: string,
     poown?: model_proofOfOwnership_pb.ProofOfOwnership.AsObject,
   }
@@ -281,34 +275,6 @@ export class RemoveNodeRegistrationTransactionBody extends jspb.Message {
 export namespace RemoveNodeRegistrationTransactionBody {
   export type AsObject = {
     nodepublickey: Uint8Array | string,
-  }
-}
-
-export class ClaimNodeRegistrationTransactionBody extends jspb.Message {
-  getNodepublickey(): Uint8Array | string;
-  getNodepublickey_asU8(): Uint8Array;
-  getNodepublickey_asB64(): string;
-  setNodepublickey(value: Uint8Array | string): void;
-
-  hasPoown(): boolean;
-  clearPoown(): void;
-  getPoown(): model_proofOfOwnership_pb.ProofOfOwnership | undefined;
-  setPoown(value?: model_proofOfOwnership_pb.ProofOfOwnership): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ClaimNodeRegistrationTransactionBody.AsObject;
-  static toObject(includeInstance: boolean, msg: ClaimNodeRegistrationTransactionBody): ClaimNodeRegistrationTransactionBody.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ClaimNodeRegistrationTransactionBody, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ClaimNodeRegistrationTransactionBody;
-  static deserializeBinaryFromReader(message: ClaimNodeRegistrationTransactionBody, reader: jspb.BinaryReader): ClaimNodeRegistrationTransactionBody;
-}
-
-export namespace ClaimNodeRegistrationTransactionBody {
-  export type AsObject = {
-    nodepublickey: Uint8Array | string,
-    poown?: model_proofOfOwnership_pb.ProofOfOwnership.AsObject,
   }
 }
 
@@ -377,6 +343,38 @@ export namespace RemoveAccountDatasetTransactionBody {
     recipientaccountaddress: string,
     property: string,
     value: string,
+  }
+}
+
+export class ClaimNodeRegistrationTransactionBody extends jspb.Message {
+  getNodepublickey(): Uint8Array | string;
+  getNodepublickey_asU8(): Uint8Array;
+  getNodepublickey_asB64(): string;
+  setNodepublickey(value: Uint8Array | string): void;
+
+  getAccountaddress(): string;
+  setAccountaddress(value: string): void;
+
+  hasPoown(): boolean;
+  clearPoown(): void;
+  getPoown(): model_proofOfOwnership_pb.ProofOfOwnership | undefined;
+  setPoown(value?: model_proofOfOwnership_pb.ProofOfOwnership): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ClaimNodeRegistrationTransactionBody.AsObject;
+  static toObject(includeInstance: boolean, msg: ClaimNodeRegistrationTransactionBody): ClaimNodeRegistrationTransactionBody.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ClaimNodeRegistrationTransactionBody, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ClaimNodeRegistrationTransactionBody;
+  static deserializeBinaryFromReader(message: ClaimNodeRegistrationTransactionBody, reader: jspb.BinaryReader): ClaimNodeRegistrationTransactionBody;
+}
+
+export namespace ClaimNodeRegistrationTransactionBody {
+  export type AsObject = {
+    nodepublickey: Uint8Array | string,
+    accountaddress: string,
+    poown?: model_proofOfOwnership_pb.ProofOfOwnership.AsObject,
   }
 }
 
@@ -543,39 +541,4 @@ export namespace SendTransactionRequest {
     senderpublickey: Uint8Array | string,
   }
 }
-
-export class SendTransactionResponse extends jspb.Message {
-  hasBatchreceipt(): boolean;
-  clearBatchreceipt(): void;
-  getBatchreceipt(): model_batchReceipt_pb.BatchReceipt | undefined;
-  setBatchreceipt(value?: model_batchReceipt_pb.BatchReceipt): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): SendTransactionResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: SendTransactionResponse): SendTransactionResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: SendTransactionResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): SendTransactionResponse;
-  static deserializeBinaryFromReader(message: SendTransactionResponse, reader: jspb.BinaryReader): SendTransactionResponse;
-}
-
-export namespace SendTransactionResponse {
-  export type AsObject = {
-    batchreceipt?: model_batchReceipt_pb.BatchReceipt.AsObject,
-  }
-}
-
-export interface TransactionTypeMap {
-  EMPTYTRANSACTION: 0;
-  SENDMONEYTRANSACTION: 1;
-  NODEREGISTRATIONTRANSACTION: 2;
-  UPDATENODEREGISTRATIONTRANSACTION: 258;
-  REMOVENODEREGISTRATIONTRANSACTION: 514;
-  CLAIMNODEREGISTRATIONTRANSACTION: 770;
-  SETUPACCOUNTDATASETTRANSACTION: 3;
-  REMOVEACCOUNTDATASETTRANSACTION: 259;
-}
-
-export const TransactionType: TransactionTypeMap;
 

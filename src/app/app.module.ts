@@ -29,13 +29,18 @@ import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
 import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';
 import { AddressBookService } from './Services/address-book.service';
+import { environment } from 'src/environments/environment';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, QrScannerComponent],
   entryComponents: [],
   imports: [
     NgxQRCodeModule,
@@ -52,10 +57,14 @@ export function createTranslateLoader(http: HttpClient) {
     TrxstatusPageModule,
     SetupPinPageModule,
     EnterpinsendPageModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule,
+    AngularFireDatabaseModule,
+
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: createTranslateLoader,
+        useFactory: (createTranslateLoader),
         deps: [HttpClient]
       }
     })
@@ -75,4 +84,4 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

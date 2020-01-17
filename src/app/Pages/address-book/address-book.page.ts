@@ -7,7 +7,7 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-address-book',
   templateUrl: './address-book.page.html',
-  styleUrls: ['./address-book.page.scss']
+  styleUrls: ['./address-book.page.scss'],
 })
 export class AddressBookPage implements OnInit, OnDestroy {
 
@@ -108,31 +108,4 @@ export class AddressBookPage implements OnInit, OnDestroy {
     this.router.navigate(['/add-address'], navigationExtras);
   }
 
-  delete(index) {
-    this.presentDeleteConfirm(index);
-  }
-
-  async presentDeleteConfirm(index) {
-    const alert = await this.alertCtrl.create({
-      header: 'Confirmation',
-      message: 'Are you sure want to delete?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {}
-        },
-        {
-          text: 'Delete',
-          handler: async () => {
-            await this.addressBookSrv.delete(index);
-            this.loadData();
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
 }

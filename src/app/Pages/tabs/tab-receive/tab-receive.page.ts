@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
-import { MenuController, ToastController, ModalController } from '@ionic/angular';
+import { MenuController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { AccountService } from 'src/app/Services/account.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';

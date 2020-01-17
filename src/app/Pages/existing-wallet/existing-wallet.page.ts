@@ -5,7 +5,9 @@ import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/setup-pin/setup-pin.page';
+import { doEncrypt, doDecrypt} from '../../Helpers/converters';
 import { Storage } from '@ionic/storage';
+import CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-existing-wallet',
@@ -109,7 +111,9 @@ export class ExistingWalletPage implements OnInit {
       if (returnedData && returnedData.data && returnedData.data.length === 6) {
 
         const PIN = returnedData.data;
+        this.savePassphrase(PIN, this.passphrase);
         this.savePIN(PIN);
+
 
       } else {
         console.log('==== PIN canceled ');
@@ -119,6 +123,28 @@ export class ExistingWalletPage implements OnInit {
     return await pinmodal.present();
   }
 
+  async savePassphrase(PIN: any, passphrase: any) {
+        console.log('=== PIN', PIN);
+        console.log('==== passphrase:', passphrase);
+        const encrypted = doEncrypt(passphrase, PIN);
+
+        await this.storage.set('PASS_STORAGE', encrypted);
+
+        const passEncryptSaved = await this.storage.get('PASS_STORAGE');
+
+        console.log('===== encrypted: ', encrypted);
+        console.log('===== passEncryptSaved: ', passEncryptSaved);
+
+        console.log('===== encrypted length: ', encrypted.length);
+        console.log('===== passEncryptSaved Length: ', passEncryptSaved.length);
+
+        if (passEncryptSaved === encrypted){
+            console.log(" sama saja bos");
+        }
+        const decrypted =  doDecrypt(passEncryptSaved, PIN);
+        console.log('dec:', decrypted);
+        console.log('===== decrypted: ', decrypted.toString(CryptoJS.enc.Utf8));
+  }
 
   goback() {
     this.navCtrl.pop();

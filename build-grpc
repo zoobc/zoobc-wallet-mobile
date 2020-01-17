@@ -1,0 +1,2 @@
+protoc --plugin="protoc-gen-ts='node_modules/.bin/protoc-gen-ts'" --grpc-web_out="import_style=typescript,mode=grpcwebtext:src/grpc/generated" --js_out="import_style=commonjs,binary:src/grpc/generated" src/grpc/schema/service/*.proto --proto_path=src/grpc/schema
+protoc --plugin="protoc-gen-ts='node_modules/.bin/protoc-gen-ts'" --grpc-web_out="import_style=typescript,mode=grpcwebtext:src/grpc/generated" --js_out="import_style=commonjs,binary:src/grpc/generated" src/grpc/schema/model/*.proto --proto_path=src/grpc/schema

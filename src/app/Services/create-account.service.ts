@@ -1,11 +1,12 @@
-import { Injectable } from "@angular/core";
-import { Storage } from "@ionic/storage";
-import { KeyringService } from "./keyring.service";
-import sha512 from "crypto-js/sha512";
-import CryptoJS from "crypto-js";
+import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
+import { KeyringService } from './keyring.service';
+import sha512 from 'crypto-js/sha512';
+import CryptoJS from 'crypto-js';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class CreateAccountService {
   private passphrase: string;
@@ -15,11 +16,10 @@ export class CreateAccountService {
   ivSize = 128;
   iterations = 100;
 
-  message = "Hello World";
-  password = "Secret Password";
+  password = 'Secret Password';
 
   account: any;
-  coinCode = "ZBC - Zoobc";
+  coinCode = 'ZBC';
 
   constructor(
     private storage: Storage,
@@ -32,7 +32,7 @@ export class CreateAccountService {
 
   async setPin(value: string) {
     this.pin = sha512(value).toString();
-    await this.storage.set("pin", this.pin);
+    await this.storage.set('pin', this.pin);
 
   }
 
@@ -79,13 +79,13 @@ export class CreateAccountService {
 
 
   async createAccount() {
-    await this.storage.set("passphrase", this.passphrase);
-    await this.storage.set("pin", this.pin);
+    await this.storage.set('passphrase', this.passphrase);
+    await this.storage.set('pin', this.pin);
 
     const { bip32RootKey } = this.keyringService.calcBip32RootKeyFromSeed(
       this.coinCode,
       this.passphrase,
-      null
+      environment.saltForAccount
     );
 
     this.account = this.keyringService.calcForDerivationPathForCoin(
@@ -96,12 +96,12 @@ export class CreateAccountService {
     );
 
     const account = {
-      accountName: "Account 1",
+      accountName: 'Account 1',
       accountProps: this.account,
       created: new Date()
     };
 
-    await this.storage.set("accounts", [account]);
-    await this.storage.set("active_account", account);
+    await this.storage.set('accounts', [account]);
+    await this.storage.set('active_account', account);
   }
 }

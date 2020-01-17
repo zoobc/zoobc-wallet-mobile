@@ -11,6 +11,7 @@ ion-icon{
 }
 
 #container {
+    padding-left: 15px;
     background-color: #ffffff;
     overflow: hidden;
 
@@ -21,18 +22,15 @@ ion-icon{
     }
     
 }
- 
-  
-ion-button{
-    font-size: 0.7em;
+   
+.fee-button{
+    font-size: 0.9em;
     width: 30%;
+    height: 60px;
 
-    --background-focused: red;
-    --background-hover: black;
+    --background-hover: green;
     --background-click: yellow;
-    // --background: blue;
     --background-activated: green;
-
 }
 
 // ion-button:hover{
@@ -55,7 +53,6 @@ ion-button{
 
 // }
 
-
 // ion-button:focus{
 //     background: yellow; 
 //     --background-focused: #ffffff;
@@ -64,46 +61,4 @@ ion-button{
 //     --background: #fff;
 //     --background-activated: #fff;
 
-// }
-
-
-
-
-
-
-// .page-send{
-
-//     ion-grid{
-//         --ion-grid-padding: 0;
-//     }
-
-//     ion-col{
-//         --ion-grid-column-padding: 0;
-//     }
-
-//     ion-item{
-//         --padding-start: 0;
-//         --inner-padding-end: 0;
-//     }
-
-//     .ion-label{
-//         font-size: 1.4em;
-//     }
-
-//     .btn-icon{
-//         background-color: transparent;
-//         font-size: 1.6rem;
-//     }
-
-// }
-
-// .stacked{
-//     font-size:1.2em;
-//     margin-bottom:12px;
-//     color:rgb(78, 77, 77);
-// }
-
-// .displayerror{
-//     font-size:0.8em;
-//     color:red;
 // }

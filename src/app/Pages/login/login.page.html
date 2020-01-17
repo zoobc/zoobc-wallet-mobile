@@ -1,32 +1,13 @@
-<ion-header >
-  <ion-toolbar color="primary">
-    <ion-title>{{ "Enter Your PIN" | translate }}</ion-title>
-    <ion-buttons slot="end" color="primary">
-        <ion-button routerLink="/feedback">
-          Feedback
-        </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-<ion-content class="ion-padding" color="primary">
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-          <ion-label *ngIf="isLoginValid">&nbsp;</ion-label>
-          <ion-label *ngIf="!isLoginValid" class="invalidPin">{{ "Invalid PIN" | translate }}</ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <app-pin (ionChange)="login($event)"></app-pin>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button color="light" fill="outline" routerLink="/initial">
-          {{ "Change Wallet" | translate }}
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content>
+  <div class="login">
+    <p class="intro-text ion-text-center">{{ "Please Enter Your PIN" | translate }}</p>
+    <p style = "margin: 0px" *ngIf="!loginFail">&nbsp;</p>
+    <p style = "margin: 0px" *ngIf="loginFail" class="ion-text-center" style="color:red">{{ "Invalid PIN" | translate }}</p>
+    <app-pin (keyup)="login($event)"></app-pin>
+
+    <ion-button color="secondary" routerLink="/initial"
+      expand="block">{{ "Change Wallet" | translate }}
+    </ion-button>
+
+  </div>
 </ion-content>

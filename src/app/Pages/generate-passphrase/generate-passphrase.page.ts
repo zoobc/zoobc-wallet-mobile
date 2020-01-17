@@ -4,6 +4,8 @@ import { ToastController, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { AuthService } from 'src/app/Services/auth-service';
+import { doEncrypt, doDecrypt } from '../../Helpers/converters';
+import CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-generate-passphrase',
@@ -49,6 +51,19 @@ export class GeneratePassphrasePage implements OnInit {
     this.pageStep++;
   }
 
+  async savePassphrase(PIN: any, passphrase: any) {
+
+    // console.log('=== PIN', PIN);
+    // console.log('==== passphrase:', passphrase);
+    const encrypted = doEncrypt(passphrase, PIN);
+    // console.log('===== encrypted: ', encrypted);
+    await this.storage.set('PASS_STORAGE', encrypted);
+
+    // const decrypted =  doDecrypt(encrypted, PIN);
+    // console.log('===== decrypted: ', decrypted.toString(CryptoJS.enc.Utf8));
+
+  }
+
   async confirmPin(event: any) {
     console.log('====event:', event);
     const { observer, pin, first } = event;
@@ -74,11 +89,6 @@ export class GeneratePassphrasePage implements OnInit {
         observer.next(true);
        }, 1000);
     }
-  }
-
-
-  async savePassphrase(PIN: any, passphrase: any) {
-    console.log('=== PIN', PIN);
   }
 
   setPagePosition(value) {

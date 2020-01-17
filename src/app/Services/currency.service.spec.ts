@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SetupPinService } from './setup-pin.service';
+import { CurrencyService } from './currency.service';
 
-describe('SetupPinService', () => {
+describe('CurrencyService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: SetupPinService = TestBed.get(SetupPinService);
+    const service: CurrencyService = TestBed.get(CurrencyService);
     expect(service).toBeTruthy();
   });
 });

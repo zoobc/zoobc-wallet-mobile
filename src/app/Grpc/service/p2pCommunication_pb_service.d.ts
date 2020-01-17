@@ -8,6 +8,7 @@ import * as model_empty_pb from "../model/empty_pb";
 import * as model_block_pb from "../model/block_pb";
 import * as model_blockchain_pb from "../model/blockchain_pb";
 import * as model_transaction_pb from "../model/transaction_pb";
+import * as model_receipt_pb from "../model/receipt_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
 type P2PCommunicationGetPeerInfo = {
@@ -43,7 +44,7 @@ type P2PCommunicationSendBlock = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof model_block_pb.SendBlockRequest;
-  readonly responseType: typeof model_block_pb.SendBlockResponse;
+  readonly responseType: typeof model_receipt_pb.Receipt;
 };
 
 type P2PCommunicationSendTransaction = {
@@ -52,7 +53,7 @@ type P2PCommunicationSendTransaction = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof model_transaction_pb.SendTransactionRequest;
-  readonly responseType: typeof model_transaction_pb.SendTransactionResponse;
+  readonly responseType: typeof model_receipt_pb.Receipt;
 };
 
 type P2PCommunicationGetCumulativeDifficulty = {
@@ -166,20 +167,20 @@ export class P2PCommunicationClient {
   sendBlock(
     requestMessage: model_block_pb.SendBlockRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: model_block_pb.SendBlockResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: model_receipt_pb.Receipt|null) => void
   ): UnaryResponse;
   sendBlock(
     requestMessage: model_block_pb.SendBlockRequest,
-    callback: (error: ServiceError|null, responseMessage: model_block_pb.SendBlockResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: model_receipt_pb.Receipt|null) => void
   ): UnaryResponse;
   sendTransaction(
     requestMessage: model_transaction_pb.SendTransactionRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: model_transaction_pb.SendTransactionResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: model_receipt_pb.Receipt|null) => void
   ): UnaryResponse;
   sendTransaction(
     requestMessage: model_transaction_pb.SendTransactionRequest,
-    callback: (error: ServiceError|null, responseMessage: model_transaction_pb.SendTransactionResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: model_receipt_pb.Receipt|null) => void
   ): UnaryResponse;
   getCumulativeDifficulty(
     requestMessage: model_blockchain_pb.GetCumulativeDifficultyRequest,

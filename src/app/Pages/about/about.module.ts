@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { IonicModule } from '@ionic/angular';
 import { AboutPage } from './about.page';
-import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   {
@@ -17,7 +17,6 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
-    TranslateModule,
     IonicModule,
     TranslateModule,
     RouterModule.forChild(routes)

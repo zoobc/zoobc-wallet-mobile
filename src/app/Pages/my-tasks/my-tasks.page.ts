@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-my-tasks',
@@ -8,18 +7,9 @@ import { AlertController } from '@ionic/angular';
 })
 export class MyTasksPage implements OnInit {
 
-  constructor(private alertCtrl: AlertController, private alertController: AlertController) {}
+  constructor() { }
+
   ngOnInit() {
-  }
-
-
-  async showTaskDetail() {
-    const alert = await this.alertCtrl.create({
-      header: 'Coming Soon!',
-      message: 'Feature will available soon',
-      buttons: ['Close']
-    });
-    await alert.present();
   }
 
 }

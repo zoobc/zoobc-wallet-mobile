@@ -40,7 +40,7 @@ const routes: Routes = [
   },
   {
     path: 'feedback',
-    loadChildren: './Pages/feedback/feedback.module#FeedbackPageModule'
+    loadChildren: './Pages/feedback/feedback.module#FeedbackPageModule', canActivate: [AuthService]
   },
   { path: 'help', loadChildren: './Pages/help/help.module#HelpPageModule' },
   {
@@ -73,9 +73,9 @@ const routes: Routes = [
   canActivate: [AuthService] },
   { path: 'sendcoin', loadChildren: './Pages/send-coin/send-coin.module#SendCoinPageModule',
    canActivate: [AuthService] },
-  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },
-  { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule' },
-  { path: 'settings', loadChildren: './Pages/settings/settings.module#SettingsPageModule' },
+  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule', canActivate: [AuthService] },
+  { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule', canActivate: [AuthService] },  { path: 'list-feedback', loadChildren: './Pages/feedback/list-feedback/list-feedback.module#ListFeedbackPageModule' },
+  { path: 'my-tasks', loadChildren: './Pages/my-tasks/my-tasks.module#MyTasksPageModule' },
 
 
 ];

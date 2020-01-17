@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -8,27 +9,35 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.page.scss']
 })
 export class LoginPage implements OnInit {
-  public isLoginValid = true;
-
+  private pin = '';
+  public loginFail = false;
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {}
 
   async login(e: any) {
-    const {pin} = e;
-    console.log('=== Pin: ', pin);
-    this.isLoginValid = true;
+    const { observer, pin, first } = e;
+
+    // set loginFail false && clear error message
+    this.loginFail = false;
+    if (first === true) {
+       return;
+    }
     const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
       this.router.navigate(['tabs']);
-    } else {
-      this.isLoginValid = false;
       setTimeout(() => {
-        this.isLoginValid = true;
-       }, 1500);
+        observer.next(true);
+      }, 500);
+    } else {
+      this.loginFail = true;
+      setTimeout(() => {
+        observer.next(true);
+       }, 1000);
     }
   }
 

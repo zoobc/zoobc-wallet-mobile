@@ -1,9 +1,54 @@
 import { default as JSBI } from 'jsbi';
 import * as BN from 'bn.js';
+import CryptoJS from 'crypto-js';
 
 const base58 = require('base58-encode');
 
-declare const Buffer;
+const keySiz = 256;
+const ivSize = 128;
+const iteration = 100;
+
+export function doEncrypt(msg, pass) {
+  const salt = CryptoJS.lib.WordArray.random(ivSize / 8);
+
+  const key = CryptoJS.PBKDF2(pass, salt, {
+      keySize: keySiz / 32,
+      iterations: iteration
+    });
+
+  const iv1 = CryptoJS.lib.WordArray.random(ivSize / 8);
+
+  const encrypted = CryptoJS.AES.encrypt(msg, key, {
+    iv: iv1,
+    padding: CryptoJS.pad.Pkcs7,
+    mode: CryptoJS.mode.CBC
+  });
+
+  // salt, iv will be hex 32 in length
+  // append them to the ciphertext for use  in decryption
+  const transitmessage = salt.toString() + iv1.toString() + encrypted.toString();
+  return transitmessage;
+}
+
+export function doDecrypt(transitmessage, pass) {
+  const salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
+  const iv2 = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32));
+  const encrypted = transitmessage.substring(64);
+
+  const key = CryptoJS.PBKDF2(pass, salt, {
+      keySize: keySiz / 32,
+      iterations: iteration
+    });
+
+  const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+    iv: iv2,
+    padding: CryptoJS.pad.Pkcs7,
+    mode: CryptoJS.mode.CBC
+  });
+
+  return decrypted;
+}
+
 
 export function hexToByteArray(hexStr: string): Uint8Array {
   return new Uint8Array(
@@ -132,7 +177,6 @@ function __makeDataViewSetter(funcName, viewFuncName) {
       throw TypeError('Value needs to be JSBI');
     }
 
-    // tslint:disable-next-line:no-bitwise
     const signBit = value.sign ? 1 << 31 : 0;
     const lowWord = value.__unsignedDigit(0) - (value.sign ? 1 : 0);
     viewSetFunc.call(
@@ -143,7 +187,6 @@ function __makeDataViewSetter(funcName, viewFuncName) {
       littleEndian
     );
     const highWord =
-      // tslint:disable-next-line:no-bitwise
       (value.__unsignedDigit(1) | signBit) + (value.sign ? 1 : 0);
     viewSetFunc.call(
       // DataView.set{Int|Uint}32
@@ -180,12 +223,9 @@ function __makeDataViewGetter(funcName, viewFuncName) {
       littleEndian
     );
     const sign = highWord < 0;
-    // tslint:disable-next-line:no-bitwise
     const signBit = sign ? 1 << 31 : 0;
     const result = new (JSBI as any)(2, sign);
-    // tslint:disable-next-line:no-bitwise
     result.__setDigit(0, (lowWord >>> 0) + (sign ? 1 : 0));
-    // tslint:disable-next-line:no-bitwise
     result.__setDigit(1, (highWord - (sign ? 1 : 0)) ^ signBit);
     return result;
   };
@@ -223,8 +263,6 @@ export function bigintToByteArray(bn: BN): Uint8Array {
 export function readInt64(buff, offset) {
   const buff1 = buff.readUInt32LE(offset);
   const buff2 = buff.readUInt32LE(offset + 4);
-  // tslint:disable-next-line:no-bitwise
   if (!(buff2 & 0x80000000)) { return buff1 + 0x100000000 * buff2; }
-  // tslint:disable-next-line:no-bitwise
   return -((~buff2 >>> 0) * 0x100000000 + (~buff1 >>> 0) + 1);
 }

@@ -9,7 +9,8 @@
 
 <ion-content class="ion-padding">
 
-  
+  <div [ngSwitch]="step">
+
     <div *ngSwitchCase=1>
 
       <ion-text color="secondary">
@@ -21,14 +22,26 @@
         keep
         it somewhere safe and secure.
       </p>
-      <div *ngSwitchCase=2>
-        <p>
-          If you ever change device, you will need this seed phrase to access your accounts. Save them
-          somewhere safe and secret.
-        </p>
-      </div>  
       <ion-button expand="block" (click)="backupClick();">{{ "Reveal seed words" | translate }}</ion-button>
-
     </div>
+
+    <div *ngSwitchCase=2>
+
+        <ion-card>
+            <ion-card-header>
+              <ion-card-title>Your Passphrase</ion-card-title>
+            </ion-card-header>
+          
+            <ion-card-content>
+                {{passDecrypted}}
+            </ion-card-content>
+          </ion-card>
+    </div>
+    <div *ngSwitchCase=3>
+      <div>
+        <ion-button (click)="closePhrase();">Close pharase</ion-button>
+      </div>
+    </div>
+  </div>
 
 </ion-content>

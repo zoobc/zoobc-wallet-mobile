@@ -1,15 +1,15 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { ListAccountComponent } from "./list-account.component";
-import { IonicModule } from "@ionic/angular";
-import { Routes, RouterModule } from "@angular/router";
-import { FormsModule } from "@angular/forms";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ListAccountComponent } from './list-account.component';
+import { IonicModule } from '@ionic/angular';
+import { Routes, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { ModalCreateAccountComponent } from "./modal-create-account/modal-create-account.component";
+import { ModalCreateAccountComponent } from './modal-create-account/modal-create-account.component';
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: ListAccountComponent
   }
 ];

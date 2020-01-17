@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { ConverterService } from './converter.service';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class CryptoService {
-  private MASTER_SECRET = 'Bitcoin seed'
+  private MASTER_SECRET = 'Bitcoin seed';
 
   constructor(
     private converterService: ConverterService
@@ -13,15 +13,15 @@ export class CryptoService {
 
   genDeriveAlgo() {
     return this.safeObj({
-      name: "PBKDF2",
-      hash: "SHA-384", // Note: Non-truncated SHA is vulnerable to length extension attack (e.g. sha256 & sha512)
-      salt: this.secureRandom(16, { type: "Uint8Array" }).buffer,
+      name: 'PBKDF2',
+      hash: 'SHA-384', // Note: Non-truncated SHA is vulnerable to length extension attack (e.g. sha256 & sha512)
+      salt: this.secureRandom(16, { type: 'Uint8Array' }).buffer,
       iterations: 1e6
     });
   }
 
   genInitVector() {
-    return this.secureRandom(12, { type: "Uint8Array" }).buffer;
+    return this.secureRandom(12, { type: 'Uint8Array' }).buffer;
   }
 
   browserRandom(count, options) {
@@ -31,29 +31,30 @@ export class CryptoService {
     crypto.getRandomValues(nativeArr);
 
     switch (options.type) {
-      case "Array":
+      case 'Array':
         return [].slice.call(nativeArr);
-      case "Buffer":
+      case 'Buffer':
         try {
           Buffer.alloc(1);
         } catch (e) {
           throw new Error(
-            "Buffer not supported in this environment. Use Node.js or Browserify for browser support."
+            'Buffer not supported in this environment. Use Node.js or Browserify for browser support.'
           );
         }
         return Buffer.from(nativeArr);
-      case "Uint8Array":
+      case 'Uint8Array':
         return nativeArr;
       default:
         throw new Error(`${options.type} is unsupported.`);
     }
   }
 
-  secureRandom(count, options = { type: "Array" }) {
+  secureRandom(count, options = { type: 'Array' }) {
     // eslint-disable-line
     const crypto = window.crypto;
-    if (!crypto)
-      throw new Error("Your browser does not support window.crypto.");
+    if (!crypto) {
+      throw new Error('Your browser does not support window.crypto.');
+    }
     return this.browserRandom(count, options);
   }
 
@@ -63,8 +64,9 @@ export class CryptoService {
 
   getCrypto() {
     const crypto = window.crypto;
-    if (!crypto)
-      throw new Error("Your browser does not support window.crypto.");
+    if (!crypto) {
+      throw new Error('Your browser does not support window.crypto.');
+    }
     return crypto;
   }
 
@@ -82,9 +84,9 @@ export class CryptoService {
 
     // Convert the secretKey into a native CryptoKey
     return subtle
-      .importKey("raw", plainkeyArrayBuf, this.safeObj(keyAlgo), true, [
-        "encrypt",
-        "decrypt"
+      .importKey('raw', plainkeyArrayBuf, this.safeObj(keyAlgo), true, [
+        'encrypt',
+        'decrypt'
       ])
       .then(cryptoKey =>
         // Use the Strengthened/Strong CryptoKey to wrap / encrypt the main CryptoKey
@@ -109,8 +111,8 @@ export class CryptoService {
 
     // Convert the Pin into a native CryptoKey
     return subtle
-      .importKey("raw", secretPinArrayBuf, deriveAlgo.name, false, [
-        "deriveKey"
+      .importKey('raw', secretPinArrayBuf, deriveAlgo.name, false, [
+        'deriveKey'
       ])
       .then(weakKey =>
         // Strengthen the Pin CryptoKey by using PBKDF2
@@ -119,7 +121,7 @@ export class CryptoService {
           weakKey,
           this.safeObj(keyAlgo),
           false,
-          ["encrypt", "wrapKey"]
+          ['encrypt', 'wrapKey']
         )
       )
       .then(strongKey =>
@@ -128,9 +130,9 @@ export class CryptoService {
       );
   }
 
-  digestKeyed(keyArrayBuf, messageArrayBuf, algo = { name: 'SHA-512' }){
+  async digestKeyed(keyArrayBuf: any, messageArrayBuf: any, algo = { name: 'SHA-512' }) {
     // See: https://security.stackexchange.com/questions/79577/whats-the-difference-between-hmac-sha256key-data-and-sha256key-data
-    const subtle = this.getCryptoSubtle()
+    const subtle = this.getCryptoSubtle();
     return subtle
       .importKey(
         'raw',
@@ -139,18 +141,18 @@ export class CryptoService {
         false,
         ['sign', 'verify']
       )
-      .then(cryptoKey => subtle.sign('HMAC', cryptoKey, messageArrayBuf))
+      .then(cryptoKey => subtle.sign('HMAC', cryptoKey, messageArrayBuf));
   }
 
   rootKeyFromSeed(seedUint8) {
-    const digestKeyUint8 = this.converterService.stringToArrayByte(this.MASTER_SECRET)
+    const digestKeyUint8 = this.converterService.stringToArrayByte(this.MASTER_SECRET);
     return this.digestKeyed(digestKeyUint8, seedUint8, { name: 'SHA-512' })
     .then(digestBuffer => {
       // Note: Non-truncated SHA is vulnerable to length extension attack (e.g. sha256 & sha512)
       // We use a longer hash here and truncate to desired AES keySize (e.g. 256)
-      const rootKeyUint8 = new Uint8Array(digestBuffer, 0, 256 / 8)
+      const rootKeyUint8 = new Uint8Array(digestBuffer, 0, 256 / 8);
       // const chainCodeUint8 = new Uint8Array(digestBuffer, PRIVATE_KEY_LENGTH / 8)
-      return rootKeyUint8
-    })
+      return rootKeyUint8;
+    });
   }
 }

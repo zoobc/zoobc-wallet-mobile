@@ -1,10 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { LoadingController, AlertController } from '@ionic/angular';
+import { LoadingController, AlertController, ToastController } from '@ionic/angular';
 import {
   MenuController,
   ModalController
 } from '@ionic/angular';
+
 import { TransactionService } from 'src/app/Services/transaction.service';
+import { TransactionFeesService } from 'src/app/Services/transaction-fees.service';
 import { publicKeyToAddress, base64ToByteArray, makeShortAddress } from 'src/app/Helpers/converters';
 import { Storage } from '@ionic/storage';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
@@ -20,6 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Currency, CurrencyService } from 'src/app/Services/currency.service';
 import { environment } from 'src/environments/environment';
+import { Network } from '@ionic-native/network/ngx';
 
 
 interface AccountInfo {
@@ -54,7 +57,7 @@ export class SendCoinPage implements OnInit {
   fee: any;
   customfee: number;
   allFees = [];
-
+  isAdvance = false;
   isAmountValid = true;
   isFeeValid = true;
   isRecipientValid = true;
@@ -65,6 +68,7 @@ export class SendCoinPage implements OnInit {
   allAccounts = [];
   errorMsg: string;
   customeChecked: false;
+  private connectionText = '';
 
   public currencyRate: Currency = {
     name: 'USD',
@@ -73,6 +77,7 @@ export class SendCoinPage implements OnInit {
 
   public isLoadingBalance = true;
   public isLoadingRecentTx = true;
+  public isLoadingTxFee = true;
 
 
   constructor(
@@ -81,9 +86,12 @@ export class SendCoinPage implements OnInit {
     private transactionService: TransactionService,
     private accountService: AccountService,
     private activeAccountSrv: ActiveAccountService,
+    private toastController: ToastController,
     private menuController: MenuController,
     private qrScannerSrv: QrScannerService,
     private router: Router,
+    private network: Network,
+    private trxFeeService: TransactionFeesService,
     private currencyServ: CurrencyService,
     public addressbookSrv: AddressBookService,
     private translateServ: TranslateService,
@@ -139,23 +147,55 @@ export class SendCoinPage implements OnInit {
   }
 
   createTransactionFees() {
-    const trxFee1: TrxFee = {
-      name: 'Slow',
-      fee: 0.00005
-    };
+    this.isLoadingTxFee = true;
+    // const trxFee1: TrxFee = {
+    //   name: 'Slow',
+    //   fee: 0.001
+    // };
 
-    const trxFee2: TrxFee = {
-      name: 'Average',
-      fee: 0.00015
-    };
+    // const trxFee2: TrxFee = {
+    //   name: 'Average',
+    //   fee: 0.005
+    // };
 
-    const trxFee3: TrxFee = {
-      name: 'Fast',
-      fee: 0.00025
-    };
+    // const trxFee3: TrxFee = {
+    //   name: 'Fast',
+    //   fee: 0.01
+    // };
 
-    this.allFees = [trxFee1, trxFee2, trxFee3];
-    this.fee = trxFee2;
+    this.trxFeeService.readTrxFees().subscribe(data => {
+      this.allFees = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          name: e.payload.doc.data()['name'],
+          fee: e.payload.doc.data()['fee']
+        };
+      });
+      console.log(" == trxees:", this.allFees);
+      this.isLoadingTxFee = false;
+    });
+
+    this.fee = this.allFees[0];
+
+  }
+
+  showLoading() {
+    this.loadingController.create({
+      message: 'Loading ...',
+      duration: 2000
+    }).then((res) => {
+      res.present();
+    });
+  }
+
+  doRefresh(event: any) {
+    console.log('Reloading data ....');
+    this.showLoading();
+    this.loadData();
+
+    setTimeout(() => {
+      event.target.complete();
+    }, 5000);
 
   }
 
@@ -297,6 +337,14 @@ export class SendCoinPage implements OnInit {
     }
   }
 
+  showAdvance(){
+    if (this.isAdvance){
+      this.isAdvance = false;
+    } else {
+      this.isAdvance = true;
+    }
+  }
+
   async inputPIN() {
 
     const pinmodal = await this.modalController.create({
@@ -305,6 +353,7 @@ export class SendCoinPage implements OnInit {
 
       }
     });
+
 
     pinmodal.onDidDismiss().then((returnedData) => {
       console.log(returnedData);
@@ -324,7 +373,29 @@ export class SendCoinPage implements OnInit {
     });
   }
 
+  async presentNoConnectionToast() {
+    const toast = await this.toastController.create({
+      message: this.connectionText,
+      duration: 3000
+    });
+    toast.present();
+  }
+
   ngOnInit() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.network.onDisconnect().subscribe(() => {
+      this.presentNoConnectionToast();
+    });
+
+    this.translateServ
+      .get('Please check internet connection')
+      .subscribe((res: string) => {
+        this.connectionText = res;
+    });
+
     console.log('=== on constructor: ');
     this.getRecipientFromScanner();
     this.createTransactionFees();
