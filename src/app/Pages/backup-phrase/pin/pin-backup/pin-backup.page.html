@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{ "Please Enter Your PIN" | translate }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel();">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item lines="none">
+    <ion-label *ngIf="isLoginValid"></ion-label>
+    <ion-label *ngIf="!isLoginValid" class="ion-text-center" color="danger">{{ "Invalid PIN" | translate }}</ion-label>
+  </ion-item>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <app-pin (keyup)="login($event)"></app-pin>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button (click)="cancel()" color="secondary">{{ "Cancel" | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
