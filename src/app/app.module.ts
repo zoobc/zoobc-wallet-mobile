@@ -33,7 +33,7 @@ import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-
+import { PinBackupPageModule } from './Pages/backup-phrase/pin/pin-backup/pin-backup.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -57,6 +57,7 @@ export function createTranslateLoader(http: HttpClient) {
     TrxstatusPageModule,
     SetupPinPageModule,
     EnterpinsendPageModule,
+    PinBackupPageModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireDatabaseModule,
