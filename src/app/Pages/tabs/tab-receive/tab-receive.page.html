@@ -20,7 +20,7 @@
 
 
   <ion-card *ngIf="createdCode">
-          <ion-card-content>
+          <ion-card-content style="background: #ffffff;">
             <ngx-qrcode [qrc-value]="createdCode"></ngx-qrcode>           
             <p class="address" (click)="tapAddress()">{{ createdCode }}
                 

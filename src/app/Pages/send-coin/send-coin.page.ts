@@ -386,15 +386,15 @@ export class SendCoinPage implements OnInit {
   }
 
   loadData() {
-    this.network.onDisconnect().subscribe(() => {
-      this.presentNoConnectionToast();
-    });
+    // this.network.onDisconnect().subscribe(() => {
+    //   this.presentNoConnectionToast();
+    // });
 
-    this.translateServ
-      .get('Please check internet connection')
-      .subscribe((res: string) => {
-        this.connectionText = res;
-    });
+    // this.translateServ
+    //   .get('Please check internet connection')
+    //   .subscribe((res: string) => {
+    //     this.connectionText = res;
+    // });
 
     console.log('=== on constructor: ');
     this.getRecipientFromScanner();

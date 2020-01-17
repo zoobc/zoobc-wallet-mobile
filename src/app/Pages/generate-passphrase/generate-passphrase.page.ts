@@ -5,7 +5,8 @@ import { Storage } from '@ionic/storage';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { doEncrypt, doDecrypt } from '../../Helpers/converters';
-import CryptoJS from 'crypto-js';
+import * as bip39 from 'bip39';
+
 
 @Component({
   selector: 'app-generate-passphrase',
@@ -16,6 +17,42 @@ export class GeneratePassphrasePage implements OnInit {
   writtenDown = false;
   terms = false;
   passphrase: string;
+
+  languages = [
+    {
+      key: "english",
+      name: "English"
+    },
+    {
+      key: "italian",
+      name: "Italian"
+    },
+    {
+      key: "french",
+      name: "French"
+    },
+    {
+      key: "spanish",
+      name: "Spanish"
+    },
+    {
+      key: "japanese",
+      name: "Japan"
+    },
+    {
+      key: "chinese_simplified",
+      name: "Chinese Simplified"
+    },
+    {
+      key: "chinese_traditional",
+      name: "Chinese Traditional"
+    },
+    {
+      key: "korean",
+      name: "Korean"
+    }
+  ];
+
   isPinSetup = false;
   private account;
   pagePosition = 1;
@@ -35,6 +72,11 @@ export class GeneratePassphrasePage implements OnInit {
 
   ngOnInit() {
     // this.checkSetupPin();
+    this.generatePassphrase();
+  }
+
+  onLanguageChanged(v) {
+    bip39.setDefaultWordlist(v);
     this.generatePassphrase();
   }
 

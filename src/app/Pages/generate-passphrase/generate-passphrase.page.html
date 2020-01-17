@@ -7,55 +7,53 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-generate-passphrase">
-  <!-- <div class="ion-margin-top">
-    <app-create-new-steps active="{{ pageStep }}"></app-create-new-steps>
-  </div> -->
+<ng-template [ngIf]="pagePosition == 3">
+  <ion-content class="page-generate-passphrase" color="primary">
+    <p class="ion-text-center">{{ "Confirm your PIN" | translate }}</p>
+    <p *ngIf="!loginFail">&nbsp;</p>
+    <p *ngIf="loginFail" class="ion-text-center" style="color:yellow">{{ "Invalid PIN" | translate }}</p>
+    <app-pin (keyup)="confirmPin($event)"></app-pin>
+  </ion-content>
+</ng-template>
 
-  <ng-template [ngIf]="pagePosition == 3">
-    <ion-content class="page-generate-passphrase">
-      <p class="ion-text-center">{{ "Confirm your PIN" | translate }}</p>
-      <p *ngIf="!loginFail">&nbsp;</p>
-      <p *ngIf="loginFail" class="ion-text-center" style="color:red">{{ "Invalid PIN" | translate }}</p>  
-      <app-pin (keyup)="confirmPin($event)"></app-pin>
-    </ion-content>
-  </ng-template>
+<ng-template [ngIf]="pagePosition == 2">
+  <ion-content class="page-generate-passphrase" color="primary">
+    <p class="ion-text-center">{{ "Setup your PIN" | translate }}</p>
+    <p>&nbsp;</p>
+    <app-pin (keyup)="setupPin($event)"></app-pin>
+  </ion-content>
+</ng-template>
 
-  <ng-template [ngIf]="pagePosition == 2">
-    <ion-content class="page-generate-passphrase">
-      <p class="ion-text-center">{{ "Setup your PIN" | translate }}</p>
-      <p>&nbsp;</p>
-      <app-pin (keyup)="setupPin($event)"></app-pin>
-    </ion-content>
-  </ng-template>
+<ng-template [ngIf]="pagePosition == 1">
+  <ion-content class="page-generate-passphrase" color="content-default">
+    <div style="background: linear-gradient(0deg, #780a6d 0%, #183b85 100%);">
+      <!-- <ion-item lines="none" style="background: transparent;">
+          <ion-label>Language of passphrase</ion-label>
+          <ion-select style="--ion-background-color:#111D12;"
+            #langSelect
+            placeholder="Select One"
+            interface="popover"
+            (ionChange)="onLanguageChanged(langSelect.value)">
+            <ion-select-option style="background-color: #780a6d; background: #780a6d;"
+              value="{{ lang.key }}"
+              *ngFor="let lang of languages">{{ lang.name }}</ion-select-option>
+          </ion-select>
+        </ion-item> -->
 
-  <ng-template [ngIf]="pagePosition == 1">
-
-    <ion-card class="card-passphrase ion-margin-horizontal">
-      <ion-card-content>
+      <div style="padding:30px;">
         <p class="passphrase">{{ passphrase }}</p>
-      </ion-card-content>
-    </ion-card>
+      </div>
+    </div>
 
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-button
-            no-shadow
-            color="dark"
-            class="btn-action"
-            expand="block"
-            (click)="copyToClipboard()"
-            ><ion-icon name="copy"></ion-icon>{{ "Copy" | translate }}</ion-button
-          >
+          <ion-button no-shadow color="dark" class="btn-action" expand="block" (click)="copyToClipboard()">
+            <ion-icon name="copy"></ion-icon>{{ "Copy" | translate }}
+          </ion-button>
         </ion-col>
         <ion-col>
-          <ion-button
-            color="medium"
-            class="btn-action"
-            expand="block"
-            (click)="generatePassphrase()"
-          >
+          <ion-button color="medium" class="btn-action" expand="block" (click)="generatePassphrase()">
             <ion-icon name="refresh-circle"></ion-icon> {{ "Regenerate" | translate }}
           </ion-button>
         </ion-col>
@@ -71,9 +69,7 @@
       <div>
         <ion-checkbox [(ngModel)]="writtenDown"></ion-checkbox>
       </div>
-      <span
-        >{{ "I have written down or otherwise securely stored my passphrase" | translate }}</span
-      >
+      <span>{{ "I have written down or otherwise securely stored my passphrase" | translate }}</span>
     </div>
 
     <div class="ion-margin-horizontal checklist">
@@ -84,14 +80,8 @@
     </div>
 
     <div class="footer-generate-passphrase" class="ion-text-center" style="margin-top:20px;">
-      <ion-button
-        color="secondary"
-        class="ion-margin-horizontal btn-submit"
-        expand="block"
-        (click)="setPagePosition(2)"
-        *ngIf="!isPinSetup"
-        disabled="{{ !(writtenDown && terms) }}"><b>{{ "Setup PIN" | translate }}</b></ion-button
-      >
+      <ion-button color="secondary" class="ion-margin-horizontal btn-submit" expand="block" (click)="setPagePosition(2)"
+        *ngIf="!isPinSetup" disabled="{{ !(writtenDown && terms) }}"><b>{{ "Setup PIN" | translate }}</b></ion-button>
     </div>
-  </ng-template>
-</ion-content>
+  </ion-content>
+</ng-template>

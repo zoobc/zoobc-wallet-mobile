@@ -1,9 +1,7 @@
 <ion-content class="initial-page ion-padding">
   <ion-list style="border: none; background: transparent">
-    <ion-item>
-      <!-- <ion-icon name="globe"></ion-icon> -->
-      <!-- <ion-label>{{ "Language" | translate }}</ion-label> -->
-      <ion-select interface="alert" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
+    <ion-item color="primary">
+      <ion-select color="primary" interface="alert" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
         <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
           {{ language.country }}
         </ion-select-option>
@@ -23,10 +21,10 @@
     </div>
 
     <div class="btn-container">
-      <ion-button expand="block" color="secondary" routerLink="/create-wallet">
+      <ion-button expand="block" color="light" routerLink="/create-wallet">
         {{ "Create New Wallet" | translate }}</ion-button>
       <span>{{ "OR" | translate }}</span>
-      <ion-button expand="block" color="secondary" routerLink="/existing-wallet">
+      <ion-button expand="block" color="light" routerLink="/existing-wallet">
         {{ "Open Existing Wallet" | translate }} </ion-button>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <ion-header no-border>
-  <ion-toolbar>
+  <ion-toolbar  color="primary">
     <ion-buttons slot="start">
       <ion-button (click)="openMenu()">
         <ion-icon slot="icon-only" name="menu"></ion-icon>
@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-dashboard">
+<ion-content class="page-dashboard"  color="content-default">
   <!-- Custom Refresher Content -->
   <ion-refresher slot="fixed" style="background: #ffffff;" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
@@ -17,22 +17,22 @@
     </ion-refresher-content>
   </ion-refresher>
 
-
-  <ion-card class="card-balance">
-    <ion-card-content>
+  <div class="card-balance" style="padding:15px; padding-bottom: 30px; background: linear-gradient(0deg, #780a6d 0%, #183b85 100%);">
+    <!-- <ion-card-content> -->
       <ion-grid>
         <ion-row>
-          <ion-col size="12" class="ion-text-center">
-            <h2 class="account-name" (click)="openListAccount()"><span>{{ account.accountName }}</span> <span>
-                <ion-icon style="margin-left:10px;" name="arrow-dropdown"></ion-icon>
-              </span></h2>
-            <ion-label sytle="margin-bottom:20px;" (click)="openListAccount()">{{ account.shortadress }}</ion-label>
+          <ion-col size="12" class="ion-text-center" style="color:#ffffff">
+            <p class="account-name" (click)="openListAccount()">
+              <span >{{ account.accountName }}</span>
+              <span style="margin-left:15px;">
+                <ion-icon name="arrow-dropdown"></ion-icon>
+              </span> 
+              <br/>
+             <span style="font-size: 0.9em;font-family: Montserrat;">{{ account.shortadress }}</span>
+           </p>
           </ion-col>
         </ion-row>
-
       </ion-grid>
-
-
 
       <ion-item lines="none" class="ion-no-padding balance-item">
         <img class="logo" src="assets/images/logo-white.png" />
@@ -80,8 +80,8 @@
         </div>
 
       </ion-item>
-    </ion-card-content>
-  </ion-card>
+    <!-- </ion-card-content> -->
+  </div>
 
   <div *ngIf="isLoadingBalance">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -158,5 +158,24 @@
       loadingText="Loading more data...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
+
+<!-- <ion-grid>
+    <ion-row>
+      <ion-col size="6" style="text-align: center;">
+          <ion-button color="light" class="btn-menu">History</ion-button>
+      </ion-col>
+      <ion-col  size="6" style="text-align: center;">
+          <ion-button color="light" class="btn-menu">News</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col  size="6" style="text-align: center;">
+          <ion-button color="light" class="btn-menu">Chart</ion-button>
+      </ion-col>
+      <ion-col  size="6" style="text-align: center;">
+          <ion-button color="light" class="btn-menu">Blog</ion-button>
+      </ion-col>
+    </ion-row>
+</ion-grid> -->
 
 </ion-content>

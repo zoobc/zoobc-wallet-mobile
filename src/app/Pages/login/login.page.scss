@@ -7,3 +7,8 @@
     @include flex-direction(column);
     @include justify-content(center);
 }
+
+ion-content{
+    --background: #3f619C;
+    background-color: #3f619C;
+}

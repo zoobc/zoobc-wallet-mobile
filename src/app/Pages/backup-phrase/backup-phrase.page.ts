@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../Services/auth-service';
-import { AlertController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { doDecrypt } from 'src/app/Helpers/converters';
 import CryptoJS from 'crypto-js';
+import { PinBackupPage } from './pin/pin-backup/pin-backup.page';
 
 @Component({
   selector: 'app-backup-phrase',
@@ -19,7 +20,7 @@ export class BackupPhrasePage implements OnInit {
   constructor(
     private storage: Storage,
     private authService: AuthService,
-    private alertCtrl: AlertController
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -31,78 +32,33 @@ export class BackupPhrasePage implements OnInit {
 
   async showInputPIN() {
 
-    const alert = await this.alertCtrl.create({
-      header: 'Input PIN',
-      inputs: [
-        {
-          name: 'password',
-          placeholder: 'Password',
-          type: 'password'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: data => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'OK',
-          role: 'ok',
-          handler: async data => {
-
-         
-            // if (isUserLoggedIn) {
-            //   data.role = 'success';
-            //   alert.dismiss(2);
-            // } else {
-            alert.dismiss(data);
-            // }
-
-          }
-        }
-      ]
+    const pinmodal = await this.modalController.create({
+      component: PinBackupPage,
+      componentProps: {
+      }
     });
 
-    alert.onDidDismiss().then(async (returnedData) => {
-      console.log('ret: ', returnedData);
 
-      console.log('Role:', returnedData.role);
-      console.log('pwd: ', returnedData.data.values.password);
+    pinmodal.onDidDismiss().then(async (returnedData) => {
+      console.log('Pin: ', returnedData);
 
-      if (returnedData && returnedData.role === 'ok') {
- 
-        const pin = returnedData.data.values.password;
+
+      if (returnedData && returnedData.data !== 0) {
+        const pin = returnedData.data;
         const isUserLoggedIn = await this.authService.login(pin);
-        // console.log('================ isUserLoggedIn:', isUserLoggedIn);
+        console.log('================ isUserLoggedIn:', isUserLoggedIn);
 
         if (isUserLoggedIn) {
           this.getPassprase(pin);
           this.step = 2;
-        } else {
-          this.wrongPwdAlert();
         }
-
-        // this.wrongPwdAlert();
-        // this.step = 4;
-
-        // this.showPassprase(data);
-
-      
 
       }
     });
 
-  
-    await alert.present();
-
-
-
-
+    return await pinmodal.present();
   }
- 
+
   async getPassprase(arg: any) {
     console.log('==== PIN:', arg);
 
@@ -119,17 +75,15 @@ export class BackupPhrasePage implements OnInit {
 
   }
 
-  async wrongPwdAlert() {
-    const alert = await this.alertCtrl.create({
-      header: 'Alert',
-      message: 'You entered Wrong PIN.',
-      buttons: ['OK']
-    });
+  // async wrongPwdAlert() {
+  //   const alert = await this.alertCtrl.create({
+  //     header: 'Alert',
+  //     message: 'You entered Wrong PIN.',
+  //     buttons: ['OK']
+  //   });
 
-    await alert.present();
-  }
-
-
+  //   await alert.present();
+  // }
 
   pinMatch() {
     this.step = 3;

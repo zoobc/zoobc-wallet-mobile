@@ -7,7 +7,7 @@ import {
   ModalController
 } from '@ionic/angular';
 import { AuthService } from 'src/app/Services/auth-service';
-import { Router, NavigationEnd, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
 import { Storage } from '@ionic/storage';
 import { TransactionService, Transactions, Transaction } from 'src/app/Services/transaction.service';
