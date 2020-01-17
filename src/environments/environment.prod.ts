@@ -1,7 +1,10 @@
 export const environment = {
   production: true,
+  defaultCurrency: 'USD',
   currencyRateUrl: 'https://api.exchangeratesapi.io/latest?base=USD',
-  grpcUrl: 'http://18.139.3.139:5001',
+  openExchangeUrl: 'https://openexchangerates.org/api',
+  // grpcUrl: 'http://18.139.3.139:5001',
+  grpcUrl: 'http://172.104.47.168:6001',
   mnemonicLanguage: 'english',
   mnemonicNumWords: 24,
   signalID: '790fe50a-589d-40c7-92af-683582d40acf',

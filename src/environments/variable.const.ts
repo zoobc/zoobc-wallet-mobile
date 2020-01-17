@@ -1,5 +1,8 @@
 export const ACTIVE_ACCOUNT = 'ACTIVE_ACCOUNT';
 export const CURRENCY_RATE_STORAGE = 'rate';
+export const OPENEXCHANGE_RATES_STORAGE = 'openexchange_rates';
+export const OPENEXCHANGE_CURR_LIST_STORAGE = 'openexchange_curr_list';
+export const TRX_FEES_STORAGE = 'transaction_fees_in_firebase';
 
 // Language
 export const SELECTED_LANGUAGE = 'SELECTED_LANGUAGE';
@@ -154,14 +157,4 @@ export const LANGUAGES = [
 
 // Currency
 export const SELECTED_CURRENCY = 'SELECTED_CURRENCY';
-export const CURRENCIES = [
-  {
-    country: 'United State',
-    code: 'USD'
-  },
-  {
-    country: 'Indonesia',
-    code: 'IDR'
-  }
-];
 export const RATES = 'RATES';
