@@ -1,0 +1,21 @@
+.app-button {
+  border: 1px solid #dedede;
+  width: 100%;
+  font-size: 1.1rem;
+  background-color: transparent;
+  border-radius: 5px;
+  padding: 20px;
+  height: 100%;
+  background-color: #fff;
+
+  ion-icon {
+    font-size: 3rem;
+  }
+
+  &.button-sell {
+    img {
+      max-width: 60px;
+      height: auto;
+    }
+  }
+}

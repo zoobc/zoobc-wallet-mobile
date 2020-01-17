@@ -18,6 +18,9 @@ export class AppComponent implements OnInit {
 
   private connectionText = '';
 
+  // private themeClassPrefix = "theme-";
+  // defaultClassTheme: string = this.themeClassPrefix + environment.defaultTheme;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -56,6 +59,10 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    // this.themeSrv.themeSubject.subscribe(value => {
+    //   this.defaultClassTheme = this.themeClassPrefix + value;
+    // });
+
     this.network.onDisconnect().subscribe(() => {
       this.presentNoConnectionToast();
     });

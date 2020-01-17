@@ -2,6 +2,7 @@
 // http://ionicframework.com/docs/theming/
 
 /** Ionic CSS Variables **/
+
 :root {
 
   --ion-color-primary: #3f619C;
@@ -68,6 +69,18 @@
   --ion-color-light-tint: #e0e1e1;
 
 
-  --ion-font-family: "Gotham-Light";
+  --main-background: #f2f2f2;
+
+  --ion-font-family: "montserratregular";
+
   --font-family-title: "Montserrat-Bold";
+
+  .ion-color-background {
+    --ion-color-base: #f2f2f2 !important;
+    //--ion-color-base-rgb: var(--ion-color-grey-rgb) !important;
+    --ion-color-contrast: #6c6c6c !important;
+    //--ion-color-contrast-rgb: var(--ion-color-grey-contrast-rgb) !important;
+    --ion-color-shade: #f2f2f2 !important;
+    --ion-color-tint: #f2f2f2 !important;
+  }
 }

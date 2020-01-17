@@ -35,7 +35,7 @@ export function createTranslateLoader(http: HttpClient) {
 }
 
 @NgModule({
-  declarations: [AppComponent, QrScannerComponent],
+  declarations: [AppComponent],
   entryComponents: [],
   imports: [
     NgxQRCodeModule,
@@ -55,7 +55,7 @@ export function createTranslateLoader(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
+        useFactory: createTranslateLoader,
         deps: [HttpClient]
       }
     })
@@ -75,4 +75,4 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

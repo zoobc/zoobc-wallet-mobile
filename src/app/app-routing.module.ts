@@ -73,7 +73,8 @@ const routes: Routes = [
   canActivate: [AuthService] },
   { path: 'sendcoin', loadChildren: './Pages/send-coin/send-coin.module#SendCoinPageModule',
    canActivate: [AuthService] },
-  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },  { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule' },
+  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule' },
+  { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule' },
   { path: 'settings', loadChildren: './Pages/settings/settings.module#SettingsPageModule' },
 
 

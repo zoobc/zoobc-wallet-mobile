@@ -1,0 +1,21 @@
+<ion-content>
+  <ion-list>
+    <ion-list-header>Please select the currency</ion-list-header>
+    <ion-item button (click)="selectCurrency('USD')"
+      ><ion-label>United State Dollars (USD)</ion-label
+      ><ion-icon
+        *ngIf="activeCurrency == 'USD'"
+        slot="end"
+        name="checkmark"
+      ></ion-icon
+    ></ion-item>
+    <ion-item button (click)="selectCurrency('IDR')"
+      ><ion-label>Indonesia Rupiahs (IDR)</ion-label
+      ><ion-icon
+        *ngIf="activeCurrency == 'IDR'"
+        slot="end"
+        name="checkmark"
+      ></ion-icon
+    ></ion-item>
+  </ion-list>
+</ion-content>

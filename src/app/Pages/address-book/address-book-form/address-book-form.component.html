@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="address-book"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ title }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="content-darker">
+  <form [formGroup]="addressForm" (ngSubmit)="onSubmit(addressForm.value)">
+    <div class="ion-padding-top ion-padding-bottom form-item-container">
+      <div class="form-item">
+        <ion-label class="label">Name</ion-label>
+        <ion-item color="content-default" lines="none">
+          <ion-icon name="person" slot="start"></ion-icon>
+          <ion-input
+            placeholder="Enter name"
+            formControlName="name"
+          ></ion-input>
+        </ion-item>
+      </div>
+    </div>
+
+    <div class="ion-padding-top ion-padding-bottom form-item-container">
+      <div class="form-item">
+        <ion-label class="label">Address</ion-label>
+        <ion-item color="content-default" lines="none">
+          <ion-icon name="book" slot="start"></ion-icon>
+          <ion-input
+            placeholder="Enter wallet address"
+            formControlName="address"
+          ></ion-input>
+          <ion-button slot="end" (click)="scanAddress()">
+            <ion-icon name="qr-scanner"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
+    </div>
+
+    <ion-button
+      [disabled]="!addressForm.valid"
+      class="ion-margin-start ion-margin-end ion-margin-top"
+      color="primary"
+      type="submit"
+      expand="block"
+      >Submit
+    </ion-button>
+
+    <div class="ion-text-center">
+      <ion-button
+        class="zbc-button-full ion-margin-top ion-margin-auto"
+        fill="clear"
+        color="medium"
+        (click)="close()"
+        type="button"
+        >Close
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

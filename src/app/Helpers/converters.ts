@@ -3,6 +3,8 @@ import * as BN from 'bn.js';
 
 const base58 = require('base58-encode');
 
+declare const Buffer;
+
 export function hexToByteArray(hexStr: string): Uint8Array {
   return new Uint8Array(
     hexStr.match(/[\da-f]{2}/gi).map(byte => parseInt(byte, 16))
@@ -130,6 +132,7 @@ function __makeDataViewSetter(funcName, viewFuncName) {
       throw TypeError('Value needs to be JSBI');
     }
 
+    // tslint:disable-next-line:no-bitwise
     const signBit = value.sign ? 1 << 31 : 0;
     const lowWord = value.__unsignedDigit(0) - (value.sign ? 1 : 0);
     viewSetFunc.call(
@@ -140,6 +143,7 @@ function __makeDataViewSetter(funcName, viewFuncName) {
       littleEndian
     );
     const highWord =
+      // tslint:disable-next-line:no-bitwise
       (value.__unsignedDigit(1) | signBit) + (value.sign ? 1 : 0);
     viewSetFunc.call(
       // DataView.set{Int|Uint}32
@@ -176,9 +180,12 @@ function __makeDataViewGetter(funcName, viewFuncName) {
       littleEndian
     );
     const sign = highWord < 0;
+    // tslint:disable-next-line:no-bitwise
     const signBit = sign ? 1 << 31 : 0;
     const result = new (JSBI as any)(2, sign);
+    // tslint:disable-next-line:no-bitwise
     result.__setDigit(0, (lowWord >>> 0) + (sign ? 1 : 0));
+    // tslint:disable-next-line:no-bitwise
     result.__setDigit(1, (highWord - (sign ? 1 : 0)) ^ signBit);
     return result;
   };
@@ -216,6 +223,8 @@ export function bigintToByteArray(bn: BN): Uint8Array {
 export function readInt64(buff, offset) {
   const buff1 = buff.readUInt32LE(offset);
   const buff2 = buff.readUInt32LE(offset + 4);
+  // tslint:disable-next-line:no-bitwise
   if (!(buff2 & 0x80000000)) { return buff1 + 0x100000000 * buff2; }
+  // tslint:disable-next-line:no-bitwise
   return -((~buff2 >>> 0) * 0x100000000 + (~buff1 >>> 0) + 1);
 }

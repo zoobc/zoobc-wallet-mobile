@@ -1,4 +1,16 @@
-ion-col{
-    text-align: center;
-}
+@import "../../../assets/scss/mixins/_mixins";
 
+.page-login {
+  .login {
+    height: 100%;
+    padding: 20px;
+    @include flex-init;
+    @include flex-direction(column);
+    @include justify-content(center);
+  }
+
+  .error-pin {
+    color: red;
+    font-size: 0.8rem;
+  }
+}

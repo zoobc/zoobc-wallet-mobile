@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="main/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>My Tasks</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="content-default">
+  <div class="address-book-list">
+    <ng-template #noData>
+      <ion-item lines="none">
+        <ion-label>You dont have any tasks</ion-label>
+      </ion-item>
+    </ng-template>
+
+    <ion-list
+      *ngIf="tasks && tasks.length >= 1; else noData"
+      color="content-default"
+      no-padding
+    >
+      <ion-item-sliding
+        *ngFor="let task of tasks; let i = index"
+        id="task-{{ i }}"
+      >
+        <ion-item
+          button
+          (click)="selectTask(i)"
+          color="content-default"
+          detail="true"
+        >
+          <ion-label>
+            <div class="my-task-list-item">
+              <div>
+                <h2>{{ task.title }}</h2>
+                <div class="time">{{ task.time }}</div>
+              </div>
+              <div class="amount">{{ task.prefix }} {{ task.amount }} ZBC</div>
+            </div>
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="delete(i)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+</ion-content>

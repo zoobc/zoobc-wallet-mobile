@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="openMenu()">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Receive Money</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="share()">
+        <ion-icon slot="icon-only" name="share"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-qrcode" color="content-default">
+  <div class="ion-padding-top ion-padding-bottom">
+    <p
+      class="address"
+      (click)="tapAddress()"
+      appAddressElipsis
+      [address]="account.address"
+    ></p>
+
+    <p class="note">
+      tap your address above to copy then paste it to your friend
+    </p>
+    <p class="note">- or -</p>
+    <div class="qrcode-container">
+      <img [src]="account.qrCode" />
+    </div>
+    <p class="note">
+      show this qrcode to your friend to transfer money to your account
+    </p>
+  </div>
+</ion-content>

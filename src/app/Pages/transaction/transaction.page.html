@@ -1,9 +1,50 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>transaction</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="min/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Full Transaction</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-list class="ion-margin-top list-transaction">
+    <ion-item lines="none" *ngIf="transactions.length <= 0; else transWithData">
+      <ion-label>You don't have any transactions</ion-label>
+    </ion-item>
+    <ng-template #transWithData>
+      <ion-item
+        #transWithData
+        *ngFor="let transaction of transactions; let i = index"
+        button
+        (click)="openDetailTransction(i)"
+      >
+        <ion-label>
+          <ion-row class="ion-justify-content-between">
+            <ion-col size="7">
+              <ion-label class="title">
+                {{ transaction.address }}
+              </ion-label>
+              <ion-label class="date">{{
+                transaction.date | calendarDate
+              }}</ion-label>
+            </ion-col>
+            <ion-col size="5" class="ion-text-end">
+              <ion-label class="amount {{ transaction.type }}">
+                <span
+                  class="prefix"
+                  *ngIf="transaction.type == 'plus'; else minus"
+                  >+</span
+                >
+                <ng-template #minus>
+                  -
+                </ng-template>
+                {{ transaction.amount / 1e8 | number: "0.0-4" }} ZBC
+              </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-label>
+      </ion-item>
+    </ng-template>
+  </ion-list>
 </ion-content>

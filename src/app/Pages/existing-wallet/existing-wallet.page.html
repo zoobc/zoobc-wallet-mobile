@@ -1,37 +1,30 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-    <ion-title>{{ "Open Existing Wallet" | translate }}</ion-title>
-    <ion-buttons slot="end" color="primary">
-        <ion-button routerLink="/feedback">
-          Feedback
-        </ion-button>
-    </ion-buttons>     
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="existing-wallet-page ion-padding">
-  <div style="vertical-align: top">
+<ion-content padding class="existing-wallet-page">
+  <div>
     <div>
       <h3 class="title ion-text-center">
-        {{ "Please enter your 24 words" | translate }}
+        Please enter your 24 mnemonic words
       </h3>
     </div>
-    <div class="ion-text-center">
-      <ion-text *ngIf="errorMsg" class="errormsg" color="danger">{{errorMsg}} </ion-text>
-    </div>
+
     <div>
-      <ion-text>Number of words: {{wordCounter}}</ion-text><br/>
-      <ion-textarea rows="10" auto-grow="true" [(ngModel)]="passphrase"
-        placeholder="{{ 'Please enter your 24 words' | translate }}" (ionChange)="onChangeMnemonic()"></ion-textarea>
+      <ion-textarea
+        rows="5"
+        auto-grow="true"
+        [(ngModel)]="passphrase"
+        placeholder="Please enter your 12 words"
+      ></ion-textarea>
+
       <div class="existing-wallet-button">
-        <ion-button expand="block" color="light" (click)="openExistingWallet()">{{ "Open Wallet" | translate }}
-        </ion-button>
+        <ion-button expand="block" color="grey" (click)="openExistingWallet()"
+          >Open Wallet</ion-button
+        >
       </div>
     </div>
-    <div style="height: 100px">
+
+    <div class="btn-container">
+      <ion-button expand="block" fill="outline" color="grey" (click)="goback()"
+        >Back</ion-button
+      >
     </div>
   </div>
 </ion-content>
