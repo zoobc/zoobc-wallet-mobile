@@ -13,6 +13,12 @@ export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_master_seed';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = new Buffer([1, 0, 0, 0]);
 export const TRANSACTION_VERSION = new Buffer([1]);
+export const FOR_SENDER = 'sender';
+export const FOR_RECIPIENT = 'recipient';
+export const FOR_ACCOUNT = 'account';
+export const EDIT_MODE = 'edit';
+export const NEW_MODE = 'new';
+export const EMPTY_STRING = '';
 
 // Language
 export const SELECTED_LANGUAGE = 'selected_language';
