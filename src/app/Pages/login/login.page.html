@@ -6,39 +6,36 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar>
-    <ion-grid>
-        <ion-row>
-            <ion-col>
-                <ion-title color="light">{{ "Enter Your PIN" | translate }}</ion-title>
-            </ion-col>
-          </ion-row>
-    </ion-grid>
-  </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding background" fullscreen>
-  <ion-grid>
-    <ion-row>
+  <ion-grid style="height: 100%; display: flex; flex-flow: column;">
+
+    <ion-row  style="flex-shrink: 0;">
+      <ion-col>
+          <ion-title color="light">{{ "Enter Your PIN" | translate }}</ion-title>
+      </ion-col>
+    </ion-row>
+
+    <ion-row  style="flex-shrink: 0;">
       <ion-col>
         <ion-label *ngIf="isLoginValid">&nbsp;</ion-label>
         <ion-label *ngIf="!isLoginValid" class="invalidPin">{{ "Invalid PIN" | translate }}</ion-label>
       </ion-col>
     </ion-row>
-    <ion-row>
+
+    <ion-row style="flex-grow: 1;">
       <ion-col>
         <app-pin (ionChange)="login($event)"></app-pin>
       </ion-col>
     </ion-row>
-  </ion-grid>
-</ion-content>
-<ion-footer no-border>
-  <ion-grid>
-    <ion-row>
+
+    <ion-row  style="flex-shrink: 0;">
       <ion-col>
         <ion-label color="light" routerLink="/initial">
           {{ "Change Wallet" | translate }}
         </ion-label>
        </ion-col>
     </ion-row>
+    
   </ion-grid>
-</ion-footer>
+</ion-content>
