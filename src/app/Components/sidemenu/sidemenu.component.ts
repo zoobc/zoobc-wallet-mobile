@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
-import { Currency } from 'src/app/Services/currency.service';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { TransactionService } from 'src/app/Services/transaction.service';
-import { STORAGE_CURRENT_ACCOUNT, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-sidemenu',
@@ -13,43 +8,15 @@ import { STORAGE_CURRENT_ACCOUNT, STORAGE_ALL_ACCOUNTS } from 'src/environments/
   styleUrls: ['./sidemenu.component.scss']
 })
 export class SidemenuComponent implements OnInit {
-  public accounts = [];
-  public activeCurrency = 'USD';
-  public activeAccount = '';
-  public currentHost = '';
-
-  public currencyRate: Currency = {
-    name: '',
-    value: 0,
-  };
-
-
-  public currencyRates: Currency[];
 
   constructor(
     private menuController: MenuController,
-    private router: Router,
-    private storage: Storage,
-    private activeAccountSrv: ActiveAccountService
-  ) {
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        this.activeAccount = v.accountName;
-      }
-    });
-  }
+    private router: Router
+  ) {}
 
   async ngOnInit() {
-    this.getActiveAccount();
-    const account = await this.storage.get(STORAGE_CURRENT_ACCOUNT);
-    this.activeAccount = account.name;
   }
 
-  // switchNetwork(host: string) {
-  //    this.transactionServ.setRpcUrl(host);
-  //    this.currentHost = host;
-  //    console.log('Set new host: ', host);
-  //  }
 
   revealPassphrase() {
     this.router.navigateByUrl('/backup-phrase');
@@ -114,20 +81,4 @@ export class SidemenuComponent implements OnInit {
     this.menuController.close('mainMenu');
   }
 
-  async getActiveAccount() {
-    const accounts = await this.storage.get(STORAGE_ALL_ACCOUNTS);
-    const account = await this.storage.get(STORAGE_CURRENT_ACCOUNT);
-    accounts.forEach((acc, index) => {
-      console.log(
-        acc.accountProps.derivationPath === account.accountProps.derivationPath,
-        acc.accountProps.derivationPath,
-        account.accountProps.derivationPath
-      );
-      if (
-        acc.accountProps.derivationPath === account.accountProps.derivationPath
-      ) {
-        this.activeAccount = index;
-      }
-    });
-  }
 }
