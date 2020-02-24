@@ -310,5 +310,6 @@ I had to remove inside ..\plugins\phonegap-plugin-barcodescanner\plugin.xml the
 then removed and added again android platform.
 Worked very fine for me.
 
-Fixing send money
+For test flight
+
 
