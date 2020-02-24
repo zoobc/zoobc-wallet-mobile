@@ -23,7 +23,7 @@ www/
 node_modules*
 tmp/
 temp/ 
-#externals/
+externals/
 platforms/
 plugins/
 #plugins/android.json
