@@ -5,3 +5,19 @@
 ion-input{
     border:1px solid #dddddd;
 }
+
+.background {
+    --color: #fff;
+    --background: transparent;
+    --background: url("src/assets/images/bg-pin.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: bottom;
+  }
+  
+  ion-toolbar {
+    --color: #fff;
+    --background: transparent;
+    --ion-color-base: transparent !important;
+  }
+  

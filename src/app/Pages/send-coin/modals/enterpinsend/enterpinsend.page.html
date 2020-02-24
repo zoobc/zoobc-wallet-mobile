@@ -1,22 +1,26 @@
-<ion-content class="ion-padding" color="primary">
-  <ion-grid>
-    <ion-row>
+<ion-content class="ion-padding background">
+  <ion-grid style="height: 100%; display: flex; flex-flow: column;">
+
+    <ion-row style="flex-shrink: 0;">
       <ion-col class="ion-text-center">
         {{ "Please Enter Your PIN" | translate }}
       </ion-col>
     </ion-row>
-    <ion-row>
+
+    <ion-row style="flex-shrink: 0;">
       <ion-col class="ion-text-center">
         <p *ngIf="isLoginValid">&nbsp;</p>
         <p *ngIf="!isLoginValid" class="ion-text-center" style="color:yellow">{{ "Invalid PIN" | translate }}</p>
       </ion-col>
     </ion-row>
-    <ion-row>
+
+    <ion-row style="flex-grow: 1;">
       <ion-col class="ion-text-center">
         <app-pin (ionChange)="login($event)"></app-pin>
       </ion-col>
     </ion-row>
-    <ion-row style="margin-top:5px;">
+
+    <ion-row style="flex-shrink: 0;margin-top:10px;">
       <ion-col class="ion-text-center">
         <ion-label (click)="cancel()" color="light">{{ "Cancel" | translate }}</ion-label>
       </ion-col>
