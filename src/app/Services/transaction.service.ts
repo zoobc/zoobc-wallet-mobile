@@ -19,7 +19,7 @@ import { MempoolService } from '../Grpc/service/mempool_pb_service';
 
 import { environment } from '../../environments/environment';
 import { Pagination, OrderBy } from '../Grpc/model/pagination_pb';
-import { readInt64, makeShortAddress } from 'src/app/Helpers/converters';
+import { readInt64, makeShortAddress } from 'src/Helpers/converters';
 import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../Grpc/model/accountBalance_pb';
 import { AccountBalanceService } from '../Grpc/service/accountBalance_pb_service';
 import { AddressBookService } from './address-book.service';
@@ -64,14 +64,14 @@ export class TransactionService {
     this.loadRpcUrl();
   }
 
-  async setRpcUrl(arg: string){
+  async setRpcUrl(arg: string) {
     this.rpcUrl = arg;
     await this.storage.set(SELECTED_NODE, arg);
     console.log('======RpcUrl: ', this.rpcUrl);
     this.changeNodeSubject.next();
   }
 
-  async loadRpcUrl(){
+  async loadRpcUrl() {
     const node = await this.storage.get(SELECTED_NODE);
     this.rpcUrl =  node;
   }

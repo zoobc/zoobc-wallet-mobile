@@ -3,8 +3,9 @@ import { FeedbackService } from 'src/app/Services/feedback.service';
 import { Router } from '@angular/router';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { makeShortAddress } from 'src/app/Helpers/converters';
+import { makeShortAddress } from 'src/Helpers/converters';
 import { Storage } from '@ionic/storage';
+import { STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-list-feedback',
@@ -34,9 +35,9 @@ export class ListFeedbackPage implements OnInit {
 
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
-        const address = this.accountService.getAccountAddress(v);
+        const address = v.address;
         this.account.shortadress = makeShortAddress(address);
-        this.account.accountName = v.accountName;
+        this.account.accountName = v.name;
         this.account.address = address;
         this.Name = this.account.accountName;
         this.AccAddress = this.account.shortadress;
@@ -55,8 +56,11 @@ export class ListFeedbackPage implements OnInit {
         return {
           id: e.payload.doc.id,
           isEdit: false,
+          // tslint:disable-next-line:no-string-literal
           CreatedDate: e.payload.doc.data()['CreatedDate']['seconds'],
+          // tslint:disable-next-line:no-string-literal
           AccAddress: e.payload.doc.data()['AccAddress'],
+          // tslint:disable-next-line:no-string-literal
           Comment: e.payload.doc.data()['Comment'],
         };
       });
@@ -66,12 +70,12 @@ export class ListFeedbackPage implements OnInit {
   }
 
   async getActiveAccount() {
-    const activeAccount = await this.storage.get('active_account');
-    const address = this.accountService.getAccountAddress(activeAccount);
+    const activeAccount = await this.storage.get(STORAGE_CURRENT_ACCOUNT);
+    const address = activeAccount.address;
     this.account.shortadress = makeShortAddress(address);
-    this.account.accountName = activeAccount.accountName;
+    this.account.accountName = activeAccount.name;
     this.account.address = address;
-    this.Name = this.account.accountName;
+    this.Name = activeAccount.name;
     this.AccAddress = this.account.shortadress;
   }
 

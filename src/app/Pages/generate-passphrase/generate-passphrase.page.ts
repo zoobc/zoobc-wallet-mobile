@@ -1,12 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { KeyringService } from 'src/app/Services/keyring.service';
-import { ToastController, NavController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { Component, OnInit } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
-import { AuthService } from 'src/app/Services/auth-service';
 import * as bip39 from 'bip39';
 import { Router } from '@angular/router';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { KeyringService } from 'src/app/Services/keyring.service';
 
 
 @Component({
@@ -17,44 +15,8 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 export class GeneratePassphrasePage implements OnInit {
   writtenDown = false;
   terms = false;
-  passphrase: string;
+  plainPassphrase: string;
   arrayPhrase = [];
-
-  languages = [
-    {
-      key: 'english',
-      name: 'English'
-    },
-    {
-      key: 'italian',
-      name: 'Italian'
-    },
-    {
-      key: 'french',
-      name: 'French'
-    },
-    {
-      key: 'spanish',
-      name: 'Spanish'
-    },
-    {
-      key: 'japanese',
-      name: 'Japan'
-    },
-    {
-      key: 'chinese_simplified',
-      name: 'Chinese Simplified'
-    },
-    {
-      key: 'chinese_traditional',
-      name: 'Chinese Traditional'
-    },
-    {
-      key: 'korean',
-      name: 'Korean'
-    }
-  ];
-
   isPinSetup = false;
   pagePosition = 1;
   pageStep = 1;
@@ -66,11 +28,7 @@ export class GeneratePassphrasePage implements OnInit {
     private clipboard: Clipboard,
     private keyringService: KeyringService,
     private toastController: ToastController,
-    private createAccSrv: CreateAccountService,
-    private navCtrl: NavController,
-    private authSrv: AuthService,
-    private storage: Storage,
-    @Inject('nacl.sign') private sign: any
+    private createAccSrv: CreateAccountService
   ) { }
 
   ngOnInit() {
@@ -97,21 +55,21 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   passphraseConfirmation() {
-    this.createAccSrv.setPassphrase(this.passphrase.slice());
+    this.createAccSrv.setPlainPassphrase(this.plainPassphrase.slice());
     this.router.navigateByUrl('/create-wallet');
   }
 
   async generatePassphrase() {
     const passphrase = this.keyringService.generateRandomPhrase().phrase;
-    this.passphrase = passphrase;
-    this.createAccSrv.setPassphrase(this.passphrase.slice());
-    this.arrayPhrase = this.passphrase.slice().split(' ');
+    this.plainPassphrase = passphrase;
+    this.createAccSrv.setPlainPassphrase(this.plainPassphrase.slice());
+    this.arrayPhrase = this.plainPassphrase.slice().split(' ');
     this.createAccSrv.setArrayPassphrase(this.arrayPhrase);
     console.log('Array phrase: ', this.arrayPhrase);
   }
 
   copyToClipboard() {
-    const val = this.passphrase.slice();
+    const val = this.plainPassphrase.slice();
     const arrayPass = val.split(' ');
     let strCopy = 'This is your ZooBC passphrase:\n\n With order number\n-------------------------\n';
     for (let i = 0; i < arrayPass.length; i++) {
@@ -131,32 +89,31 @@ export class GeneratePassphrasePage implements OnInit {
 
     this.clipboard.paste().then(
       (resolve: string) => {
-         //alert(resolve);
+         // alert(resolve);
          this.presentToast('Passphrase copied to clipboard');
        },
        (reject: string) => {
         this.copyInBrowser(strCopy);
-         //alert('Error: ' + reject);
+         // alert('Error: ' + reject);
        }
      );
 
-   
   }
 
-  copyInBrowser(arg: string){
+  copyInBrowser(arg: string) {
 
      const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = arg;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-    
+     selBox.style.position = 'fixed';
+     selBox.style.left = '0';
+     selBox.style.top = '0';
+     selBox.style.opacity = '0';
+     selBox.value = arg;
+     document.body.appendChild(selBox);
+     selBox.focus();
+     selBox.select();
+     document.execCommand('copy');
+     document.body.removeChild(selBox);
+
   }
 
   async presentToast(msg: string) {

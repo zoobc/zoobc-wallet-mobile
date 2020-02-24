@@ -11,7 +11,7 @@ import {
   NETWORK_LIST
 } from 'src/environments/variable.const';
 import { NetworkService } from 'src/app/Services/network.service';
-import { getFormatedDate } from 'src/app/Helpers/converters';
+import { getFormatedDate } from 'src/Helpers/converters';
 import { TransactionService } from 'src/app/Services/transaction.service';
 
 @Component({

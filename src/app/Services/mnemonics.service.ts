@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 
 import { environment } from '../../environments/environment';
-import { hexToByteArray } from '../Helpers/converters';
+import { hexToByteArray } from '../../Helpers/converters';
 
 const INVALID_ENTROPY = 'Invalid entropy';
 const INVALID_RNG = 'This browser does not support strong randomness';
@@ -60,7 +60,7 @@ export class MnemonicsService {
     wordlist?: string[]
   ): [string, string] {
     strength = strength || 128;
-    if (strength % 32 !== 0) throw new TypeError(INVALID_ENTROPY);
+    if (strength % 32 !== 0) { throw new TypeError(INVALID_ENTROPY); }
     rng = rng || randomBytes;
 
     const randBytes = rng(strength / 8);

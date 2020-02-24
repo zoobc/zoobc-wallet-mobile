@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { base64ToByteArray } from 'src/app/Helpers/converters';
+import { base64ToByteArray } from 'src/Helpers/converters';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { Location } from '@angular/common';
@@ -92,7 +92,7 @@ export class AddAddressPage implements OnInit {
 
     this.router.navigateByUrl('/qr-scanner');
     this.qrScannerSrv.listen().subscribe((jsondata: string) => {
-      let data = JSON.parse(jsondata);
+      const data = JSON.parse(jsondata);
       this.address = data.address;
     });
 

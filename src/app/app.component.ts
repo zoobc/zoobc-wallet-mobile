@@ -9,7 +9,8 @@ import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
-import { OPENEXCHANGE_RATES_STORAGE, TRX_FEES_STORAGE, SELECTED_NODE, ACTIVE_CURRENCY, NETWORK_LIST } from 'src/environments/variable.const';
+import { OPENEXCHANGE_RATES_STORAGE,
+  TRX_FEES_STORAGE, SELECTED_NODE, ACTIVE_CURRENCY, NETWORK_LIST } from 'src/environments/variable.const';
 import { TransactionFeesService } from './Services/transaction-fees.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { listChanges } from '@angular/fire/database';
@@ -125,8 +126,7 @@ export class AppComponent implements OnInit {
 
 
   getExchangeRateList() {
-   this.readExchangeRates().subscribe( async data => {    
-      let i  = 0;
+   this.readExchangeRates().subscribe( async data => {
       data.map(async e => {
           const res = JSON.parse(e.payload.doc.data()['rate0']);
           if (res && res.rates) {
@@ -135,7 +135,7 @@ export class AppComponent implements OnInit {
           } else {
             this.currencyService.setCurrencyRateList(await this.storage.get(OPENEXCHANGE_RATES_STORAGE));
           }
-      });      
+      });
     });
   }
 

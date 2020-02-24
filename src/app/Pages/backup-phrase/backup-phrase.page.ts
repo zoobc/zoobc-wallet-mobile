@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../Services/auth-service';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { doDecrypt } from 'src/app/Helpers/converters';
+import { doDecrypt } from 'src/Helpers/converters';
 import CryptoJS from 'crypto-js';
 import { PinBackupPage } from './pin/pin-backup/pin-backup.page';
 

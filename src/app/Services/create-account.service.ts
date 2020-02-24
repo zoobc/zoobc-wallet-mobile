@@ -1,38 +1,37 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { KeyringService } from './keyring.service';
-import sha512 from 'crypto-js/sha512';
 import CryptoJS from 'crypto-js';
-import { environment } from 'src/environments/environment.prod';
+import { KeyringService } from './keyring.service';
+import { getAddressFromPublicKey } from 'src/Helpers/utils';
+import { AuthService, SavedAccount } from './auth-service';
+import { COIN_CODE, SALT_PASSPHRASE } from 'src/environments/variable.const';
+import { makeShortAddress } from 'src/Helpers/converters';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class CreateAccountService {
-  private passphrase: string;
+  private plainPassphrase: string;
   private arrayPhrase = [];
-  private pin: string;
+  private plainPin: string;
 
   keySize = 256;
   ivSize = 128;
   iterations = 100;
-
-  password = 'Secret Password';
-
   account: any;
-  coinCode = 'ZBC';
 
   constructor(
-    private storage: Storage,
-    private keyringService: KeyringService
+    private keyringService: KeyringService,
+    private authService: AuthService
   ) {}
 
-  setPassphrase(value: string) {
-    this.passphrase = value;
+  setPlainPassphrase(arg: string) {
+    this.plainPassphrase = arg;
   }
 
   getPassphrase(): string {
-    return this.passphrase;
+    return this.plainPassphrase;
   }
 
   setArrayPassphrase(value: string[]) {
@@ -43,10 +42,12 @@ export class CreateAccountService {
     return this.arrayPhrase;
   }
 
-  async setPin(value: string) {
-    this.pin = sha512(value).toString();
-    await this.storage.set('pin', this.pin);
+  async setPlainPin(arg: string) {
+    this.plainPin = arg;
+  }
 
+  async getPlainPin() {
+   return this.plainPin;
   }
 
   doEncrypt(msg, pass) {
@@ -57,7 +58,7 @@ export class CreateAccountService {
         iterations: this.iterations
       });
 
-    const iv1 = CryptoJS.lib.WordArray.random(128/8);
+    const iv1 = CryptoJS.lib.WordArray.random(128 / 8);
 
     const encrypted = CryptoJS.AES.encrypt(msg, key, {
       iv: iv1,
@@ -90,31 +91,31 @@ export class CreateAccountService {
     return decrypted;
   }
 
-
   async createAccount() {
-    await this.storage.set('passphrase', this.passphrase);
-    await this.storage.set('pin', this.pin);
+    console.log('=== Plain Passpharase', this.plainPassphrase);
+    console.log('=== Plain PIN', this.plainPin);
 
-    const { bip32RootKey } = this.keyringService.calcBip32RootKeyFromSeed(
-      this.coinCode,
-      this.passphrase,
-      environment.saltForAccount
+    const { seed } = this.keyringService.calcBip32RootKeyFromMnemonic(
+      COIN_CODE,
+      this.plainPassphrase,
+      SALT_PASSPHRASE
     );
+    const masterSeed = seed;
+    const childSeed = this.keyringService.calcForDerivationPathForCoin(COIN_CODE, 0);
 
-    this.account = this.keyringService.calcForDerivationPathForCoin(
-      this.coinCode,
-      0,
-      0,
-      bip32RootKey
-    );
-
-    const account = {
-      accountName: 'Account 1',
-      accountProps: this.account,
-      created: new Date()
+    const publicKey = childSeed.publicKey;
+    const newAddress = getAddressFromPublicKey(publicKey);
+    console.log('=== new Address: ', newAddress);
+    const account: SavedAccount = {
+      name: 'Account 1',
+      path: 0,
+      nodeIP: null,
+      address: newAddress,
+      shortAddress: makeShortAddress(newAddress)
     };
 
-    await this.storage.set('accounts', [account]);
-    await this.storage.set('active_account', account);
+    this.authService.addAccount(account);
+    this.authService.savePassphraseSeed(this.plainPassphrase, this.plainPin);
+    this.authService.saveMasterSeed(masterSeed, this.plainPin);
   }
 }

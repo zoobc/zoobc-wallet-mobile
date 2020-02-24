@@ -5,9 +5,8 @@ import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/setup-pin/setup-pin.page';
-import { doEncrypt, doDecrypt} from '../../Helpers/converters';
+import { doEncrypt, doDecrypt } from '../../../Helpers/converters';
 import { Storage } from '@ionic/storage';
-import CryptoJS from 'crypto-js';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -17,6 +16,7 @@ import { Location } from '@angular/common';
   styleUrls: ['./existing-wallet.page.scss']
 })
 export class ExistingWalletPage implements OnInit {
+  plainPin: string;
   public passphrase: any;
   public errorMsg: string;
   private isValidPhrase: boolean;
@@ -26,7 +26,7 @@ export class ExistingWalletPage implements OnInit {
   // public arrayClass = [];
   public arrayPhrase = [];
   // public disabledBox = [];
-  
+
   constructor(
     public loadingController: LoadingController,
     private mnemonicServ: MnemonicsService,
@@ -36,7 +36,7 @@ export class ExistingWalletPage implements OnInit {
     private storage: Storage,
     private modalController: ModalController,
     private createAccSrv: CreateAccountService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.errorMsg = '';
@@ -47,22 +47,22 @@ export class ExistingWalletPage implements OnInit {
 
   }
 
-  resetForm(){
+  resetForm() {
     for (let i = 0; i < 24; i++) {
       this.arrayPhrase[i] = '';
     }
   }
 
-  comparePassphrase(){
-    console.log(" ==== changed ");
+  comparePassphrase() {
+    console.log(' ==== changed ');
   }
 
   onPaste(event: ClipboardEvent) {
-    console.log("Oke punya");
+    console.log('Oke punya');
 
-    let clipboardData = event.clipboardData;
-    let passphrase = clipboardData.getData('text').toLowerCase();
-    let phraseWord = passphrase.trim().split(' ');
+    const clipboardData = event.clipboardData;
+    const passphrase = clipboardData.getData('text').toLowerCase();
+    const phraseWord = passphrase.trim().split(' ');
 
     setTimeout(() => {
       this.resetForm();
@@ -88,7 +88,7 @@ export class ExistingWalletPage implements OnInit {
 
   //   const mnemonicNumLength = this.passphrase.trim().split(' ').length;
   //   this.wordCounter = mnemonicNumLength;
- 
+
   //   if (!this.isValidPhrase) {
   //     if (mnemonicNumLength < 1) {
   //       this.errorMsg = '';
@@ -104,25 +104,23 @@ export class ExistingWalletPage implements OnInit {
   openExistingWallet() {
     let haveEmpty = false;
 
-    this.passphrase = "";
+    this.passphrase = '';
     for (let i = 0; i < this.arrayPhrase.length; i++) {
-          const val = this.arrayPhrase[i];         
-          if (!val){
-              haveEmpty = true;
-              break;
-          }
-          this.passphrase +=  val;
-          if (i < 23){
-              this.passphrase += " ";
-          }
+      const val = this.arrayPhrase[i];
+      if (!val) {
+        haveEmpty = true;
+        break;
+      }
+      this.passphrase += val;
+      if (i < 23) {
+        this.passphrase += ' ';
+      }
     }
 
     if (haveEmpty) {
       this.errorMsg = 'Please fill in all field!';
       return;
     }
-    // this.passphrase = this.passphrase.trim();
-    
     console.log('===== this.passphrase: ', this.passphrase);
 
     this.isValidPhrase = this.mnemonicServ.validateMnemonic(this.passphrase);
@@ -130,23 +128,16 @@ export class ExistingWalletPage implements OnInit {
       this.errorMsg = 'Passphrase is not valid';
       return;
     }
-    this.errorMsg = '';
+    // set passphrase to service
+    this.createAccSrv.setPlainPassphrase(this.passphrase);
 
-    this.inputPIN();
+    this.errorMsg = '';
+    this.showPinDialog();
   }
 
-
-  async savePIN(pin: string) {
-    console.log('==== Pin:', pin);
-
-    console.log('==== this.passphrase:', this.passphrase);
-    this.createAccSrv.setPassphrase(this.passphrase);
-
-    console.log('==== setPin:', pin);
-    await this.createAccSrv.setPin(pin);
+  async createAccount() {
     await this.createAccSrv.createAccount();
-
-    const loginStatus = await this.authSrv.login(pin);
+    const loginStatus = this.authSrv.login(this.plainPin);
     console.log('==== loginstatus: ', loginStatus);
     if (loginStatus) {
       this.presentLoading();
@@ -168,50 +159,23 @@ export class ExistingWalletPage implements OnInit {
     return await loading.present();
   }
 
-  async inputPIN() {
+  async showPinDialog() {
     const pinmodal = await this.modalController.create({
       component: SetupPinPage,
       cssClass: 'modal-ZBC'
     });
 
     pinmodal.onDidDismiss().then((returnedData) => {
-      console.log('============= returned Data: ', returnedData);
       if (returnedData && returnedData.data && returnedData.data.length === 6) {
-
-        const PIN = returnedData.data;
-        this.savePassphrase(PIN, this.passphrase);
-        this.savePIN(PIN);
-
-
+        this.plainPin = returnedData.data;
+        // set pin to service
+        this.createAccSrv.setPlainPin(this.plainPin);
+        this.createAccount();
       } else {
         console.log('==== PIN canceled ');
       }
     });
-
     return await pinmodal.present();
-  }
-
-  async savePassphrase(PIN: any, passphrase: any) {
-        console.log('=== PIN', PIN);
-        console.log('==== passphrase:', passphrase);
-        const encrypted = doEncrypt(passphrase, PIN);
-
-        await this.storage.set('PASS_STORAGE', encrypted);
-
-        const passEncryptSaved = await this.storage.get('PASS_STORAGE');
-
-        console.log('===== encrypted: ', encrypted);
-        console.log('===== passEncryptSaved: ', passEncryptSaved);
-
-        console.log('===== encrypted length: ', encrypted.length);
-        console.log('===== passEncryptSaved Length: ', passEncryptSaved.length);
-
-        if (passEncryptSaved === encrypted){
-            console.log(" sama saja bos");
-        }
-        const decrypted =  doDecrypt(passEncryptSaved, PIN);
-        console.log('dec:', decrypted);
-        console.log('===== decrypted: ', decrypted.toString(CryptoJS.enc.Utf8));
   }
 
   goback() {

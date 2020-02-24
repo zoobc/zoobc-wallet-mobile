@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { KeyringService } from '../../Services/keyring.service';
 import { NavController, ModalController } from '@ionic/angular';
+import { COIN_CODE } from 'src/environments/variable.const';
+import { SavedAccount, AuthService } from 'src/app/Services/auth-service';
+import { getAddressFromPublicKey } from 'src/Helpers/utils';
+import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-create-account',
@@ -13,14 +16,14 @@ export class CreateAccountPage implements OnInit {
   accountName: string;
 
   constructor(
-    private storage: Storage,
     private keyringService: KeyringService,
+    private authService: AuthService,
     private navCtrl: NavController,
     private modalController: ModalController
   ) {}
 
   ngOnInit() {
-    this.generateAccount();
+
   }
 
   closeModal() {
@@ -30,35 +33,24 @@ export class CreateAccountPage implements OnInit {
   }
 
 
-  async generateAccount() {
-    const passphrase = await this.storage.get('passphrase');
-    const accounts = await this.storage.get('accounts');
-    const { bip32RootKey } = this.keyringService.calcBip32RootKeyFromSeed(
-      'ZBC',
-      passphrase,
-      null
-    );
-
-    this.account = this.keyringService.calcForDerivationPathForCoin(
-      'ZBC',
-      accounts.length,
-      0,
-      bip32RootKey
-    );
-  }
-
   async createAccount() {
-    const accounts = await this.storage.get('accounts');
 
-    const account = {
-      accountName: this.accountName,
-      accountProps: this.account
+    const path = this.authService.generateDerivationPath();
+    const childSeed = this.keyringService.calcForDerivationPathForCoin(
+      COIN_CODE,
+      path
+    );
+
+    const accountAddress = getAddressFromPublicKey(childSeed.publicKey);
+    const account: SavedAccount = {
+      name: this.accountName,
+      path,
+      nodeIP: null,
+      address: accountAddress,
+      shortAddress: makeShortAddress(accountAddress)
     };
 
-    console.log('__account', account);
-
-    await this.storage.set('accounts', [...accounts, account]);
-
+    this.authService.addAccount(account);
     this.navCtrl.pop();
   }
 }

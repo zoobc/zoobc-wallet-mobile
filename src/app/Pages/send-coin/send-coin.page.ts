@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component,  OnInit } from '@angular/core';
 import { LoadingController, AlertController, ToastController } from '@ionic/angular';
 import {
   MenuController,
@@ -7,11 +7,9 @@ import {
 
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionFeesService } from 'src/app/Services/transaction-fees.service';
-import { publicKeyToAddress, base64ToByteArray, makeShortAddress } from 'src/app/Helpers/converters';
+import { base64ToByteArray, intToInt64Bytes, int32ToBytes } from 'src/Helpers/converters';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { AccountService } from 'src/app/Services/account.service';
-import { BytesMaker } from 'src/app/Helpers/BytesMaker';
 import { GetAccountBalanceResponse } from 'src/app/Grpc/model/accountBalance_pb';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { SenddetailPage } from 'src/app/Pages/send-coin/modals/senddetail/senddetail.page';
@@ -22,7 +20,13 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Currency, CurrencyService } from 'src/app/Services/currency.service';
 import { environment } from 'src/environments/environment';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
-import { COIN_CODE, TRX_FEE_LIST } from 'src/environments/variable.const';
+import {
+  COIN_CODE, TRX_FEE_LIST,
+  ADDRESS_LENGTH, TRANSACTION_TYPE,
+  TRANSACTION_VERSION,
+  STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
+import { SavedAccount, AuthService } from 'src/app/Services/auth-service';
+import { KeyringService } from 'src/app/Services/keyring.service';
 
 
 interface TrxFee {
@@ -31,6 +35,57 @@ interface TrxFee {
 }
 
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
+
+export interface SendMoneyInterface {
+  sender: string;
+  recipient: string;
+  fee: number;
+  amount: number;
+}
+
+export function sendMoneyBuilder(
+  data: SendMoneyInterface,
+  keyringServ: KeyringService
+): Buffer {
+  let bytes: Buffer;
+
+  const timestamp = intToInt64Bytes(Math.trunc(Date.now() / 1000));
+  const sender = Buffer.from(data.sender, 'utf-8');
+  const recipient = Buffer.from(data.recipient, 'utf-8');
+  const addressLength = int32ToBytes(ADDRESS_LENGTH);
+  const fee = intToInt64Bytes(data.fee * 1e8);
+
+  const amount = intToInt64Bytes(data.amount * 1e8);
+  const bodyLength = int32ToBytes(amount.length);
+
+  bytes = Buffer.concat([
+    TRANSACTION_TYPE,
+    TRANSACTION_VERSION,
+    timestamp,
+    addressLength,
+    sender,
+    addressLength,
+    recipient,
+    fee,
+    bodyLength,
+    amount,
+  ]);
+
+  const signatureType = int32ToBytes(0);
+  const signature = sign(bytes, keyringServ);
+  return Buffer.concat([bytes, signatureType, signature]);
+}
+
+function sign(bytes: Buffer, keyringServ: KeyringService): Buffer {
+  const account: SavedAccount = JSON.parse(
+    localStorage.getItem(STORAGE_CURRENT_ACCOUNT)
+  );
+  const childSeed = keyringServ.calcForDerivationPathForCoin(
+    COIN_CODE,
+    account.path
+  );
+  return Buffer.from(childSeed.sign(bytes));
+}
 
 @Component({
   selector: 'app-send-coin',
@@ -43,14 +98,14 @@ export class SendCoinPage implements OnInit {
   rootPage: any;
   status: any;
   activeAccount: any;
-  account: any;
+  public currAcc: SavedAccount;
   recipient: any;
   amount = 0;
   amountSecond = 0;
   amountTemp = 0;
-  trxFee = "0.001";
+  trxFee = '0.001';
   customfee: number;
-  allFees =  TRX_FEE_LIST;
+  allFees = TRX_FEE_LIST;
   isAdvance = false;
   isAmountValid = true;
   isFeeValid = true;
@@ -79,9 +134,10 @@ export class SendCoinPage implements OnInit {
 
 
   constructor(
-    @Inject('nacl.sign') private sign: any,
+    // @Inject('nacl.sign') private sign: any,
     private transactionService: TransactionService,
-    private accountService: AccountService,
+    private keyringService: KeyringService,
+    private authService: AuthService,
     private activeAccountService: ActiveAccountService,
     private toastController: ToastController,
     private menuController: MenuController,
@@ -96,14 +152,10 @@ export class SendCoinPage implements OnInit {
     private activeRoute: ActivatedRoute,
     public loadingController: LoadingController
   ) {
-    this.getActiveAccount();
+
     this.activeAccountService.accountSubject.subscribe({
       next: v => {
-        console.log('==========v:', v);
-        this.account = v;
-        this.account.address = this.accountService.getAccountAddress(v);
-        this.account.shortadress = makeShortAddress(this.account.address);
-        this.getAccountBalance(this.account.address);
+        this.loadAccount();
       }
     });
 
@@ -128,7 +180,8 @@ export class SendCoinPage implements OnInit {
     });
 
     this.priceInUSD = this.currencyService.getPriceInUSD();
-    console.log("===== loading consturctro ==");
+    console.log('===== loading consturctro ==');
+    this.loadAccount();
   }
 
   switchCurrency() {
@@ -142,7 +195,7 @@ export class SendCoinPage implements OnInit {
       this.secondaryCurr = this.currencyRate.name;
     }
 
-    console.log("======  Primary currrency: ", this.primaryCurr);
+    console.log('======  Primary currrency: ', this.primaryCurr);
 
     this.convertAmount();
   }
@@ -150,7 +203,7 @@ export class SendCoinPage implements OnInit {
   ngOnInit() {
     console.log('=== on ngOnInit: ');
     this.loadData();
-    
+
   }
 
   loadData() {
@@ -228,7 +281,7 @@ export class SendCoinPage implements OnInit {
   async changeCurrency() {
     const currencyModal = await this.modalController.create({
       component: CurrencyComponent,
-      cssClass: "modal-fullscreen"
+      cssClass: 'modal-fullscreen'
     });
 
     currencyModal.onDidDismiss().then((returnedData) => {
@@ -242,7 +295,7 @@ export class SendCoinPage implements OnInit {
   }
 
   createTransactionFees() {
-    //this.isLoadingTxFee = true;
+    // this.isLoadingTxFee = true;
     // this.trxFeeService.readTrxFees().subscribe(data => {
     //   this.allFees = data.map(e => {
     //     return {
@@ -252,14 +305,14 @@ export class SendCoinPage implements OnInit {
     //     };
     //   });
     //   console.log(" == all trxees:", this.allFees);
-      
+
     //   this.trxFee = this.allFees[0].fee.toString();
     //   console.log(" ==  trxFee:", this.trxFee);
 
     //   this.isLoadingTxFee = false;
     // });
 
-    
+
   }
 
   showLoading() {
@@ -282,14 +335,9 @@ export class SendCoinPage implements OnInit {
 
   }
 
-  async getActiveAccount() {
-    await this.accountService.getActiveAccount().then(acc => {
-      console.log('==============ACC:', acc);
-      this.account = acc;
-      this.account.address = this.accountService.getAccountAddress(acc);
-      this.account.shortadress = makeShortAddress(this.account.address);
-      this.getAccountBalance(this.account.address);
-    });
+  async loadAccount() {
+    this.currAcc = this.authService.getCurrAccount();
+    this.getAccountBalance(this.currAcc.address);
   }
 
   async getAccountBalance(addr: string) {
@@ -298,7 +346,7 @@ export class SendCoinPage implements OnInit {
     await this.transactionService.getAccountBalance(addr).then((data: AccountBalanceList) => {
       if (data.accountbalance && data.accountbalance.spendablebalance) {
         const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
-        this.account.balance = blnc;
+        this.currAcc.balance = blnc;
       }
     }).catch((error) => {
       console.log('===== eror', error);
@@ -321,10 +369,10 @@ export class SendCoinPage implements OnInit {
       } else {
         this.errorMsg = '';
       }
-      this.account.balance = 0;
+      this.currAcc.balance = 0;
     }).finally(() => {
       this.isLoadingBalance = false;
-      console.log('===== BALANCE:', this.account.balance);
+      console.log('===== BALANCE:', this.currAcc.balance);
       // TODO REMOVE THIS
       // this.account.balance = 3000000000 / 1e8;
     });
@@ -343,7 +391,7 @@ export class SendCoinPage implements OnInit {
 
   convertAmount() {
 
-    console.log("==== Primary curr: ", this.primaryCurr);
+    console.log('==== Primary curr: ', this.primaryCurr);
 
     if (this.primaryCurr === COIN_CODE) {
       this.amount = this.amountTemp;
@@ -379,8 +427,8 @@ export class SendCoinPage implements OnInit {
     }
 
     if (!this.isLoadingBalance) {
-  
-      if (this.isAmountValid && (this.amount + this.trxFee) > this.account.balance) {
+
+      if (this.isAmountValid && (this.amount + Number(this.trxFee)) > this.currAcc.balance) {
         this.amountMsg = this.translateService.instant('Insufficient balance');
         this.isAmountValid = false;
         return;
@@ -442,7 +490,7 @@ export class SendCoinPage implements OnInit {
   getRecipientFromScanner() {
     this.activeRoute.queryParams.subscribe(params => {
       if (params && params.jsonData) {
-        let json = JSON.parse(params.jsonData);
+        const json = JSON.parse(params.jsonData);
         this.recipient = json.address;
         this.amountTemp = Number(json.amount);
         this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;
@@ -502,7 +550,7 @@ export class SendCoinPage implements OnInit {
     const total = (Number(amount) + Number(fee));
     console.log('-- Total: ', total);
 
-    if (total > Number(this.account.balance)) {
+    if (total > Number(this.currAcc.balance)) {
       this.isAmountValid = false;
       this.amountMsg = 'Insuficient balance';
       return;
@@ -517,8 +565,8 @@ export class SendCoinPage implements OnInit {
       componentProps: {
         trxFee: this.trxFee,
         trxAmount: Number(this.amount),
-        trxBalance: this.account.balance,
-        trxSender: this.account.address,
+        trxBalance: this.currAcc.balance,
+        trxSender: this.currAcc.address,
         trxRecipient: this.recipient,
         trxCurrencyRate: this.currencyRate
       }
@@ -546,56 +594,20 @@ export class SendCoinPage implements OnInit {
       message: 'Please wait, submiting!',
       duration: 50000
     });
+
     await loading.present();
 
-    const { derivationPrivKey: accountSeed } = this.account.accountProps;
-    console.log('this.account.accountProps: ', this.account.accountProps);
-    const { publicKey, secretKey } = this.sign.keyPair.fromSeed(accountSeed);
+    const data: SendMoneyInterface = {
+      sender: this.currAcc.address,
+      recipient: this.recipient,
+      fee: Number(this.trxFee),
+      amount: this.amount,
+    };
 
-    const sender = Buffer.from(publicKeyToAddress(publicKey), 'utf-8');
-    const recepient = Buffer.from(this.recipient, 'utf-8');
-    const amount = this.amount * 1e8;
-    const fee = Number(this.trxFee) * 1e8;
-    const timestamp = Math.trunc(Date.now() / 1000);
-
-    const bytes = new BytesMaker(129);
-    // transaction type
-    bytes.write4bytes(1);
-    // version
-    bytes.write1Byte(1);
-    // timestamp
-    bytes.write8Bytes(timestamp);
-    // sender address length
-    bytes.write4bytes(44);
-    // sender address
-    bytes.write44Bytes(sender);
-    // recepient address length
-    bytes.write4bytes(44);
-    // recepient address
-    bytes.write44Bytes(recepient);
-    // tx fee
-    bytes.write8Bytes(fee);
-    // tx body length
-    bytes.write4bytes(8);
-    // tx body (amount)
-    bytes.write8Bytes(amount);
-
-    const signature = this.sign.detached(bytes.value, secretKey);
-
-    const bytesWithSign = new BytesMaker(197);
-
-    // copy to new bytes
-    bytesWithSign.write(bytes.value, 129);
-    // set signature type
-    bytesWithSign.write4bytes(0);
-    // set signature
-    bytesWithSign.write(signature, 64);
-
-    console.log(bytesWithSign.value);
-
+    const txBytes = sendMoneyBuilder(data, this.keyringService);
 
     await this.transactionService.postTransaction(
-      bytesWithSign.value
+      txBytes
     ).then((resolveTx) => {
       console.log('========= response from grpc: ', resolveTx);
       if (resolveTx) {
@@ -615,7 +627,7 @@ export class SendCoinPage implements OnInit {
     });
 
 
-    //loading.dismiss();
+    // loading.dismiss();
 
   }
   async showErrorMessage(error) {
@@ -651,15 +663,15 @@ export class SendCoinPage implements OnInit {
   }
 
   switchAccount(accounts: any) {
-    console.log('=== accounts: ', this.account);
+    console.log('=== accounts: ', this.currAcc);
     this.isAmountValid = true;
     this.isRecipientValid = true;
     this.amount = null;
   }
 
   changeFee() {
-    //this.fee = arg;
-    console.log("==== trxFee: ", this.trxFee);
+    // this.fee = arg;
+    console.log('==== trxFee: ', this.trxFee);
     if (Number(this.trxFee) < 0) {
       this.customeChecked = true;
       this.customfee = this.allFees[0].fee;
@@ -672,7 +684,7 @@ export class SendCoinPage implements OnInit {
   scanQrCode() {
     this.router.navigateByUrl('/qr-scanner');
     this.qrScannerService.listen().subscribe((jsonData: string) => {
-      let data = JSON.parse(jsonData);
+      const data = JSON.parse(jsonData);
       this.recipient = data.address;
       this.amountTemp = Number(data.amount);
       this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;

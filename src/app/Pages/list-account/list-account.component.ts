@@ -6,6 +6,7 @@ import { AccountService } from 'src/app/Services/account.service';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { STORAGE_ALL_ACCOUNTS, STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-list-account',
@@ -30,7 +31,6 @@ export class ListAccountComponent implements OnInit {
 
     this.route.queryParams.subscribe(params => {
       console.log('==== params received:', params);
- 
       if (this.router.getCurrentNavigation().extras.state) {
         console.log('==== state received:', this.router.getCurrentNavigation().extras.state);
         this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
@@ -48,7 +48,7 @@ export class ListAccountComponent implements OnInit {
   }
 
   loadData() {
-    this.storage.get('accounts').then(data => {
+    this.storage.get(STORAGE_ALL_ACCOUNTS).then(data => {
       console.log('__data', data);
 
       this.accountsRaw = data;
@@ -56,7 +56,7 @@ export class ListAccountComponent implements OnInit {
         const { accountName, created } = acc;
         return {
           accountName,
-          address: this.accountService.getAccountAddress(acc),
+          address: '', // this.accountService.getAccountAddress(acc),
           created
         };
       });
@@ -69,16 +69,16 @@ export class ListAccountComponent implements OnInit {
 
     console.log('===== forwat accountClicked 2:', this.forWhat);
 
-    if (this.forWhat === 'sender' || this.forWhat === 'account' ){
+    if (this.forWhat === 'sender' || this.forWhat === 'account' ) {
       this.activeAccountSrv.setForWhat(this.forWhat);
-      this.storage.set('active_account', activeAccount).then(() => {
+      this.storage.set(STORAGE_CURRENT_ACCOUNT, activeAccount).then(() => {
         this.activeAccountSrv.setActiveAccount(activeAccount);
         this.location.back();
       });
 
     } else if (this.forWhat === 'recipient') {
       this.activeAccountSrv.setForWhat(this.forWhat);
-      const address = this.accountService.getAccountAddress(activeAccount);
+      const address = ''; // this.accountService.getAccountAddress(activeAccount);
       this.activeAccountSrv.setRecipient(address);
       this.location.back();
     }
@@ -91,7 +91,7 @@ export class ListAccountComponent implements OnInit {
 
     console.log('Copy address: ', account);
 
-    const val = this.accountService.getAccountAddress(account);
+    const val = 'please chedk code'; // this.accountService.getAccountAddress(account);
     const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';
@@ -139,17 +139,6 @@ export class ListAccountComponent implements OnInit {
 
     modal.onDidDismiss().then((returnVal: any) => {
       this.loadData();
-
-      // if (returnVal.data.account) {
-      //   const account = returnVal.data.account;
-
-      //   this.accountsRaw.push(account);
-      //   this.accounts.push({
-      //     accountName: account.accountName,
-      //     address: this.accountService.getAccountAddress(account)
-      //   });
-      // }
-
     });
 
     return await modal.present();

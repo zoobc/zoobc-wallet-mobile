@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { Storage } from '@ionic/storage';
-import { doEncrypt } from 'src/app/Helpers/converters';
+import { doEncrypt } from 'src/Helpers/converters';
 import { AuthService } from 'src/app/Services/auth-service';
 
 @Component({
@@ -17,11 +17,10 @@ export class SetupPinGpPage implements OnInit {
   public isLoginValid = true;
   public loginFail = false;
   public pagePosition: number;
-  public passphrase: any;
+  public plainPassphrase: any;
   public processing = false;
   constructor(
     private createAccSrv: CreateAccountService,
-    private storage: Storage,
     private authSrv: AuthService,
     private router: Router
   ) {
@@ -30,24 +29,21 @@ export class SetupPinGpPage implements OnInit {
   }
 
   ngOnInit() {
-    this.passphrase = this.createAccSrv.getPassphrase();
+    this.plainPassphrase = this.createAccSrv.getPassphrase();
   }
 
   async confirmPin(event: any) {
-    console.log('====event:', event);
+
     const { pin } = event;
     this.loginFail = false;
     this.processing = true;
     // const pin = event.pin;
     if (this.tempPin === pin) {
-      console.log('=== passphrease: ', this.passphrase);
-      console.log('=== pin: ', this.tempPin);
-
-      this.createAccSrv.setPassphrase(this.passphrase);
-      this.createAccSrv.setPin(pin);
-      this.savePassphrase(pin, this.passphrase);
+      this.createAccSrv.setPlainPassphrase(this.plainPassphrase);
+      this.createAccSrv.setPlainPin(pin);
       await this.createAccSrv.createAccount();
-      const loginStatus = await this.authSrv.login(pin);
+
+      const loginStatus = this.authSrv.login(pin);
       if (loginStatus) {
         this.router.navigateByUrl('/');
         setTimeout(() => {
@@ -73,19 +69,5 @@ export class SetupPinGpPage implements OnInit {
       this.processing = false;
     }, 1500);
   }
-
-  async savePassphrase(PIN: any, passphrase: any) {
-
-    // console.log('=== PIN', PIN);
-    // console.log('==== passphrase:', passphrase);
-    const encrypted = doEncrypt(passphrase, PIN);
-    // console.log('===== encrypted: ', encrypted);
-    await this.storage.set('PASS_STORAGE', encrypted);
-
-    // const decrypted =  doDecrypt(encrypted, PIN);
-    // console.log('===== decrypted: ', decrypted.toString(CryptoJS.enc.Utf8));
-
-  }
-
 
 }

@@ -12,9 +12,10 @@ import { AccountService } from 'src/app/Services/account.service';
 import { Storage } from '@ionic/storage';
 import { TransactionService, Transactions, Transaction } from 'src/app/Services/transaction.service';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { makeShortAddress } from 'src/app/Helpers/converters';
+import { makeShortAddress } from 'src/Helpers/converters';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
+import { STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-transactions',
@@ -67,8 +68,8 @@ export class TransactionsPage implements OnInit {
     this.activeAccountSrv.accountSubject.subscribe({
       next: v => {
         if (v) {
-          this.account.accountName = v.accountName;
-          this.account.address = this.accountService.getAccountAddress(v);
+          this.account.accountName = v.name;
+          this.account.address = v.address;
           this.account.shortadress = makeShortAddress(this.account.address);
           this.loadData();
         }
@@ -139,12 +140,12 @@ export class TransactionsPage implements OnInit {
     this.unconfirmTx = [];
     this.isError = false;
 
-    const account = await this.storage.get('active_account');
+    const account = await this.storage.get(STORAGE_CURRENT_ACCOUNT);
     console.log('==== Active account:', account);
 
     if (account) {
-      this.account.accountName = account.accountName;
-      this.account.address = this.accountService.getAccountAddress(account);
+      this.account.accountName = account.name;
+      this.account.address = account.address;
       this.account.shortadress = makeShortAddress(this.account.address);
     }
     this.getTransactions();

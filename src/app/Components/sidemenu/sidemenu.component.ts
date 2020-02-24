@@ -5,7 +5,7 @@ import { Storage } from '@ionic/storage';
 import { Currency } from 'src/app/Services/currency.service';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
-import { SELECTED_NODE } from 'src/environments/variable.const';
+import { STORAGE_CURRENT_ACCOUNT, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-sidemenu',
@@ -27,7 +27,6 @@ export class SidemenuComponent implements OnInit {
   public currencyRates: Currency[];
 
   constructor(
-    private transactionServ: TransactionService,
     private menuController: MenuController,
     private router: Router,
     private storage: Storage,
@@ -42,8 +41,8 @@ export class SidemenuComponent implements OnInit {
 
   async ngOnInit() {
     this.getActiveAccount();
-    const account = await this.storage.get('active_account');
-    this.activeAccount = account.accountName;
+    const account = await this.storage.get(STORAGE_CURRENT_ACCOUNT);
+    this.activeAccount = account.name;
   }
 
   // switchNetwork(host: string) {
@@ -72,7 +71,7 @@ export class SidemenuComponent implements OnInit {
     this.menuController.close('mainMenu');
   }
 
-  openSettings(){
+  openSettings() {
     this.router.navigateByUrl('/settings');
     this.menuController.close('mainMenu');
   }
@@ -116,8 +115,8 @@ export class SidemenuComponent implements OnInit {
   }
 
   async getActiveAccount() {
-    const accounts = await this.storage.get('accounts');
-    const account = await this.storage.get('active_account');
+    const accounts = await this.storage.get(STORAGE_ALL_ACCOUNTS);
+    const account = await this.storage.get(STORAGE_CURRENT_ACCOUNT);
     accounts.forEach((acc, index) => {
       console.log(
         acc.accountProps.derivationPath === account.accountProps.derivationPath,
