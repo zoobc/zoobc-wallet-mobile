@@ -309,3 +309,5 @@ I had to remove inside ..\plugins\phonegap-plugin-barcodescanner\plugin.xml the
 <uses-feature android:name="android.hardware.camera">
 then removed and added again android platform.
 Worked very fine for me.
+
+Fix Account list than error on iOS.
