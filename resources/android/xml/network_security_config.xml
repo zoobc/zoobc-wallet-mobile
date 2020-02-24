@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">18.139.3.139</domain>
+        <domain includeSubdomains="true">api.exchangeratesapi.io</domain>
+        <domain includeSubdomains="true">openexchangerates.org</domain>
+        <domain includeSubdomains="true">firebase.google.com</domain>
+        <domain includeSubdomains="true">firebase.google.org</domain>
+        <domain includeSubdomains="true">*.google.org</domain>
+        <domain includeSubdomains="true">172.104.47.168</domain>
+        <domain includeSubdomains="true">n0.alpha.proofofparticipation.network</domain>
+        <domain includeSubdomains="true">n0.demo.alpha.proofofparticipation.network</domain>
+        <domain includeSubdomains="true">n2.alpha.proofofparticipation.network</domain>      
+        <domain includeSubdomains="true">proofofparticipation.network</domain>
+        <domain includeSubdomains="true">*.proofofparticipation.network</domain>
+        <domain includeSubdomains="true">*.alpha.proofofparticipation.network</domain>     
     </domain-config>
 </network-security-config>
