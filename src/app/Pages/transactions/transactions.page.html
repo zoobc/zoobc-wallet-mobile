@@ -1,0 +1,95 @@
+<ion-header>
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-title>{{ "Transactions" | translate }}</ion-title>
+      <ion-buttons slot="end" color="primary">
+        <ion-button routerLink="/feedback">
+          Feedback
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+
+
+<ion-content>
+
+
+  <div *ngIf="isLoadingBalance">
+    <!-- <ion-progress-bar type="indeterminate"></ion-progress-bar> -->
+  </div>
+
+  <ion-label *ngIf="isError" color="danger" class="ion-text-center">
+    <h2>{{ errorMsg }}</h2>
+  </ion-label>
+
+  <p *ngIf="unconfirmTx && unconfirmTx.length > 0" class="title-section ion-padding-horizontal">
+    {{ "Queue" | translate }} ({{unconfirmTx.length}})
+  </p>
+  <ion-list *ngIf="unconfirmTx && unconfirmTx.length > 0" class="ion-margin-top list-transaction">
+    <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
+      <ion-icon *ngIf="pendingtrx.type==='send'" name="arrow-round-up" color="light"></ion-icon>
+      <ion-icon *ngIf="pendingtrx.type!=='send'" name="arrow-round-down" color="light"></ion-icon>
+      <ion-label>
+        <ion-row class="ion-justify-content-between">
+          <ion-col size="7">
+            <ion-label *ngIf="pendingtrx.name" class="title">
+              {{ pendingtrx.name }}
+            </ion-label>
+            <ion-label *ngIf="!pendingtrx.name" class="title">
+              {{ pendingtrx.shortaddress }}
+            </ion-label>
+            <ion-label class="date" style="font-size: 0.7em">{{
+                  pendingtrx.timestamp | date: "short"
+                }} <span style="color:orange">{{ "Pending" | translate }}</span>
+              <ion-spinner name="lines-small" style="width: 15px !important; height: 15px !important;"></ion-spinner>
+            </ion-label>
+          </ion-col>
+          <ion-col size="5" class="ion-text-end">
+            <ion-label class="amount pending">
+              {{ pendingtrx.amount / 1e8 | number: '0.0-6' }} <span style="color:grey">ZBC</span>
+            </ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <p class="title-section ion-padding-horizontal">
+    {{ "History" | translate }}
+  </p>
+  <ion-list class="ion-margin-top list-transaction">
+    <ion-item *ngFor="let transaction of recentTx; let i = index" button (click)="openDetailTransction(transaction)">
+      <ion-icon *ngIf="transaction.type==='send'" name="arrow-round-up" color="danger"></ion-icon>
+      <ion-icon *ngIf="transaction.type!=='send'" name="arrow-round-down" color="success"></ion-icon>
+      <ion-label>
+        <ion-row class="ion-justify-content-between">
+          <ion-col size="7">
+            <ion-label *ngIf="transaction.name" class="title">
+              {{ transaction.name }}
+            </ion-label>
+            <ion-label *ngIf="!transaction.name" class="title">
+              {{ transaction.shortaddress }}
+            </ion-label>
+            <ion-label class="date" style="font-size: 0.7em">{{
+                  transaction.timestamp | date: "short"
+                }}</ion-label>
+          </ion-col>
+          <ion-col size="5" class="ion-text-end">
+            <ion-label class="amount {{ transaction.type }}">
+              {{ transaction.amount / 1e8 | number: '0.0-6' }} <span style="color:grey">ZBC</span>
+            </ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+
+</ion-content>
