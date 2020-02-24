@@ -33,7 +33,7 @@ export class AddAddressPage implements OnInit {
 
   ngOnInit() {
     this.activeRoute.queryParams.subscribe(params => {
-      console.log('=== Params: ', params);
+      // console.log('=== Params: ', params);
       this.index = params.index;
       this.mode = params.mode;
       this.name = params.name;
@@ -77,7 +77,6 @@ export class AddAddressPage implements OnInit {
         this.validationMessage = 'Address is exist, with name: ' + obj.name;
         finded = true;
       }
-
     });
     return finded;
   }
@@ -85,7 +84,7 @@ export class AddAddressPage implements OnInit {
   scanQRCode() {
     // const navigationExtras: NavigationExtras = {
     //   queryParams: {
-    //     from: JSON.stringify('addressbook')
+    //     from: ('addressbook')
     //   }
     // };
 
@@ -99,12 +98,12 @@ export class AddAddressPage implements OnInit {
 
   async saveAddress() {
 
-    console.log('======= saveAddress Mode: ', this.mode);
+    // console.log('======= saveAddress Mode: ', this.mode);
     this.isAddressValid = true;
     this.isNameValid = true;
 
     if (!this.name) {
-      console.log('== name is empty');
+      // console.log('== name is empty');
       this.validationMessage = 'Name is empty';
       this.isNameValid = false;
       return;
@@ -114,14 +113,14 @@ export class AddAddressPage implements OnInit {
 
       // check if nothing changed
       if (this.name === this.oldName) {
-        console.log('Nothing changed ');
+        // console.log('Nothing changed ');
         this.goListAddress();
         return;
       }
 
       // check if name exists
       if (this.isNameExists(this.name, this.address)) {
-        console.log('== name exist: ', this.name);
+        // console.log('== name exist: ', this.name);
         this.validationMessage = 'Name is Exists';
         this.isNameValid = false;
         return;
@@ -140,21 +139,21 @@ export class AddAddressPage implements OnInit {
     } else if (this.mode === NEW_MODE) {
 
       if (this.isNameExists(this.name, this.address)) {
-        console.log('== name exist: ', this.name);
+        // console.log('== name exist: ', this.name);
         this.validationMessage = 'Name is exists';
         this.isNameValid = false;
         return;
       }
 
       if (!this.address) {
-        console.log('== address is empty: ');
+        // console.log('== address is empty: ');
         this.validationMessage = 'Address is empty';
         this.isAddressValid = false;
         return;
       }
 
       if (this.address.length !== 44) {
-        console.log('== address length: ', this.address.length);
+        // console.log('== address length: ', this.address.length);
         this.validationMessage = 'Address is not valid!';
         this.isAddressValid = false;
         return;
@@ -168,7 +167,7 @@ export class AddAddressPage implements OnInit {
       }
 
       if (this.isAddressExists(this.address, this.name)) {
-        console.log('== Address exist: ', this.address);
+        // console.log('== Address exist: ', this.address);
         this.isAddressValid = false;
         return;
       }

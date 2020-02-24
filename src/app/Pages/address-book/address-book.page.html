@@ -31,8 +31,8 @@
       <ion-item-sliding *ngFor="let address of addresses; let i = index">
         <ion-item>
           <ion-label (click)="selectAddress(address)">
-            <p>{{ address.name }}</p>
-            <p>{{ address.address }}</p>
+            <p class="title">{{ address.name }}</p>
+            <p class="address">{{ address.address }}</p>
           </ion-label>
           <ion-icon slot="end" name="copy" (click)="copyAddress(i)"></ion-icon>
         </ion-item>

@@ -4,6 +4,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ToastController } from '@ionic/angular';
 import { Location } from '@angular/common';
 import { EDIT_MODE, NEW_MODE } from 'src/environments/variable.const';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-address-book',
@@ -19,11 +20,11 @@ export class AddressBookPage implements OnInit, OnDestroy {
     private location: Location,
     private router: Router,
     private addressBookSrv: AddressBookService,
-    private toastController: ToastController
+    private accountService: AccountService
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
-        console.log('=== NavigationEnd');
+        // console.log('=== NavigationEnd');
         this.getAllAddress();
       }
     });
@@ -36,12 +37,8 @@ export class AddressBookPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    console.log('=== ngOninit');
+    // console.log('=== ngOninit');
     this.getAllAddress();
-  }
-
-  ionViewWillEnter(){
-    console.log('=== ionViewWillEnter');
   }
 
   async getAllAddress() {
@@ -52,30 +49,8 @@ export class AddressBookPage implements OnInit, OnDestroy {
   }
 
   copyAddress(index: string | number) {
-
     const val =   this.addresses[index];
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val.address;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-
-    this.copySuccess();
-  }
-
-  async copySuccess() {
-    const toast = await this.toastController.create({
-      message: 'Your address copied to clipboard.',
-      duration: 2000
-    });
-
-    toast.present();
+    this.accountService.copyToClipboard(val.address);
   }
 
   selectAddress(address: any) {

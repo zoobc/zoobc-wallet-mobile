@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { Subject } from 'rxjs';
+import { STORAGE_ADDRESS_BOOK } from 'src/environments/variable.const';
+import { StoragedevService } from './storagedev.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AddressBookService {
-  private STORAGE_NAME = 'addresses';
 
   private selectedAddress: string;
 
-  public addressSubject: Subject<any> = new Subject<any>();
+  public addressSubject: Subject<string> = new Subject<string>();
 
   public getSelectedAddress() {
     return this.selectedAddress;
@@ -19,22 +19,22 @@ export class AddressBookService {
   public setSelectedAddress(value) {
     this.selectedAddress = value;
     this.addressSubject.next(this.selectedAddress);
-    console.log('===== selectedAddress :', this.selectedAddress);
+    // console.log('===== selectedAddress :', this.selectedAddress);
   }
 
-  constructor(private storage: Storage) {
+  constructor(private strgSrv: StoragedevService) {
     this.selectedAddress = '';
   }
 
   async getAll() {
-    const addresses = await this.storage.get(this.STORAGE_NAME).catch(error => {
-      console.log(error);
+    const addresses = await this.strgSrv.get(STORAGE_ADDRESS_BOOK).catch(error => {
+      // console.log(error);
     });
     return addresses;
   }
 
 
-  async getNameByAddress(address: string){
+  async getNameByAddress(address: string) {
     const addresses = await this.getAll();
     let name = '';
     addresses.forEach( (obj: { name: any; address: string; }) => {
@@ -73,9 +73,7 @@ export class AddressBookService {
   }
 
   async update(addresses: any) {
-    await this.storage.set(this.STORAGE_NAME, addresses).catch(error => {
-      console.log(error);
-    });
+    await this.strgSrv.set(STORAGE_ADDRESS_BOOK, addresses);
   }
 
 }
