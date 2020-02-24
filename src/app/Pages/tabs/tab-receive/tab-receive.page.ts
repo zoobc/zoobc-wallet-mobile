@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
 import { MenuController, ToastController } from '@ionic/angular';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { SavedAccount, AuthService } from 'src/app/Services/auth-service';
+import { AccountInf } from 'src/app/Services/auth-service';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-tab-receive',
@@ -14,21 +13,18 @@ import { SavedAccount, AuthService } from 'src/app/Services/auth-service';
 export class TabReceivePage implements OnInit {
 
   createdCode: string;
-  public amount = 0;
-  public currAcc: SavedAccount;
+  amount = 0;
+  account: AccountInf;
 
   constructor(
-    private authService: AuthService,
+    private accountService: AccountService,
     private toastController: ToastController,
     private menuController: MenuController,
-    private activeAccountSrv: ActiveAccountService,
     private socialSharing: SocialSharing,
     public platform: Platform
   ) {
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        this.loadData();
-      }
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadData();
     });
   }
 
@@ -37,24 +33,22 @@ export class TabReceivePage implements OnInit {
   }
 
   loadData() {
-    this.currAcc = this.authService.getCurrAccount();
-    this.createQR(this.currAcc.address, this.amount);
+    this.account = this.accountService.getCurrAccount();
+    this.createQR(this.account.address, this.amount);
   }
 
   ngOnInit(): void {
-    console.log('==== wOn initt  =====');
     this.loadData();
-
   }
 
   changeBarcode() {
-    this.createQR(this.currAcc.address, this.amount);
+    this.createQR(this.account.address, this.amount);
   }
 
   // Share Options
   async openSharing() {
     this.platform.ready().then(async () => {
-      await this.socialSharing.share(this.currAcc.address).then(() => {
+      await this.socialSharing.share(this.account.address).then(() => {
       }).catch((err) => {
         console.log(err);
       });
@@ -62,7 +56,7 @@ export class TabReceivePage implements OnInit {
   }
 
   copyToClipboard() {
-    const val = this.currAcc.address;
+    const val = this.account.address;
     const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';
@@ -89,10 +83,6 @@ export class TabReceivePage implements OnInit {
   createQR(addrs: string, amnt: number) {
     const qrCode = { address: addrs, amount: amnt };
     this.createdCode = JSON.stringify(qrCode);
-  }
-
-  async ionViewDidEnter() {
-   console.log('==== will enter =====');
   }
 
 }

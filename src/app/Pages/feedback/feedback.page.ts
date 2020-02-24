@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { FeedbackService } from '../../Services/feedback.service';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { HttpHeaders, HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { throwError } from 'rxjs';
@@ -10,6 +9,8 @@ import { Location } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular';
 import { STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
+import { AccountInf } from 'src/app/Services/auth-service';
+import { AccountService } from 'src/app/Services/account.service';
 
 export class Feedback {
   name: string;
@@ -36,12 +37,7 @@ export class FeedbackPage implements OnInit {
   Comment: string;
   rate: number;
   msgerror = '';
-  account = {
-    accountName: '',
-    address: '',
-    qrCode: '',
-    shortadress: ''
-  };
+  account: AccountInf;
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -59,14 +55,12 @@ export class FeedbackPage implements OnInit {
     private storage: Storage,
     private http: HttpClient,
     public alertController: AlertController,
-    private activeAccountSrv: ActiveAccountService,
+    private accountService: AccountService,
     private location: Location) {
 
-    this.activeAccountSrv.accountSubject.subscribe({
+    this.accountService.accountSubject.subscribe({
       next: v => {
-        this.account.address = v.address;
-        this.account.shortadress = makeShortAddress(this.account.address);
-        this.account.accountName = v.name;
+        this.account = v;
       }
     });
 
@@ -97,10 +91,7 @@ export class FeedbackPage implements OnInit {
   }
 
   async getActiveAccount() {
-    const activeAccount = await this.storage.get(STORAGE_CURRENT_ACCOUNT);
-    this.account.address = activeAccount.address;
-    this.account.shortadress = makeShortAddress(this.account.address);
-    this.account.accountName = activeAccount.name;
+    this.account = this.accountService.getCurrAccount();
   }
 
   changeRating(event) {

@@ -5,7 +5,6 @@ import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/setup-pin/setup-pin.page';
-import { doEncrypt, doDecrypt } from '../../../Helpers/converters';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -106,7 +105,9 @@ export class ExistingWalletPage implements OnInit {
 
     this.passphrase = '';
     for (let i = 0; i < this.arrayPhrase.length; i++) {
-      const val = this.arrayPhrase[i];
+      const val2 = this.arrayPhrase[i];
+      let val = val2.replace(/\s\s+/g, '').toLowerCase();
+
       if (!val) {
         haveEmpty = true;
         break;
@@ -136,7 +137,9 @@ export class ExistingWalletPage implements OnInit {
   }
 
   async createAccount() {
-    await this.createAccSrv.createAccount();
+
+    // TODO   .get('Your old wallet will be removed from this device')
+    await this.createAccSrv.createInitialAccount();
     const loginStatus = this.authSrv.login(this.plainPin);
     console.log('==== loginstatus: ', loginStatus);
     if (loginStatus) {

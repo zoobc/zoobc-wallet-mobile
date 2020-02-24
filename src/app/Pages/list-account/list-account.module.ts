@@ -5,7 +5,6 @@ import { IonicModule } from '@ionic/angular';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { ModalCreateAccountComponent } from './modal-create-account/modal-create-account.component';
 
 const routes: Routes = [
   {
@@ -15,8 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [ListAccountComponent, ModalCreateAccountComponent],
-  entryComponents: [ModalCreateAccountComponent],
+  declarations: [ListAccountComponent],
   imports: [
     CommonModule,
     FormsModule,

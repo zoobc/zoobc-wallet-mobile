@@ -6,16 +6,16 @@ import {
   LoadingController,
   ModalController
 } from '@ionic/angular';
-import { AuthService, SavedAccount } from 'src/app/Services/auth-service';
+import { AuthService, AccountInf } from 'src/app/Services/auth-service';
 import { Router, NavigationExtras } from '@angular/router';
 import { TransactionService, Transactions, Transaction } from 'src/app/Services/transaction.service';
 import {
   GetAccountBalanceResponse,
   AccountBalance as AB,
 } from 'src/app/Grpc/model/accountBalance_pb';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
+import { AccountService } from 'src/app/Services/account.service';
 
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
@@ -45,47 +45,41 @@ export class TabDashboardPage implements OnInit {
   public isError = false;
   public navigationSubscription: any;
 
-  currAcc: SavedAccount;
-  accounts: SavedAccount[];
+  account: AccountInf;
+  accounts: AccountInf[];
 
   constructor(
     private authService: AuthService,
+    private accountService: AccountService,
     private router: Router,
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
     private navCtrl: NavController,
-    private activeAccountSrv: ActiveAccountService,
     private transactionServ: TransactionService,
     private currencyServ: CurrencyService,
     public toastController: ToastController
   ) {
 
     // if account changed
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        if (v) {
-          this.loadData();
-        }
-      }
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadData();
     });
 
     // if post send money reload data
-    this.transactionServ.sendMoneySubject.subscribe( () => {
-        this.loadData();
-      }
+    this.transactionServ.sendMoneySubject.subscribe(() => {
+      this.loadData();
+    }
     );
 
-    // if post send money reload data
-    this.transactionServ.changeNodeSubject.subscribe( () => {
-      console.log(' node changed ');
+    // if network changed reload data
+    this.transactionServ.changeNodeSubject.subscribe(() => {
       this.loadData();
-      }
+    }
     );
 
     // if currency changed
     this.currencyServ.currencySubject.subscribe((rate: Currency) => {
-      console.log(' ================== RATE CHANGED TO:', rate);
       this.currencyRate = rate;
     });
 
@@ -102,13 +96,8 @@ export class TabDashboardPage implements OnInit {
 
   }
 
-  ionViewDidEnter() {
-    console.log('========== get Rpc Url: ', this.transactionServ.getRpcUrl());
-    this.loadData();
-  }
-
   ngOnInit() {
-
+    this.loadData();
   }
 
 
@@ -134,8 +123,7 @@ export class TabDashboardPage implements OnInit {
     this.unconfirmTx = [];
     this.isError = false;
 
-    this.currAcc = this.authService.getCurrAccount();
-    console.log('==== CURRENT ACCOUNT:', this.currAcc);
+    this.account = this.accountService.getCurrAccount();
     this.getBalance();
     this.getTransactions();
     this.currencyRate = this.currencyServ.getRate();
@@ -153,7 +141,7 @@ export class TabDashboardPage implements OnInit {
 
     setTimeout(async () => {
       await this.transactionServ
-        .getAccountTransaction(++this.offset, 5, this.currAcc.address)
+        .getAccountTransaction(++this.offset, 5, this.account.address)
         .then((res: Transactions) => {
           this.totalTx = res.total;
           this.recentTx.push(...res.transactions);
@@ -173,7 +161,7 @@ export class TabDashboardPage implements OnInit {
     this.isLoadingRecentTx = true;
 
     await this.transactionServ
-      .getUnconfirmTransaction(this.currAcc.address)
+      .getUnconfirmTransaction(this.account.address)
       .then((res: Transaction[]) => (this.unconfirmTx = res)).finally(() => {
         // wait until unconfirm transaction loading finish.
         // this.isLoadingRecentTx = false;
@@ -182,7 +170,7 @@ export class TabDashboardPage implements OnInit {
       });
 
     await this.transactionServ
-      .getAccountTransaction(this.offset, 5, this.currAcc.address)
+      .getAccountTransaction(this.offset, 5, this.account.address)
       .then((res: Transactions) => {
         this.totalTx = res.total;
         this.recentTx = res.transactions;
@@ -198,7 +186,7 @@ export class TabDashboardPage implements OnInit {
     this.isError = false;
     const date1 = new Date();
     this.isLoadingBalance = true;
-    await this.transactionServ.getAccountBalance(this.currAcc.address).then((data: AccountBalanceList) => {
+    await this.transactionServ.getAccountBalance(this.account.address).then((data: AccountBalanceList) => {
       this.accountBalance = data.accountbalance;
     }).catch((error) => {
       this.accountBalance = {
@@ -307,7 +295,7 @@ export class TabDashboardPage implements OnInit {
       cssClass: 'modal-ZBC',
       componentProps: {
         transaction: trx,
-        account: this.currAcc,
+        account: this.account,
         status: trxStatus
       }
     });

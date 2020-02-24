@@ -3,7 +3,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { base64ToByteArray } from 'src/Helpers/converters';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
-import { Location } from '@angular/common';
+import { EDIT_MODE, NEW_MODE } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-add-address',
@@ -24,7 +24,6 @@ export class AddAddressPage implements OnInit {
   validationMessage = '';
 
   constructor(
-    private location: Location,
     private addressBookSrv: AddressBookService,
     private qrScannerSrv: QrScannerService,
     private activeRoute: ActivatedRoute,
@@ -111,7 +110,7 @@ export class AddAddressPage implements OnInit {
       return;
     }
 
-    if (this.mode === 'edit') {
+    if (this.mode === EDIT_MODE) {
 
       // check if nothing changed
       if (this.name === this.oldName) {
@@ -138,7 +137,7 @@ export class AddAddressPage implements OnInit {
         this.goListAddress();
       }
 
-    } else if (this.mode === 'new') {
+    } else if (this.mode === NEW_MODE) {
 
       if (this.isNameExists(this.name, this.address)) {
         console.log('== name exist: ', this.name);

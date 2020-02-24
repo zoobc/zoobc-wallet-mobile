@@ -1,21 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import {
   MenuController,
-  NavController,
   ToastController,
   LoadingController,
   ModalController
 } from '@ionic/angular';
-import { AuthService } from 'src/app/Services/auth-service';
-import { Router } from '@angular/router';
+import { AccountInf } from 'src/app/Services/auth-service';
 import { AccountService } from 'src/app/Services/account.service';
 import { Storage } from '@ionic/storage';
 import { TransactionService, Transactions, Transaction } from 'src/app/Services/transaction.service';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
-import { STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-transactions',
@@ -24,39 +19,29 @@ import { STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
 })
 export class TransactionsPage implements OnInit {
 
-  public account = {
-    accountName: '',
-    address: '',
-    shortadress: ''
-  };
+  account: AccountInf;
+  errorMsg: string;
+  offset: number;
+  accountBalance: any;
+  isLoadingBalance: boolean;
+  isLoadingRecentTx: boolean;
 
-  public errorMsg: string;
-  public offset: number;
-
-  public accountBalance: any;
-  public isLoadingBalance: boolean;
-  public isLoadingRecentTx: boolean;
-
-  public currencyRate: Currency = {
+  currencyRate: Currency = {
     name: 'USD',
     value: 1,
   };
 
-  public priceInUSD: number;
-  public totalTx: number;
-  public recentTx: Transaction[];
-  public unconfirmTx: Transaction[];
-  public isError = false;
-  public navigationSubscription: any;
+  priceInUSD: number;
+  totalTx: number;
+  recentTx: Transaction[];
+  unconfirmTx: Transaction[];
+  isError = false;
+  navigationSubscription: any;
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
-    private navCtrl: NavController,
-    private activeAccountSrv: ActiveAccountService,
     private storage: Storage,
     private accountService: AccountService,
     private transactionServ: TransactionService,
@@ -65,29 +50,20 @@ export class TransactionsPage implements OnInit {
   ) {
 
     // if account changed
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        if (v) {
-          this.account.accountName = v.name;
-          this.account.address = v.address;
-          this.account.shortadress = makeShortAddress(this.account.address);
-          this.loadData();
-        }
-      }
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadData();
     });
 
     // if post send money reload data
     this.transactionServ.sendMoneySubject.subscribe(() => {
       this.loadData();
-    }
-    );
+    });
 
-    // if post send money reload data
+    // if network changed reload data
     this.transactionServ.changeNodeSubject.subscribe(() => {
       console.log(' node changed ');
       this.loadData();
-    }
-    );
+    });
 
     // if currency changed
     this.currencyServ.currencySubject.subscribe((rate: Currency) => {
@@ -95,7 +71,6 @@ export class TransactionsPage implements OnInit {
       this.currencyRate = rate;
     });
 
-    this.loadData();
   }
 
   doRefresh(event: any) {
@@ -105,16 +80,10 @@ export class TransactionsPage implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 2000);
-
-  }
-
-  ionViewDidEnter() {
-    console.log('========== get Rpc Url: ', this.transactionServ.getRpcUrl());
-    this.loadData();
   }
 
   ngOnInit() {
-
+    this.loadData();
   }
 
 
@@ -140,14 +109,8 @@ export class TransactionsPage implements OnInit {
     this.unconfirmTx = [];
     this.isError = false;
 
-    const account = await this.storage.get(STORAGE_CURRENT_ACCOUNT);
-    console.log('==== Active account:', account);
-
-    if (account) {
-      this.account.accountName = account.name;
-      this.account.address = account.address;
-      this.account.shortadress = makeShortAddress(this.account.address);
-    }
+    this.account = this.accountService.getCurrAccount();
+    console.log('==== Active account:', this.account);
     this.getTransactions();
     this.currencyRate = this.currencyServ.getRate();
   }

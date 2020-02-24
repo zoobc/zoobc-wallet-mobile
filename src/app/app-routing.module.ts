@@ -36,11 +36,13 @@ const routes: Routes = [
   {
     path: 'create-account',
     loadChildren:
-      './Pages/create-account/create-account.module#CreateAccountPageModule'
+      './Pages/create-account/create-account.module#CreateAccountPageModule',
+      canActivate: [AuthService]
   },
   {
     path: 'feedback',
-    loadChildren: './Pages/feedback/feedback.module#FeedbackPageModule'},
+    loadChildren: './Pages/feedback/feedback.module#FeedbackPageModule',
+    canActivate: [AuthService]},
   { path: 'help', loadChildren: './Pages/help/help.module#HelpPageModule' },
   {
     path: 'notifications',
@@ -49,17 +51,20 @@ const routes: Routes = [
   { path: 'chart', loadChildren: './Pages/chart/chart.module#ChartPageModule' },
   {
     path: 'list-account',
-    loadChildren: './Pages/list-account/list-account.module#ListAccountModule'
+    loadChildren: './Pages/list-account/list-account.module#ListAccountModule',
+    canActivate: [AuthService]
   },
   {
     path: 'address-book',
     loadChildren:
-      './Pages/address-book/address-book.module#AddressBookPageModule'
+      './Pages/address-book/address-book.module#AddressBookPageModule',
+      canActivate: [AuthService]
   },
   {
     path: 'transaction/:transId',
     loadChildren:
-      './Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule'
+      './Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule',
+      canActivate: [AuthService]
   },
   { path: 'senddetail', loadChildren: './Pages/send-coin/modals/senddetail/senddetail.module#SenddetailPageModule',
   canActivate: [AuthService] },
@@ -68,9 +73,8 @@ const routes: Routes = [
   canActivate: [AuthService] },
   { path: 'sendcoin', loadChildren: './Pages/send-coin/send-coin.module#SendCoinPageModule',
    canActivate: [AuthService] },
-  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule'},
+  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule', canActivate: [AuthService]},
   { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule', canActivate: [AuthService] },
-  { path: 'list-feedback', loadChildren: './Pages/feedback/list-feedback/list-feedback.module#ListFeedbackPageModule' },
   { path: 'my-tasks', loadChildren: './Pages/my-tasks/my-tasks.module#MyTasksPageModule' },
   { path: 'task-detail', loadChildren: './Pages/my-tasks/task-detail/task-detail.module#TaskDetailPageModule' },
   { path: 'pin-backup', loadChildren: './Pages/backup-phrase/pin/pin-backup/pin-backup.module#PinBackupPageModule' },
@@ -78,9 +82,8 @@ const routes: Routes = [
   { path: 'applist', loadChildren: './Pages/apps/applist/applist.module#ApplistPageModule' },
   { path: 'sell-coin', loadChildren: './Pages/apps/applist/sell/sell-coin/sell-coin.module#SellCoinPageModule' },
   { path: 'setup-pin-gp', loadChildren: './Pages/generate-passphrase/setup-pin-gp/setup-pin-gp.module#SetupPinGpPageModule' },
-  { path: 'transactions', loadChildren: './Pages/transactions/transactions.module#TransactionsPageModule' },  { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' }
-
-
+  { path: 'transactions', loadChildren: './Pages/transactions/transactions.module#TransactionsPageModule', canActivate: [AuthService] },
+  { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' }
 
 ];
 @NgModule({

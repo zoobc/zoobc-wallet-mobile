@@ -11,7 +11,6 @@ import { base64ToByteArray, intToInt64Bytes, int32ToBytes } from 'src/Helpers/co
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { GetAccountBalanceResponse } from 'src/app/Grpc/model/accountBalance_pb';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
 import { SenddetailPage } from 'src/app/Pages/send-coin/modals/senddetail/senddetail.page';
 import { EnterpinsendPage } from 'src/app/Pages/send-coin/modals/enterpinsend/enterpinsend.page';
 import { TrxstatusPage } from 'src/app/Pages/send-coin/modals/trxstatus/trxstatus.page';
@@ -25,8 +24,9 @@ import {
   ADDRESS_LENGTH, TRANSACTION_TYPE,
   TRANSACTION_VERSION,
   STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
-import { SavedAccount, AuthService } from 'src/app/Services/auth-service';
+import { AccountInf, AuthService } from 'src/app/Services/auth-service';
 import { KeyringService } from 'src/app/Services/keyring.service';
+import { AccountService } from 'src/app/Services/account.service';
 
 
 interface TrxFee {
@@ -77,7 +77,7 @@ export function sendMoneyBuilder(
 }
 
 function sign(bytes: Buffer, keyringServ: KeyringService): Buffer {
-  const account: SavedAccount = JSON.parse(
+  const account: AccountInf = JSON.parse(
     localStorage.getItem(STORAGE_CURRENT_ACCOUNT)
   );
   const childSeed = keyringServ.calcForDerivationPathForCoin(
@@ -97,8 +97,8 @@ export class SendCoinPage implements OnInit {
 
   rootPage: any;
   status: any;
-  activeAccount: any;
-  public currAcc: SavedAccount;
+  account: AccountInf;
+  public currAcc: AccountInf;
   recipient: any;
   amount = 0;
   amountSecond = 0;
@@ -137,8 +137,7 @@ export class SendCoinPage implements OnInit {
     // @Inject('nacl.sign') private sign: any,
     private transactionService: TransactionService,
     private keyringService: KeyringService,
-    private authService: AuthService,
-    private activeAccountService: ActiveAccountService,
+    private accountService: AccountService,
     private toastController: ToastController,
     private menuController: MenuController,
     private qrScannerService: QrScannerService,
@@ -153,7 +152,7 @@ export class SendCoinPage implements OnInit {
     public loadingController: LoadingController
   ) {
 
-    this.activeAccountService.accountSubject.subscribe({
+    this.accountService.accountSubject.subscribe({
       next: v => {
         this.loadAccount();
       }
@@ -166,7 +165,7 @@ export class SendCoinPage implements OnInit {
       }
     });
 
-    this.activeAccountService.recipientSubject.subscribe({
+    this.accountService.recipientSubject.subscribe({
       next: v => {
         console.log('===== recipient Subject subscrive ', v);
         this.recipient = v;
@@ -336,7 +335,7 @@ export class SendCoinPage implements OnInit {
   }
 
   async loadAccount() {
-    this.currAcc = this.authService.getCurrAccount();
+    this.currAcc = this.accountService.getCurrAccount();
     this.getAccountBalance(this.currAcc.address);
   }
 

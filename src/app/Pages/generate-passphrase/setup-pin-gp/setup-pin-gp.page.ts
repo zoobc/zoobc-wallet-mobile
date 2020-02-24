@@ -41,7 +41,7 @@ export class SetupPinGpPage implements OnInit {
     if (this.tempPin === pin) {
       this.createAccSrv.setPlainPassphrase(this.plainPassphrase);
       this.createAccSrv.setPlainPin(pin);
-      await this.createAccSrv.createAccount();
+      await this.createAccSrv.createInitialAccount();
 
       const loginStatus = this.authSrv.login(pin);
       if (loginStatus) {

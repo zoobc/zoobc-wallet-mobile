@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import CryptoJS from 'crypto-js';
 import { KeyringService } from './keyring.service';
 import { getAddressFromPublicKey } from 'src/Helpers/utils';
-import { AuthService, SavedAccount } from './auth-service';
+import { AccountInf } from './auth-service';
 import { COIN_CODE, SALT_PASSPHRASE } from 'src/environments/variable.const';
 import { makeShortAddress } from 'src/Helpers/converters';
+import { AccountService } from './account.service';
 
 
 @Injectable({
@@ -23,7 +23,7 @@ export class CreateAccountService {
 
   constructor(
     private keyringService: KeyringService,
-    private authService: AuthService
+    private  accountService: AccountService
   ) {}
 
   setPlainPassphrase(arg: string) {
@@ -91,31 +91,39 @@ export class CreateAccountService {
     return decrypted;
   }
 
-  async createAccount() {
+  async createInitialAccount() {
     console.log('=== Plain Passpharase', this.plainPassphrase);
     console.log('=== Plain PIN', this.plainPin);
 
+    this.accountService.removeAllAccounts();
+    
     const { seed } = this.keyringService.calcBip32RootKeyFromMnemonic(
       COIN_CODE,
       this.plainPassphrase,
       SALT_PASSPHRASE
     );
     const masterSeed = seed;
-    const childSeed = this.keyringService.calcForDerivationPathForCoin(COIN_CODE, 0);
+    const account = this.createNewAccount('Account 1', 0); 
+    this.accountService.addAccount(account);
+    this.accountService.savePassphraseSeed(this.plainPassphrase, this.plainPin);
+    this.accountService.saveMasterSeed(masterSeed, this.plainPin);
+  }
 
-    const publicKey = childSeed.publicKey;
-    const newAddress = getAddressFromPublicKey(publicKey);
+  createNewAccount(arg: string, pathNumber: number) {
+    console.log('===== Path Number: ', pathNumber);
+    console.log('===== COIN_CODE: ', COIN_CODE);
+    const childSeed = this.keyringService.calcForDerivationPathForCoin(COIN_CODE, pathNumber);
+    const newAddress = getAddressFromPublicKey(childSeed.publicKey);
     console.log('=== new Address: ', newAddress);
-    const account: SavedAccount = {
-      name: 'Account 1',
-      path: 0,
+    const account: AccountInf = {
+      name: arg,
+      path: pathNumber,
       nodeIP: null,
+      created: new Date(),
       address: newAddress,
       shortAddress: makeShortAddress(newAddress)
     };
-
-    this.authService.addAccount(account);
-    this.authService.savePassphraseSeed(this.plainPassphrase, this.plainPin);
-    this.authService.saveMasterSeed(masterSeed, this.plainPin);
+    return account;
   }
+
 }

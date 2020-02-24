@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, ModalController, ToastController } from '@ionic/angular';
-import { ModalCreateAccountComponent } from './modal-create-account/modal-create-account.component';
-import { Storage } from '@ionic/storage';
+import { ToastController } from '@ionic/angular';
 import { AccountService } from 'src/app/Services/account.service';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Location } from '@angular/common';
-import { STORAGE_ALL_ACCOUNTS, STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
+import { AccountInf } from 'src/app/Services/auth-service';
+import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, NEW_MODE, EDIT_MODE } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-list-account',
@@ -16,82 +14,60 @@ import { STORAGE_ALL_ACCOUNTS, STORAGE_CURRENT_ACCOUNT } from 'src/environments/
 export class ListAccountComponent implements OnInit {
 
   private forWhat: string;
+  accounts: AccountInf[];
 
   constructor(
     private location: Location,
-    private navtrl: NavController,
-    private modalController: ModalController,
-    private storage: Storage,
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AccountService,
-    private toastController: ToastController,
-    private activeAccountSrv: ActiveAccountService
+    private toastController: ToastController
   ) {
-
-    this.route.queryParams.subscribe(params => {
-      console.log('==== params received:', params);
-      if (this.router.getCurrentNavigation().extras.state) {
-        console.log('==== state received:', this.router.getCurrentNavigation().extras.state);
-        this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
-        console.log(' ===  this.forwat:', this.forWhat);
-      }
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadData();
     });
-
   }
 
-  accounts: any = [];
-  accountsRaw = [];
-
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
+      }
+    });
     this.loadData();
   }
 
   loadData() {
-    this.storage.get(STORAGE_ALL_ACCOUNTS).then(data => {
-      console.log('__data', data);
-
-      this.accountsRaw = data;
-      this.accounts = data.map((acc: { accountName: any; created: any; }) => {
-        const { accountName, created } = acc;
-        return {
-          accountName,
-          address: '', // this.accountService.getAccountAddress(acc),
-          created
-        };
-      });
-    });
+    this.accounts = this.accountService.getAllAccount();
   }
 
-  accountClicked(index: number) {
-    const activeAccount = this.accountsRaw[index];
-    console.log('======= active Account clicked 1: ', activeAccount);
-
-    console.log('===== forwat accountClicked 2:', this.forWhat);
-
-    if (this.forWhat === 'sender' || this.forWhat === 'account' ) {
-      this.activeAccountSrv.setForWhat(this.forWhat);
-      this.storage.set(STORAGE_CURRENT_ACCOUNT, activeAccount).then(() => {
-        this.activeAccountSrv.setActiveAccount(activeAccount);
-        this.location.back();
-      });
-
-    } else if (this.forWhat === 'recipient') {
-      this.activeAccountSrv.setForWhat(this.forWhat);
-      const address = ''; // this.accountService.getAccountAddress(activeAccount);
-      this.activeAccountSrv.setRecipient(address);
-      this.location.back();
+  accountClicked(account: AccountInf) {
+    this.accountService.setForWhat(this.forWhat);
+    if (this.forWhat === FOR_ACCOUNT) {
+      this.accountService.setActiveAccount(account);
+      this.goToDashboard();
+    } else if (this.forWhat === FOR_SENDER) {
+      this.accountService.setActiveAccount(account);
+      this.goToSendMoney();
+      // this.location.back();
+    } else if (this.forWhat === FOR_RECIPIENT) {
+      this.accountService.setRecipient(account);
+      // this.location.back();
+      this.goToSendMoney();
     }
-
+  }
+  
+  goToDashboard() {
+    this.router.navigateByUrl('/tabs/dashboard');
   }
 
-  copyAddress(index) {
+  goToSendMoney() {
+    this.router.navigateByUrl('/sendcoin');
+  }
 
-    const account = this.accountsRaw[index];
+  copyAddress(account: AccountInf) {
 
-    console.log('Copy address: ', account);
-
-    const val = 'please chedk code'; // this.accountService.getAccountAddress(account);
+    const val = account.address;
     const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';
@@ -109,7 +85,7 @@ export class ListAccountComponent implements OnInit {
 
   async copySuccess() {
     const toast = await this.toastController.create({
-      message: 'Your address copied to clipboard.',
+      message: 'Copied to clipboard.',
       duration: 2000
     });
 
@@ -117,30 +93,21 @@ export class ListAccountComponent implements OnInit {
   }
 
   createNewAccount() {
-    this.presentModal({accountName: '', address: ''}, 0, 'new');
+    this.openAddAccount(null, NEW_MODE);
   }
 
-  editName(index: number) {
-    const account = this.accountsRaw[index];
-    console.log('==== edited address: ', account);
-    this.presentModal(account, index, 'edit');
+  editName(account: AccountInf) {
+    this.openAddAccount(account, EDIT_MODE);
   }
 
-  async presentModal(arg: any, idx: number, trxMode: string) {
-    const modal = await this.modalController.create({
-      component: ModalCreateAccountComponent,
-      componentProps: {
-        accountName: arg.accountName,
-        address: arg.address,
-        mode: trxMode,
-        index: idx
+  async openAddAccount(arg: AccountInf, trxMode: string) {
+    console.log('====== Accoint will edited', arg);
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        account: JSON.stringify(arg),
+        mode: trxMode
       }
-    });
-
-    modal.onDidDismiss().then((returnVal: any) => {
-      this.loadData();
-    });
-
-    return await modal.present();
+    };
+    this.router.navigate(['/create-account'], navigationExtras);
   }
 }
