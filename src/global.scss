@@ -9,96 +9,52 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
-
-@font-face {
-  font-family: "Gotham-XLight";
-  src: url("./assets/fonts/Gotham-XLight.eot?#iefix") format("embedded-opentype"),
-    url("./assets/fonts/Gotham-XLight.otf") format("opentype"), url("./assets/fonts/Gotham-XLight.woff") format("woff"),
-    url("./assets/fonts/Gotham-XLight.ttf") format("truetype"),
-    url("./assets/fonts/Gotham-XLight.svg#Gotham-XLight") format("svg");
-  font-weight: normal;
-  font-style: normal;
+@import url("https://fonts.googleapis.com/css?family=Lato:100,300,400,700");
+:root,
+:root[mode="md"],
+:root[mode="ios"] {
+  --ion-font-family: "Lato", sans-serif;
+  font-family: var(--ion-font-family) !important;
 }
 
-@font-face {
-  font-family: "Montserrat-Bold";
-  src: url("./assets/fonts/Montserrat-Bold.eot?#iefix") format("embedded-opentype"),
-    url("./assets/fonts/Montserrat-Bold.otf") format("opentype"), url("./assets/fonts/Montserrat-Bold.woff") format("woff"),
-    url("./assets/fonts/Montserrat-Bold.ttf") format("truetype"),
-    url("./assets/fonts/Montserrat-Bold.svg#Montserrat-Bold") format("svg");
-  font-weight: normal;
-  font-style: normal;
-}
+// ion-toolbar {
+//   --color: white;
+// }
+// ion-content {
+//   --ion-background-color: #eee;
+//   ion-item {
+//     --ion-background-color: #eee;
+//   }
+//   ion-list {
+//     background: #eee !important;
+//   }
+//   ion-searchbar {
+//     --background: #eee !important;
+//   }
+//   ion-checkbox {
+//     --background: #eee !important;
+//   }
+// }
 
-@font-face {
-  font-family: "Gotham-Light";
-  src: url("./assets/fonts/Gotham-Light.eot?#iefix") format("embedded-opentype"),
-    url("./assets/fonts/Gotham-Light.otf") format("opentype"), url("./assets/fonts/Gotham-Light.woff") format("woff"),
-    url("./assets/fonts/Gotham-Light.ttf") format("truetype"), url("./assets/fonts/Gotham-Light.svg#Gotham-Light") format("svg");
-  font-weight: normal;
-  font-style: normal;
-}
-
-.page-title {
-  font-family: var(--font-family-title);
-  font-size: 1rem;
-  margin-top: 0;
-  margin-bottom: 3rem;
-}
-
-.label {
-  font-family: "Montserrat-Bold";
-}
-
-a {
-  color: black;
-  text-decoration: none;
-}
-
-.info-list {
-  .info-label {
-    font-size: 0.8rem;
-  }
-  .info-desc {
-    font-size: 0.9rem;
-    color: #333;
-  }
-  .info-address {
-    width: auto;
-    font-size: x-small;
-    color: #333;
-  }
-}
-
-.separator {
-  border-bottom: 1px solid #dedede;
-  height: 0;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.bg-grey {
-  background-color: #eee;
-}
 
 .list-transaction {
-  .title {
-    font-size: 0.8rem;
-    color: #666;
-  }
-  .date {
-    margin-top: 3px;
-    font-size: 0.9rem;
-  }
+  // .title {
+  //   font-size: 0.8rem;
+  //   color: #666;
+  // }
+  // .date {
+  //   margin-top: 3px;
+  //   font-size: 0.9rem;
+  // }
   .amount {
-    font-family: "Montserrat-Bold";
+    // font-family: "Montserrat-Bold";
 
-    &.plus {
-      color: green;
-    }
-    &.minus {
-      color: red;
-    }
+    // &.plus {
+    //   color: green;
+    // }
+    // &.minus {
+    //   color: red;
+    // }
 
     &.receive {
       color: green;
@@ -171,9 +127,9 @@ a {
   }
 }
 
-.tab-selected {
-  background: #5675a9;
-}
+// .tab-selected {
+//   background: #5675a9;
+// }
 
 .logo-container {
   text-align: center;
@@ -184,10 +140,13 @@ a {
   }
 }
 
-.modal-ZBC {
-  //opacity: 0.9 !important;
+.modal-zbc {
+  // opacity: 0.9 !important;
   .modal-wrapper {
-    max-height: 90%;
+    max-height: 100%;
+    max-width: 100%;
+    height: 100%;
+    width: 100%
   }
 }
 
@@ -195,18 +154,35 @@ a {
   color: rgb(255, 255, 93);
 }
 
-.modal-fullscreen {
-  .modal-wrapper {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: block;
-      width: 100%;
-      height: 100%;
-      max-height: 100%;
-      max-width: 100%;
-  }
+.background-pin {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
 }
+
+.background-bcz {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+// .modal-fullscreen {
+//   .modal-wrapper {
+//       position: absolute;
+//       top: 0;
+//       left: 0;
+//       display: block;
+//       width: 100%;
+//       height: 100%;
+//       max-height: 100%;
+//       max-width: 100%;
+//   }
+// }
 
 ion-title{
   font-size: 1.0em;

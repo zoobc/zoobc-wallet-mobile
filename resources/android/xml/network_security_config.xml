@@ -6,7 +6,7 @@
         <domain includeSubdomains="true">firebase.google.com</domain>
         <domain includeSubdomains="true">firebase.google.org</domain>
         <domain includeSubdomains="true">*.google.org</domain>
-        <domain includeSubdomains="true">172.104.47.168</domain>
+        <domain includeSubdomains="true">192.168.20.242</domain>
         <domain includeSubdomains="true">n0.alpha.proofofparticipation.network</domain>
         <domain includeSubdomains="true">n0.demo.alpha.proofofparticipation.network</domain>
         <domain includeSubdomains="true">n2.alpha.proofofparticipation.network</domain>      
