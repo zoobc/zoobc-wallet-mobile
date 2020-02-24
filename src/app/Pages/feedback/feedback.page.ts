@@ -2,14 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { FeedbackService } from '../../Services/feedback.service';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { HttpHeaders, HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { Location } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular';
-import { STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
-import { AccountInf } from 'src/app/Services/auth-service';
+import { Account } from 'src/app/Services/auth-service';
 import { AccountService } from 'src/app/Services/account.service';
 
 export class Feedback {
@@ -37,7 +35,6 @@ export class FeedbackPage implements OnInit {
   Comment: string;
   rate: number;
   msgerror = '';
-  account: AccountInf;
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -52,23 +49,12 @@ export class FeedbackPage implements OnInit {
   constructor(
     private feedbackService: FeedbackService,
     private router: Router,
-    private storage: Storage,
     private http: HttpClient,
     public alertController: AlertController,
-    private accountService: AccountService,
     private location: Location) {
-
-    this.accountService.accountSubject.subscribe({
-      next: v => {
-        this.account = v;
-      }
-    });
-
   }
 
   ngOnInit() {
-    this.getActiveAccount();
-    console.log('this accAddress: ', this.AccAddress);
     this.rate = 2;
   }
 
@@ -90,23 +76,19 @@ export class FeedbackPage implements OnInit {
       'Something bad happened; please try again later.');
   }
 
-  async getActiveAccount() {
-    this.account = this.accountService.getCurrAccount();
-  }
-
   changeRating(event) {
-    console.log('Your rate:', event);
+    // console.log('Your rate:', event);
   }
 
   // Create a new item
   createItem(item: any) {
-    console.log('Dta will send: ', item);
-    const postData = JSON.stringify(item);
+    // console.log('Dta will send: ', item);
+    const postData = (item);
     let url = environment.feedbackUrl + '/applications/11045/submit';
     url += '?key=6iiLMDdWejJrMi831uTdnZg4vSWlguwLBjbw5962Zu5EPA6c8xvKyhItme6hFWTs';
     this.http.post(url, postData, this.httpOptions)
       .subscribe(data => {
-        console.log('Response from server: ', data);
+        // console.log('Response from server: ', data);
         this.isSending = false;
       }, error => {
         this.isSending = false;
@@ -119,7 +101,7 @@ export class FeedbackPage implements OnInit {
           this.errorMsg = error.error;
         }
         // this.showToast();
-        console.log('== Have error when submit: ', error);
+        // console.log('== Have error when submit: ', error);
       });
   }
 
@@ -128,7 +110,7 @@ export class FeedbackPage implements OnInit {
       // tslint:disable-next-line:max-line-length
       const regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
       serchfind = regexp.test(search);
-      console.log('is email valid', serchfind);
+      // console.log('is email valid', serchfind);
       return serchfind;
   }
 
