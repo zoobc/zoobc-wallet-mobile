@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 
 @Component({
@@ -10,18 +11,23 @@ import { Router } from '@angular/router';
 export class ApplistPage implements OnInit {
 
   constructor(
-    private router: Router,
-  ) { }
+    private alertCtrl: AlertController,
+    private router: Router
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  openSell() {
+  showSellApp() {
     this.router.navigateByUrl('/sell-coin');
   }
 
-  coolApp() {
-    this.router.navigateByUrl('/sell-coin');
+  async showListOtherApp() {
+    const alert = await this.alertCtrl.create({
+      header: 'Coming Soon!',
+      message: 'Feature will available soon',
+      buttons: ['Close']
+    });
+    await alert.present();
   }
 
 }

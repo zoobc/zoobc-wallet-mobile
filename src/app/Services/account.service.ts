@@ -56,13 +56,36 @@ export class AccountService {
   }
 
   getAccountPublicKey(account) {
-
+    console.log("====== accouint: ", account);
     const { derivationPrivKey: accountSeed } = account;
-    console.log(new Uint8Array(accountSeed));
+    console.log("==== seed:", new Uint8Array(accountSeed));
 
     const { publicKey } = this.sign.keyPair.fromSeed(new Uint8Array(accountSeed));
+
+    console.log("===== Pubic Key: ", this.toHexString(publicKey));
     return publicKey;
   }
+
+   toHexString(byteArray) {
+    return Array.prototype.map.call(byteArray, function(byte) {
+      return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+    }).join('');
+  }
+   createHexString(arr) {
+    var result = "";
+    var z;
+
+    for (var i = 0; i < arr.length; i++) {
+        var str = arr[i].toString(16);
+
+        z = 8 - str.length + 1;
+        str = Array(z).join("0") + str;
+
+        result += str;
+    }
+
+    return result;
+}
 
 
 }

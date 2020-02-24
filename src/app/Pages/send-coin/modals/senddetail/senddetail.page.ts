@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
+import { CurrencyService } from 'src/app/Services/currency.service';
 
 @Component({
   selector: 'app-senddetail',
@@ -13,8 +14,11 @@ export class SenddetailPage implements OnInit {
   trxBalance: number;
   trxSender: string;
   trxRecipient: string;
-  constructor(private modalController: ModalController, private navParams: NavParams) {
-
+  currencyRate: any;
+  priceInUSD: any;
+  constructor(private modalController: ModalController, 
+              private currencyServ: CurrencyService,
+              private navParams: NavParams) {
   }
 
   @HostListener('document:ionBackButton', ['$event'])
@@ -29,6 +33,8 @@ export class SenddetailPage implements OnInit {
     this.trxBalance = this.navParams.data.trxBalance;
     this.trxSender = this.navParams.data.trxSender;
     this.trxRecipient = this.navParams.data.trxRecipient;
+    this.currencyRate = this.navParams.data.trxCurrencyRate;
+    this.priceInUSD = this.currencyServ.getPriceInUSD();
   }
 
   async cancel() {

@@ -1,5 +1,4 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-pin',
@@ -7,58 +6,65 @@ import { Observable } from 'rxjs';
   styleUrls: ['./pin.component.scss'],
 })
 export class PinComponent {
-  pin = '';
-  dots = [];
-  numbers = [];
-  obs: any;
-
-  @Output() keyup: EventEmitter<any> = new EventEmitter<any>();
-
+  private start = 0;
+  public pin = '';
+  public pin2 = [];
+  @Output() ionChange: EventEmitter<any> = new EventEmitter<any>();
   constructor() {
-    this.dots = Array(6).fill(null).map((x, i) => i);
-    this.numbers = Array(9).fill(null).map((x, i) => i);
+    this.initialPin();
+  }
+
+  initialPin() {
+    this.start = 0;
+    this.pin = '';
+    this.pin2[0] = '_';
+    this.pin2[1] = '_';
+    this.pin2[2] = '_';
+    this.pin2[3] = '_';
+    this.pin2[4] = '_';
+    this.pin2[5] = '_';
   }
 
   clear() {
-    this.pin = '';
-    this.keyup.emit({
-      first: true
-    });
+    this.initialPin();
   }
 
   clearOne() {
+    if (this.start > 0) {
+      this.start--;
+    }
+    this.pin2[this.start] = '_';
+
     let l = this.pin.length;
     if (l > 0) {
       l = l - 1;
     }
     this.pin = this.pin.substring(0, l);
-    if (this.pin.length === 1) {
-      this.keyup.emit({
-         first: true
-     });
-    }
   }
 
   handleInput(pin: string) {
 
-    this.pin += pin;
-    if (this.pin.length === 1) {
-         this.keyup.emit({
-            first: true
-        });
+    if (this.pin.length === 6) {
+      return;
     }
+
+    this.pin += pin;
+    this.pin2[this.start] = '*';
 
     if (this.pin.length === 6) {
-      this.obs = new Observable(observer => {
-        this.keyup.emit({
-          observer,
+      setTimeout(() => {
+        this.ionChange.emit({
           pin: this.pin
         });
-      });
+      }, 200);
 
-      this.obs.subscribe(() => {
-        this.pin = '';
-      });
+      setTimeout(() => {
+        this.initialPin();
+      }, 1800);
+      return;
+
     }
+    this.start++;
+
   }
 }

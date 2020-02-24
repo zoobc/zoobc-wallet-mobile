@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../Services/auth-service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { doDecrypt } from 'src/app/Helpers/converters';
 import CryptoJS from 'crypto-js';
@@ -16,9 +16,11 @@ export class BackupPhrasePage implements OnInit {
   step = 1;
   isLoginValid = false;
   passSaved = '';
-  passDecrypted = '';
+  passDecrypted = [];
+  decrypted = '';
   constructor(
     private storage: Storage,
+    private toastController: ToastController,
     private authService: AuthService,
     private modalController: ModalController
   ) { }
@@ -69,10 +71,9 @@ export class BackupPhrasePage implements OnInit {
 
     const decryptedArray =  doDecrypt(passEncryptSaved, arg);
     console.log('decryptedArray:', decryptedArray);
-    const decrypted = decryptedArray.toString(CryptoJS.enc.Utf8);
-    this.passDecrypted = decrypted;
-    console.log('===== decrypted: ', decrypted);
-
+    this.decrypted = decryptedArray.toString(CryptoJS.enc.Utf8);
+    this.passDecrypted = this.decrypted.split(' ');
+    console.log('===== decrypted: ', this.decrypted);
   }
 
   // async wrongPwdAlert() {
@@ -84,6 +85,47 @@ export class BackupPhrasePage implements OnInit {
 
   //   await alert.present();
   // }
+
+  copyToClipboard() {
+    const val = this.decrypted.slice();
+    const arrayPass = val.split(' ');
+    let strCopy = 'This is your ZooBC passphrase:\n\n With order number\n-------------------------\n';
+    for (let i = 0; i < arrayPass.length; i++) {
+      strCopy += (i + 1) + '.' + arrayPass[i];
+      if (i < 23) {
+        strCopy += ',   ';
+      }
+      if ((i + 1) % 3 === 0) {
+        strCopy += '\n';
+      }
+    }
+    strCopy += '\n\nWithout order number\n-------------------------\n' + val;
+    strCopy += '\n\n----------- End ----------\n\n';
+
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = strCopy;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+
+    this.copySuccess();
+  }
+
+  async copySuccess() {
+    const toast = await this.toastController.create({
+      message: 'Your address copied to clipboard.',
+      duration: 2000
+    });
+
+    toast.present();
+  }
+
 
   pinMatch() {
     this.step = 3;

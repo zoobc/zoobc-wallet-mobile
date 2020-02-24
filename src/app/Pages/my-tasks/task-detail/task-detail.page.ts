@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController, AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-task-detail',
@@ -7,9 +8,35 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TaskDetailPage implements OnInit {
 
-  constructor() { }
+  constructor(
+    private modalCtrl: ModalController,
+    private alertCtrl: AlertController
+  ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  closeModal() {
+    this.modalCtrl.dismiss();
+  }
+
+  async confirm() {
+    const alert = await this.alertCtrl.create({
+      header: 'Information',
+      message: 'Feature is not available yet!',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  async reject() {
+    const alert = await this.alertCtrl.create({
+      header: 'Information',
+      message: 'Feature is not available yet!',
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 
 }

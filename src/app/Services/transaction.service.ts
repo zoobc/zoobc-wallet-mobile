@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { grpc } from '@improbable-eng/grpc-web';
+import { Storage } from '@ionic/storage';
 
 import {
   GetTransactionsRequest,
@@ -23,6 +24,7 @@ import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../Grpc/mod
 import { AccountBalanceService } from '../Grpc/service/accountBalance_pb_service';
 import { AddressBookService } from './address-book.service';
 import { Subject } from 'rxjs';
+import { SELECTED_LANGUAGE, SELECTED_NODE } from 'src/environments/variable.const';
 
 
 export interface Transaction {
@@ -56,11 +58,23 @@ export class TransactionService {
   private rpcUrl = environment.grpcUrl;
 
   public sendMoneySubject: Subject<any> = new Subject<any>();
+  public changeNodeSubject: Subject<any> = new Subject<any>();
 
-  constructor(private addressBookSrv: AddressBookService) {
-
+  constructor(private addressBookSrv: AddressBookService, private storage: Storage) {
+    this.loadRpcUrl();
   }
 
+  async setRpcUrl(arg: string){
+    this.rpcUrl = arg;
+    await this.storage.set(SELECTED_NODE, arg);
+    console.log('======RpcUrl: ', this.rpcUrl);
+    this.changeNodeSubject.next();
+  }
+
+  async loadRpcUrl(){
+    const node = await this.storage.get(SELECTED_NODE);
+    this.rpcUrl =  node;
+  }
 
   getRpcUrl() {
     return this.rpcUrl;
@@ -69,6 +83,7 @@ export class TransactionService {
   getUnconfirmTransaction(address: string) {
 
     const addresses = this.addressBookSrv.getAll();
+    console.log(' ===== grpcUrl: ', this.rpcUrl);
     console.log(' ===== addresses: ', addresses);
 
     return new Promise((resolve, reject) => {
@@ -136,6 +151,7 @@ export class TransactionService {
   ) {
 
     const addresses = this.addressBookSrv.getAll();
+    console.log(' ===== grpcUrl: ', this.rpcUrl);
     console.log(' ===== addresses: ', addresses);
 
     // const address = this.authServ.currAddress;
@@ -220,7 +236,7 @@ export class TransactionService {
   }
 
   getTransaction(id) {
-
+    console.log(' ===== grpcUrl: ', this.rpcUrl);
     const addresses = this.addressBookSrv.getAll();
 
     return new Promise((resolve, reject) => {
@@ -283,7 +299,7 @@ export class TransactionService {
           msg: string | undefined,
           trailers: grpc.Metadata
         ) => {
-          if (code !== grpc.Code.OK) { 
+          if (code !== grpc.Code.OK) {
             reject(msg);
           }
         },
@@ -299,6 +315,7 @@ export class TransactionService {
   }
 
   getAccountBalance(address: string) {
+    console.log(' ===== grpcUrl: ', this.rpcUrl);
     // const address = this.authServ.currAddress;
     return new Promise((resolve, reject) => {
       const request = new GetAccountBalanceRequest();

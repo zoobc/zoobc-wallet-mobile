@@ -1,39 +1,25 @@
-<ion-content>
-    <ion-grid class="outer-content">
-      <ion-row class="ion-align-items-center outer-content">
-        <ion-col></ion-col>
-        <ion-col class="ion-align-self-center" size="12" size-md="8" size-lg="8" size-xl="8">
-          <!--start content -->
+<ion-content class="ion-padding" color="primary">
+  <ion-progress-bar *ngIf="processing" color="light" type="indeterminate"></ion-progress-bar>
   
-    
-      <ion-grid>
-        <ion-row *ngIf="pageNumber == 0">
-          <ion-col class="ion-text-center" >
-              <ion-label>
-                <p class="pin-title" style="margin-top:40px;">{{ "Setup your PIN" | translate }}</ion-label>
-              <app-pin (keyup)="pinConfirm($event)"></app-pin>
-          </ion-col>
-        </ion-row>
-        <ion-row *ngIf="pageNumber == 1">
-            <ion-col class="ion-text-center" >
-                <ion-label>
-                    <p class="pin-title"  style="margin-top:40px;">{{ "Confirm your PIN" | translate }} </p> 
-                    <p *ngIf="isPinEqual">&nbsp;</p>
-                    <p *ngIf="!isPinEqual" class="errormsg">{{ "PIN is not Equal" | translate }}</p>
-                  </ion-label>
-                <app-pin (keyup)="savePin($event)"></app-pin>
-            </ion-col>
-          </ion-row>
-        <ion-row>
-            <ion-col class="ion-text-center">
-                <ion-button (click)="cancel()" color="secondary">{{ "Cancel" | translate }}</ion-button>
-            </ion-col>
-        </ion-row>
-      </ion-grid>
+  <ng-template [ngIf]="pagePosition === 0">
+    <p class="ion-text-center">{{ "Input your PIN" | translate }}</p>
+    <div>&nbsp;</div>
+    <app-pin (ionChange)="setupPin($event)"></app-pin>
+  </ng-template>
 
-        <!--end content -->
+  <ng-template [ngIf]="pagePosition === 1">
+    <p class="ion-text-center">{{ "Confirm your PIN" | translate }}</p>
+    <div>&nbsp;</div>
+    <p *ngIf="loginFail" class="ion-text-center" style="color:yellow">{{ "Invalid PIN" | translate }}</p>
+    <app-pin (ionChange)="confirmPin($event)"></app-pin>
+  </ng-template>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-label (click)="cancel()">{{ "Cancel" | translate }}</ion-label>
       </ion-col>
-      <ion-col></ion-col>
     </ion-row>
   </ion-grid>
+
 </ion-content>

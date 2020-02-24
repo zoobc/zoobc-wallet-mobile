@@ -1,159 +1,108 @@
-.page-dashboard {
-  --background: #f9fafb;
+// .page-dashboard {
+//   --background: #f9fafb;
 
-  font-family: "Gotham-Light";
+//   font-family: "Gotham-Light";
 
-  .title-section {
-    margin-top: 1.6rem;
-  }
+//   .title-section {
+//     margin-top: 1.6rem;
+//   }
 
-  .account-name {
-    font-family: "Montserrat-Bold";
-    text-transform: uppercase;
-  }
+//   .account-name {
+//     font-family: "Montserrat-Bold";
+//     text-transform: uppercase;
+//   }
 
-  .my-width{
-		width:600px;
-  }
-  
-  .item-text-wrap .col{
-    width: 33.33%;
-    text-align: center;
- }
+//   .my-width {
+//     width: 600px;
+//   }
 
- .btn-menu{
-   height: 80;
-   width: 90%;
- }
+//   .item-text-wrap .col {
+//     width: 33.33%;
+//     text-align: center;
+//   }
 
-  .card-balance {
-    --background: linear-gradient(90deg, #3f619C, #A43786);
-    --color: #fff;
+//   .btn-menu {
+//     height: 80;
+//     width: 90%;
+//   }
 
-    .balance-item {
-      --background: transparent;
-      --color: #fff;
+//   .card-balance {
+//     --background: linear-gradient(90deg, #0b3d65, #3f629c);
+//     --color: #fff;
 
-      .logo {
-        max-width: 60px;
-        margin-right: 1.6rem;
-      }
+//     .balance-item {
+//       --background: transparent;
+//       --border: 0px;
+//       --color: #fff;
 
-      .balance-title {
-        --color: rgba(255, 255, 255, 0.7);
-        text-transform: uppercase;
-        font-size: 0.7rem;
-        font-family: "Montserrat-Bold";
-      }
-      .main-balance {
-        font-size: 1.4rem;
-      }
-      .sub-balance {
-        --color: rgba(255, 255, 255, 0.7);
-        font-size: 0.9rem;
-      }
-    }
+//       .logo {
+//         max-width: 60px;
+//         margin-right: 1.6rem;
+//       }
 
-    .send-request-title {
-      text-transform: uppercase;
-      margin-top: 2rem;
-    }
+//       .balance-title {
+//         --color: rgba(255, 255, 255, 0.7);
+//         text-transform: uppercase;
+//         font-size: 0.7rem;
+//         font-family: "Montserrat-Bold";
+//       }
+//       .main-balance {
+//         font-size: 1.4rem;
+//       }
+//       .sub-balance {
+//         --color: rgba(255, 255, 255, 0.7);
+//         font-size: 1rem;
+//       }
+//     }
+//   }
 
-    button {
-      background-color: rgba(0, 0, 0, 0.5);
-      color: #fff;
-      display: flex;
-      font-size: 0.9rem;
-      padding-left: 1rem;
-      padding-right: 1rem;
-      padding-top: 0.7rem;
-      padding-bottom: 0.7rem;
-      width: 124px;
-      font-family: "Montserrat-Bold";
-      border-radius: 4px;
-      justify-content: center;
-      margin-left: auto;
+//   .balance-line {
+//     padding-left: 1.8rem;
+//     padding-right: 1.8rem;
+//     margin-bottom: 0.7rem;
 
-      &.button-send {
-        margin-right: auto;
-        margin-left: 0;
-      }
-      .icon {
-        margin-right: 0.3rem;
-      }
-    }
-  }
+//     .label {
+//       font-size: 0.8rem;
+//       color: #565656;
+//     }
 
-  .list-transaction {
-    box-shadow: 0 0 40px rgba(52, 61, 72, 0.2);
-  }
+//     .amount {
+//       font-size: 0.65rem;
+//       font-family: "Gotham-XLight";
 
-  .send-request-container {
-    background-color: #2656c1;
-    color: #fff;
-    padding-top: 0.5rem;
-    padding-bottom: 5rem;
-    text-align: center;
+//       &.top {
+//         font-size: 1.6rem;
+//       }
+//     }
+//   }
+// }
 
-    h3 {
-      font-family: "Montserrat-Bold";
-      font-size: 1rem;
-    }
+// :host {
+//   ion-item {
+//     border: 1px solid var(--ion-color-medium);
+//     margin: 10px auto;
+//   }
+// }
 
-    .button {
+
+ion-content{
+  ion-col{
       text-align: center;
-      background: transparent;
-      color: #fff;
-
-      .icon {
-        width: 80px;
-        height: 80px;
-        background-color: #142c87;
-        color: #fff;
-        font-size: 2rem;
-        display: inline-block;
-        text-align: center;
-        margin-bottom: 1rem;
-        display: flex;
-        margin-right: auto;
-        margin-left: auto;
-
-        -webkit-border-radius: 50%;
-        -moz-border-radius: 50%;
-        border-radius: 50%;
+      ion-icon{
+          zoom: 2.8;
+          padding: 5px;
+          &:first-child{
+              zoom: 3.8;
+              padding: 5px;
+          }
       }
-      .text {
-        font-size: 0.9rem;
+      h2,h1{
+          margin-top: 0;
+          font-size: 1.2em;
       }
-    }
-  }
-
-  .balance-line {
-    padding-left: 1.8rem;
-    padding-right: 1.8rem;
-    margin-bottom: 0.7rem;
-
-    .label {
-      font-size: 0.8rem;
-      color: #565656;
-    }
-
-    .amount {
-      font-size: 0.65rem;
-      font-family: "Gotham-XLight";
-
-      &.top {
-        font-size: 1.6rem;
+      ion-card{
+          text-align: center;
       }
-    }
+
   }
-
-  .last-transaction-container {
-    margin-top: -2rem;
-
-    ion-card {
-      background-color: #fff;
-    }
-  }
-
 }

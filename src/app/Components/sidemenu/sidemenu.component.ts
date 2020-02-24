@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { LanguageService } from 'src/app/Services/language.service';
-import { CurrencyService, Currency } from 'src/app/Services/currency.service';
+import { Currency } from 'src/app/Services/currency.service';
 import { ActiveAccountService } from 'src/app/Services/active-account.service';
+import { TransactionService } from 'src/app/Services/transaction.service';
+import { SELECTED_NODE } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-sidemenu',
@@ -15,15 +16,18 @@ export class SidemenuComponent implements OnInit {
   public accounts = [];
   public activeCurrency = 'USD';
   public activeAccount = '';
+  public currentHost = '';
 
   public currencyRate: Currency = {
     name: '',
     value: 0,
   };
 
+
   public currencyRates: Currency[];
 
   constructor(
+    private transactionServ: TransactionService,
     private menuController: MenuController,
     private router: Router,
     private storage: Storage,
@@ -42,51 +46,55 @@ export class SidemenuComponent implements OnInit {
     this.activeAccount = account.accountName;
   }
 
+  // switchNetwork(host: string) {
+  //    this.transactionServ.setRpcUrl(host);
+  //    this.currentHost = host;
+  //    console.log('Set new host: ', host);
+  //  }
+
   revealPassphrase() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/backup-phrase');
+    this.menuController.close('mainMenu');
   }
 
   myTasks() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/my-tasks');
+    this.menuController.close('mainMenu');
   }
 
   openAboutView() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/about');
+    this.menuController.close('mainMenu');
   }
 
   openListAccount() {
     this.router.navigateByUrl('/list-account');
+    this.menuController.close('mainMenu');
   }
 
   openSettings(){
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/settings');
+    this.menuController.close('mainMenu');
   }
 
   openAddresBook() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/address-book');
+    this.menuController.close('mainMenu');
   }
 
   openSendFeedbak() {
     this.router.navigateByUrl('/feedback');
+    this.menuController.close('mainMenu');
   }
 
   openHelpSupport() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/help');
-  }
-  
-  openAppsList() {
     this.menuController.close('mainMenu');
-    this.router.navigateByUrl('/applist');
   }
 
-  openNodeAdmin() {
-    this.router.navigateByUrl('/node-admin');
+  openAppsList() {
+    this.router.navigateByUrl('/applist');
+    this.menuController.close('mainMenu');
   }
 
   openNotifications() {
@@ -98,11 +106,13 @@ export class SidemenuComponent implements OnInit {
   }
 
   goToGenerate() {
-    this.router.navigate(['/create-account']);
+    this.router.navigateByUrl('/create-account');
+    this.menuController.close('mainMenu');
   }
 
   logout() {
-    this.router.navigate(['/login']);
+    this.router.navigateByUrl('/login');
+    this.menuController.close('mainMenu');
   }
 
   async getActiveAccount() {

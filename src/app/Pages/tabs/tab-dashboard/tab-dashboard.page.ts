@@ -44,9 +44,10 @@ export class TabDashboardPage implements OnInit {
 
   public currencyRate: Currency = {
     name: 'USD',
-    value: environment.zbcPriceInUSD,
+    value: 1,
   };
 
+  public priceInUSD: number;
   public totalTx: number;
   public recentTx: Transaction[];
   public unconfirmTx: Transaction[];
@@ -86,8 +87,16 @@ export class TabDashboardPage implements OnInit {
       }
     );
 
+    // if post send money reload data
+    this.transactionServ.changeNodeSubject.subscribe( () => {
+      console.log(' node changed ');
+      this.loadData();
+      }
+    );
+
     // if currency changed
     this.currencyServ.currencySubject.subscribe((rate: Currency) => {
+      console.log(' ================== RATE CHANGED TO:', rate);
       this.currencyRate = rate;
     });
 
@@ -116,6 +125,7 @@ export class TabDashboardPage implements OnInit {
 
   async loadData() {
 
+    this.priceInUSD = this.currencyServ.getPriceInUSD();
     this.accountBalance = {
       accountaddress: '',
       blockheight: 0,
@@ -148,6 +158,9 @@ export class TabDashboardPage implements OnInit {
     this.getTransactions();
 
     this.currencyRate = this.currencyServ.getRate();
+
+
+
   }
 
   async loadMoreData(event) {
@@ -242,6 +255,17 @@ export class TabDashboardPage implements OnInit {
       console.error(' ==== have error: ', error);
     }).finally(() => {
       this.isLoadingBalance = false;
+
+      // TODO REMOVE THIS
+      // this.accountBalance = {
+      //   accountaddress: '',
+      //   blockheight: 0,
+      //   spendablebalance: 3000000000,
+      //   balance: 2000000000,
+      //   poprevenue: '',
+      //   latest: false
+      // };
+
     });
   }
 
@@ -264,6 +288,10 @@ export class TabDashboardPage implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['login']);
+  }
+
+  openSendFeedbak() {
+    this.router.navigateByUrl('/feedback');
   }
 
   openListAccount() {

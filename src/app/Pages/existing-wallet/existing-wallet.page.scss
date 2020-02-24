@@ -1,22 +1,16 @@
-@import "src/assets/scss/main.scss";
+ion-textarea {
+  --background: #fff;
+  --color: #333;
+  --border-radius: 10px;
 
-.existing-wallet-page {
-  @include background;
-  flex-direction: column;
+  margin-bottom: 1rem;
+}
 
-  & > div {
-    @include flex-init;
-    @include flex-direction(column);
-    @include justify-content(space-around);
+ion-col{
+  font-size: 0.8em;
+}
 
-    height: 100%;
-  }
-
-  ion-textarea {
-    --background: #fff;
-    --color: #333;
-    --border-radius: 10px;
-
-    margin-bottom: 1rem;
-  }
+ion-input{
+  border: 1px solid #cccccc;
+  // font-size: 0.8em;
 }

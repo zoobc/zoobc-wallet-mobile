@@ -25,6 +25,10 @@ export class InitialPage implements OnInit {
 
   }
 
+  openSendFeedbak() {
+    this.router.navigateByUrl('/feedback');
+  }
+
   selectActiveLanguage() {
     this.translate.use(this.activeLanguage);
     this.translate.setDefaultLang(this.activeLanguage);

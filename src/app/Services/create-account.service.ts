@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class CreateAccountService {
   private passphrase: string;
+  private arrayPhrase = [];
   private pin: string;
 
   keySize = 256;
@@ -28,6 +29,18 @@ export class CreateAccountService {
 
   setPassphrase(value: string) {
     this.passphrase = value;
+  }
+
+  getPassphrase(): string {
+    return this.passphrase;
+  }
+
+  setArrayPassphrase(value: string[]) {
+    this.arrayPhrase = value;
+  }
+
+  getArrayPassphrase(): string[] {
+    return this.arrayPhrase;
   }
 
   async setPin(value: string) {

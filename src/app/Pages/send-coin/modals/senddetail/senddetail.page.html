@@ -1,11 +1,16 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>{{ "Confirm" | translate }}</ion-title>
     <ion-buttons slot="start">
       <ion-button (click)="cancel();">
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <ion-title>{{ "Confirm" | translate }}</ion-title>
+    <!-- <ion-buttons slot="end" color="primary">
+        <ion-button routerLink="/feedback">
+          Feedback
+        </ion-button>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -28,7 +33,10 @@
           <h3>{{ "Balance" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
-          <p><b>{{ trxBalance }}</b></p>
+          <p><b>{{ trxBalance }} ZBC</b>
+          <br/>
+          {{trxBalance * priceInUSD * currencyRate.value  | number: '0.0-4'}} {{ currencyRate.name }}
+          </p>
         </ion-text>
       </ion-label>
     </ion-item>
@@ -54,7 +62,10 @@
           <h3>{{ "Amount" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
-          <p><b>{{ trxAmount }} ZBC</b></p>
+          <p>
+            <b>{{ trxAmount }} ZBC</b><br/>
+            {{trxAmount * priceInUSD * currencyRate.value  | number: '0.0-4'}} {{ currencyRate.name }}
+          </p>
         </ion-text>
       </ion-label>
     </ion-item>
@@ -66,7 +77,10 @@
           <h3>{{ "Transaction Fee" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
-          <p><b>{{ trxFee }} ZBC</b></p>
+          <p>
+            <b>{{ trxFee }} ZBC</b><br/>
+            {{trxFee * priceInUSD * currencyRate.value  | number: '0.0-4'}} {{ currencyRate.name }}
+          </p>
         </ion-text>
       </ion-label>
     </ion-item>
@@ -75,11 +89,13 @@
   <ion-grid>
     <ion-row>
       <ion-col>
+        <ion-button (click)="confirm()" expand="block" color="secondary">{{ "Confirm" | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
         <ion-button (click)="cancel()" expand="block" fill="outline" color="secondary">{{ "Cancel" | translate }}
         </ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button (click)="confirm()" expand="block" color="secondary">{{ "Confirm" | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -1,13 +1,18 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{ "List of Account" | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+        <ion-button routerLink="/feedback">
+          Feedback
+        </ion-button>
+    </ion-buttons>    
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="grey">
+<ion-content>
   <ion-fab ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button color="secondary" (click)="createNewAccount()"
       ><ion-icon name="add"></ion-icon

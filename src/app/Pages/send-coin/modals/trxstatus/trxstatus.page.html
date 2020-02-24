@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar color="primary"  hideBackButton="true">
     <ion-title>{{ "Transaction Status" | translate }}</ion-title>
+    <!-- <ion-buttons slot="end" color="primary">
+        <ion-button routerLink="/feedback">
+          Feedback
+        </ion-button>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -22,7 +27,7 @@
         </ion-text>
       </ion-col>  
     </ion-row>
-    <ion-row>
+    <ion-row style="margin-bottom:20px;">
         <ion-col class="ion-text-center">
             <ion-text *ngIf="status" color="dark">{{ "Transaction will need a few seconds to confirmed" | translate }}.</ion-text>
             <ion-text *ngIf="!status" color="danger">{{ msg }}.</ion-text>   
@@ -30,20 +35,16 @@
     </ion-row>
 
     <ion-row>
-      <ion-col>
-        &nbsp;
+      <ion-col class="ion-text-center">
+          <ion-button color="secondary" expand="block" (click)="close();">{{ "Close" | translate }}</ion-button>
       </ion-col>
     </ion-row>
 
     <ion-row>
       <ion-col class="ion-text-center">
-          <ion-button color="secondary" fill="outline" expand="block" (click)="close();">{{ "Close" | translate }}</ion-button>
-      </ion-col>
-      <ion-col class="ion-text-center">
-          <ion-button color="secondary"  expand="block" (click)="newTrx();">{{ "New Transaction" | translate }}</ion-button>
+          <ion-button color="secondary" fill="outline" expand="block" (click)="newTrx();">{{ "New Transaction" | translate }}</ion-button>
       </ion-col>
     </ion-row>
-
 
   </ion-grid>
 </ion-content>

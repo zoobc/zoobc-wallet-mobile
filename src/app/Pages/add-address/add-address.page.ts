@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { base64ToByteArray } from 'src/app/Helpers/converters';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { Location } from '@angular/common';
 
@@ -60,7 +60,7 @@ export class AddAddressPage implements OnInit {
     this.addresses.forEach(obj => {
       if (String(name).valueOf() === String(obj.name).valueOf() &&
         String(address).valueOf() !== String(obj.address).valueOf()) {
-        this.validationMessage = '<p>Name is exist, with address:<br/>' + obj.address + '</p>';
+        this.validationMessage = 'Name is exist, with address: ' + obj.address ;
         finded = true;
       }
     });
@@ -75,7 +75,7 @@ export class AddAddressPage implements OnInit {
 
     this.addresses.forEach(obj => {
       if (String(address).valueOf() === String(obj.address).valueOf()) {
-        this.validationMessage = '<p>Address is exist, with name:<br/>' + obj.name + '</p>';
+        this.validationMessage = 'Address is exist, with name: ' + obj.name;
         finded = true;
       }
 
@@ -84,16 +84,18 @@ export class AddAddressPage implements OnInit {
   }
 
   scanQRCode() {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        from: JSON.stringify('addressbook')
-      }
-    };
+    // const navigationExtras: NavigationExtras = {
+    //   queryParams: {
+    //     from: JSON.stringify('addressbook')
+    //   }
+    // };
 
-    this.router.navigateByUrl('/qr-scanner', navigationExtras);
-    this.qrScannerSrv.listen().subscribe((addrss: string) => {
-      this.address = addrss;
+    this.router.navigateByUrl('/qr-scanner');
+    this.qrScannerSrv.listen().subscribe((jsondata: string) => {
+      let data = JSON.parse(jsondata);
+      this.address = data.address;
     });
+
   }
 
   async saveAddress() {
@@ -114,7 +116,7 @@ export class AddAddressPage implements OnInit {
       // check if nothing changed
       if (this.name === this.oldName) {
         console.log('Nothing changed ');
-        this.location.back();
+        this.goListAddress();
         return;
       }
 
@@ -133,7 +135,7 @@ export class AddAddressPage implements OnInit {
           this.oldAddress,
           this.index
         );
-        this.location.back();
+        this.goListAddress();
       }
 
     } else if (this.mode === 'new') {
@@ -174,19 +176,23 @@ export class AddAddressPage implements OnInit {
 
       if (this.isAddressValid && this.isNameValid) {
         await this.addressBookSrv.insert(
-           this.name,
-           this.address
-         );
-        this.location.back();
+          this.name,
+          this.address
+        );
+        this.goListAddress();
         return;
-     }
- 
+      }
+
 
     }
 
   }
 
+  goListAddress() {
+    this.router.navigateByUrl('/address-book');
+  }
+
   cancel() {
-    this.location.back();
+    this.goListAddress();
   }
 }

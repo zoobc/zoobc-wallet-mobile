@@ -1,45 +1,14 @@
-@import "../../../assets/scss/main.scss";
-
 .page-generate-passphrase {
-
-  background: linear-gradient(0deg, #780a6d 0%, #183b85 100%);
-
-  padding: 10px;
-  position: relative;
-  height: 100%;
-
-  .your-passphrase {
-    font-size: 0.9rem;
-  }
-
-  .card-passphrase {
-    padding-top: 1.2rem;
-    padding-bottom: 1.2rem;
-
-    box-shadow: 0 0 8px rgba(52, 61, 72, 0.2);
-  }
-
+ 
   .warning {
     background: #fff176;
     color: #353535;
-    padding: 0.9rem;
-
-    margin-bottom: 2rem;
-    margin-top: 2rem;
-
+    padding: 0.5rem;
+    margin-bottom: 1rem;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
   }
-
-  .passphrase {
-    font-size: 1.2rem;
-    color: #ffffff;
-    text-align: center;
-    font-family: "Montserrat-Bold";
-  }
-
-  .alert-radio-group{ background: #780a6d !important; }
 
   ion-grid {
     margin-left: 5px;
@@ -47,9 +16,7 @@
   }
 
   .btn-action {
-    margin-top: 0.3rem;
     font-size: 0.8rem;
-
     --box-shadow: none;
     --background: var(--ion-color-btn);
 
@@ -61,7 +28,7 @@
   .checklist {
     display: flex;
     font-size: 0.8rem;
-    margin-top: 1.2rem;
+    margin-top: 0.4rem;
 
     ion-checkbox {
       margin-right: 0.8rem;
@@ -73,4 +40,15 @@
   .btn-submit {
     font-family: "Montserrat-Bold";
   }
+}
+
+ion-col{
+  margin: 3px;
+  background-color:#c4dcee;
+  padding: 6px;
+  padding-top:12px;
+  padding-bottom:12px;
+  font-size: 0.8em;
+  font-weight: bold;
+  color: #000000;
 }

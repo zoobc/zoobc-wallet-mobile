@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class LoginPage implements OnInit {
   public isLoginValid = true;
-  public loginFail = false;
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -18,26 +18,17 @@ export class LoginPage implements OnInit {
   ngOnInit() {}
 
   async login(e: any) {
-    const { observer, pin, first } = e;
-
-    if (first === true) {
-      this.isLoginValid = true;
-      return;
-    }
-
+    const {pin} = e;
+    console.log('=== Pin: ', pin);
+    this.isLoginValid = true;
     const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
-      this.isLoginValid = true;
       this.router.navigate(['tabs']);
-      setTimeout(() => {
-        observer.next(true);
-      }, 500);
     } else {
-      this.loginFail = true;
+      this.isLoginValid = false;
       setTimeout(() => {
-        this.isLoginValid = false;
-        observer.next(true);
-       }, 500);
+        this.isLoginValid = true;
+       }, 1500);
     }
   }
 

@@ -6,30 +6,61 @@
       </ion-button>
     </ion-buttons>
     <ion-title>{{ "Receive" | translate }} ZBC</ion-title>
-
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="openSharing()">
         <ion-icon slot="icon-only" name="share"></ion-icon>
       </ion-button>
     </ion-buttons>
-    
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-qrcode" padding="true">
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col class="warning">
+        {{ "Show this qrcode to your friend to transfer zoobc coin to your account" | translate }}
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <div *ngIf="createdCode">
+          <ngx-qrcode [qrc-value]="createdCode"></ngx-qrcode>
+        </div>
+      </ion-col>
+    </ion-row>
 
+    <ion-row>
+      <ion-col class="qrcode">
+        <div style="margin-bottom: 5px; font-weight: bold;">Address:</div>
+        <div>{{ address }} 
+          <ion-button fill="outline"  expand="block" size="small" (click)="copyToClipboard()">
+            <ion-icon name="copy"></ion-icon> Copy
+          </ion-button> 
+        </div>
+      </ion-col>
+    </ion-row>
 
-  <ion-card *ngIf="createdCode">
-          <ion-card-content style="background: #ffffff;">
-            <ngx-qrcode [qrc-value]="createdCode"></ngx-qrcode>           
-            <p class="address" (click)="tapAddress()">{{ createdCode }}
-                
-            <span style="font-size: 1.6em;"><ion-icon name="copy"></ion-icon></span></p>
-            
-          </ion-card-content>
-  </ion-card>
+    <ion-row>
+      <ion-col class="qrcode">
+        <div style="margin-bottom: 5px; font-weight: bold;">Amount (ZBC)</div>
+        <div>
+          <ion-input style="border:1px solid #cccccc;" type="number" (ionChange)="changeBarcode()" [(ngModel)]="amount">
+          </ion-input>
+        </div>
+      </ion-col>
+    </ion-row>
 
-  <p class="note">
-    {{ "show this qrcode to your friend to transfer money to your account" | translate }}
-  </p>
+    <!-- <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button color="light" >
+           Copy Address to clipboard
+        </ion-button>
+      </ion-col>
+    </ion-row> -->
+  </ion-grid>
 </ion-content>

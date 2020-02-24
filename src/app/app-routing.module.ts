@@ -40,8 +40,7 @@ const routes: Routes = [
   },
   {
     path: 'feedback',
-    loadChildren: './Pages/feedback/feedback.module#FeedbackPageModule', canActivate: [AuthService]
-  },
+    loadChildren: './Pages/feedback/feedback.module#FeedbackPageModule'},
   { path: 'help', loadChildren: './Pages/help/help.module#HelpPageModule' },
   {
     path: 'notifications',
@@ -58,10 +57,6 @@ const routes: Routes = [
       './Pages/address-book/address-book.module#AddressBookPageModule'
   },
   {
-    path: 'transaction',
-    loadChildren: './Pages/transaction/transaction.module#TransactionPageModule'
-  },
-  {
     path: 'transaction/:transId',
     loadChildren:
       './Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule'
@@ -73,14 +68,17 @@ const routes: Routes = [
   canActivate: [AuthService] },
   { path: 'sendcoin', loadChildren: './Pages/send-coin/send-coin.module#SendCoinPageModule',
    canActivate: [AuthService] },
-  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule', canActivate: [AuthService] },
+  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule'},
   { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule', canActivate: [AuthService] },
   { path: 'list-feedback', loadChildren: './Pages/feedback/list-feedback/list-feedback.module#ListFeedbackPageModule' },
   { path: 'my-tasks', loadChildren: './Pages/my-tasks/my-tasks.module#MyTasksPageModule' },
   { path: 'task-detail', loadChildren: './Pages/my-tasks/task-detail/task-detail.module#TaskDetailPageModule' },
-  { path: 'pin-backup', loadChildren: './Pages/backup-phrase/pin/pin-backup/pin-backup.module#PinBackupPageModule' },  { path: 'settings', loadChildren: './Pages/settings/settings.module#SettingsPageModule' },
+  { path: 'pin-backup', loadChildren: './Pages/backup-phrase/pin/pin-backup/pin-backup.module#PinBackupPageModule' },
+  { path: 'settings', loadChildren: './Pages/settings/settings.module#SettingsPageModule' },
   { path: 'applist', loadChildren: './Pages/apps/applist/applist.module#ApplistPageModule' },
   { path: 'sell-coin', loadChildren: './Pages/apps/applist/sell/sell-coin/sell-coin.module#SellCoinPageModule' },
+  { path: 'setup-pin-gp', loadChildren: './Pages/generate-passphrase/setup-pin-gp/setup-pin-gp.module#SetupPinGpPageModule' },
+  { path: 'transactions', loadChildren: './Pages/transactions/transactions.module#TransactionsPageModule' },  { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' }
 
 
 

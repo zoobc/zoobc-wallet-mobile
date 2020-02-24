@@ -300,22 +300,12 @@ https://www.npmjs.com/package/cordova-plugin-firebasex#ionic-4
 https://github.com/dpa99c/cordova-plugin-androidx-adapter
 
 https://github.com/dpa99c/cordova-plugin-androidx
+'
 
+camera conflict 
 
+I had to remove inside ..\plugins\phonegap-plugin-barcodescanner\plugin.xml the
 
-Note:
-
-Add submodule:
-git submodule add -f --name  bip32 https://github.com/BlockchainZoo/bip32 externals/bip32
-git submodule add -f --name  bip39 https://github.com/iancoleman/bip39 externals/bip39
-
-Remove submodule:
-# Remove the submodule entry from .git/config
-git submodule deinit -f externals/bip39
-
-# Remove the submodule directory from the superproject's .git/modules directory
-rm -rf .git/modules/bip39
-
-# Remove the entry in .gitmodules and remove the submodule directory located at path/to/submodule
-git rm -f externals/bip39
-
+<uses-feature android:name="android.hardware.camera">
+then removed and added again android platform.
+Worked very fine for me.

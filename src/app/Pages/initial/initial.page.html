@@ -1,14 +1,21 @@
-<ion-content class="initial-page ion-padding">
-  <ion-list style="border: none; background: transparent">
-    <ion-item color="primary">
-      <ion-select color="primary" interface="alert" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
-        <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
-          {{ language.country }}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-  </ion-list>
+<ion-header no-border no-shadow>
+  <ion-toolbar color="primary">
+    <ion-select slot="start" style="margin-right:8px;" color="primary" interface="action-sheet" [(ngModel)]="activeLanguage"
+      (ionChange)="selectActiveLanguage()">
+      <ion-select-option *ngFor="let language of languages" value="{{ language.code }}">
+        {{ language.country }}
+      </ion-select-option>
+    </ion-select>
+    <ion-title></ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
+<ion-content class="initial-page ion-padding">
   <div class="">
     <div class="logo-container">
       <img src="assets/images/logo-color.png" />
@@ -19,12 +26,14 @@
       <span class="text2">{{ "Please choose" | translate }} <br />
         {{ "one of signin methods bellow" | translate }}.</span>
     </div>
-
+    <div>
+      <p>&nbsp;</p>
+    </div>
     <div class="btn-container">
-      <ion-button expand="block" color="light" routerLink="/create-wallet">
+      <ion-button expand="block" color="tertiary" routerLink="/generate-passphrase">
         {{ "Create New Wallet" | translate }}</ion-button>
       <span>{{ "OR" | translate }}</span>
-      <ion-button expand="block" color="light" routerLink="/existing-wallet">
+      <ion-button expand="block" color="secondary" routerLink="/existing-wallet">
         {{ "Open Existing Wallet" | translate }} </ion-button>
     </div>
   </div>

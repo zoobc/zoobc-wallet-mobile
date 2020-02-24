@@ -5,6 +5,8 @@ export interface Transaction {
   sender: string;
   recipient: string;
   amount: number;
+  height: number;
+  blockId: number;
   fee: number;
   total: number;
   timestamp: Date;

@@ -1,9 +1,14 @@
 <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+        <ion-back-button></ion-back-button>
       </ion-buttons>
-      <ion-title>Notifications</ion-title>  
+      <ion-title>Notifications</ion-title> 
+      <ion-buttons slot="end" color="primary">
+          <ion-button routerLink="/feedback">
+            Feedback
+          </ion-button>
+      </ion-buttons>       
     </ion-toolbar>
 </ion-header>
 
