@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
 import { MenuController, ToastController } from '@ionic/angular';
-import { AccountInf } from 'src/app/Services/auth-service';
+import { Account } from 'src/app/Services/auth-service';
 import { AccountService } from 'src/app/Services/account.service';
-
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 @Component({
   selector: 'app-tab-receive',
   templateUrl: 'tab-receive.page.html',
@@ -12,13 +12,12 @@ import { AccountService } from 'src/app/Services/account.service';
 })
 export class TabReceivePage implements OnInit {
 
-  createdCode: string;
+  createdCode: any;
   amount = 0;
-  account: AccountInf;
+  account: Account;
 
   constructor(
     private accountService: AccountService,
-    private toastController: ToastController,
     private menuController: MenuController,
     private socialSharing: SocialSharing,
     public platform: Platform
@@ -32,8 +31,9 @@ export class TabReceivePage implements OnInit {
     this.menuController.open('mainMenu');
   }
 
-  loadData() {
-    this.account = this.accountService.getCurrAccount();
+  async loadData() {
+    this.account = await this.accountService.getCurrAccount();
+    console.log('=== account: ', this.account);
     this.createQR(this.account.address, this.amount);
   }
 
@@ -45,6 +45,10 @@ export class TabReceivePage implements OnInit {
     this.createQR(this.account.address, this.amount);
   }
 
+  copyToClipboard() {
+    this.accountService.copyToClipboard(this.account.address);
+  }
+
   // Share Options
   async openSharing() {
     this.platform.ready().then(async () => {
@@ -53,31 +57,6 @@ export class TabReceivePage implements OnInit {
         console.log(err);
       });
     });
-  }
-
-  copyToClipboard() {
-    const val = this.account.address;
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-    this.copySuccess();
-  }
-
-  async copySuccess() {
-    const toast = await this.toastController.create({
-      message: 'Copied to clipboard.',
-      duration: 2000
-    });
-
-    toast.present();
   }
 
   createQR(addrs: string, amnt: number) {

@@ -1,13 +1,13 @@
-import { Component, ViewChild } from "@angular/core";
-import { SidemenuComponent } from "src/app/Components/sidemenu/sidemenu.component";
-import { NavigationExtras, Router } from "@angular/router";
-import { IonTabs, NavController, ToastController } from "@ionic/angular";
+import { Component, ViewChild } from '@angular/core';
+import { SidemenuComponent } from 'src/app/Components/sidemenu/sidemenu.component';
+import { NavigationExtras, Router } from '@angular/router';
+import { IonTabs, NavController, ToastController } from '@ionic/angular';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 
 @Component({
-  selector: "app-tabs",
-  templateUrl: "tabs.page.html",
-  styleUrls: ["tabs.page.scss"]
+  selector: 'app-tabs',
+  templateUrl: 'tabs.page.html',
+  styleUrls: ['tabs.page.scss']
 })
 export class TabsPage {
 
@@ -16,13 +16,13 @@ export class TabsPage {
 
   @ViewChild(SidemenuComponent) sidemenu: SidemenuComponent;
 
-  @ViewChild("myTabs") tabRef: IonTabs;
+  @ViewChild('myTabs') tabRef: IonTabs;
 
   seeTabs = true;
 
 
   onTabChanged($event) {
-    if ($event.tab === "dashboard") {
+    if ($event.tab === 'dashboard') {
       this.seeTabs = false;
     } else {
       this.seeTabs = true;
@@ -53,7 +53,7 @@ export class TabsPage {
 
     //     this.navigationExtras = {
     //       queryParams: {
-    //         address: JSON.stringify(this.address)
+    //         address: (this.address)
     //       }
     //     };
 
@@ -61,10 +61,10 @@ export class TabsPage {
 
     // });
 
- 
+
     const navigationExtras: NavigationExtras = {
       queryParams: {
-          from: JSON.stringify('tabscan')
+          from: ('tabscan')
       }
     };
     this.navCtrl.navigateForward(['/qr-scanner'], navigationExtras);

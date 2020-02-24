@@ -51,7 +51,10 @@ export function createTranslateLoader(http: HttpClient) {
     NgxQRCodeModule,
     BrowserModule,
     IonicModule.forRoot(),
-    IonicStorageModule.forRoot(),
+    IonicStorageModule.forRoot({
+      name: '__zobcdb',
+      driverOrder: ['indexeddb', 'sqlite', 'websql']
+    }),
     AppConfigModule,
     AppRoutingModule,
     FormsModule,

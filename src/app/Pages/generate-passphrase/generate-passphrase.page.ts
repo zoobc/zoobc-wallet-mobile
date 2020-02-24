@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
 import * as bip39 from 'bip39';
 import { Router } from '@angular/router';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { KeyringService } from 'src/app/Services/keyring.service';
+import { AccountService } from 'src/app/Services/account.service';
 
 
 @Component({
@@ -25,9 +24,8 @@ export class GeneratePassphrasePage implements OnInit {
 
   constructor(
     private router: Router,
-    private clipboard: Clipboard,
+    private accountService: AccountService,
     private keyringService: KeyringService,
-    private toastController: ToastController,
     private createAccSrv: CreateAccountService
   ) { }
 
@@ -42,7 +40,7 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   setupPin(event: any) {
-    console.log('====event:', event);
+    // console.log('====event:', event);
     this.loginFail = false;
     const { first } = event;
     // set loginFail false && clear error message
@@ -65,7 +63,7 @@ export class GeneratePassphrasePage implements OnInit {
     this.createAccSrv.setPlainPassphrase(this.plainPassphrase.slice());
     this.arrayPhrase = this.plainPassphrase.slice().split(' ');
     this.createAccSrv.setArrayPassphrase(this.arrayPhrase);
-    console.log('Array phrase: ', this.arrayPhrase);
+    // console.log('Array phrase: ', this.arrayPhrase);
   }
 
   copyToClipboard() {
@@ -84,45 +82,11 @@ export class GeneratePassphrasePage implements OnInit {
     strCopy += '\n\nWithout order number\n-------------------------\n' + val;
     strCopy += '\n\n----------- End ----------\n\n';
 
-
-    this.clipboard.copy(strCopy);
-
-    this.clipboard.paste().then(
-      (resolve: string) => {
-         // alert(resolve);
-         this.presentToast('Passphrase copied to clipboard');
-       },
-       (reject: string) => {
-        this.copyInBrowser(strCopy);
-         // alert('Error: ' + reject);
-       }
-     );
+    this.accountService.copyToClipboard(strCopy);
 
   }
 
-  copyInBrowser(arg: string) {
 
-     const selBox = document.createElement('textarea');
-     selBox.style.position = 'fixed';
-     selBox.style.left = '0';
-     selBox.style.top = '0';
-     selBox.style.opacity = '0';
-     selBox.value = arg;
-     document.body.appendChild(selBox);
-     selBox.focus();
-     selBox.select();
-     document.execCommand('copy');
-     document.body.removeChild(selBox);
-
-  }
-
-  async presentToast(msg: string) {
-    const toast = await this.toastController.create({
-      message: msg,
-      duration: 1000
-    });
-    toast.present();
-  }
 
   ionViewDidLeave(): void {
     // Called once, before the instance is destroyed.

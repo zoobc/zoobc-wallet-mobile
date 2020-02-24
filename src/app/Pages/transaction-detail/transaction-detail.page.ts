@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Transaction } from 'src/app/Interfaces/transaction';
 import { ToastController, NavParams, ModalController } from '@ionic/angular';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -27,6 +28,7 @@ export class TransactionDetailPage implements OnInit {
   constructor(
     private toastController: ToastController,
     private navParams: NavParams,
+    private accountService: AccountService,
     public modalCtrl: ModalController,
   ) {
 
@@ -50,30 +52,11 @@ export class TransactionDetailPage implements OnInit {
       this.transaction.recipient = this.account.address;
     }
     this.transaction.total = this.transaction.amount + this.transaction.fee;
-    console.log('----- Transacdtion total: ', this.transaction.total);
+    // console.log('----- Transacdtion total: ', this.transaction.total);
   }
 
   async copyAddress(address: string) {
-
-    console.log('Copy address: ', address);
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = address;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-
-    const toast = await this.toastController.create({
-      message: 'Copied to clipboard.',
-      duration: 2000
-    });
-
-    toast.present();
+    this.accountService.copyToClipboard(address);
   }
 
   async close() {

@@ -11,6 +11,7 @@ import {
 } from '../../Helpers/childkeys';
 
 import { findCoin } from '../../Helpers/coins';
+import { CONST_HEX } from 'src/environments/variable.const';
 
 const NOT_IMPLEMENTED = 'Not Implemented';
 
@@ -29,7 +30,7 @@ export class KeyringService {
   // Multiple signatures are attached to the transaction for verification.
 
   /**
-   * Use seed.toString('hex') to get hexadecimal format.
+   * Use seed.toString(CONST_HEX) to get hexadecimal format.
    */
   private seed: Buffer;
   private bip32RootKey: BIP32Interface;
@@ -73,7 +74,7 @@ export class KeyringService {
     this.bip32RootKey = fromSeed(seed, this.getNetwork(networkName), curveName);
 
     return {
-      seed: this.seed.toString('hex')
+      seed: this.seed.toString(CONST_HEX)
     };
   }
 
@@ -94,7 +95,7 @@ export class KeyringService {
     );
 
     return {
-      seed: this.seed.toString('hex')
+      seed: this.seed.toString(CONST_HEX)
     };
   }
 

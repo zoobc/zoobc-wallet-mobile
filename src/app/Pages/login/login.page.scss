@@ -1,4 +1,21 @@
-ion-col{
-    text-align: center;
+ion-col {
+  text-align: center;
 }
 
+.background {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/bg-pin.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+ion-toolbar {
+  --background: transparent;
+  --ion-color-base: transparent !important;
+}
+
+ion-footer{
+  padding-bottom:40px;
+}

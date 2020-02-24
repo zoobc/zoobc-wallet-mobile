@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../Services/auth-service';
 import { ModalController, ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { doDecrypt } from 'src/Helpers/converters';
 import CryptoJS from 'crypto-js';
 import { PinBackupPage } from './pin/pin-backup/pin-backup.page';
+import { STORAGE_ENC_PASSPHRASE_SEED, STORAGE_ENC_MASTER_SEED } from 'src/environments/variable.const';
+import { StoragedevService } from 'src/app/Services/storagedev.service';
 
 @Component({
   selector: 'app-backup-phrase',
@@ -19,7 +20,7 @@ export class BackupPhrasePage implements OnInit {
   passDecrypted = [];
   decrypted = '';
   constructor(
-    private storage: Storage,
+    private strgSrv: StoragedevService,
     private toastController: ToastController,
     private authService: AuthService,
     private modalController: ModalController
@@ -36,44 +37,59 @@ export class BackupPhrasePage implements OnInit {
 
     const pinmodal = await this.modalController.create({
       component: PinBackupPage,
+      cssClass: 'modal-zbc',
       componentProps: {
       }
     });
 
 
     pinmodal.onDidDismiss().then(async (returnedData) => {
-      console.log('Pin: ', returnedData);
-
-
-      if (returnedData && returnedData.data !== 0) {
-        const pin = returnedData.data;
-        const isUserLoggedIn = await this.authService.login(pin);
-        console.log('================ isUserLoggedIn:', isUserLoggedIn);
-
-        if (isUserLoggedIn) {
-          this.getPassprase(pin);
-          this.step = 2;
-        }
-
+      if (returnedData && returnedData.data !== '-') {
+        const key = returnedData.data;
+        this.getPassprase(key);
+        this.step = 2;
+      } else {
+        this.step = 1;
       }
     });
 
     return await pinmodal.present();
   }
 
-  async getPassprase(arg: any) {
-    console.log('==== PIN:', arg);
+  async getPassprase(pin: any) {
 
-    const passEncryptSaved = await this.storage.get('PASS_STORAGE');
-    this.passSaved = passEncryptSaved;
-    console.log('===== passEncryptSaved: ', passEncryptSaved);
-    console.log('===== passEncryptSaved Length: ', passEncryptSaved.length);
 
-    const decryptedArray =  doDecrypt(passEncryptSaved, arg);
-    console.log('decryptedArray:', decryptedArray);
-    this.decrypted = decryptedArray.toString(CryptoJS.enc.Utf8);
-    this.passDecrypted = this.decrypted.split(' ');
-    console.log('===== decrypted: ', this.decrypted);
+      // console.log('==== pin backup:', pin);
+      const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
+      // console.log('==== passEncryptSaved:', passEncryptSaved);
+
+      const isPinValid = this.authService.isPinValid(passEncryptSaved, pin);
+      // console.log('==== isPinValid:', isPinValid);
+
+      if (isPinValid) {
+         const decryptedArray =  doDecrypt(passEncryptSaved, pin);
+
+         // console.log('decryptedArray:', decryptedArray);
+         this.decrypted = decryptedArray.toString(CryptoJS.enc.Utf8);
+         // console.log('===== decrypted: ', this.decrypted);
+
+         this.passDecrypted = this.decrypted.split(' ');
+
+      }
+
+
+    // console.log('==== PIN:', arg);
+
+    // const passEncryptSaved = await this.storage.get('PASS_STORAGE');
+    // this.passSaved = passEncryptSaved;
+    // console.log('===== passEncryptSaved: ', passEncryptSaved);
+    // console.log('===== passEncryptSaved Length: ', passEncryptSaved.length);
+
+    // const decryptedArray =  doDecrypt(passEncryptSaved, arg);
+    // console.log('decryptedArray:', decryptedArray);
+    // this.decrypted = decryptedArray.toString(CryptoJS.enc.Utf8);
+    // this.passDecrypted = this.decrypted.split(' ');
+    // console.log('===== decrypted: ', this.decrypted);
   }
 
   // async wrongPwdAlert() {

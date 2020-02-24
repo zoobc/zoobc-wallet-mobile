@@ -3,13 +3,17 @@ import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 
 import {
   STORAGE_ENC_MASTER_SEED,
-  COIN_CODE
+  COIN_CODE,
+  CONST_HEX
 } from 'src/environments/variable.const';
+import { Storage } from '@ionic/storage';
 import * as CryptoJS from 'crypto-js';
 import { KeyringService } from './keyring.service';
 import { AccountService } from './account.service';
+import { doDecrypt } from 'src/Helpers/converters';
+import { StoragedevService } from './storagedev.service';
 
-export interface AccountInf {
+export interface Account {
   path: number;
   name: string;
   nodeIP: string;
@@ -24,23 +28,27 @@ export interface AccountInf {
 })
 export class AuthService implements CanActivate {
 
-  private isUserLoggenIn = false;
+  private isUserLoggenIn: boolean;
+
   // private loggedIn = false;
 
   constructor(
     private router: Router,
-    private keyringServie: KeyringService,
-    private accountService: AccountService) { }
+    private strgSrv: StoragedevService,
+    private keyringServ: KeyringService,
+    private accountService: AccountService) {
+      this.isUserLoggenIn = false;
+    }
 
   async canActivate(route: ActivatedRouteSnapshot) {
-
-    const acc = this.accountService.getCurrAccount();
-    console.log('=== canActivate current account:', acc);
-
-    if (!acc) {
+    const acc = await this.accountService.getCurrAccount();
+    console.log('====== acc one canActivate: ', acc);
+    if (acc === null) {
       this.router.navigate(['initial']);
       return false;
     }
+
+    // console.log('=== this.isUserLoggenIn:', this.isUserLoggenIn);
 
     if (!this.isUserLoggenIn) {
       this.router.navigate(['login']);
@@ -50,14 +58,17 @@ export class AuthService implements CanActivate {
     return true;
   }
 
+  isLoggedIn() {
+    return this.isUserLoggenIn;
+  }
 
   isPinValid(encSeed: string, key: string): boolean {
     let isPinValid = false;
     try {
-      const seed = CryptoJS.AES.decrypt(encSeed, key).toString(
-        CryptoJS.enc.Utf8
-      );
-      if (!seed) { throw new Error('not match'); }
+      const seed = doDecrypt(encSeed, key).toString(CryptoJS.enc.Utf8);
+      if (!seed) {
+        throw new Error('pin is not match');
+      }
       isPinValid = true;
     } catch (e) {
       isPinValid = false;
@@ -65,18 +76,18 @@ export class AuthService implements CanActivate {
     return isPinValid;
   }
 
-  login(key: string): boolean {
-    const encSeed = localStorage.getItem(STORAGE_ENC_MASTER_SEED);
+  async login(key: string) {
+    const encSeed = await this.strgSrv.get(STORAGE_ENC_MASTER_SEED);
     const isPinValid = this.isPinValid(encSeed, key);
     if (isPinValid) {
-      const seed = Buffer.from(
-        CryptoJS.AES.decrypt(encSeed, key).toString(CryptoJS.enc.Utf8),
-        'hex'
-      );
-      this.keyringServie.calcBip32RootKeyFromSeed(COIN_CODE, seed);
-      return (this.isUserLoggenIn = true);
+      const ej = doDecrypt(encSeed, key).toString(CryptoJS.enc.Utf8);
+      const seed = Buffer.from(ej, CONST_HEX);
+      this.keyringServ.calcBip32RootKeyFromSeed(COIN_CODE, seed);
+      this.isUserLoggenIn = true;
+      return this.isUserLoggenIn;
     }
-    return (this.isUserLoggenIn = false);
+    this.isUserLoggenIn = false;
+    return this.isUserLoggenIn;
   }
 
   async logout() {

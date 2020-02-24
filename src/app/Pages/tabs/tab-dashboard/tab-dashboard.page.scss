@@ -1,99 +1,42 @@
-// .page-dashboard {
-//   --background: #f9fafb;
 
-//   font-family: "Gotham-Light";
+.background {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
 
-//   .title-section {
-//     margin-top: 1.6rem;
-//   }
+.bg-header{
+  background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
 
-//   .account-name {
-//     font-family: "Montserrat-Bold";
-//     text-transform: uppercase;
-//   }
-
-//   .my-width {
-//     width: 600px;
-//   }
-
-//   .item-text-wrap .col {
-//     width: 33.33%;
-//     text-align: center;
-//   }
-
-//   .btn-menu {
-//     height: 80;
-//     width: 90%;
-//   }
-
-//   .card-balance {
-//     --background: linear-gradient(90deg, #0b3d65, #3f629c);
-//     --color: #fff;
-
-//     .balance-item {
-//       --background: transparent;
-//       --border: 0px;
-//       --color: #fff;
-
-//       .logo {
-//         max-width: 60px;
-//         margin-right: 1.6rem;
-//       }
-
-//       .balance-title {
-//         --color: rgba(255, 255, 255, 0.7);
-//         text-transform: uppercase;
-//         font-size: 0.7rem;
-//         font-family: "Montserrat-Bold";
-//       }
-//       .main-balance {
-//         font-size: 1.4rem;
-//       }
-//       .sub-balance {
-//         --color: rgba(255, 255, 255, 0.7);
-//         font-size: 1rem;
-//       }
-//     }
-//   }
-
-//   .balance-line {
-//     padding-left: 1.8rem;
-//     padding-right: 1.8rem;
-//     margin-bottom: 0.7rem;
-
-//     .label {
-//       font-size: 0.8rem;
-//       color: #565656;
-//     }
-
-//     .amount {
-//       font-size: 0.65rem;
-//       font-family: "Gotham-XLight";
-
-//       &.top {
-//         font-size: 1.6rem;
-//       }
-//     }
-//   }
-// }
-
-// :host {
-//   ion-item {
-//     border: 1px solid var(--ion-color-medium);
-//     margin: 10px auto;
-//   }
-// }
-
+ion-toolbar {
+  --background: transparent;
+  --ion-color-base: transparent !important;
+}
 
 ion-content{
   ion-col{
       text-align: center;
+      ion-item{
+          .amount{
+            font-size: 1.3em;
+          }
+          .sufix{
+            font-size:0.7em;
+          }
+      }
       ion-icon{
           zoom: 2.8;
-          padding: 5px;
+          padding: 3px;
           &:first-child{
-              zoom: 3.8;
-              padding: 5px;
+              zoom: 3.2;
+              padding: 3px;
           }
       }
       h2,h1{
@@ -102,6 +45,7 @@ ion-content{
       }
       ion-card{
           text-align: center;
+          box-shadow: none !important;
       }
 
   }

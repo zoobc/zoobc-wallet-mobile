@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { LanguageService } from 'src/app/Services/language.service';
-import { CurrencyService, Currency, CurrencyName } from 'src/app/Services/currency.service';
-import { Storage } from '@ionic/storage';
+import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 import {
   LANGUAGES,
   SELECTED_LANGUAGE,
   CURRENCY_LIST,
-  ACTIVE_CURRENCY,
-  ACTIVE_NETWORK,
+  STORAGE_ACTIVE_CURRENCY,
+  STORAGE_ACTIVE_NETWORK,
   NETWORK_LIST
 } from 'src/environments/variable.const';
 import { NetworkService } from 'src/app/Services/network.service';
 import { getFormatedDate } from 'src/Helpers/converters';
 import { TransactionService } from 'src/app/Services/transaction.service';
+import { StoragedevService } from 'src/app/Services/storagedev.service';
 
 @Component({
   selector: 'app-settings',
@@ -33,11 +33,11 @@ export class SettingsPage implements OnInit {
   public timestamp: string;
 
   constructor(
-    private storage: Storage,
+    private strgSrv: StoragedevService,
     private transactionService: TransactionService,
     private languageService: LanguageService,
     private networkService: NetworkService,
-    private currencyService: CurrencyService) { 
+    private currencyService: CurrencyService) {
 
        // if currency changed
       this.currencyService.currencySubject.subscribe((rate: Currency) => {
@@ -49,29 +49,24 @@ export class SettingsPage implements OnInit {
   async ngOnInit() {
     this.getCurrencyRates();
     this.currencyRate = this.currencyService.getRate();
-    this.activeLanguage = await this.storage.get(SELECTED_LANGUAGE);
-    this.activeCurrency = await this.storage.get(ACTIVE_CURRENCY);
-    this.activeNetwork = await this.storage.get(ACTIVE_NETWORK);    
-    console.log('============= activeNetwork ONLOAD:', this.activeNetwork);
+    this.activeLanguage = await this.strgSrv.get(SELECTED_LANGUAGE);
+    this.activeCurrency = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
+    this.activeNetwork = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK);
   }
 
 
   async getCurrencyRates() {
     this.currencyRateList = await this.currencyService.getCurrencyRateList();
-    if (this.currencyRateList){
+    if (this.currencyRateList) {
       this.timestamp = getFormatedDate(this.currencyRateList.timestamp);
     }
   }
 
-  changeRate() {
-    console.log('============= activeCurrency:', this.activeCurrency);
-    this.currencyService.setActiveCurrency(this.activeCurrency);
-    // this.setCurrencyRate(this.activeCurrency);
-    console.log('== Rates on settings currCode 2: ', this.currencyRate);
-    console.log('============= activeCurrency 2:', this.activeCurrency);
+  async changeRate() {
+    await this.currencyService.setActiveCurrency(this.activeCurrency);
   }
 
-  
+
   // async setCurrencyRate(currCode: any) {
   //   const rates = this.currencyRateList.rates;
   //   const currencyRate: Currency = {
@@ -80,22 +75,22 @@ export class SettingsPage implements OnInit {
   //   };
   //   this.currencyRate = currencyRate;
   //   this.currencyService.changeRate(currencyRate);
-  //   console.log('== Rates on settings currCode: ', currencyRate);
+  //   // console.log('== Rates on settings currCode: ', currencyRate);
   // }
 
   selectActiveLanguage() {
-    console.log('=============== this.activeLanguage', this.activeLanguage);
+    // console.log('=============== this.activeLanguage', this.activeLanguage);
     this.languageService.setLanguage(this.activeLanguage);
   }
 
   switchNetwork(host: string) {
-   
-     console.log('Set new host: ', host);
+
+     // console.log('Set new host: ', host);
   }
 
 
   selectActiveNetwork() {
-    console.log('=============== this.activeNetwork', this.activeNetwork);
+    // console.log('=============== this.activeNetwork', this.activeNetwork);
     this.transactionService.setRpcUrl(this.activeNetwork);
     this.networkService.setNetwork(this.activeNetwork);
   }

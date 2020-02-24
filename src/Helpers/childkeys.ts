@@ -111,7 +111,7 @@ export function getDerivationPath(
     return path;
     // DOM.bip44path.val(path);
     // var derivationPath = DOM.bip44path.val();
-    // console.log("Using derivation path from BIP44 tab: " + derivationPath);
+    // // console.log("Using derivation path from BIP44 tab: " + derivationPath);
     // return derivationPath;
   } else if (derivationStandard === 'bip44') {
     const purpose = parseIntNoNaN(purposeValue, 44);
@@ -126,7 +126,7 @@ export function getDerivationPath(
     return path;
     // DOM.bip44path.val(path);
     // var derivationPath = DOM.bip44path.val();
-    // console.log("Using derivation path from BIP44 tab: " + derivationPath);
+    // // console.log("Using derivation path from BIP44 tab: " + derivationPath);
     // return derivationPath;
   } else if (derivationStandard === 'bip49') {
     const purpose = parseIntNoNaN(purposeValue, 49);
@@ -141,7 +141,7 @@ export function getDerivationPath(
     return path;
     // DOM.bip49path.val(path);
     // var derivationPath = DOM.bip49path.val();
-    // console.log("Using derivation path from BIP49 tab: " + derivationPath);
+    // // console.log("Using derivation path from BIP49 tab: " + derivationPath);
     // return derivationPath;
   } else if (derivationStandard === 'bip84') {
     const purpose = parseIntNoNaN(purposeValue, 84);
@@ -156,20 +156,20 @@ export function getDerivationPath(
     return path;
     // DOM.bip84path.val(path);
     // var derivationPath = DOM.bip84path.val();
-    // console.log("Using derivation path from BIP84 tab: " + derivationPath);
+    // // console.log("Using derivation path from BIP84 tab: " + derivationPath);
     // return derivationPath;
   } else if (derivationStandard === 'bip32') {
     return null;
     // var derivationPath = DOM.bip32path.val();
-    // console.log("Using derivation path from BIP32 tab: " + derivationPath);
+    // // console.log("Using derivation path from BIP32 tab: " + derivationPath);
     // return derivationPath;
   } else if (derivationStandard === 'bip141') {
     return null;
     // var derivationPath = DOM.bip141path.val();
-    // console.log("Using derivation path from BIP141 tab: " + derivationPath);
+    // // console.log("Using derivation path from BIP141 tab: " + derivationPath);
     // return derivationPath;
   } else {
-    console.log('Unknown derivation path');
+    // console.log('Unknown derivation path');
   }
 }
 

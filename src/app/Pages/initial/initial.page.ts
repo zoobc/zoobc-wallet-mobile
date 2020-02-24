@@ -32,7 +32,7 @@ export class InitialPage implements OnInit {
   selectActiveLanguage() {
     this.translate.use(this.activeLanguage);
     this.translate.setDefaultLang(this.activeLanguage);
-    console.log('== this.activeLanguage:', this.activeLanguage);
+    // console.log('== this.activeLanguage:', this.activeLanguage);
     this.languageService.setLanguage(this.activeLanguage);
   }
 

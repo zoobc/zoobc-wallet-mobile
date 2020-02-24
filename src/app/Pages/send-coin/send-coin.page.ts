@@ -23,8 +23,8 @@ import {
   COIN_CODE, TRX_FEE_LIST,
   ADDRESS_LENGTH, TRANSACTION_TYPE,
   TRANSACTION_VERSION,
-  STORAGE_CURRENT_ACCOUNT } from 'src/environments/variable.const';
-import { AccountInf, AuthService } from 'src/app/Services/auth-service';
+  CONST_DEFAULT_CURRENCY} from 'src/environments/variable.const';
+import { Account } from 'src/app/Services/auth-service';
 import { KeyringService } from 'src/app/Services/keyring.service';
 import { AccountService } from 'src/app/Services/account.service';
 
@@ -45,7 +45,8 @@ export interface SendMoneyInterface {
 
 export function sendMoneyBuilder(
   data: SendMoneyInterface,
-  keyringServ: KeyringService
+  keyringServ: KeyringService,
+  account: Account
 ): Buffer {
   let bytes: Buffer;
 
@@ -72,14 +73,12 @@ export function sendMoneyBuilder(
   ]);
 
   const signatureType = int32ToBytes(0);
-  const signature = sign(bytes, keyringServ);
+  const signature = sign(bytes, keyringServ, account);
   return Buffer.concat([bytes, signatureType, signature]);
 }
 
-function sign(bytes: Buffer, keyringServ: KeyringService): Buffer {
-  const account: AccountInf = JSON.parse(
-    localStorage.getItem(STORAGE_CURRENT_ACCOUNT)
-  );
+function sign(bytes: Buffer, keyringServ: KeyringService, account: Account): Buffer {
+  console.log('====== account xyz: ', account);
   const childSeed = keyringServ.calcForDerivationPathForCoin(
     COIN_CODE,
     account.path
@@ -97,13 +96,13 @@ export class SendCoinPage implements OnInit {
 
   rootPage: any;
   status: any;
-  account: AccountInf;
-  public currAcc: AccountInf;
-  recipient: any;
+  account: Account;
+  recipientAddress = '';
+  senderAddress = '';
   amount = 0;
   amountSecond = 0;
   amountTemp = 0;
-  trxFee = '0.001';
+  trxFee: string;
   customfee: number;
   allFees = TRX_FEE_LIST;
   isAdvance = false;
@@ -121,7 +120,7 @@ export class SendCoinPage implements OnInit {
   private connectionText = '';
 
   public currencyRate: Currency = {
-    name: 'USD',
+    name: CONST_DEFAULT_CURRENCY,
     value: environment.zbcPriceInUSD,
   };
 
@@ -152,23 +151,21 @@ export class SendCoinPage implements OnInit {
     public loadingController: LoadingController
   ) {
 
-    this.accountService.accountSubject.subscribe({
-      next: v => {
+    this.accountService.accountSubject.subscribe(() => {
         this.loadAccount();
-      }
     });
 
     this.addressbookService.addressSubject.subscribe({
-      next: v => {
-        console.log('===== address Subject subscrive ', v);
-        this.recipient = v;
+      next: address => {
+        // console.log('===== address book recipient: ', address);
+        this.recipientAddress = address;
       }
     });
 
     this.accountService.recipientSubject.subscribe({
-      next: v => {
-        console.log('===== recipient Subject subscrive ', v);
-        this.recipient = v;
+      next: recipient => {
+        // console.log('===== account recipient: ', recipient);
+        this.recipientAddress = recipient.address;
       }
     });
 
@@ -179,7 +176,7 @@ export class SendCoinPage implements OnInit {
     });
 
     this.priceInUSD = this.currencyService.getPriceInUSD();
-    console.log('===== loading consturctro ==');
+    // console.log('===== loading consturctro ==');
     this.loadAccount();
   }
 
@@ -194,13 +191,15 @@ export class SendCoinPage implements OnInit {
       this.secondaryCurr = this.currencyRate.name;
     }
 
-    console.log('======  Primary currrency: ', this.primaryCurr);
+    // console.log('======  Primary currrency: ', this.primaryCurr);
 
     this.convertAmount();
   }
 
   ngOnInit() {
-    console.log('=== on ngOnInit: ');
+    this.amountMsg = '';
+    this.recipientAddress = '';
+    // console.log('=== on ngOnInit: ');
     this.loadData();
 
   }
@@ -217,7 +216,7 @@ export class SendCoinPage implements OnInit {
   }
 
   openListAccount(arg: string) {
-    console.log('==== arg send coin:', arg);
+    // console.log('==== arg send coin:', arg);
     const navigationExtras: NavigationExtras = {
       state: {
         forWhat: arg
@@ -256,12 +255,12 @@ export class SendCoinPage implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: (val) => {
-            console.log('Confirm Cancel', val);
+            // console.log('Confirm Cancel', val);
           }
         }, {
           text: 'Ok',
           handler: (val) => {
-            console.log('Confirm Ok', val);
+            // console.log('Confirm Ok', val);
             if (val === 'address') {
               this.openAddresses();
             } else if (val === 'account') {
@@ -303,15 +302,15 @@ export class SendCoinPage implements OnInit {
     //       fee: e.payload.doc.data()['fee']
     //     };
     //   });
-    //   console.log(" == all trxees:", this.allFees);
+    //   // console.log(" == all trxees:", this.allFees);
 
     //   this.trxFee = this.allFees[0].fee.toString();
-    //   console.log(" ==  trxFee:", this.trxFee);
+    //   // console.log(" ==  trxFee:", this.trxFee);
 
     //   this.isLoadingTxFee = false;
     // });
 
-
+    this.trxFee = this.allFees[0].fee.toString();
   }
 
   showLoading() {
@@ -324,7 +323,7 @@ export class SendCoinPage implements OnInit {
   }
 
   doRefresh(event: any) {
-    console.log('Reloading data ....');
+    // console.log('Reloading data ....');
     this.showLoading();
     this.loadData();
 
@@ -335,8 +334,8 @@ export class SendCoinPage implements OnInit {
   }
 
   async loadAccount() {
-    this.currAcc = this.accountService.getCurrAccount();
-    this.getAccountBalance(this.currAcc.address);
+    this.account = await this.accountService.getCurrAccount();
+    this.getAccountBalance(this.account.address);
   }
 
   async getAccountBalance(addr: string) {
@@ -345,13 +344,13 @@ export class SendCoinPage implements OnInit {
     await this.transactionService.getAccountBalance(addr).then((data: AccountBalanceList) => {
       if (data.accountbalance && data.accountbalance.spendablebalance) {
         const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
-        this.currAcc.balance = blnc;
+        this.account.balance = blnc;
       }
     }).catch((error) => {
-      console.log('===== eror', error);
+      // console.log('===== eror', error);
       const date2 = new Date();
       const diff = date2.getTime() - date1.getTime();
-      console.log('== diff: ', diff);
+      // console.log('== diff: ', diff);
 
       // all SubConns are in TransientFailure
       if (error === 'error: account not found') {
@@ -368,10 +367,10 @@ export class SendCoinPage implements OnInit {
       } else {
         this.errorMsg = '';
       }
-      this.currAcc.balance = 0;
+      this.account.balance = 0;
     }).finally(() => {
       this.isLoadingBalance = false;
-      console.log('===== BALANCE:', this.currAcc.balance);
+      // console.log('===== BALANCE:', this.account.balance);
       // TODO REMOVE THIS
       // this.account.balance = 3000000000 / 1e8;
     });
@@ -384,13 +383,18 @@ export class SendCoinPage implements OnInit {
     } else {
       this.isCustomFeeValid = false;
     }
-    console.log('==== customfee: ', this.customfee);
+    // console.log('==== customfee: ', this.customfee);
   }
 
 
   convertAmount() {
-
-    console.log('==== Primary curr: ', this.primaryCurr);
+    console.log('==== Primary curr: ', this.amountTemp);
+    if (!this.amountTemp) {
+      this.amountMsg = this.translateService.instant('Amount required!');
+      this.isAmountValid = false;
+      return;
+    }
+    this.amountMsg = '';
 
     if (this.primaryCurr === COIN_CODE) {
       this.amount = this.amountTemp;
@@ -402,6 +406,8 @@ export class SendCoinPage implements OnInit {
 
   }
 
+
+
   validateAmount() {
 
     this.convertAmount();
@@ -409,12 +415,12 @@ export class SendCoinPage implements OnInit {
     this.isAmountValid = true;
     this.amountMsg = '';
     if (!this.amount) {
-      this.amountMsg = 'Amount required!';
+      // this.amountMsg = 'Amount required!';
+      this.amountMsg = this.translateService.instant('Amount required!');
       this.isAmountValid = false;
       return;
     }
 
-    this.amountMsg = this.translateService.instant('Amount required!');
     if (this.isAmountValid && isNaN(this.amount)) {
       this.isAmountValid = false;
       return;
@@ -427,7 +433,7 @@ export class SendCoinPage implements OnInit {
 
     if (!this.isLoadingBalance) {
 
-      if (this.isAmountValid && (this.amount + Number(this.trxFee)) > this.currAcc.balance) {
+      if (this.isAmountValid && (this.amount + Number(this.trxFee)) > this.account.balance) {
         this.amountMsg = this.translateService.instant('Insufficient balance');
         this.isAmountValid = false;
         return;
@@ -439,21 +445,24 @@ export class SendCoinPage implements OnInit {
 
   validateRecipient() {
     this.isRecipientValid = true;
-    this.recipientMsg = this.translateService.instant('Address is not valid!');
-    if (!this.recipient) {
+    console.log('===== Recipient: ', this.recipientAddress);
+
+    if (!this.recipientAddress || this.recipientAddress === '' || this.recipientAddress === null) {
       this.isRecipientValid = false;
+      this.recipientMsg = this.translateService.instant('Recipient is required!');
       return;
     }
 
-    if (this.isRecipientValid && this.recipient.length !== 44) {
-      this.isRecipientValid = false;
-      return;
-    }
+    // if (this.isRecipientValid && this.recipient.length !== 44) {
+    //   this.isRecipientValid = false;
+    //   return;
+    // }
 
     if (this.isRecipientValid) {
-      const addressBytes = base64ToByteArray(this.recipient);
+      const addressBytes = base64ToByteArray(this.recipientAddress);
       if (this.isRecipientValid && addressBytes.length !== 33) {
         this.isRecipientValid = false;
+        this.recipientMsg = this.translateService.instant('Address is not valid!');
         return;
       }
     }
@@ -478,7 +487,7 @@ export class SendCoinPage implements OnInit {
 
 
     pinmodal.onDidDismiss().then((returnedData) => {
-      console.log(returnedData);
+      // console.log(returnedData);
       if (returnedData && returnedData.data === 1) {
         this.sendMoney();
       }
@@ -490,10 +499,10 @@ export class SendCoinPage implements OnInit {
     this.activeRoute.queryParams.subscribe(params => {
       if (params && params.jsonData) {
         const json = JSON.parse(params.jsonData);
-        this.recipient = json.address;
+        this.recipientAddress = json.address;
         this.amountTemp = Number(json.amount);
         this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;
-        console.log('== From: ', this.recipient);
+        // console.log('== From: ', this.recipientAddress);
       }
     });
   }
@@ -526,14 +535,14 @@ export class SendCoinPage implements OnInit {
       this.isFeeValid = false;
     }
 
-    if (!this.amount || !this.recipient || !this.isRecipientValid || !this.isAmountValid || !this.isFeeValid) {
+    if (!this.amount || !this.recipientAddress || !this.isRecipientValid || !this.isAmountValid || !this.isFeeValid) {
       return;
     }
 
 
     const fee = this.trxFee;
     const amount = this.amount;
-    const dest = this.recipient;
+    const dest = this.recipientAddress;
 
     if (amount > 0 && amount < 0.000000001) {
       this.isAmountValid = false;
@@ -547,9 +556,9 @@ export class SendCoinPage implements OnInit {
 
 
     const total = (Number(amount) + Number(fee));
-    console.log('-- Total: ', total);
+    // console.log('-- Total: ', total);
 
-    if (total > Number(this.currAcc.balance)) {
+    if (total > Number(this.account.balance)) {
       this.isAmountValid = false;
       this.amountMsg = 'Insuficient balance';
       return;
@@ -564,9 +573,9 @@ export class SendCoinPage implements OnInit {
       componentProps: {
         trxFee: this.trxFee,
         trxAmount: Number(this.amount),
-        trxBalance: this.currAcc.balance,
-        trxSender: this.currAcc.address,
-        trxRecipient: this.recipient,
+        trxBalance: this.account.balance,
+        trxSender: this.account.address,
+        trxRecipient: this.recipientAddress,
         trxCurrencyRate: this.currencyRate
       }
     });
@@ -575,10 +584,10 @@ export class SendCoinPage implements OnInit {
       if (dataReturned) {
         modalResult = dataReturned.data;
         if (dataReturned.data === 1) {
-          console.log('==  detail accepted');
+          // console.log('==  detail accepted');
           this.inputPIN();
         } else {
-          console.log('==  detail closed');
+          // console.log('==  detail closed');
         }
       }
     });
@@ -597,20 +606,20 @@ export class SendCoinPage implements OnInit {
     await loading.present();
 
     const data: SendMoneyInterface = {
-      sender: this.currAcc.address,
-      recipient: this.recipient,
+      sender: this.account.address,
+      recipient: this.recipientAddress,
       fee: Number(this.trxFee),
       amount: this.amount,
     };
 
-    const txBytes = sendMoneyBuilder(data, this.keyringService);
+    const txBytes = sendMoneyBuilder(data, this.keyringService, this.account);
 
     await this.transactionService.postTransaction(
       txBytes
     ).then((resolveTx) => {
-      console.log('========= response from grpc: ', resolveTx);
+      // console.log('========= response from grpc: ', resolveTx);
       if (resolveTx) {
-        this.recipient = '';
+        this.recipientAddress = '';
         this.amount = 0;
 
         this.showSuccessMessage();
@@ -618,7 +627,7 @@ export class SendCoinPage implements OnInit {
       }
     }
     ).catch((error) => {
-      console.log('==== Have eroor when submiting:', error);
+      // console.log('==== Have eroor when submiting:', error);
       this.showErrorMessage(error);
     }
     ).finally(() => {
@@ -639,7 +648,7 @@ export class SendCoinPage implements OnInit {
     });
 
     modal.onDidDismiss().then((returnedData) => {
-      console.log(returnedData);
+      // console.log(returnedData);
     });
 
     return await modal.present();
@@ -655,14 +664,14 @@ export class SendCoinPage implements OnInit {
     });
 
     modal.onDidDismiss().then((returnedData) => {
-      console.log(returnedData);
+      // console.log(returnedData);
     });
 
     return await modal.present();
   }
 
   switchAccount(accounts: any) {
-    console.log('=== accounts: ', this.currAcc);
+    // console.log('=== accounts: ', this.account);
     this.isAmountValid = true;
     this.isRecipientValid = true;
     this.amount = null;
@@ -670,21 +679,21 @@ export class SendCoinPage implements OnInit {
 
   changeFee() {
     // this.fee = arg;
-    console.log('==== trxFee: ', this.trxFee);
+    // console.log('==== trxFee: ', this.trxFee);
     if (Number(this.trxFee) < 0) {
       this.customeChecked = true;
       this.customfee = this.allFees[0].fee;
     } else {
       this.customeChecked = false;
     }
-    console.log('======= customeChecked: ', this.customeChecked);
+    // console.log('======= customeChecked: ', this.customeChecked);
   }
 
   scanQrCode() {
     this.router.navigateByUrl('/qr-scanner');
     this.qrScannerService.listen().subscribe((jsonData: string) => {
       const data = JSON.parse(jsonData);
-      this.recipient = data.address;
+      this.recipientAddress = data.address;
       this.amountTemp = Number(data.amount);
       this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;
     });
@@ -703,6 +712,6 @@ export class SendCoinPage implements OnInit {
   }
 
   submit() {
-    console.log('----- form submited ----');
+    // console.log('----- form submited ----');
   }
 }

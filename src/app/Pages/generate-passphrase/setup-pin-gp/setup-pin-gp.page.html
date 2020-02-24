@@ -1,4 +1,4 @@
-<ion-header >
+<ion-header no-shadow no-border>
     <ion-toolbar color="primary">
       <ion-buttons slot="start">
           <ion-back-button></ion-back-button>
@@ -12,7 +12,7 @@
     </ion-toolbar>
   </ion-header>
    
-  <ion-content class="ion-padding" color="primary">
+  <ion-content class="ion-padding background" fullscreen>
     <ion-progress-bar *ngIf="processing" color="light" type="indeterminate"></ion-progress-bar>
 
     <ng-template [ngIf]="pagePosition === 0">

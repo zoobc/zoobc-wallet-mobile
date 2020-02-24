@@ -25,7 +25,7 @@
       </ion-item>
     </ng-template>
 
-    <ion-list *ngIf="accounts.length >= 1; else noData">
+    <ion-list *ngIf="accounts && accounts.length >= 1; else noData">
       <ion-list-header>
         <ion-label><span>{{"Tap list to switch account" | translate}}.</span></ion-label>
       </ion-list-header>

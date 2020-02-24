@@ -5,12 +5,13 @@ import {
   LoadingController,
   ModalController
 } from '@ionic/angular';
-import { AccountInf } from 'src/app/Services/auth-service';
+import { Account } from 'src/app/Services/auth-service';
 import { AccountService } from 'src/app/Services/account.service';
-import { Storage } from '@ionic/storage';
 import { TransactionService, Transactions, Transaction } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
+import { NUMBER_OF_RECORD_IN_TRANSACTIONS, CONST_DEFAULT_CURRENCY,
+   CONST_DEFAULT_RATE } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-transactions',
@@ -19,18 +20,13 @@ import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 })
 export class TransactionsPage implements OnInit {
 
-  account: AccountInf;
+  account: Account;
   errorMsg: string;
   offset: number;
   accountBalance: any;
   isLoadingBalance: boolean;
   isLoadingRecentTx: boolean;
-
-  currencyRate: Currency = {
-    name: 'USD',
-    value: 1,
-  };
-
+  currencyRate =  CONST_DEFAULT_RATE;
   priceInUSD: number;
   totalTx: number;
   recentTx: Transaction[];
@@ -42,7 +38,6 @@ export class TransactionsPage implements OnInit {
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
-    private storage: Storage,
     private accountService: AccountService,
     private transactionServ: TransactionService,
     private currencyServ: CurrencyService,
@@ -61,13 +56,13 @@ export class TransactionsPage implements OnInit {
 
     // if network changed reload data
     this.transactionServ.changeNodeSubject.subscribe(() => {
-      console.log(' node changed ');
+      // console.log(' node changed ');
       this.loadData();
     });
 
     // if currency changed
     this.currencyServ.currencySubject.subscribe((rate: Currency) => {
-      console.log(' ================== RATE CHANGED TO:', rate);
+      // console.log(' ================== RATE CHANGED TO:', rate);
       this.currencyRate = rate;
     });
 
@@ -109,25 +104,25 @@ export class TransactionsPage implements OnInit {
     this.unconfirmTx = [];
     this.isError = false;
 
-    this.account = this.accountService.getCurrAccount();
-    console.log('==== Active account:', this.account);
+    this.account = await this.accountService.getCurrAccount();
+    // console.log('==== Active account:', this.account);
     this.getTransactions();
     this.currencyRate = this.currencyServ.getRate();
   }
 
   async loadMoreData(event) {
 
-    console.log('==== this.offset:', this.offset);
+    // console.log('==== this.offset:', this.offset);
 
     if (this.recentTx.length >= this.totalTx) {
       // event.target.complete();
-      console.log(' === all loaded', this.recentTx.length + ' - ' + this.totalTx);
+      // console.log(' === all loaded', this.recentTx.length + ' - ' + this.totalTx);
       // event.target.disabled = true;
     }
 
     setTimeout(async () => {
       await this.transactionServ
-        .getAccountTransaction(++this.offset, 5, this.account.address)
+        .getAccountTransaction(++this.offset, NUMBER_OF_RECORD_IN_TRANSACTIONS, this.account.address)
         .then((res: Transactions) => {
           this.totalTx = res.total;
           this.recentTx.push(...res.transactions);
@@ -136,7 +131,7 @@ export class TransactionsPage implements OnInit {
           event.target.complete();
         }).catch((error) => {
           event.target.complete();
-          console.log('===== eroor getAccountTransaction:', error);
+          // console.log('===== eroor getAccountTransaction:', error);
         });
 
     }, 500);
@@ -150,22 +145,20 @@ export class TransactionsPage implements OnInit {
       .getUnconfirmTransaction(this.account.address)
       .then((res: Transaction[]) => (this.unconfirmTx = res)).finally(() => {
         // wait until unconfirm transaction loading finish.
-        // this.isLoadingRecentTx = false;
       }).catch((error) => {
         console.log('===== eroor getUnconfirmTransaction:', error);
       });
 
     await this.transactionServ
-      .getAccountTransaction(this.offset, 5, this.account.address)
+      .getAccountTransaction(this.offset, NUMBER_OF_RECORD_IN_TRANSACTIONS, this.account.address)
       .then((res: Transactions) => {
         this.totalTx = res.total;
         this.recentTx = res.transactions;
-      }).finally(() => {
-        this.isLoadingRecentTx = false;
       }).catch((error) => {
         console.log('===== eroor getAccountTransaction:', error);
       });
 
+    this.isLoadingRecentTx = false;
   }
 
 
@@ -197,7 +190,7 @@ export class TransactionsPage implements OnInit {
 
     const modal = await this.modalCtrl.create({
       component: TransactionDetailPage,
-      cssClass: 'modal-ZBC',
+      cssClass: 'modal-zbc',
       componentProps: {
         transaction: trx,
         account: this.account,

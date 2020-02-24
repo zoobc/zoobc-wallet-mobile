@@ -5,7 +5,7 @@ import { ActivatedRoute, NavigationExtras } from '@angular/router';
 import {
   BarcodeScannerOptions,
   BarcodeScanner
-} from "@ionic-native/barcode-scanner/ngx";
+} from '@ionic-native/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-qr-scanner',
@@ -26,8 +26,8 @@ export class QrScannerComponent implements OnInit {
     private barcodeScanner: BarcodeScanner,
     private navCtrl: NavController,
     private qrScannerSrv: QrScannerService, private activeRoute: ActivatedRoute, private toastController: ToastController) {
-    this.encodeData = "";
-    //Options
+    this.encodeData = '';
+    // Options
     this.barcodeScannerOptions = {
       showTorchButton: true,
       showFlipCameraButton: true
@@ -35,13 +35,7 @@ export class QrScannerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.activeRoute.queryParams.subscribe(params => {
-      this.from = JSON.parse(params.from);
-      console.log('== From: ', this.from);
-    });
-
     this.openScanner();
-  
   }
 
   scanCode() {
@@ -57,13 +51,13 @@ export class QrScannerComponent implements OnInit {
         this.navCtrl.pop();
       })
       .catch(err => {
-        console.log("Error", err);
+        // console.log('Error', err);
       });
   }
 
   ionViewWillLeave() {
     this.qrScannerSrv.setResult(this.jsonData);
-    
+
     if (this.isScanned && this.from && this.from === 'tabscan') {
       // if scanner trigered from tabscan, after scan redirect to scan page.
       const navigationExtras: NavigationExtras = {
@@ -80,21 +74,21 @@ export class QrScannerComponent implements OnInit {
 
   }
 
-  openScanner(){
+  openScanner() {
     this.from = '';
     this.isScanned = false;
     this.jsonData = '';
 
     this.activeRoute.queryParams.subscribe(params => {
       this.from = JSON.parse(params.from);
-      console.log('== From: ', this.from);
+      // console.log('== From: ', this.from);
     });
 
     this.scanCode();
   }
 
   async ionViewDidEnter() {
-    //this.openScanner();
+    // this.openScanner();
 
     // this.qrScanner.prepare()
     //   .then((status: QRScannerStatus) => {
@@ -120,7 +114,7 @@ export class QrScannerComponent implements OnInit {
     //   .catch((e: any) => {
     //     alert(e);
     //     this.isScanned = false;
-    //     console.log('Error is', e);
+    //     // console.log('Error is', e);
     //   });
 
   }

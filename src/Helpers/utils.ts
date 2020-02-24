@@ -3,7 +3,6 @@ import {
   base64ToByteArray,
   fromBase64Url,
 } from './converters';
-import * as CryptoJS from 'crypto-js';
 
 // getAddressFromPublicKey Get the formatted address from a raw public key
 export function getAddressFromPublicKey(publicKey: Uint8Array): string {
@@ -30,13 +29,6 @@ export function getChecksumByte(bytes): any {
   }
   const res = new Uint8Array([a]);
   return res;
-}
-
-export function generateEncKey(pin: string): string {
-  return CryptoJS.PBKDF2(pin, 'salt', {
-    keySize: 8,
-    iterations: 10000,
-  }).toString();
 }
 
 export function onCopyText(text: string) {

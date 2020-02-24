@@ -41,14 +41,12 @@ const routes: Routes = [
   },
   {
     path: 'feedback',
-    loadChildren: './Pages/feedback/feedback.module#FeedbackPageModule',
-    canActivate: [AuthService]},
+    loadChildren: './Pages/feedback/feedback.module#FeedbackPageModule'},
   { path: 'help', loadChildren: './Pages/help/help.module#HelpPageModule' },
   {
     path: 'notifications',
     loadChildren: './Pages/notifications/notifications.module#NotificationsPageModule'
   },
-  { path: 'chart', loadChildren: './Pages/chart/chart.module#ChartPageModule' },
   {
     path: 'list-account',
     loadChildren: './Pages/list-account/list-account.module#ListAccountModule',

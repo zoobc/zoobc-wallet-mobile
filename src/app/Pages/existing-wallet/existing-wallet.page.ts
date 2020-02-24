@@ -5,9 +5,9 @@ import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/setup-pin/setup-pin.page';
-import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { StoragedevService } from 'src/app/Services/storagedev.service';
 
 @Component({
   selector: 'app-existing-wallet',
@@ -32,7 +32,7 @@ export class ExistingWalletPage implements OnInit {
     private router: Router,
     private location: Location,
     private authSrv: AuthService,
-    private storage: Storage,
+    private strgSrv: StoragedevService,
     private modalController: ModalController,
     private createAccSrv: CreateAccountService
   ) { }
@@ -53,11 +53,11 @@ export class ExistingWalletPage implements OnInit {
   }
 
   comparePassphrase() {
-    console.log(' ==== changed ');
+    // console.log(' ==== changed ');
   }
 
   onPaste(event: ClipboardEvent) {
-    console.log('Oke punya');
+    // console.log('Oke punya');
 
     const clipboardData = event.clipboardData;
     const passphrase = clipboardData.getData('text').toLowerCase();
@@ -75,7 +75,7 @@ export class ExistingWalletPage implements OnInit {
 
   // onChangeMnemonic() {
   //   this.passphrase = this.arrayPhrase.toString();
-  //   console.log('===== this.passphraseField', this.passphrase);
+  //   // console.log('===== this.passphraseField', this.passphrase);
 
   //   if (!this.passphrase) {
   //     this.errorMsg = '';
@@ -83,7 +83,7 @@ export class ExistingWalletPage implements OnInit {
   //   }
 
   //   this.isValidPhrase = this.mnemonicServ.validateMnemonic(this.passphrase);
-  //   console.log('===== this.isValidPhrase', this.isValidPhrase);
+  //   // console.log('===== this.isValidPhrase', this.isValidPhrase);
 
   //   const mnemonicNumLength = this.passphrase.trim().split(' ').length;
   //   this.wordCounter = mnemonicNumLength;
@@ -105,9 +105,7 @@ export class ExistingWalletPage implements OnInit {
 
     this.passphrase = '';
     for (let i = 0; i < this.arrayPhrase.length; i++) {
-      const val2 = this.arrayPhrase[i];
-      let val = val2.replace(/\s\s+/g, '').toLowerCase();
-
+      const val = this.arrayPhrase[i].toLowerCase();
       if (!val) {
         haveEmpty = true;
         break;
@@ -122,7 +120,7 @@ export class ExistingWalletPage implements OnInit {
       this.errorMsg = 'Please fill in all field!';
       return;
     }
-    console.log('===== this.passphrase: ', this.passphrase);
+    // console.log('===== this.passphrase: ', this.passphrase);
 
     this.isValidPhrase = this.mnemonicServ.validateMnemonic(this.passphrase);
     if (!this.isValidPhrase) {
@@ -138,10 +136,10 @@ export class ExistingWalletPage implements OnInit {
 
   async createAccount() {
 
-    // TODO   .get('Your old wallet will be removed from this device')
     await this.createAccSrv.createInitialAccount();
+    // console.log('=== create account existing this.ploian pin: ', this.plainPin);
     const loginStatus = this.authSrv.login(this.plainPin);
-    console.log('==== loginstatus: ', loginStatus);
+    // console.log('==== login status: ', loginStatus);
     if (loginStatus) {
       this.presentLoading();
     }
@@ -165,17 +163,18 @@ export class ExistingWalletPage implements OnInit {
   async showPinDialog() {
     const pinmodal = await this.modalController.create({
       component: SetupPinPage,
-      cssClass: 'modal-ZBC'
+      cssClass: 'modal-zbc'
     });
 
     pinmodal.onDidDismiss().then((returnedData) => {
-      if (returnedData && returnedData.data && returnedData.data.length === 6) {
+      // console.log('===== returnedData: ', returnedData);
+      if (returnedData && returnedData.data !== '-') {
         this.plainPin = returnedData.data;
         // set pin to service
         this.createAccSrv.setPlainPin(this.plainPin);
         this.createAccount();
       } else {
-        console.log('==== PIN canceled ');
+        // console.log('==== PIN canceled ');
       }
     });
     return await pinmodal.present();

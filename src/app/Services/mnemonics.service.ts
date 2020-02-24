@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 
 import { environment } from '../../environments/environment';
 import { hexToByteArray } from '../../Helpers/converters';
+import { CONST_HEX } from 'src/environments/variable.const';
 
 const INVALID_ENTROPY = 'Invalid entropy';
 const INVALID_RNG = 'This browser does not support strong randomness';
@@ -79,7 +80,7 @@ export class MnemonicsService {
 
   toSeed(mnemonic: string, password?: string): Buffer {
     const hexStr = this.mnemonic.toSeed(mnemonic, password);
-    return Buffer.from(hexStr, 'hex');
+    return Buffer.from(hexStr, CONST_HEX);
   }
 
   toMnemonic(

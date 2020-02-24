@@ -11,16 +11,16 @@ export class EnterpinsendPage implements OnInit {
   isLoginValid = true;
 
   constructor(private authService: AuthService, private modalController: ModalController, ) { }
-  
+
   ngOnInit() {
   }
 
 
   async login(e: any) {
     const {pin} = e;
-    console.log('=== Pin: ', pin);
     this.isLoginValid = true;
-    const isUserLoggedIn = await this.authService.login(pin);
+
+    const isUserLoggedIn =  await this.authService.login(pin);
     if (isUserLoggedIn) {
       this.modalController.dismiss(1);
     } else {
@@ -32,7 +32,7 @@ export class EnterpinsendPage implements OnInit {
   }
 
   // async login(e: any) {
-  //   console.log('---', e);
+  //   // console.log('---', e);
   //   const { observer, pin, first } = e;
   //   // set loginFail false && clear error message
   //   if (first === true) {

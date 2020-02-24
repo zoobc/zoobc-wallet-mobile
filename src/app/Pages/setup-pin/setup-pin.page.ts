@@ -24,12 +24,8 @@ export class SetupPinPage implements OnInit {
     this.tempPin = '';
   }
 
-  async cancel() {
-    await this.modalCtrl.dismiss('');
-  }
-
   setupPin(event: any) {
-    console.log('====event:', event);
+    // console.log('====event:', event);
     this.loginFail = false;
     this.tempPin = event.pin;
     this.processing = true;
@@ -40,12 +36,12 @@ export class SetupPinPage implements OnInit {
   }
 
   async confirmPin(event: any) {
-    console.log('====event:', event);
     const { pin } = event;
     this.loginFail = false;
     this.processing = true;
-    // const pin = event.pin;
+    // console.log('====pin:', pin);
     if (this.tempPin === pin) {
+      // console.log('==== key existing: ', pin);
       this.modalCtrl.dismiss(pin);
       setTimeout(() => {
         this.processing = false;
@@ -57,6 +53,10 @@ export class SetupPinPage implements OnInit {
         this.processing = false;
       }, 1500);
     }
+  }
+
+  async cancel() {
+    await this.modalCtrl.dismiss('-');
   }
 
 }

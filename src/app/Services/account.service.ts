@@ -1,28 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import {
   STORAGE_ALL_ACCOUNTS,
   STORAGE_CURRENT_ACCOUNT,
   STORAGE_ENC_MASTER_SEED,
   STORAGE_ENC_PASSPHRASE_SEED
 } from 'src/environments/variable.const';
-import { AccountInf } from './auth-service';
-import * as CryptoJS from 'crypto-js';
+import { Account } from './auth-service';
 import { Subject } from 'rxjs';
+import { doEncrypt } from 'src/Helpers/converters';
+import { StoragedevService } from './storagedev.service';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { ToastController } from '@ionic/angular';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
 
-  account: AccountInf;
+  account: Account;
   private forWhat: string;
-  private recipient: AccountInf;
+  private recipient: Account;
 
-  constructor(private storage: Storage) { }
+  constructor(
+    private strgSrv: StoragedevService,
+    private toastController: ToastController,
+    private clipboard: Clipboard) { }
 
-  public accountSubject: Subject<AccountInf> = new Subject<AccountInf>();
-  public recipientSubject: Subject<AccountInf> = new Subject<AccountInf>();
+  public accountSubject: Subject<Account> = new Subject<Account>();
+  public recipientSubject: Subject<Account> = new Subject<Account>();
 
 
   setForWhat(arg: string) {
@@ -33,8 +39,8 @@ export class AccountService {
     return this.forWhat;
   }
 
-  setRecipient(arg: AccountInf) {
-    console.log('====== set Recipeint:', arg);
+  setRecipient(arg: Account) {
+    // console.log('====== set Recipeint:', arg);
     this.recipient = arg;
     this.recipientSubject.next(this.recipient);
   }
@@ -43,83 +49,145 @@ export class AccountService {
     return this.recipient;
   }
 
-  getAllAccount(): AccountInf[] {
-    return JSON.parse(localStorage.getItem(STORAGE_ALL_ACCOUNTS)) || [];
+  async getAllAccount(): Promise<Account[]> {
+    const allAccount = await this.strgSrv.get(STORAGE_ALL_ACCOUNTS);
+    return allAccount;
   }
 
-  removeAllAccounts() {
-    localStorage.removeItem(STORAGE_CURRENT_ACCOUNT);
-    localStorage.removeItem(STORAGE_ENC_MASTER_SEED);
-    localStorage.removeItem(STORAGE_ENC_PASSPHRASE_SEED);
-    return localStorage.removeItem(STORAGE_ALL_ACCOUNTS);
+  async removeAllAccounts() {
+    await this.strgSrv.remove(STORAGE_CURRENT_ACCOUNT);
+    await this.strgSrv.remove(STORAGE_ENC_MASTER_SEED);
+    await this.strgSrv.remove(STORAGE_ENC_PASSPHRASE_SEED);
+    await this.strgSrv.remove(STORAGE_ALL_ACCOUNTS);
+
+    console.log('== STORAGE_ALL_ACCOUNTS: ', await this.strgSrv.get(STORAGE_ALL_ACCOUNTS));
   }
 
-  generateDerivationPath(): number {
-    const accounts: AccountInf[] =
-      JSON.parse(localStorage.getItem(STORAGE_ALL_ACCOUNTS)) || [];
+  async generateDerivationPath(): Promise<number> {
+    const accounts: Account[] = await this.getAllAccount();
     if (accounts && accounts.length) {
       return accounts.length;
     }
     return 0;
   }
 
-  setActiveAccount(account: AccountInf) {
-    localStorage.setItem(STORAGE_CURRENT_ACCOUNT, JSON.stringify(account));
+  async setActiveAccount(account: Account) {
+    console.log('=== setActiveAccount account:', account);
+    await this.strgSrv.set(STORAGE_CURRENT_ACCOUNT, account);
+    console.log('===== savve storage Account');
     this.broadCastNewAccount(account);
   }
 
-  broadCastNewAccount(account: AccountInf) {
+  broadCastNewAccount(account: Account) {
     this.accountSubject.next(this.account);
   }
 
-  addAccount(account: AccountInf) {
-    const accounts = this.getAllAccount();
-    const { path } = account;
-    const isDuplicate = accounts.find(acc => {
-      if (path && acc.path === path) { return true; }
-      return false;
-    });
+  async addAccount(account: Account) {
+    console.log('====++++ addAccount: ');
+    console.log('==== Account', account);
+    let accounts = await this.getAllAccount();
 
-    if (!isDuplicate) {
-      accounts.push(account);
-      localStorage.setItem(STORAGE_ALL_ACCOUNTS, JSON.stringify(accounts));
-      this.setActiveAccount(account);
+    if (accounts === null) {
+      console.log('===  accunts is null ===');
+      accounts = [];
     }
-  }
 
-  saveMasterSeed(seedBase58: string, key: string) {
-    const encSeed = CryptoJS.AES.encrypt(seedBase58, key).toString();
-    localStorage.setItem(STORAGE_ENC_MASTER_SEED, encSeed);
-  }
+    console.log('====== accounts 2 : ', accounts);
 
-  savePassphraseSeed(passphrase: string, key: string) {
-    const encPassphraseSeed = CryptoJS.AES.encrypt(passphrase, key).toString();
-    localStorage.setItem(STORAGE_ENC_PASSPHRASE_SEED, encPassphraseSeed);
-  }
-
-  getCurrAccount(): AccountInf {
-    return JSON.parse(localStorage.getItem(STORAGE_CURRENT_ACCOUNT));
-  }
-
-  updateNameByAddress(arg: string, account: AccountInf) {
-    const accounts = this.getAllAccount();
-    let acc2 = null;
-    const isExists = accounts.find(acc => {
-      if (acc.address === account.address) { 
-        acc2 = acc;
-        acc.name = arg;
-        account.name = arg;
-        return true; 
+    const isDuplicate =  accounts.find(acc => {
+      if (path && acc.path === path) {
+        return true;
       }
       return false;
     });
 
-    if (isExists){
-      localStorage.setItem(STORAGE_ALL_ACCOUNTS, JSON.stringify(accounts));
-      this.broadCastNewAccount(account);
-    }
+    console.log('====== isDuplicate: ', isDuplicate);
 
+    console.log('====== accounts 3: ', accounts);
+    const { path } = account;
+    console.log('====== Path: ', path);
+
+    if (!isDuplicate) {
+      accounts.push(account);
+      console.log('==== add all Accounts 4: ', accounts);
+      console.log('===== savve storage all accounts');
+      await this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
+      await this.setActiveAccount(account);
+    }
+  }
+
+  saveMasterSeed(seedBase58: string, pin: string) {
+    const encSeed = doEncrypt(seedBase58, pin);
+    this.strgSrv.set(STORAGE_ENC_MASTER_SEED, encSeed);
+  }
+
+  savePassphraseSeed(passphrase: string, pin: string) {
+    // console.log('===savePassphraseSeed: key', pin);
+    // console.log('===savePassphraseSeed: passphrase', passphrase);
+    const encPassphraseSeed = doEncrypt(passphrase, pin);
+    // console.log('===savePassphraseSeed: encPassphraseSeed', encPassphraseSeed);
+    this.strgSrv.set(STORAGE_ENC_PASSPHRASE_SEED, encPassphraseSeed);
+  }
+
+  getCurrAccount(): Promise<Account> {
+    return this.strgSrv.get(STORAGE_CURRENT_ACCOUNT);
   }
 
 
+  copyToClipboard(arg: any) {
+    this.clipboard.copy(arg);
+    this.clipboard.paste().then(
+      (resolve: string) => {
+        this.copySuccess();
+       },
+       (reject: string) => {
+        this.copyInBrowser(arg);
+        // alert('Error: ' + reject);
+       }
+     );
+  }
+
+  copyInBrowser(arg: any) {
+    const val = arg;
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.copySuccess();
+  }
+
+  async copySuccess() {
+    const toast = await this.toastController.create({
+      message: 'Copied to clipboard.',
+      duration: 2000
+    });
+
+    toast.present();
+  }
+
+  async updateNameByAddress(arg: string, account: Account) {
+    const accounts = this.getAllAccount();
+    let acc2 = null;
+    const isExists = (await accounts).find(acc => {
+      if (acc.address === account.address) {
+        acc2 = acc;
+        acc.name = arg;
+        account.name = arg;
+        return true;
+      }
+      return false;
+    });
+
+    if (isExists) {
+      this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
+      this.broadCastNewAccount(account);
+    }
+  }
 }

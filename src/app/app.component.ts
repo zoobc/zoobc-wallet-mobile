@@ -7,14 +7,17 @@ import { LanguageService } from 'src/app/Services/language.service';
 import { AboutPage } from './Pages/about/about.page';
 import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Storage } from '@ionic/storage';
-import { CurrencyService, Currency } from 'src/app/Services/currency.service';
-import { OPENEXCHANGE_RATES_STORAGE,
-  TRX_FEES_STORAGE, SELECTED_NODE, ACTIVE_CURRENCY, NETWORK_LIST } from 'src/environments/variable.const';
+import { CurrencyService } from 'src/app/Services/currency.service';
+import {
+  STORAGE_OPENEXCHANGE_RATES,
+  STORAGE_TRX_FEES, STORAGE_ACTIVE_CURRENCY, NETWORK_LIST,
+  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY
+} from 'src/environments/variable.const';
 import { TransactionFeesService } from './Services/transaction-fees.service';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { listChanges } from '@angular/fire/database';
 import { NetworkService } from './Services/network.service';
+import { TransactionService } from './Services/transaction.service';
+import { StoragedevService } from './Services/storagedev.service';
 
 @Component({
   selector: 'app-root',
@@ -34,8 +37,9 @@ export class AppComponent implements OnInit {
     private toastController: ToastController,
     private network: Network,
     private firestore: AngularFirestore,
-    private storage: Storage,
+    private strgSrv: StoragedevService,
     private trxFeeService: TransactionFeesService,
+    private transactionService: TransactionService,
     private translateService: TranslateService,
     private currencyService: CurrencyService
   ) {
@@ -57,12 +61,11 @@ export class AppComponent implements OnInit {
   }
 
   async setDefaultCurrency() {
-    const curr = await this.storage.get(ACTIVE_CURRENCY);
-    console.log('=== Active Currency: ', curr);
-    if (curr) {
-      return;
+    const curr = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
+    if (curr === null) {
+      await this.strgSrv.set(STORAGE_ACTIVE_CURRENCY, CONST_DEFAULT_CURRENCY);
     }
-    await this.storage.set(ACTIVE_CURRENCY, 'USD');
+    console.log('=== Active Currency: ', curr);
   }
 
   createTransactionFees() {
@@ -76,16 +79,17 @@ export class AppComponent implements OnInit {
       });
 
       if (allFees) {
-        await this.storage.set(TRX_FEES_STORAGE, allFees);
+        await this.strgSrv.set(STORAGE_TRX_FEES, allFees);
       }
     });
 
   }
 
   async setNodes() {
-    const node = await this.storage.get(SELECTED_NODE);
+    const node = await this.strgSrv.get(STORAGE_SELECTED_NODE);
     if (!node) {
-      await this.storage.set(SELECTED_NODE, NETWORK_LIST[0].domain);
+      await this.strgSrv.set(STORAGE_SELECTED_NODE, NETWORK_LIST[0].domain);
+      this.transactionService.loadRpcUrl();
     }
   }
 
@@ -100,13 +104,13 @@ export class AppComponent implements OnInit {
   //     });
   //     this.currencyService.setCurrencyRateList(rates);
   //   }).catch(error => {
-  //     console.log(' Error on app components: ', error);
+  //     // console.log(' Error on app components: ', error);
   //   });
   // }
 
   // getCurrencyRateList() {
   //   this.currencyService.getCurrencyRateFromThirdParty().subscribe(async (res: any) => {
-  //     console.log('==xxxx  currencyRate timestamp 2: ', res.timestamp);
+  //     // console.log('==xxxx  currencyRate timestamp 2: ', res.timestamp);
   //     if (res) {
   //       this.currencyService.setCurrencyRateList(res);
   //       await this.storage.set(OPENEXCHANGE_RATES_STORAGE, res);
@@ -125,18 +129,22 @@ export class AppComponent implements OnInit {
   }
 
 
-  getExchangeRateList() {
-   this.readExchangeRates().subscribe( async data => {
-      data.map(async e => {
-          const res = JSON.parse(e.payload.doc.data()['rate0']);
-          if (res && res.rates) {
-            this.currencyService.setCurrencyRateList(res);
-            await this.storage.set(OPENEXCHANGE_RATES_STORAGE, res);
-          } else {
-            this.currencyService.setCurrencyRateList(await this.storage.get(OPENEXCHANGE_RATES_STORAGE));
-          }
+  async getExchangeRateList() {
+    const rates = await this.strgSrv.get(STORAGE_OPENEXCHANGE_RATES);
+    if (rates !== null) {
+      this.currencyService.setCurrencyRateList(rates);
+    } else {
+      const rtFromGoogle = this.readExchangeRates().subscribe(async data => {
+        data.map(async e => {
+          // tslint:disable-next-line:no-string-literal
+          const res = await JSON.parse(e.payload.doc.data()['rate0']);
+          return res;
+        });
       });
-    });
+
+      this.currencyService.setCurrencyRateList(rtFromGoogle);
+      await this.strgSrv.set(STORAGE_OPENEXCHANGE_RATES, rtFromGoogle);
+    }
   }
 
   readExchangeRates() {

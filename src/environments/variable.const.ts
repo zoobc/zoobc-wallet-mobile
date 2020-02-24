@@ -1,15 +1,19 @@
-export const ACTIVE_CURRENCY = 'active_currency';
-export const ACTIVE_NETWORK = 'active_network';
-export const CURRENCY_RATE_STORAGE = 'rate';
-export const OPENEXCHANGE_RATES_STORAGE = 'openexchange_rates';
-export const TRX_FEES_STORAGE = 'transaction_fees_in_firebase';
-export const RATES = 'rates';
+import { Currency } from 'src/app/Services/currency.service';
+
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = 'p4ssphr4se';
+export const STORAGE_ACTIVE_CURRENCY = 'active_currency';
+export const STORAGE_ACTIVE_NETWORK = 'active_network';
+export const STORAGE_CURRENCY_RATES = 'currency_rates';
+export const STORAGE_CURRENCY_RATE = 'rate';
+export const STORAGE_OPENEXCHANGE_RATES = 'openexchange_rates';
+export const STORAGE_ADDRESS_BOOK = 'address_book';
+export const STORAGE_TRX_FEES = 'transaction_fees_in_firebase';
 export const STORAGE_ALL_ACCOUNTS = 'all_accounts';
 export const STORAGE_CURRENT_ACCOUNT = 'curr_account';
 export const STORAGE_ENC_MASTER_SEED = 'enc_master_seed';
-export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_master_seed';
+export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_passphrase_seed';
+export const STORAGE_SELECTED_NODE = 'net_selected_node';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = new Buffer([1, 0, 0, 0]);
 export const TRANSACTION_VERSION = new Buffer([1]);
@@ -19,10 +23,17 @@ export const FOR_ACCOUNT = 'account';
 export const EDIT_MODE = 'edit';
 export const NEW_MODE = 'new';
 export const EMPTY_STRING = '';
+export const CONST_DEFAULT_CURRENCY = 'USD';
+
+export const CONST_DEFAULT_RATE: Currency = {
+  name: CONST_DEFAULT_CURRENCY,
+  value: 1,
+};
+export const NUMBER_OF_RECORD_IN_TRANSACTIONS = 15;
+export const CONST_HEX = 'hex';
 
 // Language
 export const SELECTED_LANGUAGE = 'selected_language';
-export const SELECTED_NODE = 'net_selected_node';
 export const LANGUAGES = [
   {
     country: 'العربية',
@@ -172,15 +183,13 @@ export const LANGUAGES = [
   }
 ];
 
-// http://172.104.47.168:8001
-
 export const NETWORK_LIST = [{
-    name: 'Demo',
-    domain: 'https://n0.demo.proofofparticipation.network'
-  },
-  {
     name: 'Alpha Testnet',
     domain: 'https://n0.alpha.proofofparticipation.network:8443'
+  },
+  {
+    name: 'Demo',
+    domain: 'https://n0.demo.proofofparticipation.network'
   },
   {
     name: 'Local Testnet',
@@ -268,7 +277,7 @@ export const CURRENCY_RATE_LIST = {
   disclaimer: 'Usage subject to terms: https://openexchangerates.org/terms',
   license: 'https://openexchangerates.org/license',
   timestamp: 1575255600,
-  base: 'USD',
+  base: CONST_DEFAULT_CURRENCY,
   rates: {
     AED: 3.673,
     AFN: 78.38653,

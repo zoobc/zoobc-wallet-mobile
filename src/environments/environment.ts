@@ -4,9 +4,6 @@
 
 export const environment = {
   production: false,
-  defaultCurrency: 'USD',
-  // grpcUrl: 'http://18.139.3.139:5001',
-  grpcUrl: '//172.104.47.168:8001',
   feedbackUrl: 'https://doorbell.io/api',
   currencyRateUrl: 'https://api.exchangeratesapi.io/latest?base=USD',
   openExchangeUrl: 'https://openexchangerates.org/api',

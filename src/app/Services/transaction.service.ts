@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { grpc } from '@improbable-eng/grpc-web';
-import { Storage } from '@ionic/storage';
-
 import {
   GetTransactionsRequest,
   GetTransactionsResponse,
@@ -16,16 +14,14 @@ import {
 } from '../Grpc/model/mempool_pb';
 import { TransactionService as TransactionServ } from '../Grpc/service/transaction_pb_service';
 import { MempoolService } from '../Grpc/service/mempool_pb_service';
-
-import { environment } from '../../environments/environment';
 import { Pagination, OrderBy } from '../Grpc/model/pagination_pb';
 import { readInt64, makeShortAddress } from 'src/Helpers/converters';
 import { GetAccountBalanceRequest, GetAccountBalanceResponse } from '../Grpc/model/accountBalance_pb';
 import { AccountBalanceService } from '../Grpc/service/accountBalance_pb_service';
 import { AddressBookService } from './address-book.service';
 import { Subject } from 'rxjs';
-import { SELECTED_LANGUAGE, SELECTED_NODE } from 'src/environments/variable.const';
-
+import { STORAGE_SELECTED_NODE } from 'src/environments/variable.const';
+import { StoragedevService } from './storagedev.service';
 
 export interface Transaction {
   id: string;
@@ -39,6 +35,8 @@ export interface Transaction {
   amount: number;
   blockId: string;
   height: number;
+  shortaddress: string;
+  name: string;
   transactionIndex: number;
 }
 
@@ -55,24 +53,23 @@ export class TransactionService {
   srvClient: TransactionService;
   mempoolClient: MempoolService;
   alladdress: any;
-  private rpcUrl = environment.grpcUrl;
+  private rpcUrl: string;
 
   public sendMoneySubject: Subject<any> = new Subject<any>();
   public changeNodeSubject: Subject<any> = new Subject<any>();
 
-  constructor(private addressBookSrv: AddressBookService, private storage: Storage) {
+  constructor(private addressBookSrv: AddressBookService, private strgSrv: StoragedevService) {
     this.loadRpcUrl();
   }
 
   async setRpcUrl(arg: string) {
     this.rpcUrl = arg;
-    await this.storage.set(SELECTED_NODE, arg);
-    console.log('======RpcUrl: ', this.rpcUrl);
+    await this.strgSrv.set(STORAGE_SELECTED_NODE, arg);
     this.changeNodeSubject.next();
   }
 
   async loadRpcUrl() {
-    const node = await this.storage.get(SELECTED_NODE);
+    const node = await this.strgSrv.get(STORAGE_SELECTED_NODE);
     this.rpcUrl =  node;
   }
 
@@ -83,8 +80,8 @@ export class TransactionService {
   getUnconfirmTransaction(address: string) {
 
     const addresses = this.addressBookSrv.getAll();
-    console.log(' ===== grpcUrl: ', this.rpcUrl);
-    console.log(' ===== addresses: ', addresses);
+    // console.log(' ===== grpcUrl: ', this.rpcUrl);
+    // console.log(' ===== addresses: ', addresses);
 
     return new Promise((resolve, reject) => {
       const request = new GetMempoolTransactionsRequest();
@@ -151,8 +148,8 @@ export class TransactionService {
   ) {
 
     const addresses = this.addressBookSrv.getAll();
-    console.log(' ===== grpcUrl: ', this.rpcUrl);
-    console.log(' ===== addresses: ', addresses);
+    // console.log(' ===== grpcUrl: ', this.rpcUrl);
+    // console.log(' ===== addresses: ', addresses);
 
     // const address = this.authServ.currAddress;
     return new Promise((resolve, reject) => {
@@ -224,7 +221,7 @@ export class TransactionService {
   getNameByAddress(address: string, alldress: any) {
     let name = '';
     if (alldress && alldress.__zone_symbol__value) {
-      console.log('=== Name: ', alldress.__zone_symbol__value);
+      // console.log('=== Name: ', alldress.__zone_symbol__value);
 
       alldress.__zone_symbol__value.forEach((obj: { name: any; address: string; }) => {
         if (String(address).valueOf() === String(obj.address).valueOf()) {
@@ -236,7 +233,7 @@ export class TransactionService {
   }
 
   getTransaction(id) {
-    console.log(' ===== grpcUrl: ', this.rpcUrl);
+    // console.log(' ===== grpcUrl: ', this.rpcUrl);
     const addresses = this.addressBookSrv.getAll();
 
     return new Promise((resolve, reject) => {
@@ -283,7 +280,7 @@ export class TransactionService {
 
   postTransaction(txBytes: any ) {
 
-    console.log('============ postTransaction rpcURL:', this.rpcUrl);
+    // console.log('============ postTransaction rpcURL:', this.rpcUrl);
 
     return new Promise((resolve, reject) => {
       const request = new PostTransactionRequest();
@@ -305,17 +302,17 @@ export class TransactionService {
         },
       });
     }).finally( () => {
-        console.log('=========== finally on post Transaction');
+        // console.log('=========== finally on post Transaction');
         this.sendMoneySubject.next();
       }
     );
     // .catch((error) => {
-    //     console.log('===== eroor:', error);
+    //     // console.log('===== eroor:', error);
     // });
   }
 
   getAccountBalance(address: string) {
-    console.log(' ===== grpcUrl: ', this.rpcUrl);
+    // console.log(' ===== grpcUrl: ', this.rpcUrl);
     // const address = this.authServ.currAddress;
     return new Promise((resolve, reject) => {
       const request = new GetAccountBalanceRequest();

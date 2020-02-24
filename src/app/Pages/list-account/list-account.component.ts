@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { Location } from '@angular/common';
-import { AccountInf } from 'src/app/Services/auth-service';
+import { Account } from 'src/app/Services/auth-service';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, NEW_MODE, EDIT_MODE } from 'src/environments/variable.const';
 
 @Component({
@@ -14,17 +13,18 @@ import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, NEW_MODE, EDIT_MODE } from 'src
 export class ListAccountComponent implements OnInit {
 
   private forWhat: string;
-  accounts: AccountInf[];
+  accounts: Account[];
 
   constructor(
-    private location: Location,
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AccountService,
     private toastController: ToastController
   ) {
     this.accountService.accountSubject.subscribe(() => {
-      this.loadData();
+      setTimeout(() => {
+        this.loadData();
+      }, 500);
     });
   }
 
@@ -37,11 +37,11 @@ export class ListAccountComponent implements OnInit {
     this.loadData();
   }
 
-  loadData() {
-    this.accounts = this.accountService.getAllAccount();
+  async loadData() {
+    this.accounts =  await this.accountService.getAllAccount();
   }
 
-  accountClicked(account: AccountInf) {
+  accountClicked(account: Account) {
     this.accountService.setForWhat(this.forWhat);
     if (this.forWhat === FOR_ACCOUNT) {
       this.accountService.setActiveAccount(account);
@@ -56,7 +56,7 @@ export class ListAccountComponent implements OnInit {
       this.goToSendMoney();
     }
   }
-  
+
   goToDashboard() {
     this.router.navigateByUrl('/tabs/dashboard');
   }
@@ -65,43 +65,21 @@ export class ListAccountComponent implements OnInit {
     this.router.navigateByUrl('/sendcoin');
   }
 
-  copyAddress(account: AccountInf) {
-
+  copyAddress(account: Account) {
     const val = account.address;
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-
-    this.copySuccess();
-  }
-
-  async copySuccess() {
-    const toast = await this.toastController.create({
-      message: 'Copied to clipboard.',
-      duration: 2000
-    });
-
-    toast.present();
+    this.accountService.copyToClipboard(val);
   }
 
   createNewAccount() {
     this.openAddAccount(null, NEW_MODE);
   }
 
-  editName(account: AccountInf) {
+  editName(account: Account) {
     this.openAddAccount(account, EDIT_MODE);
   }
 
-  async openAddAccount(arg: AccountInf, trxMode: string) {
-    console.log('====== Accoint will edited', arg);
+  async openAddAccount(arg: Account, trxMode: string) {
+    // console.log('====== Accoint will edited', arg);
     const navigationExtras: NavigationExtras = {
       queryParams: {
         account: JSON.stringify(arg),
