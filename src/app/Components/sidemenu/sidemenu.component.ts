@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/Services/auth-service';
 
 @Component({
   selector: 'app-sidemenu',
@@ -11,6 +12,7 @@ export class SidemenuComponent implements OnInit {
 
   constructor(
     private menuController: MenuController,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -77,6 +79,7 @@ export class SidemenuComponent implements OnInit {
   }
 
   logout() {
+    this.authService.logout();
     this.router.navigateByUrl('/login');
     this.menuController.close('mainMenu');
   }

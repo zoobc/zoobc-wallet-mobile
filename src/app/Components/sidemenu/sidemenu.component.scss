@@ -1,12 +1,18 @@
-ion-content{
-    --ion-background-color:var(--side-menu-background-color);
+leftmenutop{
+    height: 50px;
+    --background-color: blue;
+    padding: 20px;
 }
 
 ion-icon{
-    margin-right: 15px;
+    margin-right: 20px;
     color: var(--side-menu-text-color);   
 }
 
-.item.sc-ion-label-md-h, .item .sc-ion-label-md-h{
-    color: var(--side-menu-text-color);
+.logo{
+    margin-bottom:40px;
+    margin-top:60px;
+    width: 60px;
+    height: 60px;
 }
+
