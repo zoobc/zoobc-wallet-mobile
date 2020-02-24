@@ -1,5 +1,7 @@
 ![](/src/assets/images/ZooBC-wallet-mobile.png)
 
+This branch For test flight
+
 # Requirement
   nodejs v10.16.2
   npm 6.9.2
@@ -310,6 +312,23 @@ I had to remove inside ..\plugins\phonegap-plugin-barcodescanner\plugin.xml the
 then removed and added again android platform.
 Worked very fine for me.
 
-For test flight
+Note:
+
+Add submodule:
+git submodule add -f --name  bip32 https://github.com/BlockchainZoo/bip32 externals/bip32
+git submodule add -f --name  bip39 https://github.com/iancoleman/bip39 externals/bip39
+
+Remove submodule:
+# Remove the submodule entry from .git/config
+git submodule deinit -f externals/bip39
+
+# Remove the submodule directory from the superproject's .git/modules directory
+rm -rf .git/modules/bip39
+
+# Remove the entry in .gitmodules and remove the submodule directory located at path/to/submodule
+git rm -f externals/bip39
+
+
+This branch For test flight
 
 
