@@ -24,22 +24,21 @@ export class CreateWalletPage implements OnInit {
   ngOnInit() {
     this.arrayPhrase = this.createAccSrv.getArrayPassphrase().slice();
     this.arrayPhraseOri = this.createAccSrv.getArrayPassphrase().slice();
-    console.log('===== Array phrase: ', this.arrayPhrase);
+    // console.log('===== Array phrase: ', this.arrayPhrase);
     this.generateRandomBlanks();
   }
 
   comparePassphrase() {
+    this.errorMsg = '';
     if (this.arrayPhrase.toString() === this.arrayPhraseOri.toString()) {
-      this.errorMsg = '';
       this.isPinSetup = true;
     } else {
-      this.errorMsg = 'Passphrase is not same yet!';
       this.isPinSetup = false;
     }
   }
 
   isReadonly(arg: number) {
-    console.log('number of box: ', arg);
+    // console.log('number of box: ', arg);
     if (this.disabledBox[arg] === '') {
       return true;
     } else {
@@ -47,7 +46,12 @@ export class CreateWalletPage implements OnInit {
     }
   }
 
-  setupPin(){
+  setupPin() {
+    this.comparePassphrase();
+    if (!this.isPinSetup) {
+      this.errorMsg = 'Passphrase is not same!';
+      return;
+    }
     this.router.navigateByUrl('/setup-pin-gp');
   }
 

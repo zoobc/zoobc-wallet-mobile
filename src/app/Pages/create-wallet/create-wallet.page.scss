@@ -2,15 +2,19 @@
 .ion-input-readonly{
     font-size: 0.8em;
     border: 1px solid #838383; 
-    --background: #eeeeee;
+    --background: #E2DCDE;
 }
 
 .ion-input-normal{
     font-size: 0.8em;
     border: 1px solid #838383; 
-    --background: #c4dcee;
+    --background: #ffffff;
 }
 
+ion-grid {
+    margin-left: 10px;
+    margin-right: 10px;
+}
 
 ion-col{
     text-align: center;
