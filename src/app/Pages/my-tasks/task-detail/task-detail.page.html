@@ -1,9 +1,81 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>task-detail</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Task Detail</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
+<ion-content class="ion-padding">
+  <div style="text-align: center;">
+    <h5> (Coming Soon) </h5>
+  </div>
+  <ion-list>
+    <ion-item>
+      <ion-label>
+        <h5>{{ "ID" | translate }}</h5>
+        <p>
+          1335562333909324037
+        </p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h5>{{ "Sender" | translate }}</h5>
+        <p>
+          YuKTkCCWOPeGBknQSTGsNuyREB-iGhIz6ur4suM4FXMb
+        </p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h5>{{ "Recipient" | translate }}</h5>
+        <p>
+          B9C35tu6hJCE7IrwqL5uxnh6OW77Pw99JIdrSpHMg2Ki
+        </p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h5>{{ "Amount" | translate }}</h5>
+        <p>
+          1,000 ZBC
+        </p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h5>{{ "Commission Fee" | translate }}</h5>
+        <p>
+          10 ZBC
+        </p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h5>{{ "Instruction" | translate }}</h5>
+        <p>
+          Please check sender balance if already get 5 zoobc before confirm
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="primary">Confirm</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="primary" fill="outline">Reject</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

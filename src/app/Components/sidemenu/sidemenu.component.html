@@ -1,56 +1,29 @@
 <ion-menu type="overlay" menuId="mainMenu">
-  <ion-header>
-    <ion-toolbar color="primary">
-      <ion-title>{{ "Others" | translate }}</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content class="ion-padding">
+  <ion-content>
+    <ion-grid style="background-color: #0B3D65;">
+      <ion-row>
+        <ion-col class="ion-text-center">
+            <img src="assets/images/logo-white.png" class="logo"/>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    
     <ion-list>
 
-      <ion-item lines="none" (click)="openAddresBook()" button>
+      <!-- <ion-item lines="none" (click)="openAddresBook()" button>
         <ion-icon name="book"></ion-icon>
         <ion-label>
           {{ "Address Book" | translate }}
         </ion-label>
-      </ion-item>
-      
+      </ion-item> -->
+
       <ion-item lines="none" (click)="openSettings()" button>
-        <ion-icon name="book"></ion-icon>
+        <ion-icon name="cog"></ion-icon>
         <ion-label>
           {{ "Settings" | translate }}
         </ion-label>
       </ion-item>
 
-      
-<!-- 
-      <ion-item lines="none">
-        <ion-icon name="globe"></ion-icon>
-        <ion-label>{{ "Language" | translate }}</ion-label>
-        <ion-select lines="none" interface="popover" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
-          <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
-            {{ language.country }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <ion-item lines="none">
-        <ion-icon name="logo-usd"></ion-icon>
-        <ion-label>{{ "Currency" | translate }}</ion-label>
-        <ion-select
-          interface="popover"
-          [(ngModel)]="activeCurrency"
-          (ionChange)="changeRate()"
-        >
-          <ion-select-option
-            *ngFor="let rate of currencyRates; let idx = index"
-            value="{{ rate.name }}"
-          >
-          {{ rate.name }} - {{ rate.value }}</ion-select-option
-          >
-        </ion-select>
-      </ion-item> -->
-
- 
       <ion-item lines="none" (click)="revealPassphrase()">
         <ion-icon name="key"></ion-icon>
         <ion-label>
@@ -58,46 +31,50 @@
         </ion-label>
       </ion-item>
 
-      <ion-item lines="none" (click)="myTasks()">
-          <ion-icon name="checkbox-outline"></ion-icon>
-          <ion-label>
-            {{ "My Tasks" | translate }}
-          </ion-label>
+      <ion-item lines="none" (click)="goBackupRestore()">
+        <ion-icon name="arrow-round-down"></ion-icon>
+        <ion-label>
+          Backup / Restore Address
+        </ion-label>
       </ion-item>
-  
-      <ion-item lines="none" (click)="openAppsList()">
+
+      <!-- <ion-item lines="none" (click)="myTasks()">
         <ion-icon name="checkbox-outline"></ion-icon>
+        <ion-label>
+          {{ "My Tasks" | translate }}
+        </ion-label>
+      </ion-item>
+
+      <ion-item lines="none" (click)="openAppsList()">
+        <ion-icon name="flask"></ion-icon>
         <ion-label>
           {{ "Apps" | translate }}
         </ion-label>
-      </ion-item>
-
-      <ion-item lines="none" (click)="openSendFeedbak()">
-        <ion-icon name="log-in"></ion-icon>
-        <ion-label>
-          {{ "Feedback" | translate }}
-        </ion-label>
-      </ion-item>
+      </ion-item> -->
 
       <ion-item lines="none">
         <ion-icon name="help-circle-outline"></ion-icon>
-        <ion-label  class="text" (click)="openHelpSupport()">
+        <ion-label class="text" (click)="openHelpSupport()">
           {{ "Help & Support" | translate }}
         </ion-label>
       </ion-item>
-      
+
       <ion-item lines="none">
         <ion-icon name="information-circle-outline"></ion-icon>
         <ion-label (click)="openAboutView()">
           {{ "About this wallet" | translate }}
         </ion-label>
-      </ion-item>  
+      </ion-item>
     </ion-list>
-
-    <ion-button expand="block" style="margin-top:40px;" (click)="logout()" color="medium">
-        <b>{{ "Log out" | translate }}</b>
-    </ion-button>    
+    <ion-grid>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <ion-button strong style="margin-top:40px;" (click)="logout()" color="secondary" expand="block">
+            {{ "Log out" | translate }} &nbsp;&nbsp;<ion-icon name="log-out"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-content>
- </ion-menu>
-
+</ion-menu>
 <ion-router-outlet main></ion-router-outlet>

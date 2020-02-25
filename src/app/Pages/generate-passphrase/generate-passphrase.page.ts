@@ -1,11 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { KeyringService } from 'src/app/Services/keyring.service';
-import { ToastController, NavController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { Component, OnInit } from '@angular/core';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
-import { AuthService } from 'src/app/Services/auth-service';
-import { doEncrypt, doDecrypt } from '../../Helpers/converters';
 import * as bip39 from 'bip39';
+import { Router } from '@angular/router';
+import { KeyringService } from 'src/app/Services/keyring.service';
+import { AccountService } from 'src/app/Services/account.service';
 
 
 @Component({
@@ -16,59 +14,20 @@ import * as bip39 from 'bip39';
 export class GeneratePassphrasePage implements OnInit {
   writtenDown = false;
   terms = false;
-  passphrase: string;
-
-  languages = [
-    {
-      key: "english",
-      name: "English"
-    },
-    {
-      key: "italian",
-      name: "Italian"
-    },
-    {
-      key: "french",
-      name: "French"
-    },
-    {
-      key: "spanish",
-      name: "Spanish"
-    },
-    {
-      key: "japanese",
-      name: "Japan"
-    },
-    {
-      key: "chinese_simplified",
-      name: "Chinese Simplified"
-    },
-    {
-      key: "chinese_traditional",
-      name: "Chinese Traditional"
-    },
-    {
-      key: "korean",
-      name: "Korean"
-    }
-  ];
-
+  plainPassphrase: string;
+  arrayPhrase = [];
   isPinSetup = false;
-  private account;
   pagePosition = 1;
   pageStep = 1;
   tempPin = '';
   public loginFail = false;
 
   constructor(
+    private router: Router,
+    private accountService: AccountService,
     private keyringService: KeyringService,
-    private toastController: ToastController,
-    private createAccSrv: CreateAccountService,
-    private navCtrl: NavController,
-    private authSrv: AuthService,
-    private storage: Storage,
-    @Inject('nacl.sign') private sign: any
-  ) {}
+    private createAccSrv: CreateAccountService
+  ) { }
 
   ngOnInit() {
     // this.checkSetupPin();
@@ -81,92 +40,53 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   setupPin(event: any) {
-    console.log('====event:', event);
+    // console.log('====event:', event);
     this.loginFail = false;
     const { first } = event;
     // set loginFail false && clear error message
     if (first === true) {
-       return;
+      return;
     }
     this.tempPin = event.pin;
     this.pagePosition++;
     this.pageStep++;
   }
 
-  async savePassphrase(PIN: any, passphrase: any) {
-
-    // console.log('=== PIN', PIN);
-    // console.log('==== passphrase:', passphrase);
-    const encrypted = doEncrypt(passphrase, PIN);
-    // console.log('===== encrypted: ', encrypted);
-    await this.storage.set('PASS_STORAGE', encrypted);
-
-    // const decrypted =  doDecrypt(encrypted, PIN);
-    // console.log('===== decrypted: ', decrypted.toString(CryptoJS.enc.Utf8));
-
-  }
-
-  async confirmPin(event: any) {
-    console.log('====event:', event);
-    const { observer, pin, first } = event;
-    this.loginFail = false;
-    // set loginFail false && clear error message
-    if (first === true) {
-       return;
-    }
-    // const pin = event.pin;
-    if (this.tempPin === pin) {
-      this.createAccSrv.setPassphrase(this.passphrase);
-      this.createAccSrv.setPin(pin);
-      this.savePassphrase(pin, this.passphrase);
-      await this.createAccSrv.createAccount();
-      const loginStatus = await this.authSrv.login(pin);
-      if (loginStatus) {
-        this.navCtrl.navigateForward('/');
-      }
-    } else {
-      this.loginFail = true;
-      // this.presentToast('Your Pin is not same');
-      setTimeout(() => {
-        observer.next(true);
-       }, 1000);
-    }
-  }
-
-  setPagePosition(value) {
-    this.pagePosition = value;
+  passphraseConfirmation() {
+    this.createAccSrv.setPlainPassphrase(this.plainPassphrase.slice());
+    this.router.navigateByUrl('/create-wallet');
   }
 
   async generatePassphrase() {
     const passphrase = this.keyringService.generateRandomPhrase().phrase;
-    this.passphrase = passphrase;
+    this.plainPassphrase = passphrase;
+    this.createAccSrv.setPlainPassphrase(this.plainPassphrase.slice());
+    this.arrayPhrase = this.plainPassphrase.slice().split(' ');
+    this.createAccSrv.setArrayPassphrase(this.arrayPhrase);
+    // console.log('Array phrase: ', this.arrayPhrase);
   }
 
   copyToClipboard() {
-    const val = this.passphrase;
+    const val = this.plainPassphrase.slice();
+    const arrayPass = val.split(' ');
+    let strCopy = 'This is your ZooBC passphrase:\n\n With order number\n-------------------------\n';
+    for (let i = 0; i < arrayPass.length; i++) {
+      strCopy += (i + 1) + '.' + arrayPass[i];
+      if (i < 23) {
+        strCopy += ',   ';
+      }
+      if ((i + 1) % 3 === 0) {
+        strCopy += '\n';
+      }
+    }
+    strCopy += '\n\nWithout order number\n-------------------------\n' + val;
+    strCopy += '\n\n----------- End ----------\n\n';
 
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
+    this.accountService.copyToClipboard(strCopy);
 
-    this.presentToast('Passphrase copied to clipboard');
   }
 
-  async presentToast(msg: string) {
-    const toast = await this.toastController.create({
-      message: msg,
-      duration: 2000
-    });
-    toast.present();
-  }
+
 
   ionViewDidLeave(): void {
     // Called once, before the instance is destroyed.

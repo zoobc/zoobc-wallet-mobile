@@ -6,20 +6,17 @@ import {
   LoadingController,
   ModalController
 } from '@ionic/angular';
-import { AuthService } from 'src/app/Services/auth-service';
+import { AuthService, Account } from 'src/app/Services/auth-service';
 import { Router, NavigationExtras } from '@angular/router';
-import { AccountService } from 'src/app/Services/account.service';
-import { Storage } from '@ionic/storage';
-import { TransactionService, Transactions, Transaction } from 'src/app/Services/transaction.service';
+import { TransactionService, Transaction } from 'src/app/Services/transaction.service';
 import {
   GetAccountBalanceResponse,
   AccountBalance as AB,
 } from 'src/app/Grpc/model/accountBalance_pb';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { makeShortAddress } from 'src/app/Helpers/converters';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
-import { environment } from 'src/environments/environment';
+import { AccountService } from 'src/app/Services/account.service';
+import { CONST_DEFAULT_CURRENCY, CONST_DEFAULT_RATE } from 'src/environments/variable.const';
 
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
@@ -29,61 +26,53 @@ type AccountBalanceList = GetAccountBalanceResponse.AsObject;
   styleUrls: ['tab-dashboard.page.scss']
 })
 export class TabDashboardPage implements OnInit {
-  public account = {
-    accountName: '',
-    address: '',
-    shortadress: ''
-  };
 
   public errorMsg: string;
   public offset: number;
-  
+
   public accountBalance: any;
   public isLoadingBalance: boolean;
   public isLoadingRecentTx: boolean;
-
-  public currencyRate: Currency = {
-    name: 'USD',
-    value: environment.zbcPriceInUSD,
-  };
-
+  public currencyRate = CONST_DEFAULT_RATE;
+  public priceInUSD: number;
   public totalTx: number;
   public recentTx: Transaction[];
   public unconfirmTx: Transaction[];
   public isError = false;
   public navigationSubscription: any;
 
+  account: Account;
+  accounts: Account[];
+
   constructor(
     private authService: AuthService,
+    private accountService: AccountService,
     private router: Router,
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
     private navCtrl: NavController,
-    private activeAccountSrv: ActiveAccountService,
-    private storage: Storage,
-    private accountService: AccountService,
     private transactionServ: TransactionService,
     private currencyServ: CurrencyService,
     public toastController: ToastController
   ) {
 
     // if account changed
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        if (v) {
-          this.account.accountName = v.accountName;
-          this.account.address = this.accountService.getAccountAddress(v);
-          this.account.shortadress = makeShortAddress(this.account.address);
-          this.loadData();
-        }
-      }
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadData();
     });
 
     // if post send money reload data
-    this.transactionServ.sendMoneySubject.subscribe( () => {
-        this.loadData();
-      }
+    this.transactionServ.sendMoneySubject.subscribe(() => {
+      this.loadData();
+    }
+    );
+
+    // if network changed reload data
+    this.transactionServ.changeNodeSubject.subscribe(() => {
+      // console.log(' == change node network ====');
+      this.loadData();
+    }
     );
 
     // if currency changed
@@ -104,18 +93,15 @@ export class TabDashboardPage implements OnInit {
 
   }
 
-  ionViewDidEnter() {
-    console.log('========== get Rpc Url: ', this.transactionServ.getRpcUrl());
-    this.loadData();
-  }
-
   ngOnInit() {
-
+    // this.loadData();
   }
 
 
   async loadData() {
 
+    // console.log('=== load data ===');
+    this.priceInUSD = this.currencyServ.getPriceInUSD();
     this.accountBalance = {
       accountaddress: '',
       blockheight: 0,
@@ -135,78 +121,24 @@ export class TabDashboardPage implements OnInit {
     this.unconfirmTx = [];
     this.isError = false;
 
-    const account = await this.storage.get('active_account');
-    console.log('==== Active account:', account);
+    this.account = await this.accountService.getCurrAccount();
+    // console.log('==== this.account: ', this.account);
+    this.currencyRate = this.currencyServ.getRate();
 
-    if (account) {
-      this.account.accountName = account.accountName;
-      this.account.address = this.accountService.getAccountAddress(account);
-      this.account.shortadress = makeShortAddress(this.account.address);
-    }
+    // console.log('==== this.currencyRate: ', this.currencyRate);
 
     this.getBalance();
-    this.getTransactions();
-
-    this.currencyRate = this.currencyServ.getRate();
   }
 
-  async loadMoreData(event) {
-
-    console.log('==== this.offset:', this.offset);
-
-    if (this.recentTx.length >= this.totalTx) {
-      // event.target.complete();
-      console.log(' === all loaded', this.recentTx.length + ' - ' + this.totalTx);
-      // event.target.disabled = true;
-    }
-
-    setTimeout(async () => {
-      await this.transactionServ
-        .getAccountTransaction(++this.offset, 5, this.account.address)
-        .then((res: Transactions) => {
-          this.totalTx = res.total;
-          this.recentTx.push(...res.transactions);
-        }).finally(() => {
-          this.isLoadingRecentTx = false;
-          event.target.complete();
-        }).catch((error) => {
-          event.target.complete();
-          console.log('===== eroor getAccountTransaction:', error);
-        });
-
-    }, 500);
-
-  }
-
-  async getTransactions() {
-    this.isLoadingRecentTx = true;
-
-    await this.transactionServ
-      .getUnconfirmTransaction(this.account.address)
-      .then((res: Transaction[]) => (this.unconfirmTx = res)).finally(() => {
-        // wait until unconfirm transaction loading finish.
-        // this.isLoadingRecentTx = false;
-      }).catch((error) => {
-        console.log('===== eroor getUnconfirmTransaction:', error);
-      });
-
-    await this.transactionServ
-      .getAccountTransaction(this.offset, 5, this.account.address)
-      .then((res: Transactions) => {
-        this.totalTx = res.total;
-        this.recentTx = res.transactions;
-      }).finally(() => {
-        this.isLoadingRecentTx = false;
-      }).catch((error) => {
-        console.log('===== eroor getAccountTransaction:', error);
-      });
-
+  openBlog() {
+    window.open('https://blogchainzoo.com', '_system');
   }
 
   async getBalance() {
     this.isError = false;
     const date1 = new Date();
     this.isLoadingBalance = true;
+    // console.log('==== this.account2: ', this.account.address);
     await this.transactionServ.getAccountBalance(this.account.address).then((data: AccountBalanceList) => {
       this.accountBalance = data.accountbalance;
     }).catch((error) => {
@@ -225,7 +157,7 @@ export class TabDashboardPage implements OnInit {
       } else if (error === 'Response closed without headers') {
         const date2 = new Date();
         const diff = date2.getTime() - date1.getTime();
-        console.log('== diff: ', diff);
+        // console.log('== diff: ', diff);
         if (diff < 5000) {
           this.errorMsg = 'Please check internet connection!';
         } else {
@@ -242,6 +174,17 @@ export class TabDashboardPage implements OnInit {
       console.error(' ==== have error: ', error);
     }).finally(() => {
       this.isLoadingBalance = false;
+
+      // TODO REMOVE THIS
+      // this.accountBalance = {
+      //   accountaddress: '',
+      //   blockheight: 0,
+      //   spendablebalance: 3000000000,
+      //   balance: 2000000000,
+      //   poprevenue: '',
+      //   latest: false
+      // };
+
     });
   }
 
@@ -264,6 +207,10 @@ export class TabDashboardPage implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['login']);
+  }
+
+  openSendFeedbak() {
+    this.router.navigateByUrl('/feedback');
   }
 
   openListAccount() {
@@ -298,7 +245,7 @@ export class TabDashboardPage implements OnInit {
 
     const modal = await this.modalCtrl.create({
       component: TransactionDetailPage,
-      cssClass: 'modal-ZBC',
+      cssClass: 'modal-zbc',
       componentProps: {
         transaction: trx,
         account: this.account,

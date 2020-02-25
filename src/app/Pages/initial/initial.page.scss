@@ -1,37 +1,41 @@
-@import "src/assets/scss/mixins/_mixins";
+.cMiddle{
+  padding-top: 20px;
+  height: 50%;
+}
 
-.initial-page {
-  @include background;
-  
-  & > div {
-    @include flex-init;
-    @include flex-direction(column);
-    @include justify-content(space-around);
+.cBottom{
+  margin-bottom: 20px;
+}
 
-    height: 84%;
+.scroll-content {
+  margin-bottom: 0!important;
+}
 
-    .welcome-text {
-      .text1 {
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-        display: inline-block;
-      }
-      .text2 {
-        font-size: 0.8rem;
-      }
-    }
+.logo{
+  margin-top: 70px;
+  height: 60px;
+  width: 60px;
+}
 
-    .btn-container {
-      ion-button {
-        width: 100%;
-      }
+.background {
+  --color: #fff;
+  // --background: transparent;
+  --background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
 
-      span {
-        display: block;
-        text-align: center;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-      }
-    }
-  }
+.btnNew{
+  margin-bottom:10px;
+}
+
+ion-toolbar {
+  // --background: transparent;
+  --ion-color-base: transparent !important;
+}
+
+ion-footer {
+  // --background: transparent;
+  --ion-color-base: transparent !important;
 }

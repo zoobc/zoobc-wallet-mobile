@@ -1,14 +1,22 @@
-@import "src/assets/scss/main.scss";
-
-.login {
-    height: 100%;
-    padding: 20px;
-    @include flex-init;
-    @include flex-direction(column);
-    @include justify-content(center);
+ion-col {
+  text-align: center;
 }
 
-ion-content{
-    --background: #3f619C;
-    background-color: #3f619C;
+.background {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/bg-pin.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+ion-toolbar {
+  --color: #fff;
+  --background: transparent;
+  --ion-color-base: transparent !important;
+}
+
+ion-footer{
+  padding-bottom:40px;
 }

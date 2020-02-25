@@ -1,49 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import * as qrcode from 'qrcode-generator';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
 import { MenuController, ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { Account } from 'src/app/Services/auth-service';
 import { AccountService } from 'src/app/Services/account.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
-import { makeShortAddress } from 'src/app/Helpers/converters';
-
 @Component({
   selector: 'app-tab-receive',
   templateUrl: 'tab-receive.page.html',
   styleUrls: ['tab-receive.page.scss']
 })
-export class TabReceivePage {
+export class TabReceivePage implements OnInit {
 
-  createdCode: string;
-  encodeData: string;
-  qrCodeUrl: any;
-  account = {
-    accountName: '',
-    address: '',
-    qrCode: '',
-    shortadress: ''
-  };
+  createdCode: any;
+  amount = 0;
+  account: Account;
 
   constructor(
-    private clipboard: Clipboard,
-    private toastController: ToastController,
-    private menuController: MenuController,
-    private storage: Storage,
     private accountService: AccountService,
-    private activeAccountSrv: ActiveAccountService,
+    private menuController: MenuController,
     private socialSharing: SocialSharing,
     public platform: Platform
   ) {
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        const address = this.accountService.getAccountAddress(v);
-        this.account.shortadress = makeShortAddress(address);
-        this.account.accountName = v.accountName;
-        this.account.address = address;
-        this.createQR(address);
-      }
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadData();
     });
   }
 
@@ -51,6 +31,23 @@ export class TabReceivePage {
     this.menuController.open('mainMenu');
   }
 
+  async loadData() {
+    this.account = await this.accountService.getCurrAccount();
+    console.log('=== account: ', this.account);
+    this.createQR(this.account.address, this.amount);
+  }
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  changeBarcode() {
+    this.createQR(this.account.address, this.amount);
+  }
+
+  copyToClipboard() {
+    this.accountService.copyToClipboard(this.account.address);
+  }
 
   // Share Options
   async openSharing() {
@@ -62,55 +59,9 @@ export class TabReceivePage {
     });
   }
 
-  tapAddress() {
-    const val = this.account.address;
-
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-
-    this.copySuccess();
+  createQR(addrs: string, amnt: number) {
+    const qrCode = { address: addrs, amount: amnt };
+    this.createdCode = JSON.stringify(qrCode);
   }
 
-  async copySuccess() {
-    const toast = await this.toastController.create({
-      message: 'Your address copied to clipboard.',
-      duration: 2000
-    });
-
-    toast.present();
-  }
-
-
-
-  createQR(value: string) {
-    this.createdCode = value;
-    // const qrCode = qrcode(8, 'L');
-    // qrCode.addData(value);
-    // qrCode.make();
-    // return qrCode.createDataURL(4, 8);
-  }
-
-  async getActiveAccount() {
-    const activeAccount = await this.storage.get('active_account');
-    const address = this.accountService.getAccountAddress(activeAccount);
-    this.account.shortadress = makeShortAddress(address);
-    this.account.accountName = activeAccount.accountName;
-    this.account.address = address;
-    this.createQR(address);
-  }
-
-  async ionViewDidEnter() {
-    this.getActiveAccount();
-  }
-
-  onInit() { }
 }

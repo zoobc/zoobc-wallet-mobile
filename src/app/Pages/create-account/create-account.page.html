@@ -1,52 +1,51 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Create New Account" | translate }}</ion-title>
+    <ion-title *ngIf="mode==='new'">{{ "Add Account" | translate }}</ion-title>
+    <ion-title *ngIf="mode==='edit'">{{ "Edit Account" | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="create-account-page">
-    <ion-list padding>
-      <ion-item>
-        <ion-input
-          padding="false"
-          placeholder="Please enter your account name"
-          [(ngModel)]="accountName"
-          name="sender"
-          autocomplete="on"
-          autocorrect="on"
-        ></ion-input>
-      </ion-item>
-    </ion-list>
-
-
-    <div padding>
-
-        <ion-row>
-            <ion-col col-6> 
-              <ion-button
-                expand="block"
-                color="secondary"
-                (click)="closeModal()"
-                fill="outline"
-                expand="block">{{ "Cancel" | translate }}
-              </ion-button>
-            </ion-col>
-          
-            <ion-col col-6>
-                <ion-button
-                color="primary"
-                (click)="createAccount()"
-                type="submit"
-                expand="block">{{ "Save" | translate }}
-              </ion-button>        
-            </ion-col>
-        </ion-row>
-    
-    </div>
-
-  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label position="stacked">{{ "Account Name" | translate }}</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input padding="false" placeholder="{{ 'Please enter your account name' | translate }}"
+          [(ngModel)]="accountName"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-label color="danger">
+          {{validationMessage}}&nbsp;
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button strong color="secondary" (click)="createOrUpdateAccount()" type="submit" expand="block">
+          <span *ngIf="mode==='new'">{{"Save"|translate}}</span>
+          <span *ngIf="mode==='edit'">{{"Update"|translate}}</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="secondary" routerLink="/list-account" fill="outline" expand="block">
+          {{ "Cancel" | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

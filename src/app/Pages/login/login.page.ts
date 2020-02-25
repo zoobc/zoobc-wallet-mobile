@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-login',
@@ -9,35 +10,39 @@ import { Router } from '@angular/router';
 })
 export class LoginPage implements OnInit {
   public isLoginValid = true;
-  public loginFail = false;
+
   constructor(
+    private accountService: AccountService,
     private authService: AuthService,
     private router: Router
   ) {}
 
-  ngOnInit() {}
+  async ngOnInit() {
 
-  async login(e: any) {
-    const { observer, pin, first } = e;
-
-    if (first === true) {
-      this.isLoginValid = true;
+    const acc =  await this.accountService.getCurrAccount();
+    if (acc === null) {
+      this.router.navigate(['initial']);
       return;
     }
 
-    const isUserLoggedIn = await this.authService.login(pin);
-    if (isUserLoggedIn) {
-      this.isLoginValid = true;
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn === true) {
       this.router.navigate(['tabs']);
-      setTimeout(() => {
-        observer.next(true);
-      }, 500);
+      return;
+    }
+  }
+
+  async login(e: any) {
+    const {pin} = e;
+    this.isLoginValid = true;
+    const isUserLoggedIn =  await this.authService.login(pin);
+    if (isUserLoggedIn) {
+      this.router.navigate(['tabs']);
     } else {
-      this.loginFail = true;
+      this.isLoginValid = false;
       setTimeout(() => {
-        this.isLoginValid = false;
-        observer.next(true);
-       }, 500);
+        this.isLoginValid = true;
+       }, 1500);
     }
   }
 

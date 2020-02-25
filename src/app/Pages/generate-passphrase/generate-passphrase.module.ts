@@ -6,7 +6,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { GeneratePassphrasePage } from './generate-passphrase.page';
-import { CreateNewStepsComponent } from 'src/app/Components/create-new-steps/create-new-steps.component';
 import { ComponentsModule } from 'src/app/Components/components.module';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,6 +28,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     ComponentsModule
   ],
-  declarations: [GeneratePassphrasePage, CreateNewStepsComponent]
+  declarations: [GeneratePassphrasePage]
 })
 export class GeneratePassphrasePageModule { }

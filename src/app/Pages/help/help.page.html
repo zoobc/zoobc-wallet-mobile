@@ -1,11 +1,18 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{ "Help" | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+        <ion-button routerLink="/feedback">
+          Feedback
+        </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
+
 
 <ion-content class="ion-padding">
   <h2>Overview</h2>
@@ -32,5 +39,12 @@
     destination coin address.
   </p>
 
+  <h2>Link</h2>
+  <ul>
+     <li><a href="https://zoobc.org">ZooBC Forum</a></li>
+     <li><a href="https://zoobc.net">ZooBC Eplorer</a></li>
+     <li><a href="https://zoobc.com">ZooBC Website</a></li>
+     <li><a href="https://blockchainzoo.com">Company Website</a></li>
+  </ul>
 
 </ion-content>

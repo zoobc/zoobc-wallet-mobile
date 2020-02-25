@@ -1,24 +1,28 @@
 <ion-header>
-    <ion-toolbar color="primary">
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="tabs/dashboard"></ion-back-button>
-      </ion-buttons>
-      <ion-title>{{ "Settings" | translate }}</ion-title>
-    </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "Settings" | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
-  
+
 <ion-content class="ion-padding">
   <ion-grid>
     <ion-row>
       <ion-col size="12">
         <p>
-          Currency Conversion<br />
-          Updated Mon Nov 11 2019 17:50:48 GMT+0800 (Central Indonesia Time)
+          Network
         </p>
         <div style="border:1px solid #cccccc">
-          <ion-select interface="action-sheet" [(ngModel)]="activeCurrency" (ionChange)="changeRate()">
-            <ion-select-option *ngFor="let rate of currencyRates; let idx = index" value="{{ rate.name }}">
-              {{ rate.name }} - {{ rate.value }}
+          <ion-select interface="action-sheet" [(ngModel)]="activeNetwork" (ionChange)="selectActiveNetwork()">
+            <ion-select-option *ngFor="let network of networks" value="{{ network.domain }}">
+              {{ network.name }}
             </ion-select-option>
           </ion-select>
         </div>
@@ -27,12 +31,25 @@
     <ion-row>
       <ion-col size="12">
         <p>
-          Current Language<br />
-          English
+          Currency<br />
+          <span style="font-size:0.7em;">Last updated: {{timestamp}}</span>
         </p>
         <div style="border:1px solid #cccccc">
-          <ion-select interface="action-sheet" [(ngModel)]="activeLanguage"
-            (ionChange)="selectActiveLanguage()">
+          <ion-select interface="popover" [(ngModel)]="activeCurrency" (ionChange)="changeRate()">
+            <ion-select-option *ngFor="let curr of Object.keys(currencyList)" value="{{curr}}">
+                {{curr}} - {{ currencyList[curr] }}
+            </ion-select-option>
+          </ion-select>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <p>
+         Language
+        </p>
+        <div style="border:1px solid #cccccc">
+          <ion-select interface="popover" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
             <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
               {{ language.country }}
             </ion-select-option>

@@ -1,35 +1,69 @@
-<div class="pins-container">
-  <div class="ion-margin-vertical ion-text-center">
-    <ion-icon class="pin-bullet" *ngFor="let dot of dots" [name]="pin.length > dot ? 'radio-button-on' : 'radio-button-off'">
-    </ion-icon>
-  </div>
-
-  <div class="pad-container">
-    <ion-grid class="ion-text-center">
-      <ion-row>
-        <ion-col *ngFor="let number of numbers">
-          <ion-button ion-item expand="block" (click)="handleInput(number + 1)">{{
-            number + 1
-          }}</ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button ion-item expand="block" (click)="clear()">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button ion-item expand="block" (click)="handleInput('0')">0</ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button ion-item expand="block" (click)="clearOne()">
-              <ion-icon name="backspace"></ion-icon>
-          </ion-button>
-        </ion-col>
-        <!-- <ion-col> </ion-col> -->
-        <!--<ion-col>
-          <ion-button fill="clear" class="btn-text" expand="block" (click)="emitEvent()">OK</ion-button>
-        </ion-col>-->
-      </ion-row>
-    </ion-grid>
-  </div>
-</div>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-icon src="/assets/images/icon-lock.svg" size="large"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid style="margin-bottom: 20px;">
+    <ion-row>
+      <ion-col>
+        <ion-text style="padding:6px">{{pin2[0]}}</ion-text>
+        <ion-text class="pinText">{{pin2[1]}}</ion-text>
+        <ion-text class="pinText">{{pin2[2]}}</ion-text>
+        <ion-text class="pinText">{{pin2[3]}}</ion-text>
+        <ion-text class="pinText">{{pin2[4]}}</ion-text>
+        <ion-text class="pinText">{{pin2[5]}}</ion-text>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('1')">1</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('2')">2</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('3')">3</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('4')">4</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('5')">5</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('6')">6</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('7')">7</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('8')">8</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('9')">9</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="clear()">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="handleInput('0')">0</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button size="large" color="light" fill="outline" (click)="clearOne()">
+          <ion-icon name="backspace"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>

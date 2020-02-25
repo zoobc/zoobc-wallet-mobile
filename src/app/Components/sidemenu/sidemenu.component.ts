@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
-import { LanguageService } from 'src/app/Services/language.service';
-import { CurrencyService, Currency } from 'src/app/Services/currency.service';
-import { ActiveAccountService } from 'src/app/Services/active-account.service';
+import { AuthService } from 'src/app/Services/auth-service';
 
 @Component({
   selector: 'app-sidemenu',
@@ -12,81 +9,64 @@ import { ActiveAccountService } from 'src/app/Services/active-account.service';
   styleUrls: ['./sidemenu.component.scss']
 })
 export class SidemenuComponent implements OnInit {
-  public accounts = [];
-  public activeCurrency = 'USD';
-  public activeAccount = '';
-
-  public currencyRate: Currency = {
-    name: '',
-    value: 0,
-  };
-
-  public currencyRates: Currency[];
 
   constructor(
     private menuController: MenuController,
-    private router: Router,
-    private storage: Storage,
-    private activeAccountSrv: ActiveAccountService
-  ) {
-    this.activeAccountSrv.accountSubject.subscribe({
-      next: v => {
-        this.activeAccount = v.accountName;
-      }
-    });
-  }
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   async ngOnInit() {
-    this.getActiveAccount();
-    const account = await this.storage.get('active_account');
-    this.activeAccount = account.accountName;
+  }
+
+  goBackupRestore() {
+    this.router.navigateByUrl('/backuprestore-address');
+    this.menuController.close('mainMenu');
   }
 
   revealPassphrase() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/backup-phrase');
+    this.menuController.close('mainMenu');
   }
 
   myTasks() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/my-tasks');
+    this.menuController.close('mainMenu');
   }
 
   openAboutView() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/about');
+    this.menuController.close('mainMenu');
   }
 
   openListAccount() {
     this.router.navigateByUrl('/list-account');
+    this.menuController.close('mainMenu');
   }
 
-  openSettings(){
-    this.menuController.close('mainMenu');
+  openSettings() {
     this.router.navigateByUrl('/settings');
+    this.menuController.close('mainMenu');
   }
 
   openAddresBook() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/address-book');
+    this.menuController.close('mainMenu');
   }
 
   openSendFeedbak() {
     this.router.navigateByUrl('/feedback');
+    this.menuController.close('mainMenu');
   }
 
   openHelpSupport() {
-    this.menuController.close('mainMenu');
     this.router.navigateByUrl('/help');
-  }
-  
-  openAppsList() {
     this.menuController.close('mainMenu');
-    this.router.navigateByUrl('/applist');
   }
 
-  openNodeAdmin() {
-    this.router.navigateByUrl('/node-admin');
+  openAppsList() {
+    this.router.navigateByUrl('/applist');
+    this.menuController.close('mainMenu');
   }
 
   openNotifications() {
@@ -98,27 +78,14 @@ export class SidemenuComponent implements OnInit {
   }
 
   goToGenerate() {
-    this.router.navigate(['/create-account']);
+    this.router.navigateByUrl('/create-account');
+    this.menuController.close('mainMenu');
   }
 
   logout() {
-    this.router.navigate(['/login']);
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
+    this.menuController.close('mainMenu');
   }
 
-  async getActiveAccount() {
-    const accounts = await this.storage.get('accounts');
-    const account = await this.storage.get('active_account');
-    accounts.forEach((acc, index) => {
-      console.log(
-        acc.accountProps.derivationPath === account.accountProps.derivationPath,
-        acc.accountProps.derivationPath,
-        account.accountProps.derivationPath
-      );
-      if (
-        acc.accountProps.derivationPath === account.accountProps.derivationPath
-      ) {
-        this.activeAccount = index;
-      }
-    });
-  }
 }

@@ -1,5 +1,7 @@
 ![](/src/assets/images/ZooBC-wallet-mobile.png)
 
+This branch add Feature: Backup - restore Address Book
+
 # Requirement
   nodejs v10.16.2
   npm 6.9.2
@@ -300,8 +302,15 @@ https://www.npmjs.com/package/cordova-plugin-firebasex#ionic-4
 https://github.com/dpa99c/cordova-plugin-androidx-adapter
 
 https://github.com/dpa99c/cordova-plugin-androidx
+'
 
+camera conflict 
 
+I had to remove inside ..\plugins\phonegap-plugin-barcodescanner\plugin.xml the
+
+<uses-feature android:name="android.hardware.camera">
+then removed and added again android platform.
+Worked very fine for me.
 
 Note:
 
@@ -318,4 +327,8 @@ rm -rf .git/modules/bip39
 
 # Remove the entry in .gitmodules and remove the submodule directory located at path/to/submodule
 git rm -f externals/bip39
+
+
+This branch For test flight
+
 

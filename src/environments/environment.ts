@@ -4,26 +4,23 @@
 
 export const environment = {
   production: false,
-  defaultCurrency: 'USD',
-  // grpcUrl: 'http://18.139.3.139:5001',
-  grpcUrl: 'http://172.104.47.168:6001',
+  feedbackUrl: 'https://doorbell.io/api',
   currencyRateUrl: 'https://api.exchangeratesapi.io/latest?base=USD',
   openExchangeUrl: 'https://openexchangerates.org/api',
   mnemonicLanguage: 'english',
   mnemonicNumWords: 24,
-  signalID: '790fe50a-589d-40c7-92af-683582d40acf',
-  appID: '482874041634',
+  signalID: '9afa0071-9129-4cc2-9b03-e540943c136e',
+  appID: '342522815584',
   zbcPriceInUSD: 10,
   saltForAccount: 'p4ssphr4se',
-  firebaseConfig : {
-    apiKey: "AIzaSyBw44MlutdPuLOGBWm-HjrxPsn_nCux18s",
-    authDomain: "zoobcwallet.firebaseapp.com",
-    databaseURL: "https://zoobcwallet.firebaseio.com",
-    projectId: "zoobcwallet",
-    storageBucket: "zoobcwallet.appspot.com",
-    messagingSenderId: "342522815584",
-    appId: "1:342522815584:web:cee8f5b692138b4fc98f05"
+  firebaseConfig: {
+    apiKey: 'AIzaSyBw44MlutdPuLOGBWm-HjrxPsn_nCux18s',
+    authDomain: 'zoobcwallet.firebaseapp.com',
+    databaseURL: 'https://zoobcwallet.firebaseio.com',
+    projectId: 'zoobcwallet',
+    storageBucket: 'zoobcwallet.appspot.com',
+    messagingSenderId: '342522815584',
+    appId: '1:342522815584:web:6d02dd7e49f0c72fc98f05',
+    measurementId: 'G-8LG5JTR37N'
   }
-
 };
-

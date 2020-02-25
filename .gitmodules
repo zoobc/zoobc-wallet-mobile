@@ -1,3 +1,4 @@
-[submodule "bip32"]
-	path = externals/bip32
-	url = https://github.com/BlockchainZoo/bip32
+[submodule "proto"]
+	path = externals/proto
+	url = https://github.com/zoobc/zoobc-schema
+	branch = develop

@@ -22,5 +22,6 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [MyTasksPage]
+  // entryComponents: [TaskDetailPage]
 })
 export class MyTasksPageModule {}

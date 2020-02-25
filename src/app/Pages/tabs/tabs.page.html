@@ -1,16 +1,16 @@
 <app-sidemenu></app-sidemenu>
 
 <ion-tabs #myTabs (ionTabsDidChange)="onTabChanged($event)" >
-  <ion-tab-bar color="primary" slot="bottom">
+  <ion-tab-bar color="light" slot="bottom">
     <ion-tab-button tab="dashboard">
-      <ion-icon name="wallet"></ion-icon>
-      <ion-label>{{ "Wallets" | translate }}</ion-label>
+      <ion-icon name="home"></ion-icon>
+      <ion-label>{{ "Home" | translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button (click)="scanQrCode()">
+    <!-- <ion-tab-button (click)="scanQrCode()">
       <ion-icon name="qr-scanner"></ion-icon>
         <ion-label>{{ "Scan" | translate }}</ion-label>
-    </ion-tab-button>
+    </ion-tab-button> -->
 
     <ion-tab-button tab="receive">
       <ion-icon name="arrow-round-down"></ion-icon>
@@ -18,7 +18,7 @@
     </ion-tab-button>
 
     <ion-tab-button [routerLink]="['/sendcoin']">
-      <ion-icon name="arrow-round-up"></ion-icon>
+      <ion-icon ios="ios-arrow-round-up" md="md-arrow-round-up"></ion-icon>
       <ion-label>{{ "Send" | translate }}</ion-label>
     </ion-tab-button>
   </ion-tab-bar>

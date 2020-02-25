@@ -7,6 +7,7 @@ import { Observable, Subject } from 'rxjs';
 export class QrScannerService implements OnInit {
 
   private listners = new Subject<string>();
+  scannerResult: any;
 
   constructor() { }
 
@@ -19,5 +20,6 @@ export class QrScannerService implements OnInit {
 
   setResult(data: string) {
     this.listners.next(data);
+    this.scannerResult = data;
   }
 }
