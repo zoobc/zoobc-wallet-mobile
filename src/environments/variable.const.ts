@@ -14,6 +14,7 @@ export const STORAGE_CURRENT_ACCOUNT = 'curr_account';
 export const STORAGE_ENC_MASTER_SEED = 'enc_master_seed';
 export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_passphrase_seed';
 export const STORAGE_SELECTED_NODE = 'net_selected_node';
+export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
 export const TRANSACTION_VERSION = Buffer.from([1]);

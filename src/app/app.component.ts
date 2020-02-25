@@ -62,9 +62,9 @@ export class AppComponent implements OnInit {
       this.setNodes();
       this.setDefaultCurrency();
 
-      if (this.platform.is('cordova')) {
-        this.setupPush();
-      }
+     // if (this.platform.is('cordova')) {
+      this.setupPush();
+      //}
 
       this.splashScreen.hide();
     });
@@ -130,6 +130,14 @@ export class AppComponent implements OnInit {
   //   });
   // }
 
+  async presentNotificationToast(msg: any) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 3000
+    });
+    toast.present();
+  }
+
   async presentNoConnectionToast() {
     const toast = await this.toastController.create({
       message: this.connectionText,
@@ -174,15 +182,15 @@ export class AppComponent implements OnInit {
       });
   }
 
-
   setupPush() {
     this.oneSignal.startInit(environment.signalID, environment.appID);
-    this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
+    // this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
     // this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.Notification);
     this.oneSignal.handleNotificationReceived().subscribe(data => {
       const msg = data.payload.body;
       const title = data.payload.title;
       const additionalData = data.payload.additionalData;
+      this.presentNotificationToast(msg);
       this.showAlert(title, msg, additionalData.task);
     });
 
@@ -190,6 +198,7 @@ export class AppComponent implements OnInit {
     this.oneSignal.handleNotificationOpened().subscribe(data => {
       // Just a note that the data is a different place here!
       const additionalData = data.notification.payload.additionalData;
+      this.presentNotificationToast('YOu already read this');
       this.showAlert('Notification opened', 'You already read this before', additionalData.task);
     });
 

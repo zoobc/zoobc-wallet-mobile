@@ -47,6 +47,7 @@
         <splash density="land-xhdpi" src="resources/android/splash/drawable-land-xhdpi-screen.png" />
         <splash density="land-xxhdpi" src="resources/android/splash/drawable-land-xxhdpi-screen.png" />
         <splash density="land-xxxhdpi" src="resources/android/splash/drawable-land-xxxhdpi-screen.png" />
+        <hook src="hooks/copy_android_notification_icons.js" type="after_prepare" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
