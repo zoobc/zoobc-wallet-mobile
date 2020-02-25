@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Backup Restore Address</ion-title>
+    <ion-buttons slot="end" color="primary">
+        <ion-button routerLink="/feedback">
+          Feedback
+        </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p>
+    Here you can backup or restore address book
+  </p>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="backup()" color="primary" expand="block">Backup</ion-button>
+        <ion-progress-bar *ngIf="isBackup" type="indeterminate"></ion-progress-bar>
+        <ion-label *ngIf="isBackupFinish" color="success">Backup succesfull</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="restore()" color="secondary" expand="block">Restore</ion-button>
+        <ion-progress-bar *ngIf="isRestore" type="indeterminate" reversed="true"></ion-progress-bar>
+        <ion-label *ngIf="isRestoreFinish" color="success">Restoring {{numBerOfRestored}} address finish</ion-label>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

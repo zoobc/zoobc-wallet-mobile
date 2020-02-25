@@ -81,8 +81,9 @@ const routes: Routes = [
   { path: 'sell-coin', loadChildren: './Pages/apps/applist/sell/sell-coin/sell-coin.module#SellCoinPageModule' },
   { path: 'setup-pin-gp', loadChildren: './Pages/generate-passphrase/setup-pin-gp/setup-pin-gp.module#SetupPinGpPageModule' },
   { path: 'transactions', loadChildren: './Pages/transactions/transactions.module#TransactionsPageModule', canActivate: [AuthService] },
-  { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' }
-
+  { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' },
+    // tslint:disable-next-line:max-line-length
+  { path: 'backuprestore-address', loadChildren: './Pages/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule' }
 ];
 @NgModule({
   imports: [

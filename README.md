@@ -1,6 +1,6 @@
 ![](/src/assets/images/ZooBC-wallet-mobile.png)
 
-This branch For test flight
+This branch add Feature: Backup - restore Address Book
 
 # Requirement
   nodejs v10.16.2

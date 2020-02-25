@@ -19,6 +19,10 @@ export class SidemenuComponent implements OnInit {
   async ngOnInit() {
   }
 
+  goBackupRestore() {
+    this.router.navigateByUrl('/backuprestore-address');
+    this.menuController.close('mainMenu');
+  }
 
   revealPassphrase() {
     this.router.navigateByUrl('/backup-phrase');
