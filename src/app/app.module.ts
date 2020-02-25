@@ -39,6 +39,7 @@ import { SetupPinGpPageModule } from './Pages/generate-passphrase/setup-pin-gp/s
 import { File } from '@ionic-native/file/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -93,6 +94,7 @@ export function createTranslateLoader(http: HttpClient) {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: 'global', useFactory: () => window },
     { provide: 'nacl.sign', useFactory: () => naclSign },
+    OneSignal,
     ObservableService,
     Clipboard
   ],
