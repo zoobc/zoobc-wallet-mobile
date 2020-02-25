@@ -4,6 +4,7 @@ import { Account } from 'src/app/Services/auth-service';
 import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { AngularFirestore } from '@angular/fire/firestore';
+import * as firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -75,7 +76,7 @@ export class AddressBookService {
   async insert(name: string, address: string, created: any) {
     let crtd = new Date();
     if (created !== null) {
-        crtd = created;
+      crtd = created;
     }
     let allAddress = await this.getAll();
     if (!allAddress) {
@@ -110,6 +111,43 @@ export class AddressBookService {
 
   delete_backup() {
     // this.firestore.doc('Students/' + record_id).delete();
+  }
+
+
+  registerUser(value) {
+    return new Promise<any>((resolve, reject) => {
+      firebase.auth().createUserWithEmailAndPassword(value.email, value.password)
+        .then(
+          res => resolve(res),
+          err => reject(err));
+    })
+  }
+
+  loginUser(value) {
+    return new Promise<any>((resolve, reject) => {
+      firebase.auth().signInWithEmailAndPassword(value.email, value.password)
+        .then(
+          res => resolve(res),
+          err => reject(err));
+    })
+  }
+
+  logoutUser() {
+    return new Promise((resolve, reject) => {
+      if (firebase.auth().currentUser) {
+        firebase.auth().signOut()
+          .then(() => {
+            console.log('LOG Out');
+            resolve();
+          }).catch((error) => {
+            reject();
+          });
+      }
+    })
+  }
+
+  userDetails() {
+    return firebase.auth().currentUser;
   }
 
 }
