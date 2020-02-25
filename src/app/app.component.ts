@@ -185,7 +185,7 @@ export class AppComponent implements OnInit {
   setupPush() {
     this.oneSignal.startInit(environment.signalID, environment.appID);
     // this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
-    // this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.Notification);
+    this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.Notification);
     this.oneSignal.handleNotificationReceived().subscribe(data => {
       const msg = data.payload.body;
       const title = data.payload.title;
@@ -198,7 +198,7 @@ export class AppComponent implements OnInit {
     this.oneSignal.handleNotificationOpened().subscribe(data => {
       // Just a note that the data is a different place here!
       const additionalData = data.notification.payload.additionalData;
-      this.presentNotificationToast('YOu already read this');
+      this.presentNotificationToast('You already read this');
       this.showAlert('Notification opened', 'You already read this before', additionalData.task);
     });
 
