@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Backup Restore Address</ion-title>
+    <ion-title>Backup / Restore</ion-title>
+
     <ion-buttons slot="end" color="primary">
         <ion-button routerLink="/feedback">
           Feedback
@@ -13,11 +14,27 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <h3>Backup / Restore Address Book</h3>
   <p>
-    Here you can backup or restore address book
+    Here you can backup or restore address book.<br/>
+    Backup / Restore service are using third party services.<br/>
+    Please register / login to allow backup / restore address book.<br/>
   </p>
 
   <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <p>
+            Email Address:
+            <br/>
+            <b>{{userEmail}}</b>
+            <br/>
+            <span (click)="logout()">Change email</span>
+          </p>
+        </ion-item>
+      </ion-col>
+    </ion-row>
     <ion-row>
       <ion-col>
         <ion-button (click)="backup()" color="primary" expand="block">Backup</ion-button>

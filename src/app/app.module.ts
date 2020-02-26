@@ -9,7 +9,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppConfigModule } from './app-config.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { NgxsModule } from '@ngxs/store';
@@ -40,6 +40,8 @@ import { File } from '@ionic-native/file/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -58,6 +60,7 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     AppConfigModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
     NgxsModule.forRoot(),
@@ -71,6 +74,7 @@ export function createTranslateLoader(http: HttpClient) {
     PinBackupPageModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
+    AngularFireAuthModule,
     AngularFireDatabaseModule,
 
     TranslateModule.forRoot({
