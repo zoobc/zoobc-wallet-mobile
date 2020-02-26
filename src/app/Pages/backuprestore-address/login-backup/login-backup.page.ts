@@ -10,9 +10,6 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 })
 export class LoginBackupPage implements OnInit {
 
-  public validations_form: FormGroup;
-  errorMessage: string = '';
-
   constructor(
 
     private navCtrl: NavController,
@@ -20,6 +17,20 @@ export class LoginBackupPage implements OnInit {
     private formBuilder: FormBuilder
 
   ) { }
+
+  public validations_form: FormGroup;
+  errorMessage = '';
+
+  validation_messages = {
+    email: [
+      { type: 'required', message: 'Email is required.' },
+      { type: 'pattern', message: 'Please enter a valid email.' }
+    ],
+    password: [
+      { type: 'required', message: 'Password is required.' },
+      { type: 'minlength', message: 'Password must be at least 5 characters long.' }
+    ]
+  };
 
   ngOnInit() {
 
@@ -36,27 +47,15 @@ export class LoginBackupPage implements OnInit {
   }
 
 
-  validation_messages = {
-    'email': [
-      { type: 'required', message: 'Email is required.' },
-      { type: 'pattern', message: 'Please enter a valid email.' }
-    ],
-    'password': [
-      { type: 'required', message: 'Password is required.' },
-      { type: 'minlength', message: 'Password must be at least 5 characters long.' }
-    ]
-  };
-
-
   loginUser(value) {
     this.authService.loginUser(value)
       .then(res => {
         console.log(res);
-        this.errorMessage = "";
-        this.navCtrl.navigateForward('/dashboard');
+        this.errorMessage = '';
+        this.navCtrl.navigateForward('/backuprestore-address');
       }, err => {
         this.errorMessage = err.message;
-      })
+      });
   }
 
   goToRegisterPage() {
