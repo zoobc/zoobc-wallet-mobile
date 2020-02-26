@@ -5,6 +5,9 @@
 </ion-header>
 
 <ion-content padding>
+
+  <p>Backup / Restore Address Book using third party services, please register / login to use this services.</p>
+
   <form class="form" [formGroup]="validations_form" (ngSubmit)="tryRegister(validations_form.value)">
 
     <ion-item>
@@ -34,8 +37,10 @@
     </div>
 
     <ion-button class="submit-btn" type="submit" [disabled]="!validations_form.valid">Register</ion-button>
-    <label class="error-message">{{errorMessage}}</label>
-    <label class="success-message">{{successMessage}}</label>
+    <br/>
+    <label style="color:red" class="error-message">{{errorMessage}}</label>
+    <br/>
+    <label style="color:green" class="success-message">{{successMessage}}</label>
   </form>
   <p class="go-to-login">Already have an account? <a (click)="goLoginPage()">Try to Log In.</a></p>
 </ion-content>
