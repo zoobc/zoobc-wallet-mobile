@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Account } from 'src/app/Services/auth-service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { AccountService } from 'src/app/Services/account.service';
+// import { DeviceAccounts } from '@ionic-native/device-accounts/ngx';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-backuprestore-address',
@@ -10,7 +12,8 @@ import { AccountService } from 'src/app/Services/account.service';
 })
 export class BackuprestoreAddressPage implements OnInit {
   accounts: Account[];
-
+  userEmail: string;
+  emailAccounts: any;
   addresses: any;
   addressName: string;
   addressAddress: string;
@@ -25,13 +28,45 @@ export class BackuprestoreAddressPage implements OnInit {
   counter = 0;
 
   constructor(
+    // private deviceAccounts: DeviceAccounts,
     private addressBookSrv: AddressBookService,
-    private accountService: AccountService) { }
+    private accountService: AccountService,
+    private navCtrl: NavController,
+    private authService: AddressBookService) { }
 
   ngOnInit() {
     this.getAllAddress();
+    // this.getEmails();
+
+    if (this.authService.userDetails()) {
+      this.userEmail = this.authService.userDetails().email;
+      console.log('=== userEmail: ', this.userEmail);
+    } else {
+      this.navCtrl.navigateBack('/login-backup');
+    }
+
   }
 
+  logout() {
+    this.authService.logoutUser()
+    .then(res => {
+      console.log(res);
+      this.navCtrl.navigateBack('/login-backup');
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
+  // getEmails() {
+  //   this.deviceAccounts.get().then(accounts => {
+  //     console.log(accounts);
+  //     alert(accounts);
+  //     this.emailAccounts = accounts;
+  //   }
+  // )
+  // .catch(error => console.error(error));
+  // }
 
   async getAllAddress() {
     const alladdress = await this.addressBookSrv.getAll();
@@ -51,7 +86,7 @@ export class BackuprestoreAddressPage implements OnInit {
 
       console.log('All Address: ', alladdress);
 
-      const mainAcc = this.accounts[0].address;
+      const mainAcc = this.userEmail;
       console.log('--- main Acc: ', mainAcc);
       if (alladdress && alladdress.length > 0) {
 
