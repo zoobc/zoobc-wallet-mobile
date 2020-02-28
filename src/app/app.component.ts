@@ -133,7 +133,7 @@ export class AppComponent implements OnInit {
   async presentNotificationToast(msg: any) {
     const toast = await this.toastController.create({
       message: msg,
-      duration: 3000
+      duration: 15000
     });
     toast.present();
   }
