@@ -84,7 +84,8 @@ const routes: Routes = [
   { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' },
     // tslint:disable-next-line:max-line-length
   { path: 'backuprestore-address', loadChildren: './Pages/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule' },  { path: 'reg-backup', loadChildren: './Pages/backuprestore-address/reg-backup/reg-backup.module#RegBackupPageModule' },
-  { path: 'login-backup', loadChildren: './Pages/backuprestore-address/login-backup/login-backup.module#LoginBackupPageModule' }
+  { path: 'login-backup', loadChildren: './Pages/backuprestore-address/login-backup/login-backup.module#LoginBackupPageModule' },
+  { path: 'chat', loadChildren: './Pages/chat/chat.module#ChatPageModule' }
 
 ];
 @NgModule({

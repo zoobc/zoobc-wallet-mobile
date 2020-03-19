@@ -35,6 +35,7 @@ export const CONST_HEX = 'hex';
 
 // Language
 export const SELECTED_LANGUAGE = 'selected_language';
+export const SELECTED_THEME = 'card';
 export const LANGUAGES = [
   {
     country: 'العربية',
@@ -195,6 +196,24 @@ export const NETWORK_LIST = [{
   {
     name: 'Local Testnet',
     domain: 'http://192.168.20.242:7001'
+  }];
+
+export const THEME_LIST = [
+  {
+    name: 'Card',
+    code: 'card'
+  },
+  {
+    name: 'List',
+    code: 'list'
+  },
+  {
+    name: 'Light',
+    code: 'light'
+  },
+  {
+    name: 'Dark',
+    code: 'dark'
   }];
 
 export const TRX_FEE_LIST = [{
