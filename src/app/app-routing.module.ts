@@ -85,7 +85,8 @@ const routes: Routes = [
     // tslint:disable-next-line:max-line-length
   { path: 'backuprestore-address', loadChildren: './Pages/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule' },  { path: 'reg-backup', loadChildren: './Pages/backuprestore-address/reg-backup/reg-backup.module#RegBackupPageModule' },
   { path: 'login-backup', loadChildren: './Pages/backuprestore-address/login-backup/login-backup.module#LoginBackupPageModule' },
-  { path: 'chat', loadChildren: './Pages/chat/chat.module#ChatPageModule' }
+  { path: 'chat', loadChildren: './Pages/chat/chat.module#ChatPageModule' },
+  { path: 'chat-session', loadChildren: './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule' }
 
 ];
 @NgModule({
