@@ -15,7 +15,7 @@
 
 <ion-content>
   <ion-list no-padding>
-    <ion-item *ngFor="let chat of chatData" lines="none">
+    <ion-item *ngFor="let chat of chatData; let idx = index" lines="none" (click)="showSession(idx)">
       <div class="borderBottomLine"></div>
       <div class="listSection">
         <div class="UserimgSection">
@@ -25,7 +25,7 @@
               [ngStyle]="{'background-color':(chat.status === 'online'? '#4cd137' : '#c23616')}"></span>
           </ion-avatar>
         </div>
-        <div class="usernameSection" padding-start padding>
+        <div class="usernameSection" padding-start padding >
           <h5>
             <ion-icon *ngIf="chat.group" name="people" color="medium"></ion-icon>
             <ion-icon name="microphone" *ngIf="chat.broadcast" color="medium"></ion-icon>

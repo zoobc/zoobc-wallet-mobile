@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -8,103 +9,124 @@ import { Component, OnInit } from '@angular/core';
 export class ChatPage implements OnInit {
 
   public chatData: Array<any>;
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.chatData = [{
-      "name": 'Jovenica',
-      "image": '../../assets/chat/user.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'online',
-      "count": '2',
-      "time": '2 min ago'
+      name: 'Jovenica',
+      address: 'xvbvn1',
+      image: '../../assets/chat/user.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'online',
+      count: '2',
+      time: '2 min ago'
 
     }, {
-      "name": 'Oliver',
-      "image": ' ../../assets/chat/user3.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'offline',
-      "badge": '4',
-      "sendTime": '18:34',
-      "group": true
+      name: 'Oliver',
+      address: 'xvbvn2',
+      image: ' ../../assets/chat/user3.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'offline',
+      badge: '4',
+      sendTime: '18:34',
+      group: true
 
     }, {
-      "name": 'George',
-      "image": ' ../../assets/chat/user4.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'offline',
-      "count": '2',
-      "sendTime": '18:30',
-      "broadcast": true
+      name: 'George',
+      address: 'xvbvn3',
+      image: ' ../../assets/chat/user4.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'offline',
+      count: '2',
+      sendTime: '18:30',
+      broadcast: true
 
     }, {
-      "name": 'Harry',
-      "image": ' ../../assets/chat/user1.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'online',
-      "badge": '6',
-      "sendTime": '17:55'
+      name: 'Harry',
+      address: 'xvbvn4',
+      image: ' ../../assets/chat/user1.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'online',
+      badge: '6',
+      sendTime: '17:55'
     }, {
-      "name": 'Jack',
-      "image": ' ../../assets/chat/user.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'offline',
-      "sendTime": '17:55'
+      name: 'Jack',
+      address: 'xvbvn5',
+      image: ' ../../assets/chat/user.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'offline',
+      sendTime: '17:55'
     }, {
-      "name": 'Jacob',
-      "image": ' ../../assets/chat/user3.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'offline',
-      "count": '1',
-      "sendTime": '17:50'
+      name: 'Jacob',
+      address: 'xvbvn6',
+      image: ' ../../assets/chat/user3.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'offline',
+      count: '1',
+      sendTime: '17:50'
     }, {
-      "name": 'Noah',
-      "image": ' ../../assets/chat/user2.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'offline',
-      "sendTime": '17:40'
+      name: 'Noah',
+      address: 'xvbvn7',
+      image: ' ../../assets/chat/user2.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'offline',
+      sendTime: '17:40'
     }, {
-      "name": 'Charlie',
-      "image": ' ../../assets/chat/user4.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'online',
-      "count": '6',
-      "badge": '8',
-      "sendTime": '17:40'
+      name: 'Charlie',
+      address: 'xvbvn8',
+      image: ' ../../assets/chat/user4.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'online',
+      count: '6',
+      badge: '8',
+      sendTime: '17:40'
     }, {
-      "name": 'Logan',
-      "image": ' ../../assets/chat/user.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'offline',
-      "badge": '8',
-      "sendTime": '17:40'
+      name: 'Logan',
+      address: 'xvbvn9',
+      image: ' ../../assets/chat/user.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'offline',
+      badge: '8',
+      sendTime: '17:40'
     }, {
-      "name": 'Harrison',
-      "image": ' ../../assets/chat/user2.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'offline',
-      "sendTime": '17:40'
+      name: 'Harrison',
+      address: 'xvbvn10',
+      image: ' ../../assets/chat/user2.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'offline',
+      sendTime: '17:40'
     }, {
-      "name": 'Sebastian',
-      "image": ' ../../assets/chat/user1.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'online',
-      "sendTime": '17:40'
+      name: 'Sebastian',
+      address: 'xvbvn11',
+      image: ' ../../assets/chat/user1.jpeg',
+      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'online',
+      sendTime: '17:40'
     }, {
-      "name": 'Zachary',
-      "image": ' ../../assets/chat/user4.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'offline',
-      "sendTime": '17:40'
-    }, {
-      "name": 'Elijah',
-      "image": ' ../../assets/chat/user3.jpeg',
-      "description": ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt nulla minima ratione, pariatur quaerat aut ex a ullam? Officia, explicabo optio. Dolores, ab exercitationem? Neque illo soluta sapiente!',
-      "status": 'offline',
-      "badge": '8',
-      "sendTime": '17:40'
+      name: 'Zachary',
+      address: 'xvbvn12',
+      image: ' ../../assets/chat/user4.jpeg',
+      description: ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
+      status: 'offline',
+      sendTime: '17:40'
     }
-    ]
+    ];
+
+  }
+
+  showSession(idx: number) {
+
+    const chat = this.chatData[idx];
+    console.log('... di session ', chat);
+
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        name: chat.name,
+        address: chat.address,
+        index: idx
+      }
+    };
+    this.router.navigate(['/chat-session'], navigationExtras);
 
   }
 
