@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { AccountService } from 'src/app/Services/account.service';
+import { Account } from 'src/app/Services/auth-service';
+
 
 @Component({
   selector: 'app-chat',
@@ -9,7 +12,18 @@ import { NavigationExtras, Router } from '@angular/router';
 export class ChatPage implements OnInit {
 
   public chatData: Array<any>;
-  constructor(private router: Router) { }
+  account: Account;
+  constructor(private router: Router,
+              private accountService: AccountService) {
+
+      this.accountService.accountSubject.subscribe(() => {
+          this.loadAccount();
+      });
+  }
+
+  async loadAccount() {
+    this.account = await this.accountService.getCurrAccount();
+  }
 
   ngOnInit() {
     this.chatData = [{
@@ -121,6 +135,7 @@ export class ChatPage implements OnInit {
 
     const navigationExtras: NavigationExtras = {
       queryParams: {
+        sender: this.account.address,
         name: chat.name,
         address: chat.address,
         index: idx
