@@ -1,45 +1,85 @@
 <ion-header>
   <ion-toolbar>
+
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Chat List</ion-title>
-    <ion-buttons slot="end">
-      <ion-icon name="more" class="fontSize"></ion-icon>
-    </ion-buttons>
-    <ion-buttons slot="end" padding-start>
-      <ion-icon name="add" class="fontSize"></ion-icon>
-    </ion-buttons>
+    
+    <!-- <ion-buttons > -->
+    <div class="plusClass" slot="end">
+      <ion-icon name="add" expand="icon-only" color="success"> </ion-icon>
+    </div>
+    <!-- </ion-buttons> -->
+    <ion-title color="light">
+      Chat List
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar mode="md" placeholder="Search your friend"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list no-padding>
-    <ion-item *ngFor="let chat of chatData; let idx = index" lines="none" (click)="showSession(idx)">
-      <div class="borderBottomLine"></div>
-      <div class="listSection">
-        <div class="UserimgSection">
-          <ion-avatar class="chatImage" slot="start">
-            <ion-img [src]="chat.image"></ion-img>
-            <span class="onlineOffline_icon"
-              [ngStyle]="{'background-color':(chat.status === 'online'? '#4cd137' : '#c23616')}"></span>
-          </ion-avatar>
-        </div>
-        <div class="usernameSection" padding-start padding >
-          <h5>
-            <ion-icon *ngIf="chat.group" name="people" color="medium"></ion-icon>
-            <ion-icon name="microphone" *ngIf="chat.broadcast" color="medium"></ion-icon>
-            {{chat.name}}
-          </h5>
-          <p class="descText" no-margin no-padding>{{chat.description}}</p>
-        </div>
-      </div>
-      <div slot="end" class="lastSection">
-        <ion-note *ngIf="chat.badge || !chat.time" class="sendTime">{{chat.sendTime}}</ion-note>
-        <ion-badge slot="end" class="userBadge" *ngIf="chat.badge">{{chat.badge}}</ion-badge>
-        <ion-note slot="end" *ngIf="chat.time">{{chat.time}}</ion-note>
-      </div>
 
+<ion-content>
+  <ion-segment mode="md" (ionChange)="segmentChanged($event)" padding>
+    <ion-segment-button mode="md" value="chat" checked fixed>
+      <div class="contentCenter">
+        <ion-icon name="chatboxes" slot="start" class="padding_right tab-icon"></ion-icon>
+        <ion-text slot=end>chat</ion-text>
+      </div>
+    </ion-segment-button>
+
+    <ion-segment-button mode="md" value="friends">
+      <div class="contentCenter">
+        <ion-icon name="person" slot="start" class="padding_right tab-icon"></ion-icon>
+        <ion-text slot=end>Address Book</ion-text>
+      </div>
+    </ion-segment-button>
+
+    <!-- <ion-segment-button mode="md" value="group">
+      <div class="contentCenter">
+        <ion-icon name="contacts" slot="start" class="padding_right tab-icon"></ion-icon>
+        <ion-text slot=end>Group</ion-text>
+      </div>
+    </ion-segment-button> -->
+  </ion-segment>
+  <!-- <content> -->
+  <ion-list *ngIf="segmentTab == 'chat' " no-padding>
+    <ion-item *ngFor="let chat of chatData; let idx = index" (click)="showSession(idx)">
+      <ion-avatar class="chatImage" slot="start">
+        <ion-img src="../../assets/chat/user2.png"></ion-img>
+      </ion-avatar>
+      <ion-label>
+        <div class="withcount">
+          <div class="nameAvatar">
+            <h2 color="light">{{chat.name}}
+            </h2>
+            <ion-avatar class="chatCount" *ngIf="chat.count">{{chat.count}}</ion-avatar>
+          </div>
+
+          <div class="timeEnd">
+            <ion-text slot="end" color="light">{{chat.time}}</ion-text>
+          </div>
+        </div>
+        <p class="widthHalf">{{chat.description}}</p>
+      </ion-label>
     </ion-item>
   </ion-list>
+
+  <ion-list *ngIf="segmentTab == 'friends' " no-padding>
+    <ion-item *ngFor="let address of addresses; let idx = index" (click)="showAction(idx)">
+      <ion-icon name="person-outline" slot="start"></ion-icon>
+      <ion-label>
+        <div class="withcount">
+          <div class="nameAvatar">
+            <h2 color="light">{{address.name}}
+            </h2>
+          </div> 
+         </div>
+        <p class="widthHalf">{{address.address}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  
+  <!-- </content> -->
 </ion-content>

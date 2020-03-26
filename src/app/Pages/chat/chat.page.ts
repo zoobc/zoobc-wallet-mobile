@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Services/auth-service';
+import { AddressBookService } from 'src/app/Services/address-book.service';
 
 
 @Component({
@@ -12,8 +13,11 @@ import { Account } from 'src/app/Services/auth-service';
 export class ChatPage implements OnInit {
 
   public chatData: Array<any>;
+  segmentTab: any;
+  addresses = [];
   account: Account;
   constructor(private router: Router,
+              private addressBookSrv: AddressBookService,
               private accountService: AccountService) {
 
       this.accountService.accountSubject.subscribe(() => {
@@ -25,7 +29,17 @@ export class ChatPage implements OnInit {
     this.account = await this.accountService.getCurrAccount();
   }
 
+
+  segmentChanged(event: any) {
+    this.segmentTab = event.detail.value;
+    console.log(this.segmentTab);
+  }
+
   ngOnInit() {
+    this.segmentTab = 'Chat';
+    this.loadAccount();
+    this.getAllAddress();
+
     this.chatData = [{
       name: 'Jovenica',
       address: 'xvbvn1',
@@ -126,6 +140,14 @@ export class ChatPage implements OnInit {
     }
     ];
 
+
+    console.log('---- All address in chat---- :', this.addresses);
+
+  }
+
+
+  showAction(idx: number){
+
   }
 
   showSession(idx: number) {
@@ -143,6 +165,13 @@ export class ChatPage implements OnInit {
     };
     this.router.navigate(['/chat-session'], navigationExtras);
 
+  }
+
+  async getAllAddress() {
+    const alladdress = await this.addressBookSrv.getAll();
+    if (alladdress) {
+      this.addresses = alladdress;
+    }
   }
 
 }
