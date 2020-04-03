@@ -89,7 +89,8 @@
     "ts-protoc-gen": "^0.10.0",
     "tslib": "^1.9.0",
     "tweetnacl": "^1.0.1",
-    "zone.js": "~0.8.29"
+    "zone.js": "~0.8.29",
+    "zoobc": "0.0.3-pre-release"
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.12.3",

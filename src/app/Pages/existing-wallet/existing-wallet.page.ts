@@ -41,9 +41,7 @@ export class ExistingWalletPage implements OnInit {
     this.errorMsg = '';
     this.isValidPhrase = true;
     this.wordCounter = 0;
-
     this.resetForm();
-
   }
 
   resetForm() {
@@ -72,33 +70,6 @@ export class ExistingWalletPage implements OnInit {
     }, 300);
 
   }
-
-  // onChangeMnemonic() {
-  //   this.passphrase = this.arrayPhrase.toString();
-  //   // console.log('===== this.passphraseField', this.passphrase);
-
-  //   if (!this.passphrase) {
-  //     this.errorMsg = '';
-  //     return;
-  //   }
-
-  //   this.isValidPhrase = this.mnemonicServ.validateMnemonic(this.passphrase);
-  //   // console.log('===== this.isValidPhrase', this.isValidPhrase);
-
-  //   const mnemonicNumLength = this.passphrase.trim().split(' ').length;
-  //   this.wordCounter = mnemonicNumLength;
-
-  //   if (!this.isValidPhrase) {
-  //     if (mnemonicNumLength < 1) {
-  //       this.errorMsg = '';
-  //     } else {
-  //       this.errorMsg = 'Passphrase not valid';
-  //     }
-
-  //   } else {
-  //     this.errorMsg = '';
-  //   }
-  // }
 
   openExistingWallet() {
     let haveEmpty = false;
