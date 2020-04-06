@@ -1,6 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NavParams, IonContent, Events } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/firestore';
+import * as firebase from 'firebase/app';
+import { Subscription, Observable } from 'rxjs';
+import { ChatService } from 'src/app/Services/chat.service';
 
 @Component({
   selector: 'app-chat-session',
@@ -26,9 +30,21 @@ export class ChatSessionPage implements OnInit {
   }>;
 
   index: number;
-  address = '';
-  name = '';
   sender = '';
+  sendername = '';
+  pair = '';
+  pairname = '';
+
+  chatId = '';
+  chatcontent: string;
+  created: number;
+  modified: number;
+
+  subs: Subscription;
+
+  private msgDbref: any;
+  private messageList = [];
+  private inputMessage = '';
 
   public count = 0;
   public arr = [
@@ -43,7 +59,6 @@ export class ChatSessionPage implements OnInit {
       time: 1488349800000,
       message: 'Hey, thats an awesome chat UI',
       status: 'success'
-
     },
     {
       messageId: '2',
@@ -107,18 +122,32 @@ export class ChatSessionPage implements OnInit {
     }
   ];
 
-
+  chat$: Observable<any>;
+  newMsg: string;
 
   constructor(private events: Events,
-              private activeRoute: ActivatedRoute) {
+              public cs: ChatService,
+              private route: ActivatedRoute,
+              private activeRoute: ActivatedRoute,
+              private db: AngularFirestore) {
+
+    
 
     this.activeRoute.queryParams.subscribe(params => {
-      console.log('=== Params: ', params);
+      console.log('=== queryParams Params: ', params);
       this.index = params.idx;
       this.sender = params.sender;
-      this.name = params.name;
-      this.address = params.address;
+      this.sendername = params.sendername;
+      this.pair = params.pair;
+      this.pairname = params.pairname;
+      this.chatId = params.chatId;
+      console.log('== Sender: ', this.sender);
+      const doc = this.db.collection('chats').doc(this.sender).get();
+
+
     });
+
+
 
     this.msgList = [
       {
@@ -190,10 +219,35 @@ export class ChatSessionPage implements OnInit {
   }
 
   ngOnInit() {
+
+    this.loadChat(this.sender);
+    const source = this.cs.get(this.chatId);
+    console.log('=== Doc Source: ', source);
+    this.chat$ = this.cs.joinUsers(source);
+  }
+
+  loadChat(sender) {
+
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
+
+    const doc = this.db.collection('chats').doc(sender).get();
+    this.subs = doc.subscribe((snapshot) => {
+      const chat = snapshot.data();
+      if (!chat) {
+        this.chatcontent = '### This page does not exist';
+      } else {
+        this.chatcontent = chat.content;
+        this.created = chat.created;
+        this.modified = chat.modified;
+        console.log(chat);
+      }
+    });
   }
 
   scrollToBottom() {
-    this.content.scrollToBottom(100);
+    // this.content.scrollToBottom(100);
   }
 
   ionViewWillLeave() {
@@ -203,8 +257,8 @@ export class ChatSessionPage implements OnInit {
   ionViewDidEnter() {
     console.log('scrollBottom');
     setTimeout(() => {
-      this.scrollToBottom()
-    }, 500)
+      this.scrollToBottom();
+    }, 500);
     console.log('scrollBottom2');
   }
 
@@ -215,47 +269,56 @@ export class ChatSessionPage implements OnInit {
   }
 
   logScrolling(event) {
-    console.log('event', event)
+    console.log('event', event);
   }
 
 
+  submit(chatId) {
+    this.cs.sendMessage(chatId, this.newMsg);
+    this.newMsg = '';
+  }
+
+  trackByCreated(i, msg) {
+    return msg.createdAt;
+  }
+
 
   sendMsg() {
-    let otherUser;
-    if (this.count === 0) {
-      otherUser = this.arr[0].message
-      this.count++
-    }
-    else if (this.count == this.arr.length) {
-      this.count = 0;
-      otherUser = this.arr[this.count].message
-    }
-    else {
-      otherUser = this.arr[this.count].message;
-      this.count++
-    }
 
-    this.msgList.push({
-      userId: this.User,
-      userName: this.User,
-      userAvatar: 'assets/user.jpeg',
-      time: '12:01 pm',
-      message: this.inp_text,
-      upertext: this.inp_text
-    })
-    this.msgList.push({
-      userId: this.toUser,
-      userName: this.toUser,
-      userAvatar: 'assets/user.jpeg',
-      time: '12:01 pm',
-      message: otherUser,
-      upertext: otherUser
-    });
-    this.inp_text = '';
-    console.log('scrollBottom');
-    setTimeout(() => {
-      this.scrollToBottom()
-    }, 10)
+
+    // let otherUser;
+    // if (this.count === 0) {
+    //   otherUser = this.arr[0].message;
+    //   this.count++;
+    // } else if (this.count == this.arr.length) {
+    //   this.count = 0;
+    //   otherUser = this.arr[this.count].message;
+    // } else {
+    //   otherUser = this.arr[this.count].message;
+    //   this.count++;
+    // }
+
+    // this.msgList.push({
+    //   userId: this.User,
+    //   userName: this.User,
+    //   userAvatar: 'assets/user.jpeg',
+    //   time: '12:01 pm',
+    //   message: this.inp_text,
+    //   upertext: this.inp_text
+    // });
+    // this.msgList.push({
+    //   userId: this.toUser,
+    //   userName: this.toUser,
+    //   userAvatar: 'assets/user.jpeg',
+    //   time: '12:01 pm',
+    //   message: otherUser,
+    //   upertext: otherUser
+    // });
+    // this.inp_text = '';
+    // console.log('scrollBottom');
+    // setTimeout(() => {
+    //   this.scrollToBottom();
+    // }, 10);
   }
 
 

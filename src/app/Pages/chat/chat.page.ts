@@ -3,7 +3,11 @@ import { NavigationExtras, Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Services/auth-service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-
+import { AngularFireDatabase } from '@angular/fire/database';
+import { NavController } from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { FIREBASE_CHAT } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-chat',
@@ -16,8 +20,16 @@ export class ChatPage implements OnInit {
   segmentTab: any;
   addresses = [];
   account: Account;
+  email = '';
+  uid = '';
+  docRef: any;
+
   constructor(private router: Router,
+              private afs: AngularFirestore,
+              private httpClient: HttpClient,
               private addressBookSrv: AddressBookService,
+              private navCtrl: NavController,
+              private authService: AddressBookService,
               private accountService: AccountService) {
 
       this.accountService.accountSubject.subscribe(() => {
@@ -35,7 +47,40 @@ export class ChatPage implements OnInit {
     console.log(this.segmentTab);
   }
 
+
+  async getUser(){
+    if (this.authService.userDetails()) {
+
+
+      const { uid } = await this.authService.userDetails();
+
+      const data = {
+        uid,
+        createdAt: Date.now(),
+        count: 0,
+        messages: []
+      };
+
+      this.docRef = await this.afs.collection(FIREBASE_CHAT).add(data);
+      console.log('============== doc ref: ', this.docRef);
+
+      const userEmail = this.authService.userDetails().email;
+
+      console.log('=== User Detail: ', this.authService.userDetails());
+    } else {
+      this.navCtrl.navigateBack('/login-backup');
+    }
+
+  }
+
   ngOnInit() {
+
+
+    const urlNodeFirebase = '/apps/zbchat/contacts/';
+    //const d = this.db.object(urlNodeFirebase);
+
+    this.getUser();
+
     this.segmentTab = 'Chat';
     this.loadAccount();
     this.getAllAddress();
@@ -150,17 +195,32 @@ export class ChatPage implements OnInit {
 
   }
 
-  showSession(idx: number) {
+  async showSession(idx: number) {
 
     const chat = this.chatData[idx];
     console.log('... di session ', chat);
 
+
+    const uid = this.account.address;
+    const data = {
+      uid,
+      createdAt: Date.now(),
+      count: 0,
+      messages: []
+    };
+
+    this.docRef = await this.afs.collection(FIREBASE_CHAT).add(data);
+    console.log('============== doc ref: ', this.docRef);
+
+
     const navigationExtras: NavigationExtras = {
       queryParams: {
         sender: this.account.address,
-        name: chat.name,
-        address: chat.address,
-        index: idx
+        sendername: this.account.name,
+        pair: chat.address,
+        pairname: chat.name,
+        index: idx,
+        chatId: this.docRef.id
       }
     };
     this.router.navigate(['/chat-session'], navigationExtras);

@@ -111,12 +111,15 @@
     </ion-col>
   </ion-row>
 
+
+
+
+
 </ion-content>
 
 <ion-footer translucent>
   <ion-item>
     <ion-icon slot="start" name="camera" expand="icon-only" class="footerIcon"></ion-icon>
-    <ion-input class="input-box" type="text" placeholder="Write a message..." [(ngModel)]="user_input"
-      (keypress)="userTyping($event)"></ion-input>
+    <ion-input class="input-box" type="text" placeholder="Write a message..." [(ngModel)]="newMsg" (keydown.enter)="submit(chatId)"></ion-input>
   </ion-item>
 </ion-footer>
