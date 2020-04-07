@@ -83,10 +83,12 @@ const routes: Routes = [
   { path: 'transactions', loadChildren: './Pages/transactions/transactions.module#TransactionsPageModule', canActivate: [AuthService] },
   { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' },
     // tslint:disable-next-line:max-line-length
-  { path: 'backuprestore-address', loadChildren: './Pages/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule' },  { path: 'reg-backup', loadChildren: './Pages/backuprestore-address/reg-backup/reg-backup.module#RegBackupPageModule' },
+  { path: 'backuprestore-address', loadChildren: './Pages/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule' },
+  { path: 'reg-backup', loadChildren: './Pages/backuprestore-address/reg-backup/reg-backup.module#RegBackupPageModule' },
   { path: 'login-backup', loadChildren: './Pages/backuprestore-address/login-backup/login-backup.module#LoginBackupPageModule' },
   { path: 'chat', loadChildren: './Pages/chat/chat.module#ChatPageModule' },
-  { path: 'chat-session', loadChildren: './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule' }
+  { path: 'chat-session', loadChildren: './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule' },
+  { path: 'chat-profile', loadChildren: './Pages/chat/chat-profile/chat-profile.module#ChatProfilePageModule' }
 
 ];
 @NgModule({

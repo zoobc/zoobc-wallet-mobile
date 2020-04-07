@@ -42,6 +42,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { ChatProfilePageModule } from './Pages/chat/chat-profile/chat-profile.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -72,6 +73,7 @@ export function createTranslateLoader(http: HttpClient) {
     SetupPinPageModule,
     EnterpinsendPageModule,
     PinBackupPageModule,
+    ChatProfilePageModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireAuthModule,
