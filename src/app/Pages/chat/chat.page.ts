@@ -8,6 +8,8 @@ import { NavController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
+import { ChatService } from 'src/app/Services/chat.service';
+import { User } from 'src/app/Models/chatmodels';
 
 @Component({
   selector: 'app-chat',
@@ -16,17 +18,13 @@ import { FIREBASE_CHAT } from 'src/environments/variable.const';
 })
 export class ChatPage implements OnInit {
 
-  public chatData: Array<any>;
-  segmentTab: any;
   addresses = [];
   account: Account;
   email = '';
-  uid = '';
-  docRef: any;
+  chatuser: User;
 
   constructor(private router: Router,
-              private afs: AngularFirestore,
-              private httpClient: HttpClient,
+              private chatService: ChatService,
               private addressBookSrv: AddressBookService,
               private navCtrl: NavController,
               private authService: AddressBookService,
@@ -42,152 +40,10 @@ export class ChatPage implements OnInit {
   }
 
 
-  segmentChanged(event: any) {
-    this.segmentTab = event.detail.value;
-    console.log(this.segmentTab);
-  }
-
-
-  async getUser(){
-    if (this.authService.userDetails()) {
-
-
-      const { uid } = await this.authService.userDetails();
-
-      const data = {
-        uid,
-        createdAt: Date.now(),
-        count: 0,
-        messages: []
-      };
-
-      this.docRef = await this.afs.collection(FIREBASE_CHAT).add(data);
-      console.log('============== doc ref: ', this.docRef);
-
-      const userEmail = this.authService.userDetails().email;
-
-      console.log('=== User Detail: ', this.authService.userDetails());
-    } else {
-      this.navCtrl.navigateBack('/login-backup');
-    }
-
-  }
-
   ngOnInit() {
-
-
-    const urlNodeFirebase = '/apps/zbchat/contacts/';
-    //const d = this.db.object(urlNodeFirebase);
-
-    this.getUser();
-
-    this.segmentTab = 'Chat';
     this.loadAccount();
     this.getAllAddress();
-
-    this.chatData = [{
-      name: 'Jovenica',
-      address: 'xvbvn1',
-      image: '../../assets/chat/user.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'online',
-      count: '2',
-      time: '2 min ago'
-
-    }, {
-      name: 'Oliver',
-      address: 'xvbvn2',
-      image: ' ../../assets/chat/user3.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'offline',
-      badge: '4',
-      sendTime: '18:34',
-      group: true
-
-    }, {
-      name: 'George',
-      address: 'xvbvn3',
-      image: ' ../../assets/chat/user4.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'offline',
-      count: '2',
-      sendTime: '18:30',
-      broadcast: true
-
-    }, {
-      name: 'Harry',
-      address: 'xvbvn4',
-      image: ' ../../assets/chat/user1.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'online',
-      badge: '6',
-      sendTime: '17:55'
-    }, {
-      name: 'Jack',
-      address: 'xvbvn5',
-      image: ' ../../assets/chat/user.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'offline',
-      sendTime: '17:55'
-    }, {
-      name: 'Jacob',
-      address: 'xvbvn6',
-      image: ' ../../assets/chat/user3.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'offline',
-      count: '1',
-      sendTime: '17:50'
-    }, {
-      name: 'Noah',
-      address: 'xvbvn7',
-      image: ' ../../assets/chat/user2.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'offline',
-      sendTime: '17:40'
-    }, {
-      name: 'Charlie',
-      address: 'xvbvn8',
-      image: ' ../../assets/chat/user4.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'online',
-      count: '6',
-      badge: '8',
-      sendTime: '17:40'
-    }, {
-      name: 'Logan',
-      address: 'xvbvn9',
-      image: ' ../../assets/chat/user.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'offline',
-      badge: '8',
-      sendTime: '17:40'
-    }, {
-      name: 'Harrison',
-      address: 'xvbvn10',
-      image: ' ../../assets/chat/user2.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'offline',
-      sendTime: '17:40'
-    }, {
-      name: 'Sebastian',
-      address: 'xvbvn11',
-      image: ' ../../assets/chat/user1.jpeg',
-      description: '  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'online',
-      sendTime: '17:40'
-    }, {
-      name: 'Zachary',
-      address: 'xvbvn12',
-      image: ' ../../assets/chat/user4.jpeg',
-      description: ' Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim laboriosam sunt. ',
-      status: 'offline',
-      sendTime: '17:40'
-    }
-    ];
-
-
     console.log('---- All address in chat---- :', this.addresses);
-
   }
 
 
@@ -197,20 +53,34 @@ export class ChatPage implements OnInit {
 
   async showSession(idx: number) {
 
-    const chat = this.chatData[idx];
+    const chat = this.addresses[idx];
     console.log('... di session ', chat);
 
-
-    const uid = this.account.address;
-    const data = {
-      uid,
-      createdAt: Date.now(),
-      count: 0,
-      messages: []
+    this.chatuser = {
+      name: this.account.name,
+      address: this.account.address,
+      email: '',
+      time: new Date().getTime().toString()
     };
 
-    this.docRef = await this.afs.collection(FIREBASE_CHAT).add(data);
-    console.log('============== doc ref: ', this.docRef);
+    const chatpartner = {
+      name: chat.name,
+      address: chat.address,
+      email: '',
+      time: new Date().getTime().toString()
+    };
+
+    this.chatService.currentChatPairId = this.chatService.createPairId(
+      this.chatuser,
+      chatpartner
+    );
+
+    this.chatService.currentChatPairId2 = this.chatService.createPairId2(
+      this.chatuser,
+      chatpartner
+    );
+
+    this.chatService.currentChatPartner = chatpartner;
 
 
     const navigationExtras: NavigationExtras = {
@@ -219,8 +89,7 @@ export class ChatPage implements OnInit {
         sendername: this.account.name,
         pair: chat.address,
         pairname: chat.name,
-        index: idx,
-        chatId: this.docRef.id
+        index: idx
       }
     };
     this.router.navigate(['/chat-session'], navigationExtras);
