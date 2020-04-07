@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button color="success"></ion-back-button>
     </ion-buttons>
-    <ion-title color="light" text-center>
+    <ion-title color="light" class="ion-text-center">
     {{chatpartner.name}}
     </ion-title>
   </ion-toolbar>
@@ -11,20 +11,23 @@
 <ion-content #content fullscreen="true">
   <ion-list>
     <div  *ngFor="let chat of chats; let i = index">
-      <ion-row *ngIf="chat.sender == sender">
-        <ion-col class="right" no-padding>
+      <ion-row *ngIf="chat.sender != sender">
+        <ion-col class="right ion-no-padding" [ngClass]="{'clubbed':((chats[i+1] && chats[i+1].sender != chat.sender)|| !chats[i+1])}">
           <div class="imageAvatarRight">
             <div class="imageAvatarBottom">
-              <ion-avatar class="avatar">
+              <ion-avatar class="avatar" [ngClass]="(chats[i+1] && chats[i+1].sender == chat.sender)?'hidden':''">
                 <div class="imageAvatarBottomIcon">
                   <ion-icon name="add" expand="icon-only" color="light"> </ion-icon>
                 </div>
-                <ion-img src="../../assets/chat/user2.png"></ion-img>
+                <ion-img src="../../assets/chat/user.png"></ion-img>
               </ion-avatar>
             </div>
-            <ion-label color="light">
+            <ion-label color="light" [ngClass]="{'sharper':((chats[i+1] && chats[i+1].sender == chat.sender) && 
+              (chats[i-1] && chats[i-1].sender == chat.sender)),
+              'sharper-top':(chats[i-1] && chats[i-1].sender == chat.sender),
+              'sharper-bottom':(chats[i+1] && chats[i+1].sender == chat.sender)}">
               <div class="chatDiv">
-                <p text-wrap padding>{{chat.message}}
+                <p class="ion-text-wrap ion-padding">{{chat.message}}
                 </p>
                 <div class="corner-parent-right">
                   <div class="corner-child-right">
@@ -35,14 +38,14 @@
             </ion-label>
           </div>
         </ion-col>
-      </ion-row>
-   
-    <ion-row *ngIf="chat.sender == pair">
-      <ion-col class="left" no-padding>
+    </ion-row>
+
+    <ion-row *ngIf="chat.sender == sender">
+      <ion-col class="left ion-no-padding" [ngClass]="{'clubbed':((chats[i+1] && chats[i+1].sender != chat.sender)|| !chats[i+1])}">
         <div class="imageAvatarLeft">
           <ion-label color="light">
             <div class="chatDiv">
-              <p text-wrap padding>{{chat.message}}</p>
+              <p class="ion-text-wrap ion-padding">{{chat.message}}</p>
               <div class="corner-parent-left">
                 <div class="corner-child-left">
     
@@ -51,10 +54,9 @@
             </div>
           </ion-label>
           <div class="imageAvatarBottom">
-            <!-- <ion-icon class="imageAvatarBottomIcon" name="add" expand="icon-only" color="success"></ion-icon> -->
-            <ion-avatar class="avatar" >
+            <ion-avatar class="avatar" [ngClass]="(chats[i+1] && chats[i+1].sender == chat.sender)?'hidden':''">
               <div class="imageAvatarBottomIcon">
-                <ion-icon name="add" expand="icon-only" color="light"> </ion-icon>
+                <!-- <ion-icon name="add" expand="icon-only" color="light"> </ion-icon> -->
               </div>
               <ion-img src="../../assets/chat/user2.png"></ion-img>
             </ion-avatar>
@@ -62,9 +64,9 @@
         </div>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="chat.sender != pair">
+    <ion-row *ngIf="((chats[i+1] && chats[i+1].sender != chat.sender)|| !chats[i+1])">
       <ion-col>
-        <ion-text>{{chat.time}}</ion-text>
+        <ion-text>{{chat.time.toDate() | date: 'dd MMM hh:mm:ss'}}</ion-text>
       </ion-col>
     </ion-row>
 
@@ -78,21 +80,20 @@
   </ion-fab>
 
   <ion-row *ngIf="loader">
-    <ion-col no-padding class="loading-col">
+    <ion-col class="loading-col ion-no-padding ">
       <div class="imageAvatarRight">
         <div class="imageAvatarBottomLoader">
           <ion-avatar class="avatar">
             <div class="imageAvatarBottomIcon">
               <ion-icon name="add" expand="icon-only" color="light"> </ion-icon>
             </div>
-            <ion-img src="../../assets/chat/chat5.jpg"></ion-img>
+            <ion-img src="../../assets/chat/loader.gif"></ion-img>
           </ion-avatar>
         </div>
         <ion-label>
           <div class="chatDivLoader">
             <ion-spinner name="dots" color="light"></ion-spinner>
-            <!-- <ion-img src="../../assets/chat/loader.gif"></ion-img> -->
-            <!-- <p text-wrap padding> {{paramData.name || 'Pam'}} is typing...</p> -->
+            <ion-img src="../../assets/chat/loader.gif"></ion-img>
             <div class="corner-parent-right">
               <div class="corner-child-right">
 

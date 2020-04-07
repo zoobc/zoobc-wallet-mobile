@@ -1,6 +1,5 @@
-
 ion-content {
-  --background: radial-gradient(at 0 50%,rgb(96, 139, 204),#5B2573);
+  --background: radial-gradient(at 0 50%,rgb(173, 42, 162),#5B2573);
 }
 ion-header{
   --background: #5B2573
@@ -176,7 +175,7 @@ ion-input {
   display: flex;
   justify-content: center;
   .corner-parent-right{
-    background: #648fac7a;
+    background: #9164ac7a;
     height: 10px;
     width: 10px;
     position: absolute;
