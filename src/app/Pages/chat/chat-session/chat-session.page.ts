@@ -5,6 +5,9 @@ import { Subscription} from 'rxjs';
 import { ChatService } from 'src/app/Services/chat.service';
 import { Chat } from 'src/app/Models/chatmodels';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
+import { IonContent } from '@ionic/angular';
+import * as firebase from 'firebase';
+
 
 @Component({
   selector: 'app-chat-session',
@@ -13,8 +16,7 @@ import { FIREBASE_CHAT } from 'src/environments/variable.const';
 })
 export class ChatSessionPage implements OnInit {
 
-  // @ViewChild('content') content: IonContent;
-  @ViewChild('content') content: any;
+  @ViewChild('content') content: IonContent;
   @ViewChild('chat_input') messageInput: ElementRef;
 
   showEmojiPicker = false;
@@ -37,7 +39,7 @@ export class ChatSessionPage implements OnInit {
   chatcontent: string;
   created: number;
   modified: number;
-
+  loader: boolean;
   subs: Subscription;
 
   private msgDbref: any;
@@ -74,35 +76,38 @@ export class ChatSessionPage implements OnInit {
 
   }
 
-  ngOnInit() {
+  async scrollToBottom() {
+    setTimeout(() => {
+      this.content.scrollToBottom(50);
+    }, 400);
+  }
 
-    console.log(' ====== current chart PairID:  ', this.chatService.currentChatPairId);
-    console.log(' ====== current chart PairID2:  ', this.chatService.currentChatPairId2);
+  ngOnInit() {
 
     this.db
       .collection<Chat>(FIREBASE_CHAT, res => {
-        return res.where('pair', 'in', [this.chatService.currentChatPairId, this.chatService.currentChatPairId2]);
+        return res.where('pair', 'in', [this.chatService.currentChatPairId, this.chatService.currentChatPairId2]).orderBy('time').limit(500);
       })
       .valueChanges()
       .subscribe(chats => {
         console.log('== all chat is: ', chats);
+        this.loader = true;
         this.chats = chats;
+        this.scrollToBottom();
+        this.loader = false;
       });
   }
 
-
-
-  addChat() {
-
-
+  async addChat() {
+    this.loader = true;
     if (this.message && this.message !== '') {
-      console.log('== Message: ', this.message);
+      console.log('== Firebase time stamp: ', firebase.firestore.FieldValue.serverTimestamp());
 
       this.chatPayload = {
         message: this.message,
         sender: this.sender,
         pair: this.chatService.currentChatPairId,
-        time: new Date().getTime()
+        time: firebase.firestore.FieldValue.serverTimestamp() // new Date().getTime()
       };
 
       this.chatService
@@ -112,11 +117,14 @@ export class ChatSessionPage implements OnInit {
           this.message = '';
 
           // Scroll to bottom
-          this.content.scrollToBottom(300);
+          this.scrollToBottom();
+          this.loader = false;
         })
         .catch(err => {
           console.log(err);
         });
+
+      this.scrollToBottom();
     }
 
   } // addChat
