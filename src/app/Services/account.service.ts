@@ -92,8 +92,8 @@ export class AccountService {
       accounts = [];
     }
 
-    console.log('====== accounts 2 : ', accounts);
 
+    const { path } = account;
     const isDuplicate =  accounts.find(acc => {
       if (path && acc.path === path) {
         return true;
@@ -101,11 +101,6 @@ export class AccountService {
       return false;
     });
 
-    console.log('====== isDuplicate: ', isDuplicate);
-
-    console.log('====== accounts 3: ', accounts);
-    const { path } = account;
-    console.log('====== Path: ', path);
 
     if (!isDuplicate) {
       accounts.push(account);
