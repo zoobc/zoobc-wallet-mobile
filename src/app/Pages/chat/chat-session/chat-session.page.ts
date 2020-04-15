@@ -86,7 +86,8 @@ export class ChatSessionPage implements OnInit {
 
     this.db
       .collection<Chat>(FIREBASE_CHAT, res => {
-        return res.where('pair', 'in', [this.chatService.currentChatPairId, this.chatService.currentChatPairId2]).orderBy('time').limit(500);
+        return res.where('chatId', 'in', [this.chatService.currentChatPairId,
+          this.chatService.currentChatPairId2]).orderBy('time').limit(500);
       })
       .valueChanges()
       .subscribe(chats => {
@@ -106,7 +107,8 @@ export class ChatSessionPage implements OnInit {
       this.chatPayload = {
         message: this.message,
         sender: this.sender,
-        pair: this.chatService.currentChatPairId,
+        pair: this.pair,
+        chatId: this.chatService.currentChatPairId,
         time: firebase.firestore.FieldValue.serverTimestamp() // new Date().getTime()
       };
 

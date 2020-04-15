@@ -11,7 +11,7 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import {
   STORAGE_OPENEXCHANGE_RATES,
   STORAGE_TRX_FEES, STORAGE_ACTIVE_CURRENCY, NETWORK_LIST,
-  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY
+  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY, FIREBASE_CHAT
 } from 'src/environments/variable.const';
 import { TransactionFeesService } from './Services/transaction-fees.service';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -20,6 +20,10 @@ import { TransactionService } from './Services/transaction.service';
 import { StoragedevService } from './Services/storagedev.service';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { environment } from 'src/environments/environment';
+import { Chat } from './Models/chatmodels';
+import { ChatService } from './Services/chat.service';
+import { AccountService } from 'src/app/Services/account.service';
+import { AuthService, Account } from 'src/app/Services/auth-service';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +31,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AppComponent implements OnInit {
   public rootPage: any = AboutPage;
-
+  public currentAccount: Account;
   private connectionText = '';
 
   constructor(
@@ -46,9 +50,18 @@ export class AppComponent implements OnInit {
     private translateService: TranslateService,
     private oneSignal: OneSignal,
     private alertCtrl: AlertController,
+    private accountService: AccountService,
+    private chatService: ChatService,
+    private db: AngularFirestore,
     private currencyService: CurrencyService
   ) {
     this.initializeApp();
+
+    // if account changed
+    this.accountService.accountSubject.subscribe(() => {
+      this.showNotification();
+    });
+
   }
 
   initializeApp() {
@@ -68,6 +81,21 @@ export class AppComponent implements OnInit {
 
       this.splashScreen.hide();
     });
+  }
+
+
+  async showNotification() {
+    this.currentAccount = await this.accountService.getCurrAccount();
+    console.log('============ Current account on Component: ', this.currentAccount.address);
+    this.db
+      .collection<Chat>(FIREBASE_CHAT, res => {
+        return res.where('pair', 'in', [this.currentAccount.address]).orderBy('time').limit(10);
+      })
+      .valueChanges()
+      .subscribe(chats => {
+        console.log('... Receive Chat ...');
+        // TODO make notification for received chat
+      });
   }
 
   async setDefaultCurrency() {

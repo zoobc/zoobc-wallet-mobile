@@ -9,5 +9,6 @@ export interface Chat {
     message: string;
     pair: string;
     sender: string;
+    chatId: string;
     time: any;
 }
