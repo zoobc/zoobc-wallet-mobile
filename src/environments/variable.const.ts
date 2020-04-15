@@ -187,17 +187,18 @@ export const LANGUAGES = [
   }
 ];
 
-export const NETWORK_LIST = [{
+export const NETWORK_LIST = [
+  {
     name: 'Alpha Testnet',
-    domain: 'https://n0.alpha.proofofparticipation.network:8443'
+    domain: '//n1.alpha.proofofparticipation.network:8080'
   },
   {
-    name: 'Demo',
-    domain: 'https://n0.demo.proofofparticipation.network'
+    name: 'Demo Testnet 1',
+    domain: '//85.90.246.90:8002',
   },
   {
-    name: 'Local Testnet',
-    domain: 'http://192.168.20.242:7001'
+    name: 'Demo Testnet 2',
+    domain: '//45.79.39.58:8002'
   }];
 
 export const THEME_LIST = [
