@@ -21,7 +21,7 @@
         </p>
         <div style="border:1px solid #cccccc">
           <ion-select interface="action-sheet" [(ngModel)]="activeNetwork" (ionChange)="selectActiveNetwork()">
-            <ion-select-option *ngFor="let network of networks" value="{{ network.domain }}">
+            <ion-select-option *ngFor="let network of networks" value="{{ network.host }}">
               {{ network.name }}
             </ion-select-option>
           </ion-select>

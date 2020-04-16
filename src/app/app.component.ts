@@ -98,7 +98,7 @@ export class AppComponent implements OnInit {
   async setNodes() {
     const node = await this.strgSrv.get(STORAGE_SELECTED_NODE);
     if (!node) {
-      await this.strgSrv.set(STORAGE_SELECTED_NODE, NETWORK_LIST[0].domain);
+      await this.strgSrv.set(STORAGE_SELECTED_NODE, NETWORK_LIST[0].host);
       this.transactionService.loadRpcUrl();
     }
   }
