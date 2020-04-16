@@ -184,17 +184,22 @@ export const LANGUAGES = [
   }
 ];
 
-export const NETWORK_LIST = [{
-    name: 'Alpha Testnet',
-    domain: 'https://n0.alpha.proofofparticipation.network:8443'
+export const NETWORK_LIST = [
+  {
+    name: 'Demo 1',
+    host: 'http://85.90.246.90:8002'
   },
   {
-    name: 'Demo',
-    domain: 'https://n0.demo.proofofparticipation.network'
+    name: 'Demo 2',
+    host: 'http://45.79.39.58:8002'
+  },
+  {
+    name: 'Alpha Testnet',
+    host: 'https://n1.alpha.proofofparticipation.network:8080'
   },
   {
     name: 'Local Testnet',
-    domain: 'http://192.168.20.242:7001'
+    host: 'http://192.168.20.242:7001'
   }];
 
 export const TRX_FEE_LIST = [{
