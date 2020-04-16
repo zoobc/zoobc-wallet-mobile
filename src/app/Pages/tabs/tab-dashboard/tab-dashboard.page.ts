@@ -16,7 +16,8 @@ import {
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { CONST_DEFAULT_CURRENCY, CONST_DEFAULT_RATE } from 'src/environments/variable.const';
+import { CONST_DEFAULT_CURRENCY, CONST_DEFAULT_RATE, NETWORK_LIST } from 'src/environments/variable.const';
+import zoobc from 'zoobc';
 
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
@@ -122,11 +123,9 @@ export class TabDashboardPage implements OnInit {
     this.isError = false;
 
     this.account = await this.accountService.getCurrAccount();
-    // console.log('==== this.account: ', this.account);
     this.currencyRate = this.currencyServ.getRate();
 
-    // console.log('==== this.currencyRate: ', this.currencyRate);
-
+    zoobc.Network.list(NETWORK_LIST);
     this.getBalance();
   }
 
@@ -138,54 +137,92 @@ export class TabDashboardPage implements OnInit {
     this.isError = false;
     const date1 = new Date();
     this.isLoadingBalance = true;
-    // console.log('==== this.account2: ', this.account.address);
-    await this.transactionServ.getAccountBalance(this.account.address).then((data: AccountBalanceList) => {
-      this.accountBalance = data.accountbalance;
-    }).catch((error) => {
-      this.accountBalance = {
-        accountaddress: '',
-        blockheight: 0,
-        spendablebalance: 0,
-        balance: 0,
-        poprevenue: '',
-        latest: false
-      };
-      this.errorMsg = '';
-      this.isError = false;
-      if (error === 'error: account not found') {
-        // do something here
-      } else if (error === 'Response closed without headers') {
-        const date2 = new Date();
-        const diff = date2.getTime() - date1.getTime();
-        // console.log('== diff: ', diff);
-        if (diff < 5000) {
-          this.errorMsg = 'Please check internet connection!';
+
+    await zoobc.Account.getBalance(this.account.address)
+      .then(data => {
+        this.accountBalance = data.accountbalance;
+      })
+      .catch(error => {
+        this.accountBalance = {
+          accountaddress: '',
+          blockheight: 0,
+          spendablebalance: 0,
+          balance: 0,
+          poprevenue: '',
+          latest: false
+        };
+        this.errorMsg = '';
+        this.isError = false;
+        if (error === 'error: account not found') {
+          // do something here
+        } else if (error === 'Response closed without headers') {
+          const date2 = new Date();
+          const diff = date2.getTime() - date1.getTime();
+          // console.log('== diff: ', diff);
+          if (diff < 5000) {
+            this.errorMsg = 'Please check internet connection!';
+          } else {
+            this.errorMsg = 'Fail connect to services, please try again later!';
+          }
+
+          this.isError = true;
+        } else if (error === 'all SubConns are in TransientFailure') {
+          this.errorMsg = 'All SubConns are in TransientFailure';
         } else {
-          this.errorMsg = 'Fail connect to services, please try again later!';
+          this.errorMsg = error;
         }
+        console.error(' ==== have error: ', error);
+      })
+      .finally(() => (this.isLoadingBalance = false));
 
-        this.isError = true;
-      } else if (error === 'all SubConns are in TransientFailure') {
-        // do something here
-      } else {
+    // console.log('==== this.account2: ', this.account.address);
+    // await this.transactionServ.getAccountBalance(this.account.address).then((data: AccountBalanceList) => {
+    //   this.accountBalance = data.accountbalance;
+    // }).catch((error) => {
+    //   this.accountBalance = {
+    //     accountaddress: '',
+    //     blockheight: 0,
+    //     spendablebalance: 0,
+    //     balance: 0,
+    //     poprevenue: '',
+    //     latest: false
+    //   };
+    //   this.errorMsg = '';
+    //   this.isError = false;
+    //   if (error === 'error: account not found') {
+    //     // do something here
+    //   } else if (error === 'Response closed without headers') {
+    //     const date2 = new Date();
+    //     const diff = date2.getTime() - date1.getTime();
+    //     // console.log('== diff: ', diff);
+    //     if (diff < 5000) {
+    //       this.errorMsg = 'Please check internet connection!';
+    //     } else {
+    //       this.errorMsg = 'Fail connect to services, please try again later!';
+    //     }
 
-      }
+    //     this.isError = true;
+    //   } else if (error === 'all SubConns are in TransientFailure') {
+    //     // do something here
+    //   } else {
 
-      console.error(' ==== have error: ', error);
-    }).finally(() => {
-      this.isLoadingBalance = false;
+    //   }
 
-      // TODO REMOVE THIS
-      // this.accountBalance = {
-      //   accountaddress: '',
-      //   blockheight: 0,
-      //   spendablebalance: 3000000000,
-      //   balance: 2000000000,
-      //   poprevenue: '',
-      //   latest: false
-      // };
+    //   console.error(' ==== have error: ', error);
+    // }).finally(() => {
+    //   this.isLoadingBalance = false;
 
-    });
+    //   // TODO REMOVE THIS
+    //   // this.accountBalance = {
+    //   //   accountaddress: '',
+    //   //   blockheight: 0,
+    //   //   spendablebalance: 3000000000,
+    //   //   balance: 2000000000,
+    //   //   poprevenue: '',
+    //   //   latest: false
+    //   // };
+
+    // });
   }
 
   goToSend() {
