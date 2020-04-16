@@ -66,7 +66,7 @@
     </ion-row>
     <ion-row *ngIf="((chats[i+1] && chats[i+1].sender != chat.sender)|| !chats[i+1])">
       <ion-col>
-        <ion-text>{{chat.time.toDate() | date: 'dd MMM hh:mm:ss'}}</ion-text>
+        <ion-text *ngIf="chat.time">{{chat.time.toDate() | date: 'dd MMM hh:mm:ss'}}</ion-text>
       </ion-col>
     </ion-row>
 
