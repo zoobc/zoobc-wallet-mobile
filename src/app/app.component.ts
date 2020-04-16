@@ -21,9 +21,9 @@ import { StoragedevService } from './Services/storagedev.service';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { environment } from 'src/environments/environment';
 import { Chat } from './Models/chatmodels';
-import { ChatService } from './Services/chat.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { AuthService, Account } from 'src/app/Services/auth-service';
+import { Account } from 'src/app/Services/auth-service';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @Component({
   selector: 'app-root',
@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
     private oneSignal: OneSignal,
     private alertCtrl: AlertController,
     private accountService: AccountService,
-    private chatService: ChatService,
+    private notifications: LocalNotifications,
     private db: AngularFirestore,
     private currencyService: CurrencyService
   ) {
@@ -59,8 +59,9 @@ export class AppComponent implements OnInit {
 
     // if account changed
     this.accountService.accountSubject.subscribe(() => {
-      this.showNotification();
+      this.subscribeNotif();
     });
+
 
   }
 
@@ -77,14 +78,14 @@ export class AppComponent implements OnInit {
 
      // if (this.platform.is('cordova')) {
       this.setupPush();
-      //}
+      // }
 
       this.splashScreen.hide();
     });
   }
 
 
-  async showNotification() {
+  async subscribeNotif() {
     this.currentAccount = await this.accountService.getCurrAccount();
     console.log('============ Current account on Component: ', this.currentAccount.address);
     this.db
@@ -92,10 +93,18 @@ export class AppComponent implements OnInit {
         return res.where('pair', 'in', [this.currentAccount.address]).orderBy('time').limit(10);
       })
       .valueChanges()
-      .subscribe(chats => {
+      .subscribe(() => {
         console.log('... Receive Chat ...');
-        // TODO make notification for received chat
+        // this.showNotif();
       });
+  }
+
+  showNotif() {
+    this.notifications.schedule({
+      id: 1,
+      text: 'You receive msg from Other',
+      data: { secret: 'secret' }
+    });
   }
 
   async setDefaultCurrency() {
