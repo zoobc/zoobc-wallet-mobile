@@ -3,13 +3,9 @@ import { NavigationExtras, Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Services/auth-service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { AngularFireDatabase } from '@angular/fire/database';
-import { NavController } from '@ionic/angular';
-import { HttpClient } from '@angular/common/http';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { FIREBASE_CHAT } from 'src/environments/variable.const';
 import { ChatService } from 'src/app/Services/chat.service';
 import { User } from 'src/app/Models/chatmodels';
+import * as firebase from 'firebase/app';
 
 @Component({
   selector: 'app-chat',
@@ -26,13 +22,11 @@ export class ChatPage implements OnInit {
   constructor(private router: Router,
               private chatService: ChatService,
               private addressBookSrv: AddressBookService,
-              private navCtrl: NavController,
-              private authService: AddressBookService,
               private accountService: AccountService) {
 
-      this.accountService.accountSubject.subscribe(() => {
-          this.loadAccount();
-      });
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadAccount();
+    });
   }
 
   async loadAccount() {
@@ -46,12 +40,12 @@ export class ChatPage implements OnInit {
     console.log('---- All address in chat---- :', this.addresses);
   }
 
-
-  showAction(idx: number){
-
-  }
-
   async showSession(idx: number) {
+    firebase.auth().signInAnonymously();
+
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+      console.log('Firebase User: ', firebaseUser);
+    });
 
     const chat = this.addresses[idx];
     console.log('... di session ', chat);
