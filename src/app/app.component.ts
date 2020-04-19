@@ -51,17 +51,9 @@ export class AppComponent implements OnInit {
     private oneSignal: OneSignal,
     private alertCtrl: AlertController,
     private accountService: AccountService,
-    private notifications: LocalNotifications,
-    private db: AngularFirestore,
     private currencyService: CurrencyService
   ) {
     this.initializeApp();
-
-    // if account changed
-    this.accountService.accountSubject.subscribe(() => {
-      this.subscribeNotif();
-    });
-
 
   }
 
@@ -84,28 +76,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-
-  async subscribeNotif() {
-    this.currentAccount = await this.accountService.getCurrAccount();
-    console.log('============ Current account on Component: ', this.currentAccount.address);
-    this.db
-      .collection<Chat>(FIREBASE_CHAT, res => {
-        return res.where('pair', 'in', [this.currentAccount.address]).orderBy('time').limit(10);
-      })
-      .valueChanges()
-      .subscribe(() => {
-        console.log('... Receive Chat ...');
-        // this.showNotif();
-      });
-  }
-
-  showNotif() {
-    this.notifications.schedule({
-      id: 1,
-      text: 'You receive msg from Other',
-      data: { secret: 'secret' }
-    });
-  }
 
   async setDefaultCurrency() {
     const curr = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
