@@ -112,7 +112,7 @@ export class ChatSessionPage implements OnInit {
         time: firebase.firestore.FieldValue.serverTimestamp() // new Date().getTime()
       };
 
-      this.chatService
+      await this.chatService
         .addChat(this.chatPayload)
         .then(() => {
           // Clear message box
