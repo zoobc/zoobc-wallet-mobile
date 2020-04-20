@@ -11,7 +11,14 @@ import { TransactionService, Transactions, Transaction } from 'src/app/Services/
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 import { NUMBER_OF_RECORD_IN_TRANSACTIONS, CONST_DEFAULT_CURRENCY,
-   CONST_DEFAULT_RATE } from 'src/environments/variable.const';
+   CONST_DEFAULT_RATE, 
+   NETWORK_LIST} from 'src/environments/variable.const';
+import zoobc, {
+  TransactionListParams,
+  toTransactionListWallet,
+  MempoolListParams,
+  toUnconfirmedSendMoneyWallet,
+} from 'zoobc';
 
 @Component({
   selector: 'app-transactions',
@@ -29,10 +36,11 @@ export class TransactionsPage implements OnInit {
   currencyRate =  CONST_DEFAULT_RATE;
   priceInUSD: number;
   totalTx: number;
-  recentTx: Transaction[];
+  recentTx: any;
   unconfirmTx: Transaction[];
   isError = false;
   navigationSubscription: any;
+  isErrorRecentTx: boolean;
 
   constructor(
     public modalCtrl: ModalController,
@@ -65,7 +73,7 @@ export class TransactionsPage implements OnInit {
       // console.log(' ================== RATE CHANGED TO:', rate);
       this.currencyRate = rate;
     });
-
+    zoobc.Network.list(NETWORK_LIST);
   }
 
   doRefresh(event: any) {
@@ -139,26 +147,63 @@ export class TransactionsPage implements OnInit {
   }
 
   async getTransactions() {
-    this.isLoadingRecentTx = true;
+    if (!this.isLoadingRecentTx) {
+      this.recentTx = null;
+      this.unconfirmTx = null;
+      this.isErrorRecentTx = false;
+      this.isLoadingRecentTx = true;
 
-    await this.transactionServ
-      .getUnconfirmTransaction(this.account.address)
-      .then((res: Transaction[]) => (this.unconfirmTx = res)).finally(() => {
-        // wait until unconfirm transaction loading finish.
-      }).catch((error) => {
-        console.log('===== eroor getUnconfirmTransaction:', error);
-      });
+      const params: TransactionListParams = {
+        address: this.account.address,
+        transactionType: 1,
+        pagination: {
+          page: 1,
+          limit: 5,
+        },
+      };
 
-    await this.transactionServ
-      .getAccountTransaction(this.offset, NUMBER_OF_RECORD_IN_TRANSACTIONS, this.account.address)
-      .then((res: Transactions) => {
-        this.totalTx = res.total;
-        this.recentTx = res.transactions;
-      }).catch((error) => {
-        console.log('===== eroor getAccountTransaction:', error);
-      });
+      zoobc.Transactions.getList(params)
+        .then(res => {
+          const tx = toTransactionListWallet(res, this.account.address);
+          this.recentTx = tx.transactions;
 
-    this.isLoadingRecentTx = false;
+          this.totalTx = tx.total;
+
+          const params: MempoolListParams = {
+            address: this.account.address,
+          };
+          return zoobc.Mempool.getList(params);
+        })
+        .then(
+          unconfirmTx => (this.unconfirmTx = toUnconfirmedSendMoneyWallet(unconfirmTx, this.account.address))
+        )
+        .catch(error => {
+          this.isErrorRecentTx = true;
+          console.log('===== eroor getUnconfirmTransaction:', error);
+        })
+        .finally(() => (this.isLoadingRecentTx = false));
+    }
+    
+    // this.isLoadingRecentTx = true;
+
+    // await this.transactionServ
+    //   .getUnconfirmTransaction(this.account.address)
+    //   .then((res: Transaction[]) => (this.unconfirmTx = res)).finally(() => {
+    //     // wait until unconfirm transaction loading finish.
+    //   }).catch((error) => {
+    //     console.log('===== eroor getUnconfirmTransaction:', error);
+    //   });
+
+    // await this.transactionServ
+    //   .getAccountTransaction(this.offset, NUMBER_OF_RECORD_IN_TRANSACTIONS, this.account.address)
+    //   .then((res: Transactions) => {
+    //     this.totalTx = res.total;
+    //     this.recentTx = res.transactions;
+    //   }).catch((error) => {
+    //     console.log('===== eroor getAccountTransaction:', error);
+    //   });
+
+    // this.isLoadingRecentTx = false;
   }
 
 
