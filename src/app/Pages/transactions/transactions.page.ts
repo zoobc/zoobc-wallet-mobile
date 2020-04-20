@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { makeShortAddress } from 'src/Helpers/converters';
 import {
   MenuController,
   ToastController,
@@ -19,6 +20,7 @@ import zoobc, {
   MempoolListParams,
   toUnconfirmedSendMoneyWallet,
 } from 'zoobc';
+import { AddressBookService } from 'src/app/Services/address-book.service';
 
 @Component({
   selector: 'app-transactions',
@@ -49,6 +51,7 @@ export class TransactionsPage implements OnInit {
     private accountService: AccountService,
     private transactionServ: TransactionService,
     private currencyServ: CurrencyService,
+    private addressBookSrv: AddressBookService,
     public toastController: ToastController
   ) {
 
@@ -147,43 +150,53 @@ export class TransactionsPage implements OnInit {
   }
 
   async getTransactions() {
-    if (!this.isLoadingRecentTx) {
+      this.isLoadingRecentTx = true;
+
+      const addresses = this.addressBookSrv.getAll();
+
       this.recentTx = null;
       this.unconfirmTx = null;
       this.isErrorRecentTx = false;
       this.isLoadingRecentTx = true;
 
+      console.log('===== Get Transactions ====');
+
       const params: TransactionListParams = {
         address: this.account.address,
         transactionType: 1,
         pagination: {
-          page: 1,
-          limit: 5,
+          page: this.offset++,
+          limit: NUMBER_OF_RECORD_IN_TRANSACTIONS,
         },
       };
 
-      zoobc.Transactions.getList(params)
-        .then(res => {
-          const tx = toTransactionListWallet(res, this.account.address);
-          this.recentTx = tx.transactions;
+      try {
+        const tx = await zoobc.Transactions.getList(params).then(res =>
+          toTransactionListWallet(res, this.account.address)
+        );
+        tx.transactions.map(recent => {
+          console.log('=== Recent transaction: ', recent);
+          recent['sender'] = recent.type === 'receive' ? recent.address : this.account.address;
+          recent['recipient'] = recent.type === 'receive' ? this.account.address : recent.address;
+          recent['name'] = this.transactionServ.getNameByAddress(recent.address, addresses);
+          recent['shortaddress'] = makeShortAddress(recent.address);
+        });
+        this.totalTx = tx.total;
+        this.recentTx = tx.transactions;
 
-          this.totalTx = tx.total;
+        // const mempoolParams: MempoolListParams = { address: this.account.address };
+        // this.unconfirmTx = await zoobc.Mempool.getList(mempoolParams).then(res =>
+        //      toUnconfirmedSendMoneyWallet(res, this.account.address)
+        // );
 
-          const params: MempoolListParams = {
-            address: this.account.address,
-          };
-          return zoobc.Mempool.getList(params);
-        })
-        .then(
-          unconfirmTx => (this.unconfirmTx = toUnconfirmedSendMoneyWallet(unconfirmTx, this.account.address))
-        )
-        .catch(error => {
-          this.isErrorRecentTx = true;
-          console.log('===== eroor getUnconfirmTransaction:', error);
-        })
-        .finally(() => (this.isLoadingRecentTx = false));
-    }
-    
+
+      } catch {
+        this.isError = true;
+        this.unconfirmTx = null;
+      } finally {
+        this.isLoadingRecentTx = false;
+      }
+
     // this.isLoadingRecentTx = true;
 
     // await this.transactionServ
