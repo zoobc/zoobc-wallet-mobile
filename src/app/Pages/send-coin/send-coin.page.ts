@@ -7,7 +7,7 @@ import {
 
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionFeesService } from 'src/app/Services/transaction-fees.service';
-import { base64ToByteArray, intToInt64Bytes, int32ToBytes } from 'src/Helpers/converters';
+import { base64ToByteArray, intToInt64Bytes, int32ToBytes, doDecrypt } from 'src/Helpers/converters';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { GetAccountBalanceResponse } from 'src/app/Grpc/model/accountBalance_pb';
@@ -23,11 +23,21 @@ import {
   COIN_CODE, TRX_FEE_LIST,
   ADDRESS_LENGTH, TRANSACTION_TYPE,
   TRANSACTION_VERSION,
-  CONST_DEFAULT_CURRENCY} from 'src/environments/variable.const';
+  CONST_DEFAULT_CURRENCY,
+  STORAGE_ENC_PASSPHRASE_SEED,
+  SALT_PASSPHRASE,
+  TRANSACTION_MINIMUM_FEE} from 'src/environments/variable.const';
 import { Account } from 'src/app/Services/auth-service';
 import { KeyringService } from 'src/app/Services/keyring.service';
 import { AccountService } from 'src/app/Services/account.service';
-
+import { StoragedevService } from 'src/app/Services/storagedev.service';
+import CryptoJS from 'crypto-js';
+import zoobc, {
+  BIP32Interface,
+  SendMoneyInterface,
+  ZooKeyring
+} from 'zoobc';
+import { calculateMinFee, truncate } from 'src/Helpers/utils';
 
 interface TrxFee {
   name: string;
@@ -36,12 +46,7 @@ interface TrxFee {
 
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
-export interface SendMoneyInterface {
-  sender: string;
-  recipient: string;
-  fee: number;
-  amount: number;
-}
+
 
 export function sendMoneyBuilder(
   data: SendMoneyInterface,
@@ -94,6 +99,8 @@ function sign(bytes: Buffer, keyringServ: KeyringService, account: Account): Buf
 
 export class SendCoinPage implements OnInit {
 
+  private seed: BIP32Interface;
+  private keyring: ZooKeyring;
   rootPage: any;
   status: any;
   account: Account;
@@ -118,7 +125,7 @@ export class SendCoinPage implements OnInit {
   errorMsg: string;
   customeChecked: boolean;
   private connectionText = '';
-
+  minFee = TRANSACTION_MINIMUM_FEE;
   public currencyRate: Currency = {
     name: CONST_DEFAULT_CURRENCY,
     value: environment.zbcPriceInUSD,
@@ -142,6 +149,7 @@ export class SendCoinPage implements OnInit {
     private qrScannerService: QrScannerService,
     private router: Router,
     private trxFeeService: TransactionFeesService,
+    private strgSrv: StoragedevService,
     private currencyService: CurrencyService,
     public addressbookService: AddressBookService,
     private translateService: TranslateService,
@@ -487,13 +495,39 @@ export class SendCoinPage implements OnInit {
 
 
     pinmodal.onDidDismiss().then((returnedData) => {
-      // console.log(returnedData);
-      if (returnedData && returnedData.data === 1) {
+      console.log('=== returned after entr pin: ', returnedData);
+      if (returnedData && returnedData.data !== 0) {
+        const pin = returnedData.data;
+        this.generateSeed(pin);
         this.sendMoney();
       }
     });
     return await pinmodal.present();
   }
+
+
+  async generateSeed(pin: any) {
+
+    console.log('===== generateSeed, account.path: ', this.account.path);
+    console.log('==== generateSeed pin :', pin);
+
+    const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
+    console.log('==== generateSeed, passEncryptSaved:', passEncryptSaved);
+
+    const decryptedArray = doDecrypt(passEncryptSaved, pin);
+    console.log('=== generateSeed,  decryptedArray:', decryptedArray);
+
+    const passphrase = decryptedArray.toString(CryptoJS.enc.Utf8);
+    console.log('===== generateSeed,  passphrase: ', passphrase);
+
+    this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
+    console.log('===== generateSeed,  this.keyring: ', this.keyring);
+
+    this.seed = this.keyring.calcDerivationPath(this.account.path);
+    console.log('===== generateSeed,  this.seed: ', this.seed);
+
+  }
+
 
   getRecipientFromScanner() {
     this.activeRoute.queryParams.subscribe(params => {
@@ -612,30 +646,50 @@ export class SendCoinPage implements OnInit {
       amount: this.amount,
     };
 
-    const txBytes = sendMoneyBuilder(data, this.keyringService, this.account);
-
-    await this.transactionService.postTransaction(
-      txBytes
-    ).then((resolveTx) => {
-      // console.log('========= response from grpc: ', resolveTx);
-      if (resolveTx) {
-        this.recipientAddress = '';
-        this.amount = 0;
-
-        this.showSuccessMessage();
-        return;
+    const childSeed = this.seed;
+    await zoobc.Transactions.sendMoney(data, childSeed).then(
+      (resolveTx: any) => {
+        console.log('====== SendMOney resolveTx:', resolveTx);
+        if (resolveTx) {
+          this.recipientAddress = '';
+          this.amount = 0;
+          this.showSuccessMessage();
+          return;
+        }
+      },
+      error => {
+        console.log('===== sendMoney, error: ', error);
+        this.showErrorMessage(error);
       }
-    }
-    ).catch((error) => {
-      // console.log('==== Have eroor when submiting:', error);
-      this.showErrorMessage(error);
-    }
     ).finally(() => {
-      loading.dismiss();
+     loading.dismiss();
     });
 
 
-    // loading.dismiss();
+    // const txBytes = sendMoneyBuilder(data, this.keyringService, this.account);
+
+    // await this.transactionService.postTransaction(
+    //   txBytes
+    // ).then((resolveTx) => {
+    //   // console.log('========= response from grpc: ', resolveTx);
+    //   if (resolveTx) {
+    //     this.recipientAddress = '';
+    //     this.amount = 0;
+
+    //     this.showSuccessMessage();
+    //     return;
+    //   }
+    // }
+    // ).catch((error) => {
+    //   // console.log('==== Have eroor when submiting:', error);
+    //   this.showErrorMessage(error);
+    // }
+    // ).finally(() => {
+    //   loading.dismiss();
+    // });
+
+
+    // // loading.dismiss();
 
   }
   async showErrorMessage(error) {
@@ -714,4 +768,12 @@ export class SendCoinPage implements OnInit {
   submit() {
     // console.log('----- form submited ----');
   }
+
+  async getMinimumFee() {
+    const  timeout =  100; // TODO change to form value
+    const fee: number = calculateMinFee(timeout);
+    this.minFee = fee;
+    const feeCurrency = truncate(fee * this.currencyRate.value, 8);
+  }
+
 }
