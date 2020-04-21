@@ -17,6 +17,7 @@ export const STORAGE_SELECTED_NODE = 'net_selected_node';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
+export const TRANSACTION_MINIMUM_FEE = 0.01;
 export const TRANSACTION_VERSION = Buffer.from([1]);
 export const FOR_SENDER = 'sender';
 export const FOR_RECIPIENT = 'recipient';
@@ -204,15 +205,15 @@ export const NETWORK_LIST = [
 
 export const TRX_FEE_LIST = [{
     name: 'Slow',
-    fee: 0.001
+    fee: TRANSACTION_MINIMUM_FEE
   },
   {
-    name: 'Average',
-    fee: 0.005
+    name: 'Medium',
+    fee: TRANSACTION_MINIMUM_FEE * 2
   },
   {
     name: 'Fast',
-    fee: 0.01
+    fee: TRANSACTION_MINIMUM_FEE * 4
 }];
 
 export const CURRENCY_LIST = {
