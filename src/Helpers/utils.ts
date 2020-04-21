@@ -61,3 +61,13 @@ export function isPubKeyValid(pubkey: string) {
 export function truncate(num: number, places: number): number {
   return Math.trunc(num * Math.pow(10, places)) / Math.pow(10, places);
 }
+
+export function calculateMinFee(timeout: number) {
+  const blockPeriod = 10 * 1e8;
+  const feePerBlockPeriod = 0.01 * 1e8;
+  if (timeout) {
+    return (
+      (Math.ceil((timeout * 1e8) / blockPeriod) * feePerBlockPeriod) / 1e8
+    );
+  } else { return feePerBlockPeriod / 1e8; }
+}
