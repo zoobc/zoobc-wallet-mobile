@@ -205,15 +205,15 @@ export const NETWORK_LIST = [
 
 export const TRX_FEE_LIST = [{
     name: 'Slow',
-    fee: TRANSACTION_MINIMUM_FEE
-  },
-  {
-    name: 'Medium',
     fee: TRANSACTION_MINIMUM_FEE * 2
   },
   {
-    name: 'Fast',
+    name: 'Average',
     fee: TRANSACTION_MINIMUM_FEE * 4
+  },
+  {
+    name: 'Fast',
+    fee: TRANSACTION_MINIMUM_FEE * 6
 }];
 
 export const CURRENCY_LIST = {

@@ -117,9 +117,11 @@ export class SendCoinPage implements OnInit {
   isFeeValid = true;
   isCustomFeeValid = true;
   isRecipientValid = true;
+  isApproverValid = true;
   isBalanceValid = true;
   accountName = '';
   recipientMsg = '';
+  approverMsg = '';
   amountMsg = '';
   allAccounts = [];
   errorMsg: string;
@@ -138,6 +140,10 @@ export class SendCoinPage implements OnInit {
   public primaryCurr = COIN_CODE;
   public secondaryCurr: string;
 
+  escrowApprover = '';
+  escrowCommision = 0;
+  escrowTimout = 0;
+  escrowInstruction = '';
 
   constructor(
     // @Inject('nacl.sign') private sign: any,
@@ -450,6 +456,26 @@ export class SendCoinPage implements OnInit {
 
   }
 
+  validateApprover() {
+    this.isApproverValid = true;
+    console.log('===== approverAddress: ', this.escrowApprover);
+
+    if (!this.escrowApprover || this.escrowApprover === '' || this.escrowApprover === null) {
+      this.isApproverValid = false;
+      this.approverMsg = this.translateService.instant('Approver address is required!');
+      return;
+    }
+
+    if (this.isApproverValid) {
+      const addressBytes = base64ToByteArray(this.escrowApprover);
+      if (this.isApproverValid && addressBytes.length !== 33) {
+        this.isApproverValid = false;
+        this.approverMsg = this.translateService.instant('Approver address is not valid!');
+        return;
+      }
+    }
+  }
+
 
   validateRecipient() {
     this.isRecipientValid = true;
@@ -639,13 +665,34 @@ export class SendCoinPage implements OnInit {
 
     await loading.present();
 
-    const data: SendMoneyInterface = {
+    let data: SendMoneyInterface = {
       sender: this.account.address,
       recipient: this.recipientAddress,
       fee: Number(this.trxFee),
       amount: this.amount,
     };
 
+    if (this.isAdvance) {
+      let trxFee = Number(this.trxFee);
+
+      const minimumFee = await this.getMinimumFee(this.escrowTimout);
+      if (trxFee < minimumFee){
+        trxFee = minimumFee;
+      }
+
+      data  = {
+        sender: this.account.address,
+        recipient: this.recipientAddress,
+        fee: trxFee,
+        amount: this.amount,
+        approverAddress: this.escrowApprover,
+        commission: this.escrowCommision,
+        timeout: this.escrowTimout,
+        instruction: this.escrowInstruction
+      }
+    }
+
+    console.log('==== Send Money: data', data);
     const childSeed = this.seed;
     await zoobc.Transactions.sendMoney(data, childSeed).then(
       (resolveTx: any) => {
@@ -769,11 +816,9 @@ export class SendCoinPage implements OnInit {
     // console.log('----- form submited ----');
   }
 
-  async getMinimumFee() {
-    const  timeout =  100; // TODO change to form value
+  async getMinimumFee(timeout: number) {
     const fee: number = calculateMinFee(timeout);
-    this.minFee = fee;
-    const feeCurrency = truncate(fee * this.currencyRate.value, 8);
+    return fee;
   }
 
 }
