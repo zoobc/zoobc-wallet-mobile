@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-button (click)="goDashboard()"> <h3><</h3></ion-button>
     </ion-buttons>
     <ion-title>{{ "Transactions" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
@@ -37,7 +37,7 @@
             <ion-label class="date" style="font-size: 0.7em">{{
                   pendingtrx.timestamp | date: "short"
                 }} <span style="color:orange">{{ "Pending" | translate }}</span>
-              <ion-spinner name="lines-small" style="width: 15px !important; height: 15px !important;"></ion-spinner>
+              <!-- <ion-spinner name="lines-small" style="width: 15px !important; height: 15px !important;"></ion-spinner> -->
             </ion-label>
           </ion-col>
           <ion-col size="5" class="ion-text-end">
@@ -53,7 +53,7 @@
   <h3 class="title-section ion-padding-horizontal">
     {{ "Transaction(s) History" | translate }}
   </h3>
-  <ion-list *ngIf="recentTx.length === 0" class="ion-margin-top list-transaction">
+  <ion-list *ngIf="recentTx && recentTx.length === 0" class="ion-margin-top list-transaction">
     <ion-item class="ion-text-center">
       <ion-label>
         <br/> <br/>

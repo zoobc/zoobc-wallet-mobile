@@ -21,6 +21,7 @@ import zoobc, {
   toUnconfirmedSendMoneyWallet,
 } from 'zoobc';
 import { AddressBookService } from 'src/app/Services/address-book.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-transactions',
@@ -45,6 +46,7 @@ export class TransactionsPage implements OnInit {
   isErrorRecentTx: boolean;
 
   constructor(
+    private router: Router,
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
@@ -184,10 +186,10 @@ export class TransactionsPage implements OnInit {
         this.totalTx = tx.total;
         this.recentTx = tx.transactions;
 
-        // const mempoolParams: MempoolListParams = { address: this.account.address };
-        // this.unconfirmTx = await zoobc.Mempool.getList(mempoolParams).then(res =>
-        //      toUnconfirmedSendMoneyWallet(res, this.account.address)
-        // );
+        const mempoolParams: MempoolListParams = { address: this.account.address };
+        this.unconfirmTx = await zoobc.Mempool.getList(mempoolParams).then(res =>
+             toUnconfirmedSendMoneyWallet(res, this.account.address)
+        );
 
 
       } catch {
@@ -257,6 +259,11 @@ export class TransactionsPage implements OnInit {
     });
     await modal.present();
 
+  }
+
+
+  goDashboard() {
+    this.router.navigate(['/tabs/dashboard']);
   }
 
 }
