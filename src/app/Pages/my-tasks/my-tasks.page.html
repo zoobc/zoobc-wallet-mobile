@@ -14,30 +14,31 @@
 
 <ion-content>
   <div style="text-align: center;">
-    <h5>(Coming Soon)</h5>
+    <h5>Escrow transaction need approval</h5>
+    <p>Current Block Height: {{blockHeight}}</p>
   </div>
 
-  <ion-list>
-    <ion-item routerLink="/task-detail">
-      <span style='font-size:2em; margin-right: 5px;'>
-        <ion-icon name="open" slot="start"></ion-icon>
-      </span>
-      <ion-label>
-        <h3>Approval-Send Money</h3>
-        <p>3 weeks ago</p>
+  <ion-list class="ion-margin-top list-transaction">
+    <ion-item *ngFor="let escrow of escrowTransactions; let i = index" (click)="openDetail(escrow.id)">
+      <ion-label class="title">
+        <h3>{{i+1}}</h3>
+        <h3>Sender <b> {{ escrow.senderaddress }} </b></h3>
+        <p>Recipient: <b>{{ escrow.recipientaddress }}</b></p>
+        <p>Approver: <b>{{ escrow.approveraddress }}</b></p>
+        <p>Commision: <b>{{ escrow.commission / 1e8 | number: '0.0-6' }} </b></p>
+        <p>Instruction: <b>{{ escrow.instruction }} </b></p>
+        <p>Block Height: <b>{{ escrow.blockheight }} </b></p>
+        <p>Expired after <br/> blockheight: <b>{{ escrow.timeout | number }} </b></p>
+        <p>Latest: <b>{{ escrow.latest }} </b></p>
+        <p>Status: <b>{{ escrow.status }} </b></p>
       </ion-label>
-      <ion-badge color="danger" slot="end"><span style="color:#ffffff">10 ZBC</span></ion-badge>
-    </ion-item>
-    <ion-item (click)="showTaskDetail()">
-      <span style='font-size:2em; margin-right: 5px;'>
-        <ion-icon name="open" slot="start"></ion-icon>
-      </span>
-      <ion-label>
-        <h3>Approval-Multi Signature</h3>
-        <p>3 weeks ago</p>
-      </ion-label>
-      <ion-badge color="success" slot="end"><span style="color:#ffffff">5 ZBC</span></ion-badge>
+  
+      <ion-text class="amount send">
+        {{ escrow.amount / 1e8 | number: '0.0-6' }} <span style="color:grey; font-size:0.7em">ZBC</span>
+      </ion-text>
+  
     </ion-item>
   </ion-list>
+
 
 </ion-content>
