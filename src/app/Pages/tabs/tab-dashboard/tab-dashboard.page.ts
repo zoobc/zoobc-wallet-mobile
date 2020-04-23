@@ -9,17 +9,11 @@ import {
 import { AuthService, Account } from 'src/app/Services/auth-service';
 import { Router, NavigationExtras } from '@angular/router';
 import { TransactionService, Transaction } from 'src/app/Services/transaction.service';
-import {
-  GetAccountBalanceResponse,
-  AccountBalance as AB,
-} from 'src/app/Grpc/model/accountBalance_pb';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { CONST_DEFAULT_CURRENCY, CONST_DEFAULT_RATE, NETWORK_LIST } from 'src/environments/variable.const';
+import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST } from 'src/environments/variable.const';
 import zoobc from 'zoobc';
-
-type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
 @Component({
   selector: 'app-tab-dashboard',
@@ -81,7 +75,7 @@ export class TabDashboardPage implements OnInit {
       this.currencyRate = rate;
     });
 
-    this.loadData();
+    // this.loadData();
   }
 
   doRefresh(event: any) {
@@ -95,13 +89,11 @@ export class TabDashboardPage implements OnInit {
   }
 
   ngOnInit() {
-    // this.loadData();
+    this.loadData();
   }
-
 
   async loadData() {
 
-    // console.log('=== load data ===');
     this.priceInUSD = this.currencyServ.getPriceInUSD();
     this.accountBalance = {
       accountaddress: '',
@@ -126,19 +118,19 @@ export class TabDashboardPage implements OnInit {
     this.currencyRate = this.currencyServ.getRate();
 
     zoobc.Network.list(NETWORK_LIST);
-    this.getBalance();
+    this.getBalanceByAddress(this.account.address);
   }
 
-  openBlog() {
-    window.open('https://blogchainzoo.com', '_system');
-  }
-
-  async getBalance() {
+  /**
+   * Get balance of current active address
+   * @ param address
+   */
+  async getBalanceByAddress(address: string) {
     this.isError = false;
     const date1 = new Date();
     this.isLoadingBalance = true;
 
-    await zoobc.Account.getBalance(this.account.address)
+    await zoobc.Account.getBalance(address)
       .then(data => {
         this.accountBalance = data.accountbalance;
       })
@@ -174,67 +166,6 @@ export class TabDashboardPage implements OnInit {
         console.error(' ==== have error: ', error);
       })
       .finally(() => (this.isLoadingBalance = false));
-
-    // console.log('==== this.account2: ', this.account.address);
-    // await this.transactionServ.getAccountBalance(this.account.address).then((data: AccountBalanceList) => {
-    //   this.accountBalance = data.accountbalance;
-    // }).catch((error) => {
-    //   this.accountBalance = {
-    //     accountaddress: '',
-    //     blockheight: 0,
-    //     spendablebalance: 0,
-    //     balance: 0,
-    //     poprevenue: '',
-    //     latest: false
-    //   };
-    //   this.errorMsg = '';
-    //   this.isError = false;
-    //   if (error === 'error: account not found') {
-    //     // do something here
-    //   } else if (error === 'Response closed without headers') {
-    //     const date2 = new Date();
-    //     const diff = date2.getTime() - date1.getTime();
-    //     // console.log('== diff: ', diff);
-    //     if (diff < 5000) {
-    //       this.errorMsg = 'Please check internet connection!';
-    //     } else {
-    //       this.errorMsg = 'Fail connect to services, please try again later!';
-    //     }
-
-    //     this.isError = true;
-    //   } else if (error === 'all SubConns are in TransientFailure') {
-    //     // do something here
-    //   } else {
-
-    //   }
-
-    //   console.error(' ==== have error: ', error);
-    // }).finally(() => {
-    //   this.isLoadingBalance = false;
-
-    //   // TODO REMOVE THIS
-    //   // this.accountBalance = {
-    //   //   accountaddress: '',
-    //   //   blockheight: 0,
-    //   //   spendablebalance: 3000000000,
-    //   //   balance: 2000000000,
-    //   //   poprevenue: '',
-    //   //   latest: false
-    //   // };
-
-    // });
-  }
-
-  goToSend() {
-    this.router.navigateByUrl('tabs/send');
-  }
-
-  goToRequest() {
-    this.router.navigateByUrl('tabs/receive');
-  }
-
-  openchart() {
-    this.navCtrl.navigateForward('chart');
   }
 
   openMenu() {
@@ -259,11 +190,11 @@ export class TabDashboardPage implements OnInit {
     this.router.navigate(['list-account'], navigationExtras);
   }
 
-  async openDetailUnconfirm(trx) {
+  openDetailUnconfirm(trx) {
     this.loadDetailTransaction(trx, 'pending');
   }
 
-  async openDetailTransction(trx) {
+  openDetailTransction(trx) {
     this.loadDetailTransaction(trx, 'confirm');
   }
 
@@ -276,10 +207,13 @@ export class TabDashboardPage implements OnInit {
     });
   }
 
+  /**
+   * Load detail transaction
+   * @ param trx
+   * @ param trxStatus
+   */
   async loadDetailTransaction(trx: any, trxStatus: string) {
-
     this.showLoading();
-
     const modal = await this.modalCtrl.create({
       component: TransactionDetailPage,
       cssClass: 'modal-zbc',
@@ -290,6 +224,10 @@ export class TabDashboardPage implements OnInit {
       }
     });
     await modal.present();
-
   }
+
+  openBlog() {
+    window.open(BLOCKCHAIN_BLOG_URL, '_system');
+  }
+
 }

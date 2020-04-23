@@ -26,6 +26,7 @@ export const EDIT_MODE = 'edit';
 export const NEW_MODE = 'new';
 export const EMPTY_STRING = '';
 export const CONST_DEFAULT_CURRENCY = 'USD';
+export const BLOCKCHAIN_BLOG_URL = 'https://blogchainzoo.com';
 
 export const CONST_DEFAULT_RATE: Currency = {
   name: CONST_DEFAULT_CURRENCY,
