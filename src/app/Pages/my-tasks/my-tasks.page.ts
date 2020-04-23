@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { Account } from 'src/app/Services/auth-service';
+import { Account } from 'src/app/Interfaces/Account';
 import { AccountService } from 'src/app/Services/account.service';
 import zoobc, { EscrowListParams } from 'zoobc';
 import { GetEscrowTransactionsResponse } from 'zoobc/grpc/model/escrow_pb';
 import { OrderBy } from 'zoobc/grpc/model/pagination_pb';
 import { makeShortAddress } from 'src/Helpers/converters';
+import { Router, NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-my-tasks',
@@ -20,6 +21,7 @@ export class MyTasksPage implements OnInit {
   total = 0;
   blockHeight = 0;
   constructor(
+    private router: Router,
     private alertCtrl: AlertController,
     private accountService: AccountService) {}
 
@@ -86,7 +88,6 @@ export class MyTasksPage implements OnInit {
         });
   }
 
-
   getBlockHeight() {
     zoobc.Host.getBlock()
       .then(res => {
@@ -96,4 +97,15 @@ export class MyTasksPage implements OnInit {
         console.log('=== getBlockHeight, error: ', err);
       });
   }
+
+  openDetail(idx) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        escrowId: idx
+      }
+    };
+    this.router.navigate(['/task-detail'], navigationExtras);
+    // TODO show detail page;
+  }
+
 }
