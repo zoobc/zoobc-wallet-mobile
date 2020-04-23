@@ -98,10 +98,11 @@ export class MyTasksPage implements OnInit {
       });
   }
 
-  openDetail(idx) {
+  openDetail(escrowId: string) {
+    console.log('=== escrow Id: ', escrowId);
     const navigationExtras: NavigationExtras = {
       queryParams: {
-        escrowId: idx
+        escrowId
       }
     };
     this.router.navigate(['/task-detail'], navigationExtras);
