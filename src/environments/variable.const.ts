@@ -14,6 +14,7 @@ export const STORAGE_CURRENT_ACCOUNT = 'curr_account';
 export const STORAGE_ENC_MASTER_SEED = 'enc_master_seed';
 export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_passphrase_seed';
 export const STORAGE_SELECTED_NODE = 'net_selected_node';
+export const STORAGE_ESCROW_WAITING_LIST = 'escrow_waiting_list';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
@@ -27,6 +28,7 @@ export const NEW_MODE = 'new';
 export const EMPTY_STRING = '';
 export const CONST_DEFAULT_CURRENCY = 'USD';
 export const BLOCKCHAIN_BLOG_URL = 'https://blogchainzoo.com';
+
 
 export const CONST_DEFAULT_RATE: Currency = {
   name: CONST_DEFAULT_CURRENCY,
