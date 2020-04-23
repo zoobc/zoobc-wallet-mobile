@@ -8,12 +8,13 @@ import {
 } from '@ionic/angular';
 import { AuthService, Account } from 'src/app/Services/auth-service';
 import { Router, NavigationExtras } from '@angular/router';
-import { TransactionService, Transaction } from 'src/app/Services/transaction.service';
+import { TransactionService} from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST } from 'src/environments/variable.const';
 import zoobc from 'zoobc';
+import { Transaction } from 'src/app/Interfaces/transaction';
 
 @Component({
   selector: 'app-tab-dashboard',
