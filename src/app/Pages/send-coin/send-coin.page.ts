@@ -22,8 +22,7 @@ import {
   STORAGE_ENC_PASSPHRASE_SEED,
   SALT_PASSPHRASE,
   TRANSACTION_MINIMUM_FEE} from 'src/environments/variable.const';
-import { Account } from 'src/app/Services/auth-service';
-import { KeyringService } from 'src/app/Services/keyring.service';
+import { Account } from 'src/app/Interfaces/Account';
 import { AccountService } from 'src/app/Services/account.service';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import CryptoJS from 'crypto-js';

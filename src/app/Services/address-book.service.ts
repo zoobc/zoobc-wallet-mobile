@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Account } from 'src/app/Services/auth-service';
 import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { AngularFirestore } from '@angular/fire/firestore';

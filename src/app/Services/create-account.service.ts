@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { KeyringService } from './keyring.service';
 import { getAddressFromPublicKey } from 'src/Helpers/utils';
-import { Account } from './auth-service';
 import { COIN_CODE, SALT_PASSPHRASE } from 'src/environments/variable.const';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from './account.service';
+import { Account } from '../Interfaces/Account';
 
 
 @Injectable({
@@ -18,7 +18,7 @@ export class CreateAccountService {
   keySize = 256;
   ivSize = 128;
   iterations = 100;
-  account: any;
+  account: Account;
 
   constructor(
     private keyringService: KeyringService,

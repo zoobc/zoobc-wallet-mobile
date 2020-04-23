@@ -13,24 +13,12 @@ import { AccountService } from './account.service';
 import { doDecrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
 
-export interface Account {
-  path: number;
-  name: string;
-  nodeIP: string;
-  address: string;
-  shortAddress: string;
-  created: Date;
-  balance?: number;
-  lastTx?: number;
-}
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService implements CanActivate {
 
   private isUserLoggenIn: boolean;
-
-  // private loggedIn = false;
 
   constructor(
     private router: Router,

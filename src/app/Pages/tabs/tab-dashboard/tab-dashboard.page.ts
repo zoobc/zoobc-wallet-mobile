@@ -6,7 +6,8 @@ import {
   LoadingController,
   ModalController
 } from '@ionic/angular';
-import { AuthService, Account } from 'src/app/Services/auth-service';
+import { Account } from 'src/app/Interfaces/Account';
+import { AuthService} from 'src/app/Services/auth-service';
 import { Router, NavigationExtras } from '@angular/router';
 import { TransactionService} from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
