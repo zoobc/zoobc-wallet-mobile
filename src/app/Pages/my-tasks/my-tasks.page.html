@@ -15,20 +15,17 @@
 <ion-content>
   <div style="text-align: center;">
     <h5>Escrow transaction need approval</h5>
-    <p>Current Block Height: {{blockHeight}}</p>
+    <p><ion-icon name="reload-outline"></ion-icon>Current Block Height: {{blockHeight}} <ion-icon name="refresh" (click)="getBlockHeight()"></ion-icon></p>
   </div>
 
   <ion-list class="ion-margin-top list-transaction">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index" (click)="openDetail(escrow.id)">
       <ion-label class="title">
-        <h3>{{escrow.id}}</h3>
-        <h3>Sender <b> {{ escrow.senderaddress }} </b></h3>
-        <p>Recipient: <b>{{ escrow.recipientaddress }}</b></p>
-        <p>Approver: <b>{{ escrow.approveraddress }}</b></p>
+        <h3>Transaction ID: {{escrow.id}}</h3>
+        <p>Sender: <b> {{ escrow.senderaddress }} </b></p>
+        <p>Recipient: <strong>{{ escrow.recipientaddress }}</strong></p>
         <p>Commision: <b>{{ escrow.commission / 1e8 | number: '0.0-6' }} </b></p>
-        <p>Instruction: <b>{{ escrow.instruction }} </b></p>
-        <p>Block Height: <b>{{ escrow.blockheight }} </b></p>
-        <p>Expired after <br/> blockheight: <b>{{ escrow.timeout | number }} </b></p>
+        <p>Expired after block height: <b>{{ escrow.timeout | number }} </b></p>
         <p>Latest: <b>{{ escrow.latest }} </b></p>
         <p>Status: <b>{{ escrow.status }} </b></p>
       </ion-label>

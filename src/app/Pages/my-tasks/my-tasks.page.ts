@@ -7,6 +7,7 @@ import { GetEscrowTransactionsResponse } from 'zoobc/grpc/model/escrow_pb';
 import { OrderBy } from 'zoobc/grpc/model/pagination_pb';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { Router, NavigationExtras } from '@angular/router';
+import { AddressBookService } from 'src/app/Services/address-book.service';
 
 @Component({
   selector: 'app-my-tasks',
@@ -23,13 +24,14 @@ export class MyTasksPage implements OnInit {
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
-    private accountService: AccountService) {}
+    private accountService: AccountService,
+    private addresBookSrv: AddressBookService) { }
 
   ngOnInit() {
     this.loadAccount();
 
   }
-  async loadAccount(){
+  async loadAccount() {
     this.account = await this.accountService.getCurrAccount();
     console.log('=== Account: ', this.account);
     this.getEscrowTransaction();
@@ -46,47 +48,72 @@ export class MyTasksPage implements OnInit {
 
   getEscrowTransaction() {
 
-      console.log('==== getEscrowTransaction, ender');
+    console.log('==== getEscrowTransaction, ender');
 
-      const params: EscrowListParams = {
-        approverAddress: this.account.address,
-        statusList: [0],
-        pagination: {
-          page: this.page,
-          limit: 1000,
-          orderBy: OrderBy.DESC,
-          orderField: 'timeout',
-        },
-      };
-      zoobc.Escrows.getList(params)
-        .then((res: GetEscrowTransactionsResponse.AsObject) => {
-          this.total = Number(res.total);
-          const trxs = res.escrowsList;
-          console.log('==== all task: ', trxs);
-          const txMap = trxs.map(tx => {
-            const alias = '-'; // get from addressbook by tx.recipientaddress;
-            return {
-              id: tx.id,
-              alias,
-              senderaddress: makeShortAddress(tx.senderaddress),
-              recipientaddress: makeShortAddress(tx.recipientaddress),
-              approveraddress: makeShortAddress(tx.approveraddress),
-              amount: tx.amount,
-              commission: tx.commission,
-              timeout: Number(tx.timeout),
-              status: tx.status,
-              blockheight: tx.blockheight,
-              latest: tx.latest,
-              instruction: tx.instruction,
-            };
-          });
-          this.escrowTransactions = txMap;
-          console.log('==== getEscrowTransaction, escrowTransactions: ', this.escrowTransactions);
-        })
-        .catch(err => {
-          console.log('==== getEscrowTransaction, error: ', err);
+    const params: EscrowListParams = {
+      approverAddress: this.account.address,
+      pagination: {
+        page: this.page,
+        limit: 100,
+        orderBy: OrderBy.DESC,
+        orderField: 'timeout',
+      },
+    };
+    zoobc.Escrows.getList(params)
+      .then((res: GetEscrowTransactionsResponse.AsObject) => {
+        this.total = Number(res.total);
+
+        const trxs = res.escrowsList.filter(tx => {
+          if (tx.latest === true) { return tx; }
         });
+
+        console.log('==== all task: ', trxs);
+        const txMap = trxs.map(tx => {
+          const alias = this.addresBookSrv.getNameByAddress(tx.recipientaddress) || '';
+          return {
+            id: tx.id,
+            alias,
+            senderaddress: makeShortAddress(tx.senderaddress),
+            recipientaddress: makeShortAddress(tx.recipientaddress),
+            approveraddress: makeShortAddress(tx.approveraddress),
+            amount: tx.amount,
+            commission: tx.commission,
+            timeout: Number(tx.timeout),
+            status: this.getStatusName(tx.status),
+            blockheight: tx.blockheight,
+            latest: tx.latest,
+            instruction: tx.instruction,
+          };
+        });
+        this.escrowTransactions = txMap;
+        console.log('==== getEscrowTransaction, escrowTransactions: ', this.escrowTransactions);
+      })
+      .catch(err => {
+        console.log('==== getEscrowTransaction, error: ', err);
+      });
   }
+
+  getStatusName(status: number): any {
+    switch (status) {
+
+      case 0:
+        return 'Pending';
+
+      case 1:
+        return 'Approved';
+
+      case 2:
+        return 'Rejected';
+
+      case 3:
+        return 'Expired';
+
+      default:
+        return 'Unknown';
+    }
+  }
+
+
 
   getBlockHeight() {
     zoobc.Host.getBlock()
