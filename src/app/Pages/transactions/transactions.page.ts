@@ -141,7 +141,6 @@ export class TransactionsPage implements OnInit {
    */
   async getTransactionsByAddress(address: string) {
       this.isLoadingRecentTx = true;
-      const addresses = this.addressBookSrv.getAll();
       this.recentTx = null;
       this.unconfirmTx = null;
       this.isErrorRecentTx = false;
@@ -163,7 +162,7 @@ export class TransactionsPage implements OnInit {
           console.log('=== Recent transaction: ', recent);
           recent['sender'] = recent.type === 'receive' ? recent.address : address;
           recent['recipient'] = recent.type === 'receive' ? address : recent.address;
-          recent['name'] = this.transactionServ.getNameByAddress(recent.address, addresses);
+          recent['name'] = this.addressBookSrv.getNameByAddress(recent.address);
           recent['shortaddress'] = makeShortAddress(recent.address);
         });
         this.totalTx = tx.total;
