@@ -17,6 +17,20 @@
     <ion-row>
       <ion-col size="12">
         <p>
+          Theme
+        </p>
+        <div style="border:1px solid #cccccc">
+          <ion-select interface="popover" [(ngModel)]="activeTheme" (ionChange)="changeTheme()">
+            <ion-select-option *ngFor="let theme of themes" value="{{ theme.value }}">
+              {{ theme.name }}
+            </ion-select-option>
+          </ion-select>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <p>
           Network
         </p>
         <div style="border:1px solid #cccccc">
