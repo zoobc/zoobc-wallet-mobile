@@ -30,9 +30,6 @@ import { TransactionDetailPageModule } from './Pages/transaction-detail/transact
 import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';
 import { AddressBookService } from './Services/address-book.service';
 import { environment } from 'src/environments/environment';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFireDatabaseModule } from '@angular/fire/database';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { PinBackupPageModule } from './Pages/backup-phrase/pin/pin-backup/pin-backup.module';
 import { TaskDetailPageModule } from './Pages/my-tasks/task-detail/task-detail.module';
 import { SetupPinGpPageModule } from './Pages/generate-passphrase/setup-pin-gp/setup-pin-gp.module';
@@ -40,8 +37,13 @@ import { File } from '@ionic-native/file/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
-
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { ChatProfilePageModule } from './Pages/chat/chat-profile/chat-profile.module';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -72,11 +74,12 @@ export function createTranslateLoader(http: HttpClient) {
     SetupPinPageModule,
     EnterpinsendPageModule,
     PinBackupPageModule,
+    ChatProfilePageModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireAuthModule,
     AngularFireDatabaseModule,
-
+    AngularFireStorageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -99,6 +102,7 @@ export function createTranslateLoader(http: HttpClient) {
     { provide: 'global', useFactory: () => window },
     { provide: 'nacl.sign', useFactory: () => naclSign },
     OneSignal,
+    LocalNotifications,
     ObservableService,
     Clipboard
   ],

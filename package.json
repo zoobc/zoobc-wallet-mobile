@@ -34,6 +34,7 @@
     "@ionic-native/file": "^5.14.0",
     "@ionic-native/http": "^5.14.0",
     "@ionic-native/in-app-browser": "^5.18.0",
+    "@ionic-native/local-notifications": "^5.23.0",
     "@ionic-native/network": "^5.10.0",
     "@ionic-native/network-interface": "^5.14.0",
     "@ionic-native/onesignal": "^5.21.6",
@@ -58,9 +59,11 @@
     "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-androidx": "^1.0.2",
     "cordova-plugin-androidx-adapter": "^1.1.0",
+    "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-firebasex": "^6.1.0",
     "cordova-plugin-inappbrowser": "^3.1.0",
+    "cordova-plugin-local-notification": "^0.9.0-beta.2",
     "cordova-plugin-network-information": "2.0.2",
     "cordova-plugin-networkinterface": "^2.0.0",
     "cordova-plugin-x-socialsharing": "^5.4.7",
@@ -72,7 +75,7 @@
     "diceware-wordlist-en-eff": "^1.0.1",
     "elliptic": "^6.4.1",
     "es6-promise-plugin": "^4.2.2",
-    "firebase": "^7.9.1",
+    "firebase": "^7.13.2",
     "google-protobuf": "^3.8.0",
     "jayson": "^3.0.2",
     "jsbi": "^2.0.5",
@@ -160,7 +163,8 @@
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-androidx": {},
       "cordova-plugin-androidx-adapter": {},
-      "cordova-device-accounts-v2": {}
+      "cordova-device-accounts-v2": {},
+      "cordova-plugin-local-notification": {}
     },
     "platforms": [
       "android"

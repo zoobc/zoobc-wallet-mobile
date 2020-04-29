@@ -15,6 +15,8 @@ export const STORAGE_ENC_MASTER_SEED = 'enc_master_seed';
 export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_passphrase_seed';
 export const STORAGE_SELECTED_NODE = 'net_selected_node';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
+export const FIREBASE_CHAT = 'chats';
+export const FIREBASE_CHAT_USER = 'chatusers';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
 export const TRANSACTION_VERSION = Buffer.from([1]);
@@ -35,6 +37,7 @@ export const CONST_HEX = 'hex';
 
 // Language
 export const SELECTED_LANGUAGE = 'selected_language';
+export const SELECTED_THEME = 'card';
 export const LANGUAGES = [
   {
     country: 'العربية',
@@ -184,17 +187,36 @@ export const LANGUAGES = [
   }
 ];
 
-export const NETWORK_LIST = [{
+export const NETWORK_LIST = [
+  {
     name: 'Alpha Testnet',
-    domain: 'https://n0.alpha.proofofparticipation.network:8443'
+    domain: '//n1.alpha.proofofparticipation.network:8080'
   },
   {
-    name: 'Demo',
-    domain: 'https://n0.demo.proofofparticipation.network'
+    name: 'Demo Testnet 1',
+    domain: '//85.90.246.90:8002',
   },
   {
-    name: 'Local Testnet',
-    domain: 'http://192.168.20.242:7001'
+    name: 'Demo Testnet 2',
+    domain: '//45.79.39.58:8002'
+  }];
+
+export const THEME_LIST = [
+  {
+    name: 'Card',
+    code: 'card'
+  },
+  {
+    name: 'List',
+    code: 'list'
+  },
+  {
+    name: 'Light',
+    code: 'light'
+  },
+  {
+    name: 'Dark',
+    code: 'dark'
   }];
 
 export const TRX_FEE_LIST = [{

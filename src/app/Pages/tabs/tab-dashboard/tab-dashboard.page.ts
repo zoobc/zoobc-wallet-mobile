@@ -4,19 +4,22 @@ import {
   NavController,
   ToastController,
   LoadingController,
-  ModalController
-} from '@ionic/angular';
+  ModalController} from '@ionic/angular';
 import { AuthService, Account } from 'src/app/Services/auth-service';
 import { Router, NavigationExtras } from '@angular/router';
 import { TransactionService, Transaction } from 'src/app/Services/transaction.service';
 import {
   GetAccountBalanceResponse,
-  AccountBalance as AB,
 } from 'src/app/Grpc/model/accountBalance_pb';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { CONST_DEFAULT_CURRENCY, CONST_DEFAULT_RATE } from 'src/environments/variable.const';
+import { CONST_DEFAULT_RATE, FIREBASE_CHAT } from 'src/environments/variable.const';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Chat } from 'src/app/Models/chatmodels';
+import * as firebase from 'firebase';
+import { ChatService } from 'src/app/Services/chat.service';
 
 type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
@@ -26,9 +29,10 @@ type AccountBalanceList = GetAccountBalanceResponse.AsObject;
   styleUrls: ['tab-dashboard.page.scss']
 })
 export class TabDashboardPage implements OnInit {
-
+  clickSub: any;
   public errorMsg: string;
   public offset: number;
+  chatLength = 0;
 
   public accountBalance: any;
   public isLoadingBalance: boolean;
@@ -43,6 +47,7 @@ export class TabDashboardPage implements OnInit {
 
   account: Account;
   accounts: Account[];
+  notifId = 1;
 
   constructor(
     private authService: AuthService,
@@ -54,7 +59,10 @@ export class TabDashboardPage implements OnInit {
     private navCtrl: NavController,
     private transactionServ: TransactionService,
     private currencyServ: CurrencyService,
-    public toastController: ToastController
+    private chatService: ChatService,
+    public toastController: ToastController,
+    private localNotifications: LocalNotifications,
+    private db: AngularFirestore,
   ) {
 
     // if account changed
@@ -93,10 +101,45 @@ export class TabDashboardPage implements OnInit {
 
   }
 
-  ngOnInit() {
-    // this.loadData();
+  async ngOnInit() {
+    firebase.auth().signInAnonymously();
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+      console.log('==== Firebase User=============: ', firebaseUser);
+    });
+
+    this.account = await this.accountService.getCurrAccount();
+    // console.log('==== this.currencyRate: ', this.currencyRate);
+    this.subscribeNotif(this.account.address);
   }
 
+
+   subscribeNotif(address) {
+
+    console.log('============ CURRENT ADDRESS ====: ', address);
+    this.db
+      .collection<Chat>(FIREBASE_CHAT, res => {
+        return res.where('pair', '==', address).orderBy('time').limit(1000);
+      }).valueChanges()
+      .subscribe(chats => {
+        console.log('... Receive Chat ...', chats.length);
+        console.log('==== Current chat partner: ', this.chatService.currentChatPartner);
+        const max  = chats.length;
+        if (max > this.chatLength){
+          console.log('=== max: ', max);
+          const times = chats[max - 1];
+          console.log('=== Max time: ', times);
+          this.showNotif(chats);
+          this.chatLength = chats.length;
+        }
+
+      });
+  }
+
+  showNotif(chats: Chat[]) {
+    setTimeout(() => {
+      this.chat_notification(chats);
+    }, 100);
+  }
 
   async loadData() {
 
@@ -125,7 +168,6 @@ export class TabDashboardPage implements OnInit {
     // console.log('==== this.account: ', this.account);
     this.currencyRate = this.currencyServ.getRate();
 
-    // console.log('==== this.currencyRate: ', this.currencyRate);
 
     this.getBalance();
   }
@@ -255,4 +297,26 @@ export class TabDashboardPage implements OnInit {
     await modal.present();
 
   }
+
+  unsub() {
+    this.clickSub.unsubscribe();
+  }
+
+  chat_notification(chats: Chat[]) {
+    this.clickSub = this.localNotifications.on('click').subscribe(data => {
+      console.log(data);
+      this.router.navigateByUrl('/chat');
+      // this.presentAlert('Your notifiations contains a secret = ' + data.data.secret);
+      this.unsub();
+    });
+
+    // Schedule a single notification
+    this.localNotifications.schedule({
+      id: this.notifId++,
+      text: 'You have ' + (chats.length - this.chatLength) + 'chat',
+      sound: 'file://sound.mp3',
+      data: chats
+    });
+  }
+
 }

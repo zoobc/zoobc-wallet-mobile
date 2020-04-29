@@ -329,6 +329,13 @@ rm -rf .git/modules/bip39
 git rm -f externals/bip39
 
 
-This branch For test flight
+This branch Have Chat Feature
+
+https://us-central1-zoobcwallet.cloudfunctions.net/api
+
+https://us-central1-zoobcwallet.cloudfunctions.net/supportapi
+
+
+
 
 

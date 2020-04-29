@@ -13,6 +13,7 @@ import * as firebase from 'firebase/app';
 export class AddressBookService {
 
   private selectedAddress: string;
+  private addressess = [];
 
   public addressSubject: Subject<string> = new Subject<string>();
 
@@ -62,15 +63,24 @@ export class AddressBookService {
     await this.update(allAddress);
   }
 
-  async insertBatch(addresses: any) {
-    let allAddress = await this.getAll();
-    if (!allAddress) {
-      allAddress = [];
+  async insertBatch(addresses) {
+    this.addressess = [];
+    // const c = await this.getAll();
+    // if (c) {
+    //   this.addressess.push(c.slice());
+    // }
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < addresses.length; i++) {
+      const dt  = addresses[i];
+      this.addressess.push({
+          name: dt.name,
+          address: dt.address,
+          created: dt.created
+      });
     }
 
-    allAddress.push(addresses);
-
-    await this.update(allAddress);
+    await this.update(this.addressess);
   }
 
   async insert(name: string, address: string, created: any) {
@@ -83,13 +93,14 @@ export class AddressBookService {
       allAddress = [];
     }
 
-    allAddress.push({
+    const newAddress =  allAddress.slice();
+    newAddress.push({
       name,
       address,
       created: crtd
     });
 
-    await this.update(allAddress);
+    await this.update(newAddress);
   }
 
   async update(addresses: any) {
