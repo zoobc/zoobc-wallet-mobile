@@ -82,12 +82,6 @@ export class AddAddressPage implements OnInit {
   }
 
   scanQRCode() {
-    // const navigationExtras: NavigationExtras = {
-    //   queryParams: {
-    //     from: ('addressbook')
-    //   }
-    // };
-
     this.router.navigateByUrl('/qr-scanner');
     this.qrScannerSrv.listen().subscribe((jsondata: string) => {
       const data = JSON.parse(jsondata);

@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { AngularFirestore } from '@angular/fire/firestore';
+import * as firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class AddressBookService {
 
   private selectedAddress: string;
   private addresses: any;
+
   public addressSubject: Subject<string> = new Subject<string>();
 
   public getSelectedAddress() {
@@ -56,34 +58,44 @@ export class AddressBookService {
     await this.update(allAddress);
   }
 
-  async insertBatch(addresses: any) {
-    let allAddress = await this.getAll();
-    if (!allAddress) {
-      allAddress = [];
+  async insertBatch(addresses) {
+    this.addressess = [];
+    // const c = await this.getAll();
+    // if (c) {
+    //   this.addressess.push(c.slice());
+    // }
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < addresses.length; i++) {
+      const dt  = addresses[i];
+      this.addressess.push({
+          name: dt.name,
+          address: dt.address,
+          created: dt.created
+      });
     }
 
-    allAddress.push(addresses);
-
-    await this.update(allAddress);
+    await this.update(this.addressess);
   }
 
   async insert(name: string, address: string, created: any) {
     let crtd = new Date();
     if (created !== null) {
-        crtd = created;
+      crtd = created;
     }
     let allAddress = await this.getAll();
     if (!allAddress) {
       allAddress = [];
     }
 
-    allAddress.push({
+    const newAddress =  allAddress.slice();
+    newAddress.push({
       name,
       address,
       created: crtd
     });
 
-    await this.update(allAddress);
+    await this.update(newAddress);
   }
 
   async update(addresses: any) {
@@ -103,4 +115,47 @@ export class AddressBookService {
   restore_backup(mainAcc: string) {
     return this.firestore.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).ref.get();
   }
+
+  delete_backup() {
+    // this.firestore.doc('Students/' + record_id).delete();
+  }
+
+
+  registerUser(value) {
+    return new Promise<any>((resolve, reject) => {
+      firebase.auth().createUserWithEmailAndPassword(value.email, value.password)
+        .then(
+          res => resolve(res),
+          err => reject(err));
+    })
+  }
+
+  loginUser(value) {
+    return new Promise<any>((resolve, reject) => {
+      firebase.auth().signInWithEmailAndPassword(value.email, value.password)
+        .then(
+          res => resolve(res),
+          err => reject(err));
+    })
+  }
+
+  logoutUser() {
+    return new Promise((resolve, reject) => {
+      if (firebase.auth().currentUser) {
+        firebase.auth().signOut()
+          .then(() => {
+            console.log('LOG Out');
+            resolve();
+          }).catch((error) => {
+            reject();
+          });
+      }
+    })
+  }
+
+  userDetails() {
+    return firebase.auth().currentUser;
+  }
+
+
 }

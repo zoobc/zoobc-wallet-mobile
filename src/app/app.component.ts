@@ -22,13 +22,18 @@ import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { environment } from 'src/environments/environment';
 import { ThemeService } from './Services/theme.service';
 
+import { Chat } from './Models/chatmodels';
+import { AccountService } from 'src/app/Services/account.service';
+import { Account } from 'src/app/Services/auth-service';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit {
   public rootPage: any = AboutPage;
-
+  public currentAccount: Account;
   private connectionText = '';
 
   constructor(
@@ -49,8 +54,10 @@ export class AppComponent implements OnInit {
     private alertCtrl: AlertController,
     private currencyService: CurrencyService,
     private theme: ThemeService,
+    private accountService: AccountService
   ) {
     this.initializeApp();
+
   }
 
   initializeApp() {
@@ -66,11 +73,12 @@ export class AppComponent implements OnInit {
 
      // if (this.platform.is('cordova')) {
       this.setupPush();
-      //}
+      // }
 
       this.splashScreen.hide();
     });
   }
+
 
   async setDefaultCurrency() {
     const curr = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
@@ -140,7 +148,7 @@ export class AppComponent implements OnInit {
   async presentNotificationToast(msg: any) {
     const toast = await this.toastController.create({
       message: msg,
-      duration: 3000
+      duration: 15000
     });
     toast.present();
   }
