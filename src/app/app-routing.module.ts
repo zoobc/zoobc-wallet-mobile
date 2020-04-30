@@ -6,7 +6,7 @@ import { QrScannerComponent } from './Pages/qr-scanner/qr-scanner.component';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './Pages/tabs/tabs.module#TabsPageModule',
+    loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule',
     canActivate: [AuthService]
   },
   { path: 'qr-scanner', component: QrScannerComponent },
@@ -75,7 +75,7 @@ const routes: Routes = [
   { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule', canActivate: [AuthService] },
   { path: 'my-tasks', loadChildren: './Pages/my-tasks/my-tasks.module#MyTasksPageModule',
     canActivate: [AuthService] },
-  { path: 'task-detail', loadChildren: './Pages/my-tasks/task-detail/task-detail.module#TaskDetailPageModule' },
+  { path: 'task-detail', loadChildren: './Pages/my-tasks/task-detail/task-detail.module#TaskDetailPageModule', canActivate: [AuthService] },
   { path: 'pin-backup', loadChildren: './Pages/backup-phrase/pin/pin-backup/pin-backup.module#PinBackupPageModule' },
   { path: 'settings', loadChildren: './Pages/settings/settings.module#SettingsPageModule' },
   { path: 'applist', loadChildren: './Pages/apps/applist/applist.module#ApplistPageModule' },
@@ -84,12 +84,15 @@ const routes: Routes = [
   { path: 'transactions', loadChildren: './Pages/transactions/transactions.module#TransactionsPageModule', canActivate: [AuthService] },
   { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' },
     // tslint:disable-next-line:max-line-length
-  { path: 'backuprestore-address', loadChildren: './Pages/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule' },
+  { path: 'backuprestore-address', loadChildren: './Pages/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule', canActivate: [AuthService] },
   { path: 'reg-backup', loadChildren: './Pages/backuprestore-address/reg-backup/reg-backup.module#RegBackupPageModule' },
   { path: 'login-backup', loadChildren: './Pages/backuprestore-address/login-backup/login-backup.module#LoginBackupPageModule' },
-  { path: 'chat', loadChildren: './Pages/chat/chat.module#ChatPageModule' },
-  { path: 'chat-session', loadChildren: './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule' },
-  { path: 'chat-profile', loadChildren: './Pages/chat/chat-profile/chat-profile.module#ChatProfilePageModule' }
+  { path: 'chat', loadChildren: './Pages/chat/chat.module#ChatPageModule', canActivate: [AuthService] },
+  { path: 'chat-session', loadChildren: './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule', canActivate: [AuthService] },
+  { path: 'chat-profile', loadChildren: './Pages/chat/chat-profile/chat-profile.module#ChatProfilePageModule', canActivate: [AuthService] },
+  { path: 'dashboard', loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule', canActivate: [AuthService] },
+  { path: 'receive', loadChildren: './Pages/receive/receive.module#ReceivePageModule', canActivate: [AuthService] }
+
 
 ];
 @NgModule({

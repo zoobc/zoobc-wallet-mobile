@@ -1,21 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TabDashboardPage } from './tab-dashboard.page';
+import { DashboardPage } from './dashboard.page';
 
-describe('TabDashboardPage', () => {
-  let component: TabDashboardPage;
-  let fixture: ComponentFixture<TabDashboardPage>;
+describe('DashboardPage', () => {
+  let component: DashboardPage;
+  let fixture: ComponentFixture<DashboardPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TabDashboardPage],
+      declarations: [ DashboardPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).compileComponents();
+    })
+    .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TabDashboardPage);
+    fixture = TestBed.createComponent(DashboardPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

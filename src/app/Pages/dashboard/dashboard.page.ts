@@ -23,13 +23,14 @@ import { Chat } from 'src/app/Models/chatmodels';
 import * as firebase from 'firebase';
 import { ChatService } from 'src/app/Services/chat.service';
 
-
 @Component({
-  selector: 'app-tab-dashboard',
-  templateUrl: 'tab-dashboard.page.html',
-  styleUrls: ['tab-dashboard.page.scss']
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.page.html',
+  styleUrls: ['./dashboard.page.scss'],
 })
-export class TabDashboardPage implements OnInit {
+export class DashboardPage implements OnInit {
+
+
   clickSub: any;
   public errorMsg: string;
   public offset: number;
@@ -115,7 +116,7 @@ export class TabDashboardPage implements OnInit {
   }
 
 
-   subscribeNotif(address) {
+  subscribeNotif(address) {
 
     console.log('============ CURRENT ADDRESS ====: ', address);
     this.db
@@ -125,8 +126,8 @@ export class TabDashboardPage implements OnInit {
       .subscribe(chats => {
         console.log('... Receive Chat ...', chats.length);
         console.log('==== Current chat partner: ', this.chatService.currentChatPartner);
-        const max  = chats.length;
-        if (max > this.chatLength){
+        const max = chats.length;
+        if (max > this.chatLength) {
           console.log('=== max: ', max);
           const times = chats[max - 1];
           console.log('=== Max time: ', times);
@@ -301,5 +302,6 @@ export class TabDashboardPage implements OnInit {
       data: chats
     });
   }
+
 
 }

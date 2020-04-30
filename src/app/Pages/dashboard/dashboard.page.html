@@ -1,3 +1,4 @@
+<app-sidemenu></app-sidemenu>
 <ion-header no-border>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
@@ -17,15 +18,23 @@
 <ion-content fullscreen class="ion-no-padding">
   <div class="bg-header">
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-      <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
-        refreshingText="{{ 'Refreshing' | translate }} ...">
+      <ion-refresher-content
+        pullingIcon="arrow-dropdown"
+        pullingText="Pull to refresh"
+        refreshingSpinner="circles"
+        refreshingText="{{ 'Refreshing' | translate }} ..."
+      >
       </ion-refresher-content>
     </ion-refresher>
 
     <ion-grid>
       <ion-row>
         <ion-col>
-          <img src="assets/images/logo-white.png" width="60px" style="margin-bottom:35px;margin-top:120px" />
+          <img
+            src="assets/images/logo-white.png"
+            width="60px"
+            style="margin-bottom: 35px; margin-top: 120px;"
+          />
         </ion-col>
       </ion-row>
       <ion-row>
@@ -36,8 +45,12 @@
             <p>{{ account.shortAddress }}</p>
           </ion-label>
         </ion-col>
-        <ion-col size="2" style="text-align:left">
-          <ion-icon name="arrow-dropdown" style="font-size:8px; color:#cccccc" (click)="openListAccount()"></ion-icon>
+        <ion-col size="2" style="text-align: left;">
+          <ion-icon
+            name="arrow-dropdown"
+            style="font-size: 8px; color: #cccccc;"
+            (click)="openListAccount()"
+          ></ion-icon>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -45,27 +58,29 @@
           <ion-item color="dbabuku">
             <ion-label>
               <p>{{ "Balance" | translate }}</p>
-              <ion-text class="amount">{{ accountBalance.balance/1e8 | number: '0.0-2' }} <span class="sufix">ZBC</span>
+              <ion-text class="amount"
+                >{{ accountBalance.balance/1e8 | number: '0.0-2' }}
+                <span class="sufix">ZBC</span>
               </ion-text>
-              <p>{{
-                    (accountBalance.balance / 1e8) * priceInUSD * currencyRate.value
-                      | number: '0.0-2'
-                  }}
+              <p>
+                {{ (accountBalance.balance / 1e8) * priceInUSD *
+                currencyRate.value | number: '0.0-2' }}
                 <span class="sufix">{{ currencyRate.name }}</span>
               </p>
             </ion-label>
           </ion-item>
         </ion-col>
-        <ion-col size="6" style="text-align:left; padding-bottom: 10px;">
+        <ion-col size="6" style="text-align: left; padding-bottom: 10px;">
           <ion-item color="dbamount">
             <ion-label>
               <p>{{ "Spendable Balance" | translate }}</p>
-              <ion-text class="amount">{{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }} <span
-                  class="sufix">ZBC</span></ion-text>
-              <p>{{
-                    (accountBalance.spendablebalance / 1e8) * priceInUSD * currencyRate.value
-                      | number: '0.0-2'
-                  }}
+              <ion-text class="amount"
+                >{{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }}
+                <span class="sufix">ZBC</span></ion-text
+              >
+              <p>
+                {{ (accountBalance.spendablebalance / 1e8) * priceInUSD *
+                currencyRate.value | number: '0.0-2' }}
                 <span class="sufix">{{ currencyRate.name }}</span>
               </p>
             </ion-label>
@@ -75,9 +90,36 @@
     </ion-grid>
   </div>
 
-  <ion-grid style="margin-top:20px; margin-bottom: 70px;">
+  <ion-grid style="margin-top: 20px; margin-bottom: 70px;">
     <ion-row>
-      <ion-col size="6">
+      <ion-col size="4">
+        <ion-card color="light" (click)="openListAccount()">
+          <ion-icon name="wallet"></ion-icon>
+          <ion-text>
+            <h2>My Accounts</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" [routerLink]="['/sendcoin']">
+          <ion-icon name="arrow-round-up"></ion-icon>
+          <ion-text>
+            <h2>Transfer</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" [routerLink]="['/receive']">
+          <ion-icon name="arrow-round-down"></ion-icon>
+          <ion-text>
+            <h2>Receive</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
         <ion-card color="light" routerLink="/transactions">
           <ion-icon name="swap"></ion-icon>
           <ion-text>
@@ -85,17 +127,17 @@
           </ion-text>
         </ion-card>
       </ion-col>
-      <ion-col size="6">
 
-        <ion-card color="light" (click)="openListAccount()">
-          <ion-icon name="wallet"></ion-icon>
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/chat">
+          <ion-icon name="chatboxes"></ion-icon>
           <ion-text>
-            <h2>Accounts</h2>
+            <h2>{{ "Chat" | translate }}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
-      <ion-col size="6">
 
+      <ion-col size="4">
         <ion-card color="light" routerLink="/address-book">
           <ion-icon name="people"></ion-icon>
           <ion-text>
@@ -103,8 +145,7 @@
           </ion-text>
         </ion-card>
       </ion-col>
-      <ion-col size="6">
-
+      <ion-col size="4">
         <ion-card color="light" routerLink="/my-tasks">
           <ion-icon name="list"></ion-icon>
           <ion-text>
@@ -112,17 +153,7 @@
           </ion-text>
         </ion-card>
       </ion-col>
-      <ion-col size="6">
-
-        <ion-card color="light" routerLink="/applist">
-          <ion-icon name="apps"></ion-icon>
-          <ion-text>
-            <h2>Apps</h2>
-          </ion-text>
-        </ion-card>
-      </ion-col>
-
-      <ion-col size="6">
+      <ion-col size="4">
         <ion-card color="light" (click)="openBlog()">
           <ion-icon name="paper"></ion-icon>
           <ion-text>
@@ -130,26 +161,14 @@
           </ion-text>
         </ion-card>
       </ion-col>
-
-      <ion-col size="6">
-        <ion-card color="light" routerLink="/chat">
-          <ion-icon name="help-circle-outline"></ion-icon>
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/applist">
+          <ion-icon name="apps"></ion-icon>
           <ion-text>
-            <h2> {{ "Chat" | translate }}</h2>
+            <h2>Apps</h2>
           </ion-text>
         </ion-card>
       </ion-col>
-
-      <ion-col size="6">
-        <ion-card color="light" routerLink="/about">
-          <ion-icon name="information-circle-outline"></ion-icon>
-          <ion-text>
-            <h2>About</h2>
-          </ion-text>
-        </ion-card>
-      </ion-col>
-
-
     </ion-row>
   </ion-grid>
   <p>&nbsp;</p>

@@ -4,12 +4,13 @@ import { Platform } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/Account';
 import { AccountService } from 'src/app/Services/account.service';
+
 @Component({
-  selector: 'app-tab-receive',
-  templateUrl: 'tab-receive.page.html',
-  styleUrls: ['tab-receive.page.scss']
+  selector: 'app-receive',
+  templateUrl: './receive.page.html',
+  styleUrls: ['./receive.page.scss'],
 })
-export class TabReceivePage implements OnInit {
+export class ReceivePage implements OnInit {
 
   createdCode: any;
   amount = 0;
@@ -62,5 +63,6 @@ export class TabReceivePage implements OnInit {
     const qrCode = { address: addrs, amount: amnt };
     this.createdCode = JSON.stringify(qrCode);
   }
+
 
 }
