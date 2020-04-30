@@ -189,34 +189,20 @@ export const LANGUAGES = [
 
 export const NETWORK_LIST = [
   {
+    name: 'Demo 1',
+    host: 'http://85.90.246.90:8002'
+  },
+  {
+    name: 'Demo 2',
+    host: 'http://45.79.39.58:8002'
+  },
+  {
     name: 'Alpha Testnet',
-    domain: '//n1.alpha.proofofparticipation.network:8080'
+    host: 'https://n1.alpha.proofofparticipation.network:8080'
   },
   {
-    name: 'Demo Testnet 1',
-    domain: '//85.90.246.90:8002',
-  },
-  {
-    name: 'Demo Testnet 2',
-    domain: '//45.79.39.58:8002'
-  }];
-
-export const THEME_LIST = [
-  {
-    name: 'Card',
-    code: 'card'
-  },
-  {
-    name: 'List',
-    code: 'list'
-  },
-  {
-    name: 'Light',
-    code: 'light'
-  },
-  {
-    name: 'Dark',
-    code: 'dark'
+    name: 'Local Testnet',
+    host: 'http://192.168.20.242:7001'
   }];
 
 export const TRX_FEE_LIST = [{
