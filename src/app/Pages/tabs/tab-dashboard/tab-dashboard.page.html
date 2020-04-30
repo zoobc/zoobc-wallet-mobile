@@ -31,7 +31,7 @@
       <ion-row>
         <ion-col size="2"></ion-col>
         <ion-col size="8" style="margin-bottom: 35px;">
-          <ion-label *ngIf="account" color="white" (click)="openListAccount()">
+          <ion-label *ngIf="account" color="light" (click)="openListAccount()">
             <h1>{{ account.name }}</h1>
             <p>{{ account.shortAddress }}</p>
           </ion-label>
@@ -75,10 +75,10 @@
     </ion-grid>
   </div>
 
-  <ion-grid style="margin-top:20px; margin-bottom: 70px; background: #ffffff;">
+  <ion-grid style="margin-top:20px; margin-bottom: 70px;">
     <ion-row>
       <ion-col size="6">
-        <ion-card color="white" routerLink="/transactions">
+        <ion-card color="light" routerLink="/transactions">
           <ion-icon name="swap"></ion-icon>
           <ion-text>
             <h2>Transactions</h2>
@@ -87,7 +87,7 @@
       </ion-col>
       <ion-col size="6">
 
-        <ion-card color="white" (click)="openListAccount()">
+        <ion-card color="light" (click)="openListAccount()">
           <ion-icon name="wallet"></ion-icon>
           <ion-text>
             <h2>Accounts</h2>
@@ -96,7 +96,7 @@
       </ion-col>
       <ion-col size="6">
 
-        <ion-card color="white" routerLink="/address-book">
+        <ion-card color="light" routerLink="/address-book">
           <ion-icon name="people"></ion-icon>
           <ion-text>
             <h2>Contacts</h2>
@@ -105,7 +105,7 @@
       </ion-col>
       <ion-col size="6">
 
-        <ion-card color="white" routerLink="/my-tasks">
+        <ion-card color="light" routerLink="/my-tasks">
           <ion-icon name="list"></ion-icon>
           <ion-text>
             <h2>My Tasks</h2>
@@ -114,7 +114,7 @@
       </ion-col>
       <ion-col size="6">
 
-        <ion-card color="white" routerLink="/applist">
+        <ion-card color="light" routerLink="/applist">
           <ion-icon name="apps"></ion-icon>
           <ion-text>
             <h2>Apps</h2>
@@ -123,7 +123,7 @@
       </ion-col>
 
       <ion-col size="6">
-        <ion-card color="white" (click)="openBlog()">
+        <ion-card color="light" (click)="openBlog()">
           <ion-icon name="paper"></ion-icon>
           <ion-text>
             <h2>Blog</h2>
@@ -132,7 +132,7 @@
       </ion-col>
 
       <ion-col size="6">
-        <ion-card color="dbabuku" routerLink="/chat">
+        <ion-card color="light" routerLink="/chat">
           <ion-icon name="help-circle-outline"></ion-icon>
           <ion-text>
             <h2> {{ "Chat" | translate }}</h2>
@@ -141,7 +141,7 @@
       </ion-col>
 
       <ion-col size="6">
-        <ion-card color="white" routerLink="/about">
+        <ion-card color="light" routerLink="/about">
           <ion-icon name="information-circle-outline"></ion-icon>
           <ion-text>
             <h2>About</h2>
