@@ -58,7 +58,7 @@ export class ListAccountComponent implements OnInit {
   }
 
   goToDashboard() {
-    this.router.navigateByUrl('/tabs/dashboard');
+    this.router.navigateByUrl('/dashboard');
   }
 
   goToSendMoney() {

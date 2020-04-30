@@ -195,6 +195,6 @@ export class FeedbackPage implements OnInit {
   }
 
   goDashboard() {
-    this.router.navigate(['/tabs/dashboard']);
+    this.router.navigate(['/dashboard']);
   }
 }
