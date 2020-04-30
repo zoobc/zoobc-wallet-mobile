@@ -16,17 +16,12 @@ import { AccountService } from 'src/app/Services/account.service';
 import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST } from 'src/environments/variable.const';
 import zoobc from 'zoobc';
 import { Transaction } from 'src/app/Interfaces/transaction';
-
-import {
-  GetAccountBalanceResponse,
-} from 'src/app/Grpc/model/accountBalance_pb';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Chat } from 'src/app/Models/chatmodels';
 import * as firebase from 'firebase';
 import { ChatService } from 'src/app/Services/chat.service';
-type AccountBalanceList = GetAccountBalanceResponse.AsObject;
 
 
 @Component({

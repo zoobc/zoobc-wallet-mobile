@@ -59,7 +59,7 @@ export class AddressBookService {
   }
 
   async insertBatch(addresses) {
-    this.addressess = [];
+    this.addresses = [];
     // const c = await this.getAll();
     // if (c) {
     //   this.addressess.push(c.slice());
@@ -68,14 +68,14 @@ export class AddressBookService {
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < addresses.length; i++) {
       const dt  = addresses[i];
-      this.addressess.push({
+      this.addresses.push({
           name: dt.name,
           address: dt.address,
           created: dt.created
       });
     }
 
-    await this.update(this.addressess);
+    await this.update(this.addresses);
   }
 
   async insert(name: string, address: string, created: any) {
@@ -127,7 +127,7 @@ export class AddressBookService {
         .then(
           res => resolve(res),
           err => reject(err));
-    })
+    });
   }
 
   loginUser(value) {
@@ -136,7 +136,7 @@ export class AddressBookService {
         .then(
           res => resolve(res),
           err => reject(err));
-    })
+    });
   }
 
   logoutUser() {
@@ -150,7 +150,7 @@ export class AddressBookService {
             reject();
           });
       }
-    })
+    });
   }
 
   userDetails() {

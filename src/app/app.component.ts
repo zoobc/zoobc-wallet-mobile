@@ -21,11 +21,7 @@ import { StoragedevService } from './Services/storagedev.service';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { environment } from 'src/environments/environment';
 import { ThemeService } from './Services/theme.service';
-
-import { Chat } from './Models/chatmodels';
-import { AccountService } from 'src/app/Services/account.service';
-import { Account } from 'src/app/Services/auth-service';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { Account } from 'src/app/Interfaces/Account';
 
 @Component({
   selector: 'app-root',
@@ -53,9 +49,7 @@ export class AppComponent implements OnInit {
     private oneSignal: OneSignal,
     private alertCtrl: AlertController,
     private currencyService: CurrencyService,
-    private theme: ThemeService,
-    private accountService: AccountService
-  ) {
+    private theme: ThemeService  ) {
     this.initializeApp();
 
   }

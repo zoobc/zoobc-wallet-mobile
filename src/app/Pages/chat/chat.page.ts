@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
-import { Account } from 'src/app/Services/auth-service';
+import { Account } from 'src/app/Interfaces/Account';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ChatService } from 'src/app/Services/chat.service';
 import { User } from 'src/app/Models/chatmodels';
