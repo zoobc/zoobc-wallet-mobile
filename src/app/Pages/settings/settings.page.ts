@@ -7,12 +7,16 @@ import {
   CURRENCY_LIST,
   STORAGE_ACTIVE_CURRENCY,
   STORAGE_ACTIVE_NETWORK,
-  NETWORK_LIST
+  NETWORK_LIST,
+  THEME_OPTIONS,
+  STORAGE_THEME,
+  STORAGE_THEME_NAME
 } from 'src/environments/variable.const';
 import { NetworkService } from 'src/app/Services/network.service';
 import { getFormatedDate } from 'src/Helpers/converters';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { ThemeService } from 'src/app/Services/theme.service';
 
 @Component({
   selector: 'app-settings',
@@ -24,6 +28,7 @@ export class SettingsPage implements OnInit {
   public Object = Object;
   public languages = LANGUAGES;
   public activeLanguage = 'en';
+  public activeTheme: string;
   public activeCurrency: string;
   public activeNetwork: string;
   public currencyRateList: any;
@@ -31,15 +36,16 @@ export class SettingsPage implements OnInit {
   public networks = NETWORK_LIST;
   public currencyRate: Currency;
   public timestamp: string;
+  public themes = THEME_OPTIONS;
 
   constructor(
     private strgSrv: StoragedevService,
     private transactionService: TransactionService,
     private languageService: LanguageService,
     private networkService: NetworkService,
+    private theme: ThemeService,
     private currencyService: CurrencyService) {
 
-       // if currency changed
       this.currencyService.currencySubject.subscribe((rate: Currency) => {
         this.currencyRate = rate;
       });
@@ -52,6 +58,9 @@ export class SettingsPage implements OnInit {
     this.activeLanguage = await this.strgSrv.get(SELECTED_LANGUAGE);
     this.activeCurrency = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
     this.activeNetwork = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK);
+    this.activeTheme = await this.strgSrv.get(STORAGE_THEME_NAME);
+    console.log('---- Active Theme: ', this.activeTheme);
+
   }
 
 
@@ -83,16 +92,15 @@ export class SettingsPage implements OnInit {
     this.languageService.setLanguage(this.activeLanguage);
   }
 
-  switchNetwork(host: string) {
-
-     // console.log('Set new host: ', host);
-  }
-
-
   selectActiveNetwork() {
     // console.log('=============== this.activeNetwork', this.activeNetwork);
     this.transactionService.setRpcUrl(this.activeNetwork);
     this.networkService.setNetwork(this.activeNetwork);
+  }
+
+  async changeTheme() {
+    console.log('== changeTheme: theme selected: ', this.activeTheme);
+    await this.theme.setTheme(this.activeTheme);
   }
 
 }

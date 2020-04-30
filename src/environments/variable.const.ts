@@ -15,6 +15,8 @@ export const STORAGE_ENC_MASTER_SEED = 'enc_master_seed';
 export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_passphrase_seed';
 export const STORAGE_SELECTED_NODE = 'net_selected_node';
 export const STORAGE_ESCROW_WAITING_LIST = 'escrow_waiting_list';
+export const STORAGE_THEME = 'storage_themes';
+export const STORAGE_THEME_NAME = 'storage_theme_name';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
@@ -39,6 +41,23 @@ export const CONST_HEX = 'hex';
 
 // Language
 export const SELECTED_LANGUAGE = 'selected_language';
+export const THEME_OPTIONS  = [{
+  name: 'ZooBC',
+  value: 'zoobc'
+  },
+  {
+    name: 'Day',
+    value: 'neon'
+  },
+  {
+    name: 'Night',
+    value: 'night'
+  },
+  {
+    name: 'Autumn',
+    value: 'autumn'
+  }];
+
 export const LANGUAGES = [
   {
     country: 'العربية',

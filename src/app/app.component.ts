@@ -11,7 +11,7 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import {
   STORAGE_OPENEXCHANGE_RATES,
   STORAGE_TRX_FEES, STORAGE_ACTIVE_CURRENCY, NETWORK_LIST,
-  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY
+  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY, STORAGE_THEME_NAME
 } from 'src/environments/variable.const';
 import { TransactionFeesService } from './Services/transaction-fees.service';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -20,6 +20,7 @@ import { TransactionService } from './Services/transaction.service';
 import { StoragedevService } from './Services/storagedev.service';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { environment } from 'src/environments/environment';
+import { ThemeService } from './Services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -46,7 +47,8 @@ export class AppComponent implements OnInit {
     private translateService: TranslateService,
     private oneSignal: OneSignal,
     private alertCtrl: AlertController,
-    private currencyService: CurrencyService
+    private currencyService: CurrencyService,
+    private theme: ThemeService,
   ) {
     this.initializeApp();
   }
@@ -93,6 +95,11 @@ export class AppComponent implements OnInit {
       }
     });
 
+  }
+
+  async setTheme(){
+    const activeTheme = await this.strgSrv.get(STORAGE_THEME_NAME);
+    await this.theme.setTheme(activeTheme);
   }
 
   async setNodes() {
