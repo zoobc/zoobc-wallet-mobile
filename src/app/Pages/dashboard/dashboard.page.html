@@ -1,0 +1,175 @@
+<app-sidemenu></app-sidemenu>
+<ion-header no-border>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="openMenu()">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <!-- <ion-title>ZooBC v0.1</ion-title> -->
+    <ion-buttons slot="end">
+      <ion-button (click)="openSendFeedbak()">
+        Feedback
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen class="ion-no-padding">
+  <div class="bg-header">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content
+        pullingIcon="arrow-dropdown"
+        pullingText="Pull to refresh"
+        refreshingSpinner="circles"
+        refreshingText="{{ 'Refreshing' | translate }} ..."
+      >
+      </ion-refresher-content>
+    </ion-refresher>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <img
+            src="assets/images/logo-white.png"
+            width="60px"
+            style="margin-bottom: 35px; margin-top: 120px;"
+          />
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="2"></ion-col>
+        <ion-col size="8" style="margin-bottom: 35px;">
+          <ion-label *ngIf="account" color="light" (click)="openListAccount()">
+            <h1>{{ account.name }}</h1>
+            <p>{{ account.shortAddress }}</p>
+          </ion-label>
+        </ion-col>
+        <ion-col size="2" style="text-align: left;">
+          <ion-icon
+            name="arrow-dropdown"
+            style="font-size: 8px; color: #cccccc;"
+            (click)="openListAccount()"
+          ></ion-icon>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item color="dbabuku">
+            <ion-label>
+              <p>{{ "Balance" | translate }}</p>
+              <ion-text class="amount"
+                >{{ accountBalance.balance/1e8 | number: '0.0-2' }}
+                <span class="sufix">ZBC</span>
+              </ion-text>
+              <p>
+                {{ (accountBalance.balance / 1e8) * priceInUSD *
+                currencyRate.value | number: '0.0-2' }}
+                <span class="sufix">{{ currencyRate.name }}</span>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" style="text-align: left; padding-bottom: 10px;">
+          <ion-item color="dbamount">
+            <ion-label>
+              <p>{{ "Spendable Balance" | translate }}</p>
+              <ion-text class="amount"
+                >{{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }}
+                <span class="sufix">ZBC</span></ion-text
+              >
+              <p>
+                {{ (accountBalance.spendablebalance / 1e8) * priceInUSD *
+                currencyRate.value | number: '0.0-2' }}
+                <span class="sufix">{{ currencyRate.name }}</span>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <ion-grid style="margin-top: 20px; margin-bottom: 70px;">
+    <ion-row>
+      <ion-col size="4">
+        <ion-card color="light" (click)="openListAccount()">
+          <ion-icon name="wallet"></ion-icon>
+          <ion-text>
+            <h2>My Accounts</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" [routerLink]="['/sendcoin']">
+          <ion-icon name="arrow-round-up"></ion-icon>
+          <ion-text>
+            <h2>Transfer</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" [routerLink]="['/receive']">
+          <ion-icon name="arrow-round-down"></ion-icon>
+          <ion-text>
+            <h2>Receive</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/transactions">
+          <ion-icon name="swap"></ion-icon>
+          <ion-text>
+            <h2>Transactions</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/chat">
+          <ion-icon name="chatboxes"></ion-icon>
+          <ion-text>
+            <h2>{{ "Chat" | translate }}</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/address-book">
+          <ion-icon name="people"></ion-icon>
+          <ion-text>
+            <h2>Contacts</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/my-tasks">
+          <ion-icon name="list"></ion-icon>
+          <ion-text>
+            <h2>My Tasks</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+      <ion-col size="4">
+        <ion-card color="light" (click)="openBlog()">
+          <ion-icon name="paper"></ion-icon>
+          <ion-text>
+            <h2>Blog</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/applist">
+          <ion-icon name="apps"></ion-icon>
+          <ion-text>
+            <h2>Apps</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <p>&nbsp;</p>
+</ion-content>

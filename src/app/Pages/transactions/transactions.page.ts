@@ -224,7 +224,7 @@ export class TransactionsPage implements OnInit {
 
 
   goDashboard() {
-    this.router.navigate(['/tabs/dashboard']);
+    this.router.navigate(['/dashboard']);
   }
 
 }

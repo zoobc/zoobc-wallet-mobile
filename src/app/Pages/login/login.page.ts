@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
 
     const isLoggedIn = this.authService.isLoggedIn();
     if (isLoggedIn === true) {
-      this.router.navigate(['tabs']);
+      this.router.navigate(['/dashboard']);
       return;
     }
   }
@@ -37,7 +37,7 @@ export class LoginPage implements OnInit {
     this.isLoginValid = true;
     const isUserLoggedIn =  await this.authService.login(pin);
     if (isUserLoggedIn) {
-      this.router.navigate(['tabs']);
+      this.router.navigateByUrl('/dashboard');
     } else {
       this.isLoginValid = false;
       setTimeout(() => {

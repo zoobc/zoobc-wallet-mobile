@@ -1,3 +1,4 @@
+<app-sidemenu></app-sidemenu>
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
@@ -37,10 +38,10 @@
     <ion-row>
       <ion-col class="qrcode">
         <div style="margin-bottom: 5px; font-weight: bold;">Address:</div>
-        <div *ngIf="account">{{ account.address }} 
-          <ion-button fill="outline"  expand="block" size="small" (click)="copyToClipboard()">
+        <div *ngIf="account">{{ account.address }}
+          <ion-button fill="outline" expand="block" size="small" (click)="copyToClipboard()">
             <ion-icon name="copy"></ion-icon> Copy
-          </ion-button> 
+          </ion-button>
         </div>
       </ion-col>
     </ion-row>
