@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
 import { FeedbackService } from '../../Services/feedback.service';
 import { HttpHeaders, HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { Location } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular';
-import { Account } from 'src/app/Services/auth-service';
-import { AccountService } from 'src/app/Services/account.service';
 
 export class Feedback {
   name: string;
@@ -76,7 +73,7 @@ export class FeedbackPage implements OnInit {
       'Something bad happened; please try again later.');
   }
 
-  changeRating(event) {
+  changeRating() {
     // console.log('Your rate:', event);
   }
 
@@ -87,7 +84,7 @@ export class FeedbackPage implements OnInit {
     let url = environment.feedbackUrl + '/applications/11045/submit';
     url += '?key=6iiLMDdWejJrMi831uTdnZg4vSWlguwLBjbw5962Zu5EPA6c8xvKyhItme6hFWTs';
     this.http.post(url, postData, this.httpOptions)
-      .subscribe(data => {
+      .subscribe(() => {
         // console.log('Response from server: ', data);
         this.isSending = false;
       }, error => {
@@ -161,7 +158,7 @@ export class FeedbackPage implements OnInit {
       buttons: ['close']
     });
 
-    alert.onDidDismiss().then(msg => {
+    alert.onDidDismiss().then(() => {
       this.location.back();
     });
 

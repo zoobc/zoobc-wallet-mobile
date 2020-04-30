@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
-import { MenuController, ToastController } from '@ionic/angular';
-import { Account } from 'src/app/Services/auth-service';
+import { MenuController } from '@ionic/angular';
+import { Account } from 'src/app/Interfaces/Account';
 import { AccountService } from 'src/app/Services/account.service';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
 @Component({
   selector: 'app-tab-receive',
   templateUrl: 'tab-receive.page.html',

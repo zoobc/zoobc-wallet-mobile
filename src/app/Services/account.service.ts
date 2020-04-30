@@ -5,12 +5,12 @@ import {
   STORAGE_ENC_MASTER_SEED,
   STORAGE_ENC_PASSPHRASE_SEED
 } from 'src/environments/variable.const';
-import { Account } from './auth-service';
 import { Subject } from 'rxjs';
 import { doEncrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ToastController } from '@ionic/angular';
+import { Account } from '../Interfaces/Account';
 
 
 @Injectable({

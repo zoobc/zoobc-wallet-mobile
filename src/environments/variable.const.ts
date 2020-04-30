@@ -14,11 +14,15 @@ export const STORAGE_CURRENT_ACCOUNT = 'curr_account';
 export const STORAGE_ENC_MASTER_SEED = 'enc_master_seed';
 export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_passphrase_seed';
 export const STORAGE_SELECTED_NODE = 'net_selected_node';
+export const STORAGE_ESCROW_WAITING_LIST = 'escrow_waiting_list';
+export const STORAGE_THEME = 'storage_themes';
+export const STORAGE_THEME_NAME = 'storage_theme_name';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
 export const FIREBASE_CHAT = 'chats';
 export const FIREBASE_CHAT_USER = 'chatusers';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
+export const TRANSACTION_MINIMUM_FEE = 0.01;
 export const TRANSACTION_VERSION = Buffer.from([1]);
 export const FOR_SENDER = 'sender';
 export const FOR_RECIPIENT = 'recipient';
@@ -27,6 +31,8 @@ export const EDIT_MODE = 'edit';
 export const NEW_MODE = 'new';
 export const EMPTY_STRING = '';
 export const CONST_DEFAULT_CURRENCY = 'USD';
+export const BLOCKCHAIN_BLOG_URL = 'https://blogchainzoo.com';
+
 
 export const CONST_DEFAULT_RATE: Currency = {
   name: CONST_DEFAULT_CURRENCY,
@@ -37,6 +43,22 @@ export const CONST_HEX = 'hex';
 
 // Language
 export const SELECTED_LANGUAGE = 'selected_language';
+export const THEME_OPTIONS  = [{
+  name: 'ZooBC',
+  value: 'zoobc'
+  },
+  {
+    name: 'Day',
+    value: 'neon'
+  },
+  {
+    name: 'Night',
+    value: 'night'
+  },
+  {
+    name: 'Autumn',
+    value: 'autumn'
+  }];
 export const SELECTED_THEME = 'card';
 export const LANGUAGES = [
   {
@@ -207,15 +229,15 @@ export const NETWORK_LIST = [
 
 export const TRX_FEE_LIST = [{
     name: 'Slow',
-    fee: 0.001
+    fee: TRANSACTION_MINIMUM_FEE * 2
   },
   {
     name: 'Average',
-    fee: 0.005
+    fee: TRANSACTION_MINIMUM_FEE * 4
   },
   {
     name: 'Fast',
-    fee: 0.01
+    fee: TRANSACTION_MINIMUM_FEE * 6
 }];
 
 export const CURRENCY_LIST = {

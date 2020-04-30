@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SwitcthemeService } from './switctheme.service';
+import { ThemeService } from './theme.service';
 
-describe('SwitcthemeService', () => {
+describe('ThemeService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: SwitcthemeService = TestBed.get(SwitcthemeService);
+    const service: ThemeService = TestBed.get(ThemeService);
     expect(service).toBeTruthy();
   });
 });

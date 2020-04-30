@@ -5,12 +5,9 @@ import {
   ModalController
 } from '@ionic/angular';
 
-import { TransactionService } from 'src/app/Services/transaction.service';
-import { TransactionFeesService } from 'src/app/Services/transaction-fees.service';
-import { base64ToByteArray, intToInt64Bytes, int32ToBytes } from 'src/Helpers/converters';
+import { base64ToByteArray, doDecrypt } from 'src/Helpers/converters';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { GetAccountBalanceResponse } from 'src/app/Grpc/model/accountBalance_pb';
 import { SenddetailPage } from 'src/app/Pages/send-coin/modals/senddetail/senddetail.page';
 import { EnterpinsendPage } from 'src/app/Pages/send-coin/modals/enterpinsend/enterpinsend.page';
 import { TrxstatusPage } from 'src/app/Pages/send-coin/modals/trxstatus/trxstatus.page';
@@ -21,70 +18,20 @@ import { environment } from 'src/environments/environment';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
 import {
   COIN_CODE, TRX_FEE_LIST,
-  ADDRESS_LENGTH, TRANSACTION_TYPE,
-  TRANSACTION_VERSION,
-  CONST_DEFAULT_CURRENCY} from 'src/environments/variable.const';
-import { Account } from 'src/app/Services/auth-service';
-import { KeyringService } from 'src/app/Services/keyring.service';
+  CONST_DEFAULT_CURRENCY,
+  STORAGE_ENC_PASSPHRASE_SEED,
+  SALT_PASSPHRASE,
+  TRANSACTION_MINIMUM_FEE} from 'src/environments/variable.const';
+import { Account } from 'src/app/Interfaces/Account';
 import { AccountService } from 'src/app/Services/account.service';
-
-
-interface TrxFee {
-  name: string;
-  fee: number;
-}
-
-type AccountBalanceList = GetAccountBalanceResponse.AsObject;
-
-export interface SendMoneyInterface {
-  sender: string;
-  recipient: string;
-  fee: number;
-  amount: number;
-}
-
-export function sendMoneyBuilder(
-  data: SendMoneyInterface,
-  keyringServ: KeyringService,
-  account: Account
-): Buffer {
-  let bytes: Buffer;
-
-  const timestamp = intToInt64Bytes(Math.trunc(Date.now() / 1000));
-  const sender = Buffer.from(data.sender, 'utf-8');
-  const recipient = Buffer.from(data.recipient, 'utf-8');
-  const addressLength = int32ToBytes(ADDRESS_LENGTH);
-  const fee = intToInt64Bytes(data.fee * 1e8);
-
-  const amount = intToInt64Bytes(data.amount * 1e8);
-  const bodyLength = int32ToBytes(amount.length);
-
-  bytes = Buffer.concat([
-    TRANSACTION_TYPE,
-    TRANSACTION_VERSION,
-    timestamp,
-    addressLength,
-    sender,
-    addressLength,
-    recipient,
-    fee,
-    bodyLength,
-    amount,
-  ]);
-
-  const signatureType = int32ToBytes(0);
-  const signature = sign(bytes, keyringServ, account);
-  return Buffer.concat([bytes, signatureType, signature]);
-}
-
-function sign(bytes: Buffer, keyringServ: KeyringService, account: Account): Buffer {
-  console.log('====== account xyz: ', account);
-  const childSeed = keyringServ.calcForDerivationPathForCoin(
-    COIN_CODE,
-    account.path
-  );
-  return Buffer.from(childSeed.sign(bytes));
-}
+import { StoragedevService } from 'src/app/Services/storagedev.service';
+import CryptoJS from 'crypto-js';
+import zoobc, {
+  BIP32Interface,
+  SendMoneyInterface,
+  ZooKeyring
+} from 'zoobc';
+import { calculateMinFee} from 'src/Helpers/utils';
 
 @Component({
   selector: 'app-send-coin',
@@ -94,6 +41,8 @@ function sign(bytes: Buffer, keyringServ: KeyringService, account: Account): Buf
 
 export class SendCoinPage implements OnInit {
 
+  private seed: BIP32Interface;
+  private keyring: ZooKeyring;
   rootPage: any;
   status: any;
   account: Account;
@@ -110,15 +59,17 @@ export class SendCoinPage implements OnInit {
   isFeeValid = true;
   isCustomFeeValid = true;
   isRecipientValid = true;
+  isApproverValid = true;
   isBalanceValid = true;
   accountName = '';
   recipientMsg = '';
+  approverMsg = '';
   amountMsg = '';
   allAccounts = [];
   errorMsg: string;
   customeChecked: boolean;
   private connectionText = '';
-
+  minFee = TRANSACTION_MINIMUM_FEE;
   public currencyRate: Currency = {
     name: CONST_DEFAULT_CURRENCY,
     value: environment.zbcPriceInUSD,
@@ -131,17 +82,18 @@ export class SendCoinPage implements OnInit {
   public primaryCurr = COIN_CODE;
   public secondaryCurr: string;
 
+  escrowApprover = '';
+  escrowCommision = 0;
+  escrowTimout = 0;
+  escrowInstruction = '';
 
   constructor(
-    // @Inject('nacl.sign') private sign: any,
-    private transactionService: TransactionService,
-    private keyringService: KeyringService,
     private accountService: AccountService,
     private toastController: ToastController,
     private menuController: MenuController,
     private qrScannerService: QrScannerService,
     private router: Router,
-    private trxFeeService: TransactionFeesService,
+    private strgSrv: StoragedevService,
     private currencyService: CurrencyService,
     public addressbookService: AddressBookService,
     private translateService: TranslateService,
@@ -254,7 +206,7 @@ export class SendCoinPage implements OnInit {
           text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: (val) => {
+          handler: () => {
             // console.log('Confirm Cancel', val);
           }
         }, {
@@ -338,42 +290,24 @@ export class SendCoinPage implements OnInit {
     this.getAccountBalance(this.account.address);
   }
 
+
   async getAccountBalance(addr: string) {
     this.isLoadingBalance = true;
-    const date1 = new Date();
-    await this.transactionService.getAccountBalance(addr).then((data: AccountBalanceList) => {
-      if (data.accountbalance && data.accountbalance.spendablebalance) {
-        const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
-        this.account.balance = blnc;
-      }
-    }).catch((error) => {
-      // console.log('===== eror', error);
-      const date2 = new Date();
-      const diff = date2.getTime() - date1.getTime();
-      // console.log('== diff: ', diff);
-
-      // all SubConns are in TransientFailure
-      if (error === 'error: account not found') {
-        // do something here
-        this.errorMsg = '';
-      } else if (error === 'Response closed without headers') {
-        if (diff < 5000) {
-          this.errorMsg = 'Please check internet connection!';
-        } else {
-          this.errorMsg = 'Fail connect to services, please try again later!';
+    await zoobc.Account.getBalance(addr)
+      .then(data => {
+        if (data.accountbalance && data.accountbalance.spendablebalance) {
+          const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
+          this.account.balance = blnc;
         }
-      } else if (error === 'all SubConns are in TransientFailure') {
+      })
+      .catch(error => {
         this.errorMsg = '';
-      } else {
-        this.errorMsg = '';
-      }
-      this.account.balance = 0;
-    }).finally(() => {
-      this.isLoadingBalance = false;
-      // console.log('===== BALANCE:', this.account.balance);
-      // TODO REMOVE THIS
-      // this.account.balance = 3000000000 / 1e8;
-    });
+        if (error === 'Response closed without headers') {
+           this.errorMsg = 'Fail connect to services, please try again!';
+        }
+        this.account.balance = 0;
+      })
+      .finally(() => (this.isLoadingBalance = false));
   }
 
 
@@ -383,7 +317,6 @@ export class SendCoinPage implements OnInit {
     } else {
       this.isCustomFeeValid = false;
     }
-    // console.log('==== customfee: ', this.customfee);
   }
 
 
@@ -442,6 +375,26 @@ export class SendCoinPage implements OnInit {
 
   }
 
+  validateApprover() {
+    this.isApproverValid = true;
+    console.log('===== approverAddress: ', this.escrowApprover);
+
+    if (!this.escrowApprover || this.escrowApprover === '' || this.escrowApprover === null) {
+      this.isApproverValid = false;
+      this.approverMsg = this.translateService.instant('Approver address is required!');
+      return;
+    }
+
+    if (this.isApproverValid) {
+      const addressBytes = base64ToByteArray(this.escrowApprover);
+      if (this.isApproverValid && addressBytes.length !== 33) {
+        this.isApproverValid = false;
+        this.approverMsg = this.translateService.instant('Approver address is not valid!');
+        return;
+      }
+    }
+  }
+
 
   validateRecipient() {
     this.isRecipientValid = true;
@@ -487,13 +440,39 @@ export class SendCoinPage implements OnInit {
 
 
     pinmodal.onDidDismiss().then((returnedData) => {
-      // console.log(returnedData);
-      if (returnedData && returnedData.data === 1) {
+      console.log('=== returned after entr pin: ', returnedData);
+      if (returnedData && returnedData.data !== 0) {
+        const pin = returnedData.data;
+        this.generateSeed(pin);
         this.sendMoney();
       }
     });
     return await pinmodal.present();
   }
+
+
+  async generateSeed(pin: any) {
+
+    console.log('===== generateSeed, account.path: ', this.account.path);
+    console.log('==== generateSeed pin :', pin);
+
+    const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
+    console.log('==== generateSeed, passEncryptSaved:', passEncryptSaved);
+
+    const decryptedArray = doDecrypt(passEncryptSaved, pin);
+    console.log('=== generateSeed,  decryptedArray:', decryptedArray);
+
+    const passphrase = decryptedArray.toString(CryptoJS.enc.Utf8);
+    console.log('===== generateSeed,  passphrase: ', passphrase);
+
+    this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
+    console.log('===== generateSeed,  this.keyring: ', this.keyring);
+
+    this.seed = this.keyring.calcDerivationPath(this.account.path);
+    console.log('===== generateSeed,  this.seed: ', this.seed);
+
+  }
+
 
   getRecipientFromScanner() {
     this.activeRoute.queryParams.subscribe(params => {
@@ -542,7 +521,6 @@ export class SendCoinPage implements OnInit {
 
     const fee = this.trxFee;
     const amount = this.amount;
-    const dest = this.recipientAddress;
 
     if (amount > 0 && amount < 0.000000001) {
       this.isAmountValid = false;
@@ -605,39 +583,54 @@ export class SendCoinPage implements OnInit {
 
     await loading.present();
 
-    const data: SendMoneyInterface = {
+    let data: SendMoneyInterface = {
       sender: this.account.address,
       recipient: this.recipientAddress,
       fee: Number(this.trxFee),
       amount: this.amount,
     };
 
-    const txBytes = sendMoneyBuilder(data, this.keyringService, this.account);
+    if (this.isAdvance) {
+      let trxFee = Number(this.trxFee);
 
-    await this.transactionService.postTransaction(
-      txBytes
-    ).then((resolveTx) => {
-      // console.log('========= response from grpc: ', resolveTx);
-      if (resolveTx) {
-        this.recipientAddress = '';
-        this.amount = 0;
+      const minimumFee = await this.getMinimumFee(this.escrowTimout);
+      if (trxFee < minimumFee){
+        trxFee = minimumFee;
+      }
 
-        this.showSuccessMessage();
-        return;
+      data  = {
+        sender: this.account.address,
+        recipient: this.recipientAddress,
+        fee: trxFee,
+        amount: this.amount,
+        approverAddress: this.escrowApprover,
+        commission: this.escrowCommision,
+        timeout: this.escrowTimout,
+        instruction: this.escrowInstruction
       }
     }
-    ).catch((error) => {
-      // console.log('==== Have eroor when submiting:', error);
-      this.showErrorMessage(error);
-    }
+
+    console.log('==== Send Money: data', data);
+    const childSeed = this.seed;
+    await zoobc.Transactions.sendMoney(data, childSeed).then(
+      (resolveTx: any) => {
+        console.log('====== SendMOney resolveTx:', resolveTx);
+        if (resolveTx) {
+          this.recipientAddress = '';
+          this.amount = 0;
+          this.showSuccessMessage();
+          return;
+        }
+      },
+      error => {
+        console.log('===== sendMoney, error: ', error);
+        this.showErrorMessage(error);
+      }
     ).finally(() => {
-      loading.dismiss();
+     loading.dismiss();
     });
-
-
-    // loading.dismiss();
-
   }
+
   async showErrorMessage(error) {
     const modal = await this.modalController.create({
       component: TrxstatusPage,
@@ -647,8 +640,8 @@ export class SendCoinPage implements OnInit {
       }
     });
 
-    modal.onDidDismiss().then((returnedData) => {
-      // console.log(returnedData);
+    modal.onDidDismiss().then(data => {
+      console.log(data);
     });
 
     return await modal.present();
@@ -663,14 +656,14 @@ export class SendCoinPage implements OnInit {
       }
     });
 
-    modal.onDidDismiss().then((returnedData) => {
-      // console.log(returnedData);
+    modal.onDidDismiss().then(data => {
+      console.log(data);
     });
 
     return await modal.present();
   }
 
-  switchAccount(accounts: any) {
+  switchAccount() {
     // console.log('=== accounts: ', this.account);
     this.isAmountValid = true;
     this.isRecipientValid = true;
@@ -714,4 +707,10 @@ export class SendCoinPage implements OnInit {
   submit() {
     // console.log('----- form submited ----');
   }
+
+  async getMinimumFee(timeout: number) {
+    const fee: number = calculateMinFee(timeout);
+    return fee;
+  }
+
 }

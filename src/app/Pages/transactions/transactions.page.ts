@@ -1,17 +1,28 @@
 import { Component, OnInit } from '@angular/core';
+import { makeShortAddress } from 'src/Helpers/converters';
 import {
   MenuController,
   ToastController,
   LoadingController,
   ModalController
 } from '@ionic/angular';
-import { Account } from 'src/app/Services/auth-service';
+import { Account } from 'src/app/Interfaces/Account';
 import { AccountService } from 'src/app/Services/account.service';
-import { TransactionService, Transactions, Transaction } from 'src/app/Services/transaction.service';
+import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
-import { NUMBER_OF_RECORD_IN_TRANSACTIONS, CONST_DEFAULT_CURRENCY,
-   CONST_DEFAULT_RATE } from 'src/environments/variable.const';
+import { NUMBER_OF_RECORD_IN_TRANSACTIONS,
+   CONST_DEFAULT_RATE, 
+   NETWORK_LIST} from 'src/environments/variable.const';
+import zoobc, {
+  TransactionListParams,
+  toTransactionListWallet,
+  MempoolListParams,
+  toUnconfirmedSendMoneyWallet,
+} from 'zoobc';
+import { AddressBookService } from 'src/app/Services/address-book.service';
+import { Router } from '@angular/router';
+import { Transaction } from 'src/app/Interfaces/transaction';
 
 @Component({
   selector: 'app-transactions',
@@ -29,18 +40,21 @@ export class TransactionsPage implements OnInit {
   currencyRate =  CONST_DEFAULT_RATE;
   priceInUSD: number;
   totalTx: number;
-  recentTx: Transaction[];
+  recentTx: any;
   unconfirmTx: Transaction[];
   isError = false;
   navigationSubscription: any;
+  isErrorRecentTx: boolean;
 
   constructor(
+    private router: Router,
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
     private accountService: AccountService,
     private transactionServ: TransactionService,
     private currencyServ: CurrencyService,
+    private addressBookSrv: AddressBookService,
     public toastController: ToastController
   ) {
 
@@ -65,7 +79,7 @@ export class TransactionsPage implements OnInit {
       // console.log(' ================== RATE CHANGED TO:', rate);
       this.currencyRate = rate;
     });
-
+    zoobc.Network.list(NETWORK_LIST);
   }
 
   doRefresh(event: any) {
@@ -80,7 +94,6 @@ export class TransactionsPage implements OnInit {
   ngOnInit() {
     this.loadData();
   }
-
 
   async loadData() {
 
@@ -103,62 +116,70 @@ export class TransactionsPage implements OnInit {
     this.recentTx = [];
     this.unconfirmTx = [];
     this.isError = false;
-
     this.account = await this.accountService.getCurrAccount();
-    // console.log('==== Active account:', this.account);
-    this.getTransactions();
     this.currencyRate = this.currencyServ.getRate();
+    this.getTransactionsByAddress(this.account.address);
   }
 
   async loadMoreData(event) {
 
     // console.log('==== this.offset:', this.offset);
-
     if (this.recentTx.length >= this.totalTx) {
       // event.target.complete();
       // console.log(' === all loaded', this.recentTx.length + ' - ' + this.totalTx);
       // event.target.disabled = true;
     }
 
-    setTimeout(async () => {
-      await this.transactionServ
-        .getAccountTransaction(++this.offset, NUMBER_OF_RECORD_IN_TRANSACTIONS, this.account.address)
-        .then((res: Transactions) => {
-          this.totalTx = res.total;
-          this.recentTx.push(...res.transactions);
-        }).finally(() => {
-          this.isLoadingRecentTx = false;
-          event.target.complete();
-        }).catch((error) => {
-          event.target.complete();
-          // console.log('===== eroor getAccountTransaction:', error);
-        });
-
-    }, 500);
+    // setTimeout(async () => {
+    // }, 500);
 
   }
 
-  async getTransactions() {
-    this.isLoadingRecentTx = true;
+  /**
+   * Get list transaction of current account address
+   * @ param address
+   */
+  async getTransactionsByAddress(address: string) {
+      this.isLoadingRecentTx = true;
+      this.recentTx = null;
+      this.unconfirmTx = null;
+      this.isErrorRecentTx = false;
+      this.isLoadingRecentTx = true;
+      const params: TransactionListParams = {
+        address,
+        transactionType: 1,
+        pagination: {
+          page: this.offset++,
+          limit: NUMBER_OF_RECORD_IN_TRANSACTIONS,
+        },
+      };
 
-    await this.transactionServ
-      .getUnconfirmTransaction(this.account.address)
-      .then((res: Transaction[]) => (this.unconfirmTx = res)).finally(() => {
-        // wait until unconfirm transaction loading finish.
-      }).catch((error) => {
-        console.log('===== eroor getUnconfirmTransaction:', error);
-      });
+      try {
+        const tx = await zoobc.Transactions.getList(params).then(res =>
+          toTransactionListWallet(res, this.account.address)
+        );
+        tx.transactions.map(recent => {
+          console.log('=== Recent transaction: ', recent);
+          recent['sender'] = recent.type === 'receive' ? recent.address : address;
+          recent['recipient'] = recent.type === 'receive' ? address : recent.address;
+          recent['name'] = this.addressBookSrv.getNameByAddress(recent.address);
+          recent['shortaddress'] = makeShortAddress(recent.address);
+        });
+        this.totalTx = tx.total;
+        this.recentTx = tx.transactions;
 
-    await this.transactionServ
-      .getAccountTransaction(this.offset, NUMBER_OF_RECORD_IN_TRANSACTIONS, this.account.address)
-      .then((res: Transactions) => {
-        this.totalTx = res.total;
-        this.recentTx = res.transactions;
-      }).catch((error) => {
-        console.log('===== eroor getAccountTransaction:', error);
-      });
+        const mempoolParams: MempoolListParams = { address: address };
+        this.unconfirmTx = await zoobc.Mempool.getList(mempoolParams).then(res =>
+             toUnconfirmedSendMoneyWallet(res, address)
+        );
 
-    this.isLoadingRecentTx = false;
+      } catch {
+        this.isError = true;
+        this.unconfirmTx = null;
+      } finally {
+        this.isLoadingRecentTx = false;
+      }
+
   }
 
 
@@ -199,6 +220,11 @@ export class TransactionsPage implements OnInit {
     });
     await modal.present();
 
+  }
+
+
+  goDashboard() {
+    this.router.navigate(['/tabs/dashboard']);
   }
 
 }

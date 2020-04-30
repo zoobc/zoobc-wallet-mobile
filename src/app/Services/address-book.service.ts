@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Account } from 'src/app/Services/auth-service';
 import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -13,7 +12,7 @@ import * as firebase from 'firebase/app';
 export class AddressBookService {
 
   private selectedAddress: string;
-  private addressess = [];
+  private addresses: any;
 
   public addressSubject: Subject<string> = new Subject<string>();
 
@@ -23,27 +22,24 @@ export class AddressBookService {
   public setSelectedAddress(value) {
     this.selectedAddress = value;
     this.addressSubject.next(this.selectedAddress);
-    // console.log('===== selectedAddress :', this.selectedAddress);
   }
 
   constructor(
     private strgSrv: StoragedevService,
     private firestore: AngularFirestore) {
     this.selectedAddress = '';
+    this.addresses = this.getAll();
   }
 
   async getAll() {
-    const addresses = await this.strgSrv.get(STORAGE_ADDRESS_BOOK).catch(error => {
-      // console.log(error);
+    return await this.strgSrv.get(STORAGE_ADDRESS_BOOK).catch(error => {
+      console.log(error);
     });
-    return addresses;
   }
 
-
   async getNameByAddress(address: string) {
-    const addresses = await this.getAll();
     let name = '';
-    addresses.forEach((obj: { name: any; address: string; }) => {
+    this.addresses.forEach((obj: { name: any; address: string; }) => {
       if (String(address).valueOf() === String(obj.address).valueOf()) {
         name = obj.name;
       }
@@ -59,7 +55,6 @@ export class AddressBookService {
       address,
       created: new Date()
     };
-
     await this.update(allAddress);
   }
 
@@ -104,6 +99,7 @@ export class AddressBookService {
   }
 
   async update(addresses: any) {
+    this.addresses = addresses;
     await this.strgSrv.set(STORAGE_ADDRESS_BOOK, addresses);
   }
 
@@ -160,5 +156,6 @@ export class AddressBookService {
   userDetails() {
     return firebase.auth().currentUser;
   }
+
 
 }

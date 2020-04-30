@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Account } from 'src/app/Interfaces/Account';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { NavController } from '@ionic/angular';
