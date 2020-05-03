@@ -1,11 +1,10 @@
-<app-sidemenu></app-sidemenu>
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button (click)="openMenu()">
-        <ion-icon slot="icon-only" name="menu"></ion-icon>
-      </ion-button>
+      <ion-back-button>
+      </ion-back-button>
     </ion-buttons>
+
     <ion-title>{{ "Receive" | translate }} ZBC</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
