@@ -1,3 +1,10 @@
+/*
+Note:
+FCM token will get when user loogin / Account login in dashboard
+FCM token will delete when user logout.
+
+When create account will update users db in firebase.
+*/
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
@@ -6,6 +13,8 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ChatService } from 'src/app/Services/chat.service';
 import { User } from 'src/app/Models/chatmodels';
 import * as firebase from 'firebase/app';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-chat',
@@ -16,10 +25,13 @@ export class ChatPage implements OnInit {
 
   addresses = [];
   account: Account;
-  email = '';
   chatuser: User;
+  fcmToken: string;
+  fcmUid: string;
 
   constructor(private router: Router,
+              private alertController: AlertController,
+              private oneSignal: OneSignal,
               private chatService: ChatService,
               private addressBookSrv: AddressBookService,
               private accountService: AccountService) {
@@ -33,8 +45,15 @@ export class ChatPage implements OnInit {
     this.account = await this.accountService.getCurrAccount();
   }
 
+  getFcmId() {
+    this.oneSignal.getIds().then(identity => {
+      this.fcmUid = identity.userId;
+      this.fcmToken = identity.pushToken;
+    });
+  }
 
   ngOnInit() {
+    this.getFcmId();
     this.loadAccount();
     this.getAllAddress();
     console.log('---- All address in chat---- :', this.addresses);
@@ -53,14 +72,14 @@ export class ChatPage implements OnInit {
     this.chatuser = {
       name: this.account.name,
       address: this.account.address,
-      email: '',
+      fcmToken: this.fcmToken,
+      fcmUid: this.fcmUid,
       time: new Date().getTime().toString()
     };
 
     const chatpartner = {
       name: chat.name,
       address: chat.address,
-      email: '',
       time: new Date().getTime().toString()
     };
 
