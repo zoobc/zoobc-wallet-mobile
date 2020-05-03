@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { LanguageService } from 'src/app/Services/language.service';
 import { AboutPage } from './Pages/about/about.page';
+import * as firebase from 'firebase/app';
 import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { CurrencyService } from 'src/app/Services/currency.service';
@@ -47,6 +48,7 @@ export class AppComponent implements OnInit {
     private transactionService: TransactionService,
     private translateService: TranslateService,
     private oneSignal: OneSignal,
+
     private alertCtrl: AlertController,
     private currencyService: CurrencyService,
     private theme: ThemeService  ) {
@@ -65,11 +67,20 @@ export class AppComponent implements OnInit {
       this.setNodes();
       this.setDefaultCurrency();
 
-     // if (this.platform.is('cordova')) {
-      this.setupPush();
-      // }
+      this.initialFirebase();
 
+      if (this.platform.is('cordova')) {
+        this.setupPush();
+      }
       this.splashScreen.hide();
+
+    });
+  }
+
+  initialFirebase() {
+    firebase.auth().signInAnonymously();
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+      console.log('Firebase User: ', firebaseUser);
     });
   }
 
