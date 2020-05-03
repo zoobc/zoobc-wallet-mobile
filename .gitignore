@@ -24,6 +24,7 @@ node_modules*
 tmp/
 temp/ 
 externals/
+src/environments/environment.*
 platforms/
 plugins/
 #plugins/android.json
