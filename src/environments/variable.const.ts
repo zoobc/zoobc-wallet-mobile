@@ -18,6 +18,7 @@ export const STORAGE_ESCROW_WAITING_LIST = 'escrow_waiting_list';
 export const STORAGE_THEME = 'storage_themes';
 export const STORAGE_THEME_NAME = 'storage_theme_name';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
+export const FIREBASE_DEVICES = 'devices';
 export const FIREBASE_CHAT = 'chats';
 export const FIREBASE_CHAT_USER = 'chatusers';
 export const ADDRESS_LENGTH = 44;
