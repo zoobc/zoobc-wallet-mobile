@@ -3,4 +3,5 @@ export interface ChatUser {
     path: number;
     address: string;
     token: string;
+    userId: string;
 }

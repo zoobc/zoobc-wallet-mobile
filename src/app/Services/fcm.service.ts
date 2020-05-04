@@ -19,7 +19,7 @@ export class FcmService {
     private afs: AngularFirestore) {}
 
   create(user: ChatUser) {
-    const docId = user.token + user.path;
+    const docId = user.userId + user.path;
     return this.afs.collection(FIREBASE_DEVICES).doc(docId).set(user);
   }
 
@@ -34,21 +34,24 @@ export class FcmService {
   getToken(account: Account) {
 
     console.log('===  getToken one signal');
-    let tokenPush = 'non-native';
+    this.identity = {
+      userId: 'non-native-id',
+      pushToken: 'non-native-token'
+    };
 
     if (this.platform.is('cordova')) {
       this.oneSignal.getIds().then(identity => {
         console.log('===  getToken one signal', identity);
         this.identity = identity;
       });
-      tokenPush = this.identity.userId;
     }
 
     const user: ChatUser = {
       name: account.name,
       path: account.path,
       address: account.address,
-      token: tokenPush
+      token: this.identity.pushToken,
+      userId: this.identity.userId
     };
 
     console.log('==== will save token ==');
