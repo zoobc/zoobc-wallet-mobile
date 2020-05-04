@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "zoobc-functions"
+    "default": "zoobcwallet",
+    "wallet": "blockhainzoo"
   }
 }
