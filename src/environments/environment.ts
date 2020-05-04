@@ -12,15 +12,5 @@ export const environment = {
   signalID: '9afa0071-9129-4cc2-9b03-e540943c136e',
   appID: '342522815584',
   zbcPriceInUSD: 10,
-  saltForAccount: 'p4ssphr4se',
-  firebaseConfig: {
-    apiKey: 'AIzaSyBw44MlutdPuLOGBWm-HjrxPsn_nCux18s',
-    authDomain: 'zoobcwallet.firebaseapp.com',
-    databaseURL: 'https://zoobcwallet.firebaseio.com',
-    projectId: 'zoobcwallet',
-    storageBucket: 'zoobcwallet.appspot.com',
-    messagingSenderId: '342522815584',
-    appId: '1:342522815584:web:6d02dd7e49f0c72fc98f05',
-    measurementId: 'G-8LG5JTR37N'
-  }
-};
+  saltForAccount: 'p4ssphr4se'
+}
