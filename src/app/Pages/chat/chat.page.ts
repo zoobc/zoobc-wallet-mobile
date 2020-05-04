@@ -30,7 +30,6 @@ export class ChatPage implements OnInit {
   fcmUid: string;
 
   constructor(private router: Router,
-              private alertController: AlertController,
               private oneSignal: OneSignal,
               private chatService: ChatService,
               private addressBookSrv: AddressBookService,

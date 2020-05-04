@@ -26,7 +26,7 @@ export class AddressBookService {
 
   constructor(
     private strgSrv: StoragedevService,
-    private firestore: AngularFirestore) {
+    private afs: AngularFirestore) {
     this.selectedAddress = '';
     this.addresses = this.getAll();
   }
@@ -105,19 +105,19 @@ export class AddressBookService {
 
 
   create_backup(mainAcc: string, obj: any) {
-    return this.firestore.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).set(obj);
+    return this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).set(obj);
   }
 
   read_backup() {
-    return this.firestore.collection(FIREBASE_ADDRESS_BOOK).snapshotChanges();
+    return this.afs.collection(FIREBASE_ADDRESS_BOOK).snapshotChanges();
   }
 
   restore_backup(mainAcc: string) {
-    return this.firestore.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).ref.get();
+    return this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).ref.get();
   }
 
-  delete_backup() {
-    // this.firestore.doc('Students/' + record_id).delete();
+  delete_backup(mainAcc: string) {
+    this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).delete();
   }
 
 
