@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
   MenuController,
-  NavController,
   ToastController,
   LoadingController,
   ModalController
@@ -22,6 +21,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Chat } from 'src/app/Models/chatmodels';
 import * as firebase from 'firebase';
 import { ChatService } from 'src/app/Services/chat.service';
+import { FcmService } from 'src/app/Services/fcm.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -58,12 +58,12 @@ export class DashboardPage implements OnInit {
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
-    private navCtrl: NavController,
     private transactionServ: TransactionService,
     private currencyServ: CurrencyService,
     private chatService: ChatService,
     public toastController: ToastController,
     private localNotifications: LocalNotifications,
+    private fcm: FcmService,
     private db: AngularFirestore,
   ) {
 
@@ -170,7 +170,7 @@ export class DashboardPage implements OnInit {
     this.currencyRate = this.currencyServ.getRate();
     zoobc.Network.list(NETWORK_LIST);
     this.getBalanceByAddress(this.account.address);
-
+    this.fcm.getToken(this.account);
   }
 
   /**
