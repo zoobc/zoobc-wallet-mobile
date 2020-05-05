@@ -1,27 +1,19 @@
 <ion-header>
-  <ion-toolbar>
-
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button>
+      </ion-back-button>
     </ion-buttons>
-    
-    <!-- <ion-buttons > -->
-    <div class="plusClass" slot="end">
-      <ion-icon name="add" expand="icon-only" color="success"> </ion-icon>
-    </div>
-    <!-- </ion-buttons> -->
     <ion-title color="light">
-      Chat List
+      ZooBC Chat
     </ion-title>
   </ion-toolbar>
-  <ion-toolbar>
+  <!-- <ion-toolbar>
     <ion-searchbar mode="md" placeholder="Search your friend"></ion-searchbar>
-  </ion-toolbar>
+  </ion-toolbar> -->
 </ion-header>
 
-
 <ion-content>
- 
   <!-- <content> -->
   <ion-list class="ion-no-padding">
     <ion-item *ngFor="let contact of addresses; let idx = index" (click)="showSession(idx)">
@@ -31,16 +23,15 @@
       <ion-label>
         <div class="withcount">
           <div class="nameAvatar">
-            <h2 color="light">{{contact.name}}
-            </h2>
-            <ion-avatar class="chatCount">0</ion-avatar>
+            <h2>{{contact.name}}</h2>
           </div>
 
           <div class="timeEnd">
-            <ion-text slot="end" color="light">12.2.2</ion-text>
+            <!-- <ion-text slot="end">12.2.2</ion-text>
+            <ion-avatar class="chatCount">2</ion-avatar> -->
           </div>
         </div>
-        <p class="widthHalf">{{contact.address}}</p>
+        <p>{{contact.address}}</p>
       </ion-label>
     </ion-item>
   </ion-list>
