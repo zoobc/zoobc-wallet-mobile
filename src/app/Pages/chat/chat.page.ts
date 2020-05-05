@@ -12,9 +12,8 @@ import { Account } from 'src/app/Interfaces/Account';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ChatService } from 'src/app/Services/chat.service';
 import { User } from 'src/app/Models/chatmodels';
-import * as firebase from 'firebase/app';
+import { auth } from 'firebase/app';        // for authentication
 import { OneSignal } from '@ionic-native/onesignal/ngx';
-import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-chat',
@@ -59,9 +58,8 @@ export class ChatPage implements OnInit {
   }
 
   async showSession(idx: number) {
-    firebase.auth().signInAnonymously();
-
-    firebase.auth().onAuthStateChanged(firebaseUser => {
+    auth().signInAnonymously();
+    auth().onAuthStateChanged(firebaseUser => {
       console.log('Firebase User: ', firebaseUser);
     });
 

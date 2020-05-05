@@ -19,7 +19,6 @@ import { FIREBASE_CHAT } from 'src/environments/variable.const';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Chat } from 'src/app/Models/chatmodels';
-import * as firebase from 'firebase';
 import { ChatService } from 'src/app/Services/chat.service';
 import { FcmService } from 'src/app/Services/fcm.service';
 
@@ -105,13 +104,7 @@ export class DashboardPage implements OnInit {
 
   async ngOnInit() {
     this.loadData();
-    firebase.auth().signInAnonymously();
-    firebase.auth().onAuthStateChanged(firebaseUser => {
-      console.log('==== Firebase User=============: ', firebaseUser);
-    });
-
     this.account = await this.accountService.getCurrAccount();
-    // console.log('==== this.currencyRate: ', this.currencyRate);
     this.subscribeNotif(this.account.address);
   }
 

@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { AngularFirestore } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
+import { auth } from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -123,7 +123,7 @@ export class AddressBookService {
 
   registerUser(value) {
     return new Promise<any>((resolve, reject) => {
-      firebase.auth().createUserWithEmailAndPassword(value.email, value.password)
+      auth().createUserWithEmailAndPassword(value.email, value.password)
         .then(
           res => resolve(res),
           err => reject(err));
@@ -132,7 +132,7 @@ export class AddressBookService {
 
   loginUser(value) {
     return new Promise<any>((resolve, reject) => {
-      firebase.auth().signInWithEmailAndPassword(value.email, value.password)
+      auth().signInWithEmailAndPassword(value.email, value.password)
         .then(
           res => resolve(res),
           err => reject(err));
@@ -141,8 +141,8 @@ export class AddressBookService {
 
   logoutUser() {
     return new Promise((resolve, reject) => {
-      if (firebase.auth().currentUser) {
-        firebase.auth().signOut()
+      if (auth().currentUser) {
+        auth().signOut()
           .then(() => {
             console.log('LOG Out');
             resolve();
@@ -154,7 +154,7 @@ export class AddressBookService {
   }
 
   userDetails() {
-    return firebase.auth().currentUser;
+    return auth().currentUser;
   }
 
 

@@ -6,7 +6,7 @@ import { ChatService } from 'src/app/Services/chat.service';
 import { Chat } from 'src/app/Models/chatmodels';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
 import { IonContent } from '@ionic/angular';
-import * as firebase from 'firebase';
+import { firestore } from 'firebase/app';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 
 
@@ -111,14 +111,14 @@ export class ChatSessionPage implements OnInit {
   async addChat() {
     this.loader = true;
     if (this.message && this.message !== '') {
-      console.log('== Firebase time stamp: ', firebase.firestore.FieldValue.serverTimestamp());
+      console.log('== Firebase time stamp: ', firestore.FieldValue.serverTimestamp());
 
       this.chatPayload = {
         message: this.message,
         sender: this.sender,
         pair: this.pair,
         chatId: this.chatService.currentChatPairId,
-        time: firebase.firestore.FieldValue.serverTimestamp() // new Date().getTime()
+        time: firestore.FieldValue.serverTimestamp() // new Date().getTime()
       };
 
       await this.chatService

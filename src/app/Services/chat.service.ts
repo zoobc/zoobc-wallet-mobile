@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { FIREBASE_CHAT, FIREBASE_CHAT_USER } from 'src/environments/variable.const';
-import { Router } from '@angular/router';
-import { AngularFireAuth } from '@angular/fire/auth';
-import * as firebase from 'firebase/app';
-import { firestore } from 'firebase/app';
-import { map, switchMap } from 'rxjs/operators';
-import { Observable, combineLatest, of } from 'rxjs';
 import { User, Chat } from '../Models/chatmodels';
 
 @Injectable({
@@ -75,18 +69,16 @@ export class ChatService {
   // ====
 
   users: AngularFirestoreCollection<User>;
-  private userDoc: AngularFirestoreDocument<User>;
 
   chats: AngularFirestoreCollection<Chat>;
-  private chatDoc: AngularFirestoreDocument<Chat>;
 
-  //The pair string for the two users currently chatting
+  // The pair string for the two users currently chatting
   currentChatPairId;
   currentChatPairId2;
   currentChatPartner;
 
-  constructor(private db: AngularFirestore) {
-    //Get the tasks collecction
+  constructor(db: AngularFirestore) {
+    // Get the tasks collecction
     this.users = db.collection<User>(FIREBASE_CHAT_USER);
     this.chats = db.collection<Chat>(FIREBASE_CHAT);
   }
