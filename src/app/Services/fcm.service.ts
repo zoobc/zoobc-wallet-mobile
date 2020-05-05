@@ -11,6 +11,7 @@ import { ChatUser } from '../Interfaces/ChatUser';
   providedIn: 'root'
 })
 export class FcmService {
+  chatUser: ChatUser;
   identity: FcmIdentity;
   devicesRef = this.afs.collection('devices');
   constructor(
@@ -23,8 +24,9 @@ export class FcmService {
     return this.afs.collection(FIREBASE_DEVICES).doc(docId).set(user);
   }
 
-  delete(token: string) {
-    this.afs.collection(FIREBASE_DEVICES).doc(token).delete();
+  delete(user: ChatUser) {
+    const docId = user.userId + user.path;
+    this.afs.collection(FIREBASE_DEVICES).doc(docId).delete();
   }
 
   read() {
@@ -54,7 +56,7 @@ export class FcmService {
       userId: this.identity.userId
     };
 
-    console.log('==== will save token ==');
+    this.chatUser =  user;
     this.create(user);
   }
 
