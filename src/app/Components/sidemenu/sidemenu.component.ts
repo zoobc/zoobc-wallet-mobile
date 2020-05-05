@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth-service';
+import { FcmService } from 'src/app/Services/fcm.service';
 
 @Component({
   selector: 'app-sidemenu',
@@ -13,6 +14,7 @@ export class SidemenuComponent implements OnInit {
   constructor(
     private menuController: MenuController,
     private authService: AuthService,
+    private fcm: FcmService,
     private router: Router
   ) {}
 
@@ -83,6 +85,14 @@ export class SidemenuComponent implements OnInit {
   }
 
   logout() {
+
+    const user =  this.fcm.chatUser;
+    console.log('=== current chat user: ',  user);
+
+    if (user) {
+      this.fcm.delete(user);
+    }
+
     this.authService.logout();
     this.router.navigateByUrl('/login');
     this.menuController.close('mainMenu');
