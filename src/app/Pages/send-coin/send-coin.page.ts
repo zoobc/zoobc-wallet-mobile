@@ -554,7 +554,12 @@ export class SendCoinPage implements OnInit {
         trxBalance: this.account.balance,
         trxSender: this.account.address,
         trxRecipient: this.recipientAddress,
-        trxCurrencyRate: this.currencyRate
+        trxCurrencyRate: this.currencyRate,
+        IsEscrow: this.isAdvance,
+        escApproverAddress: this.escrowApprover,
+        escCommission: this.escrowCommision,
+        escTimeout: this.escrowTimout,
+        escInstruction: this.escrowInstruction
       }
     });
 
