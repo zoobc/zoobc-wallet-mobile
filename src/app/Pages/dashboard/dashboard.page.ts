@@ -12,7 +12,7 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST } from 'src/environments/variable.const';
+import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME } from 'src/environments/variable.const';
 import zoobc from 'zoobc';
 import { Transaction } from 'src/app/Interfaces/transaction';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
@@ -21,6 +21,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Chat } from 'src/app/Models/chatmodels';
 import { ChatService } from 'src/app/Services/chat.service';
 import { FcmService } from 'src/app/Services/fcm.service';
+import { ThemeService } from 'src/app/Services/theme.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -49,6 +51,7 @@ export class DashboardPage implements OnInit {
   account: Account;
   accounts: Account[];
   notifId = 1;
+  theme = DEFAULT_THEME;
 
   constructor(
     private authService: AuthService,
@@ -63,12 +66,19 @@ export class DashboardPage implements OnInit {
     public toastController: ToastController,
     private localNotifications: LocalNotifications,
     private fcm: FcmService,
+    private themeSrv: ThemeService,
     private db: AngularFirestore,
   ) {
 
     // if account changed
     this.accountService.accountSubject.subscribe(() => {
       this.loadData();
+    });
+
+
+    // if account changed
+    this.themeSrv.themeSubject.subscribe(() => {
+      this.theme = this.themeSrv.theme;
     });
 
     // if post send money reload data
@@ -103,6 +113,8 @@ export class DashboardPage implements OnInit {
   }
 
   async ngOnInit() {
+    this.theme = this.themeSrv.theme;
+    console.log('==== theme:', this.theme);
     this.loadData();
     this.account = await this.accountService.getCurrAccount();
     this.subscribeNotif(this.account.address);
