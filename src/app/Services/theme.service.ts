@@ -1,40 +1,57 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import * as Color from 'color';
-import { STORAGE_THEME, STORAGE_THEME_NAME } from 'src/environments/variable.const';
+import { STORAGE_THEME, STORAGE_ACTIVE_THEME } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 
-const themes = {
-  autumn: {
-    primary: '#F78154',
-    secondary: '#4D9078',
-    tertiary: '#B4436C',
-    light: '#FDE8DF',
-    medium: '#FCD0A2',
-    dark: '#B89876'
-  },
-  night: {
-    primary: '#8CBA80',
-    secondary: '#FCFF6C',
-    tertiary: '#FE5F55',
-    medium: '#BCC2C7',
-    dark: '#F7F7FF',
-    light: '#495867'
-  },
-  neon: {
-    primary: '#39BFBD',
-    secondary: '#4CE0B3',
-    tertiary: '#FF5E79',
-    light: '#F4EDF2',
-    medium: '#B682A5',
-    dark: '#34162A'
-  }
-};
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThemeService {
+
+  themes = {
+    zoobc: {
+      primary: '#0B3D65',
+      secondary: '#0099c4',
+      tertiary: '#d35555',
+      light: '#f4f5f8',
+      medium: '#989aa2',
+      dark: '#020202',
+      dbbalance: '#1ca3b0',
+      dbspbalance: '#eae3d0'
+    },
+    day: {
+      primary: '#F78154',
+      secondary: '#4D9078',
+      tertiary: '#B4436C',
+      light: '#FDE8DF',
+      medium: '#FCD0A2',
+      dark: '#B89876',
+      dbbalance: '#1ca3b0',
+      dbspbalance: '#eae3d0'
+    },
+    night: {
+      primary: '#8CBA80',
+      secondary: '#FCFF6C',
+      tertiary: '#FE5F55',
+      medium: '#BCC2C7',
+      dark: '#F7F7FF',
+      light: '#495867',
+      dbbalance: '#1ca3b0',
+      dbspbalance: '#eae3d0'
+    },
+    neon: {
+      primary: '#39BFBD',
+      secondary: '#4CE0B3',
+      tertiary: '#FF5E79',
+      light: '#F4EDF2',
+      medium: '#B682A5',
+      dark: '#34162A',
+      dbbalance: '#1ca3b0',
+      dbspbalance: '#eae3d0'
+    }
+  };
 
 
   constructor(
@@ -50,16 +67,16 @@ export class ThemeService {
     });
   }
   // Override all global variables with a new theme
-  async setTheme(themename) {
-    const theme = themes[themename];
+  async setTheme(themename: string) {
+    const theme = this.themes[themename];
     const cssText = CSSTextGenerator(theme);
     this.setGlobalCSS(cssText);
     await this.strgSrv.set(STORAGE_THEME, cssText);
-    await this.strgSrv.set(STORAGE_THEME_NAME, themename);
+    await this.strgSrv.set(STORAGE_ACTIVE_THEME, themename);
   }
 
   // Define a single CSS variable
-  setVariable(name, value) {
+  setVariable(name: string, value: string) {
     this.document.documentElement.style.setProperty(name, value);
   }
 
@@ -81,7 +98,9 @@ const defaults = {
   danger: '#f04141',
   dark: '#222428',
   medium: '#989aa2',
-  light: '#f4f5f8'
+  light: '#f4f5f8',
+  dbbalance: '#1ca3b0',
+  dbspbalance: '#eae3d0'
 };
 
 function CSSTextGenerator(colors) {
@@ -96,7 +115,9 @@ function CSSTextGenerator(colors) {
     danger,
     dark,
     medium,
-    light
+    light,
+    dbbalance,
+    dbspbalance
   } = colors;
 
   const shadeRatio = 0.1;
@@ -173,7 +194,21 @@ function CSSTextGenerator(colors) {
     --ion-color-light-contrast: $${contrast(light)};
     --ion-color-light-contrast-rgb: 0,0,0;
     --ion-color-light-shade: ${Color(light).darken(shadeRatio)};
-    --ion-color-light-tint: ${Color(light).lighten(tintRatio)};`;
+    --ion-color-light-tint: ${Color(light).lighten(tintRatio)};
+
+    --ion-color-dbbalance: ${dbbalance};
+    --ion-color-dbbalance-rgb: 244,244,244;
+    --ion-color-dbbalance-contrast: $${contrast(dbbalance)};
+    --ion-color-dbbalance-contrast-rgb: 0,0,0;
+    --ion-color-dbbalance-shade: ${Color(dbbalance).darken(shadeRatio)};
+    --ion-color-dbbalance-tint: ${Color(dbbalance).lighten(tintRatio)};
+
+    --ion-color-dbspbalance: ${dbspbalance};
+    --ion-color-dbspbalance-rgb: 244,244,244;
+    --ion-color-dbspbalance-contrast: $${contrast(dbspbalance)};
+    --ion-color-dbspbalance-contrast-rgb: 0,0,0;
+    --ion-color-dbspbalance-shade: ${Color(dbspbalance).darken(shadeRatio)};
+    --ion-color-dbspbalance-tint: ${Color(dbspbalance).lighten(tintRatio)};`;
 }
 
 function contrast(color, ratio = 0.8) {
