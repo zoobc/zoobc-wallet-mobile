@@ -1,55 +1,46 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import * as Color from 'color';
-import { STORAGE_THEME, STORAGE_ACTIVE_THEME } from 'src/environments/variable.const';
+import { STORAGE_THEME, STORAGE_ACTIVE_THEME, DEFAULT_THEME } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
+import { Subject } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThemeService {
-
+  theme = DEFAULT_THEME;
   themes = {
     zoobc: {
       primary: '#0B3D65',
       secondary: '#0099c4',
       tertiary: '#d35555',
       light: '#f4f5f8',
-      medium: '#989aa2',
+      medium: '#ffffff',
       dark: '#020202',
       dbbalance: '#1ca3b0',
       dbspbalance: '#eae3d0'
     },
     day: {
-      primary: '#F78154',
-      secondary: '#4D9078',
-      tertiary: '#B4436C',
-      light: '#FDE8DF',
-      medium: '#FCD0A2',
-      dark: '#B89876',
-      dbbalance: '#1ca3b0',
-      dbspbalance: '#eae3d0'
+      primary: '#3880ff',
+      secondary: '#3dc2ff',
+      tertiary: '#5260ff',
+      light: '#f4f5f8',
+      medium: '#000000',
+      dark: '#222428',
+      dbbalance: '#ffe8df',
+      dbspbalance: '#ffdf7b'
     },
     night: {
-      primary: '#8CBA80',
-      secondary: '#FCFF6C',
-      tertiary: '#FE5F55',
-      medium: '#BCC2C7',
-      dark: '#F7F7FF',
-      light: '#495867',
-      dbbalance: '#1ca3b0',
-      dbspbalance: '#eae3d0'
-    },
-    neon: {
-      primary: '#39BFBD',
-      secondary: '#4CE0B3',
-      tertiary: '#FF5E79',
-      light: '#F4EDF2',
-      medium: '#B682A5',
-      dark: '#34162A',
-      dbbalance: '#1ca3b0',
-      dbspbalance: '#eae3d0'
+      primary: '#222831',
+      secondary: '#222831',
+      tertiary: '#30475e',
+      medium: '#ffbd69',
+      dark: '#543864',
+      light: '#dbdbdb',
+      dbbalance: '#ececec',
+      dbspbalance: '#c1a57b'
     }
   };
 
@@ -61,6 +52,8 @@ export class ThemeService {
       this.loadData();
   }
 
+  public themeSubject: Subject<string> = new Subject<string>();
+
   async loadData() {
     await this.strgSrv.get(STORAGE_THEME).then(cssText => {
       this.setGlobalCSS(cssText);
@@ -68,8 +61,10 @@ export class ThemeService {
   }
   // Override all global variables with a new theme
   async setTheme(themename: string) {
-    const theme = this.themes[themename];
-    const cssText = CSSTextGenerator(theme);
+    this.theme = themename;
+    this.themeSubject.next(this.theme);
+    const them = this.themes[themename];
+    const cssText = CSSTextGenerator(them);
     this.setGlobalCSS(cssText);
     await this.strgSrv.set(STORAGE_THEME, cssText);
     await this.strgSrv.set(STORAGE_ACTIVE_THEME, themename);
@@ -93,14 +88,14 @@ const defaults = {
   primary: '#3880ff',
   secondary: '#0cd1e8',
   tertiary: '#7044ff',
-  success: '#10dc60',
-  warning: '#ffce00',
   danger: '#f04141',
   dark: '#222428',
   medium: '#989aa2',
   light: '#f4f5f8',
   dbbalance: '#1ca3b0',
-  dbspbalance: '#eae3d0'
+  dbspbalance: '#eae3d0',
+  success: '#10dc60',
+  warning: '#ffce00'
 };
 
 function CSSTextGenerator(colors) {
@@ -134,22 +129,22 @@ function CSSTextGenerator(colors) {
     --ion-item-text-color: ${contrast(dark, 0.3)};
 
     --ion-color-primary: ${primary};
-    --ion-color-primary-rgb: 56,128,255;
-    --ion-color-primary-contrast: ${contrast(primary)};
+    --ion-color-primary-rgb: 11,61,101;
+    --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255,255,255;
     --ion-color-primary-shade:  ${Color(primary).darken(shadeRatio)};
     --ion-color-primary-tint:  ${Color(primary).lighten(tintRatio)};
 
     --ion-color-secondary: ${secondary};
     --ion-color-secondary-rgb: 12,209,232;
-    --ion-color-secondary-contrast: ${contrast(secondary)};
+    --ion-color-secondary-contrast: #ffffff;
     --ion-color-secondary-contrast-rgb: 255,255,255;
     --ion-color-secondary-shade:  ${Color(secondary).darken(shadeRatio)};
     --ion-color-secondary-tint: ${Color(secondary).lighten(tintRatio)};
 
     --ion-color-tertiary:  ${tertiary};
     --ion-color-tertiary-rgb: 112,68,255;
-    --ion-color-tertiary-contrast: ${contrast(tertiary)};
+    --ion-color-tertiary-contrast: #ffffff;
     --ion-color-tertiary-contrast-rgb: 255,255,255;
     --ion-color-tertiary-shade: ${Color(tertiary).darken(shadeRatio)};
     --ion-color-tertiary-tint:  ${Color(tertiary).lighten(tintRatio)};
