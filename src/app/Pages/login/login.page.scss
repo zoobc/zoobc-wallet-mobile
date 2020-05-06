@@ -2,10 +2,28 @@ ion-col {
   text-align: center;
 }
 
-.background {
+.background-zoobc {
   --color: #fff;
   --background: transparent;
-  --background: url("src/assets/images/bg-pin.jpg");
+  --background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+.background-day {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/background-day.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+.background-night {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/background-night.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position-y: bottom;
