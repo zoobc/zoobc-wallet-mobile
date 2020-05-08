@@ -16,6 +16,11 @@ export class SenddetailPage implements OnInit {
   trxRecipient: string;
   currencyRate: any;
   priceInUSD: any;
+  isAdvance: boolean;
+  escrowApprover: string;
+  escrowCommision: number;
+  escrowTimout: number;
+  escrowInstruction: string;
   constructor(private modalController: ModalController, 
               private currencyServ: CurrencyService,
               private navParams: NavParams) {
@@ -35,6 +40,11 @@ export class SenddetailPage implements OnInit {
     this.trxRecipient = this.navParams.data.trxRecipient;
     this.currencyRate = this.navParams.data.trxCurrencyRate;
     this.priceInUSD = this.currencyServ.getPriceInUSD();
+    this.isAdvance = this.navParams.data.IsEscrow;
+    this.escrowApprover = this.navParams.data.escApproverAddress;
+    this.escrowCommision = this.navParams.data.escCommission;
+    this.escrowTimout = this.navParams.data.escTimeout;
+    this.escrowInstruction = this.navParams.data.escInstruction;
   }
 
   async cancel() {

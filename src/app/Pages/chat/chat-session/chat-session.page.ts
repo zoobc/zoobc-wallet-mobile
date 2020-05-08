@@ -6,7 +6,8 @@ import { ChatService } from 'src/app/Services/chat.service';
 import { Chat } from 'src/app/Models/chatmodels';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
 import { IonContent } from '@ionic/angular';
-import * as firebase from 'firebase';
+import { firestore } from 'firebase/app';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
 
 
 @Component({
@@ -42,9 +43,6 @@ export class ChatSessionPage implements OnInit {
   loader: boolean;
   subs: Subscription;
 
-  private msgDbref: any;
-  private messageList = [];
-  private inputMessage = '';
 
   public count = 0;
 
@@ -58,6 +56,7 @@ export class ChatSessionPage implements OnInit {
 
   constructor(
               public cs: ChatService,
+              private oneSignal: OneSignal,
               private activeRoute: ActivatedRoute,
               private chatService: ChatService,
               private db: AngularFirestore) {
@@ -83,6 +82,7 @@ export class ChatSessionPage implements OnInit {
   }
 
   ngOnInit() {
+    this.getFcmId();
 
     this.db
       .collection<Chat>(FIREBASE_CHAT, res => {
@@ -99,17 +99,26 @@ export class ChatSessionPage implements OnInit {
       });
   }
 
+
+  getFcmId(){
+    this.oneSignal.getIds().then(identity => {
+      console.log('== Fcm token: ', identity.pushToken);
+      console.log('== Fcm UserId: ', identity.userId);
+    });
+  }
+
+
   async addChat() {
     this.loader = true;
     if (this.message && this.message !== '') {
-      console.log('== Firebase time stamp: ', firebase.firestore.FieldValue.serverTimestamp());
+      console.log('== Firebase time stamp: ', firestore.FieldValue.serverTimestamp());
 
       this.chatPayload = {
         message: this.message,
         sender: this.sender,
         pair: this.pair,
         chatId: this.chatService.currentChatPairId,
-        time: firebase.firestore.FieldValue.serverTimestamp() // new Date().getTime()
+        time: firestore.FieldValue.serverTimestamp() // new Date().getTime()
       };
 
       await this.chatService

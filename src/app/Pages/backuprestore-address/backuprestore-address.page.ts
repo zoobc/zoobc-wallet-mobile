@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Account } from 'src/app/Interfaces/Account';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { AccountService } from 'src/app/Services/account.service';
 import { NavController } from '@ionic/angular';
+import { Account } from 'src/app/Interfaces/Account';
+import { AccountService } from 'src/app/Services/account.service';
 @Component({
   selector: 'app-backuprestore-address',
   templateUrl: './backuprestore-address.page.html',
   styleUrls: ['./backuprestore-address.page.scss'],
 })
 export class BackuprestoreAddressPage implements OnInit {
-  userEmail: string;
-  emailAccounts: any;
+  uid: string;
+  accounts: Account[];
   addresses = [];
   addressName: string;
   addressAddress: string;
@@ -27,13 +27,15 @@ export class BackuprestoreAddressPage implements OnInit {
   constructor(
     private addressBookSrv: AddressBookService,
     private navCtrl: NavController,
+    private accountService: AccountService,
     private authService: AddressBookService) { }
 
   ngOnInit() {
     this.getAllAddress();
-    if (this.authService.userDetails()) {
-      this.userEmail = this.authService.userDetails().email;
-      console.log('=== userEmail: ', this.userEmail);
+    this.getAllAccounts();
+    if (this.authService.userDetails() && this.authService.userDetails().uid) {
+      console.log('==== Current User: ', this.authService.userDetails().uid);
+      this.uid =  this.authService.userDetails().uid;
     } else {
       this.navCtrl.navigateBack('/login-backup');
     }
@@ -51,6 +53,10 @@ export class BackuprestoreAddressPage implements OnInit {
     });
   }
 
+  async getAllAccounts(){
+    this.accounts = await this.accountService.getAllAccount();
+  }
+
   async getAllAddress() {
     const alladdress = await this.addressBookSrv.getAll();
     if (alladdress) {
@@ -63,7 +69,7 @@ export class BackuprestoreAddressPage implements OnInit {
     this.isBackup = true;
     setTimeout(async () => {
       const alladdress = await this.addressBookSrv.getAll();
-      const mainAcc = this.userEmail;
+      const mainAcc = this.accounts[0].address;
       if (alladdress && alladdress.length > 0) {
         this.createBackup(mainAcc, alladdress);
       }
@@ -85,7 +91,7 @@ export class BackuprestoreAddressPage implements OnInit {
     this.counter = 1;
     this.isRestore = true;
     this.isRestoreFinish = false;
-    const mainAcc = this.userEmail;
+    const mainAcc = this.accounts[0].address;
     console.log('=== Main Email: ', mainAcc);
     this.addressBookSrv.restore_backup(mainAcc).then( doc => {
         if (doc.exists && doc.data().addresses) {
@@ -126,7 +132,5 @@ export class BackuprestoreAddressPage implements OnInit {
     });
     return finded;
   }
-
- 
 
 }

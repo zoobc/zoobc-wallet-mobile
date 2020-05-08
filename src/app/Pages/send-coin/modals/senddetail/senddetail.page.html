@@ -6,11 +6,6 @@
       </ion-button>
     </ion-buttons>
     <ion-title>{{ "Confirm" | translate }}</ion-title>
-    <!-- <ion-buttons slot="end" color="primary">
-        <ion-button routerLink="/feedback">
-          Feedback
-        </ion-button>
-    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -84,6 +79,56 @@
         </ion-text>
       </ion-label>
     </ion-item>
+
+    <!-- Escrow start here -->    
+    <ion-item *ngIf="isAdvance">
+      <ion-label class="ion-text-wrap">
+        <ion-text color="medium" class="ion-text-uppercase">
+          <h3>{{ "Approver Address" | translate }}</h3>
+        </ion-text>
+        <ion-text color="secondary">
+          <p><b>{{ escrowApprover }}</b></p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item  *ngIf="isAdvance">
+      <ion-label class="ion-text-wrap">
+        <ion-text color="medium" class="ion-text-uppercase">
+          <h3>{{ "Approver Comission" | translate }}</h3>
+        </ion-text>
+        <ion-text color="secondary">
+          <p><b>{{ escrowCommision }}</b></p>
+          <p>
+            <b>{{ escrowCommision }} ZBC</b><br />
+            {{escrowCommision * priceInUSD * currencyRate.value  | number: '0.0-4'}} {{ currencyRate.name }}
+          </p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="isAdvance">
+      <ion-label class="ion-text-wrap">
+        <ion-text color="medium" class="ion-text-uppercase">
+          <h3>{{ "Timeout" | translate }}</h3>
+        </ion-text>
+        <ion-text color="secondary">
+          <p><b>{{ escrowTimout }}</b></p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="isAdvance">
+      <ion-label class="ion-text-wrap">
+        <ion-text color="medium" class="ion-text-uppercase">
+          <h3>{{ "Instruction" | translate }}</h3>
+        </ion-text>
+        <ion-text color="secondary">
+          <p><b>{{ escrowInstruction }}</b></p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+
   </ion-list>
 
   <ion-grid>

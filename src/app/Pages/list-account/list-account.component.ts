@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/Account';
@@ -18,9 +17,7 @@ export class ListAccountComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private accountService: AccountService,
-    private toastController: ToastController
-  ) {
+    private accountService: AccountService  ) {
     this.accountService.accountSubject.subscribe(() => {
       setTimeout(() => {
         this.loadData();

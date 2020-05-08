@@ -1,8 +1,9 @@
 export interface User {
-    email: string;
     address: string;
     name: string;
     time: string;
+    fcmToken: string;
+    fcmUid: string;
 }
 
 export interface Chat {

@@ -8,6 +8,13 @@
   background-position-y: bottom;
 }
 
+.bg-header-night{
+  background: url("src/assets/images/background-night.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
 .bg-header{
   background: url("src/assets/images/background.jpg");
   background-repeat: no-repeat;
@@ -35,13 +42,13 @@ ion-content{
           zoom: 2.8;
           padding: 3px;
           &:first-child{
-              zoom: 3.2;
+              zoom: 2.8;
               padding: 3px;
           }
       }
       h2,h1{
           margin-top: 0;
-          font-size: 1.2em;
+          font-size: 1.1em;
       }
       ion-card{
           text-align: center;

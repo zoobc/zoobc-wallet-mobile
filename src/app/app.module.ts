@@ -29,7 +29,7 @@ import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
 import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';
 import { AddressBookService } from './Services/address-book.service';
-import { environment } from 'src/environments/environment';
+import { fbconfig } from 'src/environments/firebaseconfig';
 import { PinBackupPageModule } from './Pages/backup-phrase/pin/pin-backup/pin-backup.module';
 import { TaskDetailPageModule } from './Pages/my-tasks/task-detail/task-detail.module';
 import { SetupPinGpPageModule } from './Pages/generate-passphrase/setup-pin-gp/setup-pin-gp.module';
@@ -55,7 +55,7 @@ export function createTranslateLoader(http: HttpClient) {
   imports: [
     NgxQRCodeModule,
     BrowserModule,
-    IonicModule.forRoot(),
+    IonicModule,
     IonicStorageModule.forRoot({
       name: '__zobcdb',
       driverOrder: ['indexeddb', 'sqlite', 'websql']
@@ -75,7 +75,7 @@ export function createTranslateLoader(http: HttpClient) {
     EnterpinsendPageModule,
     PinBackupPageModule,
     ChatProfilePageModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireModule.initializeApp(fbconfig),
     AngularFirestoreModule,
     AngularFireAuthModule,
     AngularFireDatabaseModule,

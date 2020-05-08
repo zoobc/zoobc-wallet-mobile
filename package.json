@@ -10,9 +10,7 @@
     "build:ios": "cordova build ios --buildFlag='-UseModernBuildSystem=0'",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "grpc:build": "protoc --plugin=\"protoc-gen-ts='node_modules/.bin/protoc-gen-ts'\" --grpc-web_out=\"import_style=typescript,mode=grpcwebtext:src/grpc/generated\" --js_out=\"import_style=commonjs,binary:src/grpc/generated\" src/grpc/schema/service/*.proto --proto_path=src/grpc/schema && protoc --plugin=\"protoc-gen-ts='node_modules/.bin/protoc-gen-ts'\" --grpc-web_out=\"import_style=typescript,mode=grpcwebtext:src/grpc/generated\" --js_out=\"import_style=commonjs,binary:src/grpc/generated\" src/grpc/schema/model/*.proto --proto_path=src/grpc/schema",
-    "compile-proto": "sh compile-proto.sh"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -53,7 +51,7 @@
     "bn.js": "^5.0.0",
     "chart.js": "^2.8.0",
     "color": "^3.1.2",
-    "cordova-android": "^8.1.0",
+    "cordova-android": "8.1.0",
     "cordova-android-support-gradle-release": "^3.0.1",
     "cordova-clipboard": "^1.3.0",
     "cordova-device-accounts-v2": "^2.0.8",
