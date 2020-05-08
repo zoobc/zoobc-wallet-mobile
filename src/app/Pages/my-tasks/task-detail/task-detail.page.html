@@ -16,7 +16,7 @@
   <div style="text-align: center;">
     <h5> Escrow Transaction Detail </h5>
   </div>
-  <ion-list>
+  <ion-list *ngIf="escrowDetail">
     <ion-item>
       <ion-label>
         <h5>{{ "ID" | translate }}</h5>
@@ -70,17 +70,12 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="primary" (click)="cancel()">{{ 'Cancel' | translate }}</ion-button>
+        <ion-button expand="block" color="primary" (click)="confirm(escrowDetail.id)">{{ 'Confirm' | translate }}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="primary" (click)="confirm()">{{ 'Confirm' | translate }}</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" color="primary" fill="outline" (click)="reject()">{{ 'Reject' | translate }}</ion-button>
+        <ion-button expand="block" color="primary" fill="outline" (click)="reject(escrowDetail.id)">{{ 'Reject' | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
