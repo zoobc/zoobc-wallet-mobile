@@ -32,7 +32,13 @@ import zoobc, {
   ZooKeyring
 } from 'zoobc';
 import { calculateMinFee} from 'src/Helpers/utils';
+import { makeShortAddress } from 'src/Helpers/converters';
 
+export interface Approver {
+  name: string;
+  address: string;
+  shortAddress: string;
+}
 @Component({
   selector: 'app-send-coin',
   templateUrl: 'send-coin.page.html',
@@ -40,7 +46,7 @@ import { calculateMinFee} from 'src/Helpers/utils';
 })
 
 export class SendCoinPage implements OnInit {
-
+  approvers =  [];
   private seed: BIP32Interface;
   private keyring: ZooKeyring;
   rootPage: any;
@@ -100,6 +106,7 @@ export class SendCoinPage implements OnInit {
     private modalController: ModalController,
     public alertController: AlertController,
     private activeRoute: ActivatedRoute,
+    private addressBookSrv: AddressBookService,
     public loadingController: LoadingController
   ) {
 
@@ -132,6 +139,10 @@ export class SendCoinPage implements OnInit {
     this.loadAccount();
   }
 
+  selectApprover(){
+    console.log('===== escrow approver: ', this.escrowApprover);
+  }
+
   switchCurrency() {
 
     const first = this.primaryCurr.slice();
@@ -153,6 +164,23 @@ export class SendCoinPage implements OnInit {
     this.recipientAddress = '';
     // console.log('=== on ngOnInit: ');
     this.loadData();
+    this.getAllAddress();
+    this.getAllAccount();
+  }
+
+  async getAllAccount() {
+    const accounts = await this.accountService.getAllAccount();
+
+    if (accounts && accounts.length > 0) {
+      accounts.forEach((obj: { name: any; address: string; }) => {
+        const app: Approver = {
+          name: obj.name,
+          address: obj.address,
+          shortAddress: makeShortAddress(obj.address)
+        };
+        this.approvers.push(app);
+      });
+    }
 
   }
 
@@ -161,6 +189,20 @@ export class SendCoinPage implements OnInit {
     this.createTransactionFees();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
+  }
+
+  async getAllAddress() {
+    const alladdress = await this.addressBookSrv.getAll();
+
+    if (alladdress && alladdress.length > 0) {
+      alladdress.forEach((obj: { name: any; address: string; }) => {
+        const app: Approver = {
+          name: obj.name,
+          address: obj.address,
+          shortAddress: makeShortAddress(obj.address) };
+        this.approvers.push(app);
+      });
+    }
   }
 
   openMenu() {

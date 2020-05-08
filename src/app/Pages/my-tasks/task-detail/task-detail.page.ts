@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { STORAGE_ESCROW_WAITING_LIST } from 'src/environments/variable.const';
-import zoobc from 'zoobc';
+import { ModalController, AlertController } from '@ionic/angular';
+import { STORAGE_ESCROW_WAITING_LIST, STORAGE_ENC_PASSPHRASE_SEED, SALT_PASSPHRASE } from 'src/environments/variable.const';
+import zoobc, { ZooKeyring, BIP32Interface } from 'zoobc';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/Account';
 import { ActivatedRoute } from '@angular/router';
+import { doDecrypt } from 'src/Helpers/converters';
+import CryptoJS from 'crypto-js';
+import { AuthService } from 'src/app/Services/auth-service';
+
 
 @Component({
   selector: 'app-task-detail',
@@ -14,14 +18,20 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class TaskDetailPage implements OnInit {
 
+  private seed: BIP32Interface;
+  private keyring: ZooKeyring;
+
   waitingList = [];
   account: Account;
-  escrowDetail: object;
+  escrowDetail: any;
   escrowId: any;
 
   constructor(
     private modalCtrl: ModalController,
+    private alertController: AlertController,
+    private strgSrv: StoragedevService,
     private accountService: AccountService,
+    private authService: AuthService,
     private storageService: StoragedevService,
     private activeRoute: ActivatedRoute
   ) { }
@@ -42,7 +52,8 @@ export class TaskDetailPage implements OnInit {
       this.storageService.set(STORAGE_ESCROW_WAITING_LIST, JSON.stringify(reset));
     }
 
-    zoobc.Escrows.get(this.escrowId).then(res => {
+    await zoobc.Escrows.get(this.escrowId).then(res => {
+      console.log('=== escrow detail: ', res);
       this.escrowDetail = res;
     });
 
@@ -52,14 +63,44 @@ export class TaskDetailPage implements OnInit {
     this.modalCtrl.dismiss();
   }
 
-  cancel() {
-    // TODO make function for cancel
+  async generateSeed(pin: any) {
+
+    console.log('===== generateSeed, account.path: ', this.account.path);
+    console.log('==== generateSeed pin :', pin);
+
+    const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
+    console.log('==== generateSeed, passEncryptSaved:', passEncryptSaved);
+
+    const decryptedArray = doDecrypt(passEncryptSaved, pin);
+    console.log('=== generateSeed,  decryptedArray:', decryptedArray);
+
+    const passphrase = decryptedArray.toString(CryptoJS.enc.Utf8);
+    console.log('===== generateSeed,  passphrase: ', passphrase);
+
+    this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
+    console.log('===== generateSeed,  this.keyring: ', this.keyring);
+
+    this.seed =  this.keyring.calcDerivationPath(this.account.path);
+    console.log('===== generateSeed,  this.seed: ', this.seed);
+
+    return this.seed;
+
   }
 
-  async confirm(id) {
+  async confirm(id: string) {
+    console.log('============ pin confirm:', this.authService.pin);
+
     const checkWaitList = this.waitingList.includes(id);
-    const childSeed = null;  // get sedd from passphrase this.authServ.seed;
-    const approval = '';
+    console.log('===  chekcWaitList: ', checkWaitList);
+
+    const childSeed = await this.generateSeed(this.authService.pin);
+    console.log('======== confirm childSeed: ', childSeed);
+
+    const approval = this.account.address;
+    console.log('======== confirm aproval: ', approval);
+
+    console.log(' =========== escrow id: ', id);
+
     if (checkWaitList !== true) {
 
       const data = {
@@ -72,11 +113,8 @@ export class TaskDetailPage implements OnInit {
       zoobc.Escrows.approval(data, childSeed)
         .then(
           async res => {
-            const trxMessage = res;
-
-            //  TODO showm succes confirmation dialog.
-            // TODO save waiting list into local storage
-
+            console.log('======= res approval:', res);
+            this.presentAlertSuccess('Approval success');
             this.waitingList.push(id);
             this.storageService.set(
               STORAGE_ESCROW_WAITING_LIST,
@@ -87,11 +125,11 @@ export class TaskDetailPage implements OnInit {
           async err => {
             console.log('err', err);
             const message = err;
-            // TODO show error msg dialog;  
+            this.presentAlertFail(message);
           }
         )
         .finally(() => {
-          // close dialog 
+          // close dialog
         });
     } else {
       const message = 'Transaction have been processed';
@@ -99,23 +137,48 @@ export class TaskDetailPage implements OnInit {
     }
   }
 
-  async reject(id) {
+
+  async presentAlertSuccess(msg: string) {
+    const alert = await this.alertController.create({
+      header: 'Info',
+      subHeader: 'Escrow approval success',
+      message: msg,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  async presentAlertFail(msg: string) {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      subHeader: 'Escrow approval fail',
+      message: msg,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  async reject(id: string, appFee: number) {
+    console.log('============ pin reject:', this.authService.pin);
+    await this.generateSeed(this.authService.pin); //TODO make pin dialog
     const checkWaitList = this.waitingList.includes(id);
     if (checkWaitList !== true) {
       const data = {
         approvalAddress: this.account.address,
-        fee: 1,
+        fee: appFee,
         approvalCode: 1,
         transactionId: id,
       };
 
-      const childSeed = null;  // TODO this.authServ.seed;
+      const childSeed = this.seed;  // TODO this.authServ.seed;
       zoobc.Escrows.approval(data, childSeed)
         .then(
           async res => {
             const msg = res;
 
-            // TODO Show dialog info for rejected
+            this.presentAlertSuccess('Escrow reject success');
             this.waitingList.push(id);
 
             this.storageService.set(
@@ -127,7 +190,7 @@ export class TaskDetailPage implements OnInit {
             // this.isLoadingTx = false;
             console.log('err', err);
             const msg = "An error occurred while processing your request";
-            // TODO show error dialog box
+            this.presentAlertFail(msg);
           }
         )
         .finally(() => {

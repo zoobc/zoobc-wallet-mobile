@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth-service';
+import { FcmService } from 'src/app/Services/fcm.service';
+import { ThemeService } from 'src/app/Services/theme.service';
+import { DEFAULT_THEME } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-sidemenu',
@@ -10,13 +13,26 @@ import { AuthService } from 'src/app/Services/auth-service';
 })
 export class SidemenuComponent implements OnInit {
 
+  theme = DEFAULT_THEME;
+
   constructor(
     private menuController: MenuController,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private fcm: FcmService,
+    private router: Router,
+    private themeSrv: ThemeService
+  ) {
+
+    // if account changed
+    this.themeSrv.themeSubject.subscribe(() => {
+      this.theme = this.themeSrv.theme;
+    });
+
+
+  }
 
   async ngOnInit() {
+    this.theme = this.themeSrv.theme;
   }
 
   goBackupRestore() {
@@ -83,6 +99,14 @@ export class SidemenuComponent implements OnInit {
   }
 
   logout() {
+
+    const user =  this.fcm.chatUser;
+    console.log('=== current chat user: ',  user);
+
+    if (user) {
+      this.fcm.delete(user);
+    }
+
     this.authService.logout();
     this.router.navigateByUrl('/login');
     this.menuController.close('mainMenu');

@@ -12,7 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import {
   STORAGE_ACTIVE_CURRENCY, NETWORK_LIST,
-  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY, STORAGE_THEME_NAME, CURRENCY_RATE_LIST} from 'src/environments/variable.const';
+  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY, STORAGE_ACTIVE_THEME, CURRENCY_RATE_LIST, DEFAULT_THEME} from 'src/environments/variable.const';
 import { NetworkService } from './Services/network.service';
 import { TransactionService } from './Services/transaction.service';
 import { StoragedevService } from './Services/storagedev.service';
@@ -63,6 +63,7 @@ export class AppComponent implements OnInit {
         this.setupPush();
       }
       this.splashScreen.hide();
+      this.setTheme();
     });
   }
 
@@ -81,8 +82,11 @@ export class AppComponent implements OnInit {
     console.log('=== Active Currency: ', curr);
   }
 
-  async setTheme(){
-    const activeTheme = await this.strgSrv.get(STORAGE_THEME_NAME);
+  async setTheme() {
+    let activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
+    if (!activeTheme) {
+      activeTheme = DEFAULT_THEME;
+    }
     await this.theme.setTheme(activeTheme);
   }
 

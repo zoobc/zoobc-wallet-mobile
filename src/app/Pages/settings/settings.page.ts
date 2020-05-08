@@ -9,8 +9,7 @@ import {
   STORAGE_ACTIVE_NETWORK,
   NETWORK_LIST,
   THEME_OPTIONS,
-  STORAGE_THEME,
-  STORAGE_THEME_NAME
+  STORAGE_ACTIVE_THEME
 } from 'src/environments/variable.const';
 import { NetworkService } from 'src/app/Services/network.service';
 import { getFormatedDate } from 'src/Helpers/converters';
@@ -58,7 +57,7 @@ export class SettingsPage implements OnInit {
     this.activeLanguage = await this.strgSrv.get(SELECTED_LANGUAGE);
     this.activeCurrency = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
     this.activeNetwork = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK);
-    this.activeTheme = await this.strgSrv.get(STORAGE_THEME_NAME);
+    this.activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
     console.log('---- Active Theme: ', this.activeTheme);
 
   }

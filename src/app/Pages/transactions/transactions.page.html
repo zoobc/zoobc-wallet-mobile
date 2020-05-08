@@ -61,7 +61,7 @@
       </ion-label>
     </ion-item>
   </ion-list>
-  <ion-list class="ion-margin-top list-transaction">
+  <ion-list *ngIf="recentTx && recentTx.length > 0" class="ion-margin-top list-transaction">
     <ion-item *ngFor="let transaction of recentTx; let i = index" button (click)="openDetailTransction(transaction)">
       <ion-label *ngIf="transaction.name" class="title">
         <h3>{{ transaction.name }}</h3>
@@ -87,10 +87,10 @@
 
     </ion-item>
   </ion-list>
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)">
+  <!-- <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)">
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
     </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  </ion-infinite-scroll> -->
 
 
 </ion-content>

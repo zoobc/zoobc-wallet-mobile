@@ -16,7 +16,7 @@
 </ion-header>
 
 <ion-content fullscreen class="ion-no-padding">
-  <div class="bg-header">
+  <div class="bg-header-{{theme}}">
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
       <ion-refresher-content
         pullingIcon="arrow-dropdown"
@@ -40,7 +40,7 @@
       <ion-row>
         <ion-col size="2"></ion-col>
         <ion-col size="8" style="margin-bottom: 35px;">
-          <ion-label *ngIf="account" color="light" (click)="openListAccount()">
+          <ion-label *ngIf="account" color="medium" (click)="openListAccount()">
             <h1>{{ account.name }}</h1>
             <p>{{ account.shortAddress }}</p>
           </ion-label>
@@ -55,7 +55,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          <ion-item color="dbabuku">
+          <ion-item color="dbbalance">
             <ion-label>
               <p>{{ "Balance" | translate }}</p>
               <ion-text class="amount"
@@ -71,7 +71,7 @@
           </ion-item>
         </ion-col>
         <ion-col size="6" style="text-align: left; padding-bottom: 10px;">
-          <ion-item color="dbamount">
+          <ion-item color="dbspbalance">
             <ion-label>
               <p>{{ "Spendable Balance" | translate }}</p>
               <ion-text class="amount"
@@ -96,7 +96,7 @@
         <ion-card color="light" (click)="openListAccount()">
           <ion-icon name="wallet"></ion-icon>
           <ion-text>
-            <h2>My Accounts</h2>
+            <h2>Accounts</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -171,5 +171,4 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <p>&nbsp;</p>
 </ion-content>

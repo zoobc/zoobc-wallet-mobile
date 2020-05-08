@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
+import { ThemeService } from 'src/app/Services/theme.service';
+import { DEFAULT_THEME } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-login',
@@ -10,15 +12,23 @@ import { AccountService } from 'src/app/Services/account.service';
 })
 export class LoginPage implements OnInit {
   public isLoginValid = true;
-
+  theme = DEFAULT_THEME;
   constructor(
     private accountService: AccountService,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private themeSrv: ThemeService
+  ) {
+
+    // if account changed
+    this.themeSrv.themeSubject.subscribe(() => {
+      this.theme = this.themeSrv.theme;
+    });
+
+  }
 
   async ngOnInit() {
-
+    this.theme = this.themeSrv.theme;
     const acc =  await this.accountService.getCurrAccount();
     if (acc === null) {
       this.router.navigate(['initial']);

@@ -14,11 +14,14 @@
 
 <ion-content>
   <div style="text-align: center;">
-    <h5>Escrow transaction need approval</h5>
-    <p><ion-icon name="reload-outline"></ion-icon>Current Block Height: {{blockHeight}} <ion-icon name="refresh" (click)="getBlockHeight()"></ion-icon></p>
+    <p>Current Block Height: {{blockHeight}} <ion-icon name="refresh" (click)="loadAccount()"></ion-icon></p>
   </div>
 
-  <ion-list class="ion-margin-top list-transaction">
+  <div style="text-align: center; border-top: 1px solid #cccccc;" *ngIf="!escrowTransactions || escrowTransactions.length < 1 ">
+      <p>{{ 'No Approval Request Available' | translate }}</p>
+  </div>
+
+  <ion-list *ngIf="escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;" class="ion-margin-top list-transaction">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index" (click)="openDetail(escrow.id)">
       <ion-label class="title">
         <h3>Transaction ID: {{escrow.id}}</h3>

@@ -1,22 +1,33 @@
 
-.background {
-  --color: #fff;
-  --background: transparent;
-  --background: url("src/assets/images/background.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position-y: bottom;
+.account-day {
+  color: #000000;
+}
+.account-night {
+  color: #ffffff;
+}
+.account-zoobc {
+  color: #ffffff;
 }
 
 .bg-header-night{
+  --background: transparent;
   background: url("src/assets/images/background-night.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position-y: bottom;
 }
 
-.bg-header{
+.bg-header-zoobc{
+  --background: transparent;
   background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+.bg-header-day{
+  --background: transparent;
+  background: url("src/assets/images/background-day.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position-y: bottom;

@@ -117,8 +117,8 @@ export class TransactionsPage implements OnInit {
     this.unconfirmTx = [];
     this.isError = false;
     this.account = await this.accountService.getCurrAccount();
-    this.currencyRate = this.currencyServ.getRate();
-    this.getTransactionsByAddress(this.account.address);
+    this.currencyRate = await this.currencyServ.getRate();
+    await this.getTransactionsByAddress(this.account.address);
   }
 
   async loadMoreData(event) {
@@ -144,7 +144,6 @@ export class TransactionsPage implements OnInit {
       this.recentTx = null;
       this.unconfirmTx = null;
       this.isErrorRecentTx = false;
-      this.isLoadingRecentTx = true;
       const params: TransactionListParams = {
         address,
         transactionType: 1,
@@ -158,17 +157,18 @@ export class TransactionsPage implements OnInit {
         const tx = await zoobc.Transactions.getList(params).then(res =>
           toTransactionListWallet(res, this.account.address)
         );
-        tx.transactions.map(recent => {
+
+        tx.transactions.map(async recent => {
           console.log('=== Recent transaction: ', recent);
           recent['sender'] = recent.type === 'receive' ? recent.address : address;
           recent['recipient'] = recent.type === 'receive' ? address : recent.address;
-          recent['name'] = this.addressBookSrv.getNameByAddress(recent.address);
+          recent['name'] = await this.addressBookSrv.getNameByAddress(recent.address);
           recent['shortaddress'] = makeShortAddress(recent.address);
         });
         this.totalTx = tx.total;
         this.recentTx = tx.transactions;
 
-        const mempoolParams: MempoolListParams = { address: address };
+        const mempoolParams: MempoolListParams = { address };
         this.unconfirmTx = await zoobc.Mempool.getList(mempoolParams).then(res =>
              toUnconfirmedSendMoneyWallet(res, address)
         );
