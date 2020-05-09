@@ -21,6 +21,7 @@ export class MyTasksPage implements OnInit {
   page = 1;
   total = 0;
   blockHeight = 0;
+  isLoadingBlockHeight: boolean;
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
@@ -116,13 +117,15 @@ export class MyTasksPage implements OnInit {
 
 
   getBlockHeight() {
-    zoobc.Host.getBlock()
+    this.isLoadingBlockHeight = true;
+    zoobc.Host.getInfo()
       .then(res => {
         this.blockHeight = res.chainstatusesList[1].height;
       })
       .catch(err => {
-        console.log('=== getBlockHeight, error: ', err);
-      });
+        console.log(err);
+      })
+      .finally(() => (this.isLoadingBlockHeight = false));
   }
 
   openDetail(escrowId: string) {
