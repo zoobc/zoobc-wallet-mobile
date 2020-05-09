@@ -18,7 +18,6 @@ import { AuthService } from 'src/app/Services/auth-service';
 })
 export class TaskDetailPage implements OnInit {
 
-  private seed: BIP32Interface;
   private keyring: ZooKeyring;
 
   waitingList = [];
@@ -80,10 +79,10 @@ export class TaskDetailPage implements OnInit {
     this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
     console.log('===== generateSeed,  this.keyring: ', this.keyring);
 
-    this.seed =  this.keyring.calcDerivationPath(this.account.path);
-    console.log('===== generateSeed,  this.seed: ', this.seed);
+    const seed =  this.keyring.calcDerivationPath(this.account.path);
+    console.log('===== generateSeed,  this.seed: ', seed);
 
-    return this.seed;
+    return seed;
 
   }
 
@@ -133,7 +132,7 @@ export class TaskDetailPage implements OnInit {
         });
     } else {
       const message = 'Transaction have been processed';
-      // TODO show info dialog
+      this.presentAlertSuccess(message);
     }
   }
 
@@ -145,7 +144,6 @@ export class TaskDetailPage implements OnInit {
       message: msg,
       buttons: ['OK']
     });
-
     await alert.present();
   }
 
@@ -160,25 +158,25 @@ export class TaskDetailPage implements OnInit {
     await alert.present();
   }
 
-  async reject(id: string, appFee: number) {
-    console.log('============ pin reject:', this.authService.pin);
-    await this.generateSeed(this.authService.pin); //TODO make pin dialog
+  async reject(id: string) {
     const checkWaitList = this.waitingList.includes(id);
+    const childSeed = await this.generateSeed(this.authService.pin);
+    const approval = this.account.address;
+
     if (checkWaitList !== true) {
       const data = {
-        approvalAddress: this.account.address,
-        fee: appFee,
+        approvalAddress: approval,
+        fee: 1,
         approvalCode: 1,
         transactionId: id,
       };
 
-      const childSeed = this.seed;  // TODO this.authServ.seed;
       zoobc.Escrows.approval(data, childSeed)
         .then(
           async res => {
             const msg = res;
 
-            this.presentAlertSuccess('Escrow reject success');
+            this.presentAlertSuccess('Escrow reject success, ' + msg);
             this.waitingList.push(id);
 
             this.storageService.set(
@@ -189,7 +187,7 @@ export class TaskDetailPage implements OnInit {
           async err => {
             // this.isLoadingTx = false;
             console.log('err', err);
-            const msg = "An error occurred while processing your request";
+            const msg = 'An error occurred while processing your request, ' + err;
             this.presentAlertFail(msg);
           }
         )
@@ -197,9 +195,8 @@ export class TaskDetailPage implements OnInit {
           // close dialog box
         });
     } else {
-      let message = 'Transaction have been processed';
-      // TODO show dialog box;
-
+      const message = 'Transaction have been processed';
+      this.presentAlertSuccess(message);
     }
   }
 
