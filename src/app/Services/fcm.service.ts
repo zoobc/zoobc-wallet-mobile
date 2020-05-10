@@ -3,26 +3,81 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { FcmIdentity } from '../Interfaces/FcmIdentity';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { FIREBASE_DEVICES } from 'src/environments/variable.const';
-import { Platform } from '@ionic/angular';
+import { Platform, AlertController } from '@ionic/angular';
 import { Account } from '../Interfaces/Account';
 import { ChatUser } from '../Interfaces/ChatUser';
+import { AngularFireAuth } from '@angular/fire/auth';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class FcmService {
+  //  uid: string;
+  userData: any;
   chatUser: ChatUser;
   identity: FcmIdentity;
-  devicesRef = this.afs.collection('devices');
+  isAnonymous: boolean;
   constructor(
+    public ngFireAuth: AngularFireAuth,
     private oneSignal: OneSignal,
+    private alertController: AlertController,
     private platform: Platform,
-    private afs: AngularFirestore) {}
+    private afs: AngularFirestore) {
+      this.initialize();
+    }
 
   create(user: ChatUser) {
     const docId = user.userId + user.path;
     return this.afs.collection(FIREBASE_DEVICES).doc(docId).set(user);
   }
+
+  async initialize() {
+
+
+    if (this.userData) {
+      return;
+    }
+
+    await this.ngFireAuth.auth.signInAnonymously().then(userx => {
+      console.log('===== fcm user success: ', userx);
+      this.userData = userx;
+    }).catch( error =>{
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log('======== fcm errorCode: ', errorCode);
+      console.log('======== fcm  errorMessage: ', errorMessage);
+    });
+
+    this.ngFireAuth.authState.subscribe(userx => {
+      console.log('===== fcm user changed 1: ', userx);
+      // this.presentAlertSuccess('UserId: ' + userx.uid);
+      if (userx) {
+        this.userData = userx;
+        localStorage.setItem('user', JSON.stringify(this.userData));
+        JSON.parse(localStorage.getItem('user'));
+      } else {
+        localStorage.setItem('user', null);
+        JSON.parse(localStorage.getItem('user'));
+      }
+    });
+
+    // this.ngFireAuth.auth.onAuthStateChanged(userx => {
+    //   console.log('===== fcm user changed 2: ', userx);
+    // });
+
+  }
+
+  // async presentAlertSuccess(msg: string) {
+  //   const alert = await this.alertController.create({
+  //     header: 'Info',
+  //     subHeader: 'Escrow approval success',
+  //     message: msg,
+  //     buttons: ['OK']
+  //   });
+  //   await alert.present();
+  // }
+
 
   delete(user: ChatUser) {
     const docId = user.userId + user.path;
@@ -35,6 +90,7 @@ export class FcmService {
 
   getToken(account: Account) {
 
+    console.log('getToken Account: ', account);
     console.log('===  getToken one signal');
     this.identity = {
       userId: 'non-native-id',
