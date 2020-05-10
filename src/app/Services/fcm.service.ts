@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { FcmIdentity } from '../Interfaces/fcm-identity';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { FIREBASE_DEVICES } from 'src/environments/variable.const';
-import { Platform, AlertController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { Account } from '../Interfaces/account';
 import { ChatUser } from '../Interfaces/chat-user';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -22,14 +22,13 @@ export class FcmService {
   constructor(
     public ngFireAuth: AngularFireAuth,
     private oneSignal: OneSignal,
-    private alertController: AlertController,
     private platform: Platform,
     private afs: AngularFirestore) {
       this.initialize();
     }
 
   create(user: ChatUser) {
-    const docId = user.userId + user.path;
+    const docId = user.uid + user.path;
     return this.afs.collection(FIREBASE_DEVICES).doc(docId).update(user);
   }
 
@@ -81,7 +80,7 @@ export class FcmService {
 
 
   delete(user: ChatUser) {
-    const docId = user.userId + user.path;
+    const docId = user.uid + user.path;
     this.afs.collection(FIREBASE_DEVICES).doc(docId).delete();
   }
 
@@ -110,7 +109,7 @@ export class FcmService {
       path: account.path,
       address: account.address,
       token: this.identity.pushToken,
-      userId: this.identity.userId,
+      uid: this.identity.userId,
       time: firestore.FieldValue.serverTimestamp()
     };
 

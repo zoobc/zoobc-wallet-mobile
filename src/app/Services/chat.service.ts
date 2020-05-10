@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { FIREBASE_CHAT, FIREBASE_CHAT_USER } from 'src/environments/variable.const';
-import { User, Chat } from '../Interfaces/chatmodels';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { FIREBASE_CHAT } from 'src/environments/variable.const';
+import { Chat, ChatUser } from '../Interfaces/chat-user';
 
 @Injectable({
   providedIn: 'root'
@@ -46,11 +46,6 @@ export class ChatService {
   //   }
   // }
 
-
-
-
-
-
   // private updateUserData({ uid, email, displayName, photoURL }) {
   //   const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${uid}`);
 
@@ -64,39 +59,27 @@ export class ChatService {
   //   return userRef.set(data, { merge: true });
   // }
 
-
-
-  // ====
-
-  users: AngularFirestoreCollection<User>;
-
   chats: AngularFirestoreCollection<Chat>;
-
-  // The pair string for the two users currently chatting
-  currentChatPairId;
-  currentChatPairId2;
-  currentChatPartner;
+  currentChatPairId: string;
+  currentChatPairId2: string;
+  currentChatPartner: { name: any; address: any; time: string; };
 
   constructor(db: AngularFirestore) {
     // Get the tasks collecction
-    this.users = db.collection<User>(FIREBASE_CHAT_USER);
+    // this.users = db.collection<ChatUser>(FIREBASE_CHAT_USER);
     this.chats = db.collection<Chat>(FIREBASE_CHAT);
-  }
-
-  addUser(payload) {
-    return this.users.add(payload);
   }
 
   addChat(chat: Chat) {
     return this.chats.add(chat);
   }
 
-  createPairId(user1, user2) {
+  createPairId(user1: ChatUser, user2: { name?: any; address: any; time?: string; }) {
     const pairId = `${user1.address}|${user2.address}`;
     return pairId;
   }
 
-  createPairId2(user1, user2) {
+  createPairId2(user1: ChatUser, user2: { name?: any; address: any; time?: string; }) {
     const pairId2 = `${user2.address}|${user1.address}`;
     return pairId2;
   }
