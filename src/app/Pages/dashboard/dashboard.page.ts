@@ -18,12 +18,11 @@ import { Transaction } from 'src/app/Interfaces/transaction';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Chat } from 'src/app/Interfaces/chatmodels';
-import { ChatService } from 'src/app/Services/chat.service';
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
+import { Chat } from 'src/app/Interfaces/chat-user';
 
 @Component({
   selector: 'app-dashboard',
