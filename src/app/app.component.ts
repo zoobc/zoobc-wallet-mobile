@@ -1,34 +1,36 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Platform, ToastController} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { LanguageService } from 'src/app/Services/language.service';
-import { AboutPage } from './Pages/about/about.page';
-import * as firebase from 'firebase/app';
-import { auth } from 'firebase/app';
 import { Network } from '@ionic-native/network/ngx';
-import { TranslateService } from '@ngx-translate/core';
-import { CurrencyService } from 'src/app/Services/currency.service';
 import {
   STORAGE_ACTIVE_CURRENCY, NETWORK_LIST,
-  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY, STORAGE_ACTIVE_THEME, CURRENCY_RATE_LIST, DEFAULT_THEME} from 'src/environments/variable.const';
+  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY, 
+  STORAGE_ACTIVE_THEME, CURRENCY_RATE_LIST, DEFAULT_THEME} from 'src/environments/variable.const';
+
+import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { environment } from 'src/environments/environment';
+import { Account } from 'src/app/Interfaces/Account';
+import * as firebase from 'firebase/app';
+import { fbconfig } from 'src/environments/firebaseconfig';
+firebase.initializeApp(fbconfig);
+
+
 import { NetworkService } from './Services/network.service';
 import { TransactionService } from './Services/transaction.service';
 import { StoragedevService } from './Services/storagedev.service';
-import { OneSignal } from '@ionic-native/onesignal/ngx';
-import { environment } from 'src/environments/environment';
+import { LanguageService } from 'src/app/Services/language.service';
+import { TranslateService } from '@ngx-translate/core';
+import { CurrencyService } from 'src/app/Services/currency.service';
 import { ThemeService } from './Services/theme.service';
-import { Account } from 'src/app/Interfaces/Account';
-import { fbconfig } from 'src/environments/firebaseconfig';
-firebase.initializeApp(fbconfig);
+import { FcmService } from './Services/fcm.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit {
-  public rootPage: any = AboutPage;
+  // public rootPage: any = AboutPage;
   public currentAccount: Account;
   private connectionText = '';
 
@@ -36,14 +38,15 @@ export class AppComponent implements OnInit {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
+    private oneSignal: OneSignal,
+    private network: Network,
+    private fcmService: FcmService,
     private languageService: LanguageService,
     private networkService: NetworkService,
     private toastController: ToastController,
-    private network: Network,
     private strgSrv: StoragedevService,
     private transactionService: TransactionService,
     private translateService: TranslateService,
-    private oneSignal: OneSignal,
     private currencyService: CurrencyService,
     private theme: ThemeService  ) {
     this.initializeApp();
@@ -53,7 +56,7 @@ export class AppComponent implements OnInit {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      this.initialFirebase();
+      this.fcmService.initialize();
       this.languageService.setInitialAppLanguage();
       this.networkService.setInitialNetwork();
       this.setNodes();
@@ -67,12 +70,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-  initialFirebase() {
-    auth().signInAnonymously();
-    auth().onAuthStateChanged(firebaseUser => {
-      console.log('Firebase User: ', firebaseUser);
-    });
-  }
 
   async setDefaultCurrency() {
     const curr = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
