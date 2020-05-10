@@ -12,7 +12,7 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService, Currency } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME } from 'src/environments/variable.const';
+import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME, CONST_UNKNOWN_NAME } from 'src/environments/variable.const';
 import zoobc from 'zoobc';
 import { Transaction } from 'src/app/Interfaces/transaction';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
@@ -22,6 +22,8 @@ import { Chat } from 'src/app/Interfaces/chatmodels';
 import { ChatService } from 'src/app/Services/chat.service';
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
+import { AddressBookService } from 'src/app/Services/address-book.service';
+import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,7 +32,7 @@ import { ThemeService } from 'src/app/Services/theme.service';
 })
 export class DashboardPage implements OnInit {
 
-
+  identity: FcmIdentity;
   clickSub: any;
   public errorMsg: string;
   public offset: number;
@@ -61,7 +63,7 @@ export class DashboardPage implements OnInit {
     public loadingController: LoadingController,
     private transactionServ: TransactionService,
     private currencyServ: CurrencyService,
-    private chatService: ChatService,
+    private addressBookSrv: AddressBookService,
     public toastController: ToastController,
     private localNotifications: LocalNotifications,
     private fcm: FcmService,
@@ -69,7 +71,6 @@ export class DashboardPage implements OnInit {
     private db: AngularFirestore,
   ) {
 
-    
     // if account changed
     this.accountService.accountSubject.subscribe(() => {
       this.loadData();
@@ -113,41 +114,56 @@ export class DashboardPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.fcm.initialize();
     this.theme = this.themeSrv.theme;
     console.log('==== theme:', this.theme);
     this.loadData();
-    this.account = await this.accountService.getCurrAccount();
-    this.subscribeNotif(this.account.address);
+    // this.account = await this.accountService.getCurrAccount();
   }
 
 
-  subscribeNotif(address) {
+  subscribeNotif(address: string) {
 
-    console.log('============ CURRENT ADDRESS ====: ', address);
+    console.log('============ subscribeNotif CURRENT ADDRESS ====: ', address);
     this.db
       .collection<Chat>(FIREBASE_CHAT, res => {
         return res.where('pair', '==', address).orderBy('time').limit(1000);
       }).valueChanges()
       .subscribe(chats => {
-        console.log('... Receive Chat ...', chats.length);
-        console.log('==== Current chat partner: ', this.chatService.currentChatPartner);
-        const max = chats.length;
-        if (max > this.chatLength) {
-          console.log('=== max: ', max);
-          const times = chats[max - 1];
-          console.log('=== Max time: ', times);
-          this.showNotif(chats);
-          this.chatLength = chats.length;
+
+        if (chats && chats.length > 0) {
+          const max = chats.length;
+          if (max > this.chatLength) {
+
+            const lastChat = chats[max - 1];
+            console.log('=== lastChat: ', lastChat);
+
+            // check in addressbook if address not available
+            // save it
+            this.checkToDb(lastChat.sender);
+
+            this.showNotif(chats);
+            this.chatLength = chats.length;
+          }
+
         }
 
       });
   }
 
+  async checkToDb(address: string) {
+    const name = await this.addressBookSrv.getNameByAddress(address);
+    if (!name || name === ''){
+      console.log('=== checkToDb, will save to db:', address);
+      this.addressBookSrv.insert(CONST_UNKNOWN_NAME,  address);
+    } else {
+      console.log('=== checkToDb, name is : ', name);
+    }
+  }
+
   showNotif(chats: Chat[]) {
     setTimeout(() => {
       this.chat_notification(chats);
-    }, 100);
+    }, 200);
   }
 
   async loadData() {
@@ -176,7 +192,9 @@ export class DashboardPage implements OnInit {
     this.currencyRate = this.currencyServ.getRate();
     zoobc.Network.list(NETWORK_LIST);
     this.getBalanceByAddress(this.account.address);
-    this.fcm.getToken(this.account);
+    await this.fcm.getToken(this.account);
+    this.identity = this.fcm.identity;
+    this.subscribeNotif(this.account.address);
   }
 
   /**
