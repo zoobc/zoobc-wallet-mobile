@@ -10,7 +10,7 @@ import {
 
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { environment } from 'src/environments/environment';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import * as firebase from 'firebase/app';
 import { fbconfig } from 'src/environments/firebaseconfig';
 firebase.initializeApp(fbconfig);

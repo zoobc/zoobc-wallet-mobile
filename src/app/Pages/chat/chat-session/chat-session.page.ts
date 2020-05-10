@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subscription} from 'rxjs';
 import { ChatService } from 'src/app/Services/chat.service';
-import { Chat } from 'src/app/Models/chatmodels';
+import { Chat } from 'src/app/Interfaces/chatmodels';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
 import { IonContent } from '@ionic/angular';
 import { firestore } from 'firebase/app';

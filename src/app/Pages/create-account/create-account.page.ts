@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EDIT_MODE, EMPTY_STRING, NEW_MODE } from 'src/environments/variable.const';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { ActivatedRoute, Router } from '@angular/router';

@@ -5,7 +5,7 @@ import {
   LoadingController,
   ModalController
 } from '@ionic/angular';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router, NavigationExtras } from '@angular/router';
 import { TransactionService } from 'src/app/Services/transaction.service';
@@ -18,7 +18,7 @@ import { Transaction } from 'src/app/Interfaces/transaction';
 import { FIREBASE_CHAT } from 'src/environments/variable.const';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Chat } from 'src/app/Models/chatmodels';
+import { Chat } from 'src/app/Interfaces/chatmodels';
 import { ChatService } from 'src/app/Services/chat.service';
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';

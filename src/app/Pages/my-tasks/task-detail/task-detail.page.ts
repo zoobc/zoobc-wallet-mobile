@@ -4,7 +4,7 @@ import { STORAGE_ESCROW_WAITING_LIST, STORAGE_ENC_PASSPHRASE_SEED, SALT_PASSPHRA
 import zoobc, { ZooKeyring, BIP32Interface } from 'zoobc';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { ActivatedRoute } from '@angular/router';
 import { doDecrypt } from 'src/Helpers/converters';
 import CryptoJS from 'crypto-js';

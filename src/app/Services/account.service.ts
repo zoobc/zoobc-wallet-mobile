@@ -10,7 +10,7 @@ import { doEncrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ToastController } from '@ionic/angular';
-import { Account } from '../Interfaces/Account';
+import { Account } from '../Interfaces/account';
 
 
 @Injectable({

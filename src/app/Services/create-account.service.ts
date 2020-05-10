@@ -4,7 +4,7 @@ import { getAddressFromPublicKey } from 'src/Helpers/utils';
 import { COIN_CODE, SALT_PASSPHRASE } from 'src/environments/variable.const';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from './account.service';
-import { Account } from '../Interfaces/Account';
+import { Account } from '../Interfaces/account';
 
 
 @Injectable({

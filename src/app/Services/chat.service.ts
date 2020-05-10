@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { FIREBASE_CHAT, FIREBASE_CHAT_USER } from 'src/environments/variable.const';
-import { User, Chat } from '../Models/chatmodels';
+import { User, Chat } from '../Interfaces/chatmodels';
 
 @Injectable({
   providedIn: 'root'

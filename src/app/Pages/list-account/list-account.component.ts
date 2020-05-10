@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, NEW_MODE, EDIT_MODE } from 'src/environments/variable.const';
 
 @Component({

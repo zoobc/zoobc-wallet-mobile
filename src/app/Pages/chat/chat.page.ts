@@ -8,10 +8,10 @@ When create account will update users db in firebase.
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ChatService } from 'src/app/Services/chat.service';
-import { User } from 'src/app/Models/chatmodels';
+import { User } from 'src/app/Interfaces/chatmodels';
 import { auth } from 'firebase/app';        // for authentication
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { FcmIdentity } from '../Interfaces/FcmIdentity';
+import { FcmIdentity } from '../Interfaces/fcm-identity';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { FIREBASE_DEVICES } from 'src/environments/variable.const';
 import { Platform, AlertController } from '@ionic/angular';
-import { Account } from '../Interfaces/Account';
-import { ChatUser } from '../Interfaces/ChatUser';
+import { Account } from '../Interfaces/account';
+import { ChatUser } from '../Interfaces/chat-user';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 

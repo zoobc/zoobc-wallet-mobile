@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 
 @Component({

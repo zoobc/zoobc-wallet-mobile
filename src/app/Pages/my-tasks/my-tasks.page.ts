@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import zoobc, { EscrowListParams } from 'zoobc';
 import { GetEscrowTransactionsResponse } from 'zoobc/grpc/model/escrow_pb';
