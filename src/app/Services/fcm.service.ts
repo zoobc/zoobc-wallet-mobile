@@ -7,6 +7,7 @@ import { Platform, AlertController } from '@ionic/angular';
 import { Account } from '../Interfaces/account';
 import { ChatUser } from '../Interfaces/chat-user';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { firestore } from 'firebase/app';
 
 
 @Injectable({
@@ -29,7 +30,7 @@ export class FcmService {
 
   create(user: ChatUser) {
     const docId = user.userId + user.path;
-    return this.afs.collection(FIREBASE_DEVICES).doc(docId).set(user);
+    return this.afs.collection(FIREBASE_DEVICES).doc(docId).update(user);
   }
 
   async initialize() {
@@ -88,7 +89,7 @@ export class FcmService {
     return this.afs.collection(FIREBASE_DEVICES).snapshotChanges();
   }
 
-  getToken(account: Account) {
+  async getToken(account: Account) {
 
     console.log('getToken Account: ', account);
     console.log('===  getToken one signal');
@@ -98,7 +99,7 @@ export class FcmService {
     };
 
     if (this.platform.is('cordova')) {
-      this.oneSignal.getIds().then(identity => {
+      await this.oneSignal.getIds().then(identity => {
         console.log('===  getToken one signal', identity);
         this.identity = identity;
       });
@@ -109,7 +110,8 @@ export class FcmService {
       path: account.path,
       address: account.address,
       token: this.identity.pushToken,
-      userId: this.identity.userId
+      userId: this.identity.userId,
+      time: firestore.FieldValue.serverTimestamp()
     };
 
     this.chatUser =  user;
