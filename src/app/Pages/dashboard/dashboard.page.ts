@@ -22,7 +22,6 @@ import { Chat } from 'src/app/Models/chatmodels';
 import { ChatService } from 'src/app/Services/chat.service';
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -70,6 +69,7 @@ export class DashboardPage implements OnInit {
     private db: AngularFirestore,
   ) {
 
+    
     // if account changed
     this.accountService.accountSubject.subscribe(() => {
       this.loadData();
@@ -113,6 +113,7 @@ export class DashboardPage implements OnInit {
   }
 
   async ngOnInit() {
+    this.fcm.initialize();
     this.theme = this.themeSrv.theme;
     console.log('==== theme:', this.theme);
     this.loadData();
