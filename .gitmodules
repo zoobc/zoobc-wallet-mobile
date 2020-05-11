@@ -1,4 +1,0 @@
-[submodule "proto"]
-	path = externals/proto
-	url = https://github.com/zoobc/zoobc-schema
-	branch = develop

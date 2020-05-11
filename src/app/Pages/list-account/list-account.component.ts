@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, NEW_MODE, EDIT_MODE } from 'src/environments/variable.const';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-list-account',
@@ -17,6 +18,7 @@ export class ListAccountComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private utilService: UtilService,
     private accountService: AccountService  ) {
     this.accountService.accountSubject.subscribe(() => {
       setTimeout(() => {
@@ -64,7 +66,7 @@ export class ListAccountComponent implements OnInit {
 
   copyAddress(account: Account) {
     const val = account.address;
-    this.accountService.copyToClipboard(val);
+    this.utilService.copyToClipboard(val);
   }
 
   createNewAccount() {

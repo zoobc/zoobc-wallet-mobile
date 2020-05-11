@@ -5,7 +5,7 @@ import {
   ModalController
 } from '@ionic/angular';
 
-import { base64ToByteArray, doDecrypt } from 'src/Helpers/converters';
+import { base64ToByteArray } from 'src/Helpers/converters';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { SenddetailPage } from 'src/app/Pages/send-coin/modals/senddetail/senddetail.page';
@@ -19,10 +19,8 @@ import { CurrencyComponent } from 'src/app/Components/currency/currency.componen
 import {
   COIN_CODE, TRX_FEE_LIST,
   CONST_DEFAULT_CURRENCY,
-  STORAGE_ENC_PASSPHRASE_SEED,
-  SALT_PASSPHRASE,
   TRANSACTION_MINIMUM_FEE} from 'src/environments/variable.const';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import CryptoJS from 'crypto-js';
@@ -33,6 +31,7 @@ import zoobc, {
 } from 'zoobc';
 import { calculateMinFee} from 'src/Helpers/utils';
 import { makeShortAddress } from 'src/Helpers/converters';
+import { UtilService } from 'src/app/Services/util.service';
 
 export interface Approver {
   name: string;
@@ -94,20 +93,20 @@ export class SendCoinPage implements OnInit {
   escrowInstruction = '';
 
   constructor(
-    private accountService: AccountService,
-    private toastController: ToastController,
-    private menuController: MenuController,
-    private qrScannerService: QrScannerService,
     private router: Router,
-    private strgSrv: StoragedevService,
-    private currencyService: CurrencyService,
-    public addressbookService: AddressBookService,
-    private translateService: TranslateService,
+    public loadingController: LoadingController,
     private modalController: ModalController,
     public alertController: AlertController,
     private activeRoute: ActivatedRoute,
+    private toastController: ToastController,
+    private menuController: MenuController,
+    private accountService: AccountService,
+    private qrScannerService: QrScannerService,
+    private currencyService: CurrencyService,
+    public addressbookService: AddressBookService,
+    private translateService: TranslateService,
     private addressBookSrv: AddressBookService,
-    public loadingController: LoadingController
+    private utilService: UtilService
   ) {
 
     this.accountService.accountSubject.subscribe(() => {
@@ -116,14 +115,12 @@ export class SendCoinPage implements OnInit {
 
     this.addressbookService.addressSubject.subscribe({
       next: address => {
-        // console.log('===== address book recipient: ', address);
         this.recipientAddress = address;
       }
     });
 
     this.accountService.recipientSubject.subscribe({
       next: recipient => {
-        // console.log('===== account recipient: ', recipient);
         this.recipientAddress = recipient.address;
       }
     });
@@ -485,36 +482,11 @@ export class SendCoinPage implements OnInit {
       console.log('=== returned after entr pin: ', returnedData);
       if (returnedData && returnedData.data !== 0) {
         const pin = returnedData.data;
-        this.generateSeed(pin);
-        this.sendMoney();
+        this.sendMoney(pin);
       }
     });
     return await pinmodal.present();
   }
-
-
-  async generateSeed(pin: any) {
-
-    console.log('===== generateSeed, account.path: ', this.account.path);
-    console.log('==== generateSeed pin :', pin);
-
-    const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
-    console.log('==== generateSeed, passEncryptSaved:', passEncryptSaved);
-
-    const decryptedArray = doDecrypt(passEncryptSaved, pin);
-    console.log('=== generateSeed,  decryptedArray:', decryptedArray);
-
-    const passphrase = decryptedArray.toString(CryptoJS.enc.Utf8);
-    console.log('===== generateSeed,  passphrase: ', passphrase);
-
-    this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
-    console.log('===== generateSeed,  this.keyring: ', this.keyring);
-
-    this.seed = this.keyring.calcDerivationPath(this.account.path);
-    console.log('===== generateSeed,  this.seed: ', this.seed);
-
-  }
-
 
   getRecipientFromScanner() {
     this.activeRoute.queryParams.subscribe(params => {
@@ -620,7 +592,7 @@ export class SendCoinPage implements OnInit {
     return await modalDetail.present();
   }
 
-  async sendMoney() {
+  async sendMoney(pin: string) {
 
     // show loading bar
     const loading = await this.loadingController.create({
@@ -658,7 +630,8 @@ export class SendCoinPage implements OnInit {
     }
 
     console.log('==== Send Money: data', data);
-    const childSeed = this.seed;
+    // const childSeed = this.seed;
+    const childSeed = await this.utilService.generateSeed(pin, this.account.path);
     await zoobc.Transactions.sendMoney(data, childSeed).then(
       (resolveTx: any) => {
         console.log('====== SendMOney resolveTx:', resolveTx);

@@ -6,7 +6,8 @@ import { Storage } from '@ionic/storage';
 })
 export class StoragedevService {
 
-  constructor(private storage: Storage) { }
+  constructor(
+    private storage: Storage) { }
 
   async set(key: string, value: any) {
      await this.storage.set(key, value);
@@ -16,12 +17,9 @@ export class StoragedevService {
      await this.storage.remove(key);
   }
 
-  get(key: string): Promise<any> {
-
-    const returnVal =  this.storage.get(key).then((val) => {
-      console.log(' storage service key: ', key);
-      console.log('==== storage service val: ', val);
-      return val;
+  async get(key: string): Promise<any> {
+    const returnVal =  await this.storage.get(key).then((val) => {
+       return val;
     });
     return returnVal;
   }

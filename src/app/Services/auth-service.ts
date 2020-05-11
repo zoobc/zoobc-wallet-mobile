@@ -19,7 +19,6 @@ import { StoragedevService } from './storagedev.service';
 export class AuthService implements CanActivate {
 
   private isUserLoggenIn: boolean;
-  pin = '';
   constructor(
     private router: Router,
     private strgSrv: StoragedevService,
@@ -72,7 +71,6 @@ export class AuthService implements CanActivate {
       const seed = Buffer.from(ej, CONST_HEX);
       this.keyringServ.calcBip32RootKeyFromSeed(COIN_CODE, seed);
       this.isUserLoggenIn = true;
-      this.pin = key;
       return this.isUserLoggenIn;
     }
     this.isUserLoggenIn = false;

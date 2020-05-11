@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { NavController } from '@ionic/angular';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 @Component({
   selector: 'app-backuprestore-address',

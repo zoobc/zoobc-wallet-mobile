@@ -8,12 +8,11 @@ When create account will update users db in firebase.
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ChatService } from 'src/app/Services/chat.service';
-import { User } from 'src/app/Models/chatmodels';
-import { auth } from 'firebase/app';        // for authentication
-import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { ChatUser } from 'src/app/Interfaces/chat-user';
+import { FcmService } from 'src/app/Services/fcm.service';
 
 @Component({
   selector: 'app-chat',
@@ -24,12 +23,12 @@ export class ChatPage implements OnInit {
 
   addresses = [];
   account: Account;
-  chatuser: User;
+  chatuser: ChatUser;
   fcmToken: string;
   fcmUid: string;
 
   constructor(private router: Router,
-              private oneSignal: OneSignal,
+              private fcmService: FcmService,
               private chatService: ChatService,
               private addressBookSrv: AddressBookService,
               private accountService: AccountService) {
@@ -44,10 +43,9 @@ export class ChatPage implements OnInit {
   }
 
   getFcmId() {
-    this.oneSignal.getIds().then(identity => {
-      this.fcmUid = identity.userId;
-      this.fcmToken = identity.pushToken;
-    });
+    const identity = this.fcmService.identity;
+    this.fcmUid = identity.userId;
+    this.fcmToken = identity.pushToken;
   }
 
   ngOnInit() {
@@ -58,47 +56,42 @@ export class ChatPage implements OnInit {
   }
 
   async showSession(idx: number) {
-    auth().signInAnonymously();
-    auth().onAuthStateChanged(firebaseUser => {
-      console.log('Firebase User: ', firebaseUser);
-    });
 
-    const chat = this.addresses[idx];
-    console.log('... di session ', chat);
-
+    const contactPair = this.addresses[idx];
     this.chatuser = {
       name: this.account.name,
       address: this.account.address,
-      fcmToken: this.fcmToken,
-      fcmUid: this.fcmUid,
+      token: this.fcmToken,
+      uid: this.fcmUid,
+      path: -1,
       time: new Date().getTime().toString()
     };
 
-    const chatpartner = {
-      name: chat.name,
-      address: chat.address,
+    const chatPair = {
+      name: contactPair.name,
+      address: contactPair.address,
       time: new Date().getTime().toString()
     };
 
     this.chatService.currentChatPairId = this.chatService.createPairId(
       this.chatuser,
-      chatpartner
+      chatPair
     );
 
     this.chatService.currentChatPairId2 = this.chatService.createPairId2(
       this.chatuser,
-      chatpartner
+      chatPair
     );
 
-    this.chatService.currentChatPartner = chatpartner;
+    this.chatService.currentChatPartner = chatPair;
 
 
     const navigationExtras: NavigationExtras = {
       queryParams: {
         sender: this.account.address,
         sendername: this.account.name,
-        pair: chat.address,
-        pairname: chat.name,
+        pair: chatPair.address,
+        pairname: chatPair.name,
         index: idx
       }
     };

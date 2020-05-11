@@ -3,11 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subscription} from 'rxjs';
 import { ChatService } from 'src/app/Services/chat.service';
-import { Chat } from 'src/app/Models/chatmodels';
-import { FIREBASE_CHAT } from 'src/environments/variable.const';
+import { Chat } from 'src/app/Interfaces/chat-user';
+import { FIREBASE_CHAT, FIREBASE_DEVICES } from 'src/environments/variable.const';
 import { IonContent } from '@ionic/angular';
 import { firestore } from 'firebase/app';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { ChatUser } from 'src/app/Interfaces/chat-user';
 
 
 @Component({
@@ -49,10 +50,10 @@ export class ChatSessionPage implements OnInit {
   newMsg: string;
   chats: any = [];
   chatpartner = this.chatService.currentChatPartner;
-  chatuser;
+  chatuser: any;
   message: string;
   chatPayload: Chat;
-  intervalScroll;
+  intervalScroll: any;
 
   constructor(
               public cs: ChatService,
@@ -81,7 +82,32 @@ export class ChatSessionPage implements OnInit {
     }, 400);
   }
 
+
+  getPairToken(pair: string){
+    this.db
+      .collection<ChatUser>(FIREBASE_DEVICES, res => {
+        return res.where('address', '==', pair).orderBy('time').limit(10);
+      })
+      .valueChanges()
+      .subscribe(chats => {
+        console.log('== all chat is: ', chats);
+        this.loader = true;
+        this.chats = chats;
+        this.scrollToBottom();
+        this.loader = false;
+      });
+  }
+
+  ionViewDidLeave() {
+    console.log('=== Chat session closed === ');
+    this.chatService.isChatOpen = false;
+  }
+
+
   ngOnInit() {
+
+    this.chatService.isChatOpen =  true;
+
     this.getFcmId();
 
     this.db

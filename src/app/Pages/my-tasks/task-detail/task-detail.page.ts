@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
-import { STORAGE_ESCROW_WAITING_LIST, STORAGE_ENC_PASSPHRASE_SEED, SALT_PASSPHRASE } from 'src/environments/variable.const';
-import zoobc, { ZooKeyring, BIP32Interface } from 'zoobc';
+import { STORAGE_ESCROW_WAITING_LIST } from 'src/environments/variable.const';
+import zoobc from 'zoobc';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { ActivatedRoute } from '@angular/router';
-import { doDecrypt } from 'src/Helpers/converters';
-import CryptoJS from 'crypto-js';
-import { AuthService } from 'src/app/Services/auth-service';
+import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
+import { UtilService } from 'src/app/Services/util.service';
 
 
 @Component({
@@ -18,22 +17,20 @@ import { AuthService } from 'src/app/Services/auth-service';
 })
 export class TaskDetailPage implements OnInit {
 
-  private seed: BIP32Interface;
-  private keyring: ZooKeyring;
-
-  waitingList = [];
-  account: Account;
-  escrowDetail: any;
-  escrowId: any;
+  private waitingList = [];
+  private account: Account;
+  public escrowDetail: any;
+  private escrowId: any;
+  private action: number;
 
   constructor(
     private modalCtrl: ModalController,
     private alertController: AlertController,
-    private strgSrv: StoragedevService,
     private accountService: AccountService,
-    private authService: AuthService,
     private storageService: StoragedevService,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
+    private utilService: UtilService,
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -56,50 +53,55 @@ export class TaskDetailPage implements OnInit {
       console.log('=== escrow detail: ', res);
       this.escrowDetail = res;
     });
-
-
   }
+
   closeModal() {
     this.modalCtrl.dismiss();
   }
 
-  async generateSeed(pin: any) {
-
-    console.log('===== generateSeed, account.path: ', this.account.path);
-    console.log('==== generateSeed pin :', pin);
-
-    const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
-    console.log('==== generateSeed, passEncryptSaved:', passEncryptSaved);
-
-    const decryptedArray = doDecrypt(passEncryptSaved, pin);
-    console.log('=== generateSeed,  decryptedArray:', decryptedArray);
-
-    const passphrase = decryptedArray.toString(CryptoJS.enc.Utf8);
-    console.log('===== generateSeed,  passphrase: ', passphrase);
-
-    this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
-    console.log('===== generateSeed,  this.keyring: ', this.keyring);
-
-    this.seed =  this.keyring.calcDerivationPath(this.account.path);
-    console.log('===== generateSeed,  this.seed: ', this.seed);
-
-    return this.seed;
-
+  confirm() {
+    this.action = 0;
+    this.showPin();
   }
 
-  async confirm(id: string) {
-    console.log('============ pin confirm:', this.authService.pin);
+  reject() {
+    this.action = 1;
+    this.showPin();
+  }
 
-    const checkWaitList = this.waitingList.includes(id);
+  async showPin() {
+    const pinmodal = await this.modalController.create({
+      component: EnterpinsendPage
+    });
+
+    pinmodal.onDidDismiss().then((returnedData) => {
+      console.log('=== returned after entr pin: ', returnedData);
+      if (returnedData && returnedData.data !== 0) {
+        const pin = returnedData.data;
+        if (this.action === 0) {
+          this.executeConfirm(pin);
+        } else {
+          this.executeReject(pin);
+        }
+      }
+    });
+    return await pinmodal.present();
+  }
+
+  async executeConfirm(pin: string) {
+    const escrowId = this.escrowDetail.id;
+
+    console.log(' =========== escrow id: ', escrowId);
+    console.log('============ pin confirm:', pin);
+
+    const checkWaitList = this.waitingList.includes(escrowId);
     console.log('===  chekcWaitList: ', checkWaitList);
 
-    const childSeed = await this.generateSeed(this.authService.pin);
+    const childSeed = await this.utilService.generateSeed(pin, this.account.path);
     console.log('======== confirm childSeed: ', childSeed);
 
     const approval = this.account.address;
     console.log('======== confirm aproval: ', approval);
-
-    console.log(' =========== escrow id: ', id);
 
     if (checkWaitList !== true) {
 
@@ -107,7 +109,7 @@ export class TaskDetailPage implements OnInit {
         approvalAddress: approval,
         fee: 1,
         approvalCode: 0,
-        transactionId: id,
+        transactionId: escrowId,
       };
 
       zoobc.Escrows.approval(data, childSeed)
@@ -115,7 +117,7 @@ export class TaskDetailPage implements OnInit {
           async res => {
             console.log('======= res approval:', res);
             this.presentAlertSuccess('Approval success');
-            this.waitingList.push(id);
+            this.waitingList.push(escrowId);
             this.storageService.set(
               STORAGE_ESCROW_WAITING_LIST,
               JSON.stringify(this.waitingList)
@@ -133,7 +135,7 @@ export class TaskDetailPage implements OnInit {
         });
     } else {
       const message = 'Transaction have been processed';
-      // TODO show info dialog
+      this.presentAlertSuccess(message);
     }
   }
 
@@ -145,7 +147,6 @@ export class TaskDetailPage implements OnInit {
       message: msg,
       buttons: ['OK']
     });
-
     await alert.present();
   }
 
@@ -160,27 +161,27 @@ export class TaskDetailPage implements OnInit {
     await alert.present();
   }
 
-  async reject(id: string, appFee: number) {
-    console.log('============ pin reject:', this.authService.pin);
-    await this.generateSeed(this.authService.pin); //TODO make pin dialog
-    const checkWaitList = this.waitingList.includes(id);
+  async executeReject(pin: string) {
+    const escrowId = this.escrowDetail.id;
+    const checkWaitList = this.waitingList.includes(escrowId);
+    const childSeed = await this.utilService.generateSeed(pin, this.account.path);
+    const approval = this.account.address;
+
     if (checkWaitList !== true) {
       const data = {
-        approvalAddress: this.account.address,
-        fee: appFee,
+        approvalAddress: approval,
+        fee: 1,
         approvalCode: 1,
-        transactionId: id,
+        transactionId: escrowId,
       };
 
-      const childSeed = this.seed;  // TODO this.authServ.seed;
       zoobc.Escrows.approval(data, childSeed)
         .then(
           async res => {
             const msg = res;
 
-            this.presentAlertSuccess('Escrow reject success');
-            this.waitingList.push(id);
-
+            this.presentAlertSuccess('Escrow reject success, ' + msg);
+            this.waitingList.push(escrowId);
             this.storageService.set(
               STORAGE_ESCROW_WAITING_LIST,
               JSON.stringify(this.waitingList)
@@ -189,7 +190,7 @@ export class TaskDetailPage implements OnInit {
           async err => {
             // this.isLoadingTx = false;
             console.log('err', err);
-            const msg = "An error occurred while processing your request";
+            const msg = 'An error occurred while processing your request, ' + err;
             this.presentAlertFail(msg);
           }
         )
@@ -197,9 +198,8 @@ export class TaskDetailPage implements OnInit {
           // close dialog box
         });
     } else {
-      let message = 'Transaction have been processed';
-      // TODO show dialog box;
-
+      const message = 'Transaction have been processed';
+      this.presentAlertSuccess(message);
     }
   }
 

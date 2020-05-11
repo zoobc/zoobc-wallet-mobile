@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-receive',
@@ -17,10 +18,11 @@ export class ReceivePage implements OnInit {
   account: Account;
 
   constructor(
-    private accountService: AccountService,
     private menuController: MenuController,
     private socialSharing: SocialSharing,
-    public platform: Platform
+    public platform: Platform,
+    private accountService: AccountService,
+    private utilService: UtilService
   ) {
     this.accountService.accountSubject.subscribe(() => {
       this.loadData();
@@ -46,7 +48,7 @@ export class ReceivePage implements OnInit {
   }
 
   copyToClipboard() {
-    this.accountService.copyToClipboard(this.account.address);
+    this.utilService.copyToClipboard(this.account.address);
   }
 
   // Share Options

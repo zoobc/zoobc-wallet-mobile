@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK } from 'src/environments/variable.const';
+import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK, CONST_UNKNOWN_NAME } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { auth } from 'firebase/app';
@@ -37,12 +37,12 @@ export class AddressBookService {
     });
   }
 
-  async getNameByAddress(address: string) {
+  getNameByAddress(address: string) {
     let name = '';
-    if (this.addresses && this.addresses.length > 0){
-      await this.addresses.forEach((obj: { name: any; address: string; }) => {
+    if (this.addresses && this.addresses.length > 0) {
+       this.addresses.forEach((obj: { name: any; address: string; }) => {
         if (String(address).valueOf() === String(obj.address).valueOf()) {
-          name = obj.name;
+          name =  obj.name;
         }
       });
     }
@@ -62,10 +62,6 @@ export class AddressBookService {
 
   async insertBatch(addresses) {
     this.addresses = [];
-    // const c = await this.getAll();
-    // if (c) {
-    //   this.addressess.push(c.slice());
-    // }
 
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < addresses.length; i++) {
@@ -80,21 +76,22 @@ export class AddressBookService {
     await this.update(this.addresses);
   }
 
-  async insert(name: string, address: string, created: any) {
-    let crtd = new Date();
-    if (created !== null) {
-      crtd = created;
-    }
+  async insert(name: string, address: string) {
     let allAddress = await this.getAll();
     if (!allAddress) {
       allAddress = [];
     }
 
     const newAddress =  allAddress.slice();
+
+    if (CONST_UNKNOWN_NAME === name ) {
+      name = CONST_UNKNOWN_NAME + '-' + (allAddress.length + 1);
+    }
+
     newAddress.push({
       name,
       address,
-      created: crtd
+      created: new Date()
     });
 
     await this.update(newAddress);

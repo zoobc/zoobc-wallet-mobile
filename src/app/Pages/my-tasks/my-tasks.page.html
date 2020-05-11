@@ -13,6 +13,9 @@
 </ion-header>
 
 <ion-content>
+  <div *ngIf="isLoading" style="margin-top:5px;">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
   <div style="text-align: center;">
     <p>Current Block Height: {{blockHeight}} <ion-icon name="refresh" (click)="loadAccount()"></ion-icon></p>
   </div>

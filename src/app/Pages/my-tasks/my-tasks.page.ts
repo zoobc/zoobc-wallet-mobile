@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { Account } from 'src/app/Interfaces/Account';
+import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import zoobc, { EscrowListParams } from 'zoobc';
 import { GetEscrowTransactionsResponse } from 'zoobc/grpc/model/escrow_pb';
@@ -21,6 +21,8 @@ export class MyTasksPage implements OnInit {
   page = 1;
   total = 0;
   blockHeight = 0;
+  isLoadingBlockHeight: boolean;
+  isLoading: boolean;
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
@@ -47,18 +49,18 @@ export class MyTasksPage implements OnInit {
   }
 
   getEscrowTransaction() {
-
-    console.log('==== getEscrowTransaction, ender');
-
+    this.isLoading = true;
     const params: EscrowListParams = {
       approverAddress: this.account.address,
+      // statusList: [0],
       pagination: {
         page: this.page,
-        limit: 100,
+        limit: 1000,
         orderBy: OrderBy.DESC,
         orderField: 'timeout',
       },
     };
+
     zoobc.Escrows.getList(params)
       .then((res: GetEscrowTransactionsResponse.AsObject) => {
         this.total = Number(res.total);
@@ -90,6 +92,8 @@ export class MyTasksPage implements OnInit {
       })
       .catch(err => {
         console.log('==== getEscrowTransaction, error: ', err);
+      }).finally( () => {
+        this.isLoading = false;
       });
   }
 
@@ -116,13 +120,15 @@ export class MyTasksPage implements OnInit {
 
 
   getBlockHeight() {
-    zoobc.Host.getBlock()
+    this.isLoadingBlockHeight = true;
+    zoobc.Host.getInfo()
       .then(res => {
         this.blockHeight = res.chainstatusesList[1].height;
       })
       .catch(err => {
-        console.log('=== getBlockHeight, error: ', err);
-      });
+        console.log(err);
+      })
+      .finally(() => (this.isLoadingBlockHeight = false));
   }
 
   openDetail(escrowId: string) {

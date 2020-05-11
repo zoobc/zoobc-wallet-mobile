@@ -1,31 +1,71 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { FcmIdentity } from '../Interfaces/FcmIdentity';
+import { FcmIdentity } from '../Interfaces/fcm-identity';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { FIREBASE_DEVICES } from 'src/environments/variable.const';
 import { Platform } from '@ionic/angular';
-import { Account } from '../Interfaces/Account';
-import { ChatUser } from '../Interfaces/ChatUser';
+import { Account } from '../Interfaces/account';
+import { ChatUser } from '../Interfaces/chat-user';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { firestore } from 'firebase/app';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class FcmService {
-  chatUser: ChatUser;
-  identity: FcmIdentity;
-  devicesRef = this.afs.collection('devices');
+
+  public userData: any;
+  public chatUser: ChatUser;
+  public identity: FcmIdentity;
+  public isAnonymous: boolean;
   constructor(
+    public ngFireAuth: AngularFireAuth,
     private oneSignal: OneSignal,
     private platform: Platform,
-    private afs: AngularFirestore) {}
+    private afs: AngularFirestore) {
+      this.initialize();
+    }
 
-  create(user: ChatUser) {
-    const docId = user.userId + user.path;
-    return this.afs.collection(FIREBASE_DEVICES).doc(docId).set(user);
+  async create(user: ChatUser) {
+    const docId = user.uid + user.path;
+    let result = null;
+    try {
+      result = await this.afs.collection(FIREBASE_DEVICES).doc(docId).update(user);
+    } catch (e) {
+      result = await this.afs.collection(FIREBASE_DEVICES).doc(docId).set(user);
+    }
+    return result;
+   }
+
+  async initialize() {
+
+
+    if (this.userData) {
+      return;
+    }
+
+    await this.ngFireAuth.auth.signInAnonymously().then(userx => {
+      this.userData = userx;
+    }).catch( error =>{
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
+
+    this.ngFireAuth.authState.subscribe(userx => {
+      if (userx) {
+        this.userData = userx;
+        localStorage.setItem('user', JSON.stringify(this.userData));
+        JSON.parse(localStorage.getItem('user'));
+      } else {
+        localStorage.setItem('user', null);
+        JSON.parse(localStorage.getItem('user'));
+      }
+    });
   }
 
   delete(user: ChatUser) {
-    const docId = user.userId + user.path;
+    const docId = user.uid + user.path;
     this.afs.collection(FIREBASE_DEVICES).doc(docId).delete();
   }
 
@@ -33,17 +73,14 @@ export class FcmService {
     return this.afs.collection(FIREBASE_DEVICES).snapshotChanges();
   }
 
-  getToken(account: Account) {
-
-    console.log('===  getToken one signal');
+  async getToken(account: Account) {
     this.identity = {
       userId: 'non-native-id',
       pushToken: 'non-native-token'
     };
 
     if (this.platform.is('cordova')) {
-      this.oneSignal.getIds().then(identity => {
-        console.log('===  getToken one signal', identity);
+      await this.oneSignal.getIds().then(identity => {
         this.identity = identity;
       });
     }
@@ -53,7 +90,8 @@ export class FcmService {
       path: account.path,
       address: account.address,
       token: this.identity.pushToken,
-      userId: this.identity.userId
+      uid: this.identity.userId,
+      time: firestore.FieldValue.serverTimestamp()
     };
 
     this.chatUser =  user;

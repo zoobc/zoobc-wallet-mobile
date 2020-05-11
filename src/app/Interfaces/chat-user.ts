@@ -1,9 +1,10 @@
-export interface User {
-    address: string;
+export interface ChatUser {
     name: string;
-    time: string;
-    fcmToken: string;
-    fcmUid: string;
+    path: number;
+    address: string;
+    token: string;
+    uid: string;
+    time: any;
 }
 
 export interface Chat {

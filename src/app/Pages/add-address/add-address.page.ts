@@ -169,8 +169,7 @@ export class AddAddressPage implements OnInit {
       if (this.isAddressValid && this.isNameValid) {
         await this.addressBookSrv.insert(
           this.name,
-          this.address,
-          null
+          this.address
         );
         this.goListAddress();
         return;

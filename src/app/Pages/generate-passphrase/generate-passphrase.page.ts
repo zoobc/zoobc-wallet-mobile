@@ -4,7 +4,7 @@ import * as bip39 from 'bip39';
 import { Router } from '@angular/router';
 import { KeyringService } from 'src/app/Services/keyring.service';
 import { AccountService } from 'src/app/Services/account.service';
-
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-generate-passphrase',
@@ -24,6 +24,7 @@ export class GeneratePassphrasePage implements OnInit {
 
   constructor(
     private router: Router,
+    private utilService: UtilService,
     private accountService: AccountService,
     private keyringService: KeyringService,
     private createAccSrv: CreateAccountService
@@ -82,7 +83,7 @@ export class GeneratePassphrasePage implements OnInit {
     strCopy += '\n\nWithout order number\n-------------------------\n' + val;
     strCopy += '\n\n----------- End ----------\n\n';
 
-    this.accountService.copyToClipboard(strCopy);
+    this.utilService.copyToClipboard(strCopy);
 
   }
 

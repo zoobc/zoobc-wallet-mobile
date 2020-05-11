@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, NavigationExtras } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { ToastController } from '@ionic/angular';
 import { Location } from '@angular/common';
 import { EDIT_MODE, NEW_MODE } from 'src/environments/variable.const';
 import { AccountService } from 'src/app/Services/account.service';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-address-book',
@@ -19,8 +19,8 @@ export class AddressBookPage implements OnInit, OnDestroy {
   constructor(
     private location: Location,
     private router: Router,
-    private addressBookSrv: AddressBookService,
-    private accountService: AccountService
+    private utilService: UtilService,
+    private addressBookSrv: AddressBookService
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
@@ -50,7 +50,7 @@ export class AddressBookPage implements OnInit, OnDestroy {
 
   copyAddress(index: string | number) {
     const val =   this.addresses[index];
-    this.accountService.copyToClipboard(val.address);
+    this.utilService.copyToClipboard(val.address);
   }
 
   selectAddress(address: any) {
