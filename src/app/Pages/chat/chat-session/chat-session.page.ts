@@ -97,7 +97,17 @@ export class ChatSessionPage implements OnInit {
         this.loader = false;
       });
   }
+
+  ionViewDidLeave() {
+    console.log('=== Chat session closed === ');
+    this.chatService.isChatOpen = false;
+  }
+
+
   ngOnInit() {
+
+    this.chatService.isChatOpen =  true;
+
     this.getFcmId();
 
     this.db
