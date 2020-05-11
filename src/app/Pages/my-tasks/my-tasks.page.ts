@@ -22,6 +22,7 @@ export class MyTasksPage implements OnInit {
   total = 0;
   blockHeight = 0;
   isLoadingBlockHeight: boolean;
+  isLoading: boolean;
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
@@ -48,18 +49,18 @@ export class MyTasksPage implements OnInit {
   }
 
   getEscrowTransaction() {
-
-    console.log('==== getEscrowTransaction, ender');
-
+    this.isLoading = true;
     const params: EscrowListParams = {
       approverAddress: this.account.address,
+      // statusList: [0],
       pagination: {
         page: this.page,
-        limit: 100,
+        limit: 1000,
         orderBy: OrderBy.DESC,
         orderField: 'timeout',
       },
     };
+
     zoobc.Escrows.getList(params)
       .then((res: GetEscrowTransactionsResponse.AsObject) => {
         this.total = Number(res.total);
@@ -91,6 +92,8 @@ export class MyTasksPage implements OnInit {
       })
       .catch(err => {
         console.log('==== getEscrowTransaction, error: ', err);
+      }).finally( () => {
+        this.isLoading = false;
       });
   }
 
