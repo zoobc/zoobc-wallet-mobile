@@ -15,11 +15,6 @@ export class CreateAccountService {
   private arrayPhrase = [];
   private plainPin: string;
 
-  keySize = 256;
-  ivSize = 128;
-  iterations = 100;
-  account: Account;
-
   constructor(
     private keyringService: KeyringService,
     private accountService: AccountService
@@ -41,20 +36,16 @@ export class CreateAccountService {
     return this.arrayPhrase;
   }
 
-  async setPlainPin(arg: string) {
+  setPlainPin(arg: string) {
     this.plainPin = arg;
   }
 
-  async getPlainPin() {
+  getPlainPin() {
     return this.plainPin;
   }
 
   async createInitialAccount() {
-    // console.log('=== Plain Passpharase', this.plainPassphrase);
-    // console.log('=== Plain PIN', this.plainPin);
-
     await this.accountService.removeAllAccounts();
-
     const { seed } = this.keyringService.calcBip32RootKeyFromMnemonic(
       COIN_CODE,
       this.plainPassphrase,
@@ -62,16 +53,14 @@ export class CreateAccountService {
     );
     const masterSeed = seed;
     const account = this.createNewAccount('Account 1', 0);
-
     this.accountService.addAccount(account);
-
+    this.accountService.saveMainAccount(account);
     this.accountService.savePassphraseSeed(this.plainPassphrase, this.plainPin);
     this.accountService.saveMasterSeed(masterSeed, this.plainPin);
   }
 
   createNewAccount(arg: string, pathNumber: number) {
     const childSeed = this.keyringService.calcForDerivationPathForCoin(COIN_CODE, pathNumber);
-    // console.log('=== new childSeed: ', childSeed);
     const newAddress = getAddressFromPublicKey(childSeed.publicKey);
     const account: Account = {
       name: arg,
@@ -82,7 +71,6 @@ export class CreateAccountService {
       shortAddress: makeShortAddress(newAddress)
     };
 
-    // console.log('=== new account: ', account);
     return account;
   }
 

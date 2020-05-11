@@ -3,7 +3,8 @@ import {
   STORAGE_ALL_ACCOUNTS,
   STORAGE_CURRENT_ACCOUNT,
   STORAGE_ENC_MASTER_SEED,
-  STORAGE_ENC_PASSPHRASE_SEED
+  STORAGE_ENC_PASSPHRASE_SEED,
+  STORAGE_MAIN_ACCOUNT
 } from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
 import { doEncrypt } from 'src/Helpers/converters';
@@ -114,6 +115,14 @@ export class AccountService {
   saveMasterSeed(seedBase58: string, pin: string) {
     const encSeed = doEncrypt(seedBase58, pin);
     this.strgSrv.set(STORAGE_ENC_MASTER_SEED, encSeed);
+  }
+
+  saveMainAccount(account: Account){
+    this.strgSrv.set(STORAGE_MAIN_ACCOUNT, JSON.stringify(account));
+  }
+
+  getMainAccount() {
+    return this.strgSrv.get(STORAGE_MAIN_ACCOUNT);
   }
 
   savePassphraseSeed(passphrase: string, pin: string) {
