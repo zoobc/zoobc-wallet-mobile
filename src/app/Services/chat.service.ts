@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { FIREBASE_CHAT, CONST_UNKNOWN_NAME } from 'src/environments/variable.const';
+import { FIREBASE_CHAT } from 'src/environments/variable.const';
 import { Chat, ChatUser } from '../Interfaces/chat-user';
 import { AddressBookService } from './address-book.service';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
@@ -15,56 +15,7 @@ export class ChatService {
   private chatLength = 0;
   private clickSub: any;
   private notifId = 1;
-  // constructor(
-  //   private afAuth: AngularFireAuth,
-  //   private afs: AngularFirestore,
-  //   private router: Router
-  // ) { }
-
-
-  // async create() {
-  //   const { uid } = await firebase.auth().currentUser;
-  //   const data = {
-  //     uid,
-  //     createdAt: Date.now(),
-  //     count: 0,
-  //     messages: []
-  //   };
-
-  //   const docRef = await this.afs.collection(FIREBASE_CHAT).add(data);
-
-  //   return docRef;
-  // }
-
-  // async sendMessage(chatId, content) {
-  //   const { uid } = await firebase.auth().currentUser;
-
-  //   const data = {
-  //     uid,
-  //     content,
-  //     createdAt: Date.now()
-  //   };
-
-  //   if (uid) {
-  //     const ref = this.afs.collection(FIREBASE_CHAT).doc(chatId);
-  //     return ref.update({
-  //       messages: firestore.FieldValue.arrayUnion(data)
-  //     });
-  //   }
-  // }
-
-  // private updateUserData({ uid, email, displayName, photoURL }) {
-  //   const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${uid}`);
-
-  //   const data = {
-  //     uid,
-  //     email,
-  //     displayName,
-  //     photoURL
-  //   };
-
-  //   return userRef.set(data, { merge: true });
-  // }
+ 
 
   chats: AngularFirestoreCollection<Chat>;
   currentChatPairId: string;
@@ -79,8 +30,6 @@ export class ChatService {
     private toastController: ToastController,
     private platform: Platform
   ) {
-    // Get the tasks collecction
-    // this.users = db.collection<ChatUser>(FIREBASE_CHAT_USER);
     this.chats = db.collection<Chat>(FIREBASE_CHAT);
   }
 
@@ -118,11 +67,8 @@ export class ChatService {
       this.clickSub = this.localNotifications.on('click').subscribe(data => {
         console.log(data);
         this.router.navigateByUrl('/chat');
-        // this.presentAlert('Your notifiations contains a secret = ' + data.data.secret);
         this.unsub();
       });
-
-      // Schedule a single notification
       this.localNotifications.schedule({
         id: this.notifId++,
         text: 'You have ' + (chats.length - this.chatLength) + 'chat',
@@ -136,20 +82,15 @@ export class ChatService {
 
   async checkToDb(address: string) {
     const name = await this.addressBookSrv.getNameByAddress(address);
-    console.log('=== checkToDb: ', name);
     if (!name || name === '') {
       console.log('=== checkToDb, will save to db:', address);
-      this.addressBookSrv.insert(CONST_UNKNOWN_NAME, address);
+      // this.addressBookSrv.insert(CONST_UNKNOWN_NAME, address);
     } else {
       console.log('=== checkToDb, name is : ', name);
     }
   }
 
-
-
   subscribeNotif(address: string) {
-
-    console.log('============ subscribeNotif CURRENT ADDRESS ====: ', address);
     this.db
       .collection<Chat>(FIREBASE_CHAT, res => {
         return res.where('pair', '==', address).orderBy('time').limit(1000);
@@ -161,12 +102,7 @@ export class ChatService {
           if (max > this.chatLength) {
 
             const lastChat = chats[max - 1];
-            console.log('=== lastChat: ', lastChat);
-
             this.checkToDb(lastChat.sender);
-
-            console.log('=== is Chat Open: ' + this.isChatOpen);
-
             if (!this.isChatOpen) {
               this.showNotif(chats);
             }

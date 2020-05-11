@@ -37,12 +37,12 @@ export class AddressBookService {
     });
   }
 
-  async getNameByAddress(address: string) {
+  getNameByAddress(address: string) {
     let name = '';
     if (this.addresses && this.addresses.length > 0) {
-      name = await this.addresses.forEach((obj: { name: any; address: string; }) => {
+       this.addresses.forEach((obj: { name: any; address: string; }) => {
         if (String(address).valueOf() === String(obj.address).valueOf()) {
-          return obj.name;
+          name =  obj.name;
         }
       });
     }
@@ -62,10 +62,6 @@ export class AddressBookService {
 
   async insertBatch(addresses) {
     this.addresses = [];
-    // const c = await this.getAll();
-    // if (c) {
-    //   this.addressess.push(c.slice());
-    // }
 
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < addresses.length; i++) {
