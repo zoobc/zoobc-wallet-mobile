@@ -6,11 +6,11 @@
         <domain includeSubdomains="true">firebase.google.com</domain>
         <domain includeSubdomains="true">firebase.google.org</domain>
         <domain includeSubdomains="true">*.google.org</domain>
-        <domain includeSubdomains="true">192.168.20.242</domain>
-        <domain includeSubdomains="true">85.90.246.90</domain>
+        <domain includeSubdomains="true">172.104.34.10</domain>
         <domain includeSubdomains="true">45.79.39.58</domain>
+        <domain includeSubdomains="true">85.90.246.90</domain>
+        <domain includeSubdomains="true">172.104.47.168</domain>
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">proofofparticipation.network</domain>
-        <domain includeSubdomains="true">*.proofofparticipation.network</domain>
     </domain-config>
 </network-security-config>
