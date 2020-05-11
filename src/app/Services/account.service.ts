@@ -4,15 +4,11 @@ import {
   STORAGE_CURRENT_ACCOUNT,
   STORAGE_ENC_MASTER_SEED,
   STORAGE_ENC_PASSPHRASE_SEED,
-  STORAGE_MAIN_ACCOUNT
-} from 'src/environments/variable.const';
+  STORAGE_MAIN_ACCOUNT} from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
 import { doEncrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { ToastController } from '@ionic/angular';
 import { Account } from '../Interfaces/account';
-
 
 @Injectable({
   providedIn: 'root'
@@ -23,10 +19,9 @@ export class AccountService {
   private forWhat: string;
   private recipient: Account;
 
+
   constructor(
-    private strgSrv: StoragedevService,
-    private toastController: ToastController,
-    private clipboard: Clipboard) { }
+    private strgSrv: StoragedevService) { }
 
   public accountSubject: Subject<Account> = new Subject<Account>();
   public recipientSubject: Subject<Account> = new Subject<Account>();
@@ -60,8 +55,6 @@ export class AccountService {
     await this.strgSrv.remove(STORAGE_ENC_MASTER_SEED);
     await this.strgSrv.remove(STORAGE_ENC_PASSPHRASE_SEED);
     await this.strgSrv.remove(STORAGE_ALL_ACCOUNTS);
-
-    console.log('== STORAGE_ALL_ACCOUNTS: ', await this.strgSrv.get(STORAGE_ALL_ACCOUNTS));
   }
 
   async generateDerivationPath(): Promise<number> {
@@ -126,54 +119,12 @@ export class AccountService {
   }
 
   savePassphraseSeed(passphrase: string, pin: string) {
-    // console.log('===savePassphraseSeed: key', pin);
-    // console.log('===savePassphraseSeed: passphrase', passphrase);
     const encPassphraseSeed = doEncrypt(passphrase, pin);
-    // console.log('===savePassphraseSeed: encPassphraseSeed', encPassphraseSeed);
     this.strgSrv.set(STORAGE_ENC_PASSPHRASE_SEED, encPassphraseSeed);
   }
 
   getCurrAccount(): Promise<Account> {
     return this.strgSrv.get(STORAGE_CURRENT_ACCOUNT);
-  }
-
-
-  copyToClipboard(arg: any) {
-    this.clipboard.copy(arg);
-    this.clipboard.paste().then(
-      (resolve: string) => {
-        this.copySuccess();
-       },
-       (reject: string) => {
-        this.copyInBrowser(arg);
-        // alert('Error: ' + reject);
-       }
-     );
-  }
-
-  copyInBrowser(arg: any) {
-    const val = arg;
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-    this.copySuccess();
-  }
-
-  async copySuccess() {
-    const toast = await this.toastController.create({
-      message: 'Copied to clipboard.',
-      duration: 2000
-    });
-
-    toast.present();
   }
 
   async updateNameByAddress(arg: string, account: Account) {
@@ -194,4 +145,5 @@ export class AccountService {
       this.broadCastNewAccount(account);
     }
   }
+
 }
