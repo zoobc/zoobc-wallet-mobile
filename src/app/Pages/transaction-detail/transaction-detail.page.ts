@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Transaction } from 'src/app/Interfaces/transaction';
-import { ToastController, NavParams, ModalController } from '@ionic/angular';
-import { AccountService } from 'src/app/Services/account.service';
+import { NavParams, ModalController } from '@ionic/angular';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -26,17 +26,14 @@ export class TransactionDetailPage implements OnInit {
   status: string;
 
   constructor(
-    private toastController: ToastController,
+    private utilService: UtilService,
     private navParams: NavParams,
-    private accountService: AccountService,
     public modalCtrl: ModalController,
   ) {
 
   }
 
   ngOnInit() {
-
-    console.table(' params console1 === ', this.navParams);
 
     if (this.navParams && this.navParams.data) {
       this.transaction = this.navParams.data.transaction;
@@ -52,11 +49,10 @@ export class TransactionDetailPage implements OnInit {
       this.transaction.recipient = this.account.address;
     }
     this.transaction.total = this.transaction.amount + this.transaction.fee;
-    // console.log('----- Transacdtion total: ', this.transaction.total);
   }
 
   async copyAddress(address: string) {
-    this.accountService.copyToClipboard(address);
+    this.utilService.copyToClipboard(address);
   }
 
   async close() {
