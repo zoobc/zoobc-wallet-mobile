@@ -1,12 +1,12 @@
-import { BIP32Interface } from 'externals/bip32';
-export { BIP32Interface } from 'externals/bip32';
+import { BIP32Interface } from 'libs/bip32';
+export { BIP32Interface } from 'libs/bip32';
 
 export {
   fromSeed,
   fromPublicKey,
   fromPrivateKey,
   fromBase58,
-} from 'externals/bip32';
+} from 'libs/bip32';
 
 export interface Network {
   wif: number;

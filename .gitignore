@@ -23,7 +23,7 @@ www/
 node_modules*
 tmp/
 temp/ 
-externals/
+#externals/
 src/environments/firebaseconfig.ts
 platforms/
 plugins/

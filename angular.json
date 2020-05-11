@@ -41,18 +41,18 @@
               }
             ],
             "scripts": [
-              "externals/bip39/src/js/bitcoinjs-3.3.2.js",
-              "externals/bip39/src/js/bitcoinjs-extensions.js",
-              "externals/bip39/src/js/wordlist_english.js",
-              "externals/bip39/src/js/wordlist_japanese.js",
-              "externals/bip39/src/js/wordlist_spanish.js",
-              "externals/bip39/src/js/wordlist_chinese_simplified.js",
-              "externals/bip39/src/js/wordlist_chinese_traditional.js",
-              "externals/bip39/src/js/wordlist_french.js",
-              "externals/bip39/src/js/wordlist_italian.js",
-              "externals/bip39/src/js/wordlist_korean.js",
-              "externals/bip39/src/js/jsbip39.js",
-              "externals/bip39/src/js/sjcl-bip39.js"
+              "libs/bip39/src/js/bitcoinjs-3.3.2.js",
+              "libs/bip39/src/js/bitcoinjs-extensions.js",
+              "libs/bip39/src/js/wordlist_english.js",
+              "libs/bip39/src/js/wordlist_japanese.js",
+              "libs/bip39/src/js/wordlist_spanish.js",
+              "libs/bip39/src/js/wordlist_chinese_simplified.js",
+              "libs/bip39/src/js/wordlist_chinese_traditional.js",
+              "libs/bip39/src/js/wordlist_french.js",
+              "libs/bip39/src/js/wordlist_italian.js",
+              "libs/bip39/src/js/wordlist_korean.js",
+              "libs/bip39/src/js/jsbip39.js",
+              "libs/bip39/src/js/sjcl-bip39.js"
             ],
             "es5BrowserSupport": true
           },
