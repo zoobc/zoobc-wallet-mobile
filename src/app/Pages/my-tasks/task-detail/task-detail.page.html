@@ -12,7 +12,11 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content>
+  <div *ngIf="isLoading" style="margin-top:5px;">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
+
   <div style="text-align: center;">
     <h5> Escrow Transaction Detail </h5>
   </div>
