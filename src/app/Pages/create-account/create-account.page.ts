@@ -5,6 +5,7 @@ import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
+import { sanitizeString } from 'src/Helpers/utils';
 
 @Component({
   selector: 'app-create-account',
@@ -96,6 +97,10 @@ export class CreateAccountPage implements OnInit {
     });
 
     return isExists;
+  }
+
+  sanitize(){
+    this.accountName = sanitizeString(this.accountName);
   }
 
   async createAccount() {

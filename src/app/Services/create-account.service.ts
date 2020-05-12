@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { KeyringService } from './keyring.service';
-import { getAddressFromPublicKey } from 'src/Helpers/utils';
+import { getAddressFromPublicKey, sanitizeString } from 'src/Helpers/utils';
 import { COIN_CODE, SALT_PASSPHRASE } from 'src/environments/variable.const';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from './account.service';
 import { Account } from '../Interfaces/account';
-
 
 @Injectable({
   providedIn: 'root'
@@ -63,7 +62,7 @@ export class CreateAccountService {
     const childSeed = this.keyringService.calcForDerivationPathForCoin(COIN_CODE, pathNumber);
     const newAddress = getAddressFromPublicKey(childSeed.publicKey);
     const account: Account = {
-      name: arg,
+      name: sanitizeString(arg),
       path: pathNumber,
       nodeIP: null,
       created: new Date(),

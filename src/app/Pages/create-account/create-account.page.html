@@ -23,7 +23,7 @@
     <ion-row>
       <ion-col>
         <ion-input padding="false" placeholder="{{ 'Please enter your account name' | translate }}"
-          [(ngModel)]="accountName"></ion-input>
+          [(ngModel)]="accountName" (ionChange)="sanitize()"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>

@@ -31,6 +31,11 @@ export function getChecksumByte(bytes): any {
   return res;
 }
 
+export function sanitizeString(str) {
+  str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim, '');
+  return str.trim();
+}
+
 export function onCopyText(text: string) {
   const selBox = document.createElement('textarea');
   selBox.style.position = 'fixed';

@@ -4,6 +4,8 @@ import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK, CONST_UNKNOWN_NAME } from 
 import { StoragedevService } from './storagedev.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { auth } from 'firebase/app';
+import { sanitizeString } from 'src/Helpers/utils';
+import { Contact } from '../Interfaces/contact';
 
 @Injectable({
   providedIn: 'root'
@@ -50,13 +52,9 @@ export class AddressBookService {
   }
 
 
-  async updateByIndex(name: string, address: string, idx: number) {
+  async updateByIndex(contact: Contact, idx: number) {
     const allAddress = await this.getAll();
-    allAddress[idx] = {
-      name,
-      address,
-      created: new Date()
-    };
+    allAddress[idx] = contact;
     await this.update(allAddress);
   }
 
@@ -67,7 +65,7 @@ export class AddressBookService {
     for (let i = 0; i < addresses.length; i++) {
       const dt  = addresses[i];
       this.addresses.push({
-          name: dt.name,
+        name: sanitizeString(dt.name),
           address: dt.address,
           created: dt.created
       });
@@ -76,23 +74,20 @@ export class AddressBookService {
     await this.update(this.addresses);
   }
 
-  async insert(name: string, address: string) {
+  async insert(contact: Contact) {
     let allAddress = await this.getAll();
     if (!allAddress) {
       allAddress = [];
     }
 
+    let name = contact.name;
     const newAddress =  allAddress.slice();
 
     if (CONST_UNKNOWN_NAME === name ) {
       name = CONST_UNKNOWN_NAME + '-' + (allAddress.length + 1);
     }
-
-    newAddress.push({
-      name,
-      address,
-      created: new Date()
-    });
+    contact.name = name;
+    newAddress.push(contact);
 
     await this.update(newAddress);
   }

@@ -23,7 +23,7 @@
     <ion-row>
       <ion-col>
         <ion-input placeholder="{{ 'Please type the name' | translate }}" [(ngModel)]="name" name="name"
-          autocomplete="on" autocorrect="on"></ion-input>
+          autocomplete="on" autocorrect="on" (ionChange)="sanitize()"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -36,11 +36,11 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-textarea *ngIf="mode==='new'" rows="3" placeholder="{{ 'Please type the address' | translate }}"
+        <ion-textarea *ngIf="mode==='new'" rows="3" (ionChange)="sanitize()" placeholder="{{ 'Please type the address' | translate }}"
           [(ngModel)]="address" name="address" autocomplete="on" autocorrect="on">
         </ion-textarea>
 
-        <ion-textarea *ngIf="mode==='edit'" rows="3" readonly placeholder="{{ 'Please type the address' | translate }}"
+        <ion-textarea *ngIf="mode==='edit'" rows="3" (ionChange)="sanitize()" readonly placeholder="{{ 'Please type the address' | translate }}"
           [(ngModel)]="address" name="address" autocomplete="on" autocorrect="on">
         </ion-textarea>
       </ion-col>
