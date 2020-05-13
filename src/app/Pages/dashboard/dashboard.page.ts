@@ -10,7 +10,7 @@ import { AuthService } from 'src/app/Services/auth-service';
 import { Router, NavigationExtras } from '@angular/router';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
-import { CurrencyService, Currency } from 'src/app/Services/currency.service';
+import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME } from 'src/environments/variable.const';
 import zoobc from 'zoobc';
@@ -20,6 +20,7 @@ import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
 import { ChatService } from 'src/app/Services/chat.service';
+import { Currency } from 'src/app/Interfaces/currency';
 
 @Component({
   selector: 'app-dashboard',

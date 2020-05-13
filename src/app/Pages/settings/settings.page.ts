@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LanguageService } from 'src/app/Services/language.service';
-import { CurrencyService, Currency } from 'src/app/Services/currency.service';
+import { CurrencyService} from 'src/app/Services/currency.service';
 import {
   LANGUAGES,
   SELECTED_LANGUAGE,
@@ -16,6 +16,7 @@ import { getFormatedDate } from 'src/Helpers/converters';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { ThemeService } from 'src/app/Services/theme.service';
+import { Currency } from 'src/app/Interfaces/currency';
 
 @Component({
   selector: 'app-settings',

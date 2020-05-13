@@ -10,7 +10,7 @@ import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
-import { CurrencyService, Currency } from 'src/app/Services/currency.service';
+import { CurrencyService} from 'src/app/Services/currency.service';
 import { NUMBER_OF_RECORD_IN_TRANSACTIONS,
    CONST_DEFAULT_RATE, 
    NETWORK_LIST} from 'src/environments/variable.const';
@@ -23,6 +23,7 @@ import zoobc, {
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Router } from '@angular/router';
 import { Transaction } from 'src/app/Interfaces/transaction';
+import { Currency } from 'src/app/Interfaces/currency';
 
 @Component({
   selector: 'app-transactions',
