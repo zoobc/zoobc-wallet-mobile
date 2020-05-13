@@ -13,7 +13,7 @@ import { EnterpinsendPage } from 'src/app/Pages/send-coin/modals/enterpinsend/en
 import { TrxstatusPage } from 'src/app/Pages/send-coin/modals/trxstatus/trxstatus.page';
 import { TranslateService } from '@ngx-translate/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { Currency, CurrencyService } from 'src/app/Services/currency.service';
+import { CurrencyService } from 'src/app/Services/currency.service';
 import { environment } from 'src/environments/environment';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
 import {
@@ -27,12 +27,9 @@ import zoobc, {
 import { calculateMinFee, sanitizeString} from 'src/Helpers/utils';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { UtilService } from 'src/app/Services/util.service';
+import { Approver } from 'src/app/Interfaces/approver';
+import { Currency } from 'src/app/Interfaces/currency';
 
-export interface Approver {
-  name: string;
-  address: string;
-  shortAddress: string;
-}
 @Component({
   selector: 'app-send-coin',
   templateUrl: 'send-coin.page.html',
@@ -70,7 +67,6 @@ export class SendCoinPage implements OnInit {
   errorMsg: string;
   customeChecked: boolean;
   private connectionText = '';
-  minFee = TRANSACTION_MINIMUM_FEE;
   public currencyRate: Currency = {
     name: CONST_DEFAULT_CURRENCY,
     value: environment.zbcPriceInUSD,
@@ -87,6 +83,7 @@ export class SendCoinPage implements OnInit {
   escrowCommision = 0;
   escrowTimout = 0;
   escrowInstruction = '';
+  private minimumFee = TRANSACTION_MINIMUM_FEE;
 
   constructor(
     private router: Router,
@@ -147,18 +144,17 @@ export class SendCoinPage implements OnInit {
       this.secondaryCurr = this.currencyRate.name;
     }
 
-    // console.log('======  Primary currrency: ', this.primaryCurr);
-
     this.convertAmount();
+    this.convertCustomeFee();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.amountMsg = '';
     this.recipientAddress = '';
-    // console.log('=== on ngOnInit: ');
     this.loadData();
     this.getAllAddress();
     this.getAllAccount();
+    this.isAmountValid = true;
   }
 
   async getAllAccount() {
@@ -348,12 +344,10 @@ export class SendCoinPage implements OnInit {
 
   validateCustomFee() {
 
-    if (this.primaryCurr === COIN_CODE) {
-      this.customfee = this.customfeeTemp;
-      this.customfee2 = this.customfeeTemp * this.priceInUSD * this.currencyRate.value;
-    } else {
-      this.customfee = this.customfeeTemp / this.priceInUSD / this.currencyRate.value;
-      this.customfee2 = this.customfee;
+    this.convertCustomeFee();
+    if (this.minimumFee > this.customfee){
+      this.isCustomFeeValid = false;
+      return;
     }
 
     if (this.customfee && this.customfee > 0) {
@@ -363,16 +357,28 @@ export class SendCoinPage implements OnInit {
     }
   }
 
+  validateTimeout(){
+    this.minimumFee = calculateMinFee(this.escrowTimout);
+    if (this.customeChecked){
+        this.validateCustomFee();
+    }
+  }
+
+  convertCustomeFee() {
+    if (this.primaryCurr === COIN_CODE) {
+      this.customfee = this.customfeeTemp;
+      this.customfee2 = this.customfeeTemp * this.priceInUSD * this.currencyRate.value;
+    } else {
+      this.customfee = this.customfeeTemp / this.priceInUSD / this.currencyRate.value;
+      this.customfee2 = this.customfee;
+    }
+  }
+
 
   convertAmount() {
-
     if (!this.amountTemp) {
-      this.amountMsg = this.translateService.instant('Amount required!');
-      this.isAmountValid = false;
-      return;
+      this.amountTemp = 0;
     }
-    this.amountMsg = '';
-
     if (this.primaryCurr === COIN_CODE) {
       this.amount = this.amountTemp;
       this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;
@@ -380,10 +386,7 @@ export class SendCoinPage implements OnInit {
       this.amount = this.amountTemp / this.priceInUSD / this.currencyRate.value;
       this.amountSecond = this.amount;
     }
-
   }
-
-
 
   validateAmount() {
 
@@ -472,6 +475,11 @@ export class SendCoinPage implements OnInit {
     } else {
       this.isAdvance = true;
     }
+
+    if (!this.isAdvance){
+      this.minimumFee = TRANSACTION_MINIMUM_FEE;
+    }
+
   }
 
   async inputPIN() {
@@ -531,6 +539,10 @@ export class SendCoinPage implements OnInit {
       this.transactionFee = this.customfee;
     }
 
+    if (this.isAdvance) {
+      this.minimumFee = await this.getMinimumFee(this.escrowTimout);
+    }
+
     console.log('== 1 ==, trxFee: ', this.transactionFee);
 
     if (!this.transactionFee) {
@@ -541,10 +553,17 @@ export class SendCoinPage implements OnInit {
       this.isFeeValid = false;
     }
 
+    if (this.transactionFee < this.minimumFee) {
+      this.isFeeValid = false;
+      if (this.customeChecked) {
+        this.isCustomFeeValid = false;
+      }
+    }
+
     console.log('== this.amount ==', this.amount);
     console.log('== this.recipientAddress ==', this.recipientAddress);
     console.log('== this.isAmountValid ==', this.isAmountValid);
-    console.log('== this.isFeeValid ==', this.isFeeValid);
+    console.log('== this.isAmountValidisFeeValid ==', this.isFeeValid);
 
     if (!this.amount || !this.recipientAddress || !this.isRecipientValid || !this.isAmountValid || !this.isFeeValid) {
       return;
@@ -632,6 +651,8 @@ export class SendCoinPage implements OnInit {
 
     await loading.present();
 
+
+
     let data: SendMoneyInterface = {
       sender: this.account.address,
       recipient: sanitizeString(this.recipientAddress),
@@ -640,11 +661,6 @@ export class SendCoinPage implements OnInit {
     };
 
     if (this.isAdvance) {
-
-      const minimumFee = await this.getMinimumFee(this.escrowTimout);
-      if (this.transactionFee < minimumFee){
-        this.transactionFee = minimumFee;
-      }
 
       data  = {
         sender: this.account.address,
@@ -724,7 +740,7 @@ export class SendCoinPage implements OnInit {
     console.log('==== changeFee, trxFee: ', this.optionFee);
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
-      this.customfee = this.allFees[0].fee;
+      this.customfeeTemp = this.allFees[0].fee;
     }
    }
 
