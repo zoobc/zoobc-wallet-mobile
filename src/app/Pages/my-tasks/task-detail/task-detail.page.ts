@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, AlertController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { STORAGE_ESCROW_WAITING_LIST } from 'src/environments/variable.const';
 import zoobc from 'zoobc';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
@@ -8,7 +8,6 @@ import { Account } from 'src/app/Interfaces/account';
 import { ActivatedRoute } from '@angular/router';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 import { UtilService } from 'src/app/Services/util.service';
-
 
 @Component({
   selector: 'app-task-detail',
@@ -22,15 +21,15 @@ export class TaskDetailPage implements OnInit {
   public escrowDetail: any;
   private escrowId: any;
   private action: number;
+  public isLoading = false;
 
   constructor(
     private modalCtrl: ModalController,
-    private alertController: AlertController,
-    private accountService: AccountService,
-    private storageService: StoragedevService,
     private activeRoute: ActivatedRoute,
+    private modalController: ModalController,
     private utilService: UtilService,
-    private modalController: ModalController
+    private accountService: AccountService,
+    private storageService: StoragedevService
   ) { }
 
   ngOnInit() {
@@ -42,6 +41,7 @@ export class TaskDetailPage implements OnInit {
   }
 
   async loadDetail() {
+    this.isLoading = true;
     this.account = await this.accountService.getCurrAccount();
     this.waitingList = JSON.parse(await this.storageService.get(STORAGE_ESCROW_WAITING_LIST)) || [];
     if (this.waitingList.length > 50) {
@@ -50,9 +50,9 @@ export class TaskDetailPage implements OnInit {
     }
 
     await zoobc.Escrows.get(this.escrowId).then(res => {
-      console.log('=== escrow detail: ', res);
       this.escrowDetail = res;
-    });
+    }).finally(() =>
+    this.isLoading = false);
   }
 
   closeModal() {
@@ -90,19 +90,9 @@ export class TaskDetailPage implements OnInit {
 
   async executeConfirm(pin: string) {
     const escrowId = this.escrowDetail.id;
-
-    console.log(' =========== escrow id: ', escrowId);
-    console.log('============ pin confirm:', pin);
-
     const checkWaitList = this.waitingList.includes(escrowId);
-    console.log('===  chekcWaitList: ', checkWaitList);
-
     const childSeed = await this.utilService.generateSeed(pin, this.account.path);
-    console.log('======== confirm childSeed: ', childSeed);
-
     const approval = this.account.address;
-    console.log('======== confirm aproval: ', approval);
-
     if (checkWaitList !== true) {
 
       const data = {
@@ -116,49 +106,26 @@ export class TaskDetailPage implements OnInit {
         .then(
           async res => {
             console.log('======= res approval:', res);
-            this.presentAlertSuccess('Approval success');
             this.waitingList.push(escrowId);
             this.storageService.set(
               STORAGE_ESCROW_WAITING_LIST,
               JSON.stringify(this.waitingList)
             );
-
+            this.utilService.showConfirmation('Success', 'Transaction has approved successfully!', true, '/my-tasks');
           },
           async err => {
             console.log('err', err);
-            const message = err;
-            this.presentAlertFail(message);
+            const message = 'An error occurred while processing your request';
+            this.utilService.showConfirmation('Fail', message, false, '/my-tasks');
           }
         )
         .finally(() => {
           // close dialog
         });
     } else {
-      const message = 'Transaction have been processed';
-      this.presentAlertSuccess(message);
+      const message = 'All tasks have been processed';
+      this.utilService.showConfirmation('info', message, true, '/my-tasks');
     }
-  }
-
-
-  async presentAlertSuccess(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Info',
-      subHeader: 'Escrow approval success',
-      message: msg,
-      buttons: ['OK']
-    });
-    await alert.present();
-  }
-
-  async presentAlertFail(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      subHeader: 'Escrow approval fail',
-      message: msg,
-      buttons: ['OK']
-    });
-
-    await alert.present();
   }
 
   async executeReject(pin: string) {
@@ -178,9 +145,8 @@ export class TaskDetailPage implements OnInit {
       zoobc.Escrows.approval(data, childSeed)
         .then(
           async res => {
-            const msg = res;
-
-            this.presentAlertSuccess('Escrow reject success, ' + msg);
+            console.log('============ success: ', res);
+            this.utilService.showConfirmation('Success', 'Transaction has rejected successfully', true, '/my-tasks');
             this.waitingList.push(escrowId);
             this.storageService.set(
               STORAGE_ESCROW_WAITING_LIST,
@@ -188,18 +154,17 @@ export class TaskDetailPage implements OnInit {
             );
           },
           async err => {
-            // this.isLoadingTx = false;
             console.log('err', err);
-            const msg = 'An error occurred while processing your request, ' + err;
-            this.presentAlertFail(msg);
+            const msg = 'An error occurred while processing your request' + err;
+            this.utilService.showConfirmation('Fail', msg, false, '/my-tasks');
           }
         )
         .finally(() => {
           // close dialog box
         });
     } else {
-      const message = 'Transaction have been processed';
-      this.presentAlertSuccess(message);
+      const message = 'All tasks have been processed';
+      this.utilService.showConfirmation('info', message, true, '/my-tasks');
     }
   }
 

@@ -4,16 +4,7 @@ import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
 import { STORAGE_CURRENCY_RATE, STORAGE_ACTIVE_CURRENCY, CURRENCY_LIST, CONST_DEFAULT_RATE } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
-
-export interface Currency {
-  name: string;
-  value: number;
-}
-
-export interface CurrencyName {
-  name: string;
-  desc: string;
-}
+import { Currency } from '../Interfaces/currency';
 
 @Injectable({
   providedIn: 'root'

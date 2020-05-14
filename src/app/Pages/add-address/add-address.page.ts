@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AddressBookService } from 'src/app/Services/address-book.service';
 import { base64ToByteArray } from 'src/Helpers/converters';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { EDIT_MODE, NEW_MODE } from 'src/environments/variable.const';
+import { sanitizeString } from 'src/Helpers/utils';
+import { Contact } from 'src/app/Interfaces/contact';
+import { AddressBookService } from 'src/app/Services/address-book.service';
 
 @Component({
   selector: 'app-add-address',
@@ -90,6 +92,11 @@ export class AddAddressPage implements OnInit {
 
   }
 
+  sanitize() {
+    this.name = sanitizeString(this.name);
+    this.address = sanitizeString(this.address);
+  }
+
   async saveAddress() {
 
     // console.log('======= saveAddress Mode: ', this.mode);
@@ -122,9 +129,13 @@ export class AddAddressPage implements OnInit {
 
       // upddate data
       if (this.isNameValid) {
-        await this.addressBookSrv.updateByIndex(
-          this.name,
-          this.oldAddress,
+
+        const contact: Contact = {
+          name: this.name,
+          address: sanitizeString(this.address)
+        };
+
+        await this.addressBookSrv.updateByIndex(contact,
           this.index
         );
         this.goListAddress();
@@ -140,14 +151,12 @@ export class AddAddressPage implements OnInit {
       }
 
       if (!this.address) {
-        // console.log('== address is empty: ');
         this.validationMessage = 'Address is empty';
         this.isAddressValid = false;
         return;
       }
 
       if (this.address.length !== 44) {
-        // console.log('== address length: ', this.address.length);
         this.validationMessage = 'Address is not valid!';
         this.isAddressValid = false;
         return;
@@ -161,20 +170,20 @@ export class AddAddressPage implements OnInit {
       }
 
       if (this.isAddressExists(this.address, this.name)) {
-        // console.log('== Address exist: ', this.address);
         this.isAddressValid = false;
         return;
       }
 
       if (this.isAddressValid && this.isNameValid) {
-        await this.addressBookSrv.insert(
-          this.name,
-          this.address
-        );
+        const contact: Contact = {
+          name: this.name,
+          address: sanitizeString(this.address)
+        };
+
+        await this.addressBookSrv.insert(contact);
         this.goListAddress();
         return;
       }
-
 
     }
 

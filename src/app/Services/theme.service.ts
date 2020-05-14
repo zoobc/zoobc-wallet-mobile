@@ -20,7 +20,7 @@ export class ThemeService {
       medium: '#ffffff',
       dark: '#020202',
       dbbalance: '#eae3d0',
-      dbspbalance: '#1ca3b0'
+      dbspbalance: '#3399cc'
     },
     day: {
       primary: '#3880ff',

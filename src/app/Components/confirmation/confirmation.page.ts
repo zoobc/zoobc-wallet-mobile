@@ -9,29 +9,20 @@ import { Router } from '@angular/router';
 })
 export class ConfirmationPage implements OnInit {
 
-  status = true;
-  msg = '';
+  public status: boolean;
+  public msg: string;
+  public title: string;
 
   constructor(private modalController: ModalController, private navParams: NavParams, private router: Router) { }
 
   ngOnInit() {
+    this.title = this.navParams.data.title;
     this.status = this.navParams.data.status;
     this.msg = this.navParams.data.msg;
   }
 
   async close() {
-    if (this.status) {
-      this.router.navigateByUrl('/dashboard');
-    }
-    this.modalController.dismiss(); // close modal
-    // console.log('============= status closed --- ');
-  }
-
-
-  async newTrx() {
-    this.router.navigateByUrl('/my-task');
-    this.modalController.dismiss(); // close modal
-    // console.log('============= status transaction new ');
+    this.modalController.dismiss();
   }
 
 }

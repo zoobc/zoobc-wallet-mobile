@@ -52,7 +52,7 @@ export class MyTasksPage implements OnInit {
     this.isLoading = true;
     const params: EscrowListParams = {
       approverAddress: this.account.address,
-      // statusList: [0],
+      statusList: [0],
       pagination: {
         page: this.page,
         limit: 1000,
@@ -139,7 +139,6 @@ export class MyTasksPage implements OnInit {
       }
     };
     this.router.navigate(['/task-detail'], navigationExtras);
-    // TODO show detail page;
   }
 
 }

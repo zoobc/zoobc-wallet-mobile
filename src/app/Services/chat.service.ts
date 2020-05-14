@@ -104,7 +104,7 @@ export class ChatService {
             const lastChat = chats[max - 1];
             this.checkToDb(lastChat.sender);
             if (!this.isChatOpen) {
-              this.showNotif(chats);
+              // this.showNotif(chats);
             }
 
             this.chatLength = chats.length;

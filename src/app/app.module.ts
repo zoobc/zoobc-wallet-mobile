@@ -43,6 +43,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { ChatProfilePageModule } from './Pages/chat/chat-profile/chat-profile.module';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { ConfirmationPageModule } from './Components/confirmation/confirmation.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -68,6 +69,7 @@ export function createTranslateLoader(http: HttpClient) {
     SenddetailPageModule,
     TransactionDetailPageModule,
     TrxstatusPageModule,
+    ConfirmationPageModule,
     TaskDetailPageModule,
     SetupPinGpPageModule,
     SetupPinPageModule,

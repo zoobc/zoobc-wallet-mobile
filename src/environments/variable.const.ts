@@ -1,4 +1,4 @@
-import { Currency } from 'src/app/Services/currency.service';
+import { Currency } from 'src/app/Interfaces/currency';
 
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = 'p4ssphr4se';
