@@ -3,7 +3,3 @@ export interface Currency {
     value: number;
 }
 
-export interface CurrencyName {
-    name: string;
-    desc: string;
-}
