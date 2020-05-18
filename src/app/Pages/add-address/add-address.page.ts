@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { base64ToByteArray } from 'src/Helpers/converters';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
-import { EDIT_MODE, NEW_MODE } from 'src/environments/variable.const';
+import { MODE_EDIT, MODE_NEW } from 'src/environments/variable.const';
 import { sanitizeString } from 'src/Helpers/utils';
 import { Contact } from 'src/app/Interfaces/contact';
 import { AddressBookService } from 'src/app/Services/address-book.service';
@@ -110,7 +110,7 @@ export class AddAddressPage implements OnInit {
       return;
     }
 
-    if (this.mode === EDIT_MODE) {
+    if (this.mode === MODE_EDIT) {
 
       // check if nothing changed
       if (this.name === this.oldName) {
@@ -141,7 +141,7 @@ export class AddAddressPage implements OnInit {
         this.goListAddress();
       }
 
-    } else if (this.mode === NEW_MODE) {
+    } else if (this.mode === MODE_NEW) {
 
       if (this.isNameExists(this.name, this.address)) {
         // console.log('== name exist: ', this.name);

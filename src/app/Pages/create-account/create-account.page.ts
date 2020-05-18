@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EDIT_MODE, EMPTY_STRING, NEW_MODE } from 'src/environments/variable.const';
+import { MODE_EDIT, EMPTY_STRING, MODE_NEW } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
@@ -36,6 +36,12 @@ export class CreateAccountPage implements OnInit {
         this.accountName = this.account.name;
       }
     });
+
+    if (this.mode === MODE_NEW) {
+      const pathNumber = await this.accountService.generateDerivationPath();
+      this.accountName = 'Account ' + (pathNumber + 1);
+    }
+
     this.accounts = await this.accountService.getAllAccount();
   }
 
@@ -50,7 +56,7 @@ export class CreateAccountPage implements OnInit {
       return;
     }
 
-    if (this.mode === EDIT_MODE) {
+    if (this.mode === MODE_EDIT) {
       if (this.accountName === this.account.name) {
         this.accountService.broadCastNewAccount(this.account);
         this.goListAccount();
@@ -72,7 +78,7 @@ export class CreateAccountPage implements OnInit {
         this.goListAccount();
         return;
       }
-    } else if (this.mode === NEW_MODE) {
+    } else if (this.mode === MODE_NEW) {
       if (this.isNameExists(this.accountName)) {
         // console.log('== name exist: ', this.accountName);
         this.isNameValid = false;

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
-import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, NEW_MODE, EDIT_MODE } from 'src/environments/variable.const';
+import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, MODE_EDIT } from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
@@ -70,11 +70,11 @@ export class ListAccountComponent implements OnInit {
   }
 
   createNewAccount() {
-    this.openAddAccount(null, NEW_MODE);
+    this.openAddAccount(null, MODE_NEW);
   }
 
   editName(account: Account) {
-    this.openAddAccount(account, EDIT_MODE);
+    this.openAddAccount(account, MODE_EDIT);
   }
 
   async openAddAccount(arg: Account, trxMode: string) {
