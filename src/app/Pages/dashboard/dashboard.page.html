@@ -16,7 +16,6 @@
 </ion-header>
 
 <ion-content fullscreen class="ion-no-padding">
-
   <div class="bg-header-{{theme}}">
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
       <ion-refresher-content
@@ -90,7 +89,7 @@
       </ion-row>
     </ion-grid>
   </div>
-  <div *ngIf="isLoadingBalance" style="margin-top:5px;">
+  <div *ngIf="isLoadingBalance" style="margin-top: 5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
   <ion-grid style="margin-top: 20px; margin-bottom: 70px;">
@@ -132,10 +131,10 @@
       </ion-col>
 
       <ion-col size="4">
-        <ion-card color="light" routerLink="/chat">
-          <ion-icon name="chatboxes"></ion-icon>
+        <ion-card color="light" routerLink="/my-tasks">
+          <ion-icon name="list"></ion-icon>
           <ion-text>
-            <h2>{{ "Chat" | translate }}</h2>
+            <h2>My Tasks</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -148,14 +147,7 @@
           </ion-text>
         </ion-card>
       </ion-col>
-      <ion-col size="4">
-        <ion-card color="light" routerLink="/my-tasks">
-          <ion-icon name="list"></ion-icon>
-          <ion-text>
-            <h2>My Tasks</h2>
-          </ion-text>
-        </ion-card>
-      </ion-col>
+
       <ion-col size="4">
         <ion-card color="light" (click)="openBlog()">
           <ion-icon name="paper"></ion-icon>
@@ -164,6 +156,16 @@
           </ion-text>
         </ion-card>
       </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/chat">
+          <ion-icon name="chatboxes"></ion-icon>
+          <ion-text>
+            <h2>{{ "Chat" | translate }}</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
       <ion-col size="4">
         <ion-card color="light" routerLink="/applist">
           <ion-icon name="apps"></ion-icon>
