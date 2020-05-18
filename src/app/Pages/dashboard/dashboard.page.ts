@@ -14,8 +14,6 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME } from 'src/environments/variable.const';
 import zoobc from 'zoobc';
-import { Transaction } from 'src/app/Interfaces/transaction';
-
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
@@ -38,9 +36,6 @@ export class DashboardPage implements OnInit {
   public isLoadingBalance: boolean;
   public currencyRate = CONST_DEFAULT_RATE;
   public priceInUSD: number;
-  public totalTx: number;
-  public recentTx: Transaction[];
-  public unconfirmTx: Transaction[];
   public isError = false;
   public navigationSubscription: any;
 
@@ -93,7 +88,6 @@ export class DashboardPage implements OnInit {
       this.currencyRate = rate;
     });
 
-    // this.loadData();
   }
 
   doRefresh(event: any) {
@@ -110,7 +104,6 @@ export class DashboardPage implements OnInit {
     this.theme = this.themeSrv.theme;
     console.log('==== theme:', this.theme);
     this.loadData();
-    // this.account = await this.accountService.getCurrAccount();
   }
 
 
@@ -130,9 +123,6 @@ export class DashboardPage implements OnInit {
     this.offset = 1;
     this.accountBalance = 0;
     this.isLoadingBalance = true;
-    this.totalTx = 0;
-    this.recentTx = [];
-    this.unconfirmTx = [];
     this.isError = false;
 
     this.account = await this.accountService.getCurrAccount();
@@ -148,7 +138,7 @@ export class DashboardPage implements OnInit {
    * Get balance of current active address
    * @ param address
    */
-  async getBalanceByAddress(address: string) {
+  private async getBalanceByAddress(address: string) {
     this.isError = false;
     const date1 = new Date();
     this.isLoadingBalance = true;
