@@ -9,19 +9,7 @@ import { UtilService } from 'src/app/Services/util.service';
   styleUrls: ['./transaction-detail.page.scss']
 })
 export class TransactionDetailPage implements OnInit {
-  transaction: Transaction = {
-    id: null,
-    address: null,
-    type: null,
-    sender: '',
-    recipient: '',
-    blockId: 0,
-    amount: 0,
-    height: 0,
-    fee: 0,
-    total: 0,
-    timestamp: null
-  };
+  transaction: Transaction;
   account: any;
   status: string;
 
