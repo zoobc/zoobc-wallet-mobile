@@ -40,7 +40,7 @@ export const CONST_DEFAULT_RATE: Currency = {
   name: CONST_DEFAULT_CURRENCY,
   value: 1,
 };
-export const NUMBER_OF_RECORD_IN_TRANSACTIONS = 15;
+export const NUMBER_OF_RECORD_IN_TRANSACTIONS = 20;
 export const CONST_HEX = 'hex';
 
 // Language
