@@ -7,7 +7,7 @@ import { ComponentsModule } from 'src/app/Components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SendCoinPage } from './send-coin.page';
 // import { QRScanner } from '@ionic-native/qr-scanner/ngx';
-import { AddressBookComponentModule } from 'src/app/Components/address-book/address-book.module';
+import { AddressBookComponentModule } from 'src/app/Components/address-book/address-book-list/address-book.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
 
