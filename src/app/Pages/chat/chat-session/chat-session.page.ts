@@ -10,7 +10,6 @@ import { firestore } from 'firebase/app';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { ChatUser } from 'src/app/Interfaces/chat-user';
 
-
 @Component({
   selector: 'app-chat-session',
   templateUrl: './chat-session.page.html',
@@ -63,23 +62,12 @@ export class ChatSessionPage implements OnInit {
               private db: AngularFirestore) {
 
 
-    this.activeRoute.queryParams.subscribe(params => {
-      console.log('=== queryParams Params: ', params);
-      this.index = params.idx;
-      this.sender = params.sender;
-      this.sendername = params.sendername;
-      this.pair = params.pair;
-      this.pairname = params.pairname;
-      this.chatId = params.chatId;
-      console.log('== Sender: ', this.sender);
-    });
-
   }
 
   async scrollToBottom() {
     setTimeout(() => {
       this.content.scrollToBottom(50);
-    }, 400);
+    }, 1000);
   }
 
 
@@ -106,6 +94,18 @@ export class ChatSessionPage implements OnInit {
 
   ngOnInit() {
 
+
+    this.activeRoute.queryParams.subscribe(params => {
+      console.log('=== queryParams Params: ', params);
+      this.index = params.idx;
+      this.sender = params.sender;
+      this.sendername = params.sendername;
+      this.pair = params.pair;
+      this.pairname = params.pairname;
+      this.chatId = params.chatId;
+      console.log('== Sender on chat session: ', this.sender);
+    });
+
     this.chatService.isChatOpen =  true;
 
     this.getFcmId();
@@ -113,7 +113,7 @@ export class ChatSessionPage implements OnInit {
     this.db
       .collection<Chat>(FIREBASE_CHAT, res => {
         return res.where('chatId', 'in', [this.chatService.currentChatPairId,
-          this.chatService.currentChatPairId2]).orderBy('time').limit(500);
+          this.chatService.currentChatPairId2]).orderBy('time').limit(1000);
       })
       .valueChanges()
       .subscribe(chats => {
