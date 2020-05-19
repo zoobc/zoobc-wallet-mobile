@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/Services/auth-service';
 import { ModalController } from '@ionic/angular';
+import { DEFAULT_THEME } from 'src/environments/variable.const';
+import { ThemeService } from 'src/app/Services/theme.service';
 
 @Component({
   selector: 'app-enterpinsend',
@@ -9,10 +11,20 @@ import { ModalController } from '@ionic/angular';
 })
 export class EnterpinsendPage implements OnInit {
   isLoginValid = true;
-
-  constructor(private authService: AuthService, private modalController: ModalController, ) { }
+  theme = DEFAULT_THEME;
+  constructor(private authService: AuthService,
+              private modalController: ModalController,
+              private themeSrv: ThemeService) {
+    this.themeSrv.themeSubject.subscribe(() => {
+      this.theme = this.themeSrv.theme;
+    });
+               }
 
   ngOnInit() {
+    this.theme = this.themeSrv.theme;
+    if (!this.theme) {
+      this.theme = DEFAULT_THEME;
+    }
   }
 
 

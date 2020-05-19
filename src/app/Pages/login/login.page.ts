@@ -29,6 +29,9 @@ export class LoginPage implements OnInit {
 
   async ngOnInit() {
     this.theme = this.themeSrv.theme;
+    if (!this.theme){
+      this.theme = DEFAULT_THEME;
+    }
     const acc =  await this.accountService.getCurrAccount();
     if (acc === null) {
       this.router.navigate(['initial']);

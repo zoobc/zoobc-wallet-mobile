@@ -37,6 +37,9 @@ export class SetupPinGpPage implements OnInit {
   ngOnInit() {
     this.plainPassphrase = this.createAccSrv.getPassphrase();
     this.theme = this.themeSrv.theme;
+    if (!this.theme) {
+      this.theme = DEFAULT_THEME;
+    }
   }
 
   async confirmPin(event: any) {
