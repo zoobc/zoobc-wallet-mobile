@@ -164,7 +164,6 @@ export class TransactionsPage implements OnInit {
             sender: recent.type === 'receive' ? recent.address : address,
             recipient: recent.type === 'receive' ? address : recent.address,
             total: 0,
-            name: this.addressBookSrv.getNameByAddress(recent.address),
             shortaddress: makeShortAddress(recent.address)
           };
         });

@@ -39,10 +39,10 @@ export class AddressBookService {
     });
   }
 
-  getNameByAddress(address: string) {
+  async getNameByAddress(address: string) {
     let name = '';
     if (this.addresses && this.addresses.length > 0) {
-       this.addresses.forEach((obj: { name: any; address: string; }) => {
+       await this.addresses.forEach((obj: { name: any; address: string; }) => {
         if (String(address).valueOf() === String(obj.address).valueOf()) {
           name =  obj.name;
         }
