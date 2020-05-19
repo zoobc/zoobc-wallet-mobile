@@ -3,8 +3,7 @@ import {
   STORAGE_ALL_ACCOUNTS,
   STORAGE_CURRENT_ACCOUNT,
   STORAGE_ENC_MASTER_SEED,
-  STORAGE_ENC_PASSPHRASE_SEED,
-  STORAGE_MAIN_ACCOUNT} from 'src/environments/variable.const';
+  STORAGE_ENC_PASSPHRASE_SEED} from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
 import { doEncrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
@@ -18,7 +17,6 @@ export class AccountService {
   account: Account;
   private forWhat: string;
   private recipient: Account;
-
 
   constructor(
     private strgSrv: StoragedevService) { }
@@ -45,7 +43,7 @@ export class AccountService {
     return this.recipient;
   }
 
-  async getAllAccount(): Promise<Account[]> {
+  async allAccount(): Promise<Account[]> {
     const allAccount = await this.strgSrv.get(STORAGE_ALL_ACCOUNTS);
     return allAccount;
   }
@@ -58,7 +56,7 @@ export class AccountService {
   }
 
   async generateDerivationPath(): Promise<number> {
-    const accounts: Account[] = await this.getAllAccount();
+    const accounts: Account[] = await this.allAccount();
     if (accounts && accounts.length) {
       return accounts.length;
     }
@@ -79,7 +77,7 @@ export class AccountService {
   async addAccount(account: Account) {
     console.log('====++++ addAccount: ');
     console.log('==== Account', account);
-    let accounts = await this.getAllAccount();
+    let accounts = await this.allAccount();
 
     if (accounts === null) {
       console.log('===  accunts is null ===');
@@ -110,14 +108,6 @@ export class AccountService {
     this.strgSrv.set(STORAGE_ENC_MASTER_SEED, encSeed);
   }
 
-  saveMainAccount(account: Account){
-    this.strgSrv.set(STORAGE_MAIN_ACCOUNT, JSON.stringify(account));
-  }
-
-  getMainAccount() {
-    return this.strgSrv.get(STORAGE_MAIN_ACCOUNT);
-  }
-
   savePassphraseSeed(passphrase: string, pin: string) {
     const encPassphraseSeed = doEncrypt(passphrase, pin);
     this.strgSrv.set(STORAGE_ENC_PASSPHRASE_SEED, encPassphraseSeed);
@@ -128,7 +118,7 @@ export class AccountService {
   }
 
   async updateNameByAddress(arg: string, account: Account) {
-    const accounts = this.getAllAccount();
+    const accounts = this.allAccount();
     let acc2 = null;
     const isExists = (await accounts).find(acc => {
       if (acc.address === account.address) {
