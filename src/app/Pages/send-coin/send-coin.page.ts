@@ -158,7 +158,7 @@ export class SendCoinPage implements OnInit {
   }
 
   async getAllAccount() {
-    const accounts = await this.accountService.getAllAccount();
+    const accounts = await this.accountService.allAccount();
 
     if (accounts && accounts.length > 0) {
       accounts.forEach((obj: { name: any; address: string; }) => {

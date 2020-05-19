@@ -3,6 +3,7 @@ import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { DEFAULT_THEME } from 'src/environments/variable.const';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ export class LoginPage implements OnInit {
   theme = DEFAULT_THEME;
   constructor(
     private authService: AuthService,
+    private accountService: AccountService,
     private router: Router,
     private themeSrv: ThemeService
   ) {
@@ -27,11 +29,11 @@ export class LoginPage implements OnInit {
 
   async ngOnInit() {
     this.theme = this.themeSrv.theme;
-    // const acc =  await this.accountService.getCurrAccount();
-    // if (acc === null) {
-    //   this.router.navigate(['initial']);
-    //   return;
-    // }
+    const acc =  await this.accountService.getCurrAccount();
+    if (acc === null) {
+      this.router.navigate(['initial']);
+      return;
+    }
 
     const isLoggedIn = this.authService.isLoggedIn();
     if (isLoggedIn) {

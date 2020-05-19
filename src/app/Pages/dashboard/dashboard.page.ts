@@ -88,6 +88,17 @@ export class DashboardPage implements OnInit {
       this.currencyRate = rate;
     });
 
+    this.theme = this.themeSrv.theme;
+    console.log('==== theme:', this.theme);
+    this.subscribeAllAccount();
+
+  }
+
+  async subscribeAllAccount() {
+    const allAcc = await this.accountService.allAccount();
+    const addresses = allAcc.map((acc) => acc.address);
+    this.chatService.subscribeNotif(addresses);
+    console.log('==== All addresses: ', addresses);
   }
 
   doRefresh(event: any) {
@@ -101,8 +112,6 @@ export class DashboardPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.theme = this.themeSrv.theme;
-    console.log('==== theme:', this.theme);
     this.loadData();
   }
 
@@ -131,7 +140,7 @@ export class DashboardPage implements OnInit {
     this.getBalanceByAddress(this.account.address);
     await this.fcmService.getToken(this.account);
     this.identity = this.fcmService.identity;
-    this.chatService.subscribeNotif(this.account.address);
+    this.subscribeAllAccount();
   }
 
   /**

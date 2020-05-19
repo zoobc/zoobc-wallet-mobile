@@ -37,7 +37,7 @@ export class ListAccountComponent implements OnInit {
   }
 
   async loadData() {
-    this.accounts =  await this.accountService.getAllAccount();
+    this.accounts =  await this.accountService.allAccount();
   }
 
   accountClicked(account: Account) {

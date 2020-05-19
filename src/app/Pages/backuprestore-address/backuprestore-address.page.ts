@@ -54,7 +54,7 @@ export class BackuprestoreAddressPage implements OnInit {
   }
 
   async getAllAccounts(){
-    this.accounts = await this.accountService.getAllAccount();
+    this.accounts = await this.accountService.allAccount();
   }
 
   async getAllAddress() {

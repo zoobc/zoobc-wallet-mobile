@@ -42,7 +42,7 @@ export class CreateAccountPage implements OnInit {
       this.accountName = 'Account ' + (pathNumber + 1);
     }
 
-    this.accounts = await this.accountService.getAllAccount();
+    this.accounts = await this.accountService.allAccount();
   }
 
 
