@@ -17,44 +17,8 @@
   font-family: var(--ion-font-family) !important;
 }
 
-// ion-toolbar {
-//   --color: white;
-// }
-// ion-content {
-//   --ion-background-color: #eee;
-//   ion-item {
-//     --ion-background-color: #eee;
-//   }
-//   ion-list {
-//     background: #eee !important;
-//   }
-//   ion-searchbar {
-//     --background: #eee !important;
-//   }
-//   ion-checkbox {
-//     --background: #eee !important;
-//   }
-// }
-
-
 .list-transaction {
-  // .title {
-  //   font-size: 0.8rem;
-  //   color: #666;
-  // }
-  // .date {
-  //   margin-top: 3px;
-  //   font-size: 0.9rem;
-  // }
   .amount {
-    // font-family: "Montserrat-Bold";
-
-    // &.plus {
-    //   color: green;
-    // }
-    // &.minus {
-    //   color: red;
-    // }
 
     &.receive {
       color: green;
@@ -127,9 +91,6 @@
   }
 }
 
-// .tab-selected {
-//   background: #5675a9;
-// }
 
 .logo-container {
   text-align: center;
@@ -141,12 +102,14 @@
 }
 
 .modal-zbc {
-  // opacity: 0.9 !important;
   .modal-wrapper {
-    max-height: 100%;
-    max-width: 100%;
-    height: 100%;
-    width: 100%
+      top: 0;
+      left: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      max-width: 100%;
   }
 }
 
@@ -154,36 +117,58 @@
   color: rgb(255, 255, 93);
 }
 
-.background-pin {
-  --color: #fff;
-  --background: transparent;
-  --background: url("src/assets/images/background.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position-y: bottom;
-}
-
-.background-bcz {
-  --color: #fff;
-  --background: transparent;
-  --background: url("src/assets/images/background.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position-y: bottom;
-}
-// .modal-fullscreen {
-//   .modal-wrapper {
-//       position: absolute;
-//       top: 0;
-//       left: 0;
-//       display: block;
-//       width: 100%;
-//       height: 100%;
-//       max-height: 100%;
-//       max-width: 100%;
-//   }
-// }
-
 ion-title{
   font-size: 1.0em;
+}
+
+.background-zoobc {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+.background-day {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/background-day.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+.background-night {
+  --color: #fff;
+  --background: transparent;
+  --background: url("src/assets/images/background-night.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+
+.bg-header-night{
+  --background: transparent;
+  background: url("src/assets/images/background-night.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+.bg-header-zoobc{
+  --background: transparent;
+  background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+.bg-header-day{
+  --background: transparent;
+  background: url("src/assets/images/background-day.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
 }
