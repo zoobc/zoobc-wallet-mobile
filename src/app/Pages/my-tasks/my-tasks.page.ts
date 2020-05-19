@@ -30,14 +30,21 @@ export class MyTasksPage implements OnInit {
     private addresBookSrv: AddressBookService) { }
 
   ngOnInit() {
-    this.loadAccount();
+    this.loadTask();
 
   }
-  async loadAccount() {
+
+  reload(event: any){
+    setTimeout(() => {
+      event.target.complete();
+    }, 1000);
+  }
+
+  async loadTask() {
     this.account = await this.accountService.getCurrAccount();
     console.log('=== Account: ', this.account);
-    this.getEscrowTransaction();
     this.getBlockHeight();
+    this.getEscrowTransaction();
   }
   async showTaskDetail() {
     const alert = await this.alertCtrl.create({
