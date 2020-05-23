@@ -9,6 +9,7 @@ import { IonContent } from '@ionic/angular';
 import { firestore } from 'firebase/app';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { ChatUser } from 'src/app/Interfaces/chat-user';
+import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-chat-session',
@@ -30,7 +31,7 @@ export class ChatSessionPage implements OnInit {
     upertext: any;
   }>;
 
-  index: number;
+  // index: number;
   sender = '';
   sendername = '';
   pair = '';
@@ -91,13 +92,17 @@ export class ChatSessionPage implements OnInit {
     this.chatService.isChatOpen = false;
   }
 
+  shortAddress(address) {
+    return makeShortAddress(address);
+  }
+
 
   ngOnInit() {
 
 
     this.activeRoute.queryParams.subscribe(params => {
       console.log('=== queryParams Params: ', params);
-      this.index = params.idx;
+      // this.index = params.idx;
       this.sender = params.sender;
       this.sendername = params.sendername;
       this.pair = params.pair;
@@ -110,6 +115,8 @@ export class ChatSessionPage implements OnInit {
 
     this.getFcmId();
 
+    console.log('=== currentChatPairId: ', this.chatService.currentChatPairId);
+    console.log('=== currentChatPairId2: ', this.chatService.currentChatPairId2);
     this.db
       .collection<Chat>(FIREBASE_CHAT, res => {
         return res.where('chatId', 'in', [this.chatService.currentChatPairId,
