@@ -55,7 +55,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          <ion-item color="dbbalance">
+          <ion-item color="dbbalance" (click)='showBalanceDetail()'>
             <ion-label>
               <p>{{ "Balance" | translate }}</p>
               <ion-text class="amount"
@@ -71,7 +71,7 @@
           </ion-item>
         </ion-col>
         <ion-col size="6" style="text-align: left; padding-bottom: 10px;">
-          <ion-item color="dbspbalance">
+          <ion-item color="dbspbalance" (click)='showBalanceDetail()'>
             <ion-label>
               <p>{{ "Spendable Balance" | translate }}</p>
               <ion-text class="amount"

@@ -3,7 +3,8 @@ import {
   MenuController,
   ToastController,
   LoadingController,
-  ModalController
+  ModalController,
+  AlertController
 } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
@@ -19,6 +20,7 @@ import { ThemeService } from 'src/app/Services/theme.service';
 import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
 import { ChatService } from 'src/app/Services/chat.service';
 import { Currency } from 'src/app/Interfaces/currency';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -56,7 +58,9 @@ export class DashboardPage implements OnInit {
     public toastController: ToastController,
     private fcmService: FcmService,
     private themeSrv: ThemeService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private alertController: AlertController,
+    private decimalPipe: DecimalPipe
   ) {
 
     // if account changed
@@ -88,10 +92,25 @@ export class DashboardPage implements OnInit {
       this.currencyRate = rate;
     });
 
-    this.theme = this.themeSrv.theme;
+   // document.body.classList.toggle('dark', true);
+
+    // this.theme = this.themeSrv.theme;
     console.log('==== theme:', this.theme);
     this.subscribeAllAccount();
 
+  }
+
+
+  async showBalanceDetail() {
+    const alert = await this.alertController.create({
+      header: 'Account:',
+      subHeader: this.account.address,
+      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8)  + ' ZBC <br/>'
+      + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 
   async subscribeAllAccount() {
