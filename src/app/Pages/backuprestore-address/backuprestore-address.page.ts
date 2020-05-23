@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { NavController } from '@ionic/angular';
+import { NavController, AlertController } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 @Component({
@@ -28,7 +28,8 @@ export class BackuprestoreAddressPage implements OnInit {
     private addressBookSrv: AddressBookService,
     private navCtrl: NavController,
     private accountService: AccountService,
-    private authService: AddressBookService) { }
+    private authService: AddressBookService,
+    private alertController: AlertController) { }
 
   ngOnInit() {
     this.getAllAddress();
@@ -58,29 +59,41 @@ export class BackuprestoreAddressPage implements OnInit {
   }
 
   async getAllAddress() {
-    const alladdress = await this.addressBookSrv.getAll();
-    if (alladdress) {
-      this.addresses = alladdress;
-    }
+    this.addresses = await this.addressBookSrv.getAll();
   }
 
-  async backup() {
+  backup() {
+    console.log('=== All address will backup: ', this.addresses);
+    console.log('=== All length will backup: ', this.addresses.length);
+
+    if (!this.addresses || this.addresses.length < 1) {
+      this.presentAlert();
+      return;
+    }
+
     this.isBackupFinish = false;
     this.isBackup = true;
     setTimeout(async () => {
-      const alladdress = await this.addressBookSrv.getAll();
       const mainAcc = this.accounts[0].address;
-      if (alladdress && alladdress.length > 0) {
-        this.createBackup(mainAcc, alladdress);
-      }
+      this.createBackup(mainAcc, this.addresses);
       this.isBackup = false;
       this.isBackupFinish = true;
     }, 5000);
   }
 
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Confirmation',
+      message: 'No contact to backup!.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
   async createBackup(mainAcc: string, all: any) {
     const obj = { id: mainAcc, addresses: all };
-    await this.addressBookSrv.create_backup(mainAcc, obj).then(resp => {
+    await this.addressBookSrv.createBackup(mainAcc, obj).then(resp => {
       console.log(resp);
     }).catch(error => {
         console.log(error);
@@ -92,9 +105,11 @@ export class BackuprestoreAddressPage implements OnInit {
     this.isRestore = true;
     this.isRestoreFinish = false;
     const mainAcc = this.accounts[0].address;
-    console.log('=== Main Email: ', mainAcc);
-    this.addressBookSrv.restore_backup(mainAcc).then( doc => {
-        if (doc.exists && doc.data().addresses) {
+    console.log('=== Main Account: ', mainAcc);
+    this.addressBookSrv.restoreBackup(mainAcc).then( doc => {
+
+         console.log('============ Contact will restored: ', doc);
+         if (doc.exists && doc.data().addresses) {
             const addresses = doc.data().addresses;
             this.addressBookSrv.insertBatch(addresses);
         }
