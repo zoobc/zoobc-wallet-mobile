@@ -29,7 +29,13 @@
     <ion-row>
       <ion-col class="ion-text-center">
         <div *ngIf="createdCode">
-          <ngx-qrcode [qrc-value]="createdCode"></ngx-qrcode>
+            <ngx-qrcode 
+            [elementType]="elementType" 
+            [value] = "createdCode"
+            cssClass = "qrcode"
+            errorCorrectionLevel = "L">
+          </ngx-qrcode>
+          <!-- <ngx-qrcode [qrc-value]="createdCode"></ngx-qrcode> -->
         </div>
       </ion-col>
     </ion-row>
