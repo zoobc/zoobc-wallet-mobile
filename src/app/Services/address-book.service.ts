@@ -12,7 +12,7 @@ import { Contact } from '../Interfaces/contact';
 })
 
 export class AddressBookService {
-
+  counter = 0;
   private selectedAddress: string;
   private addresses: any;
 
@@ -33,22 +33,23 @@ export class AddressBookService {
     this.addresses = this.getAll();
   }
 
-  async getAll() {
-    return await this.strgSrv.get(STORAGE_ADDRESS_BOOK).catch(error => {
+  getAll() {
+    return this.strgSrv.get(STORAGE_ADDRESS_BOOK).catch(error => {
       console.log(error);
     });
   }
 
-  async getNameByAddress(address: string) {
-    let name = '';
-    if (this.addresses && this.addresses.length > 0) {
-       await this.addresses.forEach((obj: { name: any; address: string; }) => {
-        if (String(address).valueOf() === String(obj.address).valueOf()) {
-          name =  obj.name;
-        }
-      });
-    }
-    return name;
+   async getNameByAddress(address: string) {
+     let name = '';
+     await this.addresses.then(addresses => {
+       if (addresses && addresses.length > 0) {
+          addresses.forEach((obj: { name: any; address: string; }) => {
+              if (String(address).valueOf() === String(obj.address).valueOf()) {
+                name = obj.name;
+              }
+            });
+     }});
+     return name;
   }
 
 
@@ -66,8 +67,7 @@ export class AddressBookService {
       const dt  = addresses[i];
       this.addresses.push({
         name: sanitizeString(dt.name),
-          address: dt.address,
-          created: dt.created
+        address: dt.address
       });
     }
 
@@ -98,15 +98,15 @@ export class AddressBookService {
   }
 
 
-  create_backup(mainAcc: string, obj: any) {
-    return this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).set(obj);
+  createBackup(mainAcc: string, obj: any) {
+      return this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).set(obj, { merge: true });
   }
 
   read_backup() {
     return this.afs.collection(FIREBASE_ADDRESS_BOOK).snapshotChanges();
   }
 
-  restore_backup(mainAcc: string) {
+  restoreBackup(mainAcc: string) {
     return this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).ref.get();
   }
 
