@@ -1,10 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import * as Color from 'color';
-import { STORAGE_THEME, STORAGE_ACTIVE_THEME, DEFAULT_THEME } from 'src/environments/variable.const';
+import { STORAGE_ACTIVE_THEME, DEFAULT_THEME } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { Subject } from 'rxjs';
-
 
 @Injectable({
   providedIn: 'root'
@@ -49,16 +48,9 @@ export class ThemeService {
     @Inject(DOCUMENT) private document: Document,
     private strgSrv: StoragedevService
   ) {
-      this.loadData();
   }
 
   public themeSubject: Subject<string> = new Subject<string>();
-
-  async loadData() {
-    await this.strgSrv.get(STORAGE_THEME).then(cssText => {
-      this.setGlobalCSS(cssText);
-    });
-  }
   // Override all global variables with a new theme
   async setTheme(themename: string) {
     this.theme = themename;
@@ -66,7 +58,6 @@ export class ThemeService {
     const them = this.themes[themename];
     const cssText = CSSTextGenerator(them);
     this.setGlobalCSS(cssText);
-    await this.strgSrv.set(STORAGE_THEME, cssText);
     await this.strgSrv.set(STORAGE_ACTIVE_THEME, themename);
   }
 
@@ -79,9 +70,6 @@ export class ThemeService {
     this.document.documentElement.style.cssText = css;
   }
 
-  get storedTheme() {
-    return this.strgSrv.get(STORAGE_THEME);
-  }
 }
 
 const defaults = {
