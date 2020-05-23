@@ -39,33 +39,33 @@ export class SidemenuComponent implements OnInit {
   }
 
 
- themes() {
+//  themes() {
 
-   this.toggle = document.querySelector('#themeToggle');
-   this.toggle.addEventListener('ionChange', (ev: { detail: { checked: boolean; }; }) => {
+//    this.toggle = document.querySelector('#themeToggle');
+//    this.toggle.addEventListener('ionChange', (ev: { detail: { checked: boolean; }; }) => {
 
-     console.log('===== Makan Hati =====');
-     document.body.classList.toggle('dark', true);
+//      console.log('===== Makan Hati =====');
+//      document.body.classList.toggle('dark', true);
 
-     if (ev.detail.checked) {
-         this.statusBar.backgroundColorByHexString('#121212');
-         this.statusBar.styleLightContent();
-       } else {
-         this.statusBar.backgroundColorByHexString('#ffffff');
-         this.statusBar.styleDefault();
-       }
-   });
+//      if (ev.detail.checked) {
+//          this.statusBar.backgroundColorByHexString('#121212');
+//          this.statusBar.styleLightContent();
+//        } else {
+//          this.statusBar.backgroundColorByHexString('#ffffff');
+//          this.statusBar.styleDefault();
+//        }
+//    });
 
-   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+//    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
-   // tslint:disable-next-line: deprecation
-   prefersDark.addListener((e) => checkToggle(e.matches));
+//    // tslint:disable-next-line: deprecation
+//    prefersDark.addListener((e) => checkToggle(e.matches));
 
-   function checkToggle(shouldCheck) {
-     this.toggle.checked = shouldCheck;
-   }
+//    function checkToggle(shouldCheck) {
+//      this.toggle.checked = shouldCheck;
+//    }
 
- }
+//  }
 
   goBackupRestore() {
     this.router.navigateByUrl('/backuprestore-address');
