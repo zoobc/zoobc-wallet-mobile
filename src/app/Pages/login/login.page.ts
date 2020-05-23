@@ -27,11 +27,22 @@ export class LoginPage implements OnInit {
 
   }
 
-  async ngOnInit() {
+  ionViewDidEnter() {
     this.theme = this.themeSrv.theme;
-    if (!this.theme){
+    if (!this.theme || this.theme === '' || this.theme === undefined) {
       this.theme = DEFAULT_THEME;
     }
+    console.log('=== ionViewDidEnter current theme: ', this.theme);
+  }
+
+  async ngOnInit() {
+    this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === '' || this.theme === undefined){
+      this.theme = DEFAULT_THEME;
+    }
+
+    console.log('=== current theme: ', this.theme);
+
     const acc =  await this.accountService.getCurrAccount();
     if (acc === null) {
       this.router.navigate(['initial']);

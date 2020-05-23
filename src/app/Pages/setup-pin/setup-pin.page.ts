@@ -35,6 +35,14 @@ export class SetupPinPage implements OnInit {
     this.theme = this.themeSrv.theme;
   }
 
+  ionViewDidEnter() {
+    this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === '' || this.theme === undefined) {
+      this.theme = DEFAULT_THEME;
+    }
+    console.log('=== ionViewDidEnter current theme: ', this.theme);
+  }
+
   setupPin(event: any) {
     // console.log('====event:', event);
     this.loginFail = false;
