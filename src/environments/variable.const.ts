@@ -14,7 +14,7 @@ export const STORAGE_ENC_MASTER_SEED = 'enc_master_seed';
 export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_passphrase_seed';
 export const STORAGE_SELECTED_NODE = 'net_selected_node';
 export const STORAGE_ESCROW_WAITING_LIST = 'escrow_waiting_list';
-export const STORAGE_THEME = 'storage_themes';
+// export const STORAGE_THEME = 'storage_themes';
 export const STORAGE_ACTIVE_THEME = 'storage_active_theme';
 export const DEFAULT_THEME = 'zoobc';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
@@ -34,7 +34,6 @@ export const EMPTY_STRING = '';
 export const CONST_DEFAULT_CURRENCY = 'USD';
 export const CONST_UNKNOWN_NAME = 'Unknown';
 export const BLOCKCHAIN_BLOG_URL = 'https://blogchainzoo.com';
-
 
 export const CONST_DEFAULT_RATE: Currency = {
   name: CONST_DEFAULT_CURRENCY,
@@ -210,6 +209,10 @@ export const LANGUAGES = [
 
 export const NETWORK_LIST = [
   {
+    name: 'Staging',
+    host: 'https://n0.demo.proofofparticipation.network'
+  },
+  {
     name: 'Dev 1: ',
     host: 'http://172.104.34.10:8002'
   },
@@ -220,10 +223,6 @@ export const NETWORK_LIST = [
   {
     name: 'Dev 3',
     host: 'http://85.90.246.90:8002'
-  },
-  {
-    name: 'Staging',
-    host: 'http://172.104.47.168:8002'
   }];
 
 export const TRX_FEE_LIST = [{
