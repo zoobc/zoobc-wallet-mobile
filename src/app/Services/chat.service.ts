@@ -3,7 +3,6 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 import { FIREBASE_CHAT, CONST_UNKNOWN_NAME } from 'src/environments/variable.const';
 import { Chat, ChatUser } from '../Interfaces/chat-user';
 import { AddressBookService } from './address-book.service';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Router } from '@angular/router';
 import { ToastController, Platform } from '@ionic/angular';
 import { Contact } from '../Interfaces/contact';
@@ -17,7 +16,7 @@ export class ChatService {
   private chatLength = 0;
   private clickSub: any;
   private notifId = 1;
-
+  recentCats: any;
   chats: AngularFirestoreCollection<Chat>;
   currentChatPairId: string;
   currentChatPairId2: string;
@@ -26,10 +25,8 @@ export class ChatService {
   constructor(
     private db: AngularFirestore,
     private router: Router,
-    private localNotifications: LocalNotifications,
     private addressBookSrv: AddressBookService,
     private toastController: ToastController,
-    private accountService: AccountService,
     private platform: Platform
   ) {
     this.chats = db.collection<Chat>(FIREBASE_CHAT);
@@ -46,7 +43,7 @@ export class ChatService {
 
   showNotif(chats: Chat[]) {
     setTimeout(() => {
-      this.chat_notification(chats);
+      // this.chat_notification(chats);
     }, 200);
   }
 
@@ -63,24 +60,24 @@ export class ChatService {
     toast.present();
   }
 
-  chat_notification(chats: Chat[]) {
+  // chat_notification(chats: Chat[]) {
 
-    if (this.platform.is('cordova')) {
-      this.clickSub = this.localNotifications.on('click').subscribe(data => {
-        console.log(data);
-        this.router.navigateByUrl('/chat');
-        this.unsub();
-      });
-      this.localNotifications.schedule({
-        id: this.notifId++,
-        text: 'You have ' + (chats.length - this.chatLength) + 'chat',
-        sound: 'file://sound.mp3',
-        data: chats
-      });
-    } else {
-      this.presentToast();
-    }
-  }
+  //   if (this.platform.is('cordova')) {
+  //     this.clickSub = this.localNotifications.on('click').subscribe(data => {
+  //       console.log(data);
+  //       this.router.navigateByUrl('/chat');
+  //       this.unsub();
+  //     });
+  //     this.localNotifications.schedule({
+  //       id: this.notifId++,
+  //       text: 'You have ' + (chats.length - this.chatLength) + 'chat',
+  //       sound: 'file://sound.mp3',
+  //       data: chats
+  //     });
+  //   } else {
+  //     this.presentToast();
+  //   }
+  // }
 
   async findAddressInDb(address: string) {
     const name = await this.addressBookSrv.getNameByAddress(address);
@@ -91,39 +88,79 @@ export class ChatService {
   subscribeNotif(addresses: string[]) {
     this.db
       .collection<Chat>(FIREBASE_CHAT, res => {
-        return res.where('pair', 'in', addresses).orderBy('time', 'desc').limit(5);
+        return res.where('pair', 'in', addresses).orderBy('time', 'desc').limit(50);
       }).valueChanges()
       .subscribe(async chats => {
         console.log('=== notif fired, chats: ', chats);
         if (chats && chats.length > 0) {
-            const length = chats.length;
+          this.recentCats = chats;
+          const length = chats.length;
 
-            console.log('=== Length: ', length);
-            console.log('=== this.chatLength: ', this.chatLength);
+          console.log('=== recentCats: ', this.recentCats);
+          console.log('=== Length: ', length);
+          console.log('=== this.chatLength: ', this.chatLength);
 
-            if (length > this.chatLength) {
-              // const lastChat = chats[length - 1];
-              const lastChat = chats[0];
-              const name = await this.findAddressInDb(lastChat.sender);
-              console.log('=== Name after fince:-', name + "-") ;
-              if (!name || name === '' || name === undefined) {
-                console.log('=== last chat sender:', lastChat.sender);
+          // if (length > this.chatLength) {
+          //   // const lastChat = chats[length - 1];
+          //   const lastChat = chats[0];
+          //   //  const name = await this.findAddressInDb(lastChat.sender);
+          //   console.log('=== Name after fince:-', name + "-");
+          //   if (!name || name === '' || name === undefined) {
+          //     console.log('=== last chat sender:', lastChat.sender);
 
-                const contact: Contact = { name: CONST_UNKNOWN_NAME, address: lastChat.sender};
-                this.saveToDb(contact);
+          //     const contact: Contact = { name: CONST_UNKNOWN_NAME, address: lastChat.sender };
+          //     // this.saveToDb(contact);
 
-              } else {
-                console.log('=== checkToDb, name is : ', name);
-              }
+          //   } else {
+          //     console.log('=== checkToDb, name is : ', name);
+          //   }
 
-              console.log('=== checkToDb, address:', lastChat.sender);
-              console.log('=== checkToDb, will save to db:', name);
-              // this.chatLength = chats.length;
-            }
-          }
+          //   console.log('=== checkToDb, address:', lastChat.sender);
+          //   console.log('=== checkToDb, will save to db:', name);
+          //   // this.chatLength = chats.length;
+          // }
+        }
 
       });
   }
+
+
+  // subscribeNotif(addresses: string[]) {
+  //   this.db
+  //     .collection<Chat>(FIREBASE_CHAT, res => {
+  //       return res.where('pair', 'in', addresses).orderBy('time', 'desc').limit(50);
+  //     }).valueChanges()
+  //     .subscribe(async chats => {
+  //       console.log('=== notif fired, chats: ', chats);
+  //       if (chats && chats.length > 0) {
+  //           const length = chats.length;
+
+  //           console.log('=== Length: ', length);
+  //           console.log('=== this.chatLength: ', this.chatLength);
+
+  //           if (length > this.chatLength) {
+  //             // const lastChat = chats[length - 1];
+  //             const lastChat = chats[0];
+  //             const name = await this.findAddressInDb(lastChat.sender);
+  //             console.log('=== Name after fince:-', name + "-") ;
+  //             if (!name || name === '' || name === undefined) {
+  //               console.log('=== last chat sender:', lastChat.sender);
+
+  //               const contact: Contact = { name: CONST_UNKNOWN_NAME, address: lastChat.sender};
+  //               this.saveToDb(contact);
+
+  //             } else {
+  //               console.log('=== checkToDb, name is : ', name);
+  //             }
+
+  //             console.log('=== checkToDb, address:', lastChat.sender);
+  //             console.log('=== checkToDb, will save to db:', name);
+  //             // this.chatLength = chats.length;
+  //           }
+  //         }
+
+  //     });
+  // }
 
 
   async saveToDb(contact: Contact) {
