@@ -178,6 +178,10 @@ export class TransactionsPage implements OnInit {
 
   }
 
+  async getName(address) {
+    await this.addressBookSrv.getNameByAddress(address);
+  }
+
   /**
    * Get Unconfirm transaction by address
    * @ param address

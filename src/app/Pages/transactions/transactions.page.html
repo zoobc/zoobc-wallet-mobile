@@ -1,7 +1,10 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
+    <!-- <ion-buttons slot="start">
       <ion-button (click)="goDashboard()"> <h3><</h3></ion-button>
+    </ion-buttons> -->
+    <ion-buttons slot="start">
+      <ion-back-button  (click)="goDashboard()"> </ion-back-button>
     </ion-buttons>
     <ion-title>{{ "Transactions" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
