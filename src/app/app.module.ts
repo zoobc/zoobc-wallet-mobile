@@ -43,6 +43,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { ChatProfilePageModule } from './Pages/chat/chat-profile/chat-profile.module';
 import { ConfirmationPageModule } from './Components/confirmation/confirmation.module';
 import { DecimalPipe } from '@angular/common';
+import { DateAgoPipe } from './pipes/date-ago.pipe';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -102,6 +103,7 @@ export function createTranslateLoader(http: HttpClient) {
     Clipboard,
     LanguageService,
     DecimalPipe,
+    DateAgoPipe,
     ObservableService
   ],
   bootstrap: [AppComponent]
