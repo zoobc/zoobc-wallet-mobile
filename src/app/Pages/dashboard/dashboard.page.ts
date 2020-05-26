@@ -132,6 +132,7 @@ export class DashboardPage implements OnInit {
 
   async ngOnInit() {
     this.loadData();
+    this.theme = this.themeSrv.theme;
   }
 
 
@@ -271,4 +272,13 @@ export class DashboardPage implements OnInit {
     window.open(BLOCKCHAIN_BLOG_URL, '_system');
   }
 
+  async scanQrCode() {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+          from: ('tabscan')
+      }
+    };
+    this.router.navigate(['/qr-scanner'], navigationExtras);
+    // this.navCtrl.navigateForward(['/qr-scanner'], navigationExtras);
+  }
 }
