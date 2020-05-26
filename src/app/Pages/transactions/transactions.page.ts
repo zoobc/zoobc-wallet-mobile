@@ -11,7 +11,7 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
 import { CurrencyService} from 'src/app/Services/currency.service';
 import { NUMBER_OF_RECORD_IN_TRANSACTIONS,
-   CONST_DEFAULT_RATE, 
+   CONST_DEFAULT_RATE,
    NETWORK_LIST} from 'src/environments/variable.const';
 import zoobc, {
   TransactionListParams,
@@ -40,11 +40,12 @@ export class TransactionsPage implements OnInit {
   currencyRate =  CONST_DEFAULT_RATE;
   priceInUSD: number;
   totalTx: number;
-  recentTxs: Transaction[];
+  recentTxs = [];
   unconfirmTxs: Transaction[];
   isError = false;
   navigationSubscription: any;
   isErrorRecentTx: boolean;
+  addresses = [];
 
   constructor(
     private router: Router,
@@ -91,7 +92,9 @@ export class TransactionsPage implements OnInit {
   }
 
   ngOnInit() {
+    this.getAllAddress();
     this.loadData();
+    this.getAllAccount();
   }
 
   private async loadData() {
@@ -120,9 +123,41 @@ export class TransactionsPage implements OnInit {
     this.getTransactions(this.account.address);
   }
 
+
+  async getAllAddress() {
+    const alladdress = await this.addressBookSrv.getAll();
+
+    if (alladdress && alladdress.length > 0) {
+      alladdress.forEach((obj: { name: any; address: string; }) => {
+        const app = {
+          name: obj.name,
+          address: obj.address
+        };
+        this.addresses.push(app);
+      });
+    }
+  }
+
+
+  async getAllAccount() {
+    const accounts = await this.accountService.allAccount();
+
+    if (accounts && accounts.length > 0) {
+      accounts.forEach((obj: { name: any; address: string; }) => {
+        const app = {
+          name: obj.name,
+          address: obj.address
+        };
+        this.addresses.push(app);
+      });
+    }
+
+  }
+
+
   /**
    * Get more transactions
-   * @param event
+   * @param event load event
    */
   async loadMoreData(event) {
     if (this.recentTxs && this.recentTxs.length < this.totalTx) {
@@ -158,12 +193,13 @@ export class TransactionsPage implements OnInit {
         const tx = await zoobc.Transactions.getList(params).then(res =>
           toTransactionListWallet(res, this.account.address)
         );
-        const trxs: Transaction[] =  tx.transactions.map( (recent) => {
+        const trxs  =  tx.transactions.map(  (recent) => {
           return {
             ...recent,
             sender: recent.type === 'receive' ? recent.address : address,
             recipient: recent.type === 'receive' ? address : recent.address,
             total: 0,
+            name:  this.getName(recent.address),
             shortaddress: makeShortAddress(recent.address)
           };
         });
@@ -178,15 +214,27 @@ export class TransactionsPage implements OnInit {
 
   }
 
-  async getName(address) {
-    await this.addressBookSrv.getNameByAddress(address);
+  getName(address) {
+    let nama =  '';
+    console.log('== addresses: ', this.addresses);
+
+    if (this.addresses && this.addresses.length > 0) {
+      this.addresses.forEach((obj: { name: any; address: string; }) => {
+           if (address === obj.address) {
+              console.log('===== found name: ', obj.name);
+              nama = obj.name;
+           }
+        });
+    }
+
+    return nama;
   }
 
   /**
    * Get Unconfirm transaction by address
    * @ param address
    */
-  private async getUnconfirmTransactions(address: string){
+  private async getUnconfirmTransactions(address: string) {
     const mempoolParams: MempoolListParams = { address };
     this.unconfirmTxs = await zoobc.Mempool.getList(mempoolParams).then(res =>
       toUnconfirmedSendMoneyWallet(res, address)
@@ -194,8 +242,8 @@ export class TransactionsPage implements OnInit {
   }
 
   /**
-   * Open detail Unconfirm transactin 
-   * @param trx
+   * Open detail Unconfirm transactin
+   * @param trx is unconfirm transaction object
    */
   public async openDetailUnconfirm(trx) {
     this.loadDetailTransaction(trx, 'pending');
@@ -203,7 +251,7 @@ export class TransactionsPage implements OnInit {
 
   /**
    * Open detail of tranasaction
-   * @param trx
+   * @param trx is tranaction object
    */
   public async openDetailTransction(trx) {
     this.loadDetailTransaction(trx, 'confirm');
