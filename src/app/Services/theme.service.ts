@@ -12,14 +12,14 @@ export class ThemeService {
   theme = DEFAULT_THEME;
   themes = {
     zoobc: {
-      primary: '#0B3D65',
-      secondary: '#0099c4',
-      tertiary: '#d35555',
+      primary: '#1d2647',
+      secondary: '#6cc3d8',
+      tertiary: '#8f4791',
       light: '#f4f5f8',
       medium: '#ffffff',
       dark: '#020202',
       dbbalance: '#eae3d0',
-      dbspbalance: '#3399cc'
+      dbspbalance: '#6cc3d8'
     },
     day: {
       primary: '#3880ff',
@@ -42,23 +42,25 @@ export class ThemeService {
       dbspbalance: '#c1a57b'
     }
   };
-
-
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private strgSrv: StoragedevService
   ) {
+    strgSrv.get(STORAGE_ACTIVE_THEME).then(themeName => {  // <--- GET SAVED THEME
+      this.setTheme(themeName);
+    });
+
   }
 
   public themeSubject: Subject<string> = new Subject<string>();
   // Override all global variables with a new theme
   async setTheme(themename: string) {
     this.theme = themename;
-    this.themeSubject.next(this.theme);
     const them = this.themes[themename];
     const cssText = CSSTextGenerator(them);
     this.setGlobalCSS(cssText);
     await this.strgSrv.set(STORAGE_ACTIVE_THEME, themename);
+    this.themeSubject.next(this.theme);
   }
 
   // Define a single CSS variable
@@ -73,15 +75,15 @@ export class ThemeService {
 }
 
 const defaults = {
-  primary: '#3880ff',
-  secondary: '#0cd1e8',
-  tertiary: '#7044ff',
-  danger: '#f04141',
-  dark: '#222428',
-  medium: '#989aa2',
+  primary: '#1d2647',
+  secondary: '#6cc3d8',
+  tertiary: '#8f4791',
   light: '#f4f5f8',
-  dbbalance: '#1ca3b0',
-  dbspbalance: '#eae3d0',
+  medium: '#ffffff',
+  dark: '#020202',
+  dbbalance: '#eae3d0',
+  dbspbalance: '#6cc3d8',
+  danger: '#f04141',
   success: '#10dc60',
   warning: '#ffce00'
 };
