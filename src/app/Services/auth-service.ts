@@ -6,7 +6,7 @@ import {
   COIN_CODE,
   CONST_HEX
 } from 'src/environments/variable.const';
-import { Storage } from '@ionic/storage';
+import { auth } from 'firebase/app';
 import * as CryptoJS from 'crypto-js';
 import { KeyringService } from './keyring.service';
 import { AccountService } from './account.service';
@@ -80,4 +80,41 @@ export class AuthService implements CanActivate {
   async logout() {
     this.isUserLoggenIn = false;
   }
+
+  registerUser(value) {
+    return new Promise<any>((resolve, reject) => {
+      auth().createUserWithEmailAndPassword(value.email, value.password)
+        .then(
+          res => resolve(res),
+          err => reject(err));
+    });
+  }
+
+  loginUser(value) {
+    return new Promise<any>((resolve, reject) => {
+      auth().signInWithEmailAndPassword(value.email, value.password)
+        .then(
+          res => resolve(res),
+          err => reject(err));
+    });
+  }
+
+  logoutUser() {
+    return new Promise((resolve, reject) => {
+      if (auth().currentUser) {
+        auth().signOut()
+          .then(() => {
+            console.log('LOG Out');
+            resolve();
+          }).catch((error) => {
+            reject();
+          });
+      }
+    });
+  }
+
+  userDetails() {
+    return auth().currentUser;
+  }
+
 }

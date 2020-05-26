@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { AddressBookService } from 'src/app/Services/address-book.service';
+import { AuthService } from 'src/app/Services/auth-service';
 
 @Component({
   selector: 'app-reg-backup',
@@ -10,11 +11,11 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 })
 export class RegBackupPage implements OnInit {
 
-  validations_form: FormGroup;
-  errorMessage: string = '';
-  successMessage: string = '';
+  validationsForm: FormGroup;
+  errorMessage = '';
+  successMessage = '';
 
-  validation_messages = {
+  validationMessages = {
     email: [
       { type: 'required', message: 'Email is required.' },
       { type: 'pattern', message: 'Enter a valid email.' }
@@ -27,12 +28,12 @@ export class RegBackupPage implements OnInit {
 
   constructor(
     private navCtrl: NavController,
-    private authService: AddressBookService,
+    private authService: AuthService,
     private formBuilder: FormBuilder
   ) { }
 
   ngOnInit() {
-    this.validations_form = this.formBuilder.group({
+    this.validationsForm = this.formBuilder.group({
       email: new FormControl('', Validators.compose([
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')

@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK, CONST_UNKNOWN_NAME } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { auth } from 'firebase/app';
 import { sanitizeString } from 'src/Helpers/utils';
 import { Contact } from '../Interfaces/contact';
 
@@ -113,43 +112,5 @@ export class AddressBookService {
   delete_backup(mainAcc: string) {
     this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).delete();
   }
-
-
-  registerUser(value) {
-    return new Promise<any>((resolve, reject) => {
-      auth().createUserWithEmailAndPassword(value.email, value.password)
-        .then(
-          res => resolve(res),
-          err => reject(err));
-    });
-  }
-
-  loginUser(value) {
-    return new Promise<any>((resolve, reject) => {
-      auth().signInWithEmailAndPassword(value.email, value.password)
-        .then(
-          res => resolve(res),
-          err => reject(err));
-    });
-  }
-
-  logoutUser() {
-    return new Promise((resolve, reject) => {
-      if (auth().currentUser) {
-        auth().signOut()
-          .then(() => {
-            console.log('LOG Out');
-            resolve();
-          }).catch((error) => {
-            reject();
-          });
-      }
-    });
-  }
-
-  userDetails() {
-    return auth().currentUser;
-  }
-
 
 }

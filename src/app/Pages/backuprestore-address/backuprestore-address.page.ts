@@ -3,6 +3,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { NavController, AlertController } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
+import { AuthService } from 'src/app/Services/auth-service';
 @Component({
   selector: 'app-backuprestore-address',
   templateUrl: './backuprestore-address.page.html',
@@ -28,7 +29,7 @@ export class BackuprestoreAddressPage implements OnInit {
     private addressBookSrv: AddressBookService,
     private navCtrl: NavController,
     private accountService: AccountService,
-    private authService: AddressBookService,
+    private authService: AuthService,
     private alertController: AlertController) { }
 
   ngOnInit() {
@@ -54,7 +55,7 @@ export class BackuprestoreAddressPage implements OnInit {
     });
   }
 
-  async getAllAccounts(){
+  async getAllAccounts() {
     this.accounts = await this.accountService.allAccount();
   }
 
