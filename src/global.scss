@@ -121,9 +121,18 @@ ion-title{
   font-size: 1.0em;
 }
 
+.background-pin {
+  --color: #fff;
+  // --background: transparent;
+  --background: url("src/assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
 .background-zoobc {
   --color: #fff;
-  --background: transparent;
+  // --background: transparent;
   --background: url("src/assets/images/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -132,7 +141,7 @@ ion-title{
 
 .background-day {
   --color: #fff;
-  --background: transparent;
+  // --background: transparent;
   --background: url("src/assets/images/background-day.jpg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -141,7 +150,7 @@ ion-title{
 
 .background-night {
   --color: #fff;
-  --background: transparent;
+  // --background: transparent;
   --background: url("src/assets/images/background-night.jpg");
   background-repeat: no-repeat;
   background-size: cover;
