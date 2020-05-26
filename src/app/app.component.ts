@@ -5,7 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import {
   STORAGE_ACTIVE_CURRENCY, NETWORK_LIST,
-  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY, 
+  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY,
   STORAGE_ACTIVE_THEME, CURRENCY_RATE_LIST, DEFAULT_THEME} from 'src/environments/variable.const';
 
 import { OneSignal } from '@ionic-native/onesignal/ngx';
@@ -48,7 +48,7 @@ export class AppComponent implements OnInit {
     private transactionService: TransactionService,
     private translateService: TranslateService,
     private currencyService: CurrencyService,
-    private theme: ThemeService  ) {
+    private themeService: ThemeService  ) {
     this.initializeApp();
     // this.darkMode();
   }
@@ -95,10 +95,12 @@ export class AppComponent implements OnInit {
 
   async setTheme() {
     let activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
+    console.log('== Activetheme: ', activeTheme);
+
     if (!activeTheme) {
       activeTheme = DEFAULT_THEME;
     }
-    await this.theme.setTheme(activeTheme);
+    await this.themeService.setTheme(activeTheme);
   }
 
   async setNodes() {
