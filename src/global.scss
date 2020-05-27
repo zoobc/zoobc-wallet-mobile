@@ -17,90 +17,6 @@
   font-family: var(--ion-font-family) !important;
 }
 
-.list-transaction {
-  .amount {
-
-    &.receive {
-      color: green;
-    }
-    &.send {
-      color: red;
-    }
-
-    &.pending {
-      color: #5e5e5e;
-    }
-  }
-}
-
-.select-zbc {
-  // Applies a text wrap on ion options
-  .alert-tappable.alert-radio {
-    height: auto;
-    contain: content;
-  }
-
-  .alert-radio-label.sc-ion-alert-md {
-    white-space: normal;
-  }
-
-  .alert-radio-label.sc-ion-alert-ios {
-    white-space: normal;
-  }
-
-  .div.alert-radio-label.sc-ion-alert-md {
-    white-space: normal;
-  }
-
-  .div.alert-radio-label.sc-ion-alert-ios {
-    white-space: normal;
-  }
-
-  div.alert-radio-label.sc-ion-alert-md {
-    white-space: normal;
-  }
-
-  div.alert-radio-label.sc-ion-alert-ios {
-    white-space: normal;
-  }
-}
-
-.alert-zbc {
-  .alert-head {
-    background-color: rgb(87, 171, 209);
-  }
-
-  .alert-message {
-    padding: 15px;
-    margin-top: 10px;
-  }
-
-  .alert-message.sc-ion-alert-md {
-    max-height: none;
-    max-width: none;
-    width: 100%;
-    height: 100%;
-  }
-
-  .alert-message.sc-ion-alert-ios {
-    padding: 15px;
-    max-height: none;
-    max-width: none;
-    width: 100%;
-    height: 100%;
-  }
-}
-
-
-.logo-container {
-  text-align: center;
-
-  img {
-    max-width: 80px;
-    height: auto;
-  }
-}
-
 .modal-zbc {
   .modal-wrapper {
       top: 0;
@@ -122,62 +38,42 @@ ion-title{
 }
 
 .background-pin {
-  --color: #fff;
-  // --background: transparent;
-  --background: url("src/assets/images/background.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position-y: bottom;
-}
-
-.background-zoobc {
-  --color: #fff;
-  // --background: transparent;
-  --background: url("src/assets/images/background.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position-y: bottom;
-}
-
-.background-day {
-  --color: #fff;
-  // --background: transparent;
-  --background: url("src/assets/images/background-day.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position-y: bottom;
-}
-
-.background-night {
-  --color: #fff;
-  // --background: transparent;
-  --background: url("src/assets/images/background-night.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position-y: bottom;
+  --background: #000000;
 }
 
 
 .bg-header-night{
   --background: transparent;
-  background: url("src/assets/images/background-night.jpg");
-  background-repeat: no-repeat;
+  background-image: url("src/assets/images/background-night.png");
+  background-repeat:no-repeat;
   background-size: cover;
-  background-position-y: bottom;
+  background-attachment: fixed;
+  background-position: bottom;
 }
 
 .bg-header-zoobc{
   --background: transparent;
-  background: url("src/assets/images/background.jpg");
-  background-repeat: no-repeat;
+  background-image: url("src/assets/images/zoobc.png");
+  background-repeat:no-repeat;
   background-size: cover;
-  background-position-y: bottom;
+  background-attachment: fixed;
+  background-position: center center;
+}
+
+.bg-header-bcz{
+  --background: transparent;
+  background-image: url("src/assets/images/background.png");
+  background-repeat:no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
 }
 
 .bg-header-day{
   --background: transparent;
-  background: url("src/assets/images/background-day.jpg");
-  background-repeat: no-repeat;
+  background-image: url("src/assets/images/background-day.png");
+  background-repeat:no-repeat;
   background-size: cover;
-  background-position-y: bottom;
+  background-attachment: fixed;
+  background-position: center center;
 }
