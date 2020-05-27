@@ -44,9 +44,14 @@ export const CONST_HEX = 'hex';
 
 // Language
 export const SELECTED_LANGUAGE = 'selected_language';
-export const THEME_OPTIONS  = [{
+export const THEME_OPTIONS  = [
+  {
   name: 'ZooBC',
   value: 'zoobc'
+  },
+  {
+    name: 'BCZoo',
+    value: 'bcz'
   },
   {
     name: 'Day',
