@@ -1,8 +1,5 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-buttons slot="start">
-      <ion-button (click)="goDashboard()"> <h3><</h3></ion-button>
-    </ion-buttons> -->
     <ion-buttons slot="start">
       <ion-back-button  (click)="goDashboard()"> </ion-back-button>
     </ion-buttons>
@@ -29,10 +26,10 @@
     <h2>{{ errorMsg }}</h2>
   </ion-label>
 
-  <p *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="title-section ion-padding-horizontal">
+  <p *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-padding-horizontal">
     {{ "Queue" | translate }} ({{unconfirmTxs.length}})
   </p>
-  <ion-list *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-margin-top list-transaction">
+  <ion-list *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-margin-top">
     <ion-item *ngFor="let pendingtrx of unconfirmTxs; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
       <ion-label>
         <ion-row class="ion-justify-content-between">
@@ -59,10 +56,10 @@
     </ion-item>
   </ion-list>
 
-  <h4 class="title-section ion-padding-horizontal ion-text-center">
+  <h4 class="ion-padding-horizontal ion-text-center">
     {{ "Transaction(s) History" | translate }}
   </h4>
-  <ion-list *ngIf="recentTxs && recentTxs.length === 0" class="ion-margin-top list-transaction">
+  <ion-list *ngIf="recentTxs && recentTxs.length === 0" class="ion-margin-top">
     <ion-item class="ion-text-center">
       <ion-label>
         <br/> <br/>
@@ -71,33 +68,34 @@
     </ion-item>
   </ion-list>
 
-  <ion-list *ngIf="recentTxs && recentTxs.length > 0" class="ion-margin-top list-transaction">
+  <ion-list *ngIf="recentTxs && recentTxs.length > 0" class="ion-margin-top">
     <ion-item *ngFor="let transaction of recentTxs; let i = index" button (click)="openDetailTransction(transaction)">
-      <ion-label *ngIf="transaction.name" class="title">
-        <h3>{{ transaction.name }}</h3>
-        <p>{{
+      <ion-label *ngIf="transaction.name" color="dark">
+        <h3>{{ transaction.name }}
+          <br/>
+          {{transaction.shortaddress}}
+        </h3>
+        <ion-text class="dateago">{{
           transaction.timestamp | dateAgo
-          }}</p>
+          }}</ion-text>
       </ion-label>
-      <ion-label *ngIf="!transaction.name" class="title">
+      <ion-label *ngIf="!transaction.name" color="dark">
         <h3>{{ transaction.shortaddress }}</h3>
-        <p>{{
+        <ion-text class="dateago">{{
           transaction.timestamp | dateAgo
-          }}</p>
+          }}</ion-text>
       </ion-label>
 
-       <!-- <ion-icon *ngIf="transaction.type==='send'" name="arrow-round-up" color="danger"></ion-icon> -->
-      <!-- <ion-icon *ngIf="transaction.type!=='send'" name="arrow-round-down" color="success"></ion-icon> -->
-     
-      <ion-text class="amount {{ transaction.type }} ion-text-end">
-        <span *ngIf="transaction.type==='send'">-</span>
-        <span *ngIf="transaction.type !=='send'">+</span>
-        {{ transaction.amount / 1e8 | number: '0.2-4' }} <span style="color:grey; font-size:0.7em">ZBC</span>
+      <ion-text *ngIf="transaction.type==='send'" color="danger" class="amount ion-text-end">
+        - {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC
         <br/>
-        <span *ngIf="transaction.type==='send'">
-         - {{ transaction.fee / 1e8 | number: '0.2-4'}}
+        <span>
+         - {{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC
         </span>
-        <span *ngIf="transaction.type==='send'" style="color:grey; font-size:0.7em">ZBC</span>
+      </ion-text>
+     
+      <ion-text *ngIf="transaction.type!=='send'" color="success" class="amount ion-text-end">
+       + {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC
       </ion-text>
 
     </ion-item>
