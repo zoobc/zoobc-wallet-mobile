@@ -21,12 +21,16 @@
   margin-bottom:10px;
 }
 
-ion-toolbar {
-  // --background: transparent;
+
+ion-footer {
   --ion-color-base: transparent !important;
 }
 
-ion-footer {
-  // --background: transparent;
-  --ion-color-base: transparent !important;
+.background-zoobc{
+  --background: transparent;
+  background-image: url("src/assets/images/zoobc.png");
+  background-repeat:no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
 }
