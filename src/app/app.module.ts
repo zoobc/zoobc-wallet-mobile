@@ -24,7 +24,6 @@ import { LanguageService } from './Services/language.service';
 import { SenddetailPageModule } from './Pages/send-coin/modals/senddetail/senddetail.module';
 import { TrxstatusPageModule } from './Pages/send-coin/modals/trxstatus/trxstatus.module';
 import { EnterpinsendPageModule } from './Pages/send-coin/modals/enterpinsend/enterpinsend.module';
-import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
 import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';
 import { fbconfig } from 'src/environments/firebaseconfig';
@@ -44,6 +43,7 @@ import { ChatProfilePageModule } from './Pages/chat/chat-profile/chat-profile.mo
 import { ConfirmationPageModule } from './Components/confirmation/confirmation.module';
 import { DecimalPipe } from '@angular/common';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -53,7 +53,6 @@ export function createTranslateLoader(http: HttpClient) {
   declarations: [AppComponent, QrScannerComponent],
   entryComponents: [],
   imports: [
-    NgxQRCodeModule,
     BrowserModule,
     IonicModule,
     IonicStorageModule.forRoot({
@@ -87,7 +86,8 @@ export function createTranslateLoader(http: HttpClient) {
         useFactory: (createTranslateLoader),
         deps: [HttpClient]
       }
-    })
+    }),
+    NgxQRCodeModule,
   ],
   providers: [
     Network,
