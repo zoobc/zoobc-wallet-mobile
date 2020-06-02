@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MnemonicsService } from 'src/app/Services/mnemonics.service';
 import { ModalController, LoadingController } from '@ionic/angular';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { environment } from 'src/environments/environment';
@@ -7,7 +6,7 @@ import { AuthService } from 'src/app/Services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/setup-pin/setup-pin.page';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { ZooKeyring } from 'zoobc';
 
 @Component({
   selector: 'app-existing-wallet',
@@ -22,20 +21,18 @@ export class ExistingWalletPage implements OnInit {
   public wordCounter: number;
   public mnemonicWordLengtEnv: number = environment.mnemonicNumWords;
   public loginFail = false;
-  // public arrayClass = [];
+  private lang: string;
   public arrayPhrase = [];
-  // public disabledBox = [];
-
   constructor(
     public loadingController: LoadingController,
-    private mnemonicServ: MnemonicsService,
     private router: Router,
     private location: Location,
     private authSrv: AuthService,
-    private strgSrv: StoragedevService,
     private modalController: ModalController,
     private createAccSrv: CreateAccountService
-  ) { }
+  ) {
+    this.lang = 'english';
+  }
 
   ngOnInit() {
     this.errorMsg = '';
@@ -91,14 +88,13 @@ export class ExistingWalletPage implements OnInit {
       this.errorMsg = 'Please fill in all field!';
       return;
     }
-    // console.log('===== this.passphrase: ', this.passphrase);
 
-    this.isValidPhrase = this.mnemonicServ.validateMnemonic(this.passphrase);
+    this.isValidPhrase = ZooKeyring.isPassphraseValid(this.passphrase, this.lang);
     if (!this.isValidPhrase) {
       this.errorMsg = 'Passphrase is not valid';
       return;
     }
-    // set passphrase to service
+
     this.createAccSrv.setPlainPassphrase(this.passphrase);
 
     this.errorMsg = '';
