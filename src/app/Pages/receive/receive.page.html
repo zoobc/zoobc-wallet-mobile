@@ -1,8 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button>
-      </ion-back-button>
+      <ion-back-button> </ion-back-button>
     </ion-buttons>
 
     <ion-title>{{ "Receive" | translate }} ZBC</ion-title>
@@ -23,27 +22,32 @@
   <ion-grid>
     <ion-row>
       <ion-col class="warning">
-        {{ "Show this qrcode to your friend to transfer zoobc coin to your account" | translate }}
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <div *ngIf="createdCode">
-            <ngx-qrcode 
-            [elementType]="elementType" 
-            [value] = "createdCode"
-            cssClass = "qrcode"
-            errorCorrectionLevel = "correctionLevel">
-          </ngx-qrcode>
-        </div>
+        {{ "Show this qrcode to your friend to transfer zoobc coin to your
+        account" | translate }}
       </ion-col>
     </ion-row>
 
     <ion-row>
+      <ion-col class="ion-text-center">
+        <div *ngIf="createdCode">
+          <ngx-qrcode [qrc-value]="createdCode"
+           cssClass="qrcode"
+           errorCorrectionLevel="L">
+          </ngx-qrcode>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col class="qrcode">
         <div style="margin-bottom: 5px; font-weight: bold;">Address:</div>
-        <div *ngIf="account">{{ account.address }}
-          <ion-button fill="outline" expand="block" size="small" (click)="copyToClipboard()">
+        <div *ngIf="account">
+          {{ account.address }}
+          <ion-button
+            fill="outline"
+            expand="block"
+            size="small"
+            (click)="copyToClipboard()"
+          >
             <ion-icon name="copy"></ion-icon> Copy
           </ion-button>
         </div>
@@ -58,13 +62,17 @@
 
     <ion-row class="qrcode">
       <ion-col size="7">
-        
-          <ion-input class="ion-text-end" style="border:1px solid #cccccc;" type="number" (ionChange)="changeBarcode()" [(ngModel)]="amount">
-          </ion-input>
-        
+        <ion-input
+          class="ion-text-end"
+          style="border:1px solid #cccccc;"
+          type="number"
+          (ionChange)="changeBarcode()"
+          [(ngModel)]="amount"
+        >
+        </ion-input>
       </ion-col>
       <ion-col size="5">
-         <div style="margin-top: 10px"> ZBC</div>
+        <div style="margin-top: 10px">ZBC</div>
       </ion-col>
     </ion-row>
   </ion-grid>

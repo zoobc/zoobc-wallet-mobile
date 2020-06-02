@@ -5,7 +5,6 @@ import { MenuController } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { UtilService } from 'src/app/Services/util.service';
-import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
 
 @Component({
   selector: 'app-receive',
@@ -17,8 +16,6 @@ export class ReceivePage implements OnInit {
   createdCode: any;
   amount = 0;
   account: Account;
-  elementType = NgxQrcodeElementTypes.IMG;
-  correctionLevel = NgxQrcodeErrorCorrectionLevels.LOW;
 
   constructor(
     private menuController: MenuController,
@@ -47,7 +44,9 @@ export class ReceivePage implements OnInit {
   }
 
   changeBarcode() {
-    this.createQR(this.account.address, this.amount);
+    if (this.account) {
+      this.createQR(this.account.address, this.amount);
+    }
   }
 
   copyToClipboard() {
