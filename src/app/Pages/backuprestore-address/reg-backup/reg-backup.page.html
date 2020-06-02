@@ -8,7 +8,7 @@
 
   <p>Backup / Restore Address Book using third party services, please register / login to use this services.</p>
 
-  <form class="form" [formGroup]="validations_form" (ngSubmit)="tryRegister(validations_form.value)">
+  <form class="form" [formGroup]="validationsForm" (ngSubmit)="tryRegister(validationsForm.value)">
 
     <ion-item>
       <ion-label position="floating" color="primary">Email</ion-label>
@@ -17,7 +17,7 @@
     <div class="validation-errors">
       <ng-container *ngFor="let validation of validationMessages.email">
         <div class="error-message"
-          *ngIf="validations_form.get('email').hasError(validation.type) && (validations_form.get('email').dirty || validations_form.get('email').touched)">
+          *ngIf="validationsForm.get('email').hasError(validation.type) && (validationsForm.get('email').dirty || validationsForm.get('email').touched)">
           {{ validation.message }}
         </div>
       </ng-container>
@@ -30,13 +30,13 @@
     <div class="validation-errors">
       <ng-container *ngFor="let validation of validationMessages.password">
         <div class="error-message"
-          *ngIf="validations_form.get('password').hasError(validation.type) && (validations_form.get('password').dirty || validations_form.get('password').touched)">
+          *ngIf="validationsForm.get('password').hasError(validation.type) && (validationsForm.get('password').dirty || validationsForm.get('password').touched)">
           {{ validation.message }}
         </div>
       </ng-container>
     </div>
 
-    <ion-button class="submit-btn" type="submit" [disabled]="!validations_form.valid">Register</ion-button>
+    <ion-button class="submit-btn" type="submit" [disabled]="!validationsForm.valid">Register</ion-button>
     <br/>
     <label style="color:red" class="error-message">{{errorMessage}}</label>
     <br/>

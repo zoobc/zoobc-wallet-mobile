@@ -3,12 +3,12 @@ ion-col{
 }
 
 .box-warning{
-    background-color: pink; padding: 10px;
+    background-color: var(--ion-color-danger);
 }
 
 .box-pass{
-    background-color: #ffffff; 
-    padding: 5px; 
+    background-color: var(--ion-color-light);
+    padding: 10px; 
     border:1px solid black;
     font-size: 1.0em;
 }
