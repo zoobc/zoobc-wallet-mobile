@@ -77,3 +77,8 @@ ion-title{
   background-attachment: fixed;
   background-position: center center;
 }
+
+.alertCss{
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-dark);
+}
