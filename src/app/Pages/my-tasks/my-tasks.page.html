@@ -30,7 +30,7 @@
       <p>{{ 'No Approval Request Available' | translate }}</p>
   </div>
 
-  <ion-list *ngIf="escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;" class="ion-margin-top list-transaction">
+  <ion-list *ngIf="escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index" (click)="openDetail(escrow.id)">
       <ion-label class="title">
         <h3>Transaction ID: {{escrow.id}}</h3>
