@@ -1,24 +1,13 @@
-.list-account-page {
-  padding-bottom: 5rem;
-  background-color: var(--ion-color-grey);
-
-  ion-list {
-    padding-top: 0;
-    font-family: "Montserrat-Bold";
-  }
-
-  ion-list-header {
-    --background: var(--ion-color-grey);
-  }
-
+ 
   ion-item {
     .title {
       font-size: 1rem;
       margin-bottom: 0.5rem;
+      color: var(--ion-color-dark);
     }
     .address {
       font-size: 0.9rem;
-      color: var(--ion-color-secondary);
+      color: var(--ion-color-medium);
       margin-bottom: 0.5rem;
       white-space: normal;
       font-weight: bold;
@@ -27,4 +16,3 @@
       font-size: 0.7rem;
     }
   }
-}
