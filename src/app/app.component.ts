@@ -94,13 +94,10 @@ export class AppComponent implements OnInit {
   }
 
   async setTheme() {
-    let activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
-    console.log('== Activetheme: ', activeTheme);
-
-    if (!activeTheme) {
-      activeTheme = DEFAULT_THEME;
+    const activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
+    if (!activeTheme || activeTheme === undefined) {
+        await this.themeService.setTheme(DEFAULT_THEME);
     }
-    await this.themeService.setTheme(activeTheme);
   }
 
   async setNodes() {
@@ -114,7 +111,7 @@ export class AppComponent implements OnInit {
   async presentNotificationToast(msg: any) {
     const toast = await this.toastController.create({
       message: msg,
-      duration: 15000
+      duration: 1500
     });
     toast.present();
   }
