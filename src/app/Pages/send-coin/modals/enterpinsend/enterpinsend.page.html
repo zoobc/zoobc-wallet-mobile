@@ -3,14 +3,16 @@
 
     <ion-row style="flex-shrink: 0;">
       <ion-col class="ion-text-center">
+        <ion-text color="light">
         {{ "Please Enter Your PIN" | translate }}
+        </ion-text>
       </ion-col>
     </ion-row>
-
+    
     <ion-row style="flex-shrink: 0;">
       <ion-col class="ion-text-center">
         <p *ngIf="isLoginValid">&nbsp;</p>
-        <p *ngIf="!isLoginValid" class="ion-text-center" style="color:yellow">{{ "Invalid PIN" | translate }}</p>
+        <p *ngIf="!isLoginValid" class="ion-text-center invalidPin">{{ "Invalid PIN" | translate }}</p>
       </ion-col>
     </ion-row>
 
