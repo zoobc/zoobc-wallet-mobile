@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
-import * as bip39 from 'bip39';
 import { Router } from '@angular/router';
-import { KeyringService } from 'src/app/Services/keyring.service';
-import { AccountService } from 'src/app/Services/account.service';
 import { UtilService } from 'src/app/Services/util.service';
+import { ZooKeyring } from 'zoobc';
 
 @Component({
   selector: 'app-generate-passphrase',
@@ -21,22 +19,35 @@ export class GeneratePassphrasePage implements OnInit {
   pageStep = 1;
   tempPin = '';
   public loginFail = false;
+  lang: string;
+
+  languages: Languages[] = [
+    { value: 'chinese_simplified', viewValue: 'Chinese Simplified' },
+    { value: 'english', viewValue: 'English' },
+    { value: 'japanese', viewValue: 'Japanese' },
+    { value: 'spanish', viewValue: 'Spanish' },
+    { value: 'italian', viewValue: 'Italian' },
+    { value: 'french', viewValue: 'French' },
+    { value: 'korean', viewValue: 'Korean' },
+    { value: 'chinese_traditional', viewValue: 'Chinese Traditional' },
+  ];
+
 
   constructor(
     private router: Router,
     private utilService: UtilService,
-    private accountService: AccountService,
-    private keyringService: KeyringService,
     private createAccSrv: CreateAccountService
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
-    // this.checkSetupPin();
+    this.lang = 'english';
     this.generatePassphrase();
   }
 
-  onLanguageChanged(v) {
-    bip39.setDefaultWordlist(v);
+  onLanguageChanged(language: string) {
+    console.log('== language:', language);
+    // this.lang = language;
     this.generatePassphrase();
   }
 
@@ -59,15 +70,17 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   async generatePassphrase() {
-    const passphrase = this.keyringService.generateRandomPhrase().phrase;
-    this.plainPassphrase = passphrase;
+    this.plainPassphrase = ZooKeyring.generateRandomPhrase(24, this.lang);
+    if (this.lang === 'japanese') {
+      this.arrayPhrase = this.plainPassphrase.slice().split(`${String.fromCharCode(12288)}`);
+    } else {
+      this.arrayPhrase = this.plainPassphrase.slice().split(' ');
+    }
     this.createAccSrv.setPlainPassphrase(this.plainPassphrase.slice());
-    this.arrayPhrase = this.plainPassphrase.slice().split(' ');
     this.createAccSrv.setArrayPassphrase(this.arrayPhrase);
-    // console.log('Array phrase: ', this.arrayPhrase);
   }
 
-  copyToClipboard() {
+  private getPassphraseText() {
     const val = this.plainPassphrase.slice();
     const arrayPass = val.split(' ');
     let strCopy = 'This is your ZooBC passphrase:\n\n With order number\n-------------------------\n';
@@ -82,16 +95,14 @@ export class GeneratePassphrasePage implements OnInit {
     }
     strCopy += '\n\nWithout order number\n-------------------------\n' + val;
     strCopy += '\n\n----------- End ----------\n\n';
-
-    this.utilService.copyToClipboard(strCopy);
-
+    return strCopy;
   }
 
-
+  copyToClipboard() {
+    this.utilService.copyToClipboard(this.getPassphraseText());
+  }
 
   ionViewDidLeave(): void {
-    // Called once, before the instance is destroyed.
-    // Add 'implements OnDestroy' to the class.
     this.writtenDown = false;
     this.terms = false;
   }

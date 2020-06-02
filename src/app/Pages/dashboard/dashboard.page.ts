@@ -3,7 +3,8 @@ import {
   MenuController,
   ToastController,
   LoadingController,
-  ModalController
+  ModalController,
+  AlertController
 } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
@@ -14,13 +15,12 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME } from 'src/environments/variable.const';
 import zoobc from 'zoobc';
-import { Transaction } from 'src/app/Interfaces/transaction';
-
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
 import { ChatService } from 'src/app/Services/chat.service';
 import { Currency } from 'src/app/Interfaces/currency';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -38,9 +38,6 @@ export class DashboardPage implements OnInit {
   public isLoadingBalance: boolean;
   public currencyRate = CONST_DEFAULT_RATE;
   public priceInUSD: number;
-  public totalTx: number;
-  public recentTx: Transaction[];
-  public unconfirmTx: Transaction[];
   public isError = false;
   public navigationSubscription: any;
 
@@ -61,7 +58,9 @@ export class DashboardPage implements OnInit {
     public toastController: ToastController,
     private fcmService: FcmService,
     private themeSrv: ThemeService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private alertController: AlertController,
+    private decimalPipe: DecimalPipe
   ) {
 
     // if account changed
@@ -93,7 +92,32 @@ export class DashboardPage implements OnInit {
       this.currencyRate = rate;
     });
 
-    // this.loadData();
+   // document.body.classList.toggle('dark', true);
+
+    // this.theme = this.themeSrv.theme;
+    console.log('==== theme:', this.theme);
+    this.subscribeAllAccount();
+
+  }
+
+
+  async showBalanceDetail() {
+    const alert = await this.alertController.create({
+      header: 'Account:',
+      subHeader: this.account.address,
+      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8)  + ' ZBC <br/>'
+      + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  async subscribeAllAccount() {
+    const allAcc = await this.accountService.allAccount();
+    const addresses = allAcc.map((acc) => acc.address);
+    this.chatService.subscribeNotif(addresses);
+    console.log('==== All addresses: ', addresses);
   }
 
   doRefresh(event: any) {
@@ -107,12 +131,12 @@ export class DashboardPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.theme = this.themeSrv.theme;
-    console.log('==== theme:', this.theme);
     this.loadData();
-    // this.account = await this.accountService.getCurrAccount();
+    this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === undefined || this.theme === null) {
+      this.theme = DEFAULT_THEME;
+    }
   }
-
 
   async loadData() {
 
@@ -130,9 +154,6 @@ export class DashboardPage implements OnInit {
     this.offset = 1;
     this.accountBalance = 0;
     this.isLoadingBalance = true;
-    this.totalTx = 0;
-    this.recentTx = [];
-    this.unconfirmTx = [];
     this.isError = false;
 
     this.account = await this.accountService.getCurrAccount();
@@ -141,14 +162,14 @@ export class DashboardPage implements OnInit {
     this.getBalanceByAddress(this.account.address);
     await this.fcmService.getToken(this.account);
     this.identity = this.fcmService.identity;
-    this.chatService.subscribeNotif(this.account.address);
+    this.subscribeAllAccount();
   }
 
   /**
    * Get balance of current active address
    * @ param address
    */
-  async getBalanceByAddress(address: string) {
+  private async getBalanceByAddress(address: string) {
     this.isError = false;
     const date1 = new Date();
     this.isLoadingBalance = true;
@@ -253,4 +274,13 @@ export class DashboardPage implements OnInit {
     window.open(BLOCKCHAIN_BLOG_URL, '_system');
   }
 
+  async scanQrCode() {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+          from: ('tabscan')
+      }
+    };
+    this.router.navigate(['/qr-scanner'], navigationExtras);
+    // this.navCtrl.navigateForward(['/qr-scanner'], navigationExtras);
+  }
 }

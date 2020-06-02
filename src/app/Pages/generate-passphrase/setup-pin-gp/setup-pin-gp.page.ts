@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-// import { AuthService } from '../../../Services/auth-service';
 import { Router } from '@angular/router';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
-import { Storage } from '@ionic/storage';
-// import { doEncrypt } from 'src/Helpers/converters';
 import { AuthService } from 'src/app/Services/auth-service';
+import { DEFAULT_THEME } from 'src/environments/variable.const';
+import { ThemeService } from 'src/app/Services/theme.service';
 
 @Component({
   selector: 'app-setup-pin-gp',
@@ -19,17 +18,36 @@ export class SetupPinGpPage implements OnInit {
   public pagePosition: number;
   public plainPassphrase: any;
   public processing = false;
+  public theme = DEFAULT_THEME;
+  
   constructor(
     private createAccSrv: CreateAccountService,
     private authSrv: AuthService,
-    private router: Router
+    private router: Router,
+    private themeSrv: ThemeService
   ) {
     this.pagePosition = 0;
     this.processing = false;
+    // if theme changed
+    this.themeSrv.themeSubject.subscribe(() => {
+      this.theme = this.themeSrv.theme;
+    });
   }
 
   ngOnInit() {
     this.plainPassphrase = this.createAccSrv.getPassphrase();
+    this.theme = this.themeSrv.theme;
+    if (!this.theme) {
+      this.theme = DEFAULT_THEME;
+    }
+  }
+
+  ionViewDidEnter() {
+    this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === '' || this.theme === undefined) {
+      this.theme = DEFAULT_THEME;
+    }
+    console.log('=== ionViewDidEnter current theme: ', this.theme);
   }
 
   async confirmPin(event: any) {
@@ -43,15 +61,12 @@ export class SetupPinGpPage implements OnInit {
       this.createAccSrv.setPlainPassphrase(this.plainPassphrase);
       this.createAccSrv.setPlainPin(pin);
       await this.createAccSrv.createInitialAccount();
-
       const loginStatus = await this.authSrv.login(pin);
-      console.log('== loginStatus 2:', loginStatus);
       if (loginStatus) {
-        console.log('== loginStatus   3:', loginStatus);
         setTimeout(() => {
           this.router.navigateByUrl('/');
           this.processing = false;
-        }, 50);
+        }, 100);
       }
     } else {
       this.loginFail = true;
@@ -63,7 +78,6 @@ export class SetupPinGpPage implements OnInit {
   }
 
   setupPin(event: any) {
-    // console.log('====event:', event);
     this.loginFail = false;
     this.tempPin = event.pin;
     this.processing = true;

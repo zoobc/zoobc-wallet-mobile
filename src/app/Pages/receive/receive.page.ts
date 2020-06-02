@@ -44,7 +44,9 @@ export class ReceivePage implements OnInit {
   }
 
   changeBarcode() {
-    this.createQR(this.account.address, this.amount);
+    if (this.account) {
+      this.createQR(this.account.address, this.amount);
+    }
   }
 
   copyToClipboard() {

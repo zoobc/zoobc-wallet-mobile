@@ -91,8 +91,12 @@ const routes: Routes = [
   { path: 'chat-session', loadChildren: './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule', canActivate: [AuthService] },
   { path: 'chat-profile', loadChildren: './Pages/chat/chat-profile/chat-profile.module#ChatProfilePageModule', canActivate: [AuthService] },
   { path: 'dashboard', loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule', canActivate: [AuthService] },
-  { path: 'receive', loadChildren: './Pages/receive/receive.module#ReceivePageModule', canActivate: [AuthService] },  { path: 'confirmation', loadChildren: './Components/confirmation/confirmation.module#ConfirmationPageModule' }
-
+  { path: 'receive', loadChildren: './Pages/receive/receive.module#ReceivePageModule', canActivate: [AuthService] },
+  { path: 'confirmation', loadChildren: './Components/confirmation/confirmation.module#ConfirmationPageModule' },
+  { path: 'multisig', loadChildren: './Pages/multisig/multisig.module#MultisigPageModule' },
+  { path: 'msig-send-transaction', loadChildren: './Pages/multisig/msig-send-transaction/msig-send-transaction.module#MsigSendTransactionPageModule' },
+  { path: 'msig-create-transaction', loadChildren: './Pages/multisig/msig-create-transaction/msig-create-transaction.module#MsigCreateTransactionPageModule' },
+  { path: 'msig-create-info', loadChildren: './Pages/multisig/msig-create-info/msig-create-info.module#MsigCreateInfoPageModule' }
 
 
 ];

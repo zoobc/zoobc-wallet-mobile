@@ -1,13 +1,17 @@
 export interface Transaction {
   id: string;
-  type: string;
   address: string;
-  sender: string;
-  recipient: string;
-  amount: number;
-  height: number;
-  blockId: number;
+  timestamp?: number;
   fee: number;
-  total: number;
-  timestamp: Date;
+  type: string;
+  amount: number;
+  blockId: string;
+  height: number;
+  transactionIndex?: number;
+  sender?: string;
+  recipient?: string;
+  total?: number;
+  name?: string;
+  shortaddress?: string;
 }
+

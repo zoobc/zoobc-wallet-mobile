@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { DEFAULT_THEME } from 'src/environments/variable.const';
+import { ThemeService } from 'src/app/Services/theme.service';
 
 @Component({
   selector: 'app-setup-pin',
@@ -12,16 +14,33 @@ export class SetupPinPage implements OnInit {
   public passphrase: string;
   public processing = false;
   public loginFail = false;
+  public theme = DEFAULT_THEME;
 
   constructor(
     private modalCtrl: ModalController,
+    private themeSrv: ThemeService
   ) {
+
+    // if theme changed
+    this.themeSrv.themeSubject.subscribe(() => {
+      this.theme = this.themeSrv.theme;
+    });
+
   }
 
   ngOnInit() {
     this.pagePosition = 0;
     this.processing = false;
     this.tempPin = '';
+    this.theme = this.themeSrv.theme;
+  }
+
+  ionViewDidEnter() {
+    this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === '' || this.theme === undefined) {
+      this.theme = DEFAULT_THEME;
+    }
+    console.log('=== ionViewDidEnter current theme: ', this.theme);
   }
 
   setupPin(event: any) {

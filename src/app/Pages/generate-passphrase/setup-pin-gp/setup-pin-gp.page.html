@@ -12,17 +12,21 @@
     </ion-toolbar>
   </ion-header>
    
-  <ion-content class="ion-padding background" fullscreen>
+  <ion-content class="ion-padding background-pin" fullscreen>
     <ion-progress-bar *ngIf="processing" color="light" type="indeterminate"></ion-progress-bar>
 
     <ng-template [ngIf]="pagePosition === 0">
+      <ion-label color="light">
         <p class="ion-text-center">{{ "Input your PIN" | translate }}</p>
+      </ion-label>
         <app-pin (ionChange)="setupPin($event)"></app-pin>
     </ng-template>
 
     <ng-template [ngIf]="pagePosition === 1">
+      <ion-label color="light">
         <p class="ion-text-center">{{ "Confirm your PIN" | translate }}</p>
-        <p *ngIf="loginFail" class="ion-text-center" style="color:yellow">{{ "Invalid PIN" | translate }}</p>
+      </ion-label>
+        <p *ngIf="loginFail" class="ion-text-center invalidPin">{{ "Invalid PIN" | translate }}</p>
         <app-pin (ionChange)="confirmPin($event)"></app-pin>
     </ng-template>
   </ion-content>

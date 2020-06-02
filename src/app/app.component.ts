@@ -5,7 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import {
   STORAGE_ACTIVE_CURRENCY, NETWORK_LIST,
-  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY, 
+  STORAGE_SELECTED_NODE, CONST_DEFAULT_CURRENCY,
   STORAGE_ACTIVE_THEME, CURRENCY_RATE_LIST, DEFAULT_THEME} from 'src/environments/variable.const';
 
 import { OneSignal } from '@ionic-native/onesignal/ngx';
@@ -48,9 +48,23 @@ export class AppComponent implements OnInit {
     private transactionService: TransactionService,
     private translateService: TranslateService,
     private currencyService: CurrencyService,
-    private theme: ThemeService  ) {
+    private themeService: ThemeService  ) {
     this.initializeApp();
+    // this.darkMode();
+  }
 
+  darkMode() {
+    // Use matchMedia to check the user preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    toggleDarkTheme(prefersDark.matches);
+
+    // Listen for changes to the prefers-color-scheme media query
+    prefersDark.addListener((mediaQuery) => toggleDarkTheme(mediaQuery.matches));
+
+    // Add or remove the "dark" class based on if the media query matches
+    function toggleDarkTheme(shouldAdd: boolean) {
+      document.body.classList.toggle('dark', shouldAdd);
+    }
   }
 
   initializeApp() {
@@ -80,11 +94,10 @@ export class AppComponent implements OnInit {
   }
 
   async setTheme() {
-    let activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
-    if (!activeTheme) {
-      activeTheme = DEFAULT_THEME;
+    const activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
+    if (!activeTheme || activeTheme === undefined) {
+        await this.themeService.setTheme(DEFAULT_THEME);
     }
-    await this.theme.setTheme(activeTheme);
   }
 
   async setNodes() {
@@ -98,7 +111,7 @@ export class AppComponent implements OnInit {
   async presentNotificationToast(msg: any) {
     const toast = await this.toastController.create({
       message: msg,
-      duration: 15000
+      duration: 1500
     });
     toast.present();
   }

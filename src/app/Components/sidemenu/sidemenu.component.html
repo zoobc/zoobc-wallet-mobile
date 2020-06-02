@@ -1,9 +1,13 @@
 <ion-menu type="overlay" menuId="mainMenu" class="ion-no-padding">
   <ion-content class="ion-no-padding">
 
-    <div class="top-{{theme}}">
-          <img src="assets/images/logo-white.png" class="logo" />
-    </div>
+    <ion-card color="primary">   
+      <ion-card-content class="ion-text-center">
+        <div color="primary" style="box-shadow: none !important;text-align: center; ">
+          <p align="center"><img src="assets/images/logo-white.png" class="logo" style="text-align: center;" /></p>
+        </div>
+      </ion-card-content>
+    </ion-card>
 
     <ion-list>
 
@@ -66,7 +70,7 @@
     <ion-grid>
       <ion-row>
         <ion-col class="ion-text-center">
-          <ion-button strong style="margin-top:40px;" (click)="logout()" color="secondary" expand="block">
+          <ion-button strong style="margin-top:40px;" (click)="logout()" color="tertiary" expand="block">
             {{ "Log out" | translate }} &nbsp;&nbsp;<ion-icon name="log-out"></ion-icon>
           </ion-button>
         </ion-col>

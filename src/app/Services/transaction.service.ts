@@ -25,11 +25,26 @@ export class TransactionService {
 
   async loadRpcUrl() {
     const node = await this.strgSrv.get(STORAGE_SELECTED_NODE);
-    this.rpcUrl =  node;
+    this.rpcUrl = node;
   }
 
   getRpcUrl() {
     return this.rpcUrl;
   }
 
+  transactionFees(minimumFee: number) {
+    const fees = [{
+      name: 'Slow',
+      fee: minimumFee
+    },
+    {
+      name: 'Average',
+      fee: minimumFee * 2
+    },
+    {
+      name: 'Fast',
+      fee: minimumFee * 4
+    }];
+    return fees;
+  }
 }

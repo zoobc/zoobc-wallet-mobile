@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
-import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, NEW_MODE, EDIT_MODE } from 'src/environments/variable.const';
+import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, MODE_EDIT } from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
-
+import zoobc from 'zoobc';
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
@@ -14,6 +14,10 @@ export class ListAccountComponent implements OnInit {
 
   private forWhat: string;
   accounts: Account[];
+  isError: boolean;
+  isLoadingBalance: boolean;
+  accountBalance: any;
+  errorMsg: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -28,17 +32,41 @@ export class ListAccountComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadData();
+  }
+
+  async loadData() {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
       }
     });
-    this.loadData();
+    this.getAllAccountBalance();
   }
 
-  async loadData() {
-    this.accounts =  await this.accountService.getAllAccount();
+
+  async getAllAccountBalance() {
+    this.accounts = await this.accountService.allAccount();
+    if (this.accounts && this.accounts.length > 0) {
+      this.isLoadingBalance = true;
+      this.accounts.forEach(obj => {
+          const adres = obj.address;
+          this.getBalanceByAddress(adres).then(balnce => {
+            console.log('===== xxxBalance: ', balnce.spendablebalance);
+            obj.balance = Number(balnce.spendablebalance);
+          });
+      });
+    }
+
   }
+
+  private async getBalanceByAddress(address: string) {
+    return await zoobc.Account.getBalance(address)
+      .then(data => {
+        return data.accountbalance;
+      }).finally(() => (this.isLoadingBalance = false));
+  }
+
 
   accountClicked(account: Account) {
     this.accountService.setForWhat(this.forWhat);
@@ -70,11 +98,11 @@ export class ListAccountComponent implements OnInit {
   }
 
   createNewAccount() {
-    this.openAddAccount(null, NEW_MODE);
+    this.openAddAccount(null, MODE_NEW);
   }
 
   editName(account: Account) {
-    this.openAddAccount(account, EDIT_MODE);
+    this.openAddAccount(account, MODE_EDIT);
   }
 
   async openAddAccount(arg: Account, trxMode: string) {

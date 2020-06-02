@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddressBookListComponent } from './address-book-list.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AddressBookListComponent', () => {
   let component: AddressBookListComponent;
@@ -11,6 +12,7 @@ describe('AddressBookListComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ AddressBookListComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [TranslateModule],
     })
     .compileComponents();
   }));

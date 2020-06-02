@@ -15,7 +15,7 @@
 <ion-content>
 
   <ion-fab ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="secondary" (click)="createNewAddress()">
+    <ion-fab-button color="tertiary" (click)="createNewAddress()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
@@ -31,8 +31,8 @@
       <ion-item-sliding *ngFor="let address of addresses; let i = index">
         <ion-item>
           <ion-label (click)="selectAddress(address)">
-            <p class="title">{{ address.name }}</p>
-            <p class="address">{{ address.address }}</p>
+            <p class="name">{{ address.name }}</p>
+            <p class="address">{{ address.shortAddress }}</p>
           </ion-label>
           <ion-icon slot="end" name="copy" (click)="copyAddress(i)"></ion-icon>
         </ion-item>

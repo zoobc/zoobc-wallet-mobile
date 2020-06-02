@@ -14,7 +14,7 @@ export class NetworkService {
 
 
   setInitialNetwork() {
-    // check if have selected language
+    // check if have selected network
     this.strgSrv.get(STORAGE_ACTIVE_NETWORK).then((val: any) => {
       if (!val) {
         const defaultNetwork = NETWORK_LIST[0].host;

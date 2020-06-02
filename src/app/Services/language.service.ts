@@ -1,7 +1,5 @@
-import { Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { SELECTED_LANGUAGE } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 
@@ -13,9 +11,7 @@ export class LanguageService {
 
   constructor(
     private translate: TranslateService,
-    private strgSrv: StoragedevService,
-    private plt: Platform
-  ) { }
+    private strgSrv: StoragedevService  ) { }
 
   setInitialAppLanguage() {
     const language = this.translate.getBrowserLang();

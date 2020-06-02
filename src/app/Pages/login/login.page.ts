@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
-import { AccountService } from 'src/app/Services/account.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { DEFAULT_THEME } from 'src/environments/variable.const';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-login',
@@ -14,21 +14,35 @@ export class LoginPage implements OnInit {
   public isLoginValid = true;
   theme = DEFAULT_THEME;
   constructor(
-    private accountService: AccountService,
     private authService: AuthService,
+    private accountService: AccountService,
     private router: Router,
     private themeSrv: ThemeService
   ) {
 
-    // if account changed
+    // if theme changed
     this.themeSrv.themeSubject.subscribe(() => {
       this.theme = this.themeSrv.theme;
     });
 
   }
 
+  ionViewDidEnter() {
+    this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === '' || this.theme === undefined) {
+      this.theme = DEFAULT_THEME;
+    }
+    console.log('=== ionViewDidEnter current theme: ', this.theme);
+  }
+
   async ngOnInit() {
     this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === '' || this.theme === undefined){
+      this.theme = DEFAULT_THEME;
+    }
+
+    console.log('=== current theme: ', this.theme);
+
     const acc =  await this.accountService.getCurrAccount();
     if (acc === null) {
       this.router.navigate(['initial']);
@@ -36,10 +50,10 @@ export class LoginPage implements OnInit {
     }
 
     const isLoggedIn = this.authService.isLoggedIn();
-    if (isLoggedIn === true) {
+    if (isLoggedIn) {
       this.router.navigate(['/dashboard']);
-      return;
     }
+
   }
 
   async login(e: any) {
@@ -56,8 +70,5 @@ export class LoginPage implements OnInit {
     }
   }
 
-  createAccount() {
-    this.router.navigate(['initial']);
-  }
 
 }

@@ -7,7 +7,7 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding background-{{theme}}" fullscreen>
+<ion-content class="ion-padding background-pin" fullscreen>
   <ion-grid style="height: 100%; display: flex; flex-flow: column;">
 
     <ion-row  style="flex-shrink: 0;">
@@ -19,7 +19,7 @@
     <ion-row  style="flex-shrink: 0;">
       <ion-col>
         <ion-label *ngIf="isLoginValid">&nbsp;</ion-label>
-        <ion-label *ngIf="!isLoginValid" class="invalidPin">{{ "Invalid PIN" | translate }}</ion-label>
+        <ion-label *ngIf="!isLoginValid" class="ion-text-center invalidPin">{{ "Invalid PIN" | translate }}</ion-label>
       </ion-col>
     </ion-row>
 

@@ -16,7 +16,6 @@
 </ion-header>
 
 <ion-content fullscreen class="ion-no-padding">
-
   <div class="bg-header-{{theme}}">
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
       <ion-refresher-content
@@ -56,7 +55,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          <ion-item color="dbbalance">
+          <ion-item color="dbbalance" (click)='showBalanceDetail()'>
             <ion-label>
               <p>{{ "Balance" | translate }}</p>
               <ion-text class="amount"
@@ -72,7 +71,7 @@
           </ion-item>
         </ion-col>
         <ion-col size="6" style="text-align: left; padding-bottom: 10px;">
-          <ion-item color="dbspbalance">
+          <ion-item color="dbspbalance" (click)='showBalanceDetail()'>
             <ion-label>
               <p>{{ "Spendable Balance" | translate }}</p>
               <ion-text class="amount"
@@ -90,14 +89,14 @@
       </ion-row>
     </ion-grid>
   </div>
-  <div *ngIf="isLoadingBalance" style="margin-top:5px;">
+  <div *ngIf="isLoadingBalance" style="margin-top: 5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
   <ion-grid style="margin-top: 20px; margin-bottom: 70px;">
     <ion-row>
       <ion-col size="4">
         <ion-card color="light" (click)="openListAccount()">
-          <ion-icon name="wallet"></ion-icon>
+          <ion-icon name="wallet" color="secondary"></ion-icon>
           <ion-text>
             <h2>Accounts</h2>
           </ion-text>
@@ -106,7 +105,7 @@
 
       <ion-col size="4">
         <ion-card color="light" [routerLink]="['/sendcoin']">
-          <ion-icon name="arrow-round-up"></ion-icon>
+          <ion-icon name="arrow-round-up" color="secondary"></ion-icon>
           <ion-text>
             <h2>Transfer</h2>
           </ion-text>
@@ -115,7 +114,7 @@
 
       <ion-col size="4">
         <ion-card color="light" [routerLink]="['/receive']">
-          <ion-icon name="arrow-round-down"></ion-icon>
+          <ion-icon name="arrow-round-down"  color="secondary"></ion-icon>
           <ion-text>
             <h2>Receive</h2>
           </ion-text>
@@ -124,7 +123,7 @@
 
       <ion-col size="4">
         <ion-card color="light" routerLink="/transactions">
-          <ion-icon name="swap"></ion-icon>
+          <ion-icon name="swap" color="secondary"></ion-icon>
           <ion-text>
             <h2>Transactions</h2>
           </ion-text>
@@ -132,8 +131,35 @@
       </ion-col>
 
       <ion-col size="4">
+        <ion-card color="light" routerLink="/my-tasks">
+          <ion-icon name="list" color="secondary"></ion-icon>
+          <ion-text>
+            <h2>My Tasks</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/address-book">
+          <ion-icon name="people" color="secondary"></ion-icon>
+          <ion-text>
+            <h2>Contacts</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" (click)="openBlog()">
+          <ion-icon name="paper" color="secondary"></ion-icon>
+          <ion-text>
+            <h2>Blog</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
         <ion-card color="light" routerLink="/chat">
-          <ion-icon name="chatboxes"></ion-icon>
+          <ion-icon name="chatboxes" color="secondary"></ion-icon>
           <ion-text>
             <h2>{{ "Chat" | translate }}</h2>
           </ion-text>
@@ -141,32 +167,8 @@
       </ion-col>
 
       <ion-col size="4">
-        <ion-card color="light" routerLink="/address-book">
-          <ion-icon name="people"></ion-icon>
-          <ion-text>
-            <h2>Contacts</h2>
-          </ion-text>
-        </ion-card>
-      </ion-col>
-      <ion-col size="4">
-        <ion-card color="light" routerLink="/my-tasks">
-          <ion-icon name="list"></ion-icon>
-          <ion-text>
-            <h2>My Tasks</h2>
-          </ion-text>
-        </ion-card>
-      </ion-col>
-      <ion-col size="4">
-        <ion-card color="light" (click)="openBlog()">
-          <ion-icon name="paper"></ion-icon>
-          <ion-text>
-            <h2>Blog</h2>
-          </ion-text>
-        </ion-card>
-      </ion-col>
-      <ion-col size="4">
         <ion-card color="light" routerLink="/applist">
-          <ion-icon name="apps"></ion-icon>
+          <ion-icon name="apps" color="secondary"></ion-icon>
           <ion-text>
             <h2>Apps</h2>
           </ion-text>

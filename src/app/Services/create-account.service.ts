@@ -53,7 +53,6 @@ export class CreateAccountService {
     const masterSeed = seed;
     const account = this.createNewAccount('Account 1', 0);
     this.accountService.addAccount(account);
-    this.accountService.saveMainAccount(account);
     this.accountService.savePassphraseSeed(this.plainPassphrase, this.plainPin);
     this.accountService.saveMasterSeed(masterSeed, this.plainPin);
   }
