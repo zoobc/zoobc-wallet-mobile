@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LanguageService } from 'src/app/Services/language.service';
-import { LANGUAGES } from 'src/environments/variable.const';
+import { LANGUAGES, DEFAULT_THEME } from 'src/environments/variable.const';
 import { TranslateService } from '@ngx-translate/core';
+import { ThemeService } from 'src/app/Services/theme.service';
 
 @Component({
   selector: 'app-initial',
@@ -13,16 +14,19 @@ export class InitialPage implements OnInit {
 
   activeLanguage = 'en';
   languages = [];
-
   constructor(
-    private router: Router, private languageService: LanguageService, private translate: TranslateService
+    private router: Router,
+    private languageService: LanguageService,
+    private themeSrv: ThemeService,
+    private translate: TranslateService
   ) {
+
     this.languages = LANGUAGES;
     this.languageService.setLanguage(this.activeLanguage);
   }
 
   ngOnInit() {
-
+    this.themeSrv.setTheme(DEFAULT_THEME);
   }
 
   openSendFeedbak() {
