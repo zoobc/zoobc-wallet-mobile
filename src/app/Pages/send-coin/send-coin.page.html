@@ -31,7 +31,7 @@
     </ion-row>
     <ion-row *ngIf="account" (click)="openListAccount('sender')">
       <ion-col size="12">
-        <ion-item color="dbspbalance">
+        <ion-item color="primary">
           <ion-label (click)="openListAccount();">
             <h2>{{ account.name }}</h2>
             <p>
@@ -89,7 +89,7 @@
     <ion-row class="ion-row-cont">
       <ion-col size="8" style="padding-left:10px">
         <ion-input placeholder="{{'Enter amount'|translate}}" class="ion-text-right"
-          style="border-bottom: 1px solid #dddddd;font-size:1.2em; color:#0B3D65" (ionChange)="validateAmount()"
+          style="border-bottom: 1px solid #dddddd;font-size:1.2em;" (ionChange)="validateAmount()"
           maxlength="12" type="number" [(ngModel)]="amountTemp">
         </ion-input>
         <ion-input value="{{ amountSecond  | number: '0.0-2'}}" style="font-size:0.8em" class="ion-text-right" readonly
@@ -97,8 +97,8 @@
         </ion-input>
       </ion-col>
       <ion-col size="2" style="font-size: 0.8em; padding-left: 8px;">
-        <div style="margin-top:16px; color:#0B3D65">{{primaryCurr}}</div>
-        <div style="margin-top:24px; font-size: 0.9em;">{{secondaryCurr}}</div>
+        <div class="sufix" style="margin-top:16px;">{{primaryCurr}}</div>
+        <div class="sufix" style="margin-top:24px; font-size: 0.9em;">{{secondaryCurr}}</div>
       </ion-col>
       <ion-col size="2" class="ion-text-center" style="padding-top: 40px;">
         <img src="../../../assets/images/switch-vertical-256.png" style="width:20px" (click)="switchCurrency()" />
@@ -227,13 +227,13 @@
           </ion-input>
         </ion-col>
         <ion-col size="5" style="padding-left: 10px;">
-          <div style="margin-top:10px; color:#0B3D65">ZBC</div>
+          <div class="sufix">ZBC</div>
         </ion-col>
       </ion-row>
 
       <ion-row>
         <ion-col style="margin-top:15px;" class="ion-text-right" color="primary">
-          Block height: <span style="color: darkblue">{{ blockHeight | number: '0.0-2' }}</span>
+          Block height: <ion-text color="primary">{{ blockHeight | number: '0.0-2' }}</ion-text>
         </ion-col>
       </ion-row>
 
@@ -248,7 +248,7 @@
             (ionChange)="validateTimeout()" type="number"></ion-input>
         </ion-col>
         <ion-col size="5" style="padding-left: 10px;">
-          <div style="margin-top:10px; color:#0B3D65">blok(s)</div>
+          <div class="sufix">blok(s)</div>
         </ion-col>
       </ion-row>
 
@@ -270,11 +270,11 @@
   <ion-grid style="margin-top:20px;">
     <ion-row>
       <ion-col>
-        <ion-button color="secondary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="showConfirmation()"
+        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="showConfirmation()"
           expand="block">
           {{ "Next" | translate }}
         </ion-button>
-        <ion-button disabled color="secondary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
+        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
           {{ "Next" | translate }}
         </ion-button>
       </ion-col>

@@ -233,6 +233,7 @@ export class SendCoinPage implements OnInit {
   async presentGetAddressOption() {
     const alert = await this.alertController.create({
       header: 'Select Option',
+      cssClass: 'alertCss',
       inputs: [
         {
           name: 'opsi1',
