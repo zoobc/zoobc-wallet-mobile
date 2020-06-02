@@ -133,8 +133,10 @@ export class DashboardPage implements OnInit {
   async ngOnInit() {
     this.loadData();
     this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === undefined || this.theme === null) {
+      this.theme = DEFAULT_THEME;
+    }
   }
-
 
   async loadData() {
 
