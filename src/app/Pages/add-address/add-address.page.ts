@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { base64ToByteArray } from 'src/Helpers/converters';
+import { base64ToByteArray, makeShortAddress } from 'src/Helpers/converters';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
 import { MODE_EDIT, MODE_NEW } from 'src/environments/variable.const';
@@ -132,7 +132,8 @@ export class AddAddressPage implements OnInit {
 
         const contact: Contact = {
           name: this.name,
-          address: sanitizeString(this.address)
+          address: sanitizeString(this.address),
+          shortAddress: makeShortAddress(sanitizeString(this.address))
         };
 
         await this.addressBookSrv.updateByIndex(contact,
@@ -177,7 +178,8 @@ export class AddAddressPage implements OnInit {
       if (this.isAddressValid && this.isNameValid) {
         const contact: Contact = {
           name: this.name,
-          address: sanitizeString(this.address)
+          address: sanitizeString(this.address),
+          shortAddress: makeShortAddress(sanitizeString(this.address))
         };
 
         await this.addressBookSrv.insert(contact);
