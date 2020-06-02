@@ -12,32 +12,53 @@ export class ThemeService {
   theme = DEFAULT_THEME;
   themes = {
     zoobc: {
-      primary: '#1d2647',
-      secondary: '#6cc3d8',
-      tertiary: '#8f4791',
-      light: '#f4f5f8',
-      medium: '#ffffff',
-      dark: '#020202',
-      dbbalance: '#eae3d0',
+      primary: '#373854',
+      secondary: '#493267',
+      tertiary: '#9e379f',
+      dbbalance: '#9e379f',
+      dbspbalance: '#7bb3ff'
+    },
+    bcz: {
+      primary: '#005b96',
+      secondary: '#6497b1',
+      tertiary: '#03396c',
+      dbbalance: '#ffdf7b',
       dbspbalance: '#6cc3d8'
     },
     day: {
-      primary: '#3880ff',
-      secondary: '#3dc2ff',
-      tertiary: '#5260ff',
-      light: '#f4f5f8',
-      medium: '#000000',
-      dark: '#222428',
+      primary: '#317873',
+      secondary: '#5f9ea0',
+      tertiary: '#49796b',
       dbbalance: '#ffe8df',
       dbspbalance: '#ffdf7b'
     },
     night: {
-      primary: '#222831',
-      secondary: '#222831',
-      tertiary: '#30475e',
-      medium: '#ffbd69',
-      dark: '#543864',
-      light: '#dbdbdb',
+      primary: '#8CBA80',
+      secondary: '#c1a57b',
+      tertiary: '#FE5F55',
+      medium: '#BCC2C7',
+      dark: '#dedede',
+      light: '#495867',
+      dbbalance: '#c1a57b',
+      dbspbalance: '#8CBA80'
+    },
+    neon: {
+      primary: '#39BFBD',
+      secondary: '#4CE0B3',
+      tertiary: '#FF5E79',
+      light: '#F4EDF2',
+      medium: '#B682A5',
+      dark: '#34162A',
+      dbbalance: '#ececec',
+      dbspbalance: '#c1a57b'
+    },
+    autumn: {
+      primary: '#F78154',
+      secondary: '#4D9078',
+      tertiary: '#B4436C',
+      light: '#FDE8DF',
+      medium: '#FCD0A2',
+      dark: '#B89876',
       dbbalance: '#ececec',
       dbspbalance: '#c1a57b'
     }
@@ -47,7 +68,11 @@ export class ThemeService {
     private strgSrv: StoragedevService
   ) {
     strgSrv.get(STORAGE_ACTIVE_THEME).then(themeName => {  // <--- GET SAVED THEME
-      this.setTheme(themeName);
+      let thm = themeName;
+      if (!thm) {
+        thm = DEFAULT_THEME;
+      }
+      this.setTheme(thm);
     });
 
   }
@@ -79,13 +104,13 @@ const defaults = {
   secondary: '#6cc3d8',
   tertiary: '#8f4791',
   light: '#f4f5f8',
-  medium: '#ffffff',
-  dark: '#020202',
+  medium: '#92949c',
+  dark: '#222428',
   dbbalance: '#eae3d0',
   dbspbalance: '#6cc3d8',
-  danger: '#f04141',
-  success: '#10dc60',
-  warning: '#ffce00'
+  danger: '#eb445a',
+  success: '#2dd36f',
+  warning: '#ffc409'
 };
 
 function CSSTextGenerator(colors) {
