@@ -1,9 +1,82 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>msig-create-info</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Multisignature 1</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label>
+          <h3>Import My Multisignature Account</h3>
+          <ion-textarea rows="2" cols="20" placeholder="Enter any notes here...">
+          </ion-textarea>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-label>
+          Participants
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input type="text" placeholder="Participant 1"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input type="text" placeholder="Participant 2"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input type="text" placeholder="Participant 3"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button color="primary">Add Participant</ion-button>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row>
+      <ion-col>
+        <ion-label>
+          <h2>Nonce</h2>
+          <ion-input type="text"></ion-input>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-label>
+          <h2>Minimum Signature</h2>
+          <ion-input type="text"></ion-input>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="danger">Save to draft</ion-button>
+        <ion-button  expand="block" color="secondary">Next</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
