@@ -96,7 +96,10 @@ const routes: Routes = [
   { path: 'multisig', loadChildren: './Pages/multisig/multisig.module#MultisigPageModule' },
   { path: 'msig-send-transaction', loadChildren: './Pages/multisig/msig-send-transaction/msig-send-transaction.module#MsigSendTransactionPageModule' },
   { path: 'msig-create-transaction', loadChildren: './Pages/multisig/msig-create-transaction/msig-create-transaction.module#MsigCreateTransactionPageModule' },
-  { path: 'msig-create-info', loadChildren: './Pages/multisig/msig-create-info/msig-create-info.module#MsigCreateInfoPageModule' }
+  { path: 'msig-create-info', loadChildren: './Pages/multisig/msig-create-info/msig-create-info.module#MsigCreateInfoPageModule' },
+  { path: 'add-signature', loadChildren: './Pages/multisig/add-signature/add-signature.module#AddSignaturePageModule' },  { path: 'msig-add-signature', loadChildren: './Pages/multisig/msig-add-signature/msig-add-signature.module#MsigAddSignaturePageModule' }
+
+
 
 
 ];
