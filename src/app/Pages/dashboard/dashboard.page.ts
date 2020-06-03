@@ -21,6 +21,7 @@ import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
 import { ChatService } from 'src/app/Services/chat.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { QrScannerService } from '../qr-scanner/qr-scanner.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -60,7 +61,8 @@ export class DashboardPage implements OnInit {
     private themeSrv: ThemeService,
     private chatService: ChatService,
     private alertController: AlertController,
-    private decimalPipe: DecimalPipe
+    private decimalPipe: DecimalPipe,
+    private qrScannerService: QrScannerService
   ) {
 
     // if account changed
@@ -275,12 +277,31 @@ export class DashboardPage implements OnInit {
   }
 
   async scanQrCode() {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-          from: ('tabscan')
-      }
-    };
-    this.router.navigate(['/qr-scanner'], navigationExtras);
+
+      this.router.navigateByUrl('/qr-scanner');
+      this.qrScannerService.listen().subscribe((jsonData: string) => {
+        const data = JSON.parse(jsonData);
+
+        const navigationExtras: NavigationExtras = {
+          queryParams: {
+            jsonData: data
+          }
+        };
+        this.router.navigate(['/sendcoin'], navigationExtras);
+        // this.recipientAddress = data.address;
+        // this.amountTemp = Number(data.amount);
+        // this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;
+      });
+
+    // const navigationExtras: NavigationExtras = {
+    //   queryParams: {
+    //       from: ('tabscan')
+    //   }
+    // };
+    // this.router.navigateByUrl('/qr-scanner', navigationExtras);
+    // this.router.navigate(['/qr-scanner'], navigationExtras);
     // this.navCtrl.navigateForward(['/qr-scanner'], navigationExtras);
   }
+
+
 }

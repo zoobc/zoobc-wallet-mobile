@@ -15,7 +15,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen class="ion-no-padding">
+<ion-content class="ion-no-padding">
   <div class="bg-header-{{theme}}">
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
       <ion-refresher-content
@@ -140,10 +140,38 @@
       </ion-col>
 
       <ion-col size="4">
+        <ion-card color="light" routerLink="/multisig">
+          <ion-icon name="key" color="secondary"></ion-icon>
+          <ion-text>
+            <h2>Multisignature</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/multisig" (click)="scanQrCode()">
+          <ion-icon name="radio-button-on" color="secondary"></ion-icon>
+          <ion-text>
+            <h2>Scan</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+
+      <ion-col size="4">
         <ion-card color="light" routerLink="/address-book">
           <ion-icon name="people" color="secondary"></ion-icon>
           <ion-text>
             <h2>Contacts</h2>
+          </ion-text>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="4">
+        <ion-card color="light" routerLink="/settings">
+          <ion-icon name="settings" color="secondary"></ion-icon>
+          <ion-text>
+            <h2>Settings</h2>
           </ion-text>
         </ion-card>
       </ion-col>
