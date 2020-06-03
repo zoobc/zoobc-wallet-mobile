@@ -19,6 +19,7 @@ export class CreateAccountPage implements OnInit {
   validationMessage = EMPTY_STRING;
   isNameValid = true;
   accounts: Account[];
+  isMultisig: boolean;
 
   constructor(
     private createAccountService: CreateAccountService,
@@ -45,6 +46,9 @@ export class CreateAccountPage implements OnInit {
     this.accounts = await this.accountService.allAccount();
   }
 
+  public changeToMultisig() {
+      console.log('=== is multisig: ', this.isMultisig);
+  }
 
   async createOrUpdateAccount() {
 
@@ -105,7 +109,7 @@ export class CreateAccountPage implements OnInit {
     return isExists;
   }
 
-  sanitize(){
+  sanitize() {
     this.accountName = sanitizeString(this.accountName);
   }
 
