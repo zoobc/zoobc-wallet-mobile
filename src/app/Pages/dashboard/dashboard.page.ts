@@ -10,7 +10,7 @@ import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router, NavigationExtras } from '@angular/router';
 import { TransactionService } from 'src/app/Services/transaction.service';
-import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
+import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME } from 'src/environments/variable.const';

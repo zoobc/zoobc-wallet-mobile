@@ -8,7 +8,7 @@ import {
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
-import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
+import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService} from 'src/app/Services/currency.service';
 import { NUMBER_OF_RECORD_IN_TRANSACTIONS,
    CONST_DEFAULT_RATE,

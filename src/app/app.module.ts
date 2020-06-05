@@ -24,7 +24,7 @@ import { LanguageService } from './Services/language.service';
 import { SenddetailPageModule } from './Pages/send-coin/modals/senddetail/senddetail.module';
 import { TrxstatusPageModule } from './Pages/send-coin/modals/trxstatus/trxstatus.module';
 import { EnterpinsendPageModule } from './Pages/send-coin/modals/enterpinsend/enterpinsend.module';
-import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
+import { TransactionDetailPageModule } from './Pages/transactions/transaction-detail/transaction-detail.module';
 import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';
 import { fbconfig } from 'src/environments/firebaseconfig';
 import { PinBackupPageModule } from './Pages/backup-phrase/pin/pin-backup/pin-backup.module';

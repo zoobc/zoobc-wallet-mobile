@@ -14,11 +14,11 @@ const routes: Routes = [
   { path: 'login', loadChildren: './Pages/login/login.module#LoginPageModule' },
   {
     path: 'create-wallet',
-    loadChildren: './Pages/create-wallet/create-wallet.module#CreateWalletPageModule'
+    loadChildren: './Pages/wallet/create-wallet/create-wallet.module#CreateWalletPageModule'
   },
   {
     path: 'existing-wallet',
-    loadChildren: './Pages/existing-wallet/existing-wallet.module#ExistingWalletPageModule'
+    loadChildren: './Pages/wallet/existing-wallet/existing-wallet.module#ExistingWalletPageModule'
   },
   {
     path: 'generate-passphrase',
@@ -36,7 +36,7 @@ const routes: Routes = [
   {
     path: 'create-account',
     loadChildren:
-      './Pages/create-account/create-account.module#CreateAccountPageModule',
+      './Pages/account/create-account/create-account.module#CreateAccountPageModule',
       canActivate: [AuthService]
   },
   {
@@ -49,7 +49,7 @@ const routes: Routes = [
   },
   {
     path: 'list-account',
-    loadChildren: './Pages/list-account/list-account.module#ListAccountModule',
+    loadChildren: './Pages/account/list-account.module#ListAccountModule',
     canActivate: [AuthService]
   },
   {
@@ -71,7 +71,8 @@ const routes: Routes = [
   canActivate: [AuthService] },
   { path: 'sendcoin', loadChildren: './Pages/send-coin/send-coin.module#SendCoinPageModule',
    canActivate: [AuthService] },
-  { path: 'add-address', loadChildren: './Pages/add-address/add-address.module#AddAddressPageModule', canActivate: [AuthService]},
+  // tslint:disable-next-line:max-line-length
+  { path: 'add-address', loadChildren: './Pages/address-book/add-address/add-address.module#AddAddressPageModule', canActivate: [AuthService]},
   { path: 'backup-phrase', loadChildren: './Pages/backup-phrase/backup-phrase.module#BackupPhrasePageModule', canActivate: [AuthService] },
   { path: 'my-tasks', loadChildren: './Pages/my-tasks/my-tasks.module#MyTasksPageModule',
     canActivate: [AuthService] },
@@ -94,10 +95,12 @@ const routes: Routes = [
   { path: 'receive', loadChildren: './Pages/receive/receive.module#ReceivePageModule', canActivate: [AuthService] },
   { path: 'confirmation', loadChildren: './Components/confirmation/confirmation.module#ConfirmationPageModule' },
   { path: 'multisig', loadChildren: './Pages/multisig/multisig.module#MultisigPageModule' },
+  // tslint:disable-next-line:max-line-length
   { path: 'msig-send-transaction', loadChildren: './Pages/multisig/msig-send-transaction/msig-send-transaction.module#MsigSendTransactionPageModule' },
+  // tslint:disable-next-line:max-line-length
   { path: 'msig-create-transaction', loadChildren: './Pages/multisig/msig-create-transaction/msig-create-transaction.module#MsigCreateTransactionPageModule' },
   { path: 'msig-create-info', loadChildren: './Pages/multisig/msig-create-info/msig-create-info.module#MsigCreateInfoPageModule' },
-  { path: 'add-signature', loadChildren: './Pages/multisig/add-signature/add-signature.module#AddSignaturePageModule' },  { path: 'msig-add-signature', loadChildren: './Pages/multisig/msig-add-signature/msig-add-signature.module#MsigAddSignaturePageModule' }
+  { path: 'msig-add-signature', loadChildren: './Pages/multisig/msig-add-signature/msig-add-signature.module#MsigAddSignaturePageModule' }
 
 
 
