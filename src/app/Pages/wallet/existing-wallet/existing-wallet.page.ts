@@ -3,7 +3,7 @@ import { ModalController, LoadingController } from '@ionic/angular';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
-import { SetupPinPage } from 'src/app/Pages/setup-pin/setup-pin.page';
+import { SetupPinPage } from 'src/app/Pages/wallet/existing-wallet/setup-pin/setup-pin.page';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { ZooKeyring } from 'zoobc';

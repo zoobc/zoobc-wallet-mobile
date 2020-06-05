@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../Services/auth-service';
+import { AuthService } from '../../../Services/auth-service';
 import { ModalController, ToastController } from '@ionic/angular';
 import { doDecrypt } from 'src/Helpers/converters';
 import CryptoJS from 'crypto-js';

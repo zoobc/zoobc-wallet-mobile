@@ -25,11 +25,11 @@ import { SenddetailPageModule } from './Pages/send-coin/modals/senddetail/sendde
 import { TrxstatusPageModule } from './Pages/send-coin/modals/trxstatus/trxstatus.module';
 import { EnterpinsendPageModule } from './Pages/send-coin/modals/enterpinsend/enterpinsend.module';
 import { TransactionDetailPageModule } from './Pages/transactions/transaction-detail/transaction-detail.module';
-import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';
+import { SetupPinPageModule } from 'src/app/Pages/wallet/existing-wallet/setup-pin/setup-pin.module';
 import { fbconfig } from 'src/environments/firebaseconfig';
-import { PinBackupPageModule } from './Pages/backup-phrase/pin/pin-backup/pin-backup.module';
+import { PinBackupPageModule } from './Pages/wallet/backup-phrase/pin/pin-backup/pin-backup.module';
 import { TaskDetailPageModule } from './Pages/my-tasks/task-detail/task-detail.module';
-import { SetupPinGpPageModule } from './Pages/generate-passphrase/setup-pin-gp/setup-pin-gp.module';
+import { SetupPinGpPageModule } from './Pages/wallet/generate-passphrase/setup-pin-gp/setup-pin-gp.module';
 import { File } from '@ionic-native/file/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
