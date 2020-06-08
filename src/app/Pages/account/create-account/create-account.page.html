@@ -35,48 +35,41 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-item>
-          <ion-checkbox [(ngModel)]="isMultisig" slot="start" (ionChange)="changeToMultisig()"></ion-checkbox>
-          <ion-label>Multisignature</ion-label>
-        </ion-item>
+        <ion-checkbox [(ngModel)]="isMultisig" (ionChange)="changeToMultisig()" color="primary"></ion-checkbox>
+        <ion-label>Multisignature</ion-label>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="isMultisig">
       <ion-col>
         <ion-label>
-          Participants
+          <h2>Participants</h2>
+          <ion-input>
+          </ion-input>
         </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isMultisig">
-      <ion-input>
-
-      </ion-input> 
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-label>
-          Nonce
-        </ion-label>
-        <ion-input></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-label>
-          Minimum signature
+          <h2>Nonce</h2>
+          <ion-input></ion-input>
         </ion-label>
-        <ion-input type="number"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-label>
-          Sign by
+          <h2>Minimum signature</h2>
+          <ion-input type="number"></ion-input>
         </ion-label>
-        <ion-input type="text">
-
-        </ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-label>
+          <h2>Sign by</h2>
+          <ion-input type="text"></ion-input>
+        </ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
