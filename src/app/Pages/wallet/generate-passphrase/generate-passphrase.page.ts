@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/Services/util.service';
-import { ZooKeyring } from 'zoobc';
+import { ZooKeyring } from 'zoobc-sdk';
 
 @Component({
   selector: 'app-generate-passphrase',

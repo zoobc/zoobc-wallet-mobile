@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastController, ModalController } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { ZooKeyring } from 'zoobc';
+import { ZooKeyring } from 'zoobc-sdk';
 import { STORAGE_ENC_PASSPHRASE_SEED, SALT_PASSPHRASE } from 'src/environments/variable.const';
 import { doDecrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';

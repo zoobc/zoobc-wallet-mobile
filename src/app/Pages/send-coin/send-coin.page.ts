@@ -23,7 +23,7 @@ import {
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import zoobc, {
-  SendMoneyInterface} from 'zoobc';
+  SendMoneyInterface} from 'zoobc-sdk';
 import { calculateMinFee, sanitizeString} from 'src/Helpers/utils';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { UtilService } from 'src/app/Services/util.service';

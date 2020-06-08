@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, MODE_EDIT } from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
-import zoobc from 'zoobc';
+import zoobc from 'zoobc-sdk';
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
