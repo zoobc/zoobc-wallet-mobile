@@ -5,12 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MsigCreateInfoPage } from './msig-create-info.page';
+import { MsigAddInfoPage } from './msig-add-info.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: MsigCreateInfoPage
+    component: MsigAddInfoPage
   }
 ];
 
@@ -21,6 +21,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [MsigCreateInfoPage]
+  declarations: [MsigAddInfoPage]
 })
-export class MsigCreateInfoPageModule {}
+export class MsigAddInfoPageModule {}

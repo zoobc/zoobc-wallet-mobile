@@ -100,9 +100,11 @@ const routes: Routes = [
   { path: 'msig-send-transaction', loadChildren: './Pages/multisig/msig-send-transaction/msig-send-transaction.module#MsigSendTransactionPageModule' },
   // tslint:disable-next-line:max-line-length
   { path: 'msig-create-transaction', loadChildren: './Pages/multisig/msig-create-transaction/msig-create-transaction.module#MsigCreateTransactionPageModule' },
-  { path: 'msig-create-info', loadChildren: './Pages/multisig/msig-create-info/msig-create-info.module#MsigCreateInfoPageModule' },
+  // { path: 'msig-create-info', loadChildren: './Pages/multisig/msig-create-info/msig-create-info.module#MsigCreateInfoPageModule' },
   // tslint:disable-next-line:max-line-length
-  { path: 'msig-add-participants', loadChildren: './Pages/multisig/msig-add-participants/msig-add-participants.module#MsigAddParticipantsPageModule' }
+  { path: 'msig-add-participants', loadChildren: './Pages/multisig/msig-add-participants/msig-add-participants.module#MsigAddParticipantsPageModule' },
+  { path: 'msig-add-info', loadChildren: './Pages/multisig/msig-add-info/msig-add-info.module#MsigAddInfoPageModule' }
+
 
 
 
