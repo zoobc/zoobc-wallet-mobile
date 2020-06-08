@@ -31,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'setup-pin',
-    loadChildren: './Pages/setup-pin/setup-pin.module#SetupPinPageModule'
+    loadChildren: './Pages/wallet/setup-pin/setup-pin.module#SetupPinPageModule'
   },
   {
     path: 'create-account',
@@ -101,7 +101,9 @@ const routes: Routes = [
   // tslint:disable-next-line:max-line-length
   { path: 'msig-create-transaction', loadChildren: './Pages/multisig/msig-create-transaction/msig-create-transaction.module#MsigCreateTransactionPageModule' },
   { path: 'msig-create-info', loadChildren: './Pages/multisig/msig-create-info/msig-create-info.module#MsigCreateInfoPageModule' },
-  { path: 'msig-add-signature', loadChildren: './Pages/multisig/msig-add-signature/msig-add-signature.module#MsigAddSignaturePageModule' }
+  // tslint:disable-next-line:max-line-length
+  { path: 'msig-add-participants', loadChildren: './Pages/multisig/msig-add-participants/msig-add-participants.module#MsigAddParticipantsPageModule' }
+
 
 
 
