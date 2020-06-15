@@ -31,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'setup-pin',
-    loadChildren: './Pages/wallet/setup-pin/setup-pin.module#SetupPinPageModule'
+    loadChildren: './Pages/wallet/existing-wallet/setup-pin/setup-pin.module#SetupPinPageModule'
   },
   {
     path: 'create-account',
@@ -103,7 +103,8 @@ const routes: Routes = [
   // { path: 'msig-create-info', loadChildren: './Pages/multisig/msig-create-info/msig-create-info.module#MsigCreateInfoPageModule' },
   // tslint:disable-next-line:max-line-length
   { path: 'msig-add-participants', loadChildren: './Pages/multisig/msig-add-participants/msig-add-participants.module#MsigAddParticipantsPageModule' },
-  { path: 'msig-add-info', loadChildren: './Pages/multisig/msig-add-info/msig-add-info.module#MsigAddInfoPageModule' },  { path: 'acc-multisig-info', loadChildren: './Pages/account/acc-multisig-info/acc-multisig-info.module#AccMultisigInfoPageModule' }
+  { path: 'msig-add-info', loadChildren: './Pages/multisig/msig-add-info/msig-add-info.module#MsigAddInfoPageModule' },
+  { path: 'acc-multisig-info', loadChildren: './Pages/account/acc-multisig-info/acc-multisig-info.module#AccMultisigInfoPageModule' }
 
 
 
