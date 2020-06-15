@@ -6,7 +6,7 @@ import { AccountService } from 'src/app/Services/account.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { sanitizeString } from 'src/Helpers/utils';
-
+import zoobc, {MultiSigAddress} from 'zoobc-sdk';
 @Component({
   selector: 'app-create-account',
   templateUrl: './create-account.page.html',
@@ -72,13 +72,11 @@ export class CreateAccountPage implements OnInit {
       if (this.accountName === this.account.name) {
         this.accountService.broadCastNewAccount(this.account);
         this.goListAccount();
-        // TODO add toast
         return;
       }
 
       // check if name exists
       if (this.isNameExists(this.accountName)) {
-        // console.log('== name exist: ', this.accountName);
         this.validationMessage = 'Name is Exists';
         this.isNameValid = false;
         return;
@@ -92,7 +90,6 @@ export class CreateAccountPage implements OnInit {
       }
     } else if (this.mode === MODE_NEW) {
       if (this.isNameExists(this.accountName)) {
-        // console.log('== name exist: ', this.accountName);
         this.isNameValid = false;
         return;
       } else {
@@ -102,9 +99,6 @@ export class CreateAccountPage implements OnInit {
   }
 
   isNameExists(name: string) {
-    // console.log('==== All accounts: ', this.accounts);
-    // console.log('==== name: ', name);
-
     this.validationMessage = '';
     const isExists = this.accounts.find(acc => {
       if (name && acc.name.trim().toLowerCase() === name.trim().toLowerCase()) {
@@ -113,7 +107,6 @@ export class CreateAccountPage implements OnInit {
       }
       return false;
     });
-
     return isExists;
   }
 
@@ -123,35 +116,35 @@ export class CreateAccountPage implements OnInit {
 
   async createAccount() {
 
-    // if (this.isMultisig) {
-    //   // let participants: [string] = this.participantsField.value.filter(value => value.length > 0);
-    //   this.participants = this.participants.sort();
+    if (this.isMultisig) {
+      // // let participants: [string] = this.participantsField.value.filter(value => value.length > 0);
+      // this.participants = this.participants.sort();
 
-    //   const multiParam: MultiSigAddress = {
-    //     participants: participants,
-    //     nonce: this.nonce,
-    //     minSigs: this.minSignatureField.value,
-    //   };
-    //   const multiSignAddress: string = zoobc.MultiSignature.createMultiSigAddress(multiParam);
-
-    //   account = {
-    //     name: this.accountNameField.value,
-    //     type: 'multisig',
-    //     path: this.signBy.path,
-    //     nodeIP: null,
-    //     address: multiSignAddress,
-    //     participants: participants,
-    //     nonce: this.nonceField.value,
-    //     minSig: this.minSignatureField.value,
-    //     signByAddress: this.signBy.address,
-    //   };
-    // } else {
+      const multiParam: MultiSigAddress = {
+        participants: this.participants,
+        nonce: this.nonce,
+        minSigs: this.minimumSignature
+      };
+      const multiSignAddress: string = zoobc.MultiSignature.createMultiSigAddress(multiParam);
+      const pathNumber = await this.accountService.generateDerivationPath();
+      const account = {
+        name: this.accountName.trim(),
+        type: 'multisig',
+        path: pathNumber,
+        nodeIP: null,
+        address: multiSignAddress,
+        participants: this.participants,
+        nonce: this.nonce,
+        minSig: this.minimumSignature,
+        signByAddress: this.signBy,
+      };
+    } else {
       const pathNumber = await this.accountService.generateDerivationPath();
       const account = this.createAccountService.createNewAccount(this.accountName.trim(), pathNumber);
       this.accountService.addAccount(account);
       this.accountService.broadCastNewAccount(account);
-    // }
-      this.goListAccount();
+    }
+    this.goListAccount();
   }
 
   goListAccount() {
