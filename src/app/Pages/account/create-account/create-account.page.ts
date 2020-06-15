@@ -13,6 +13,8 @@ import { sanitizeString } from 'src/Helpers/utils';
   styleUrls: ['./create-account.page.scss']
 })
 export class CreateAccountPage implements OnInit {
+
+
   account: Account;
   accountName = EMPTY_STRING;
   mode = EMPTY_STRING;
@@ -20,13 +22,19 @@ export class CreateAccountPage implements OnInit {
   isNameValid = true;
   accounts: Account[];
   isMultisig: boolean;
+  participants = ['', ''];
+  signBy: string;
+  nonce: number;
+  minimumSignature: number;
 
   constructor(
     private createAccountService: CreateAccountService,
     private accountService: AccountService,
     private activeRoute: ActivatedRoute,
     private router: Router
-  ) { }
+  ) {
+  //  this.participants = ['', ''];
+  }
 
 
   async ngOnInit() {
@@ -114,15 +122,56 @@ export class CreateAccountPage implements OnInit {
   }
 
   async createAccount() {
-    const pathNumber = await this.accountService.generateDerivationPath();
-    const account = this.createAccountService.createNewAccount(this.accountName.trim(), pathNumber);
-    this.accountService.addAccount(account);
-    this.accountService.broadCastNewAccount(account);
-    this.goListAccount();
+
+    // if (this.isMultisig) {
+    //   // let participants: [string] = this.participantsField.value.filter(value => value.length > 0);
+    //   this.participants = this.participants.sort();
+
+    //   const multiParam: MultiSigAddress = {
+    //     participants: participants,
+    //     nonce: this.nonce,
+    //     minSigs: this.minSignatureField.value,
+    //   };
+    //   const multiSignAddress: string = zoobc.MultiSignature.createMultiSigAddress(multiParam);
+
+    //   account = {
+    //     name: this.accountNameField.value,
+    //     type: 'multisig',
+    //     path: this.signBy.path,
+    //     nodeIP: null,
+    //     address: multiSignAddress,
+    //     participants: participants,
+    //     nonce: this.nonceField.value,
+    //     minSig: this.minSignatureField.value,
+    //     signByAddress: this.signBy.address,
+    //   };
+    // } else {
+      const pathNumber = await this.accountService.generateDerivationPath();
+      const account = this.createAccountService.createNewAccount(this.accountName.trim(), pathNumber);
+      this.accountService.addAccount(account);
+      this.accountService.broadCastNewAccount(account);
+    // }
+      this.goListAccount();
   }
 
   goListAccount() {
     this.router.navigateByUrl('/list-account');
+  }
+
+  addParticipant() {
+    console.log('=== participants: ', this.participants);
+    this.participants.push('');
+  }
+
+  removeParticipant(idx: number) {
+    console.log('=== index: ', idx);
+    if (idx > -1) {
+      this.participants.splice(idx, 1);
+    }
+  }
+
+  customTrackBy(index: number): any {
+    return index;
   }
 
 }
