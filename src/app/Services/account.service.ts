@@ -5,9 +5,7 @@ import {
   STORAGE_ENC_MASTER_SEED,
   STORAGE_ENC_PASSPHRASE_SEED,
   COIN_CODE,
-  SALT_PASSPHRASE,
-  STORAGE_ALL_MULTISIG_ACCOUNTS
-} from 'src/environments/variable.const';
+  SALT_PASSPHRASE} from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
 import { doEncrypt, makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
@@ -32,7 +30,6 @@ export class AccountService {
 
   constructor(
     private keyringService: KeyringService,
-    private accountService: AccountService,
     private strgSrv: StoragedevService) { }
 
   public accountSubject: Subject<Account> = new Subject<Account>();
@@ -56,9 +53,15 @@ export class AccountService {
     return this.recipient;
   }
 
-  allAccount() {
-    const allAccount = this.strgSrv.get(STORAGE_ALL_ACCOUNTS).then(allaccs => {
-      return allaccs;
+  async allAccount(type?: 'normal' | 'multisig') {
+    const allAccount: Account[] = await this.strgSrv.get(STORAGE_ALL_ACCOUNTS).then(accounts => {
+      if (type && type === 'multisig') {
+        return accounts.filter(acc => acc.type === 'multisig');
+      } else if (type && type === 'normal') {
+        return accounts.filter(acc => acc.type !== 'multisig');
+      } else {
+        return accounts;
+      }
     });
     return allAccount;
   }
@@ -100,25 +103,20 @@ export class AccountService {
     let accounts = await this.allAccount();
 
     if (accounts === null) {
-      console.log('===  accunts is null ===');
       accounts = [];
     }
 
-
-    const { path } = account;
+    const { address } = account;
     const isDuplicate = accounts.find(acc => {
-      if (path && acc.path === path) {
+      if (address && acc.address === address) {
         return true;
       }
       return false;
     });
 
-
     if (!isDuplicate) {
       accounts.push(account);
-      console.log('==== add all Accounts 4: ', accounts);
-      console.log('===== savve storage all accounts');
-      await this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
+      this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
       await this.setActiveAccount(account);
     }
   }
@@ -181,7 +179,7 @@ export class AccountService {
   }
 
   async createInitialAccount() {
-    await this.accountService.removeAllAccounts();
+    await this.removeAllAccounts();
     const { seed } = this.keyringService.calcBip32RootKeyFromMnemonic(
       COIN_CODE,
       this.plainPassphrase,
@@ -189,9 +187,9 @@ export class AccountService {
     );
     const masterSeed = seed;
     const account = this.createNewAccount('Account 1', 0);
-    this.accountService.addAccount(account);
-    this.accountService.savePassphraseSeed(this.plainPassphrase, this.plainPin);
-    this.accountService.saveMasterSeed(masterSeed, this.plainPin);
+    this.addAccount(account);
+    this.savePassphraseSeed(this.plainPassphrase, this.plainPin);
+    this.saveMasterSeed(masterSeed, this.plainPin);
   }
 
   createNewAccount(arg: string, pathNumber: number) {
@@ -209,19 +207,19 @@ export class AccountService {
     return account;
   }
 
-  createNewMultisigAccount(name: string, multiParam: MultiSigAddress, signBy: string, pathNumber: number) {
+  createNewMultisigAccount(name: string, multiParam: MultiSigAddress, signByAccount: Account) {
 
     const multiSignAddress: string = zoobc.MultiSignature.createMultiSigAddress(multiParam);
     const account: Account = {
       name: sanitizeString(name),
       type: 'multisig',
-      path: pathNumber,
+      path: signByAccount.path,
       nodeIP: null,
       address: multiSignAddress,
       participants: multiParam.participants,
       nonce: multiParam.nonce,
       minSig: multiParam.minSigs,
-      signByAddress: signBy,
+      signByAddress: signByAccount.address,
       created: new Date(),
       shortAddress: makeShortAddress(multiSignAddress)
     };
