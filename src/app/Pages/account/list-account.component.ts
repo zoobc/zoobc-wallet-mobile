@@ -102,7 +102,7 @@ export class ListAccountComponent implements OnInit {
   }
 
   editName(account: Account) {
-    this.openAddAccount(account, MODE_EDIT);
+    this.openEditAccount(account);
   }
 
   async openAddAccount(arg: Account, trxMode: string) {
@@ -114,5 +114,14 @@ export class ListAccountComponent implements OnInit {
       }
     };
     this.router.navigate(['/create-account'], navigationExtras);
+  }
+
+  async openEditAccount(arg: Account) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        account: JSON.stringify(arg),
+      }
+    };
+    this.router.navigate(['/edit-account'], navigationExtras);
   }
 }

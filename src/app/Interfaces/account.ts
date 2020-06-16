@@ -8,7 +8,7 @@ export interface Account {
     balance?: number;
     lastTx?: number;
     type: 'normal' | 'multisig';
-    participants?: [string];
+    participants?: string[];
     nonce?: number;
     minSig?: number;
     signByAddress?: string;

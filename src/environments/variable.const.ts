@@ -8,6 +8,7 @@ export const STORAGE_CURRENCY_RATES = 'currency_rates';
 export const STORAGE_CURRENCY_RATE = 'rate';
 export const STORAGE_ADDRESS_BOOK = 'address_book';
 export const STORAGE_ALL_ACCOUNTS = 'all_accounts';
+export const STORAGE_ALL_MULTISIG_ACCOUNTS = 'all_multisig_accounts';
 export const STORAGE_CURRENT_ACCOUNT = 'curr_account';
 export const STORAGE_MAIN_ACCOUNT = 'main_account';
 export const STORAGE_ENC_MASTER_SEED = 'enc_master_seed';

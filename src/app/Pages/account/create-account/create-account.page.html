@@ -3,8 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="mode==='new'">{{ "Add Account" | translate }}</ion-title>
-    <ion-title *ngIf="mode==='edit'">{{ "Edit Account" | translate }}</ion-title>
+    <ion-title>{{ "Add Account" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
         Feedback
@@ -54,6 +53,11 @@
             </ion-input>
         </ion-col>
         <ion-col size="3">    
+          <ion-button  (click)="showPopupAccount(i)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+       </ion-col>
+        <ion-col size="3">    
             <ion-button *ngIf="i > 1" (click)="removeParticipant(i)">
               <ion-icon name="trash"></ion-icon>
             </ion-button>
@@ -93,8 +97,7 @@
     <ion-row >
       <ion-col>
         <ion-button strong color="secondary" (click)="createOrUpdateAccount()" type="submit" expand="block">
-          <span *ngIf="mode==='new'">{{"Save"|translate}}</span>
-          <span *ngIf="mode==='edit'">{{"Update"|translate}}</span>
+          <span>{{"Save"|translate}}</span>
         </ion-button>
       </ion-col>
     </ion-row>
