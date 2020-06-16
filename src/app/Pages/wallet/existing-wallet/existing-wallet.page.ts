@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, LoadingController } from '@ionic/angular';
-import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/wallet/existing-wallet/setup-pin/setup-pin.page';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { ZooKeyring } from 'zoobc-sdk';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-existing-wallet',
@@ -29,7 +29,7 @@ export class ExistingWalletPage implements OnInit {
     private location: Location,
     private authSrv: AuthService,
     private modalController: ModalController,
-    private createAccSrv: CreateAccountService
+    private accountSrv: AccountService
   ) {
     this.lang = 'english';
   }
@@ -95,7 +95,7 @@ export class ExistingWalletPage implements OnInit {
       return;
     }
 
-    this.createAccSrv.setPlainPassphrase(this.passphrase);
+    this.accountSrv.setPlainPassphrase(this.passphrase);
 
     this.errorMsg = '';
     this.showPinDialog();
@@ -103,7 +103,7 @@ export class ExistingWalletPage implements OnInit {
 
   async createAccount() {
 
-    await this.createAccSrv.createInitialAccount();
+    await this.accountSrv.createInitialAccount();
     // console.log('=== create account existing this.ploian pin: ', this.plainPin);
     const loginStatus = this.authSrv.login(this.plainPin);
     // console.log('==== login status: ', loginStatus);
@@ -138,7 +138,7 @@ export class ExistingWalletPage implements OnInit {
       if (returnedData && returnedData.data !== '-') {
         this.plainPin = returnedData.data;
         // set pin to service
-        this.createAccSrv.setPlainPin(this.plainPin);
+        this.accountSrv.setPlainPin(this.plainPin);
         this.createAccount();
       } else {
         // console.log('==== PIN canceled ');

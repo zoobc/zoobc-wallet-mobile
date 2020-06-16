@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { DEFAULT_THEME } from 'src/environments/variable.const';
 import { ThemeService } from 'src/app/Services/theme.service';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-setup-pin-gp',
@@ -19,9 +19,9 @@ export class SetupPinGpPage implements OnInit {
   public plainPassphrase: any;
   public processing = false;
   public theme = DEFAULT_THEME;
-  
+
   constructor(
-    private createAccSrv: CreateAccountService,
+    private accountSrv: AccountService,
     private authSrv: AuthService,
     private router: Router,
     private themeSrv: ThemeService
@@ -35,7 +35,7 @@ export class SetupPinGpPage implements OnInit {
   }
 
   ngOnInit() {
-    this.plainPassphrase = this.createAccSrv.getPassphrase();
+    this.plainPassphrase = this.accountSrv.getPassphrase();
     this.theme = this.themeSrv.theme;
     if (!this.theme) {
       this.theme = DEFAULT_THEME;
@@ -58,9 +58,9 @@ export class SetupPinGpPage implements OnInit {
     // const pin = event.pin;
     if (this.tempPin === pin) {
 
-      this.createAccSrv.setPlainPassphrase(this.plainPassphrase);
-      this.createAccSrv.setPlainPin(pin);
-      await this.createAccSrv.createInitialAccount();
+      this.accountSrv.setPlainPassphrase(this.plainPassphrase);
+      this.accountSrv.setPlainPin(pin);
+      await this.accountSrv.createInitialAccount();
       const loginStatus = await this.authSrv.login(pin);
       if (loginStatus) {
         setTimeout(() => {

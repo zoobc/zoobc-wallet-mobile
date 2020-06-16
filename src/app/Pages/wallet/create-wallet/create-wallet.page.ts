@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { Router } from '@angular/router';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-create-wallet',
@@ -18,12 +18,12 @@ export class CreateWalletPage implements OnInit {
   public isPinSetup = false;
 
   constructor(private navCtrl: NavController,
-              private createAccSrv: CreateAccountService,
+              private accountSrv: AccountService,
               private router: Router) { }
 
   ngOnInit() {
-    this.arrayPhrase = this.createAccSrv.getArrayPassphrase().slice();
-    this.arrayPhraseOri = this.createAccSrv.getArrayPassphrase().slice();
+    this.arrayPhrase = this.accountSrv.getArrayPassphrase().slice();
+    this.arrayPhraseOri = this.accountSrv.getArrayPassphrase().slice();
     // console.log('===== Array phrase: ', this.arrayPhrase);
     this.generateRandomBlanks();
   }

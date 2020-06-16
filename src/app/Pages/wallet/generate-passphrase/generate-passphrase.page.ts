@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CreateAccountService } from 'src/app/Services/create-account.service';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/Services/util.service';
 import { ZooKeyring } from 'zoobc-sdk';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-generate-passphrase',
@@ -36,7 +36,7 @@ export class GeneratePassphrasePage implements OnInit {
   constructor(
     private router: Router,
     private utilService: UtilService,
-    private createAccSrv: CreateAccountService
+    private accountSrv: AccountService
   ) {
   }
 
@@ -65,7 +65,7 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   passphraseConfirmation() {
-    this.createAccSrv.setPlainPassphrase(this.plainPassphrase.slice());
+    this.accountSrv.setPlainPassphrase(this.plainPassphrase.slice());
     this.router.navigateByUrl('/create-wallet');
   }
 
@@ -76,8 +76,8 @@ export class GeneratePassphrasePage implements OnInit {
     } else {
       this.arrayPhrase = this.plainPassphrase.slice().split(' ');
     }
-    this.createAccSrv.setPlainPassphrase(this.plainPassphrase.slice());
-    this.createAccSrv.setArrayPassphrase(this.arrayPhrase);
+    this.accountSrv.setPlainPassphrase(this.plainPassphrase.slice());
+    this.accountSrv.setArrayPassphrase(this.arrayPhrase);
   }
 
   private getPassphraseText() {
