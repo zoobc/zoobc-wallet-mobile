@@ -86,9 +86,10 @@ const routes: Routes = [
   { path: 'transactions', loadChildren: './Pages/transactions/transactions.module#TransactionsPageModule', canActivate: [AuthService] },
   { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' },
     // tslint:disable-next-line:max-line-length
-  { path: 'backuprestore-address', loadChildren: './Pages/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule', canActivate: [AuthService] },
-  { path: 'reg-backup', loadChildren: './Pages/backuprestore-address/reg-backup/reg-backup.module#RegBackupPageModule' },
-  { path: 'login-backup', loadChildren: './Pages/backuprestore-address/login-backup/login-backup.module#LoginBackupPageModule' },
+  { path: 'backuprestore-address', loadChildren: './Pages/address-book/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule', canActivate: [AuthService] },
+  { path: 'reg-backup', loadChildren: './Pages/address-book/backuprestore-address/reg-backup/reg-backup.module#RegBackupPageModule' },
+  // tslint:disable-next-line:max-line-length
+  { path: 'login-backup', loadChildren: './Pages/address-book/backuprestore-address/login-backup/login-backup.module#LoginBackupPageModule' },
   { path: 'chat', loadChildren: './Pages/chat/chat.module#ChatPageModule', canActivate: [AuthService] },
   { path: 'chat-session', loadChildren: './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule', canActivate: [AuthService] },
   { path: 'chat-profile', loadChildren: './Pages/chat/chat-profile/chat-profile.module#ChatProfilePageModule', canActivate: [AuthService] },
@@ -104,7 +105,9 @@ const routes: Routes = [
   // tslint:disable-next-line:max-line-length
   { path: 'msig-add-participants', loadChildren: './Pages/multisig/msig-add-participants/msig-add-participants.module#MsigAddParticipantsPageModule' },
   { path: 'msig-add-info', loadChildren: './Pages/multisig/msig-add-info/msig-add-info.module#MsigAddInfoPageModule' },
-  { path: 'acc-multisig-info', loadChildren: './Pages/account/acc-multisig-info/acc-multisig-info.module#AccMultisigInfoPageModule' },  { path: 'edit-account', loadChildren: './Pages/account/edit-account/edit-account.module#EditAccountPageModule' }
+  { path: 'acc-multisig-info', loadChildren: './Pages/account/acc-multisig-info/acc-multisig-info.module#AccMultisigInfoPageModule' },
+  { path: 'edit-account', loadChildren: './Pages/account/edit-account/edit-account.module#EditAccountPageModule' },
+  { path: 'account-popup', loadChildren: './Pages/account/account-popup/account-popup.module#AccountPopupPageModule' }
 
 
 
