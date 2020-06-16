@@ -61,7 +61,7 @@ const routes: Routes = [
   {
     path: 'transaction/:transId',
     loadChildren:
-      './Pages/transaction-detail/transaction-detail.module#TransactionDetailPageModule',
+      './Pages/transactions/transaction-detail/transaction-detail.module#TransactionDetailPageModule',
       canActivate: [AuthService]
   },
   { path: 'senddetail', loadChildren: './Pages/send-coin/modals/senddetail/senddetail.module#SenddetailPageModule',
@@ -104,7 +104,8 @@ const routes: Routes = [
   // tslint:disable-next-line:max-line-length
   { path: 'msig-add-participants', loadChildren: './Pages/multisig/msig-add-participants/msig-add-participants.module#MsigAddParticipantsPageModule' },
   { path: 'msig-add-info', loadChildren: './Pages/multisig/msig-add-info/msig-add-info.module#MsigAddInfoPageModule' },
-  { path: 'acc-multisig-info', loadChildren: './Pages/account/acc-multisig-info/acc-multisig-info.module#AccMultisigInfoPageModule' }
+  { path: 'acc-multisig-info', loadChildren: './Pages/account/acc-multisig-info/acc-multisig-info.module#AccMultisigInfoPageModule' },  { path: 'edit-account', loadChildren: './Pages/account/edit-account/edit-account.module#EditAccountPageModule' }
+
 
 
 
