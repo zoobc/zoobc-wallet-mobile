@@ -53,6 +53,20 @@ export class AccountService {
     return this.recipient;
   }
 
+  async getAccount(address: string) {
+    const accounts = await this.allAccount();
+    let account = null;
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < accounts.length; i++) {
+      const acc = accounts[i];
+      if (acc.address === address) {
+          account = acc;
+          break;
+      }
+    }
+    return account;
+  }
+
   async allAccount(type?: 'normal' | 'multisig') {
     const allAccount: Account[] = await this.strgSrv.get(STORAGE_ALL_ACCOUNTS).then(accounts => {
       if (type && type === 'multisig') {
@@ -80,12 +94,6 @@ export class AccountService {
     }
     return 0;
   }
-
-  // getAllMultiSigAccount(type?: 'normal' | 'multisig'): Account[] {
-  //   this.strgSrv.get(STORAGE_ALL_MULTISIG_ACCOUNTS).then(accounts => {
-  //     return accounts;
-  //   });
-  // }
 
   async setActiveAccount(account: Account) {
     console.log('=== setActiveAccount account:', account);
@@ -135,23 +143,21 @@ export class AccountService {
     return this.strgSrv.get(STORAGE_CURRENT_ACCOUNT);
   }
 
-  async updateNameByAddress(arg: string, account: Account) {
-    const accounts = this.allAccount();
-    let acc2 = null;
-    const isExists = (await accounts).find(acc => {
-      if (acc.address === account.address) {
-        acc2 = acc;
-        acc.name = arg;
-        account.name = arg;
-        return true;
-      }
-      return false;
-    });
+  async updateAccount(account: Account) {
+    console.log('== acount will updated: ', account);
+    const accounts = await this.allAccount();
 
-    if (isExists) {
-      this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
-      this.broadCastNewAccount(account);
+    for (let i = 0; i < accounts.length; i++) {
+      const acc = accounts[i];
+      if (acc.address === account.address) {
+          console.log('=== finded, ' + i + ':', acc);
+          accounts[i] = account;
+          this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
+          this.broadCastNewAccount(account);
+          break;
+      }
     }
+
   }
 
   setPlainPassphrase(arg: string) {
