@@ -36,8 +36,8 @@ export class ListAccountComponent implements OnInit {
   }
 
   async loadData() {
-    this.route.queryParams.subscribe(params => {
-      if (this.router.getCurrentNavigation().extras.state) {
+    this.route.queryParams.subscribe( () => {
+      if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
         this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
       }
     });
