@@ -15,7 +15,7 @@ export class AccountPopupPage implements OnInit {
               private modalController: ModalController) { }
 
   async ngOnInit() {
-    this.accounts = await this.accountService.allAccount();
+    this.accounts = await this.accountService.allAccount('normal');
   }
 
   accountClicked(account: any) {
@@ -27,4 +27,7 @@ export class AccountPopupPage implements OnInit {
     await this.modalController.dismiss(this.account);
   }
 
+  async close() {
+    await this.modalController.dismiss();
+  }
 }
