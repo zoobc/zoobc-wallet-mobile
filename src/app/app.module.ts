@@ -44,6 +44,7 @@ import { ConfirmationPageModule } from './Components/confirmation/confirmation.m
 import { DecimalPipe } from '@angular/common';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { AccountPopupPageModule } from './Pages/account/account-popup/account-popup.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -75,6 +76,7 @@ export function createTranslateLoader(http: HttpClient) {
     EnterpinsendPageModule,
     PinBackupPageModule,
     ChatProfilePageModule,
+    AccountPopupPageModule,
     AngularFireModule.initializeApp(fbconfig),
     AngularFirestoreModule,
     AngularFireAuthModule,
