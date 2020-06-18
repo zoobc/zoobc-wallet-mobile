@@ -91,7 +91,8 @@ const routes: Routes = [
   { path: 'chat-session', loadChildren: './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule', canActivate: [AuthService] },
   { path: 'chat-profile', loadChildren: './Pages/chat/chat-profile/chat-profile.module#ChatProfilePageModule', canActivate: [AuthService] },
   { path: 'dashboard', loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule', canActivate: [AuthService] },
-  { path: 'receive', loadChildren: './Pages/receive/receive.module#ReceivePageModule', canActivate: [AuthService] },  { path: 'confirmation', loadChildren: './Components/confirmation/confirmation.module#ConfirmationPageModule' }
+  { path: 'receive', loadChildren: './Pages/receive/receive.module#ReceivePageModule', canActivate: [AuthService] },
+  { path: 'confirmation', loadChildren: './Components/confirmation/confirmation.module#ConfirmationPageModule' }
 
 
 
