@@ -5,6 +5,8 @@ import { Account } from 'src/app/Interfaces/account';
 import zoobc from 'zoobc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
+import { Subscription } from 'rxjs';
+import { MultiSigInfo } from 'zoobc-sdk/types/helper/transaction-builder/multisignature';
 
 
 @Component({
@@ -13,7 +15,7 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
   styleUrls: ['./msig-add-info.page.scss'],
 })
 export class MsigAddInfoPage implements OnInit, OnDestroy {
-
+  isMultiSignature = false;
   stepper = {
     transaction: false,
     signatures: false,
@@ -23,34 +25,59 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
   participants: string[];
   nonce: number;
   minSig: number;
-
+  multisigSubs: Subscription;
+  multisig: MultiSigDraft;
 
   constructor(
     private multisigServ: MultisigService,
     private router: Router,
     private accountService: AccountService
   ) {
+
   }
 
   ngOnDestroy(): void {
   }
 
-  ngOnInit() {
-    this.loadData();
-    //   this.stepper.transaction = unisgnedTransactions !== undefined ? true : false;
-    //   this.stepper.signatures = signaturesInfo !== undefined ? true : false;
+  async ngOnInit() {
+    this.account = await this.accountService.getCurrAccount();
+    this.isMultiSignature = this.account.type === 'multisig' ? true : false;
+
+    this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
+      const { multisigInfo, unisgnedTransactions, signaturesInfo } = multisig;
+      if (multisigInfo === undefined) {
+        this.router.navigate(['/multisig']);
+      }
+
+      this.multisig = multisig;
+      if (multisigInfo) {
+        this.loadMultsisigInfo(multisigInfo);
+      } else if (this.isMultiSignature) {
+        this.loadDataAccount();
+      }
+
+      this.stepper.transaction = unisgnedTransactions !== undefined ? true : false;
+      this.stepper.signatures = signaturesInfo !== undefined ? true : false;
+    });
   }
 
   customTrackBy(index: number): any {
     return index;
   }
 
-  async loadData() {
+  async loadDataAccount() {
     this.account = await this.accountService.getCurrAccount();
     const { participants, minSig, nonce } = this.account;
     this.participants = participants;
     this.nonce = nonce;
     this.minSig = minSig;
+  }
+
+  async loadMultsisigInfo(multisigInfo: MultiSigInfo) {
+    const { participants, minSigs, nonce } = multisigInfo;
+    this.participants = participants;
+    this.nonce = nonce;
+    this.minSig = minSigs;
   }
 
 
@@ -82,23 +109,25 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
 
   updateMultisig() {
      const multisig: MultiSigDraft = {
-      accountAddress: '',
-      fee: 0,
-      id: 0,
+        accountAddress: '',
+        fee: 0,
+        id: 0,
+     };
+
+     this.participants.sort();
+     this.participants = this.participants.filter(addrs => addrs !== '');
+
+     multisig.multisigInfo = {
+      minSigs: this.minSig,
+      nonce: this.nonce,
+      participants: this.participants,
+      multisigAddress: '',
     };
+     const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
 
-    // this.participants.sort();
-    // this.participants = this.participants.filter(addrs => addrs !== '');
-
-    // multisig.multisigInfo = {
-    //   minSigs: this.minSig,
-    //   nonce: this.nonce,
-    //   participants: this.participants,
-    //   multisigAddress: '',
-    // };
-    // const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
-    // multisig.generatedSender = address;
-    // this.multisigServ.update(multisig);
+     console.log('=== Multisig Address: ', address);
+     multisig.generatedSender = address;
+     this.multisigServ.update(multisig);
   }
 
 }

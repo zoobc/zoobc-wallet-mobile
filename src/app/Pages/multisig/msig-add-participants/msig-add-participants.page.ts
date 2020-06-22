@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { AuthService } from 'src/app/Services/auth-service';
-import { onCopyText } from 'src/helpers/utils';
+import { onCopyText } from 'src/Helpers/utils';
 import { TranslateService } from '@ngx-translate/core';
-import { MultiSigDraft, MultisigService } from 'src/app/Services/multisig.service';
+import { MultisigService } from 'src/app/Services/multisig.service';
 import { Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -12,6 +12,7 @@ import { Account } from 'src/app/Interfaces/account';
 import { AlertController } from '@ionic/angular';
 import { AccountService } from 'src/app/Services/account.service';
 import { UtilService } from 'src/app/Services/util.service';
+import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 
 @Component({
   selector: 'app-msig-add-participants',
@@ -305,7 +306,6 @@ export class MsigAddParticipantsPage implements OnInit, OnDestroy {
     }
     return result;
   }
-
 
   async showError(title: string, msg: string, ertxt: string ) {
     const alert = await this.alertController.create({

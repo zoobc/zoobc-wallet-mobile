@@ -42,13 +42,20 @@
   </ion-item>
 
   <ion-list>
-    <ion-item>
+    <ion-item *ngFor="let draft of multiSigDrafts; let i = index">
       <ion-label slot="start">
-        <h2>Draft ID: 132456734</h2>
-        <p><i>20 hours ago</i></p>
-        <ion-button color="tertiary" shape="round">
+        <h2>Draft ID: {{ draft.id }}</h2>
+        <p><i>{{ getDate(draft.id) }}</i></p>
+        <ion-button color="tertiary" *ngIf="draft.multisigInfo" shape="round">
           Multisig info
         </ion-button>
+        <ion-button color="tertiary" *ngIf="draft.unisgnedTransactions" shape="round">
+          Transaction
+        </ion-button>
+        <ion-button color="tertiary" *ngIf="draft.signaturesInfo" shape="round">
+          Signatures
+        </ion-button>
+
       </ion-label>
     </ion-item>
   </ion-list>

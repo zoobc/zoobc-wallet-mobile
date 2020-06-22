@@ -36,6 +36,11 @@ export class MultisigPage implements OnInit {
     this.multiSigDrafts = this.multisigServ.getDrafts();
   }
 
+  getDate(pDate: number) {
+    const newDate = new Date(pDate);
+    return newDate;
+  }
+
   goNextStep() {
 
     const multisig: MultiSigDraft = {
