@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { MultiSigInterface } from 'zoobc-sdk';
-
-export interface MultiSigDraft extends MultiSigInterface {
-  id: number;
-  generatedSender?: string;
-}
+import { STORAGE_MULTISIG_DRAFTS } from 'src/environments/variable.const';
+import { MultiSigDraft } from '../Interfaces/multisig';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MultisigService {
+
   private multisigTemplate: MultiSigDraft = {
     id: 0,
     accountAddress: '',
@@ -27,7 +24,7 @@ export class MultisigService {
   }
 
   getDrafts(): MultiSigDraft[] {
-    return JSON.parse(localStorage.getItem('MULTISIG_DRAFTS'));
+    return JSON.parse(localStorage.getItem(STORAGE_MULTISIG_DRAFTS));
   }
 
   saveDraft() {
@@ -35,7 +32,7 @@ export class MultisigService {
     const len = multisigDrafts.length;
     this.sourceMultisig.value.id = new Date().getTime();
     multisigDrafts[len] = this.sourceMultisig.value;
-    localStorage.setItem('MULTISIG_DRAFTS', JSON.stringify(multisigDrafts));
+    localStorage.setItem(STORAGE_MULTISIG_DRAFTS, JSON.stringify(multisigDrafts));
   }
 
   editDraft() {
@@ -44,7 +41,7 @@ export class MultisigService {
       const multisig = multisigDrafts[i];
       if (multisig.id === this.sourceMultisig.value.id) {
         multisigDrafts[i] = this.sourceMultisig.value;
-        localStorage.setItem('MULTISIG_DRAFTS', JSON.stringify(multisigDrafts));
+        localStorage.setItem(STORAGE_MULTISIG_DRAFTS, JSON.stringify(multisigDrafts));
         break;
       }
     }
@@ -53,7 +50,7 @@ export class MultisigService {
   deleteDraft(idx: number) {
     let multisigDrafts = this.getDrafts();
     multisigDrafts = multisigDrafts.filter(draft => draft.id !== idx);
-    localStorage.setItem('MULTISIG_DRAFTS', JSON.stringify(multisigDrafts));
+    localStorage.setItem(STORAGE_MULTISIG_DRAFTS, JSON.stringify(multisigDrafts));
   }
 
 }
