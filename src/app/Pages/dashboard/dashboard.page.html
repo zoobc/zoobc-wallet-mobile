@@ -104,10 +104,10 @@
       </ion-col>
 
       <ion-col size="4">
-        <ion-card color="light" [routerLink]="['/sendcoin']">
+        <ion-card color="light" (click)="sendCoin()">
           <ion-icon name="arrow-round-up" color="secondary"></ion-icon>
           <ion-text>
-            <h2>Transfer</h2>
+            <h2>{{ "Send" | translate }}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -139,7 +139,7 @@
         </ion-card>
       </ion-col>
 
-      <ion-col size="4">
+      <ion-col size="4" *ngIf="account && account.type !== 'multisig'">
         <ion-card color="light" routerLink="/multisig">
           <ion-icon name="key" color="secondary"></ion-icon>
           <ion-text>

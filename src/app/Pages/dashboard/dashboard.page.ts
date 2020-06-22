@@ -288,9 +288,6 @@ export class DashboardPage implements OnInit {
           }
         };
         this.router.navigate(['/sendcoin'], navigationExtras);
-        // this.recipientAddress = data.address;
-        // this.amountTemp = Number(data.amount);
-        // this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;
       });
 
     // const navigationExtras: NavigationExtras = {
@@ -303,5 +300,13 @@ export class DashboardPage implements OnInit {
     // this.navCtrl.navigateForward(['/qr-scanner'], navigationExtras);
   }
 
+  sendCoin() {
+    if (this.account.type && this.account.type === 'multisig') {
+      this.router.navigate(['/multisig']);
+    } else {
+      this.router.navigate(['/sendcoin']);
+    }
+  }
 
+  // [routerLink]="['/sendcoin']"
 }
