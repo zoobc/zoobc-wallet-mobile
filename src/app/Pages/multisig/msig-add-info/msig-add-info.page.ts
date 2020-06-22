@@ -6,8 +6,6 @@ import zoobc from 'zoobc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Subscription } from 'rxjs';
-import { MultiSigInfo } from 'zoobc-sdk/types/helper/transaction-builder/multisignature';
-
 
 @Component({
   selector: 'app-msig-add-info',
@@ -15,7 +13,6 @@ import { MultiSigInfo } from 'zoobc-sdk/types/helper/transaction-builder/multisi
   styleUrls: ['./msig-add-info.page.scss'],
 })
 export class MsigAddInfoPage implements OnInit, OnDestroy {
-  isMultiSignature = false;
   stepper = {
     transaction: false,
     signatures: false,
@@ -33,36 +30,32 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
     private router: Router,
     private accountService: AccountService
   ) {
-
   }
 
   ngOnDestroy(): void {
+    if (this.multisigSubs) { this.multisigSubs.unsubscribe(); }
   }
 
-  async ngOnInit() {
-    this.account = await this.accountService.getCurrAccount();
-    this.isMultiSignature = this.account.type === 'multisig' ? true : false;
-
-    this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
+  ngOnInit() {
+    this.multisigSubs = this.multisigServ.multisig.subscribe( multisig => {
       const { multisigInfo, unisgnedTransactions, signaturesInfo } = multisig;
       if (multisigInfo === undefined) {
         this.router.navigate(['/multisig']);
       }
 
       this.multisig = multisig;
+      console.log('=== this.multisig:', multisig);
       if (multisigInfo) {
-        this.loadMultsisigInfo(multisigInfo);
-      } else if (this.isMultiSignature) {
-        this.loadDataAccount();
+        const { participants, minSigs, nonce } = multisigInfo;
+        this.participants = participants;
+        this.nonce = nonce;
+        this.minSig = minSigs;
+      } else  {
+          this.loadDataAccount();
       }
-
       this.stepper.transaction = unisgnedTransactions !== undefined ? true : false;
       this.stepper.signatures = signaturesInfo !== undefined ? true : false;
     });
-  }
-
-  customTrackBy(index: number): any {
-    return index;
   }
 
   async loadDataAccount() {
@@ -73,17 +66,19 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
     this.minSig = minSig;
   }
 
-  async loadMultsisigInfo(multisigInfo: MultiSigInfo) {
-    const { participants, minSigs, nonce } = multisigInfo;
-    this.participants = participants;
-    this.nonce = nonce;
-    this.minSig = minSigs;
+  customTrackBy(index: number): any {
+    return index;
   }
-
 
   saveDraft() {
     this.updateMultisig();
-    this.multisigServ.saveDraft();
+    if (this.multisig.id) {
+      console.log('=== will edit');
+      this.multisigServ.editDraft();
+    } else {
+      console.log('=== will save');
+      this.multisigServ.saveDraft();
+    }
     this.router.navigate(['/multisig']);
   }
 
@@ -108,12 +103,7 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
   }
 
   updateMultisig() {
-     const multisig: MultiSigDraft = {
-        accountAddress: '',
-        fee: 0,
-        id: 0,
-     };
-
+     const multisig = { ...this.multisig };
      this.participants.sort();
      this.participants = this.participants.filter(addrs => addrs !== '');
 

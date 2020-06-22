@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-multisig',
@@ -22,14 +23,21 @@ export class MultisigPage implements OnInit {
   isAddMultisigInfo: boolean;
   isSignature: boolean;
   isTransaction: boolean;
-  isMultisigInfo = true;
+  isMultisigInfo: boolean;
 
   constructor(
     private router: Router,
-    private multisigServ: MultisigService) { }
+    private alertController: AlertController,
+    private multisigServ: MultisigService) {
+      this.isMultisigInfo = true;
+    }
+
+  ionViewDidEnter(){
+    this.getMultiSigDraft();
+  }
 
   ngOnInit() {
-    this.getMultiSigDraft();
+    // this.getMultiSigDraft();
   }
 
   getMultiSigDraft() {
@@ -53,7 +61,10 @@ export class MultisigPage implements OnInit {
     if (this.isTransaction) { multisig.unisgnedTransactions = null; }
     if (this.isSignature) { multisig.signaturesInfo = null; }
 
+
+    console.log('=== multisif before update: ', multisig);
     this.multisigServ.update(multisig);
+
     if (this.isMultisigInfo) {
       this.router.navigate(['/msig-add-info']);
     } else if (this.isTransaction) {
@@ -64,6 +75,54 @@ export class MultisigPage implements OnInit {
 
   }
 
+  async onDeleteDraft(e, id: number) {
+    this.presentDeleteConfirmation(e, id);
+  }
+
+  async presentDeleteConfirmation(e, id: number) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirm!',
+      message: 'Are you sure want to delete!!!',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+            return false;
+          }
+        }, {
+          text: 'Oke',
+          handler: () => {
+            console.log('Confirm Okay');
+
+            this.multisigServ.deleteDraft(id);
+            this.getMultiSigDraft();
+            return true;
+
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+
+  onEditDraft(idx: number) {
+    const multisig: MultiSigDraft = this.multiSigDrafts[idx];
+    this.multisigServ.update(multisig);
+    const { multisigInfo, unisgnedTransactions, signaturesInfo } = multisig;
+    if (multisigInfo) {
+      this.router.navigate(['/msig-add-info']);
+    } else if (unisgnedTransactions) {
+      this.router.navigate(['/msig-create-transaction']);
+    } else if (signaturesInfo) {
+      this.router.navigate(['/msig-add-signatures']);
+    }
+  }
 
   showInfo() {
     this.addInfo = !this.addInfo;
