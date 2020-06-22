@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Multisignature</ion-title>
+    <ion-title>Send money</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
         Feedback
@@ -13,157 +13,44 @@
 </ion-header>
 
 <ion-content>
+  <ion-item>
+    <h2>Send Money</h2>
+  </ion-item>
 
   <ion-card>
     <ion-card-content>
-
-      <ion-label>
-        Send money
-      </ion-label>
-
       <ion-item>
-        <ion-checkbox slot="start" [(ngModel)]="isAddMultisigInfo"></ion-checkbox>
-        <ion-label>Add Multisignature info</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-checkbox slot="start" [(ngModel)]="isCreateTransaction"></ion-checkbox>
+        <ion-checkbox slot="start" [(ngModel)]="isTransaction"></ion-checkbox>
         <ion-label>Create transaction</ion-label>
       </ion-item>
       <ion-item>
-        <ion-checkbox slot="start" [(ngModel)]="isAddParticipant"></ion-checkbox>
-        <ion-label>Add multisignature participant</ion-label>
+        <ion-checkbox slot="start" [(ngModel)]="isSignature"></ion-checkbox>
+        <ion-label>Add participants signature</ion-label>
       </ion-item>
-      <ion-button color="primary" (click)="goNextStep()">Next</ion-button>
+      <ion-button color="secondary" [disabled]="!isTransaction && !isSignature" (click)="goNextStep()">Next</ion-button>
 
     </ion-card-content>
   </ion-card>
 
   <ion-item>
     <ion-label>
-      Multisignature Draft
+      <h2>Multisignature Draft</h2>
     </ion-label>
+    <ion-button slot="end" color="secondary">
+      Import draft
+    </ion-button>
   </ion-item>
 
   <ion-list>
     <ion-item>
       <ion-label slot="start">
-        <h2>From (John Doe)</h2>
-        <p>iSJt3H8wFOzlWKsy_UoEWF_OjF6oymHMqthyUMDKSyxb</p>
-        <h3>To (Scarlet jonsen)</h3>
-        <p>AFiTqqX99kYXjLFJJ2AWuzKK5zxYUT1Pn0p3s6lutka.</p>
-      </ion-label>
-      <ion-label slot="end">
-        <h3>30 ZBC</h3>
-        <p>
-          <ion-icon name="trash"></ion-icon>
-        </p>
+        <h2>Draft ID: 132456734</h2>
+        <p><i>20 hours ago</i></p>
+        <ion-button color="tertiary" shape="round">
+          Multisig info
+        </ion-button>
       </ion-label>
     </ion-item>
-
-    <ion-item>
-      <ion-label slot="start">
-        <h2>From (John Doe)</h2>
-        <p>iSJt3H8wFOzlWKsy_UoEWF_OjF6oymHMqthyUMDKSyxb</p>
-        <h3>To (Scarlet jonsen)</h3>
-        <p>AFiTqqX99kYXjLFJJ2AWuzKK5zxYUT1Pn0p3s6lutka.</p>
-      </ion-label>
-      <ion-label slot="end">
-        <h3>30 ZBC</h3>
-        <p>
-          <ion-icon name="trash"></ion-icon>
-        </p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label slot="start">
-        <h2>From (John Doe)</h2>
-        <p>iSJt3H8wFOzlWKsy_UoEWF_OjF6oymHMqthyUMDKSyxb</p>
-        <h3>To (Scarlet jonsen)</h3>
-        <p>AFiTqqX99kYXjLFJJ2AWuzKK5zxYUT1Pn0p3s6lutka.</p>
-      </ion-label>
-      <ion-label slot="end">
-        <h3>30 ZBC</h3>
-        <p>
-          <ion-icon name="trash"></ion-icon>
-        </p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label slot="start">
-        <h2>From (John Doe)</h2>
-        <p>iSJt3H8wFOzlWKsy_UoEWF_OjF6oymHMqthyUMDKSyxb</p>
-        <h3>To (Scarlet jonsen)</h3>
-        <p>AFiTqqX99kYXjLFJJ2AWuzKK5zxYUT1Pn0p3s6lutka.</p>
-      </ion-label>
-      <ion-label slot="end">
-        <h3>30 ZBC</h3>
-        <p>
-          <ion-icon name="trash"></ion-icon>
-        </p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label slot="start">
-        <h2>From (John Doe)</h2>
-        <p>iSJt3H8wFOzlWKsy_UoEWF_OjF6oymHMqthyUMDKSyxb</p>
-        <h3>To (Scarlet jonsen)</h3>
-        <p>AFiTqqX99kYXjLFJJ2AWuzKK5zxYUT1Pn0p3s6lutka.</p>
-      </ion-label>
-      <ion-label slot="end">
-        <h3>30 ZBC</h3>
-        <p>
-          <ion-icon name="trash"></ion-icon>
-        </p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label slot="start">
-        <h2>From (John Doe)</h2>
-        <p>iSJt3H8wFOzlWKsy_UoEWF_OjF6oymHMqthyUMDKSyxb</p>
-        <h3>To (Scarlet jonsen)</h3>
-        <p>AFiTqqX99kYXjLFJJ2AWuzKK5zxYUT1Pn0p3s6lutka.</p>
-      </ion-label>
-      <ion-label slot="end">
-        <h3>30 ZBC</h3>
-        <p>
-          <ion-icon name="trash"></ion-icon>
-        </p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label slot="start">
-        <h2>From (John Doe)</h2>
-        <p>iSJt3H8wFOzlWKsy_UoEWF_OjF6oymHMqthyUMDKSyxb</p>
-        <h3>To (Scarlet jonsen)</h3>
-        <p>AFiTqqX99kYXjLFJJ2AWuzKK5zxYUT1Pn0p3s6lutka.</p>
-      </ion-label>
-      <ion-label slot="end">
-        <h3>30 ZBC</h3>
-        <p>
-          <ion-icon name="trash"></ion-icon>
-        </p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label slot="start">
-        <h2>From (John Doe)</h2>
-        <p>iSJt3H8wFOzlWKsy_UoEWF_OjF6oymHMqthyUMDKSyxb</p>
-        <h3>To (Scarlet jonsen)</h3>
-        <p>AFiTqqX99kYXjLFJJ2AWuzKK5zxYUT1Pn0p3s6lutka.</p>
-      </ion-label>
-      <ion-label slot="end">
-        <h3>30 ZBC</h3>
-        <p>
-          <ion-icon name="trash"></ion-icon>
-        </p>
-      </ion-label>
-    </ion-item>
-
-
   </ion-list>
 
 </ion-content>

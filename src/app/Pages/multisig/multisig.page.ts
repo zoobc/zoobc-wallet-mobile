@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { AccountService } from 'src/app/Services/account.service';
-import { AddressBookService } from 'src/app/Services/address-book.service';
+import { MultisigService } from 'src/app/Services/multisig.service';
+import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 
 @Component({
   selector: 'app-multisig',
@@ -10,7 +9,9 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
   styleUrls: ['./multisig.page.scss'],
 })
 export class MultisigPage implements OnInit {
-  
+
+  multiSigDrafts: MultiSigDraft[];
+
   addInfo = true;
   createTransaction = true;
   addSignature = true;
@@ -19,46 +20,43 @@ export class MultisigPage implements OnInit {
   isError = false;
 
   isAddMultisigInfo: boolean;
-  isAddParticipant: boolean;
-  isCreateTransaction: boolean;
-  
+  isSignature: boolean;
+  isTransaction: boolean;
+  isMultisigInfo = true;
+
   constructor(
     private router: Router,
-    private alertCtrl: AlertController,
-    private accountService: AccountService,
-    private addresBookSrv: AddressBookService) { }
+    private multisigServ: MultisigService) { }
 
   ngOnInit() {
-    this.isLoading = true;
-
-    this.multiSigCoPayer = [
-      {
-        sender: '',
-        senderName: '',
-        recipient: '',
-        recipientName: '',
-        amount: 10,
-      }
-    ];
-    this.isLoading = false;
-    this.isError = false;
+    this.getMultiSigDraft();
   }
 
-  goNextStep(){
-    if (this.isAddMultisigInfo) {
-      this.router.navigateByUrl('/msig-create-info');
-      return;
-    }
-    if (this.isCreateTransaction) {
-      this.router.navigateByUrl('/msig-create-transaction');
-      return;
-    }
-    if (this.isAddParticipant) {
-      this.router.navigateByUrl('/msig-add-signature');
-      return;
+  getMultiSigDraft() {
+    this.multiSigDrafts = this.multisigServ.getDrafts();
+  }
+
+  goNextStep() {
+
+    const multisig: MultiSigDraft = {
+      accountAddress: '',
+      fee: 0,
+      id: 0,
+    };
+
+    if (this.isMultisigInfo) { multisig.multisigInfo = null; }
+    if (this.isTransaction) { multisig.unisgnedTransactions = null; }
+    if (this.isSignature) { multisig.signaturesInfo = null; }
+
+    this.multisigServ.update(multisig);
+    if (this.isMultisigInfo) {
+      this.router.navigate(['/msig-add-info']);
+    } else if (this.isTransaction) {
+      this.router.navigate(['/msig-create-transaction']);
+    } else if (this.isSignature) {
+      this.router.navigate(['/msig-add-participants']);
     }
 
-    this.router.navigateByUrl('/msig-create-info');
   }
 
 
