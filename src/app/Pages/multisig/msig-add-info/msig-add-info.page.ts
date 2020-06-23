@@ -83,19 +83,17 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
   }
 
   next() {
-    this.router.navigateByUrl('/msig-create-transaction');
-    // if (this.form.valid) {
-    //   this.updateMultisig();
 
-    //   const { unisgnedTransactions, signaturesInfo } = this.multisig;
-    //   if (unisgnedTransactions !== undefined) {
-    //     this.router.navigate(['/multisignature/create-transaction']);
-    //   } else if (signaturesInfo !== undefined) {
-    //     this.router.navigate(['/multisignature/add-signatures']);
-    //   } else {
-    //     this.router.navigate(['/multisignature/send-transaction']);
-    //   }
-    // }
+      this.updateMultisig();
+      const { unisgnedTransactions, signaturesInfo } = this.multisig;
+      if (unisgnedTransactions !== undefined) {
+         this.router.navigate(['/msig-create-transaction']);
+      } else if (signaturesInfo !== undefined) {
+        this.router.navigate(['/msig-add-signatures']);
+      } else {
+        this.router.navigate(['/msig-send-transaction']);
+      }
+
   }
 
   back() {
