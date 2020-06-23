@@ -1,12 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-
 import { MnemonicsService } from './mnemonics.service';
 
-describe('MnemonicsService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+// describe('MnemonicsService', () => {
+//   let service: MnemonicsService;
+//   beforeEach(() => { 
+//     TestBed.configureTestingModule({})
+//     service = new MnemonicsService(null);
+//   });
 
-  it('should be created', () => {
-    // const service: MnemonicsService = TestBed.get(MnemonicsService);
-    // expect(service).toBeTruthy();
-  });
-});
+//   it('should be created', () => {
+//     expect(service).toBeTruthy();
+//   });
+// });
