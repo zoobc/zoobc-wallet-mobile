@@ -1,14 +1,13 @@
 
-import { Component, OnInit, ViewChild, TemplateRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { environment } from 'src/environments/environment';
-import { truncate } from 'src/helpers/utils';
+import { truncate } from 'src/Helpers/utils';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { MultiSigDraft, MultisigService } from 'src/app/services/multisig.service';
+import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import zoobc, { MultiSigInterface } from 'zoobc-sdk';
@@ -16,6 +15,7 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { AuthService } from 'src/app/Services/auth-service';
 import { AlertController } from '@ionic/angular';
 import { CurrencyService } from 'src/app/Services/currency.service';
+import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 
 
 @Component({
@@ -73,43 +73,43 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.accountSrv.getCurrAccount().then(acc => {
-      this.account = acc;
-    });
-    const subsRate = this.currencyServ.rate.subscribe((rate: Currency) => {
-      this.currencyRate = rate;
-      const minCurrency = truncate(this.minFee * rate.value, 8);
-      this.feeFormCurr.setValidators([Validators.required, Validators.min(minCurrency)]);
-    });
-    this.subscription.add(subsRate);
+    // this.accountSrv.getCurrAccount().then(acc => {
+    //   this.account = acc;
+    // });
+    // const subsRate = this.currencyServ.rate.subscribe((rate: Currency) => {
+    //   this.currencyRate = rate;
+    //   const minCurrency = truncate(this.minFee * rate.value, 8);
+    //   this.feeFormCurr.setValidators([Validators.required, Validators.min(minCurrency)]);
+    // });
+    // this.subscription.add(subsRate);
 
-    this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
-      this.multisig = multisig;
+    // this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
+    //   this.multisig = multisig;
 
-      const { accountAddress, fee } = this.multisig;
-      this.account.address = accountAddress;
-      this.feeForm.setValue(multisig.fee);
-      this.feeFormCurr.setValue(multisig.fee * this.currencyRate.value);
-      this.timeoutField.setValue('0');
-      if (fee === this.feeSlow) {
-        this.typeFee = 1;
-        this.kindFee = 'Slow';
-      } else if (fee === this.feeMedium) {
-        this.typeFee = 2;
-        this.kindFee = 'Average';
-      } else if (fee === this.feeFast) {
-        this.typeFee = 3;
-        this.kindFee = 'Fast';
-      } else {
-        this.customFeeValues = multisig.fee;
-        this.kindFee = 'Custom';
-      }
-    });
-    this.getMultiSigDraft();
+    //   const { accountAddress, fee } = this.multisig;
+    //   this.account.address = accountAddress;
+    //   this.feeForm.setValue(multisig.fee);
+    //   this.feeFormCurr.setValue(multisig.fee * this.currencyRate.value);
+    //   this.timeoutField.setValue('0');
+    //   if (fee === this.feeSlow) {
+    //     this.typeFee = 1;
+    //     this.kindFee = 'Slow';
+    //   } else if (fee === this.feeMedium) {
+    //     this.typeFee = 2;
+    //     this.kindFee = 'Average';
+    //   } else if (fee === this.feeFast) {
+    //     this.typeFee = 3;
+    //     this.kindFee = 'Fast';
+    //   } else {
+    //     this.customFeeValues = multisig.fee;
+    //     this.kindFee = 'Custom';
+    //   }
+    // });
+    // this.getMultiSigDraft();
   }
 
-  getMultiSigDraft() {
-    this.multiSigDrafts = this.multisigServ.getDrafts();
+  async getMultiSigDraft() {
+    this.multiSigDrafts = await this.multisigServ.getDrafts();
   }
 
   saveDraft() {
@@ -176,10 +176,10 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       unisgnedTransactions: this.multisig.unisgnedTransactions,
       signaturesInfo: this.multisig.signaturesInfo,
     };
-    const childSeed = this.authServ.seed;
+    const childSeed = null; // this.authServ.seed;
 
     zoobc.MultiSignature.postTransaction(data, childSeed)
-      .then(async (res: any) => {
+      .then(async () => {
         let message = '';
         await this.translate
           .get('Your Transaction is processing')
@@ -198,7 +198,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
           .toPromise()
           .then(resp => { subMessage = resp; });
         this.multisigServ.deleteDraft(this.multisig.id);
-        this.showDialog(message, subMessage, 'success');
+        this.showDialog(message, subMessage);
         this.router.navigateByUrl('/dashboard');
       })
       .catch(async err => {
@@ -208,7 +208,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
           .get('An error occurred while processing your request')
           .toPromise()
           .then(res => (message = res));
-        this.showDialog('Opps...', message, 'error');
+        this.showDialog('Opps...', message);
       });
   }
 
@@ -216,7 +216,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     // this.dialog.closeAll();
   }
 
-  async showDialog(title: string, msg: string, ertxt: string) {
+  async showDialog(title: string, msg: string) {
     const alert = await this.alertController.create({
       cssClass: 'alertCss',
       header: 'Alert',

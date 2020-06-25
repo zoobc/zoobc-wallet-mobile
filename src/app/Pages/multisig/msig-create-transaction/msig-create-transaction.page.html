@@ -30,7 +30,7 @@
       </ion-col>
     </ion-row>
     <!-- <ion-row *ngIf="account" (click)="openListAccount('sender')"> -->
-      <ion-row *ngIf="account" >
+    <ion-row *ngIf="account">
       <ion-col size="12">
         <ion-item color="primary">
           <ion-label>
@@ -90,8 +90,8 @@
     <ion-row class="ion-row-cont">
       <ion-col size="8" style="padding-left:10px">
         <ion-input placeholder="{{'Enter amount'|translate}}" class="ion-text-right"
-          style="border-bottom: 1px solid #dddddd;font-size:1.2em;" (ionChange)="validateAmount()"
-          maxlength="12" type="number" [(ngModel)]="amountTemp">
+          style="border-bottom: 1px solid #dddddd;font-size:1.2em;" (ionChange)="validateAmount()" maxlength="12"
+          type="number" [(ngModel)]="amountTemp">
         </ion-input>
         <ion-input value="{{ amountSecond  | number: '0.0-2'}}" style="font-size:0.8em" class="ion-text-right" readonly
           type="text">
@@ -182,6 +182,13 @@
   <ion-grid style="margin-top:20px;">
     <ion-row>
       <ion-col>
+        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()"
+          expand="block">
+          {{ "Save" | translate }}
+        </ion-button>
+        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
+          {{ "Save" | translate }}
+        </ion-button>
         <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="showConfirmation()"
           expand="block">
           {{ "Next" | translate }}

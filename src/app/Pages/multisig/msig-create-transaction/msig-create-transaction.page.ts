@@ -155,13 +155,12 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   saveDraft() {
     this.updateCreateTransaction();
-    const isDraft = this.multiSigDrafts.some(draft => draft.id === this.multisig.id);
-    if (isDraft) {
+    if (this.multisig.id) {
       this.multisigServ.editDraft();
     } else {
       this.multisigServ.saveDraft();
     }
-    this.router.navigate(['/multisignature']);
+    this.router.navigate(['/multisig']);
   }
 
   updateCreateTransaction() {
@@ -172,8 +171,9 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       sender: address,
       amount: this.amount,
       fee: this.transactionFee,
-      recipient: this.recipientAddress,
+      recipient: sanitizeString(this.recipientAddress),
     };
+
     this.multisigServ.update(multisig);
   }
 
