@@ -35,36 +35,59 @@
   </ion-card>
 
   <ion-item>
-    <h3>Multisignature Draft</h3>
+    <h4>Multisignature Draft</h4>
     <ion-button slot="end" color="secondary">
       Import draft
     </ion-button>
   </ion-item>
 
   <ion-grid>
-    <ion-row *ngFor="let draft of multiSigDrafts; let i = index">
+    <div *ngFor="let draft of multiSigDrafts; let i = index"  (click)="onEditDraft(i)">
+    <ion-row>
       <ion-col size="9">
-        <ion-label (click)="onEditDraft(i)">
+        <ion-label>
           <h2>Draft ID: {{ draft.id }}</h2>
-          <p><i>{{ getDate(draft.id) }}</i></p>
-          <ion-button color="tertiary" size="small" *ngIf="draft.multisigInfo" shape="round">
-            Multisig info
-          </ion-button>
-          <ion-button color="tertiary" size="small" *ngIf="draft.unisgnedTransactions" shape="round">
-            Transaction
-          </ion-button>
-          <ion-button color="tertiary" size="small" *ngIf="draft.signaturesInfo" shape="round">
-            Signatures
-          </ion-button>
+          <p><i>{{ doDateAgo(draft.id) }}</i></p>
         </ion-label>
       </ion-col>
 
       <ion-col size="3" class="ion-text-center">
-        <ion-label (click)="onDeleteDraft($event, draft.id)">
+        <ion-label *ngIf="draft.unisgnedTransactions">
+          - {{ draft.unisgnedTransactions.amount | number: '0.0-2' }} ZBC
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row  *ngIf="draft.unisgnedTransactions">
+      <ion-col>
+        <ion-label>
+          <h3>From</h3>
+          <p> {{draft.unisgnedTransactions.sender}}</p>
+        </ion-label>
+        <ion-label>
+          <h3>To</h3>
+          <p> {{draft.unisgnedTransactions.sender}}</p>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row style="border-bottom: 1px #cccccc solid;">
+      <ion-col size="11">
+        <ion-badge color="tertiary"  *ngIf="draft.multisigInfo" shape="round">
+          Multisig info
+        </ion-badge>&nbsp;
+        <ion-badge color="tertiary"  *ngIf="draft.unisgnedTransactions" shape="round">
+          Transaction
+        </ion-badge>&nbsp;
+        <ion-badge color="tertiary"  *ngIf="draft.signaturesInfo" shape="round">
+          Signatures
+        </ion-badge>
+      </ion-col>
+      <ion-col size="1" class="text-align-center">
+        <ion-label (click)="onDeleteDraft($event, draft.id)" color="danger">
           <ion-icon name="trash"></ion-icon>
         </ion-label>
       </ion-col>
     </ion-row>
+  </div>
   </ion-grid>
 
 </ion-content>

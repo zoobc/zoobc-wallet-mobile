@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { AlertController } from '@ionic/angular';
+import { dateAgo } from 'src/Helpers/utils';
 
 @Component({
   selector: 'app-multisig',
@@ -110,6 +111,9 @@ export class MultisigPage implements OnInit {
     await alert.present();
   }
 
+  doDateAgo(pDate: any) {
+    return dateAgo(pDate);
+  }
 
   onEditDraft(idx: number) {
     const multisig: MultiSigDraft = this.multiSigDrafts[idx];
