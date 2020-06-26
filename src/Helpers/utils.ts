@@ -36,6 +36,10 @@ export function sanitizeString(str) {
   return str.trim();
 }
 
+export function stringToBuffer(str: string) {
+  return Buffer.from(str, 'base64');
+}
+
 export function dateAgo(value: any): any {
   if (value) {
       const seconds = Math.floor((+new Date() - +new Date(value)) / 1000);

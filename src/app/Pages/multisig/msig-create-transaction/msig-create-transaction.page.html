@@ -189,7 +189,7 @@
         <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
           {{ "Save" | translate }}
         </ion-button>
-        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="showConfirmation()"
+        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="next()"
           expand="block">
           {{ "Next" | translate }}
         </ion-button>
