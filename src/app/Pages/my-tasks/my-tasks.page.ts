@@ -15,7 +15,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
   styleUrls: ['./my-tasks.page.scss'],
 })
 export class MyTasksPage implements OnInit {
-
+  segmentModel = 'escrow';
   account: Account;
   escrowTransactions: any;
   page = 1;
@@ -38,6 +38,11 @@ export class MyTasksPage implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 1000);
+  }
+
+  segmentChanged(event) {
+    console.log(this.segmentModel);
+    //  console.log(event);
   }
 
   async loadTask() {
