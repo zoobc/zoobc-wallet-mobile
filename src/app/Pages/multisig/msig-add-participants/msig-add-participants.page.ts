@@ -97,22 +97,22 @@ export class MsigAddParticipantsPage implements OnInit, OnDestroy {
   }
 
   checkValidityParticipant(multisig: MultiSigDraft, address: string) {
-    const { signaturesInfo, multisigInfo, unisgnedTransactions } = multisig;
-    if (
-      !signaturesInfo ||
-      signaturesInfo == null ||
-      signaturesInfo.participants.filter(pcp => pcp.address.length === 0).length > 0
-    ) {
-      if (multisigInfo) {
-        length = multisigInfo.participants.filter(pcp => pcp === address).length;
-      } else if (unisgnedTransactions) {
-        this.accountService.allAccount().then(accounts => {
-          const account = accounts.find(acc => acc.address === unisgnedTransactions.sender);
-          length = account.participants.filter(pcp => pcp === address).length;
-        });
-      } else { length = 1; }
-    } else { length = signaturesInfo.participants.filter(pcp => pcp.address === address).length; }
-    if (length > 0) { return true; }
+    // const { signaturesInfo, multisigInfo, unisgnedTransactions } = multisig;
+    // if (
+    //   !signaturesInfo ||
+    //   signaturesInfo == null ||
+    //   // signaturesInfo.participants.filter(pcp => pcp.address.length === 0).length > 0
+    // ) {
+    //   if (multisigInfo) {
+    //     length = multisigInfo.participants.filter(pcp => pcp === address).length;
+    //   } else if (unisgnedTransactions) {
+    //     this.accountService.allAccount().then(accounts => {
+    //       const account = accounts.find(acc => acc.address === unisgnedTransactions.);
+    //       length = account.participants.filter(pcp => pcp === address).length;
+    //     });
+    //   } else { length = 1; }
+    // } else { length = signaturesInfo.participants.filter(pcp => pcp.address === address).length; }
+    // if (length > 0) { return true; }
     return false;
   }
 
@@ -121,7 +121,7 @@ export class MsigAddParticipantsPage implements OnInit, OnDestroy {
 
     if (!signaturesInfo || signaturesInfo == null) {
       if (multisigInfo) { return this.patchParticipant(multisigInfo.participants, true); }
-      if (unisgnedTransactions) { return this.patchUnsignedAddress(unisgnedTransactions.sender); }
+      // if (unisgnedTransactions) { return this.patchUnsignedAddress(unisgnedTransactions.sender); }
       return this.pushInitParticipant();
     }
     if (signaturesInfo.txHash) { this.transactionHashField.patchValue(signaturesInfo.txHash); }

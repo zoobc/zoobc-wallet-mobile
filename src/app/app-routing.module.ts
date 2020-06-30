@@ -120,13 +120,19 @@ const routes: Routes = [
   loadChildren: './Pages/multisig/msig-add-participants/msig-add-participants.module#MsigAddParticipantsPageModule',
   canActivate: [AuthService] },
   { path: 'msig-add-info',
-  loadChildren: './Pages/multisig/msig-add-info/msig-add-info.module#MsigAddInfoPageModule', canActivate: [AuthService] },
+  loadChildren: './Pages/multisig/msig-add-info/msig-add-info.module#MsigAddInfoPageModule',
+  canActivate: [AuthService] },
   { path: 'acc-multisig-info',
-  loadChildren: './Pages/account/acc-multisig-info/acc-multisig-info.module#AccMultisigInfoPageModule', canActivate: [AuthService] },
+  loadChildren: './Pages/account/acc-multisig-info/acc-multisig-info.module#AccMultisigInfoPageModule',
+  canActivate: [AuthService] },
   { path: 'edit-account',
-  loadChildren: './Pages/account/edit-account/edit-account.module#EditAccountPageModule', canActivate: [AuthService] },
+  loadChildren: './Pages/account/edit-account/edit-account.module#EditAccountPageModule',
+  canActivate: [AuthService] },
   { path: 'account-popup',
-  loadChildren: './Pages/account/account-popup/account-popup.module#AccountPopupPageModule'}
+  loadChildren: './Pages/account/account-popup/account-popup.module#AccountPopupPageModule'},
+  { path: 'msig-add-signatures',
+  loadChildren: './Pages/multisig/msig-add-signatures/msig-add-signatures.module#MsigAddSignaturesPageModule',
+  canActivate: [AuthService] }
 ];
 @NgModule({
   imports: [

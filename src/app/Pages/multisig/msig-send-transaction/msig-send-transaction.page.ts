@@ -16,6 +16,7 @@ import { AuthService } from 'src/app/Services/auth-service';
 import { AlertController } from '@ionic/angular';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
+import { UtilService } from 'src/app/Services/util.service';
 
 
 @Component({
@@ -52,14 +53,11 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   customFeeValues: number;
 
   constructor(
-    private authServ: AuthService,
-    private currencyServ: CurrencyService,
+    private utilService: UtilService,
     private alertController: AlertController,
-    private translate: TranslateService,
     private router: Router,
     private multisigServ: MultisigService,
-    private location: Location,
-    private accountSrv: AccountService
+    private location: Location
   ) {
     this.formSend = new FormGroup({
       fee: this.feeForm,
@@ -168,47 +166,34 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   }
 
   async onSendMultiSignatureTransaction() {
+    const {
+      accountAddress,
+      fee,
+      multisigInfo,
+      unisgnedTransactions,
+      signaturesInfo,
+      transaction,
+    } = this.multisig;
     this.updateSendTransaction();
     const data: MultiSigInterface = {
-      accountAddress: this.multisig.accountAddress,
-      fee: this.multisig.fee,
-      multisigInfo: this.multisig.multisigInfo,
-      unisgnedTransactions: this.multisig.unisgnedTransactions,
-      signaturesInfo: this.multisig.signaturesInfo,
+      accountAddress,
+      fee,
+      multisigInfo,
+      unisgnedTransactions,
+      signaturesInfo,
     };
+
     const childSeed = null; // this.authServ.seed;
 
     zoobc.MultiSignature.postTransaction(data, childSeed)
-      .then(async () => {
-        let message = '';
-        await this.translate
-          .get('Your Transaction is processing')
-          .toPromise()
-          .then(resp => {
-            message = resp;
-          });
-        let subMessage = '';
-        await this.translate
-          .get('You send coins to', {
-            amount: data.unisgnedTransactions.amount,
-            currencyValue: truncate(data.unisgnedTransactions.amount * this.currencyRate.value, 2),
-            currencyName: this.currencyRate.name,
-            recipient: data.unisgnedTransactions.recipient,
-          })
-          .toPromise()
-          .then(resp => { subMessage = resp; });
-        this.multisigServ.deleteDraft(this.multisig.id);
-        this.showDialog(message, subMessage);
-        this.router.navigateByUrl('/dashboard');
+      .then(async (res: any) => {
+        const message = 'Your Transaction is processing';
+        this.utilService.showConfirmation('Success', message, true, '/dashboard');
       })
       .catch(async err => {
         console.log(err.message);
-        let message: string;
-        await this.translate
-          .get('An error occurred while processing your request')
-          .toPromise()
-          .then(res => (message = res));
-        this.showDialog('Opps...', message);
+        const message = 'An error occurred while processing your request' ;
+        this.utilService.showConfirmation('Fail', message, false, '/dashboard');
       });
   }
 
@@ -229,4 +214,19 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   }
 
 }
+
+export async function getTranslation(
+  value: string,
+  translateService: TranslateService,
+  // tslint:disable-next-line:ban-types
+  interpolateParams?: Object
+) {
+  let message: string;
+  await translateService
+    .get(value, interpolateParams)
+    .toPromise()
+    .then(res => (message = res));
+  return message;
+}
+
 

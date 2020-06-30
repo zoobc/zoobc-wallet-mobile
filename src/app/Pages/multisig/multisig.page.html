@@ -28,14 +28,14 @@
         <ion-label>Add participants signature</ion-label>
       </ion-item>
       <!-- <ion-item> -->
-      <ion-button slot="end" color="secondary" [disabled]="!isTransaction && !isSignature" (click)="goNextStep()">Next
+      <ion-button slot="end" color="tertiary" [disabled]="!isTransaction && !isSignature" (click)="goNextStep()">Next
       </ion-button>
       <!-- </ion-item> -->
     </ion-card-content>
   </ion-card>
 
   <ion-item>
-    <h4>Multisignature Draft</h4>
+    <h5>Multisignature drafts</h5>
     <ion-button slot="end" color="secondary">
       Import draft
     </ion-button>
@@ -52,25 +52,45 @@
       </ion-col>
 
       <ion-col size="3" class="ion-text-center">
-        <ion-label *ngIf="draft.unisgnedTransactions">
-          - {{ draft.unisgnedTransactions.amount | number: '0.0-2' }} ZBC
+        <ion-label *ngIf="draft.transaction">
+          - {{ draft.transaction.amount | number: '0.0-2' }} ZBC
         </ion-label>
       </ion-col>
     </ion-row>
-    <ion-row  *ngIf="draft.unisgnedTransactions">
+    <ion-row  *ngIf="draft.transaction">
       <ion-col>
         <ion-label>
           <h3>From</h3>
-          <p> {{draft.unisgnedTransactions.sender}}</p>
+          <p> {{draft.transaction.sender}}</p>
         </ion-label>
         <ion-label>
           <h3>To</h3>
-          <p> {{draft.unisgnedTransactions.sender}}</p>
+          <p> {{draft.transaction.recipient}}</p>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row  *ngIf="draft.signaturesInfo">
+      <ion-col>
+        <ion-label>
+          <h3>Transaction Hash</h3>
+          <p> {{draft.signaturesInfo.txHash}}</p>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row  *ngIf="draft.signaturesInfo">
+      <ion-col>
+        <ion-label>
+          <h3>Signed By</h3>
+          <p>
+            <span>{{ draft.signaturesInfo.participants.length }} </span>
+            <span *ngIf="draft.multisigInfo"> of {{ draft.multisigInfo.participants.length }}</span>
+          </p>
         </ion-label>
       </ion-col>
     </ion-row>
     <ion-row style="border-bottom: 1px #cccccc solid;">
       <ion-col size="11">
+        
         <ion-badge color="tertiary"  *ngIf="draft.multisigInfo" shape="round">
           Multisig info
         </ion-badge>&nbsp;
@@ -80,8 +100,9 @@
         <ion-badge color="tertiary"  *ngIf="draft.signaturesInfo" shape="round">
           Signatures
         </ion-badge>
+        
       </ion-col>
-      <ion-col size="1" class="text-align-center">
+      <ion-col size="2" class="text-align-center">
         <ion-label (click)="onDeleteDraft($event, draft.id)" color="danger">
           <ion-icon name="trash"></ion-icon>
         </ion-label>

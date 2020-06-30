@@ -61,10 +61,10 @@ export class UtilService {
 
   /**
    * Confirmation page, if success set status = true otherwise false
-   * @param title
-   * @param msg
-   * @param status
-   * @param path
+   * @param title is title
+   * @param msg is message
+   * @param status is status
+   * @param path is path
    */
   public async showConfirmation(title: string, msg: string, status: boolean, path: string) {
     const modal = await this.modalController.create({
@@ -78,7 +78,9 @@ export class UtilService {
 
     modal.onDidDismiss().then(data => {
       console.log(data);
-      this.router.navigateByUrl(path);
+      if (path) {
+        this.router.navigateByUrl(path);
+      }
     });
 
     return await modal.present();

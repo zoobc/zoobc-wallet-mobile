@@ -182,13 +182,6 @@
   <ion-grid style="margin-top:20px;">
     <ion-row>
       <ion-col>
-        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()"
-          expand="block">
-          {{ "Save" | translate }}
-        </ion-button>
-        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
-          {{ "Save" | translate }}
-        </ion-button>
         <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="next()"
           expand="block">
           {{ "Next" | translate }}
@@ -196,6 +189,13 @@
         <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
           {{ "Next" | translate }}
         </ion-button>
+        <ion-button color="secondary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()"
+        expand="block" fill="outline">
+        {{ "Save Draft" | translate }}
+      </ion-button>
+      <ion-button disabled color="secondaryCurr" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block" fill="outline">
+        {{ "Save Draft" | translate }}
+      </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

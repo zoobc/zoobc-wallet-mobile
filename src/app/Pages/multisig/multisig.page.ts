@@ -4,6 +4,10 @@ import { MultisigService } from 'src/app/Services/multisig.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { AlertController } from '@ionic/angular';
 import { dateAgo } from 'src/Helpers/utils';
+import { Subscription } from 'rxjs';
+import { AccountService } from 'src/app/Services/account.service';
+import { Account } from 'src/app/Interfaces/account';
+import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
 
 @Component({
   selector: 'app-multisig',
@@ -25,24 +29,50 @@ export class MultisigPage implements OnInit {
   isSignature: boolean;
   isTransaction: boolean;
   isMultisigInfo: boolean;
+  isMultiSignature = true;
+  account: Account;
+
+  participants: string[];
+  nonce: number;
+  minSig: number;
+  multisigSubs: Subscription;
+  multisig: MultiSigDraft;
 
   constructor(
     private router: Router,
+    private accountSrv: AccountService,
     private alertController: AlertController,
     private multisigServ: MultisigService) {
       this.isMultisigInfo = true;
     }
 
-  ionViewDidEnter(){
+  ionViewDidEnter() {
     this.getMultiSigDraft();
   }
 
   ngOnInit() {
-    // this.getMultiSigDraft();
+    this.getMultiSigDraft();
   }
 
-  getMultiSigDraft() {
-    this.multiSigDrafts = this.multisigServ.getDrafts();
+  async getMultiSigDraft() {
+    const currAccount = await this.accountSrv.getCurrAccount();
+    this.account = currAccount;
+    this.multiSigDrafts = this.multisigServ
+      .getDrafts()
+      .filter(draft => {
+        const { multisigInfo, transaction, generatedSender } = draft;
+        if (generatedSender === currAccount.address) {
+          return draft;
+        }
+        if (multisigInfo.participants.includes(currAccount.address)) {
+          return draft;
+        }
+        if (transaction && transaction.sender === currAccount.address) {
+          return draft;
+        }
+      })
+      .sort()
+      .reverse();
   }
 
   getDate(pDate: number) {
@@ -51,7 +81,6 @@ export class MultisigPage implements OnInit {
   }
 
   goNextStep() {
-
     const multisig: MultiSigDraft = {
       accountAddress: '',
       fee: 0,
@@ -62,18 +91,33 @@ export class MultisigPage implements OnInit {
     if (this.isTransaction) { multisig.unisgnedTransactions = null; }
     if (this.isSignature) { multisig.signaturesInfo = null; }
 
+    console.log('=== Multisig: ', multisig);
 
-    console.log('=== multisif before update: ', multisig);
-    this.multisigServ.update(multisig);
-
-    if (this.isMultisigInfo) {
-      this.router.navigate(['/msig-add-info']);
-    } else if (this.isTransaction) {
-      this.router.navigate(['/msig-create-transaction']);
-    } else if (this.isSignature) {
-      this.router.navigate(['/msig-add-participants']);
+    if (this.isMultiSignature) {
+      multisig.multisigInfo = {
+        minSigs: this.account.minSig,
+        nonce: this.account.nonce,
+        participants: this.account.participants,
+        multisigAddress: '',
+      };
+      const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
+      multisig.generatedSender = address;
+      this.multisigServ.update(multisig);
+      if (this.isTransaction) {
+        this.router.navigate(['/msig-create-transaction']);
+      } else if (this.isSignature) {
+        this.router.navigate(['/msig-add-signatures']);
+      }
+    } else {
+      this.multisigServ.update(multisig);
+      if (this.isMultisigInfo) {
+        this.router.navigate(['/msig-add-multisig-info']);
+      } else if (this.isTransaction) {
+        this.router.navigate(['/msig-create-transaction']);
+      } else if (this.isSignature) {
+        this.router.navigate(['/msig-add-signatures']);
+      }
     }
-
   }
 
   async onDeleteDraft(e, id: number) {
