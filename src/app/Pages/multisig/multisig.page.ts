@@ -161,15 +161,17 @@ export class MultisigPage implements OnInit {
 
   onEditDraft(idx: number) {
     const multisig: MultiSigDraft = this.multiSigDrafts[idx];
-    this.multisigServ.update(multisig);
     const { multisigInfo, unisgnedTransactions, signaturesInfo } = multisig;
-    if (multisigInfo) {
-      this.router.navigate(['/msig-add-info']);
+    this.multisigServ.update(multisig);
+
+    if (signaturesInfo) {
+      this.router.navigate(['/msig-add-signatures']);
     } else if (unisgnedTransactions) {
       this.router.navigate(['/msig-create-transaction']);
-    } else if (signaturesInfo) {
-      this.router.navigate(['/msig-add-signatures']);
+    } else if (multisigInfo) {
+      this.router.navigate(['/msig-add-info']);
     }
+
   }
 
   showInfo() {

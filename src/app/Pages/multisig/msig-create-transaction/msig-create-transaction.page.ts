@@ -23,7 +23,6 @@ import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinse
 import { SenddetailPage } from '../../send-coin/modals/senddetail/senddetail.page';
 import { TrxstatusPage } from '../../send-coin/modals/trxstatus/trxstatus.page';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
-import { getTranslation } from '../msig-send-transaction/msig-send-transaction.page';
 
 @Component({
   selector: 'app-msig-create-transaction',
@@ -69,7 +68,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   public primaryCurr = COIN_CODE;
   public secondaryCurr: string;
 
-  private minimumFee = TRANSACTION_MINIMUM_FEE;
+  minimumFee = TRANSACTION_MINIMUM_FEE;
   isLoadingBlockHeight: boolean;
   blockHeight: number;
 
@@ -138,6 +137,26 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     // this.loadAccount();
 
   }
+
+
+
+  async showPopupAccount() {
+    const modal = await this.modalController.create({
+      component: AccountPopupPage,
+      componentProps: {
+        idx: 0
+      }
+    });
+
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data) {
+        this.recipientAddress  =  dataReturned.data.address;
+      }
+    });
+
+    return await modal.present();
+  }
+
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
@@ -290,16 +309,13 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
 
   updateCreateTransaction() {
-  
     const address = this.multisig.generatedSender || this.account.address;
-
     this.multisig.transaction = {
       sender: address,
       amount: this.amount,
       fee: this.transactionFee,
       recipient: sanitizeString(this.recipientAddress),
     };
-    // console.log('===temp mulstisig: ', multisig);
   }
 
   switchCurrency() {
