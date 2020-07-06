@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HelpPage } from './help.page';
+import { TranslateModule } from "@ngx-translate/core";
 
 describe('HelpPage', () => {
   let component: HelpPage;
@@ -9,19 +9,22 @@ describe('HelpPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      // declarations: [ HelpPage ],
+      declarations: [ HelpPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports:[
+        TranslateModule.forRoot()
+      ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    // fixture = TestBed.createComponent(HelpPage);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture = TestBed.createComponent(HelpPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
-    // expect(component).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 });

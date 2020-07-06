@@ -1,7 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InitialPage } from './initial.page';
+import { TranslateModule } from "@ngx-translate/core";
+import { RouterTestingModule } from "@angular/router/testing";
+import { IonicStorageModule } from '@ionic/storage';
 
 describe('InitialPage', () => {
   let component: InitialPage;
@@ -9,19 +11,33 @@ describe('InitialPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      // declarations: [ InitialPage ],
+      declarations: [ InitialPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports:[
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+        IonicStorageModule.forRoot()
+        
+      ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    // fixture = TestBed.createComponent(InitialPage);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture = TestBed.createComponent(InitialPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
-    // expect(component).toBeTruthy();
+    expect(component).toBeTruthy();
+  });
+  it("should return a non empty array", () => {
+    let result = component.openSendFeedbak();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("should return a non empty array", () => {
+    let result = component.selectActiveLanguage();
+    expect(Array.isArray(result)).toBeTruthy;
   });
 });
