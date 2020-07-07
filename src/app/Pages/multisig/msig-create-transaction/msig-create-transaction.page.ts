@@ -23,6 +23,7 @@ import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinse
 import { SenddetailPage } from '../../send-coin/modals/senddetail/senddetail.page';
 import { TrxstatusPage } from '../../send-coin/modals/trxstatus/trxstatus.page';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-msig-create-transaction',
@@ -213,11 +214,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     }
     const { signaturesInfo } = this.multisig;
 
-    console.log('==== AAAA multisig: ', this.multisig);
-
     if (!this.multisig.unisgnedTransactions) {
-
-      console.log('==== YYYY multisig-1: ');
 
       this.generatedTxHash();
       // this.updateCreateTransaction();
@@ -861,6 +858,22 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   async getMinimumFee(timeout: number) {
     const fee: number = calculateMinFee(timeout);
     return fee;
+  }
+
+  async exportDraft() {
+    const isValid = this.isFormValid();
+    if (!isValid) {
+        return;
+    }
+    if (!this.multisig.unisgnedTransactions) {
+      // this.updateCreateTransaction();
+      this.generatedTxHash();
+      this.multisigServ.update(this.multisig);
+      const theJSON = JSON.stringify(this.multisig);
+      const blob = new Blob([theJSON], { type: 'application/JSON' });
+      saveAs(blob, 'Multisignature-Draft.json');
+    }
+
   }
 
 }

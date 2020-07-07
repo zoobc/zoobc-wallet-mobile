@@ -8,6 +8,8 @@ import { Subscription } from 'rxjs';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-multisig',
@@ -42,9 +44,11 @@ export class MultisigPage implements OnInit {
     private router: Router,
     private accountSrv: AccountService,
     private alertController: AlertController,
-    private multisigServ: MultisigService) {
-      this.isMultisigInfo = true;
-    }
+    private multisigServ: MultisigService,
+    private utilSrv: UtilService,
+    private fileChooser: FileChooser) {
+    this.isMultisigInfo = true;
+  }
 
   ionViewDidEnter() {
     this.getMultiSigDraft();
@@ -57,9 +61,9 @@ export class MultisigPage implements OnInit {
   async getMultiSigDraft() {
     const currAccount = await this.accountSrv.getCurrAccount();
     this.account = currAccount;
-    this.multiSigDrafts = this.multisigServ
-      .getDrafts()
-      .filter(draft => {
+    const drafts = this.multisigServ.getDrafts();
+    if (drafts) {
+      this.multiSigDrafts = drafts.filter(draft => {
         const { multisigInfo, transaction, generatedSender } = draft;
         if (generatedSender === currAccount.address) {
           return draft;
@@ -71,8 +75,9 @@ export class MultisigPage implements OnInit {
           return draft;
         }
       })
-      .sort()
-      .reverse();
+        .sort()
+        .reverse();
+    }
   }
 
   getDate(pDate: number) {
@@ -121,10 +126,10 @@ export class MultisigPage implements OnInit {
   }
 
   async onDeleteDraft(e, id: number) {
-    this.presentDeleteConfirmation(e, id);
+    this.presentDeleteConfirmation(id);
   }
 
-  async presentDeleteConfirmation(e, id: number) {
+  async presentDeleteConfirmation(id: number) {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Confirm!',
@@ -134,7 +139,7 @@ export class MultisigPage implements OnInit {
           text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: (blah) => {
+          handler: () => {
             console.log('Confirm Cancel: blah');
             return false;
           }
@@ -172,6 +177,59 @@ export class MultisigPage implements OnInit {
       this.router.navigate(['/msig-add-info']);
     }
 
+  }
+
+  importDraft() {
+    this.fileChooser.open().then(uri => {
+        console.log('=== fiel urei: ', uri);
+        this.readFile(uri);
+     }).catch(e => {
+        console.log(e);
+      }
+    );
+  }
+
+  validationFile(file: any): file is MultiSigDraft {
+    if ((file as MultiSigDraft).generatedSender !== undefined) {
+      return isZBCAddressValid((file as MultiSigDraft).generatedSender);
+    }
+    return false;
+  }
+
+  readFile(file: any) {
+    // const file = event.target.files[0];
+    const fileReader = new FileReader();
+    if (file !== undefined) {
+      fileReader.readAsText(file, 'JSON');
+      fileReader.onload = async () => {
+        const fileResult = JSON.parse(fileReader.result.toString());
+        const validation = this.validationFile(fileResult);
+        if (!validation) {
+          const message = 'You imported the wrong file';
+          this.utilSrv.showConfirmation('Opps...', message, false, null);
+        } else {
+          this.multisigServ.update(fileResult);
+          const listdraft = this.multisigServ.getDrafts();
+          const checkExistDraft = listdraft.some(res => res.id === fileResult.id);
+
+          if (checkExistDraft === true) {
+            const message = 'There is same id in your draft';
+            this.utilSrv.showConfirmation('Opps...', message, false, null);
+          } else {
+            this.multisigServ.saveDraft();
+            this.getMultiSigDraft();
+            const message = 'Draft Saved';
+            const subMessage = 'Your Draft has been saved';
+            this.utilSrv.showConfirmation('Success', subMessage, true, null);
+          }
+        }
+      };
+      fileReader.onerror = async err => {
+        console.log(err);
+        const message = 'An error occurred while processing your request';
+        this.utilSrv.showConfirmation('Opps...', message, false, null);
+      };
+    }
   }
 
   showInfo() {

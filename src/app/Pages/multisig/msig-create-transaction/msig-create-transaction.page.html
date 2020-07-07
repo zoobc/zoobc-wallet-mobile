@@ -182,6 +182,14 @@
   <ion-grid style="margin-top:20px;">
     <ion-row>
       <ion-col>
+        <ion-button color="tertiary" fill="outline" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="exportDraft()"
+          expand="block">
+          {{ "Export Draft Multi Signature" | translate }}
+        </ion-button>
+        <ion-button color="tertiary"fill="outline" *ngIf="isLoadingBalance && isLoadingTxFee"
+        expand="block">
+        {{ "Export Draft Multi Signature" | translate }}
+      </ion-button>
         <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="next()"
           expand="block">
           {{ "Next" | translate }}

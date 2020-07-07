@@ -45,6 +45,7 @@ import { DecimalPipe } from '@angular/common';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { AccountPopupPageModule } from './Pages/account/account-popup/account-popup.module';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -96,6 +97,7 @@ export function createTranslateLoader(http: HttpClient) {
     StatusBar,
     SplashScreen,
     File,
+    FileChooser,
     BarcodeScanner,
     SocialSharing,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
