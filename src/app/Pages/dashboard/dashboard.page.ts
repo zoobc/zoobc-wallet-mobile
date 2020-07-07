@@ -22,6 +22,7 @@ import { ChatService } from 'src/app/Services/chat.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { QrScannerService } from '../qr-scanner/qr-scanner.service';
+import { NetworkService } from 'src/app/Services/network.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -54,8 +55,9 @@ export class DashboardPage implements OnInit {
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
-    private transactionServ: TransactionService,
-    private currencyServ: CurrencyService,
+    private transactionSrv: TransactionService,
+    private networkSrv: NetworkService,
+    private currencySrv: CurrencyService,
     public toastController: ToastController,
     private fcmService: FcmService,
     private themeSrv: ThemeService,
@@ -77,20 +79,20 @@ export class DashboardPage implements OnInit {
     });
 
     // if post send money reload data
-    this.transactionServ.sendMoneySubject.subscribe(() => {
+    this.transactionSrv.sendMoneySubject.subscribe(() => {
       this.loadData();
     }
     );
 
     // if network changed reload data
-    this.transactionServ.changeNodeSubject.subscribe(() => {
+    this.networkSrv.changeNodeSubject.subscribe(() => {
       // console.log(' == change node network ====');
       this.loadData();
     }
     );
 
     // if currency changed
-    this.currencyServ.currencySubject.subscribe((rate: Currency) => {
+    this.currencySrv.currencySubject.subscribe((rate: Currency) => {
       this.currencyRate = rate;
     });
 
@@ -142,7 +144,7 @@ export class DashboardPage implements OnInit {
 
   async loadData() {
 
-    this.priceInUSD = this.currencyServ.getPriceInUSD();
+    this.priceInUSD = this.currencySrv.getPriceInUSD();
     this.accountBalance = {
       accountaddress: '',
       blockheight: 0,
@@ -159,7 +161,7 @@ export class DashboardPage implements OnInit {
     this.isError = false;
 
     this.account = await this.accountService.getCurrAccount();
-    this.currencyRate = this.currencyServ.getRate();
+    this.currencyRate = this.currencySrv.getRate();
     zoobc.Network.list(NETWORK_LIST);
     this.getBalanceByAddress(this.account.address);
     await this.fcmService.getToken(this.account);

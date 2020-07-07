@@ -6,7 +6,7 @@ import {
   SELECTED_LANGUAGE,
   CURRENCY_LIST,
   STORAGE_ACTIVE_CURRENCY,
-  STORAGE_ACTIVE_NETWORK,
+  STORAGE_ACTIVE_NETWORK_IDX,
   NETWORK_LIST,
   THEME_OPTIONS,
   STORAGE_ACTIVE_THEME
@@ -30,7 +30,7 @@ export class SettingsPage implements OnInit {
   public activeLanguage = 'en';
   public activeTheme: string;
   public activeCurrency: string;
-  public activeNetwork: string;
+  public activeNetwork: any;
   public currencyRateList: any;
   public currencyList = CURRENCY_LIST;
   public networks = NETWORK_LIST;
@@ -57,7 +57,7 @@ export class SettingsPage implements OnInit {
     this.currencyRate = this.currencyService.getRate();
     this.activeLanguage = await this.strgSrv.get(SELECTED_LANGUAGE);
     this.activeCurrency = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
-    this.activeNetwork = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK);
+    this.activeNetwork = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX);
     this.activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
     console.log('---- Active Theme: ', this.activeTheme);
 
@@ -93,8 +93,8 @@ export class SettingsPage implements OnInit {
   }
 
   selectActiveNetwork() {
-    // console.log('=============== this.activeNetwork', this.activeNetwork);
-    this.transactionService.setRpcUrl(this.activeNetwork);
+    console.log('=============== this.activeNetwork: ', this.activeNetwork);
+    // this.transactionService.setRpcUrl(this.activeNetwork);
     this.networkService.setNetwork(this.activeNetwork);
   }
 

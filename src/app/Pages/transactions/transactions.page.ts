@@ -23,6 +23,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Router } from '@angular/router';
 import { Transaction } from 'src/app/Interfaces/transaction';
 import { Currency } from 'src/app/Interfaces/currency';
+import { NetworkService } from 'src/app/Services/network.service';
 
 @Component({
   selector: 'app-transactions',
@@ -53,6 +54,7 @@ export class TransactionsPage implements OnInit {
     public loadingController: LoadingController,
     private accountService: AccountService,
     private transactionServ: TransactionService,
+    private  networkSrv: NetworkService,
     private currencyServ: CurrencyService,
     private addressBookSrv: AddressBookService,
     public toastController: ToastController
@@ -69,7 +71,7 @@ export class TransactionsPage implements OnInit {
     });
 
     // if network changed reload data
-    this.transactionServ.changeNodeSubject.subscribe(() => {
+    this.networkSrv.changeNodeSubject.subscribe(() => {
       // console.log(' node changed ');
       this.loadData();
     });
