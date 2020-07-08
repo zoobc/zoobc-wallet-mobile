@@ -21,4 +21,13 @@ describe('UtilService', () => {
     let result = service.generateSeed(1234, 4567);
     expect(Array.isArray(result)).toBeTruthy;
   });
+  it("should return a non empty array", () => {
+    let result = service.copyInBrowser("test");
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+
+  it("should return a non empty array", () => {
+    let result = service.copySuccess();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
 });

@@ -2,26 +2,50 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GeneratePassphrasePage } from './generate-passphrase.page';
+import {TranslateModule } from '@ngx-translate/core';
+import { RouterTestingModule } from "@angular/router/testing";
+import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { ModalController} from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage';
 
-describe('GeneratePassphrasePage', () => {
-  let component: GeneratePassphrasePage;
-  let fixture: ComponentFixture<GeneratePassphrasePage>;
+// describe('Generate Passphrase Page', () => {
+//   let component: GeneratePassphrasePage;
+//   let fixture: ComponentFixture<GeneratePassphrasePage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      // declarations: [ GeneratePassphrasePage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+//   let modalSpy = jasmine.createSpyObj('Modal', ['present']);
+//   let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
 
-  beforeEach(() => {
-    // fixture = TestBed.createComponent(GeneratePassphrasePage);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
-  });
+//   modalCtrlSpy.create.and.callFake(function () {
+//     return modalSpy;
+//   });
 
-  it('should create', () => {
-    // expect(component).toBeTruthy();
-  });
-});
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ GeneratePassphrasePage ],
+//       imports: [
+//         TranslateModule.forRoot(),
+//         RouterTestingModule,
+//         IonicStorageModule.forRoot()
+//         ],
+//       providers:[
+//         Clipboard,
+//         {
+//           provide: ModalController,
+//           useValue: modalCtrlSpy
+//         },
+//       ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//     })
+//     .compileComponents();
+//   }));
+
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(GeneratePassphrasePage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
+
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

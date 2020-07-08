@@ -2,26 +2,30 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NotificationsPage } from './notifications.page';
+import {TranslateModule } from '@ngx-translate/core';
 
-describe('NotificationsPage', () => {
+describe('Notifications Page', () => {
   let component: NotificationsPage;
   let fixture: ComponentFixture<NotificationsPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      // declarations: [ NotificationsPage ],
+      declarations: [ NotificationsPage ],
+      imports: [
+        TranslateModule.forRoot(),
+        ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    // fixture = TestBed.createComponent(NotificationsPage);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture = TestBed.createComponent(NotificationsPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
-    // expect(component).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 });
