@@ -13,10 +13,12 @@ import {
 } from 'src/environments/variable.const';
 import { NetworkService } from 'src/app/Services/network.service';
 import { getFormatedDate } from 'src/Helpers/converters';
-import { TransactionService } from 'src/app/Services/transaction.service';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { Currency } from 'src/app/Interfaces/currency';
+import { ModalController } from '@ionic/angular';
+import { PopupCurrencyPage } from './popup-currency/popup-currency.page';
+import { PopupLanguagesPage } from './popup-languages/popup-languages.page';
 
 @Component({
   selector: 'app-settings',
@@ -37,13 +39,16 @@ export class SettingsPage implements OnInit {
   public currencyRate: Currency;
   public timestamp: string;
   public themes = THEME_OPTIONS;
+  indexSelected: any;
+  activeCureencyWithname: string;
+  activeLanguageWithname: string;
 
   constructor(
     private strgSrv: StoragedevService,
-    private transactionService: TransactionService,
     private languageService: LanguageService,
     private networkService: NetworkService,
     private theme: ThemeService,
+    private modalController: ModalController,
     private currencyService: CurrencyService) {
 
       this.currencyService.currencySubject.subscribe((rate: Currency) => {
@@ -55,14 +60,23 @@ export class SettingsPage implements OnInit {
   async ngOnInit() {
     this.getCurrencyRates();
     this.currencyRate = this.currencyService.getRate();
+
     this.activeLanguage = await this.strgSrv.get(SELECTED_LANGUAGE);
+    const lang = this.getLanguages(this.activeLanguage);
+    this.activeLanguageWithname = lang.code + ' - ' + lang.country;
+
     this.activeCurrency = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
+    this.activeCureencyWithname = this.activeCurrency + ' - ' + this.currencyList[this.activeCurrency];
+
     this.activeNetwork = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX);
     this.activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
     console.log('---- Active Theme: ', this.activeTheme);
 
   }
 
+  getLanguages(code: string) {
+    return this.languages.find(e => e.code === code);
+  }
 
   async getCurrencyRates() {
     this.currencyRateList = await this.currencyService.getCurrencyRateList();
@@ -88,13 +102,10 @@ export class SettingsPage implements OnInit {
   // }
 
   selectActiveLanguage() {
-    // console.log('=============== this.activeLanguage', this.activeLanguage);
     this.languageService.setLanguage(this.activeLanguage);
   }
 
   selectActiveNetwork() {
-    console.log('=============== this.activeNetwork: ', this.activeNetwork);
-    // this.transactionService.setRpcUrl(this.activeNetwork);
     this.networkService.setNetwork(this.activeNetwork);
   }
 
@@ -102,5 +113,47 @@ export class SettingsPage implements OnInit {
     console.log('== changeTheme: theme selected: ', this.activeTheme);
     await this.theme.setTheme(this.activeTheme);
   }
+
+  async showPopupCurrency() {
+    const modal = await this.modalController.create({
+      component: PopupCurrencyPage,
+      componentProps: {
+      }
+    });
+
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data) {
+        console.log('== Data returned: ', dataReturned.data);
+        const curr = dataReturned.data;
+        this.activeCurrency = curr.code;
+        this.activeCureencyWithname = curr.code + ' - ' + curr.name;
+        this.changeRate();
+      }
+    });
+
+    return await modal.present();
+  }
+
+  async showPopupLanguage() {
+    const modal = await this.modalController.create({
+      component: PopupLanguagesPage,
+      componentProps: {
+      }
+    });
+
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data) {
+        const lang = dataReturned.data;
+        console.log('== Data returned: ', lang);
+        this.activeLanguage = lang.code;
+        this.activeLanguageWithname = lang.code + ' - ' + lang.country;
+        this.selectActiveLanguage();
+      }
+    });
+
+    return await modal.present();
+  }
+
+
 
 }

@@ -132,7 +132,9 @@ const routes: Routes = [
   loadChildren: './Pages/account/account-popup/account-popup.module#AccountPopupPageModule'},
   { path: 'msig-add-signatures',
   loadChildren: './Pages/multisig/msig-add-signatures/msig-add-signatures.module#MsigAddSignaturesPageModule',
-  canActivate: [AuthService] }
+  canActivate: [AuthService] },  { path: 'popup-currency', loadChildren: './Pages/settings/popup-currency/popup-currency.module#PopupCurrencyPageModule' },
+  { path: 'popup-languages', loadChildren: './Pages/settings/popup-languages/popup-languages.module#PopupLanguagesPageModule' }
+
 ];
 @NgModule({
   imports: [

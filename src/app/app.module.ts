@@ -46,6 +46,8 @@ import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { AccountPopupPageModule } from './Pages/account/account-popup/account-popup.module';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { PopupCurrencyPageModule } from './Pages/settings/popup-currency/popup-currency.module';
+import { PopupLanguagesPageModule } from './Pages/settings/popup-languages/popup-languages.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -78,6 +80,8 @@ export function createTranslateLoader(http: HttpClient) {
     PinBackupPageModule,
     ChatProfilePageModule,
     AccountPopupPageModule,
+    PopupCurrencyPageModule,
+    PopupLanguagesPageModule,
     AngularFireModule.initializeApp(fbconfig),
     AngularFirestoreModule,
     AngularFireAuthModule,
