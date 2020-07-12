@@ -45,7 +45,9 @@
               {{"Created"|translate}}: {{ account.created | date: "short" }}
             </div> -->
           </ion-label>
-          <ion-icon slot="end" name="copy" (click)="copyAddress(account)"></ion-icon>
+          <ion-button slot="end" (click)="copyAddress(account)" color="meddium">
+            <ion-icon name="copy" ></ion-icon>
+          </ion-button>
         </ion-item>
         <ion-item-options>
           <button color="success" (click)="editName(account)" class="tool">
