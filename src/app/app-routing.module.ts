@@ -132,8 +132,13 @@ const routes: Routes = [
   loadChildren: './Pages/account/account-popup/account-popup.module#AccountPopupPageModule'},
   { path: 'msig-add-signatures',
   loadChildren: './Pages/multisig/msig-add-signatures/msig-add-signatures.module#MsigAddSignaturesPageModule',
-  canActivate: [AuthService] },  { path: 'popup-currency', loadChildren: './Pages/settings/popup-currency/popup-currency.module#PopupCurrencyPageModule' },
-  { path: 'popup-languages', loadChildren: './Pages/settings/popup-languages/popup-languages.module#PopupLanguagesPageModule' }
+  canActivate: [AuthService] },
+  { path: 'popup-currency',
+  loadChildren: './Pages/settings/popup-currency/popup-currency.module#PopupCurrencyPageModule' },
+  { path: 'popup-languages',
+  loadChildren: './Pages/settings/popup-languages/popup-languages.module#PopupLanguagesPageModule' },
+  { path: 'scanqr-for-addressbook',
+  loadChildren: './Pages/address-book/scanqr-for-addressbook/scanqr-for-addressbook.module#ScanqrForAddressbookPageModule' }
 
 ];
 @NgModule({
