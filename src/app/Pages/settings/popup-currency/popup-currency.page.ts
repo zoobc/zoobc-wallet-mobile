@@ -16,7 +16,7 @@ export class PopupCurrencyPage implements OnInit {
   async ngOnInit() {
      // show loading bar
      const loading = await this.loadingController.create({
-      message: 'Please wait, submiting!',
+      message: 'loading ...',
       duration: 50000
     });
 
