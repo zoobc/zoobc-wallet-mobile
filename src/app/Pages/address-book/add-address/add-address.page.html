@@ -30,7 +30,7 @@
       <ion-col col-8 align-self-end>
         <ion-label position="stacked">{{ "Address" | translate }}</ion-label>
       </ion-col>
-      <ion-col col-4 align-self-end class="ion-text-right btnScanner">
+      <ion-col col-4 align-self-end *ngIf="mode==='new'" class="ion-text-right btnScanner">
         <ion-icon name="qr-scanner" (click)="scanQRCode();"></ion-icon><span (click)="scanQRCode();" style="font-size: 0.6em;"> Scan QR</span>
       </ion-col>
     </ion-row>
@@ -40,8 +40,8 @@
           [(ngModel)]="address" name="address" autocomplete="on" autocorrect="on">
         </ion-textarea>
 
-        <ion-textarea *ngIf="mode==='edit'" rows="3" (ionChange)="sanitize()" readonly placeholder="{{ 'Please type the address' | translate }}"
-          [(ngModel)]="address" name="address" autocomplete="on" autocorrect="on">
+        <ion-textarea *ngIf="mode==='edit'" style="background-color: lightgray;" rows="3" readonly 
+          [(ngModel)]="address" name="address">
         </ion-textarea>
       </ion-col>
     </ion-row>
