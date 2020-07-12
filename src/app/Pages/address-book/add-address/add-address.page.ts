@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { base64ToByteArray, makeShortAddress } from 'src/Helpers/converters';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
+import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { MODE_EDIT, MODE_NEW } from 'src/environments/variable.const';
 import { sanitizeString } from 'src/Helpers/utils';
 import { Contact } from 'src/app/Interfaces/contact';
@@ -35,16 +35,15 @@ export class AddAddressPage implements OnInit {
 
   ngOnInit() {
     this.activeRoute.queryParams.subscribe(params => {
-      // console.log('=== Params: ', params);
+      if (params && params.mode === MODE_EDIT) {
+        this.name = params.name;
+        this.address = params.address;
+        this.oldName = params.name;
+        this.oldAddress = params.address;
+      }
       this.index = params.index;
       this.mode = params.mode;
-      this.name = params.name;
-      this.address = params.address;
-
-      this.oldName = params.name;
-      this.oldAddress = params.address;
     });
-
     this.getAllAddress();
   }
 
@@ -84,12 +83,12 @@ export class AddAddressPage implements OnInit {
   }
 
   scanQRCode() {
-    this.router.navigateByUrl('/qr-scanner');
+    this.router.navigateByUrl('/scanqr-for-addressbook');
+
     this.qrScannerSrv.listen().subscribe((jsondata: string) => {
       const data = JSON.parse(jsondata);
       this.address = data.address;
     });
-
   }
 
   sanitize() {

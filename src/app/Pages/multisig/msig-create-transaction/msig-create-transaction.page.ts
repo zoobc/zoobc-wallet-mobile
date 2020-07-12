@@ -9,7 +9,7 @@ import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { environment } from 'src/environments/environment';
 import { LoadingController, ModalController, AlertController, ToastController, MenuController } from '@ionic/angular';
-import { QrScannerService } from '../../qr-scanner/qr-scanner.service';
+import { QrScannerService } from '../../../Services/qr-scanner.service';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { TranslateService } from '@ngx-translate/core';

@@ -21,7 +21,7 @@ import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
 import { ChatService } from 'src/app/Services/chat.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
-import { QrScannerService } from '../qr-scanner/qr-scanner.service';
+import { QrScannerService } from '../../Services/qr-scanner.service';
 import { NetworkService } from 'src/app/Services/network.service';
 
 @Component({

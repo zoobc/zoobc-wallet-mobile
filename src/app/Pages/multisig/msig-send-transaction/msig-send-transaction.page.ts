@@ -17,7 +17,7 @@ import { AlertController, LoadingController, ModalController, ToastController, M
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { UtilService } from 'src/app/Services/util.service';
-import { QrScannerService } from '../../qr-scanner/qr-scanner.service';
+import { QrScannerService } from '../../../Services/qr-scanner.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';

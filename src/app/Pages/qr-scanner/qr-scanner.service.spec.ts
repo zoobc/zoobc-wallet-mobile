@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { QrScannerService } from './qr-scanner.service';
+import { QrScannerService } from '../../Services/qr-scanner.service';
 
 describe('QrScannerService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
