@@ -138,7 +138,10 @@ const routes: Routes = [
   { path: 'popup-languages',
   loadChildren: './Pages/settings/popup-languages/popup-languages.module#PopupLanguagesPageModule' },
   { path: 'scanqr-for-addressbook',
-  loadChildren: './Pages/address-book/scanqr-for-addressbook/scanqr-for-addressbook.module#ScanqrForAddressbookPageModule' }
+  loadChildren: './Pages/address-book/scanqr-for-addressbook/scanqr-for-addressbook.module#ScanqrForAddressbookPageModule' },
+  { path: 'msig-task-detail', loadChildren: './Pages/my-tasks/msig-task-detail/msig-task-detail.module#MsigTaskDetailPageModule',
+  canActivate: [AuthService]}
+
 
 ];
 @NgModule({

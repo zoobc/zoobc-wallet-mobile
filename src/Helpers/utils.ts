@@ -40,6 +40,16 @@ export function stringToBuffer(str: string) {
   return Buffer.from(str, 'base64');
 }
 
+export function base64ToHex(str) {
+  const raw = atob(str);
+  let result = '';
+  for (let i = 0; i < raw.length; i++) {
+    const hex = raw.charCodeAt(i).toString(16);
+    result += hex.length === 2 ? hex : '0' + hex;
+  }
+  return result.toUpperCase();
+}
+
 export function dateAgo(value: any): any {
   if (value) {
       const seconds = Math.floor((+new Date() - +new Date(value)) / 1000);
