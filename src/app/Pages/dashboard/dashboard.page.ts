@@ -279,27 +279,13 @@ export class DashboardPage implements OnInit {
   }
 
   async scanQrCode() {
-
       this.router.navigateByUrl('/qr-scanner');
-      this.qrScannerService.listen().subscribe((jsonData: string) => {
-        const data = JSON.parse(jsonData);
-
-        const navigationExtras: NavigationExtras = {
-          queryParams: {
-            jsonData: data
-          }
-        };
-        this.router.navigate(['/sendcoin'], navigationExtras);
-      });
-
-    // const navigationExtras: NavigationExtras = {
-    //   queryParams: {
-    //       from: ('tabscan')
-    //   }
-    // };
-    // this.router.navigateByUrl('/qr-scanner', navigationExtras);
-    // this.router.navigate(['/qr-scanner'], navigationExtras);
-    // this.navCtrl.navigateForward(['/qr-scanner'], navigationExtras);
+      const navigationExtras: NavigationExtras = {
+        queryParams: {
+          from: 'dashboard'
+        }
+      };
+      this.router.navigate(['/qr-scanner'], navigationExtras);
   }
 
   sendCoin() {
