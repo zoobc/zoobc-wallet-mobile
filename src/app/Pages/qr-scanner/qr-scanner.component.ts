@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, ToastController } from '@ionic/angular';
-import { QrScannerService } from './qr-scanner.service';
+import { QrScannerService } from '../../Services/qr-scanner.service';
 import { ActivatedRoute, NavigationExtras } from '@angular/router';
 import {
   BarcodeScannerOptions,

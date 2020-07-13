@@ -10,6 +10,20 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment value="multisig" [(ngModel)]="segmentModel"
+      (ionChange)="segmentChanged($event)">
+
+      <ion-segment-button value="multisig">
+        <ion-label>Multi-Signature</ion-label>
+      </ion-segment-button>
+
+      <ion-segment-button value="escrow">
+        <ion-label>Escrow</ion-label>
+      </ion-segment-button>
+
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
@@ -18,19 +32,20 @@
       refreshingText="{{ 'Refreshing' | translate }} ...">
     </ion-refresher-content>
   </ion-refresher>
-  
+
   <div *ngIf="isLoading" style="margin-top:5px;">
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
   <div style="text-align: center;">
     <p>Current Block Height: {{blockHeight}}</p>
   </div>
 
-  <div style="text-align: center; border-top: 1px solid #cccccc;" *ngIf="!escrowTransactions || escrowTransactions.length < 1 ">
-      <p>{{ 'No Approval Request Available' | translate }}</p>
+  <div style="text-align: center; border-top: 1px solid #cccccc;"
+    *ngIf="segmentModel === 'escrow' && (!escrowTransactions || escrowTransactions.length < 1) ">
+    <p>{{ 'No Escrow Approval Request Available' | translate }}</p>
   </div>
 
-  <ion-list *ngIf="escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
+  <ion-list *ngIf="segmentModel === 'escrow' && escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index" (click)="openDetail(escrow.id)">
       <ion-label class="title">
         <h3>Transaction ID: {{escrow.id}}</h3>
@@ -41,13 +56,20 @@
         <!-- <p>Latest: <b>{{ escrow.latest }} </b></p> -->
         <p>Status: <b>{{ escrow.status }} </b></p>
       </ion-label>
-  
+
       <ion-text class="amount send">
         {{ escrow.amount / 1e8 | number: '0.0-6' }} <span style="color:grey; font-size:0.7em">ZBC</span>
       </ion-text>
-  
+
     </ion-item>
   </ion-list>
 
+  <ion-list *ngIf="segmentModel !== 'escrow'" style="border-top: 1px solid #cccccc;">
+    <ion-item>
+      <ion-label>
+        Mulstisig list here
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
 </ion-content>

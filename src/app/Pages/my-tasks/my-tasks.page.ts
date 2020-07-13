@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
-import zoobc, { EscrowListParams } from 'zoobc';
-import { GetEscrowTransactionsResponse } from 'zoobc/grpc/model/escrow_pb';
-import { OrderBy } from 'zoobc/grpc/model/pagination_pb';
+import zoobc, { EscrowListParams } from 'zoobc-sdk';
+import { GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
+import { OrderBy } from 'zoobc-sdk/grpc/model/pagination_pb';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { Router, NavigationExtras } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
@@ -15,7 +15,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
   styleUrls: ['./my-tasks.page.scss'],
 })
 export class MyTasksPage implements OnInit {
-
+  segmentModel = 'escrow';
   account: Account;
   escrowTransactions: any;
   page = 1;
@@ -38,6 +38,11 @@ export class MyTasksPage implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 1000);
+  }
+
+  segmentChanged(event) {
+    console.log(this.segmentModel);
+    //  console.log(event);
   }
 
   async loadTask() {

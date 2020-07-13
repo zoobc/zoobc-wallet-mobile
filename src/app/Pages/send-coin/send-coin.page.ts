@@ -6,7 +6,7 @@ import {
 } from '@ionic/angular';
 
 import { base64ToByteArray } from 'src/Helpers/converters';
-import { QrScannerService } from 'src/app/Pages/qr-scanner/qr-scanner.service';
+import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { SenddetailPage } from 'src/app/Pages/send-coin/modals/senddetail/senddetail.page';
 import { EnterpinsendPage } from 'src/app/Pages/send-coin/modals/enterpinsend/enterpinsend.page';
@@ -23,7 +23,7 @@ import {
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import zoobc, {
-  SendMoneyInterface} from 'zoobc';
+  SendMoneyInterface} from 'zoobc-sdk';
 import { calculateMinFee, sanitizeString} from 'src/Helpers/utils';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { UtilService } from 'src/app/Services/util.service';

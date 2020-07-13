@@ -3,18 +3,18 @@ import { Currency } from 'src/app/Interfaces/currency';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = 'p4ssphr4se';
 export const STORAGE_ACTIVE_CURRENCY = 'active_currency';
-export const STORAGE_ACTIVE_NETWORK = 'active_network';
+export const STORAGE_ACTIVE_NETWORK_IDX = 'active_network_idx';
 export const STORAGE_CURRENCY_RATES = 'currency_rates';
 export const STORAGE_CURRENCY_RATE = 'rate';
 export const STORAGE_ADDRESS_BOOK = 'address_book';
 export const STORAGE_ALL_ACCOUNTS = 'all_accounts';
+export const STORAGE_ALL_MULTISIG_ACCOUNTS = 'all_multisig_accounts';
 export const STORAGE_CURRENT_ACCOUNT = 'curr_account';
 export const STORAGE_MAIN_ACCOUNT = 'main_account';
 export const STORAGE_ENC_MASTER_SEED = 'enc_master_seed';
 export const STORAGE_ENC_PASSPHRASE_SEED = 'enc_passphrase_seed';
-export const STORAGE_SELECTED_NODE = 'net_selected_node';
 export const STORAGE_ESCROW_WAITING_LIST = 'escrow_waiting_list';
-// export const STORAGE_THEME = 'storage_themes';
+export const STORAGE_MULTISIG_DRAFTS = 'MULTISIG_DRAFTS';
 export const STORAGE_ACTIVE_THEME = 'storage_active_theme';
 export const DEFAULT_THEME = 'zoobc';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
@@ -213,22 +213,38 @@ export const LANGUAGES = [
 ];
 
 export const NETWORK_LIST = [
-  {
-    name: 'Staging',
-    host: 'https://n0.demo.proofofparticipation.network'
-  },
-  {
-    name: 'Dev 1: ',
-    host: 'http://172.104.34.10:8002'
-  },
-  {
-    name: 'Dev 2',
-    host: 'http://45.79.39.58:8002'
-  },
-  {
-    name: 'Dev 3',
-    host: 'http://85.90.246.90:8002'
-  }];
+  // {
+  //   name: 'Staging',
+  //   host: 'https://n0.demo.proofofparticipation.network'
+  // },
+  // {
+  //   name: 'Dev 1: ',
+  //   host: 'http://172.104.34.10:8002'
+  // },
+  // {
+  //   name: 'Dev 2',
+  //   host: 'http://45.79.39.58:8002'
+  // },
+  // {
+  //   name: 'Dev 3',
+  //   host: 'http://85.90.246.90:8002'
+  // }
+    {
+      host: '//n1.alpha.proofofparticipation.network:8080',
+      default: true,
+      name: 'Alpha Testnet'
+    },
+    {
+      host: '//85.90.246.90:8002',
+      default: true,
+      name: 'Demo Testnet 1'
+    },
+    {
+      host: '//45.79.39.58:8002',
+      default: true,
+      name: 'Demo Testnet 2'
+    }
+];
 
 export const TRX_FEE_LIST = [{
     name: 'Slow',

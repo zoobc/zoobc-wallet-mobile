@@ -24,12 +24,12 @@ import { LanguageService } from './Services/language.service';
 import { SenddetailPageModule } from './Pages/send-coin/modals/senddetail/senddetail.module';
 import { TrxstatusPageModule } from './Pages/send-coin/modals/trxstatus/trxstatus.module';
 import { EnterpinsendPageModule } from './Pages/send-coin/modals/enterpinsend/enterpinsend.module';
-import { TransactionDetailPageModule } from './Pages/transaction-detail/transaction-detail.module';
-import { SetupPinPageModule } from 'src/app/Pages/setup-pin/setup-pin.module';
+import { TransactionDetailPageModule } from './Pages/transactions/transaction-detail/transaction-detail.module';
+import { SetupPinPageModule } from 'src/app/Pages/wallet/existing-wallet/setup-pin/setup-pin.module';
 import { fbconfig } from 'src/environments/firebaseconfig';
-import { PinBackupPageModule } from './Pages/backup-phrase/pin/pin-backup/pin-backup.module';
+import { PinBackupPageModule } from './Pages/wallet/backup-phrase/pin/pin-backup/pin-backup.module';
 import { TaskDetailPageModule } from './Pages/my-tasks/task-detail/task-detail.module';
-import { SetupPinGpPageModule } from './Pages/generate-passphrase/setup-pin-gp/setup-pin-gp.module';
+import { SetupPinGpPageModule } from './Pages/wallet/generate-passphrase/setup-pin-gp/setup-pin-gp.module';
 import { File } from '@ionic-native/file/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
@@ -44,6 +44,10 @@ import { ConfirmationPageModule } from './Components/confirmation/confirmation.m
 import { DecimalPipe } from '@angular/common';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { AccountPopupPageModule } from './Pages/account/account-popup/account-popup.module';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { PopupCurrencyPageModule } from './Pages/settings/popup-currency/popup-currency.module';
+import { PopupLanguagesPageModule } from './Pages/settings/popup-languages/popup-languages.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -75,6 +79,9 @@ export function createTranslateLoader(http: HttpClient) {
     EnterpinsendPageModule,
     PinBackupPageModule,
     ChatProfilePageModule,
+    AccountPopupPageModule,
+    PopupCurrencyPageModule,
+    PopupLanguagesPageModule,
     AngularFireModule.initializeApp(fbconfig),
     AngularFirestoreModule,
     AngularFireAuthModule,
@@ -94,6 +101,7 @@ export function createTranslateLoader(http: HttpClient) {
     StatusBar,
     SplashScreen,
     File,
+    FileChooser,
     BarcodeScanner,
     SocialSharing,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

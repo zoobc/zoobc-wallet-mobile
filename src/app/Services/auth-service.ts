@@ -19,6 +19,8 @@ import { StoragedevService } from './storagedev.service';
 export class AuthService implements CanActivate {
 
   private isUserLoggenIn: boolean;
+  public tempKey: string;
+
   constructor(
     private router: Router,
     private strgSrv: StoragedevService,
@@ -63,7 +65,10 @@ export class AuthService implements CanActivate {
     return isPinValid;
   }
 
+
   async login(key: string) {
+    console.log('=== Keyu: ', key);
+    this.tempKey = key;
     const encSeed = await this.strgSrv.get(STORAGE_ENC_MASTER_SEED);
     const isPinValid = this.isPinValid(encSeed, key);
     if (isPinValid) {
@@ -79,6 +84,7 @@ export class AuthService implements CanActivate {
 
   async logout() {
     this.isUserLoggenIn = false;
+    this.tempKey = null;
   }
 
   registerUser(value) {

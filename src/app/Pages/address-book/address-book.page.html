@@ -20,7 +20,7 @@
     </ion-fab-button>
   </ion-fab>
 
-  <div class="address-book-list">
+  <div class="address-book-list" style="margin-bottom: 60px;">
     <ng-template #noData>
       <ion-item lines="none">
         <ion-label>{{ "You dont have any address" | translate }}</ion-label>
@@ -34,7 +34,9 @@
             <p class="name">{{ address.name }}</p>
             <p class="address">{{ address.shortAddress }}</p>
           </ion-label>
-          <ion-icon slot="end" name="copy" (click)="copyAddress(i)"></ion-icon>
+          <ion-button slot="end" (click)="copyAddress(i)" color="meddium">
+            <ion-icon name="copy" ></ion-icon>
+          </ion-button>
         </ion-item>
         <ion-item-options>
           <button color="success" (click)="editAddress(i)" class="tool">
