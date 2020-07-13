@@ -36,7 +36,7 @@
   <div *ngIf="isLoading" style="margin-top:5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
-  <div style="text-align: center;">
+  <div style="text-align: center;" *ngIf="segmentModel === 'escrow'">
     <p>Current Block Height: {{blockHeight}}</p>
   </div>
 
@@ -65,11 +65,23 @@
   </ion-list>
 
   <ion-list *ngIf="segmentModel !== 'escrow'" style="border-top: 1px solid #cccccc;">
-    <ion-item>
-      <ion-label>
-        Mulstisig list here
+
+    <ion-item *ngFor="let msig of multiSigPendingList; let i = index" button>
+  
+      <ion-label color="dark" (click)="openMultisigDetail(msig.transactionhash)">
+        <h3>{{ msig.senderaddress }}</h3>
+        <ion-text class="dateago">{{ doDateAgo(msig.timestamp * 1000)}}</ion-text>
       </ion-label>
+  
+      <ion-text color="danger" class="amount ion-text-end">
+        - {{ msig.amount / 1e8 | number: '0.2-4' }} ZBC
+        <br/>
+        <span>
+         - {{ msig.fee / 1e8 | number: '0.2-4'}} ZBC
+        </span>
+      </ion-text>     
     </ion-item>
+
   </ion-list>
 
 </ion-content>
