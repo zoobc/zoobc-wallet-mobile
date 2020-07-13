@@ -34,7 +34,7 @@ export class MyTasksPage implements OnInit {
 
   }
 
-  reload(event: any){
+  reload(event: any) {
     setTimeout(() => {
       event.target.complete();
     }, 1000);
@@ -151,6 +151,10 @@ export class MyTasksPage implements OnInit {
       }
     };
     this.router.navigate(['/task-detail'], navigationExtras);
+  }
+
+  public goDashboard() {
+    this.router.navigate(['/dashboard']);
   }
 
 }

@@ -19,8 +19,6 @@ import { calculateMinFee, sanitizeString, stringToBuffer } from 'src/Helpers/uti
 import { base64ToByteArray } from 'src/Helpers/converters';
 import zoobc, { SendMoneyInterface, generateTransactionHash, sendMoneyBuilder } from 'zoobc-sdk';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
-import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
-import { SenddetailPage } from '../../send-coin/modals/senddetail/senddetail.page';
 import { TrxstatusPage } from '../../send-coin/modals/trxstatus/trxstatus.page';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { saveAs } from 'file-saver';
@@ -49,6 +47,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   isRecipientValid = true;
   isApproverValid = true;
   isBalanceValid = true;
+  removeExport = false;
   accountName = '';
   recipientMsg = '';
   approverMsg = '';
@@ -88,7 +87,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     multisigInfo: false,
     signatures: false,
   };
-  removeExport: boolean;
+
   isHasTransactionHash: boolean;
   isMultiSignature = true;
   txHash: string;
@@ -108,9 +107,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     public addressbookService: AddressBookService,
     private translateService: TranslateService,
     private utilService: UtilService,
-    private trxService: TransactionService,
-    private translate: TranslateService
-  ) {
+    private trxService: TransactionService  ) {
 
 
     this.accountService.accountSubject.subscribe(() => {
@@ -178,9 +175,17 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
         this.router.navigate(['/multisig']);
       }
 
+      console.log('== multisigInfo: ' + multisigInfo);
+      console.log('== unisgnedTransactions: ' + unisgnedTransactions);
+      console.log('== signaturesInfo: ' + signaturesInfo);
+      console.log('== transaction: ' + transaction);
+
       await this.loadAccount();
       this.multisig = multisig;
       this.removeExport = signaturesInfo !== undefined ? true : false;
+      if (unisgnedTransactions !== null) {
+        this.isHasTransactionHash = true;
+      }
       if (signaturesInfo) {
         this.isHasTransactionHash = signaturesInfo.txHash !== undefined ? true : false;
       }
@@ -206,16 +211,29 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     return index;
   }
 
+
+
   async next() {
 
     const isValid = this.isFormValid();
     if (!isValid) {
         return;
     }
+
     const { signaturesInfo } = this.multisig;
-
+    console.log('== multisig: ', this.multisig);
     if (!this.multisig.unisgnedTransactions) {
+      this.showNextConfirmation();
+    } else if (signaturesInfo !== undefined) {
+      this.router.navigate(['/msig-add-signatures']);
+    } else {
+      this.router.navigate(['/msig-send-transaction']);
+    }
 
+  }
+
+  generateHash() {
+      const { signaturesInfo } = this.multisig;
       this.generatedTxHash();
       // this.updateCreateTransaction();
 
@@ -225,28 +243,16 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       // end of
 
       if (signaturesInfo === undefined) {
-        console.log('==== YYYY multisig-1a: ');
         this.router.navigate(['/msig-send-transaction']);
       } else {
-        console.log('==== YYYY multisig-1b: ');
         this.router.navigate(['/msig-add-signatures']);
       }
-
-    } else if (signaturesInfo !== undefined) {
-      console.log('==== YYYY multisig-2: ');
-      this.router.navigate(['/msig-add-signatures']);
-    } else {
-      console.log('==== YYYY multisig-3: ');
-      this.router.navigate(['/msig-send-transaction']);
-    }
-
   }
-
 
   async generatedTxHash() {
     this.updateCreateTransaction();
     console.log('XXXX ==== Multisig4: ', this.multisig);
-    const { amount, fee, recipient, sender } = this.multisig.transaction;
+    const { sender } = this.multisig.transaction;
 
     const data: SendMoneyInterface = {
       sender: this.account.address,
@@ -339,7 +345,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   loadData() {
     this.recipientAddress = '';
     this.getRecipientFromScanner();
-    this.optionFee = this.allFees[0].fee.toString();
+    this.optionFee = this.allFees[1].fee.toString();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
   }
@@ -362,7 +368,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.menuController.open('mainMenu');
   }
 
-  async openListAccount(arg: string) {
+  async openListAccount() {
     const modal = await this.modalController.create({
       component: AccountPopupPage
     });
@@ -418,7 +424,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
             if (val === 'address') {
               this.openAddresses();
             } else if (val === 'account') {
-              this.openListAccount('recipient');
+              this.openListAccount();
             } else {
               this.scanQrCode();
             }
@@ -504,16 +510,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     }
   }
 
-  validateTimeout() {
-    // this.minimumFee = calculateMinFee(this.escrowTimout);
-    // this.allFees = this.trxService.transactionFees(this.minimumFee);
-    // this.optionFee = this.allFees[0].fee.toString();
-    // if (this.customeChecked) {
-    //     this.validateCustomFee();
-    // }
-    // this.getBlockHeight();
-  }
-
   convertCustomeFee() {
     if (this.primaryCurr === COIN_CODE) {
       this.customfee = this.customfeeTemp;
@@ -593,26 +589,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     }
   }
 
-  async inputPIN() {
-
-    const pinmodal = await this.modalController.create({
-      component: EnterpinsendPage,
-      componentProps: {
-
-      }
-    });
-
-
-    pinmodal.onDidDismiss().then((returnedData) => {
-      console.log('=== returned after entr pin: ', returnedData);
-      if (returnedData && returnedData.data !== 0) {
-        const pin = returnedData.data;
-        this.sendMoney(pin);
-      }
-    });
-    return await pinmodal.present();
-  }
-
   getRecipientFromScanner() {
     this.activeRoute.queryParams.subscribe(params => {
       if (params && params.jsonData) {
@@ -630,42 +606,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       duration: 3000
     });
     toast.present();
-  }
-
-
-  async showConfirmation() {
-
-    if (!this.isFormValid()) {
-      return;
-    }
-
-    const modalDetail = await this.modalController.create({
-      component: SenddetailPage,
-      componentProps: {
-        trxFee: this.transactionFee,
-        trxAmount: Number(this.amount),
-        trxBalance: this.account.balance,
-        trxSender: this.account.address,
-        trxRecipient: this.recipientAddress,
-        trxCurrencyRate: this.currencyRate,
-      }
-    });
-
-    console.log('== 6 ==');
-
-    modalDetail.onDidDismiss().then((dataReturned) => {
-      if (dataReturned) {
-        if (dataReturned.data === 1) {
-          // console.log('==  detail accepted');
-          this.inputPIN();
-        } else {
-          // console.log('==  detail closed');
-        }
-      }
-    });
-    console.log('== 7 ==');
-
-    return await modalDetail.present();
   }
 
   isFormValid(): boolean {
@@ -710,95 +650,26 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       return false;
     }
 
-    console.log('== 2 ==');
-
     const amount = this.amount;
     if (amount > 0 && amount < 0.000000001) {
       this.isAmountValid = false;
       return false;
     }
 
-    console.log('== 3 ==');
-
     if (this.amount === 0) {
       this.isAmountValid = false;
       return false;
     }
 
-    console.log('== 4 ==');
-
-
     const total = (amount + this.transactionFee);
-    // console.log('-- Total: ', total);
-
     if (total > Number(this.account.balance)) {
       this.isAmountValid = false;
       this.amountMsg = 'Insuficient balance';
       return false;
     }
-
-    console.log('== 5 ==');
     return true;
   }
 
-  sanitizeInput() {
-
-  }
-
-  async sendMoney(pin: string) {
-
-    // show loading bar
-    const loading = await this.loadingController.create({
-      message: 'Please wait, submiting!',
-      duration: 50000
-    });
-
-    await loading.present();
-
-    const data: SendMoneyInterface = {
-      sender: this.account.address,
-      recipient: sanitizeString(this.recipientAddress),
-      fee: this.transactionFee,
-      amount: this.amount,
-    };
-
-    console.log('==== Send Money: data', data);
-    // const childSeed = this.seed;
-    const childSeed = await this.utilService.generateSeed(pin, this.account.path);
-    await zoobc.Transactions.sendMoney(data, childSeed).then(
-      (resolveTx: any) => {
-        console.log('====== SendMOney resolveTx:', resolveTx);
-        if (resolveTx) {
-          this.recipientAddress = '';
-          this.amount = 0;
-          this.showSuccessMessage();
-          return;
-        }
-      },
-      error => {
-        console.log('===== sendMoney, error: ', error);
-        this.showErrorMessage(error);
-      }
-    ).finally(() => {
-      loading.dismiss();
-    });
-  }
-
-  async showErrorMessage(error) {
-    const modal = await this.modalController.create({
-      component: TrxstatusPage,
-      componentProps: {
-        msg: error,
-        status: false
-      }
-    });
-
-    modal.onDidDismiss().then(data => {
-      console.log(data);
-    });
-
-    return await modal.present();
-  }
 
   async showSuccessMessage() {
     const modal = await this.modalController.create({
@@ -816,19 +687,12 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     return await modal.present();
   }
 
-  switchAccount() {
-    // console.log('=== accounts: ', this.account);
-    this.isAmountValid = true;
-    this.isRecipientValid = true;
-    this.amount = null;
-  }
-
   changeFee() {
     this.customeChecked = false;
     console.log('==== changeFee, trxFee: ', this.optionFee);
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
-      this.customfeeTemp = this.allFees[0].fee;
+      this.customfeeTemp = this.allFees[2].fee;
     }
   }
 
@@ -844,10 +708,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   goDashboard() {
     this.router.navigate(['/dashboard']);
-  }
-
-  confirmSend() {
-    this.router.navigate(['sendconfirm']);
   }
 
   openAddresses() {
@@ -874,6 +734,32 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       saveAs(blob, 'Multisignature-Draft.json');
     }
 
+  }
+
+  async showNextConfirmation() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Are you sure?',
+      message: '<strong>You will not be able to update the form anymore</strong>!!',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Yes, continue it!',
+          handler: () => {
+            console.log('Confirm Okay');
+            this.generateHash();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
 }

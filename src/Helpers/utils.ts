@@ -111,3 +111,14 @@ export function calculateMinFee(timeout: number) {
     );
   } else { return feePerBlockPeriod / 1e8; }
 }
+
+export function jsonBufferToString(buf: any) {
+  if (!buf) { return ''; }
+  try {
+    return Buffer.from(buf.data, 'base64').toString('base64');
+  } catch (error) {
+    return buf.toString('base64');
+  }
+}
+
+

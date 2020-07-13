@@ -28,9 +28,9 @@ export class MultisigPage implements OnInit {
   isError = false;
 
   isAddMultisigInfo: boolean;
-  isSignature: boolean;
-  isTransaction: boolean;
-  isMultisigInfo: boolean;
+  isSignature = false;
+  isTransaction = false;
+  isMultisigInfo = true;
   isMultiSignature = true;
   account: Account;
 
@@ -47,11 +47,10 @@ export class MultisigPage implements OnInit {
     private multisigServ: MultisigService,
     private utilSrv: UtilService,
     private fileChooser: FileChooser) {
-    this.isMultisigInfo = true;
-  }
 
-  ionViewDidEnter() {
-    this.getMultiSigDraft();
+    this.isMultisigInfo = true;
+    this.isSignature = false;
+    this.isTransaction = false;
   }
 
   ngOnInit() {
@@ -61,7 +60,12 @@ export class MultisigPage implements OnInit {
   async getMultiSigDraft() {
     const currAccount = await this.accountSrv.getCurrAccount();
     this.account = currAccount;
+
+    this.isMultiSignature = this.account.type !== 'multisig' ? false : true;
+
     const drafts = this.multisigServ.getDrafts();
+
+  
     if (drafts) {
       this.multiSigDrafts = drafts.filter(draft => {
         const { multisigInfo, transaction, generatedSender } = draft;
