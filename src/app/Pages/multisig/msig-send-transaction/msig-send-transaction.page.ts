@@ -308,7 +308,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         this.utilService.showConfirmation('Succes', message, true, null);
 
         this.multisigServ.deleteDraft(this.multisig.id);
-        this.router.navigateByUrl('/my-tasks');
+        this.router.navigateByUrl('/dashboard');
 
       })
       .catch(async err => {
