@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { STORAGE_ESCROW_WAITING_LIST } from 'src/environments/variable.const';
-import zoobc from 'zoobc';
+import zoobc from 'zoobc-sdk';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';

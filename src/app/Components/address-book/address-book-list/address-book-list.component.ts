@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/cor
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ToastController} from '@ionic/angular';
 import { NavigationExtras, Router, NavigationEnd } from '@angular/router';
-import { EDIT_MODE, NEW_MODE } from 'src/environments/variable.const';
+import { MODE_EDIT, MODE_NEW } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-address-book-list',
@@ -84,7 +84,7 @@ export class AddressBookListComponent implements OnInit, OnDestroy {
 
   editAddress(index: number) {
     const address = this.addresses[index];
-    this.openAddressdForm(address, index, EDIT_MODE);
+    this.openAddressdForm(address, index, MODE_EDIT);
   }
 
   deleteAddress(index: number) {
@@ -93,7 +93,7 @@ export class AddressBookListComponent implements OnInit, OnDestroy {
   }
 
   createNewAddress() {
-    this.openAddressdForm({name: '', address: ''}, 0, NEW_MODE);
+    this.openAddressdForm({name: '', address: ''}, 0, MODE_NEW);
   }
 
   async openAddressdForm(arg: any, idx: number, trxMode: string) {

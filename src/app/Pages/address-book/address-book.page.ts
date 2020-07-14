@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, NavigationExtras } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Location } from '@angular/common';
-import { EDIT_MODE, NEW_MODE } from 'src/environments/variable.const';
+import { MODE_EDIT, MODE_NEW } from 'src/environments/variable.const';
 import { AccountService } from 'src/app/Services/account.service';
 import { UtilService } from 'src/app/Services/util.service';
 
@@ -60,7 +60,7 @@ export class AddressBookPage implements OnInit, OnDestroy {
 
   editAddress(index: number) {
     const address = this.addresses[index];
-    this.openAddressdForm(address, index, EDIT_MODE);
+    this.openAddressdForm(address, index, MODE_EDIT);
   }
 
   deleteAddress(index: number) {
@@ -69,7 +69,7 @@ export class AddressBookPage implements OnInit, OnDestroy {
   }
 
   createNewAddress() {
-    this.openAddressdForm({name: '', address: ''}, 0, NEW_MODE);
+    this.openAddressdForm({name: '', address: ''}, 0, MODE_NEW);
   }
 
   async openAddressdForm(arg: any, idx: number, trxMode: string) {

@@ -6,7 +6,7 @@ import {
   COIN_CODE,
   CONST_HEX
 } from 'src/environments/variable.const';
-import { Storage } from '@ionic/storage';
+import { auth } from 'firebase/app';
 import * as CryptoJS from 'crypto-js';
 import { KeyringService } from './keyring.service';
 import { AccountService } from './account.service';
@@ -19,6 +19,8 @@ import { StoragedevService } from './storagedev.service';
 export class AuthService implements CanActivate {
 
   private isUserLoggenIn: boolean;
+  public tempKey: string;
+
   constructor(
     private router: Router,
     private strgSrv: StoragedevService,
@@ -30,7 +32,7 @@ export class AuthService implements CanActivate {
   async canActivate(route: ActivatedRouteSnapshot) {
     const acc = await this.accountService.getCurrAccount();
     console.log('====== acc one canActivate: ', acc);
-    if (acc === null) {
+    if (acc === null || acc === undefined) {
       this.router.navigate(['initial']);
       return false;
     }
@@ -63,7 +65,10 @@ export class AuthService implements CanActivate {
     return isPinValid;
   }
 
+
   async login(key: string) {
+    console.log('=== Keyu: ', key);
+    this.tempKey = key;
     const encSeed = await this.strgSrv.get(STORAGE_ENC_MASTER_SEED);
     const isPinValid = this.isPinValid(encSeed, key);
     if (isPinValid) {
@@ -79,5 +84,43 @@ export class AuthService implements CanActivate {
 
   async logout() {
     this.isUserLoggenIn = false;
+    this.tempKey = null;
   }
+
+  registerUser(value) {
+    return new Promise<any>((resolve, reject) => {
+      auth().createUserWithEmailAndPassword(value.email, value.password)
+        .then(
+          res => resolve(res),
+          err => reject(err));
+    });
+  }
+
+  loginUser(value) {
+    return new Promise<any>((resolve, reject) => {
+      auth().signInWithEmailAndPassword(value.email, value.password)
+        .then(
+          res => resolve(res),
+          err => reject(err));
+    });
+  }
+
+  logoutUser() {
+    return new Promise((resolve, reject) => {
+      if (auth().currentUser) {
+        auth().signOut()
+          .then(() => {
+            console.log('LOG Out');
+            resolve();
+          }).catch((error) => {
+            reject();
+          });
+      }
+    });
+  }
+
+  userDetails() {
+    return auth().currentUser;
+  }
+
 }

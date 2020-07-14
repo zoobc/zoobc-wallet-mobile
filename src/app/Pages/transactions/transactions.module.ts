@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { TransactionsPage } from './transactions.page';
 import { TranslateModule } from '@ngx-translate/core';
+import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
 
 const routes: Routes = [
   {
@@ -23,6 +24,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [TransactionsPage]
+  declarations: [TransactionsPage, DateAgoPipe]
 })
 export class TransactionsPageModule {}

@@ -1,10 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import * as Color from 'color';
-import { STORAGE_THEME, STORAGE_ACTIVE_THEME, DEFAULT_THEME } from 'src/environments/variable.const';
+import { STORAGE_ACTIVE_THEME, DEFAULT_THEME } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { Subject } from 'rxjs';
-
 
 @Injectable({
   providedIn: 'root'
@@ -13,61 +12,80 @@ export class ThemeService {
   theme = DEFAULT_THEME;
   themes = {
     zoobc: {
-      primary: '#0B3D65',
-      secondary: '#0099c4',
-      tertiary: '#d35555',
-      light: '#f4f5f8',
-      medium: '#ffffff',
-      dark: '#020202',
-      dbbalance: '#eae3d0',
-      dbspbalance: '#3399cc'
+      primary: '#373854',
+      secondary: '#493267',
+      tertiary: '#9e379f',
+      dbbalance: '#9e379f',
+      dbspbalance: '#7bb3ff'
+    },
+    bcz: {
+      primary: '#005b96',
+      secondary: '#6497b1',
+      tertiary: '#03396c',
+      dbbalance: '#ffdf7b',
+      dbspbalance: '#6cc3d8'
     },
     day: {
-      primary: '#3880ff',
-      secondary: '#3dc2ff',
-      tertiary: '#5260ff',
-      light: '#f4f5f8',
-      medium: '#000000',
-      dark: '#222428',
+      primary: '#317873',
+      secondary: '#5f9ea0',
+      tertiary: '#49796b',
       dbbalance: '#ffe8df',
       dbspbalance: '#ffdf7b'
     },
     night: {
-      primary: '#222831',
-      secondary: '#222831',
-      tertiary: '#30475e',
-      medium: '#ffbd69',
-      dark: '#543864',
-      light: '#dbdbdb',
+      primary: '#8CBA80',
+      secondary: '#c1a57b',
+      tertiary: '#FE5F55',
+      medium: '#BCC2C7',
+      dark: '#dedede',
+      light: '#495867',
+      dbbalance: '#c1a57b',
+      dbspbalance: '#8CBA80'
+    },
+    neon: {
+      primary: '#39BFBD',
+      secondary: '#4CE0B3',
+      tertiary: '#FF5E79',
+      light: '#F4EDF2',
+      medium: '#B682A5',
+      dark: '#34162A',
+      dbbalance: '#ececec',
+      dbspbalance: '#c1a57b'
+    },
+    autumn: {
+      primary: '#F78154',
+      secondary: '#4D9078',
+      tertiary: '#B4436C',
+      light: '#FDE8DF',
+      medium: '#FCD0A2',
+      dark: '#B89876',
       dbbalance: '#ececec',
       dbspbalance: '#c1a57b'
     }
   };
-
-
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private strgSrv: StoragedevService
   ) {
-      this.loadData();
+    strgSrv.get(STORAGE_ACTIVE_THEME).then(themeName => {  // <--- GET SAVED THEME
+      let thm = themeName;
+      if (!thm) {
+        thm = DEFAULT_THEME;
+      }
+      this.setTheme(thm);
+    });
+
   }
 
   public themeSubject: Subject<string> = new Subject<string>();
-
-  async loadData() {
-    await this.strgSrv.get(STORAGE_THEME).then(cssText => {
-      this.setGlobalCSS(cssText);
-    });
-  }
   // Override all global variables with a new theme
   async setTheme(themename: string) {
     this.theme = themename;
-    this.themeSubject.next(this.theme);
     const them = this.themes[themename];
     const cssText = CSSTextGenerator(them);
     this.setGlobalCSS(cssText);
-    await this.strgSrv.set(STORAGE_THEME, cssText);
     await this.strgSrv.set(STORAGE_ACTIVE_THEME, themename);
+    this.themeSubject.next(this.theme);
   }
 
   // Define a single CSS variable
@@ -79,23 +97,20 @@ export class ThemeService {
     this.document.documentElement.style.cssText = css;
   }
 
-  get storedTheme() {
-    return this.strgSrv.get(STORAGE_THEME);
-  }
 }
 
 const defaults = {
-  primary: '#3880ff',
-  secondary: '#0cd1e8',
-  tertiary: '#7044ff',
-  danger: '#f04141',
-  dark: '#222428',
-  medium: '#989aa2',
+  primary: '#1d2647',
+  secondary: '#6cc3d8',
+  tertiary: '#8f4791',
   light: '#f4f5f8',
-  dbbalance: '#1ca3b0',
-  dbspbalance: '#eae3d0',
-  success: '#10dc60',
-  warning: '#ffce00'
+  medium: '#92949c',
+  dark: '#222428',
+  dbbalance: '#eae3d0',
+  dbspbalance: '#6cc3d8',
+  danger: '#eb445a',
+  success: '#2dd36f',
+  warning: '#ffc409'
 };
 
 function CSSTextGenerator(colors) {
