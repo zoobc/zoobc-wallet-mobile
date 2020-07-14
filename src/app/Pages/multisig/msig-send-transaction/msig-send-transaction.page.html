@@ -24,25 +24,25 @@
         {{ "From Account" | translate }}
       </ion-col>
     </ion-row>
-    <!-- <ion-row *ngIf="account" (click)="openListAccount('sender')"> -->
-    <ion-row *ngIf="account" (click)="switchAccount()">
+    <!-- <ion-row *ngIf="account" (click)="switchAccount()"> -->
+    <ion-row *ngIf="account">
       <ion-col size="12">
         <ion-item color="primary">
           <ion-label>
-            <h2>{{ account.name }}</h2>
+            <!-- <h2>{{ account.name }}</h2> -->
             <p>
-              {{ account.shortAddress }}&nbsp;&nbsp;
-              <span>
+              {{ senderAccount.signByAddress }}&nbsp;&nbsp;
+              <!-- <span>
                 <ion-icon name="arrow-dropdown"></ion-icon>
-              </span>
+              </span> -->
             </p>
             <p>&nbsp;</p>
-            <p>Current Balance</p>
+            <!-- <p>Current Balance</p>
             <h1>{{ account.balance | number: '0.0-2' }} ZBC</h1>
             <p>
               {{ account.balance * priceInUSD * currencyRate.value | number:
               '0.0-2' }} {{ currencyRate.name }}
-            </p>
+            </p> -->
           </ion-label>
         </ion-item>
       </ion-col>
@@ -72,7 +72,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row *ngIf="customeChecked" class="ion-row-cont" style="margin-bottom:10px">
+    <ion-row *ngIf="customeChecked" class="ion-row-cont" style="margin-bottom:10px;margin-top:10px">
       <ion-col size="8" style="padding-left:10px">
         <ion-input placeholder="{{'Enter fee'|translate}}" class="ion-text-right"
           style="border-bottom: 1px solid #dddddd;font-size:1.2em; color:#0B3D65" (ionChange)="validateCustomFee()"
@@ -81,7 +81,6 @@
         <ion-input value="{{ customfee2  | number: '0.0-6'}}" style="font-size:0.9em" class="ion-text-right" readonly
           type="text">
         </ion-input>
-        <!-- <ion-label style="font-size: 0.8em;">{{ amountSecond  | number: '0.0-4'}} {{ secondaryCurr }}</ion-label> -->
       </ion-col>
       <ion-col size="2" style="font-size: 0.8em; padding-left: 8px;">
         <div style="margin-top:16px; color:#0B3D65">{{primaryCurr}}</div>

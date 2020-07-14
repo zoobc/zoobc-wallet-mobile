@@ -40,6 +40,16 @@ export function stringToBuffer(str: string) {
   return Buffer.from(str, 'base64');
 }
 
+export function base64ToHex(str) {
+  const raw = atob(str);
+  let result = '';
+  for (let i = 0; i < raw.length; i++) {
+    const hex = raw.charCodeAt(i).toString(16);
+    result += hex.length === 2 ? hex : '0' + hex;
+  }
+  return result.toUpperCase();
+}
+
 export function dateAgo(value: any): any {
   if (value) {
       const seconds = Math.floor((+new Date() - +new Date(value)) / 1000);
@@ -111,3 +121,14 @@ export function calculateMinFee(timeout: number) {
     );
   } else { return feePerBlockPeriod / 1e8; }
 }
+
+export function jsonBufferToString(buf: any) {
+  if (!buf) { return ''; }
+  try {
+    return Buffer.from(buf.data, 'base64').toString('base64');
+  } catch (error) {
+    return buf.toString('base64');
+  }
+}
+
+

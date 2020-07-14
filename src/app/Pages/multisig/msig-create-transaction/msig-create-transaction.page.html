@@ -37,9 +37,9 @@
             <h2>{{ account.name }}</h2>
             <p>
               {{ account.shortAddress }}&nbsp;&nbsp;
-              <span>
+              <!-- <span>
                 <ion-icon name="arrow-dropdown"></ion-icon>
-              </span>
+              </span> -->
             </p>
             <p>&nbsp;</p>
             <p>Current Balance</p>
@@ -143,19 +143,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row *ngIf="customeChecked" class="ion-row-cont" style="margin-bottom:10px">
-      <!-- <ion-col size="8" style="padding-left:10px">
-        <ion-input placeholder="{{'Enter transaction fee'|translate}}" 
-        style="border-bottom: 1px solid #dddddd;font-size:1.2em; color:#0B3D65"
-        (ionChange)="validateCustomFee()" maxlength="12"
-          type="number" [(ngModel)]="customfee"></ion-input>
-          <ion-input value="{{ amountSecond  | number: '0.0-2'}}" style="font-size:0.8em" class="ion-text-right" readonly type="text">
-          </ion-input>
-      </ion-col>
-      <ion-col size="2" style="padding-left: 10px;">
-        <div style="margin-top:10px; color:#0B3D65">ZBC</div>
-      </ion-col> -->
-
+    <ion-row *ngIf="customeChecked" class="ion-row-cont" style="margin-bottom:10px; margin-top: 10px;">
       <ion-col size="8" style="padding-left:10px">
         <ion-input placeholder="{{'Enter fee'|translate}}" class="ion-text-right"
           style="border-bottom: 1px solid #dddddd;font-size:1.2em; color:#0B3D65" (ionChange)="validateCustomFee()"
@@ -164,7 +152,6 @@
         <ion-input value="{{ customfee2  | number: '0.0-6'}}" style="font-size:0.9em" class="ion-text-right" readonly
           type="text">
         </ion-input>
-        <!-- <ion-label style="font-size: 0.8em;">{{ amountSecond  | number: '0.0-4'}} {{ secondaryCurr }}</ion-label> -->
       </ion-col>
       <ion-col size="2" style="font-size: 0.8em; padding-left: 8px;">
         <div style="margin-top:16px; color:#0B3D65">{{primaryCurr}}</div>
@@ -182,11 +169,11 @@
   <ion-grid style="margin-top:20px;">
     <ion-row>
       <ion-col>
-        <ion-button color="tertiary" fill="outline" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="exportDraft()"
+        <ion-button color="tertiary" fill="outline" *ngIf="removeExport && !isLoadingBalance && !isLoadingTxFee" (click)="exportDraft()"
           expand="block">
           {{ "Export Draft Multi Signature" | translate }}
         </ion-button>
-        <ion-button color="tertiary"fill="outline" *ngIf="isLoadingBalance && isLoadingTxFee"
+        <ion-button color="tertiary"fill="outline" *ngIf="removeExport && isLoadingBalance && isLoadingTxFee"
         expand="block">
         {{ "Export Draft Multi Signature" | translate }}
       </ion-button>
