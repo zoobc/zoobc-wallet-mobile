@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TRANSACTION_MINIMUM_FEE, COIN_CODE } from 'src/environments/variable.const';
 import zoobc, { MultisigPendingTxDetailResponse,
@@ -13,6 +13,7 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { UtilService } from 'src/app/Services/util.service';
+import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-msig-task-detail',
@@ -24,7 +25,6 @@ export class MsigTaskDetailPage implements OnInit {
   currencyRate: Currency;
   private account: Account;
   private msigHash: any;
-  private action: number;
   public isLoading = false;
   priceInUSD: number;
   primaryCurr = COIN_CODE;
@@ -59,6 +59,7 @@ export class MsigTaskDetailPage implements OnInit {
     private router: Router,
     private accountService: AccountService,
     private authSrv: AuthService,
+    private loadingController: LoadingController,
     private utilService: UtilService,
     private trxService: TransactionService) {
     this.priceInUSD = this.currencyService.getPriceInUSD();
@@ -66,7 +67,6 @@ export class MsigTaskDetailPage implements OnInit {
 
   ngOnInit() {
     this.activeRoute.queryParams.subscribe(params => {
-      console.log('=== task detail Params: ', params);
       this.msigHash = params.msigHash;
     });
 
@@ -107,13 +107,17 @@ export class MsigTaskDetailPage implements OnInit {
         page: 1,
         pendingtransactionsList: list,
       };
+
       const txFilter = toGetPendingList(tx);
       this.multiSigDetail = txFilter.pendingtransactionsList[0];
 
-      console.log('=== Detail: ', this.multiSigDetail);
-
       this.pendingSignatures = res.pendingsignaturesList;
+      console.log('=== pendingSignatures: ', this.pendingSignatures);
+
       this.participants = res.multisignatureinfo.addressesList;
+      console.log('=== participants: ', this.participants);
+
+      console.log('=== this.account.signByAddress: ', this.account.signByAddress);
       const idx = this.pendingSignatures.findIndex(
         sign => sign.accountaddress === this.account.signByAddress
       );
@@ -129,6 +133,10 @@ export class MsigTaskDetailPage implements OnInit {
       this.isLoading = false;
     }
     );
+  }
+
+  async copyAddress(address: string) {
+    this.utilService.copyToClipboard(address);
   }
 
   closeModal() {
@@ -162,13 +170,11 @@ export class MsigTaskDetailPage implements OnInit {
   }
 
   confirm() {
-    this.action = 0;
     this.showPin();
   }
 
-  reject() {
-    this.action = 1;
-    this.showPin();
+  shortAddress(arg: string) {
+    return makeShortAddress(arg);
   }
 
   async showPin() {
@@ -179,11 +185,7 @@ export class MsigTaskDetailPage implements OnInit {
     pinmodal.onDidDismiss().then((returnedData) => {
       console.log('=== returned after entr pin: ', returnedData);
       if (returnedData && returnedData.data !== 0) {
-        if (this.action === 0) {
           this.doAccept();
-        } else {
-          this.doIgnore();
-        }
       }
     });
     return await pinmodal.present();
@@ -195,10 +197,17 @@ export class MsigTaskDetailPage implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/my-task']);
+    this.router.navigate(['/my-tasks']);
   }
 
   async doAccept() {
+
+    // show loading bar
+    const loading = await this.loadingController.create({
+      message: 'processing ..!',
+      duration: 50000
+    });
+    loading.present();
 
     // TODO VALIDATE THIS
     this.transactionFee = Number(this.optionFee);
@@ -228,8 +237,7 @@ export class MsigTaskDetailPage implements OnInit {
       },
     };
 
-    console.log('=== data: ', data);
-    return;
+
 
     zoobc.MultiSignature.postTransaction(data, seed)
       .then( () => {
@@ -237,13 +245,15 @@ export class MsigTaskDetailPage implements OnInit {
         this.utilService.showConfirmation('Succes', message, true, null);
       })
       .catch( err => {
-        console.log(err.message);
+        console.log('== Error: ', err.message);
         const message = 'An error occurred while processing your request';
         this.utilService.showConfirmation('Fail', message, false, null);
       })
       .finally(() => {
         this.isLoadingTx = false;
-        this.goBack();
+        loading.dismiss();
+        // this.goBack();
+        this.router.navigate(['/dashboard']);
       });
   }
 

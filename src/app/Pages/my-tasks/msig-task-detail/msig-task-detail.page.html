@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Msig Task Detail</ion-title>
+    <ion-title>Task Detail</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
         Feedback
@@ -18,29 +18,33 @@
   </div>
 
   <div style="text-align: center;">
-    <h5> Escrow Transaction Detail </h5>
+    <h5> Multi Signature Transaction Detail </h5>
   </div>
   <ion-list *ngIf="multiSigDetail && !isLoading">
     <ion-item>
       <ion-label class="ion-text-wrap">
         <h5>{{ "Sender" | translate }}</h5>
-        <p>
-          {{ multiSigDetail.senderaddress }}
+        <p class="info-val">
+          {{ shortAddress(multiSigDetail.senderaddress) }}
         </p>
       </ion-label>
+      <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.senderaddress)">
+      </ion-icon>
     </ion-item>
     <ion-item>
       <ion-label class="ion-text-wrap">
         <h5>{{ "Recipient" | translate }}</h5>
-        <p>
-          {{ multiSigDetail.recipientaddress }}
+        <p class="info-val">
+          {{ shortAddress(multiSigDetail.recipientaddress) }}
         </p>
       </ion-label>
+      <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.recipientaddress)">
+      </ion-icon>
     </ion-item>
     <ion-item>
       <ion-label>
         <h5>{{ "Amount" | translate }}</h5>
-        <p>
+        <p class="info-val">
           {{multiSigDetail.amount / 1e8 | number: '0.0-8' }} ZBC
         </p>
       </ion-label>
@@ -48,7 +52,7 @@
     <ion-item>
       <ion-label>
         <h5>{{ "Fee" | translate }}</h5>
-        <p>
+        <p class="info-val">
           {{ multiSigDetail.fee / 1e8 | number: '0.0-8' }} ZBC
         </p>
       </ion-label>
@@ -56,7 +60,7 @@
     <ion-item>
       <ion-label class="ion-text-wrap">
         <h5>{{ "Blockheight" | translate }}</h5>
-        <p>
+        <p class="info-val">
           {{multiSigDetail.blockheight}}
         </p>
       </ion-label>
@@ -64,7 +68,7 @@
     <ion-item>
       <ion-label class="ion-text-wrap">
         <h5>{{ "Date" | translate }}</h5>
-        <p>
+        <p class="info-val">
           {{multiSigDetail.timestamp * 1000 | date: 'medium'}}
         </p>
       </ion-label>
@@ -73,18 +77,18 @@
       <ion-label color="danger" *ngIf="pendingSignatures.length == 0">
         <p> {{ 'No participants have signed yet' | translate }}</p>
       </ion-label>
-      <ion-label color="success" *ngIf="pendingSignatures.length > 0">
+      <ion-label color="danger" *ngIf="pendingSignatures.length > 0">
         <p>{{ 'Signed by' | translate }} {{ pendingSignatures.length }} of {{ participants.length }}
           {{ 'participants' | translate }}</p>
       </ion-label>
     </ion-item>
 
-    <ion-item *ngIf="isNeedSign">
+    <ion-item *ngIf="isNeedSign && enabledSign">
       <ion-checkbox [(ngModel)]="isNeedSign" color="primary"></ion-checkbox>
       <ion-label style="margin-left:10px;">Sign this transaction</ion-label>
     </ion-item>
 
-    <ion-item style="margin-bottom:50px;" *ngIf="!isNeedSign">
+    <ion-item style="margin-bottom:50px;" *ngIf="!isNeedSign && enabledSign">
       <ion-checkbox [(ngModel)]="isNeedSign" color="primary"></ion-checkbox>
       <ion-label style="margin-left:10px;">Sign this transaction</ion-label>
     </ion-item>
@@ -129,7 +133,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="primary" (click)="doAccept()">{{ 'Accept' | translate }}</ion-button>
+        <ion-button expand="block" color="primary" (click)="confirm()">{{ 'Accept' | translate }}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
