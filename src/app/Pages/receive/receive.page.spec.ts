@@ -1,15 +1,42 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ReceivePage } from './receive.page';
+import {TranslateModule } from '@ngx-translate/core';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { IonicStorageModule } from '@ionic/storage';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { RouterTestingModule } from "@angular/router/testing";
+import { ModalController} from '@ionic/angular';
 
-describe('ReceivePage', () => {
+
+
+describe('Notofications Page', () => {
   let component: ReceivePage;
   let fixture: ComponentFixture<ReceivePage>;
+
+  let modalSpy = jasmine.createSpyObj('Modal', ['present']);
+  let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+
+  modalCtrlSpy.create.and.callFake(function () {
+    return modalSpy;
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ReceivePage ],
+      imports: [
+        TranslateModule.forRoot(),
+        IonicStorageModule.forRoot(),
+        RouterTestingModule,
+        ],
+      providers:[
+        SocialSharing,
+        Clipboard,
+        {
+          provide: ModalController,
+          useValue: modalCtrlSpy
+        },
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();

@@ -1,9 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AboutPage } from './about.page';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient, HttpHandler } from '@angular/common/http';
-import { createTranslateLoader } from 'src/app/app.module';
+import { TranslateModule } from "@ngx-translate/core";
 
 describe('AboutPage', () => {
 
@@ -15,6 +13,9 @@ describe('AboutPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AboutPage ],
+      imports: [
+        TranslateModule.forRoot(),
+        ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         TranslateModule.forRoot({

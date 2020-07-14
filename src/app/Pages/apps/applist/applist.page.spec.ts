@@ -1,10 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ApplistPage } from './applist.page';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { createTranslateLoader } from 'src/app/app.module';
-import { HttpClient, HttpHandler } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ApplistPage', () => {
   let component: ApplistPage;
@@ -14,16 +12,10 @@ describe('ApplistPage', () => {
     TestBed.configureTestingModule({
       declarations: [ ApplistPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: (createTranslateLoader),
-            deps: [HttpClient]
-          }
-        })
+      imports:[
+        TranslateModule.forRoot(),
+        RouterTestingModule,
       ],
-      providers: [TranslateService, HttpClient, HttpHandler]
     })
     .compileComponents();
   }));
@@ -36,5 +28,18 @@ describe('ApplistPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should return a non empty array', () => {
+    let result = component.ngOnInit();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it('should return a non empty array', () => {
+    let result = component.showSellApp();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it('should return a non empty array', () => {
+    let result = component.showListOtherApp();
+    expect(Array.isArray(result)).toBeTruthy;
   });
 });

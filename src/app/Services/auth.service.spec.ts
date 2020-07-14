@@ -1,32 +1,28 @@
 import { TestBed } from '@angular/core/testing';
-import { TransactionService } from './transaction.service';
+import { AuthService } from './auth-service';
 
-describe('TransactionService', () => {
-  let service: TransactionService;
-  beforeEach(() => { 
-    TestBed.configureTestingModule({})
-    service = new TransactionService(null)
-});
+describe('AddressBookService', () => {
+    let service: AuthService;
+  beforeEach(() => { TestBed.configureTestingModule({})
+    service = new AuthService(null, null, null, null);
+ });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
   it("should return a non empty array", () => {
-    let result = service.getRpcUrl();
+    let result = service.login("qwerty");
     expect(Array.isArray(result)).toBeTruthy;
   });
 
   it("should return a non empty array", () => {
-    let result = service.loadRpcUrl();
+    let result = service.isPinValid("qwerty","qwerty");
     expect(Array.isArray(result)).toBeTruthy;
   });
-
   it("should return a non empty array", () => {
-    let result = service.setRpcUrl("879");
+    let result = service.logout();
     expect(Array.isArray(result)).toBeTruthy;
   });
-  
-
 
 });
