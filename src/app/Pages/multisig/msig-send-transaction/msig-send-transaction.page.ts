@@ -10,7 +10,7 @@ import { Location } from '@angular/common';
 import zoobc, { MultiSigInterface } from 'zoobc-sdk';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AuthService } from 'src/app/Services/auth-service';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, LoadingController } from '@ionic/angular';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { UtilService } from 'src/app/Services/util.service';
@@ -18,6 +18,7 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { jsonBufferToString } from 'src/Helpers/utils';
 import { SignatureInfo } from 'zoobc-sdk/types/helper/transaction-builder/multisignature';
+import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 
 
 @Component({
@@ -87,6 +88,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     private accountService: AccountService,
     private currencyService: CurrencyService,
     private authSrv: AuthService,
+    private loadingController: LoadingController,
     private trxService: TransactionService  ) {
 
     this.accountService.accountSubject.subscribe(() => {
@@ -137,7 +139,6 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       }
 
       this.multisig = multisig;
-      console.log('=== multisig: ', this.multisig);
 
       const { accountAddress, fee, generatedSender } = this.multisig;
       if (this.isMultiSigAccount) {
@@ -211,7 +212,6 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
   changeFee() {
     this.customeChecked = false;
-    console.log('==== changeFee, trxFee: ', this.optionFee);
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
       this.customfeeTemp = this.allFees[2].fee;
@@ -251,7 +251,8 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     this.secondaryCurr = this.currencyRate.name;
   }
 
-  async sendTransaction() {
+
+  sendTransaction() {
 
     this.transactionFee = Number(this.optionFee);
     if (this.customeChecked) {
@@ -261,6 +262,33 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     if (!this.transactionFee) {
       this.transactionFee =  this.allFees[1].fee;
     }
+
+    this.showPin();
+  }
+
+  async showPin() {
+    const pinmodal = await this.modalController.create({
+      component: EnterpinsendPage
+    });
+
+    pinmodal.onDidDismiss().then((returnedData) => {
+       if (returnedData && returnedData.data !== 0) {
+          this.submit();
+      }
+    });
+    return await pinmodal.present();
+  }
+
+
+  private async submit() {
+    // show loading bar
+    const loading = await this.loadingController.create({
+      message: 'processing ..!',
+      duration: 50000
+    });
+    loading.present();
+    // end off
+
 
     this.updateSendTransaction();
     const {
@@ -297,13 +325,11 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       };
     }
 
-    console.log('=== Data: ', data);
     const key = this.authSrv.tempKey;
     const childSeed = await this.utilService.generateSeed(key, this.account.path);
 
     await zoobc.MultiSignature.postTransaction(data, childSeed)
-      .then( async (res: any) => {
-        console.log(res);
+      .then(  () => {
         const message = 'Your Transaction is processing!';
         this.utilService.showConfirmation('Succes', message, true, null);
 
@@ -311,10 +337,12 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         this.router.navigateByUrl('/dashboard');
 
       })
-      .catch(async err => {
+      .catch(err => {
         console.log(err.message);
         const message = 'An error occurred while processing your request';
         this.utilService.showConfirmation('Fail', message, false, null);
+      }).finally(() => {
+        loading.dismiss();
       });
   }
 
