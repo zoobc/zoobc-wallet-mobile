@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+    <ion-title>{{ "List of Account" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="list-account-page">
+    <ng-template #noData>
+      <ion-item lines="none">
+        <ion-label>{{ "You dont have any address" | translate }}</ion-label>
+      </ion-item>
+    </ng-template>
+
+    <ion-list *ngIf="accounts && accounts.length >= 1; else noData">
+      <ion-item *ngFor="let account of accounts; let i = index">
+        <ion-label (click)="accountClicked(account)">
+          <div class="title" *ngIf="account.name">{{ account.name }}</div>
+          <div class="address">{{ account.shortAddress }}</div>
+          <div class="created">
+            {{"Created"|translate}}: {{ account.created | date: "short" }}
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

@@ -1,13 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
-import zoobc, { EscrowListParams } from 'zoobc';
-import { GetEscrowTransactionsResponse } from 'zoobc/grpc/model/escrow_pb';
-import { OrderBy } from 'zoobc/grpc/model/pagination_pb';
+
+import zoobc, {
+  toGetPendingList,
+  MultisigPendingTxResponse,
+  MultisigPendingListParams,
+  EscrowListParams,
+} from 'zoobc-sdk';
+
+import { GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
+import { OrderBy } from 'zoobc-sdk/grpc/model/pagination_pb';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { Router, NavigationExtras } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
+import { PendingTransactionStatus } from 'zoobc-sdk/grpc/model/multiSignature_pb';
+import { dateAgo } from 'src/Helpers/utils';
+import { Currency } from 'src/app/Interfaces/currency';
 
 @Component({
   selector: 'app-my-tasks',
@@ -15,37 +24,100 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
   styleUrls: ['./my-tasks.page.scss'],
 })
 export class MyTasksPage implements OnInit {
-
+  segmentModel = 'escrow';
   account: Account;
   escrowTransactions: any;
   page = 1;
   total = 0;
   blockHeight = 0;
-  isLoadingBlockHeight: boolean;
-  isLoading: boolean;
+  isLoadingBlockHeight = false;
+  isLoading = false;
+  isLoadingMultisig = false;
+  pageMultiSig: number;
+  totalMultiSig: number;
+  multiSigPendingList: any;
+  isErrorMultiSig = false;
+  isLoadingDetail = false;
+  showSignForm = false;
+  multiSigDetail: any;
+  currencyRate: Currency;
+  kindFee: string;
+  advancedMenu = false;
+  enabledSign = true;
+  pendingSignatures = [];
+  participants = [];
+
   constructor(
     private router: Router,
-    private alertCtrl: AlertController,
     private accountService: AccountService,
     private addresBookSrv: AddressBookService) { }
 
   ngOnInit() {
-    this.loadAccount();
-
+    this.loadTask();
   }
-  async loadAccount() {
+
+  reload(event: any) {
+    setTimeout(() => {
+      event.target.complete();
+    }, 1000);
+  }
+
+  segmentChanged() {
+    console.log(this.segmentModel);
+    //  console.log(event);
+  }
+
+  async loadTask() {
     this.account = await this.accountService.getCurrAccount();
     console.log('=== Account: ', this.account);
-    this.getEscrowTransaction();
     this.getBlockHeight();
+    this.getEscrowTransaction();
+    this.getMultiSigPendingList(true);
   }
-  async showTaskDetail() {
-    const alert = await this.alertCtrl.create({
-      header: 'Coming Soon!',
-      message: 'Feature will available soon',
-      buttons: ['Close']
-    });
-    await alert.present();
+
+  getMultiSigPendingList(reload: boolean = false) {
+    if (!this.isLoadingMultisig) {
+      this.isLoadingMultisig = true;
+      const perPage = Math.ceil(window.outerHeight / 72);
+
+      if (reload) {
+        this.multiSigPendingList = null;
+        this.pageMultiSig = 1;
+      }
+      const params: MultisigPendingListParams = {
+        address: this.account.address,
+        status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
+        pagination: {
+          page: this.pageMultiSig,
+          limit: perPage,
+        },
+      };
+      zoobc.MultiSignature.getPendingList(params)
+        .then((res: MultisigPendingTxResponse) => {
+          const tx = toGetPendingList(res);
+          this.totalMultiSig = tx.count;
+          const pendingList = tx.pendingtransactionsList;
+          // pendingList.map(res => {
+          //   // tslint:disable-next-line:no-string-literal
+          //   res['alias'] = this.contactServ.get(res.senderaddress).alias || '';
+          // });
+          if (reload) {
+            this.multiSigPendingList = pendingList;
+          } else {
+            this.multiSigPendingList = this.multiSigPendingList.concat(pendingList);
+          }
+          console.log('=== multiSigPendingList:', this.multiSigPendingList);
+        })
+        .catch(err => {
+          this.isErrorMultiSig = true;
+          console.log(err);
+        })
+        .finally(() => (this.isLoadingMultisig = false));
+    }
+  }
+
+  doDateAgo(pDate: any) {
+    return dateAgo(pDate);
   }
 
   getEscrowTransaction() {
@@ -139,6 +211,20 @@ export class MyTasksPage implements OnInit {
       }
     };
     this.router.navigate(['/task-detail'], navigationExtras);
+  }
+
+  openMultisigDetail(msigHash: string) {
+    console.log('=== msigHash Id: ', msigHash);
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        msigHash
+      }
+    };
+    this.router.navigate(['/msig-task-detail'], navigationExtras);
+  }
+
+  public goDashboard() {
+    this.router.navigate(['/dashboard']);
   }
 
 }

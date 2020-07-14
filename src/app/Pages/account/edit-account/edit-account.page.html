@@ -1,0 +1,123 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "Edit Account" | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        Feedback
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label position="stacked">{{ "Account Name" | translate }}</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input padding="false" placeholder="{{ 'Please enter your account name' | translate }}"
+          [(ngModel)]="account.name"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-label color="danger">
+          {{validationMessage}}&nbsp;
+        </ion-label>
+      </ion-col>
+    </ion-row>
+
+    <div *ngIf="account && account.type==='multisig'">
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <h2>Participants</h2>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="addParticipant()">
+            +
+          </ion-button>
+          <ion-button (click)="reduceParticipant()">
+            -
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <div>
+        <ion-row *ngFor="let participant of account.participants; let i = index; trackBy: customTrackBy">
+          <ion-col size="10">
+            <ion-input type="text" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
+              [(ngModel)]="account.participants[i]">
+            </ion-input>
+          </ion-col>
+          <ion-col size="2">
+            <ion-button (click)="showPopupAccount(i)">
+              ..
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <h2>Nonce</h2>
+            <ion-input [(ngModel)]="account.nonce" type="number" placeholder="Nonce ..."></ion-input>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <h2>Minimum signature</h2>
+            <ion-input type="number" [(ngModel)]="account.minSig" placeholder="Minimum signature..."></ion-input>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <h2>Sign by</h2>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10">
+          <ion-label>
+            <h3 *ngIf="signByAccount">{{signByAccount.name}}</h3>
+            <ion-textarea rows="2" cols="20" [(ngModel)]="account.signByAddress" placeholder="Enter sign by...">
+            </ion-textarea>
+          </ion-label>
+        </ion-col>
+        <ion-col size="2">
+          <br/><br/>
+          <ion-button (click)="showPopupSignBy()">
+            ..
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+    </div>
+    <ion-row>
+      <ion-col>
+        <ion-button strong color="secondary" (click)="UpdateAccount()" type="submit" expand="block">
+          <span>{{"Update"|translate}}</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="secondary" routerLink="/list-account" fill="outline" expand="block">
+          {{ "Cancel" | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

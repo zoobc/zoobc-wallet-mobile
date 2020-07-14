@@ -1,16 +1,9 @@
-ion-item {
-    .title {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
-    .address {
-      font-size: 0.9rem;
-      color: var(--ion-color-secondary);
-      margin-bottom: 0.5rem;
-      white-space: normal;
-      font-weight: bold;
-    }
-    .created {
-      font-size: 0.7rem;
-    }
-  }
+
+.address {
+  font-size: 0.8em;
+  color: var(--ion-color-dark);
+}
+
+.name{
+  color: var(--ion-color-medium);
+}

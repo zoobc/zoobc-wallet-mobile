@@ -13,6 +13,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ChatService } from 'src/app/Services/chat.service';
 import { ChatUser } from 'src/app/Interfaces/chat-user';
 import { FcmService } from 'src/app/Services/fcm.service';
+import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-chat',
@@ -21,11 +22,15 @@ import { FcmService } from 'src/app/Services/fcm.service';
 })
 export class ChatPage implements OnInit {
 
+  chatGroup: any;
+  chatContent: string;
   addresses = [];
   account: Account;
   chatuser: ChatUser;
   fcmToken: string;
   fcmUid: string;
+  recentChats: any;
+  chatSenders: any;
 
   constructor(private router: Router,
               private fcmService: FcmService,
@@ -48,11 +53,84 @@ export class ChatPage implements OnInit {
     this.fcmToken = identity.pushToken;
   }
 
+  segmentChanged(ev: any) {
+    console.log('Segment changed', ev);
+  }
+
+  // getName(address) {
+  //   this.addressBookSrv.getNameByAddress(address);
+  // }
+
   ngOnInit() {
+    this.chatContent =  'chats';
+    this.recentChats = this.chatService.recentCats;
+
+    if (this.recentChats && this.recentChats.length > 0) {
+      this.chatGroup = this.groupBy(this.recentChats, 'sender');
+      this.chatSenders = Object.keys(this.chatGroup);
+      console.log('== Group by: ', this.chatGroup[this.chatSenders[0]]);
+      console.log('=== group length: ', Object.keys(this.chatGroup));
+
+    }
+
+
     this.getFcmId();
     this.loadAccount();
     this.getAllAddress();
     console.log('---- All address in chat---- :', this.addresses);
+  }
+
+  openChatSession(address: string, name: string) {
+
+    this.chatuser = {
+      name: this.account.name,
+      address: this.account.address,
+      token: this.fcmToken,
+      uid: this.fcmUid,
+      path: -1,
+      time: new Date().getTime().toString()
+    };
+
+    const chatPair = {
+      name,
+      address,
+      time: new Date().getTime().toString()
+    };
+
+    this.chatService.currentChatPairId = this.chatService.createPairId(
+      this.chatuser,
+      chatPair
+    );
+
+    this.chatService.currentChatPairId2 = this.chatService.createPairId2(
+      this.chatuser,
+      chatPair
+    );
+
+    this.chatService.currentChatPartner = chatPair;
+
+
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        sender: this.account.address,
+        sendername: this.account.name,
+        pair: chatPair.address,
+        pairname: chatPair.name
+      }
+    };
+    this.router.navigate(['/chat-session'], navigationExtras);
+
+  }
+
+  groupBy(xs, key) {
+    return xs.reduce((rv, x) => {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  }
+
+  shortAddress(address) {
+    return makeShortAddress(address);
   }
 
   async showSession(idx: number) {
