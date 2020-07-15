@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import zoobc, { MultiSigInterface } from 'zoobc-sdk';
+import zoobc, { MultiSigInterface, MultisigPostTransactionResponse, sendMoneyBuilder, SendMoneyInterface } from 'zoobc-sdk';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AuthService } from 'src/app/Services/auth-service';
 import { AlertController, ModalController, LoadingController } from '@ionic/angular';
@@ -19,6 +19,7 @@ import { AccountPopupPage } from '../../account/account-popup/account-popup.page
 import { jsonBufferToString } from 'src/Helpers/utils';
 import { SignatureInfo } from 'zoobc-sdk/types/helper/transaction-builder/multisignature';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
+import { makeShortAddress } from 'src/Helpers/converters';
 
 
 @Component({
@@ -125,6 +126,13 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     return await modal.present();
   }
 
+  async copyAddress(address: string) {
+    this.utilService.copyToClipboard(address);
+  }
+
+  shortAddress(arg: string) {
+    return makeShortAddress(arg);
+  }
 
   async ngOnInit() {
     this.loadData();
@@ -139,6 +147,8 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       }
 
       this.multisig = multisig;
+
+      console.log('== this.multisig:', this.multisig);
 
       const { accountAddress, fee, generatedSender } = this.multisig;
       if (this.isMultiSigAccount) {
@@ -299,8 +309,10 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       signaturesInfo,
     } = this.multisig;
 
+    console.log('=== signaturesInfo:', signaturesInfo);
     let data: MultiSigInterface;
     if (signaturesInfo !== undefined) {
+      console.log('=== masuk 1:');
       const signatureInfoFilter: SignatureInfo = {
         txHash: signaturesInfo.txHash,
         participants: [],
@@ -308,14 +320,27 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       signatureInfoFilter.participants = signaturesInfo.participants.filter(pcp => {
         if (jsonBufferToString(pcp.signature).length > 0) { return pcp; }
       });
+
+      // == manuallyu
+      const trx = this.multisig.transaction;
+      const dataUnsig: SendMoneyInterface = {
+        sender: trx.sender,
+        recipient: trx.recipient,
+        fee: trx.fee,
+        amount: trx.amount,
+      };
+      const unsigTrx = this.multisig.unisgnedTransactions = sendMoneyBuilder(dataUnsig);
+      // end off
+
       data = {
         accountAddress,
         fee,
         multisigInfo,
-        unisgnedTransactions,
+        unisgnedTransactions: unsigTrx,
         signaturesInfo: signatureInfoFilter,
       };
     } else {
+      console.log('=== masuk 2:');
       data = {
         accountAddress,
         fee,
@@ -325,11 +350,18 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       };
     }
 
+    console.log('== data: ', data);
+
     const key = this.authSrv.tempKey;
-    const childSeed = await this.utilService.generateSeed(key, this.account.path);
+
+    const signByAddress = this.account.signByAddress;
+    const signByAcc = await this.accountService.getAccount(signByAddress);
+    const childSeed = await this.utilService.generateSeed(key, signByAcc.path);
+    // const childSeed = await this.utilService.generateSeed(key, this.account.path);
+    console.log('== childSeed: ', childSeed);
 
     await zoobc.MultiSignature.postTransaction(data, childSeed)
-      .then(  () => {
+      .then( async (res: MultisigPostTransactionResponse) => {
         const message = 'Your Transaction is processing!';
         this.utilService.showConfirmation('Succes', message, true, null);
 
@@ -337,11 +369,12 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         this.router.navigateByUrl('/dashboard');
 
       })
-      .catch(err => {
-        console.log(err.message);
-        const message = 'An error occurred while processing your request';
+      .catch( async err => {
+        console.log(err);
+        const message = err.messsage +  '; An error occurred while processing your request';
         this.utilService.showConfirmation('Fail', message, false, null);
       }).finally(() => {
+        console.log('=== data after: ', data);
         loading.dismiss();
       });
   }
