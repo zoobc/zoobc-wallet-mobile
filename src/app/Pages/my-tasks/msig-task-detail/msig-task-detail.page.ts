@@ -221,10 +221,14 @@ export class MsigTaskDetailPage implements OnInit {
     // end
 
     const key = this.authSrv.tempKey;
-    const seed = await this.utilService.generateSeed(key, this.account.path);
+    const signByAddress = this.account.signByAddress;
+    const signByAcc = await this.accountService.getAccount(signByAddress);
+    const seed = await this.utilService.generateSeed(key, signByAcc.path);
+    console.log('== sign Adddress: ', signByAcc.address);
     this.isLoadingTx = true;
+
     const data: MultiSigInterface = {
-      accountAddress: this.account.signByAddress,
+      accountAddress: signByAcc.address,
       fee: this.transactionFee,
       signaturesInfo: {
         txHash: this.multiSigDetail.transactionhash,
@@ -237,7 +241,7 @@ export class MsigTaskDetailPage implements OnInit {
       },
     };
 
-
+    console.log('== data: ', data);
 
     zoobc.MultiSignature.postTransaction(data, seed)
       .then( () => {
@@ -252,6 +256,7 @@ export class MsigTaskDetailPage implements OnInit {
       .finally(() => {
         this.isLoadingTx = false;
         loading.dismiss();
+        console.log('-- data afer: ', data);
         // this.goBack();
         this.router.navigate(['/dashboard']);
       });
