@@ -124,7 +124,7 @@ export class MultisigPage implements OnInit {
     } else {
       this.multisigServ.update(multisig);
       if (this.isMultisigInfo) {
-        this.router.navigate(['/msig-add-multisig-info']);
+        this.router.navigate(['/msig-add-info']);
       } else if (this.isTransaction) {
         this.router.navigate(['/msig-create-transaction']);
       } else if (this.isSignature) {
@@ -258,10 +258,6 @@ export class MultisigPage implements OnInit {
 
   doAddSignature() {
     this.addSignature = !this.createTransaction;
-  }
-
-  next() {
-    console.log('Next clicked');
   }
 
   refresh() {

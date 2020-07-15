@@ -6,6 +6,8 @@ import zoobc from 'zoobc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Subscription } from 'rxjs';
+import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-msig-add-info',
@@ -13,31 +15,93 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./msig-add-info.page.scss'],
 })
 export class MsigAddInfoPage implements OnInit, OnDestroy {
-  stepper = {
-    transaction: false,
-    signatures: false,
-  };
-  account: Account;
 
-  participants: string[];
+  account: Account;
+  accounts: Account[];
+
+  participants = ['', ''];
+
   nonce: number;
   minSig: number;
   multisigSubs: Subscription;
   multisig: MultiSigDraft;
+  isMultiSignature = false;
+  indexSelected: number;
+  msigAccount: any;
 
   constructor(
     private multisigServ: MultisigService,
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private modalController: ModalController
   ) {
+    console.log('--number 1');
+    this.loadAllAccounts();
+    console.log('--number 2');
   }
 
   ngOnDestroy(): void {
     if (this.multisigSubs) { this.multisigSubs.unsubscribe(); }
   }
 
-  ngOnInit() {
-    this.multisigSubs = this.multisigServ.multisig.subscribe( multisig => {
+  addParticipant() {
+    console.log('=== participants: ', this.participants);
+    this.participants.push('');
+  }
+
+  reduceParticipant() {
+    const len = this.participants.length;
+    console.log('=== Length particpants: ', len);
+    if (len > 2) {
+      this.participants.splice((len - 1), 1);
+    }
+  }
+
+  async showPopupMultisigAccounts() {
+    const modal = await this.modalController.create({
+      component: AccountPopupPage,
+      componentProps: {
+        accType: 'multisig'
+      }
+    });
+
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data) {
+        console.log('== data returned: ', dataReturned.data);
+        this.msigAccount = dataReturned.data;
+        if (this.msigAccount !== undefined) {
+          this.participants = this.msigAccount.participants;
+          this.nonce = this.msigAccount.nonce;
+          this.minSig = this.msigAccount.minSig;
+        }
+      }
+    });
+
+    return await modal.present();
+  }
+
+  async showPopupAccount(index: number) {
+    this.indexSelected = index;
+    const modal = await this.modalController.create({
+      component: AccountPopupPage
+    });
+
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data) {
+        this.participants[this.indexSelected] =  dataReturned.data.address;
+      }
+    });
+
+    return await modal.present();
+  }
+
+
+  async ngOnInit() {
+    console.log('--number 4');
+    this.multisigSubs = this.multisigServ.multisig.subscribe( async multisig => {
+      console.log('--number 3');
+      this.account = await this.accountService.getCurrAccount();
+      this.isMultiSignature = this.account.type === 'multisig' ? true : false;
       const { multisigInfo, unisgnedTransactions, signaturesInfo } = multisig;
       if (multisigInfo === undefined) {
         this.router.navigate(['/multisig']);
@@ -46,21 +110,26 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
       this.multisig = multisig;
       console.log('=== this.multisig:', multisig);
       if (multisigInfo) {
+        console.log('=== Enter 1:');
         const { participants, minSigs, nonce } = multisigInfo;
         this.participants = participants;
         this.nonce = nonce;
         this.minSig = minSigs;
-      } else  {
-          this.loadDataAccount();
+      } else if (this.isMultiSignature) {
+        console.log('=== Enter 2:');
+        this.loadMultisigData();
       }
-      this.stepper.transaction = unisgnedTransactions !== undefined ? true : false;
-      this.stepper.signatures = signaturesInfo !== undefined ? true : false;
+      console.log('=== Enter 3:');
     });
   }
 
-  async loadDataAccount() {
-    this.account = await this.accountService.getCurrAccount();
-    const { participants, minSig, nonce } = this.account;
+  async loadAllAccounts() {
+    this.accounts = await this.accountService.allAccount('multisig');
+  }
+
+  async loadMultisigData() {
+    const account = await this.accountService.getCurrAccount();
+    const { participants, minSig, nonce } = account;
     this.participants = participants;
     this.nonce = nonce;
     this.minSig = minSig;
@@ -79,7 +148,7 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
       console.log('=== will save');
       this.multisigServ.saveDraft();
     }
-    this.router.navigate(['/multisig']);
+    this.router.navigate(['/dashboard']);
   }
 
   next() {
