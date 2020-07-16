@@ -14,12 +14,15 @@ export class MultisigService {
     fee: 0,
   };
 
+  multisigDraft: MultiSigDraft;
+
   private sourceMultisig = new BehaviorSubject<MultiSigDraft>({ ...this.multisigTemplate });
   multisig = this.sourceMultisig.asObservable();
 
   constructor() {}
 
   update(multisig: MultiSigDraft) {
+    this.multisigDraft = multisig;
     this.sourceMultisig.next(multisig);
   }
 

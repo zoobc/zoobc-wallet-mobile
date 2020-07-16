@@ -31,7 +31,8 @@ import { saveAs } from 'file-saver';
 export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   recipientAddress = '';
-  senderAddress = '';
+  senderAccount: Account;
+
   amount = 0;
   amountSecond = 0;
   amountTemp = 0;
@@ -75,23 +76,19 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   minFee = TRANSACTION_MINIMUM_FEE;
   kindFee: string;
-  subscription: Subscription = new Subscription();
   account: Account;
 
 
   multisig: MultiSigDraft;
   multisigSubs: Subscription;
+  multiSigDraft: MultiSigDraft;
   multiSigDrafts: MultiSigDraft[];
   accounts: any;
-  stepper = {
-    multisigInfo: false,
-    signatures: false,
-  };
-
   isHasTransactionHash: boolean;
-  isMultiSignature = true;
+  // isMultiSignature = true;
   txHash: string;
   createTransactionFormEnable = true;
+  isMultiSignature = true;
 
   constructor(
     private multisigServ: MultisigService,
@@ -107,7 +104,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     private currencyService: CurrencyService,
     public addressbookService: AddressBookService,
     private translateService: TranslateService,
-    private utilService: UtilService,
     private trxService: TransactionService) {
 
 
@@ -133,7 +129,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     });
 
     this.priceInUSD = this.currencyService.getPriceInUSD();
-    // this.loadAccount();
+    this.loadData();
 
   }
 
@@ -158,26 +154,29 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
     this.multisigSubs.unsubscribe();
   }
 
   async loadAccount() {
     this.account = await this.accountService.getCurrAccount();
+    this.senderAccount = this.account;
+    this.isMultiSignature = this.account.type === 'multisig' ? true : false;
+
     this.getAccountBalance(this.account.address);
   }
 
   async ngOnInit() {
     this.accounts = await this.accountService.allAccount();
-    this.loadData();
+    console.log('=== this.multisigDraft: ', this.multiSigDraft);
     // Multisignature Subscription
     this.multisigSubs = this.multisigServ.multisig.subscribe(async multisig => {
+      await this.loadAccount();
+
       const { multisigInfo, unisgnedTransactions, signaturesInfo, transaction } = multisig;
       if (unisgnedTransactions === undefined) {
         this.router.navigate(['/multisig']);
       }
 
-      await this.loadAccount();
       this.multisig = multisig;
       this.removeExport = signaturesInfo !== undefined ? true : false;
       if (unisgnedTransactions !== null) {
@@ -192,20 +191,23 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       }
 
       if (unisgnedTransactions) {
+        console.log('== enter 1');
         const { sender, recipient, amount, fee } = transaction;
         this.account.address = sender;
-        this.senderAddress = sender;
         this.recipientAddress = recipient;
         this.amount = amount;
         this.transactionFee = fee;
       } else if (this.isMultiSignature) {
+        console.log('== enter 2');
         this.multisig.generatedSender = this.account.address;
-        this.senderAddress = this.account.address;
+        this.senderAccount = this.account;
       } else {
-        this.senderAddress = this.multisig.generatedSender;
+        console.log('== enter 3');
+        const address = this.multisig.generatedSender;
+        this.senderAccount = await this.accountService.getAccount(address);
       }
-      this.stepper.multisigInfo = multisigInfo !== undefined ? true : false;
-      this.stepper.signatures = signaturesInfo !== undefined ? true : false;
+
+
     });
   }
 
@@ -348,6 +350,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.optionFee = this.allFees[1].fee.toString();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
+    this.multiSigDraft = this.multisigServ.multisigDraft;
   }
 
   getBlockHeight() {
