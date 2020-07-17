@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Feedback</ion-title>
+    <ion-title>{{ "Feedback"  | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -42,7 +42,7 @@
     </ion-row>
     <ion-row *ngIf="errorMsg">
       <ion-col class="ion-text-center">
-        <ion-label color="danger">Message: <br/> {{errorMsg}}</ion-label>
+        <ion-label color="danger">{{ "Message"  | translate }}: <br/> {{errorMsg}}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row>

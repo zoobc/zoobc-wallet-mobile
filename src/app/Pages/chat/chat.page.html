@@ -21,11 +21,11 @@
     scrollable
   >
     <ion-segment-button value="chats" checked>
-      <ion-label>Chats</ion-label>
+      <ion-label>{{ "Chats" | translate }}</ion-label>
       <ion-icon name="chatboxes"></ion-icon>
     </ion-segment-button>
     <ion-segment-button value="contacts">
-      <ion-label>Contact</ion-label>
+      <ion-label>{{ "Contact" | translate }}</ion-label>
       <ion-icon name="people"></ion-icon>
     </ion-segment-button>
   </ion-segment>
@@ -33,7 +33,7 @@
   <div [ngSwitch]="chatContent">
     <ion-list *ngSwitchCase="'chats'">
       <ion-list-header>
-        Recent Conversations
+        {{ "Recent Conversations" | translate }}
       </ion-list-header>
 
       <ion-item *ngFor="let sender of chatSenders; let i = index" (click)="openChatSession(sender, '')">

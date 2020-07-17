@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button (click)="goDashboard()"></ion-back-button>
     </ion-buttons>
-    <ion-title>My Tasks</ion-title>
+    <ion-title>{{ "My Tasks"  | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
         Feedback
@@ -19,7 +19,7 @@
       </ion-segment-button>
 
       <ion-segment-button value="escrow">
-        <ion-label>Escrow</ion-label>
+        <ion-label>{{ "Escrow" |  translate }}</ion-label>
       </ion-segment-button>
 
     </ion-segment>
