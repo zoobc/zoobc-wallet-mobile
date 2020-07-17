@@ -6,7 +6,7 @@
     <ion-title>Mulstisignature</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "Feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -16,13 +16,13 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <h2>Send Money</h2>
+        <h2>{{ "Send Money" | translate }}</h2>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-label>
-          <h2>Participants</h2>
+          <h2>{{ "Participants " | translate }}</h2>
         </ion-label>
       </ion-col>
     </ion-row>
@@ -54,8 +54,8 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button (click)="next()" color="tertiary" expand="block">Next</ion-button>
-        <ion-button (click)="saveDraft()" expand="block" color="secondary" fill="outline" expand="block" expand="block">Save to draft</ion-button>
+        <ion-button (click)="next()" color="tertiary" expand="block">{{ "Next" | translate }}</ion-button>
+        <ion-button (click)="saveDraft()" expand="block" color="secondary" fill="outline" expand="block" expand="block">{{ "Save to draft" | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

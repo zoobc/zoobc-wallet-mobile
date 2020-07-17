@@ -39,7 +39,7 @@
     </ion-row>
     <ion-row>
       <ion-col class="qrcode">
-        <div style="margin-bottom: 5px; font-weight: bold;">Address:</div>
+        <div style="margin-bottom: 5px; font-weight: bold;"> {{ "Address"  | translate }}:</div>
         <div *ngIf="account">
           {{ account.address }}
           <ion-button
@@ -56,7 +56,7 @@
 
     <ion-row>
       <ion-col class="qrcode">
-        <div style="margin-bottom: 5px; font-weight: bold;">Amount</div>
+        <div style="margin-bottom: 5px; font-weight: bold;">{{ "Amount" | translate }}</div>
       </ion-col>
     </ion-row>
 

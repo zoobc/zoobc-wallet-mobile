@@ -6,7 +6,7 @@
     <ion-title>{{ "Backup Phrase" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
         <ion-button routerLink="/feedback">
-          Feedback
+          {{ "Feedback"  | translate }}
         </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -19,7 +19,7 @@
     <div *ngSwitchCase=1>
 
       <ion-text>
-        <h2>Backup Phrase</h2>
+        <h2>{{ "Backup Phrase" | translate }}</h2>
       </ion-text>
       <p>
         For your security, Blockchain does not keep any passwords on file. The following 24 word Backup Phrase will

@@ -41,7 +41,7 @@
               </span>
             </p>
             <p>&nbsp;</p>
-            <p>Current Balance</p>
+            <p>{{ "Current Balance"  | translate }}</p>
             <h1>{{ account.balance | number: '0.0-2' }} ZBC</h1>
             <p>
               {{ account.balance * priceInUSD * currencyRate.value | number:
