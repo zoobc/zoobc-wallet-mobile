@@ -57,6 +57,7 @@ export class MyTasksPage implements OnInit {
   }
 
   reload(event: any) {
+    this.loadTask();
     setTimeout(() => {
       event.target.complete();
     }, 1000);
@@ -64,11 +65,17 @@ export class MyTasksPage implements OnInit {
 
   segmentChanged() {
     console.log(this.segmentModel);
-    //  console.log(event);
+  }
+
+  shortAddress(arg: string) {
+    return makeShortAddress(arg);
   }
 
   async loadTask() {
     this.account = await this.accountService.getCurrAccount();
+    if (this.account.type !== 'normal') {
+      this.segmentModel = 'multisig';
+    }
     console.log('=== Account: ', this.account);
     this.getBlockHeight();
     this.getEscrowTransaction();

@@ -1,12 +1,31 @@
 import { TestBed } from '@angular/core/testing';
+import { CreateAccountService } from './create-account.service';
 
-import { MultisigService } from './multisig.service';
-
-describe('MultisigService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+describe('CreateAccountService', () => {
+  let service: CreateAccountService;
+  beforeEach(() => {
+    TestBed.configureTestingModule({})
+    service = new CreateAccountService(null, null);
+  });
 
   it('should be created', () => {
-    const service: MultisigService = TestBed.get(MultisigService);
     expect(service).toBeTruthy();
   });
+
+  it("should return a non empty array", () => {
+    let result = service.createInitialAccount();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+
+  it("should return a non empty array", () => {
+    let result = service.getPassphrase();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+
+
+  // it("should return a non empty array", () => {
+  //   let result = service.createNewAccount("BCZ", 1234);
+  //   expect(Array.isArray(result)).toBeTruthy;
+  // });
+
 });

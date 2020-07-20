@@ -12,7 +12,7 @@
   </ion-toolbar>
   <ion-toolbar>
     <ion-segment value="multisig" [(ngModel)]="segmentModel"
-      (ionChange)="segmentChanged($event)">
+      (ionChange)="segmentChanged()">
 
       <ion-segment-button value="multisig">
         <ion-label>Multi-Signature</ion-label>
@@ -69,7 +69,7 @@
     <ion-item *ngFor="let msig of multiSigPendingList; let i = index" button>
   
       <ion-label color="dark" (click)="openMultisigDetail(msig.transactionhash)">
-        <h3>{{ msig.senderaddress }}</h3>
+        <h3>{{ shortAddress(msig.senderaddress) }}</h3>
         <ion-text class="dateago">{{ doDateAgo(msig.timestamp * 1000)}}</ion-text>
       </ion-label>
   

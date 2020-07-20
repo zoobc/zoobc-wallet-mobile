@@ -27,14 +27,14 @@
     <!-- <ion-row *ngIf="account" (click)="switchAccount()"> -->
     <ion-row *ngIf="account">
       <ion-col size="12">
-        <ion-item color="primary">
+        <ion-item color="primary" *ngIf="multisigAccount && multisigAccount.signByAddress">
           <ion-label>
             <!-- <h2>{{ account.name }}</h2> -->
             <p>
-              {{ senderAccount.signByAddress }}&nbsp;&nbsp;
-              <!-- <span>
-                <ion-icon name="arrow-dropdown"></ion-icon>
-              </span> -->
+              {{ shortAddress(multisigAccount.signByAddress) }}&nbsp;&nbsp;
+              <span>
+                <ion-icon name="copy" (click)="copyAddress(multisigAccount.signByAddress)"></ion-icon>
+              </span>
             </p>
             <p>&nbsp;</p>
             <!-- <p>Current Balance</p>
@@ -98,20 +98,19 @@
   <ion-grid style="margin-top:20px;">
     <ion-row>
       <ion-col>
-        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="sendTransaction()"
+        <!-- <ion-button color="secondary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()" expand="block">
+          {{ "Save Draft" | translate }}
+        </ion-button>
+        <ion-button disabled color="secondary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
+          {{ "Save Draft" | translate }}
+        </ion-button> -->
+        <ion-button color="secondary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="sendTransaction()"
           expand="block">
           {{ "Send" | translate }}
         </ion-button>
-        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
+        <ion-button disabled color="secondary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
           {{ "Send" | translate }}
         </ion-button>
-        <ion-button color="secondary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()"
-        expand="block" fill="outline">
-        {{ "Save Draft" | translate }}
-      </ion-button>
-      <ion-button disabled color="secondaryCurr" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block" fill="outline">
-        {{ "Save Draft" | translate }}
-      </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

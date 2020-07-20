@@ -31,7 +31,8 @@ import { saveAs } from 'file-saver';
 export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   recipientAddress = '';
-  senderAddress = '';
+  senderAccount: Account;
+
   amount = 0;
   amountSecond = 0;
   amountTemp = 0;
@@ -75,22 +76,19 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   minFee = TRANSACTION_MINIMUM_FEE;
   kindFee: string;
-  subscription: Subscription = new Subscription();
   account: Account;
 
 
   multisig: MultiSigDraft;
   multisigSubs: Subscription;
+  multiSigDraft: MultiSigDraft;
   multiSigDrafts: MultiSigDraft[];
-
-  stepper = {
-    multisigInfo: false,
-    signatures: false,
-  };
-
+  accounts: any;
   isHasTransactionHash: boolean;
-  isMultiSignature = true;
+  // isMultiSignature = true;
   txHash: string;
+  createTransactionFormEnable = true;
+  isMultiSignature = true;
 
   constructor(
     private multisigServ: MultisigService,
@@ -106,8 +104,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     private currencyService: CurrencyService,
     public addressbookService: AddressBookService,
     private translateService: TranslateService,
-    private utilService: UtilService,
-    private trxService: TransactionService  ) {
+    private trxService: TransactionService) {
 
 
     this.accountService.accountSubject.subscribe(() => {
@@ -132,7 +129,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     });
 
     this.priceInUSD = this.currencyService.getPriceInUSD();
-    // this.loadAccount();
+    this.loadData();
 
   }
 
@@ -148,7 +145,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data) {
-        this.recipientAddress  =  dataReturned.data.address;
+        this.recipientAddress = dataReturned.data.address;
       }
     });
 
@@ -157,30 +154,29 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
     this.multisigSubs.unsubscribe();
   }
 
   async loadAccount() {
     this.account = await this.accountService.getCurrAccount();
+    this.senderAccount = this.account;
+    this.isMultiSignature = this.account.type === 'multisig' ? true : false;
+
     this.getAccountBalance(this.account.address);
   }
 
-  ngOnInit() {
-    this.loadData();
+  async ngOnInit() {
+    this.accounts = await this.accountService.allAccount();
+    console.log('=== this.multisigDraft: ', this.multiSigDraft);
     // Multisignature Subscription
     this.multisigSubs = this.multisigServ.multisig.subscribe(async multisig => {
+      await this.loadAccount();
+
       const { multisigInfo, unisgnedTransactions, signaturesInfo, transaction } = multisig;
       if (unisgnedTransactions === undefined) {
         this.router.navigate(['/multisig']);
       }
 
-      console.log('== multisigInfo: ' + multisigInfo);
-      console.log('== unisgnedTransactions: ' + unisgnedTransactions);
-      console.log('== signaturesInfo: ' + signaturesInfo);
-      console.log('== transaction: ' + transaction);
-
-      await this.loadAccount();
       this.multisig = multisig;
       this.removeExport = signaturesInfo !== undefined ? true : false;
       if (unisgnedTransactions !== null) {
@@ -189,21 +185,29 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       if (signaturesInfo) {
         this.isHasTransactionHash = signaturesInfo.txHash !== undefined ? true : false;
       }
+
+      if (this.isHasTransactionHash) {
+        this.createTransactionFormEnable = false;
+      }
+
       if (unisgnedTransactions) {
+        console.log('== enter 1');
         const { sender, recipient, amount, fee } = transaction;
         this.account.address = sender;
-        this.senderAddress = sender;
         this.recipientAddress = recipient;
         this.amount = amount;
         this.transactionFee = fee;
       } else if (this.isMultiSignature) {
+        console.log('== enter 2');
         this.multisig.generatedSender = this.account.address;
-        this.senderAddress = this.account.address;
+        this.senderAccount = this.account;
       } else {
-        this.senderAddress = this.multisig.generatedSender;
+        console.log('== enter 3');
+        const address = this.multisig.generatedSender;
+        this.senderAccount = await this.accountService.getAccount(address);
       }
-      this.stepper.multisigInfo = multisigInfo !== undefined ? true : false;
-      this.stepper.signatures = signaturesInfo !== undefined ? true : false;
+
+
     });
   }
 
@@ -217,11 +221,12 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
     const isValid = this.isFormValid();
     if (!isValid) {
-        return;
+      return;
     }
-
+    if (this.multisig.signaturesInfo !== null) {
+      this.createTransactionFormEnable = true;
+    }
     const { signaturesInfo } = this.multisig;
-    console.log('== multisig: ', this.multisig);
     if (!this.multisig.unisgnedTransactions) {
       this.showNextConfirmation();
     } else if (signaturesInfo !== undefined) {
@@ -233,27 +238,25 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   }
 
   generateHash() {
-      const { signaturesInfo } = this.multisig;
-      this.generatedTxHash();
-      // this.updateCreateTransaction();
+    const { signaturesInfo } = this.multisig;
+    this.generatedTxHash();
+    // this.updateCreateTransaction();
 
-      // aditional
-      // const multisig = { ...this.multisig };
-      this.multisigServ.update(this.multisig);
-      // end of
+    // aditional
+    // const multisig = { ...this.multisig };
+    this.multisigServ.update(this.multisig);
+    // end of
 
-      if (signaturesInfo === undefined) {
-        this.router.navigate(['/msig-send-transaction']);
-      } else {
-        this.router.navigate(['/msig-add-signatures']);
-      }
+    if (signaturesInfo === undefined) {
+      this.router.navigate(['/msig-send-transaction']);
+    } else {
+      this.router.navigate(['/msig-add-signatures']);
+    }
   }
 
   async generatedTxHash() {
     this.updateCreateTransaction();
-    console.log('XXXX ==== Multisig4: ', this.multisig);
     const { sender } = this.multisig.transaction;
-
     const data: SendMoneyInterface = {
       sender: this.account.address,
       recipient: sanitizeString(this.recipientAddress),
@@ -261,8 +264,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       amount: this.amount
     };
 
-    const accounts = await this.accountService.allAccount();
-    const account = accounts.find(acc => acc.address === sender);
+    const account = this.accounts.find(acc => acc.address === sender);
     const participantAccount = [];
 
     if (this.multisig.unisgnedTransactions !== undefined) {
@@ -348,6 +350,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.optionFee = this.allFees[1].fee.toString();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
+    this.multiSigDraft = this.multisigServ.multisigDraft;
   }
 
   getBlockHeight() {
@@ -570,7 +573,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   validateRecipient() {
     this.isRecipientValid = true;
-    console.log('===== Recipient: ', this.recipientAddress);
     this.recipientAddress = sanitizeString(this.recipientAddress);
 
     if (!this.recipientAddress || this.recipientAddress === '' || this.recipientAddress === null) {
@@ -624,8 +626,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       this.transactionFee = this.customfee;
     }
 
-    console.log('== 1 ==, trxFee: ', this.transactionFee);
-
     if (!this.transactionFee) {
       this.isFeeValid = false;
     }
@@ -640,11 +640,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
         this.isCustomFeeValid = false;
       }
     }
-
-    console.log('== this.amount ==', this.amount);
-    console.log('== this.recipientAddress ==', this.recipientAddress);
-    console.log('== this.isAmountValid ==', this.isAmountValid);
-    console.log('== this.isAmountValidisFeeValid ==', this.isFeeValid);
 
     if (!this.amount || !this.recipientAddress || !this.isRecipientValid || !this.isAmountValid || !this.isFeeValid) {
       return false;
@@ -689,7 +684,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   changeFee() {
     this.customeChecked = false;
-    console.log('==== changeFee, trxFee: ', this.optionFee);
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
       this.customfeeTemp = this.allFees[2].fee;
@@ -723,16 +717,16 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   async exportDraft() {
     const isValid = this.isFormValid();
     if (!isValid) {
-        return;
+      return;
     }
-    if (!this.multisig.unisgnedTransactions) {
-      // this.updateCreateTransaction();
+
+    if (!this.isHasTransactionHash) {
       this.generatedTxHash();
-      this.multisigServ.update(this.multisig);
-      const theJSON = JSON.stringify(this.multisig);
-      const blob = new Blob([theJSON], { type: 'application/JSON' });
-      saveAs(blob, 'Multisignature-Draft.json');
     }
+    const theJSON = JSON.stringify(this.multisig);
+
+    const blob = new Blob([theJSON], { type: 'application/JSON' });
+    saveAs(blob, 'Multisignature-Draft.json');
 
   }
 
@@ -747,12 +741,11 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            console.log('Confirm Cancel: blah');
+            console.log('Canceled');
           }
         }, {
           text: 'Yes, continue it!',
           handler: () => {
-            console.log('Confirm Okay');
             this.generateHash();
           }
         }

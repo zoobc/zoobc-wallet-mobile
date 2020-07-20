@@ -6,6 +6,8 @@ import zoobc from 'zoobc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Subscription } from 'rxjs';
+import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-msig-add-info',
@@ -13,54 +15,119 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./msig-add-info.page.scss'],
 })
 export class MsigAddInfoPage implements OnInit, OnDestroy {
-  stepper = {
-    transaction: false,
-    signatures: false,
-  };
-  account: Account;
 
-  participants: string[];
+  account: Account;
+  accounts: Account[];
+
+  participants = ['', ''];
+
   nonce: number;
   minSig: number;
   multisigSubs: Subscription;
   multisig: MultiSigDraft;
+  isMultiSignature = false;
+  indexSelected: number;
+  msigAccount: any;
 
   constructor(
-    private multisigServ: MultisigService,
+    private multisigSrv: MultisigService,
     private router: Router,
-    private accountService: AccountService
+    private accountSrv: AccountService,
+    private modalController: ModalController
   ) {
+    this.loadAllAccounts();
   }
 
   ngOnDestroy(): void {
     if (this.multisigSubs) { this.multisigSubs.unsubscribe(); }
   }
 
-  ngOnInit() {
-    this.multisigSubs = this.multisigServ.multisig.subscribe( multisig => {
+  addParticipant() {
+    this.participants.push('');
+  }
+
+  reduceParticipant() {
+    const len = this.participants.length;
+    if (len > 2) {
+      this.participants.splice((len - 1), 1);
+    }
+  }
+
+  async showPopupMultisigAccounts() {
+    const modal = await this.modalController.create({
+      component: AccountPopupPage,
+      componentProps: {
+        accType: 'multisig'
+      }
+    });
+
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data) {
+        console.log('== data returned: ', dataReturned.data);
+        this.msigAccount = dataReturned.data;
+        if (this.msigAccount !== undefined) {
+          this.petchMsigAccount(this.msigAccount);
+        }
+      }
+    });
+
+    return await modal.present();
+  }
+
+  petchMsigAccount(acc: Account) {
+    this.participants = acc.participants;
+    this.nonce = acc.nonce;
+    this.minSig = acc.minSig;
+  }
+
+  async showPopupAccount(index: number) {
+    this.indexSelected = index;
+    const modal = await this.modalController.create({
+      component: AccountPopupPage
+    });
+
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned.data) {
+        this.participants[this.indexSelected] = dataReturned.data.address;
+      }
+    });
+
+    return await modal.present();
+  }
+
+
+  async ngOnInit() {
+    this.multisigSubs = this.multisigSrv.multisig.subscribe(async multisig => {
+      this.account = await this.accountSrv.getCurrAccount();
+      this.isMultiSignature = this.account.type === 'multisig' ? true : false;
       const { multisigInfo, unisgnedTransactions, signaturesInfo } = multisig;
       if (multisigInfo === undefined) {
         this.router.navigate(['/multisig']);
       }
 
       this.multisig = multisig;
-      console.log('=== this.multisig:', multisig);
       if (multisigInfo) {
         const { participants, minSigs, nonce } = multisigInfo;
         this.participants = participants;
         this.nonce = nonce;
         this.minSig = minSigs;
-      } else  {
-          this.loadDataAccount();
+      } else if (this.isMultiSignature) {
+        this.loadMultisigData();
       }
-      this.stepper.transaction = unisgnedTransactions !== undefined ? true : false;
-      this.stepper.signatures = signaturesInfo !== undefined ? true : false;
     });
   }
 
-  async loadDataAccount() {
-    this.account = await this.accountService.getCurrAccount();
-    const { participants, minSig, nonce } = this.account;
+  async loadAllAccounts() {
+    this.accounts = await this.accountSrv.allAccount('multisig');
+    if (this.accounts && this.accounts.length > 0) {
+      this.msigAccount = this.accounts[0];
+      this.petchMsigAccount(this.msigAccount);
+    }
+  }
+
+  async loadMultisigData() {
+    const account = await this.accountSrv.getCurrAccount();
+    const { participants, minSig, nonce } = account;
     this.participants = participants;
     this.nonce = nonce;
     this.minSig = minSig;
@@ -73,27 +140,22 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
   saveDraft() {
     this.updateMultisig();
     if (this.multisig.id) {
-      console.log('=== will edit');
-      this.multisigServ.editDraft();
+      this.multisigSrv.editDraft();
     } else {
-      console.log('=== will save');
-      this.multisigServ.saveDraft();
+      this.multisigSrv.saveDraft();
     }
-    this.router.navigate(['/multisig']);
+    this.router.navigate(['/dashboard']);
   }
 
   next() {
-
-      this.updateMultisig();
-      const { unisgnedTransactions, signaturesInfo } = this.multisig;
-      if (unisgnedTransactions !== undefined) {
-         this.router.navigate(['/msig-create-transaction']);
-      } else if (signaturesInfo !== undefined) {
-        this.router.navigate(['/msig-add-signatures']);
-      } else {
-        this.router.navigate(['/msig-send-transaction']);
-      }
-
+    this.updateMultisig();
+    if (!this.multisig.unisgnedTransactions) {
+      this.router.navigate(['/msig-create-transaction']);
+    } else if (!this.multisig.signaturesInfo) {
+      this.router.navigate(['/msig-add-signatures']);
+    } else {
+      this.router.navigate(['/msig-send-transaction']);
+    }
   }
 
   back() {
@@ -101,21 +163,22 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
   }
 
   updateMultisig() {
-     const multisig = { ...this.multisig };
-     this.participants.sort();
-     this.participants = this.participants.filter(addrs => addrs !== '');
+    const multisig = { ...this.multisig };
 
-     multisig.multisigInfo = {
+    this.participants.sort();
+    this.participants = this.participants.filter(addrs => addrs !== '');
+
+    multisig.multisigInfo = {
       minSigs: this.minSig,
       nonce: this.nonce,
       participants: this.participants,
       multisigAddress: '',
     };
-     const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
+    const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
+    multisig.generatedSender = address;
+    console.log('=== Multisig: ', multisig);
 
-     console.log('=== Multisig Address: ', address);
-     multisig.generatedSender = address;
-     this.multisigServ.update(multisig);
+    this.multisigSrv.update(multisig);
   }
 
 }

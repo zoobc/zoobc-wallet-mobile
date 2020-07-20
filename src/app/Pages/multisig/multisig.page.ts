@@ -10,6 +10,7 @@ import { Account } from 'src/app/Interfaces/account';
 import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { UtilService } from 'src/app/Services/util.service';
+import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-multisig',
@@ -57,6 +58,10 @@ export class MultisigPage implements OnInit {
     this.getMultiSigDraft();
   }
 
+  shortAddress(arg: string) {
+    return makeShortAddress(arg);
+  }
+
   async getMultiSigDraft() {
     const currAccount = await this.accountSrv.getCurrAccount();
     this.account = currAccount;
@@ -65,7 +70,6 @@ export class MultisigPage implements OnInit {
 
     const drafts = this.multisigServ.getDrafts();
 
-  
     if (drafts) {
       this.multiSigDrafts = drafts.filter(draft => {
         const { multisigInfo, transaction, generatedSender } = draft;
@@ -120,7 +124,7 @@ export class MultisigPage implements OnInit {
     } else {
       this.multisigServ.update(multisig);
       if (this.isMultisigInfo) {
-        this.router.navigate(['/msig-add-multisig-info']);
+        this.router.navigate(['/msig-add-info']);
       } else if (this.isTransaction) {
         this.router.navigate(['/msig-create-transaction']);
       } else if (this.isSignature) {
@@ -145,7 +149,7 @@ export class MultisigPage implements OnInit {
           cssClass: 'secondary',
           handler: () => {
             console.log('Confirm Cancel: blah');
-            return false;
+            this.router.navigate(['/multisig']);
           }
         }, {
           text: 'Oke',
@@ -154,6 +158,7 @@ export class MultisigPage implements OnInit {
 
             this.multisigServ.deleteDraft(id);
             this.getMultiSigDraft();
+            this.router.navigate(['/dashboard']);
             return true;
 
           }
@@ -185,6 +190,7 @@ export class MultisigPage implements OnInit {
 
   importDraft() {
     this.fileChooser.open().then(uri => {
+        alert('== uri: ' + uri);
         console.log('=== fiel urei: ', uri);
         this.readFile(uri);
      }).catch(e => {
@@ -204,14 +210,20 @@ export class MultisigPage implements OnInit {
     // const file = event.target.files[0];
     const fileReader = new FileReader();
     if (file !== undefined) {
+      alert('-- enter to file ');
       fileReader.readAsText(file, 'JSON');
       fileReader.onload = async () => {
         const fileResult = JSON.parse(fileReader.result.toString());
         const validation = this.validationFile(fileResult);
+        alert('-- enter to file 2 ');
         if (!validation) {
+          alert('-- enter to file 3 ');
+
           const message = 'You imported the wrong file';
           this.utilSrv.showConfirmation('Opps...', message, false, null);
         } else {
+          alert('-- enter to file 4 ');
+
           this.multisigServ.update(fileResult);
           const listdraft = this.multisigServ.getDrafts();
           const checkExistDraft = listdraft.some(res => res.id === fileResult.id);
@@ -246,10 +258,6 @@ export class MultisigPage implements OnInit {
 
   doAddSignature() {
     this.addSignature = !this.createTransaction;
-  }
-
-  next() {
-    console.log('Next clicked');
   }
 
   refresh() {
