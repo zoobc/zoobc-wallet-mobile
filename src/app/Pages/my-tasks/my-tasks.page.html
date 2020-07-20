@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button (click)="goDashboard()"></ion-back-button>
     </ion-buttons>
-    <ion-title>My Tasks</ion-title>
+    <ion-title>{{ "My Tasks"  | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
         Feedback
@@ -19,7 +19,7 @@
       </ion-segment-button>
 
       <ion-segment-button value="escrow">
-        <ion-label>Escrow</ion-label>
+        <ion-label>{{ "Escrow" |  translate }}</ion-label>
       </ion-segment-button>
 
     </ion-segment>
@@ -37,7 +37,7 @@
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
   <div style="text-align: center;" *ngIf="segmentModel === 'escrow'">
-    <p>Current Block Height: {{blockHeight}}</p>
+    <p> {{ "Current"  | translate }} Block Height: {{blockHeight}}</p>
   </div>
 
   <div style="text-align: center; border-top: 1px solid #cccccc;"
@@ -48,11 +48,11 @@
   <ion-list *ngIf="segmentModel === 'escrow' && escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index" (click)="openDetail(escrow.id)">
       <ion-label class="title">
-        <h3>Transaction ID: {{escrow.id}}</h3>
-        <p>Sender: <b> {{ escrow.senderaddress }} </b></p>
-        <p>Recipient: <strong>{{ escrow.recipientaddress }}</strong></p>
-        <p>Commision: <b>{{ escrow.commission / 1e8 | number: '0.0-6' }} </b></p>
-        <p>Expired after block height: <b>{{ escrow.timeout | number }} </b></p>
+        <h3>{{ "Transaction"  | translate }} ID: {{escrow.id}}</h3>
+        <p>{{ "Sender"  | translate }}: <b> {{ escrow.senderaddress }} </b></p>
+        <p>{{ "Recipient"  | translate }}: <strong>{{ escrow.recipientaddress }}</strong></p>
+        <p>{{ "Commision"  | translate }}: <b>{{ escrow.commission / 1e8 | number: '0.0-6' }} </b></p>
+        <p>{{ "Expired after block height"  | translate }}: <b>{{ escrow.timeout | number }} </b></p>
         <!-- <p>Latest: <b>{{ escrow.latest }} </b></p> -->
         <p>Status: <b>{{ escrow.status }} </b></p>
       </ion-label>

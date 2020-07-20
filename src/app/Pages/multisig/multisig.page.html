@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Send money</ion-title>
+    <ion-title>{{ "Send money" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {[ "Feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -14,18 +14,18 @@
 
 <ion-content>
   <ion-item>
-    <h2>Send Money</h2>
+    <h2>{{ "Send Money" | translate }}</h2>
   </ion-item>
 
   <ion-card>
     <ion-card-content>
       <ion-item>
         <ion-checkbox slot="start" [(ngModel)]="isTransaction"></ion-checkbox>
-        <ion-label>Create transaction</ion-label>
+        <ion-label>{{ "Create transaction" | translate }}</ion-label>
       </ion-item>
       <ion-item>
         <ion-checkbox slot="start" [(ngModel)]="isSignature"></ion-checkbox>
-        <ion-label>Add participants signature</ion-label>
+        <ion-label>{{ "Add participants signature" | translate }}</ion-label>
       </ion-item>
       <!-- <ion-item> -->
       <ion-button slot="end" color="tertiary" [disabled]="!isTransaction && !isSignature" (click)="goNextStep()">Next
@@ -35,9 +35,9 @@
   </ion-card>
 
   <ion-item>
-    <h5>Multisignature drafts</h5>
+    <h5>{{ "Multisignature drafts" | translate }}</h5>
     <ion-button slot="end" color="secondary" (click)="importDraft()">
-      Import draft
+      {{ "Import draft" | translate }}
     </ion-button>
   </ion-item>
 
@@ -80,7 +80,7 @@
     <ion-row  *ngIf="draft.signaturesInfo">
       <ion-col>
         <ion-label>
-          <h3>Signed By</h3>
+          <h3>{{ "Signed By" | translate }}</h3>
           <p>
             <span>{{ draft.signaturesInfo.participants.length }} </span>
             <span *ngIf="draft.multisigInfo"> of {{ draft.multisigInfo.participants.length }}</span>
@@ -95,10 +95,10 @@
           Multisig info
         </ion-badge>&nbsp;
         <ion-badge color="danger"  *ngIf="draft.unisgnedTransactions" shape="round">
-          Transaction
+          {{ "Transaction" | translate }}
         </ion-badge>&nbsp;
         <ion-badge color="danger"  *ngIf="draft.signaturesInfo" shape="round">
-          Signatures
+          {{ "Signatures" | translate }}
         </ion-badge>
         
       </ion-col>

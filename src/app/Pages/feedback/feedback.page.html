@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Feedback</ion-title>
+    <ion-title>{{ "Feedback"  | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,7 +12,7 @@
     <ion-row>
       <ion-col>
         <ion-item>
-          <ion-label position="stacked">Name:</ion-label>
+          <ion-label position="stacked">{{ "Name"  | translate }}:</ion-label>
           <ion-input placeholder="Enter Name" [(ngModel)]="Name"></ion-input>
         </ion-item>
       </ion-col>
@@ -30,7 +30,7 @@
     <ion-row>
       <ion-col>
         <ion-item>
-          <ion-label position="stacked">Comment:</ion-label>
+          <ion-label position="stacked">{{ "Comment"  | translate }}:</ion-label>
           <ion-textarea [(ngModel)]="Comment" placeholder="Enter Comment here..." rows="6"></ion-textarea>
         </ion-item>
       </ion-col>
@@ -42,7 +42,7 @@
     </ion-row>
     <ion-row *ngIf="errorMsg">
       <ion-col class="ion-text-center">
-        <ion-label color="danger">Message: <br/> {{errorMsg}}</ion-label>
+        <ion-label color="danger">{{ "Message"  | translate }}: <br/> {{errorMsg}}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row>

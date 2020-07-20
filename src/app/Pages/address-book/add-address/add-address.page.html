@@ -7,7 +7,7 @@
     <ion-title *ngIf="mode==='edit'">{{ "Edit Address" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "Feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -31,7 +31,7 @@
         <ion-label position="stacked">{{ "Address" | translate }}</ion-label>
       </ion-col>
       <ion-col col-4 align-self-end *ngIf="mode==='new'" class="ion-text-right btnScanner">
-        <ion-icon name="qr-scanner" (click)="scanQRCode();"></ion-icon><span (click)="scanQRCode();" style="font-size: 0.6em;"> Scan QR</span>
+        <ion-icon name="qr-scanner" (click)="scanQRCode();"></ion-icon><span (click)="scanQRCode();" style="font-size: 0.6em;">{{ "Scan" | translate }} QR</span>
       </ion-col>
     </ion-row>
     <ion-row>
