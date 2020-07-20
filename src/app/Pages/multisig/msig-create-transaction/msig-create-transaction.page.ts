@@ -8,12 +8,12 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { environment } from 'src/environments/environment';
-import { LoadingController, ModalController, AlertController, ToastController, MenuController } from '@ionic/angular';
+import { LoadingController, ModalController, AlertController, ToastController, MenuController, Platform } from '@ionic/angular';
 import { QrScannerService } from '../../../Services/qr-scanner.service';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { TranslateService } from '@ngx-translate/core';
-import { UtilService } from 'src/app/Services/util.service';
+import { File } from '@ionic-native/file/ngx';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { calculateMinFee, sanitizeString, stringToBuffer } from 'src/Helpers/utils';
 import { base64ToByteArray } from 'src/Helpers/converters';
@@ -21,7 +21,8 @@ import zoobc, { SendMoneyInterface, generateTransactionHash, sendMoneyBuilder } 
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
 import { TrxstatusPage } from '../../send-coin/modals/trxstatus/trxstatus.page';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
-import { saveAs } from 'file-saver';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+
 
 @Component({
   selector: 'app-msig-create-transaction',
@@ -93,6 +94,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   constructor(
     private multisigServ: MultisigService,
     private router: Router,
+    private file: File,
     public loadingController: LoadingController,
     private modalController: ModalController,
     public alertController: AlertController,
@@ -104,6 +106,9 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     private currencyService: CurrencyService,
     public addressbookService: AddressBookService,
     private translateService: TranslateService,
+    private platform: Platform,
+    private androidPermissions: AndroidPermissions,
+    private alertCtrl: AlertController,
     private trxService: TransactionService) {
 
 
@@ -724,10 +729,42 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       this.generatedTxHash();
     }
     const theJSON = JSON.stringify(this.multisig);
-
     const blob = new Blob([theJSON], { type: 'application/JSON' });
-    saveAs(blob, 'Multisignature-Draft.json');
+    const pathFile = await this.getDownloadPath();
 
+    const fileName = this.getDraftFileName();
+    await this.file.createFile(pathFile, fileName, true);
+    await this.file.writeFile(pathFile, fileName, blob, { replace: true, append: false });
+    alert('File saved in Download folder with name: ' + fileName);
+  }
+
+  private getDraftFileName() {
+    const currentDatetime = new Date();
+    const formattedDate = currentDatetime.getDate() + '-'
+    + (currentDatetime.getMonth() + 1)
+    + '-' + currentDatetime.getFullYear()
+    + '-' + currentDatetime.getHours()
+    + '-' + currentDatetime.getMinutes()
+    + '-' + currentDatetime.getSeconds();
+    return 'Multisig-draft-' + formattedDate + '.json';
+  }
+
+  async getDownloadPath() {
+    if (this.platform.is('ios')) {
+      return this.file.documentsDirectory;
+    }
+
+    // To be able to save files on Android, we first need to ask the user for permission.
+    // We do not let the download proceed until they grant access
+    await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(
+      result => {
+        if (!result.hasPermission) {
+          return this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE);
+        }
+      }
+    );
+
+    return this.file.externalRootDirectory + '/Download/';
   }
 
   async showNextConfirmation() {

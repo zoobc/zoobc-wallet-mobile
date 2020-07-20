@@ -36,9 +36,12 @@
 
   <ion-item>
     <h5>Multisignature drafts</h5>
-    <ion-button slot="end" color="secondary" (click)="importDraft()">
-      Import draft
-    </ion-button>
+  </ion-item>
+
+  <ion-item>
+    <!-- <ion-button slot="end" color="secondary" (click)="importDraft()">
+    </ion-button> -->
+    <input type="file"  (change)="uploadFile($event.target.files)">
   </ion-item>
 
   <ion-grid>
@@ -101,7 +104,7 @@
           Signatures
         </ion-badge>
 
-        <ion-label (click)="onDeleteDraft($event, draft.id)" color="danger">
+        <ion-label (click)="onDeleteDraft(draft.id)" color="danger">
           <ion-icon name="trash"></ion-icon>
         </ion-label>
 
