@@ -8,7 +8,6 @@ import { Subscription } from 'rxjs';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
-import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { UtilService } from 'src/app/Services/util.service';
 import { makeShortAddress } from 'src/Helpers/converters';
 
@@ -40,18 +39,25 @@ export class MultisigPage implements OnInit {
   minSig: number;
   multisigSubs: Subscription;
   multisig: MultiSigDraft;
+  jsonFilePath = '';
+  draftConent = '';
 
   constructor(
     private router: Router,
     private accountSrv: AccountService,
     private alertController: AlertController,
     private multisigServ: MultisigService,
-    private utilSrv: UtilService,
-    private fileChooser: FileChooser) {
+    private utilSrv: UtilService) {
 
     this.isMultisigInfo = true;
     this.isSignature = false;
     this.isTransaction = false;
+
+    this.multisigSubs = this.multisigServ.multisig.subscribe( () => {
+      console.log('== refreshing draft ');
+      this.getMultiSigDraft();
+    });
+
   }
 
   ngOnInit() {
@@ -71,20 +77,22 @@ export class MultisigPage implements OnInit {
     const drafts = this.multisigServ.getDrafts();
 
     if (drafts) {
-      this.multiSigDrafts = drafts.filter(draft => {
-        const { multisigInfo, transaction, generatedSender } = draft;
-        if (generatedSender === currAccount.address) {
-          return draft;
-        }
-        if (multisigInfo.participants.includes(currAccount.address)) {
-          return draft;
-        }
-        if (transaction && transaction.sender === currAccount.address) {
-          return draft;
-        }
-      })
-        .sort()
-        .reverse();
+      this.multiSigDrafts = drafts;
+
+    //   this.multiSigDrafts = drafts.filter(draft => {
+    //     const { multisigInfo, transaction, generatedSender } = draft;
+    //     if (generatedSender === currAccount.address) {
+    //       return draft;
+    //     }
+    //     if (multisigInfo.participants.includes(currAccount.address)) {
+    //       return draft;
+    //     }
+    //     if (transaction && transaction.sender === currAccount.address) {
+    //       return draft;
+    //     }
+    //   })
+    //     .sort()
+    //     .reverse();
     }
   }
 
@@ -133,7 +141,7 @@ export class MultisigPage implements OnInit {
     }
   }
 
-  async onDeleteDraft(e, id: number) {
+  async onDeleteDraft(id: number) {
     this.presentDeleteConfirmation(id);
   }
 
@@ -149,18 +157,14 @@ export class MultisigPage implements OnInit {
           cssClass: 'secondary',
           handler: () => {
             console.log('Confirm Cancel: blah');
-            this.router.navigate(['/multisig']);
+            // this.router.navigate(['/multisig']);
           }
         }, {
           text: 'Oke',
           handler: () => {
-            console.log('Confirm Okay');
-
             this.multisigServ.deleteDraft(id);
             this.getMultiSigDraft();
-            this.router.navigate(['/dashboard']);
-            return true;
-
+            this.router.navigate(['/multisig']);
           }
         }
       ]
@@ -188,17 +192,6 @@ export class MultisigPage implements OnInit {
 
   }
 
-  importDraft() {
-    this.fileChooser.open().then(uri => {
-        alert('== uri: ' + uri);
-        console.log('=== fiel urei: ', uri);
-        this.readFile(uri);
-     }).catch(e => {
-        console.log(e);
-      }
-    );
-  }
-
   validationFile(file: any): file is MultiSigDraft {
     if ((file as MultiSigDraft).generatedSender !== undefined) {
       return isZBCAddressValid((file as MultiSigDraft).generatedSender);
@@ -206,37 +199,42 @@ export class MultisigPage implements OnInit {
     return false;
   }
 
-  readFile(file: any) {
-    // const file = event.target.files[0];
-    const fileReader = new FileReader();
-    if (file !== undefined) {
-      alert('-- enter to file ');
+  async presentAlert(title: string, msg: string) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmation',
+      subHeader: title,
+      message: msg,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  public uploadFile(files: FileList) {
+    if (files && files.length > 0) {
+      const file  = files.item(0);
+      const fileReader: FileReader = new FileReader();
       fileReader.readAsText(file, 'JSON');
       fileReader.onload = async () => {
         const fileResult = JSON.parse(fileReader.result.toString());
         const validation = this.validationFile(fileResult);
-        alert('-- enter to file 2 ');
         if (!validation) {
-          alert('-- enter to file 3 ');
-
           const message = 'You imported the wrong file';
-          this.utilSrv.showConfirmation('Opps...', message, false, null);
+          this.presentAlert('Opps...', message);
         } else {
-          alert('-- enter to file 4 ');
-
           this.multisigServ.update(fileResult);
           const listdraft = this.multisigServ.getDrafts();
           const checkExistDraft = listdraft.some(res => res.id === fileResult.id);
 
           if (checkExistDraft === true) {
             const message = 'There is same id in your draft';
-            this.utilSrv.showConfirmation('Opps...', message, false, null);
+            this.presentAlert('Opps...', message);
           } else {
             this.multisigServ.saveDraft();
             this.getMultiSigDraft();
-            const message = 'Draft Saved';
             const subMessage = 'Your Draft has been saved';
-            this.utilSrv.showConfirmation('Success', subMessage, true, null);
+            this.presentAlert('Success', subMessage);
           }
         }
       };

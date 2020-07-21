@@ -269,9 +269,9 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       component: EnterpinsendPage
     });
 
-    pinmodal.onDidDismiss().then((returnedData) => {
+    pinmodal.onDidDismiss().then(async (returnedData) => {
        if (returnedData && returnedData.data !== 0) {
-          this.submit();
+          await this.submit();
       }
     });
     return await pinmodal.present();
@@ -351,19 +351,20 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     // const childSeed = await this.utilService.generateSeed(key, this.account.path);
     console.log('== childSeed: ', childSeed);
 
-    await zoobc.MultiSignature.postTransaction(data, childSeed)
-      .then( async (res: MultisigPostTransactionResponse) => {
+    zoobc.MultiSignature.postTransaction(data, childSeed)
+      .then(  () => {
         const message = 'Your Transaction is processing!';
         this.utilService.showConfirmation('Succes', message, true, null);
-
-        this.multisigServ.deleteDraft(this.multisig.id);
         this.router.navigateByUrl('/dashboard');
-
+        if (this.multisig && this.multisig.id) {
+          this.multisigServ.deleteDraft(this.multisig.id);
+        }
       })
-      .catch( async err => {
+      .catch(  err => {
         console.log(err);
-        const message = err.messsage +  '; An error occurred while processing your request';
+        const message = err.messsage +  ', An error occurred while processing your request';
         this.utilService.showConfirmation('Fail', message, false, null);
+        this.router.navigateByUrl('/dashboard');
       }).finally(() => {
         console.log('=== data after: ', data);
         loading.dismiss();
