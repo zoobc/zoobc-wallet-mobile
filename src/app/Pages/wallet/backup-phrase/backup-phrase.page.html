@@ -22,10 +22,10 @@
         <h2>{{ "Backup Phrase" | translate }}</h2>
       </ion-text>
       <p>
-        For your security, Blockchain does not keep any passwords on file. The following 24 word Backup Phrase will
+        {{ "For your security, Blockchain does not keep any passwords on file. The following 24 word Backup Phrase will
         give you access to your funds in case you lose your password. Be sure to write it on a piece of paper and to
         keep
-        it somewhere safe and secure.
+        it somewhere safe and secure." | translate }}
       </p>
       <ion-button expand="block" color="secondary" (click)="backupClick();">{{ "Reveal seed words" | translate }}</ion-button>
 
@@ -33,15 +33,15 @@
 
     <div *ngSwitchCase=2>
       <p>
-        If you ever change device, you will need this seed phrase to access your accounts. Save them
-        somewhere safe and secret.
+        {{ "If you ever change device, you will need this seed phrase to access your accounts. Save them
+        somewhere safe and secret."| translate}]
       </p>
 
       <div class="box-warning">
-        DO NOT share this phrase with anyone! These words can be used to steal all your accounts.
+        {{ "DO NOT share this phrase with anyone! These words can be used to steal all your accounts." | translate}}
       </div>
 
-      <h4>Your private seed phrase</h4>
+      <h4>{{ "Your private seed phrase" | translate}}</h4>
       <div class="box-pass">
         
         <ion-grid>
