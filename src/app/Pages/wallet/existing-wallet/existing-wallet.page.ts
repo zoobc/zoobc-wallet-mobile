@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   ModalController,
   LoadingController,
-  NavController,
+  NavController
 } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
@@ -14,7 +14,7 @@ import { AccountService } from 'src/app/Services/account.service';
 @Component({
   selector: 'app-existing-wallet',
   templateUrl: './existing-wallet.page.html',
-  styleUrls: ['./existing-wallet.page.scss'],
+  styleUrls: ['./existing-wallet.page.scss']
 })
 export class ExistingWalletPage implements OnInit {
   plainPin: string;
@@ -28,11 +28,11 @@ export class ExistingWalletPage implements OnInit {
   public arrayPhrase = [];
   constructor(
     public loadingController: LoadingController,
+    private navCtrl: NavController,
     private location: Location,
     private authSrv: AuthService,
     private modalController: ModalController,
-    private accountSrv: AccountService,
-    private navCtrl: NavController
+    private accountSrv: AccountService
   ) {
     this.lang = 'english';
   }
@@ -121,7 +121,7 @@ export class ExistingWalletPage implements OnInit {
       spinner: null,
       duration: 2000,
       message: 'Please wait...',
-      translucent: true,
+      translucent: true
     });
 
     loading.onDidDismiss().then(() => {
@@ -134,10 +134,10 @@ export class ExistingWalletPage implements OnInit {
   async showPinDialog() {
     const pinmodal = await this.modalController.create({
       component: SetupPinPage,
-      cssClass: 'modal-zbc',
+      cssClass: 'modal-zbc'
     });
 
-    pinmodal.onDidDismiss().then((returnedData) => {
+    pinmodal.onDidDismiss().then(returnedData => {
       // console.log('===== returnedData: ', returnedData);
       if (returnedData && returnedData.data !== '-') {
         this.plainPin = returnedData.data;

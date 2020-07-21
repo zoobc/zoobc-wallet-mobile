@@ -201,7 +201,7 @@ export class MsigAddSignaturesPage implements OnInit {
     } else {
       this.multisigServ.editDraft();
     }
-    this.router.navigate(['/multisig']);
+    this.router.navigate(['/dashboard']);
   }
 
   async checkReadOnlyAddress(multisig: MultiSigDraft) {

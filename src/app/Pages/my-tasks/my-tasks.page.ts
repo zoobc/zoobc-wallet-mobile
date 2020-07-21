@@ -131,7 +131,7 @@ export class MyTasksPage implements OnInit {
     this.isLoading = true;
     const params: EscrowListParams = {
       approverAddress: this.account.address,
-      statusList: [0],
+      // statusList: [0],
       pagination: {
         page: this.page,
         limit: 1000,
@@ -160,7 +160,7 @@ export class MyTasksPage implements OnInit {
             amount: tx.amount,
             commission: tx.commission,
             timeout: Number(tx.timeout),
-            status: this.getStatusName(tx.status),
+            status: tx.status,
             blockheight: tx.blockheight,
             latest: tx.latest,
             instruction: tx.instruction,

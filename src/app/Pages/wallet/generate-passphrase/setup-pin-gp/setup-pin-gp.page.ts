@@ -8,7 +8,7 @@ import { NavController } from '@ionic/angular';
 @Component({
   selector: 'app-setup-pin-gp',
   templateUrl: './setup-pin-gp.page.html',
-  styleUrls: ['./setup-pin-gp.page.scss'],
+  styleUrls: ['./setup-pin-gp.page.scss']
 })
 export class SetupPinGpPage implements OnInit {
   public tempPin: string;
@@ -22,8 +22,8 @@ export class SetupPinGpPage implements OnInit {
   constructor(
     private accountSrv: AccountService,
     private authSrv: AuthService,
-    private themeSrv: ThemeService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private themeSrv: ThemeService
   ) {
     this.pagePosition = 0;
     this.processing = false;

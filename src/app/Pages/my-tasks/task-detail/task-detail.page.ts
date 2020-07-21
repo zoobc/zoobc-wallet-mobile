@@ -51,8 +51,15 @@ export class TaskDetailPage implements OnInit {
 
     await zoobc.Escrows.get(this.escrowId).then(res => {
       this.escrowDetail = res;
+
+      console.log('Esc detail:', this.escrowDetail);
+
     }).finally(() =>
     this.isLoading = false);
+  }
+
+  toNumber(arg: any) {
+    return Number(arg);
   }
 
   closeModal() {
