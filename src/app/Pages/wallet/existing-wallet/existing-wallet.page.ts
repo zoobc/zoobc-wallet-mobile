@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, LoadingController } from '@ionic/angular';
+import {
+  ModalController,
+  LoadingController,
+  NavController
+} from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/wallet/existing-wallet/setup-pin/setup-pin.page';
-import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { ZooKeyring } from 'zoobc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
@@ -25,7 +28,7 @@ export class ExistingWalletPage implements OnInit {
   public arrayPhrase = [];
   constructor(
     public loadingController: LoadingController,
-    private router: Router,
+    private navCtrl: NavController,
     private location: Location,
     private authSrv: AuthService,
     private modalController: ModalController,
@@ -65,7 +68,6 @@ export class ExistingWalletPage implements OnInit {
     setTimeout(() => {
       this.arrayPhrase = phraseWord;
     }, 300);
-
   }
 
   openExistingWallet() {
@@ -89,7 +91,10 @@ export class ExistingWalletPage implements OnInit {
       return;
     }
 
-    this.isValidPhrase = ZooKeyring.isPassphraseValid(this.passphrase, this.lang);
+    this.isValidPhrase = ZooKeyring.isPassphraseValid(
+      this.passphrase,
+      this.lang
+    );
     if (!this.isValidPhrase) {
       this.errorMsg = 'Passphrase is not valid';
       return;
@@ -102,7 +107,6 @@ export class ExistingWalletPage implements OnInit {
   }
 
   async createAccount() {
-
     await this.accountSrv.createInitialAccount();
     // console.log('=== create account existing this.ploian pin: ', this.plainPin);
     const loginStatus = this.authSrv.login(this.plainPin);
@@ -121,7 +125,7 @@ export class ExistingWalletPage implements OnInit {
     });
 
     loading.onDidDismiss().then(() => {
-      this.router.navigateByUrl('/');
+      this.navCtrl.navigateRoot('/');
     });
 
     return await loading.present();
@@ -133,7 +137,7 @@ export class ExistingWalletPage implements OnInit {
       cssClass: 'modal-zbc'
     });
 
-    pinmodal.onDidDismiss().then((returnedData) => {
+    pinmodal.onDidDismiss().then(returnedData => {
       // console.log('===== returnedData: ', returnedData);
       if (returnedData && returnedData.data !== '-') {
         this.plainPin = returnedData.data;
