@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Task Detail</ion-title>
+    <ion-title>{{ "Task Detail" | translate}}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "Feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -18,7 +18,7 @@
   </div>
 
   <div style="text-align: center;">
-    <h5> Escrow Transaction Detail </h5>
+    <h5> Escrow {{ "Transaction Detail" | translate}} </h5>
   </div>
   <ion-list *ngIf="escrowDetail">
     <ion-item>
@@ -74,12 +74,12 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="primary" (click)="confirm()">{{ 'Confirm' | translate }}</ion-button>
+        <ion-button expand="block" color="primary" (click)="confirm()">{{ "Confirm" | translate }}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="primary" fill="outline" (click)="reject()">{{ 'Reject' | translate }}</ion-button>
+        <ion-button expand="block" color="primary" fill="outline" (click)="reject()">{{ "Reject" | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
