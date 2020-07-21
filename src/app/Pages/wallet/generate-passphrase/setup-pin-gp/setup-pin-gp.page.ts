@@ -1,17 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/app/Services/auth-service';
-import { DEFAULT_THEME } from 'src/environments/variable.const';
-import { ThemeService } from 'src/app/Services/theme.service';
-import { AccountService } from 'src/app/Services/account.service';
+import { Component, OnInit } from "@angular/core";
+import { AuthService } from "src/app/Services/auth-service";
+import { DEFAULT_THEME } from "src/environments/variable.const";
+import { ThemeService } from "src/app/Services/theme.service";
+import { AccountService } from "src/app/Services/account.service";
+import { NavController } from "@ionic/angular";
 
 @Component({
-  selector: 'app-setup-pin-gp',
-  templateUrl: './setup-pin-gp.page.html',
-  styleUrls: ['./setup-pin-gp.page.scss'],
+  selector: "app-setup-pin-gp",
+  templateUrl: "./setup-pin-gp.page.html",
+  styleUrls: ["./setup-pin-gp.page.scss"],
 })
 export class SetupPinGpPage implements OnInit {
-
   public tempPin: string;
   public isLoginValid = true;
   public loginFail = false;
@@ -23,8 +22,8 @@ export class SetupPinGpPage implements OnInit {
   constructor(
     private accountSrv: AccountService,
     private authSrv: AuthService,
-    private router: Router,
-    private themeSrv: ThemeService
+    private themeSrv: ThemeService,
+    private navCtrl: NavController
   ) {
     this.pagePosition = 0;
     this.processing = false;
@@ -44,27 +43,25 @@ export class SetupPinGpPage implements OnInit {
 
   ionViewDidEnter() {
     this.theme = this.themeSrv.theme;
-    if (!this.theme || this.theme === '' || this.theme === undefined) {
+    if (!this.theme || this.theme === "" || this.theme === undefined) {
       this.theme = DEFAULT_THEME;
     }
-    console.log('=== ionViewDidEnter current theme: ', this.theme);
+    console.log("=== ionViewDidEnter current theme: ", this.theme);
   }
 
   async confirmPin(event: any) {
-
     const { pin } = event;
     this.loginFail = false;
     this.processing = true;
     // const pin = event.pin;
     if (this.tempPin === pin) {
-
       this.accountSrv.setPlainPassphrase(this.plainPassphrase);
       this.accountSrv.setPlainPin(pin);
       await this.accountSrv.createInitialAccount();
       const loginStatus = await this.authSrv.login(pin);
       if (loginStatus) {
         setTimeout(() => {
-          this.router.navigateByUrl('/');
+          this.navCtrl.navigateRoot("/");
           this.processing = false;
         }, 100);
       }
@@ -86,5 +83,4 @@ export class SetupPinGpPage implements OnInit {
       this.processing = false;
     }, 1500);
   }
-
 }
