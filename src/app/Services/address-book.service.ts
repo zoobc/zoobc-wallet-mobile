@@ -1,18 +1,15 @@
-import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
-import {
-  STORAGE_ADDRESS_BOOK,
-  FIREBASE_ADDRESS_BOOK,
-  CONST_UNKNOWN_NAME,
-} from "src/environments/variable.const";
-import { StoragedevService } from "./storagedev.service";
-import { AngularFirestore } from "@angular/fire/firestore";
-import { sanitizeString } from "src/Helpers/utils";
-import { Contact } from "../Interfaces/contact";
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { STORAGE_ADDRESS_BOOK, FIREBASE_ADDRESS_BOOK, CONST_UNKNOWN_NAME } from 'src/environments/variable.const';
+import { StoragedevService } from './storagedev.service';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { sanitizeString } from 'src/Helpers/utils';
+import { Contact } from '../Interfaces/contact';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root'
 })
+
 export class AddressBookService {
   counter = 0;
   private selectedAddress: string;
@@ -30,36 +27,30 @@ export class AddressBookService {
 
   constructor(
     private strgSrv: StoragedevService,
-    private afs: AngularFirestore
-  ) {
-    this.selectedAddress = "";
+    private afs: AngularFirestore) {
+    this.selectedAddress = '';
     this.addresses = this.getAll();
   }
 
   getAll() {
-    return this.strgSrv.get(STORAGE_ADDRESS_BOOK).catch((error) => {
+    return this.strgSrv.get(STORAGE_ADDRESS_BOOK).catch(error => {
       console.log(error);
     });
   }
 
-  async getOneByIndex(index: number) {
-    const addressBooks = await this.strgSrv.get(STORAGE_ADDRESS_BOOK);
-    return addressBooks[index];
+   async getNameByAddress(address: string) {
+     let name = '';
+     await this.addresses.then(addresses => {
+       if (addresses && addresses.length > 0) {
+          addresses.forEach((obj: { name: any; address: string; }) => {
+              if (String(address).valueOf() === String(obj.address).valueOf()) {
+                name = obj.name;
+              }
+            });
+     }});
+     return name;
   }
 
-  async getNameByAddress(address: string) {
-    let name = "";
-    await this.addresses.then((addresses) => {
-      if (addresses && addresses.length > 0) {
-        addresses.forEach((obj: { name: any; address: string }) => {
-          if (String(address).valueOf() === String(obj.address).valueOf()) {
-            name = obj.name;
-          }
-        });
-      }
-    });
-    return name;
-  }
 
   async updateByIndex(contact: Contact, idx: number) {
     const allAddress = await this.getAll();
@@ -72,10 +63,10 @@ export class AddressBookService {
 
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < addresses.length; i++) {
-      const dt = addresses[i];
+      const dt  = addresses[i];
       this.addresses.push({
         name: sanitizeString(dt.name),
-        address: dt.address,
+        address: dt.address
       });
     }
 
@@ -89,10 +80,10 @@ export class AddressBookService {
     }
 
     let name = contact.name;
-    const newAddress = allAddress.slice();
+    const newAddress =  allAddress.slice();
 
-    if (CONST_UNKNOWN_NAME === name) {
-      name = CONST_UNKNOWN_NAME + "-" + (allAddress.length + 1);
+    if (CONST_UNKNOWN_NAME === name ) {
+      name = CONST_UNKNOWN_NAME + '-' + (allAddress.length + 1);
     }
     contact.name = name;
     newAddress.push(contact);
@@ -105,11 +96,9 @@ export class AddressBookService {
     await this.strgSrv.set(STORAGE_ADDRESS_BOOK, addresses);
   }
 
+
   createBackup(mainAcc: string, obj: any) {
-    return this.afs
-      .collection(FIREBASE_ADDRESS_BOOK)
-      .doc(mainAcc)
-      .set(obj, { merge: true });
+      return this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).set(obj, { merge: true });
   }
 
   read_backup() {
@@ -123,4 +112,5 @@ export class AddressBookService {
   delete_backup(mainAcc: string) {
     this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).delete();
   }
+
 }
