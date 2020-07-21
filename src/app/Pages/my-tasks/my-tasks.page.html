@@ -42,7 +42,7 @@
 
   <div style="text-align: center; border-top: 1px solid #cccccc;"
     *ngIf="segmentModel === 'escrow' && (!escrowTransactions || escrowTransactions.length < 1) ">
-    <p>{{ 'No Escrow Approval Request Available' | translate }}</p>
+    <p>{{ "No Escrow Approval Request Available" | translate }}</p>
   </div>
 
   <ion-list *ngIf="segmentModel === 'escrow' && escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
