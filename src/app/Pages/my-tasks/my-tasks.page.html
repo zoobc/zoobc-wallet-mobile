@@ -36,8 +36,8 @@
   <div *ngIf="isLoading" style="margin-top:5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
-  <div style="text-align: center;" *ngIf="segmentModel === 'escrow'">
-    <p>Current Block Height: {{blockHeight}}</p>
+  <div style="text-align: right; margin-right:10px;" *ngIf="segmentModel === 'escrow'">
+    <p>Block Height: {{blockHeight}}</p>
   </div>
 
   <div style="text-align: center; border-top: 1px solid #cccccc;"
@@ -47,18 +47,43 @@
 
   <ion-list *ngIf="segmentModel === 'escrow' && escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index" (click)="openDetail(escrow.id)">
-      <ion-label class="title">
-        <h3>Transaction ID: {{escrow.id}}</h3>
+      <ion-label>
+        <!-- <h3>Transaction ID: {{escrow.id}}</h3> -->
         <p>Sender: <b> {{ escrow.senderaddress }} </b></p>
         <p>Recipient: <strong>{{ escrow.recipientaddress }}</strong></p>
-        <p>Commision: <b>{{ escrow.commission / 1e8 | number: '0.0-6' }} </b></p>
-        <p>Expired after block height: <b>{{ escrow.timeout | number }} </b></p>
+        <!-- <p>Commision: <b>{{ escrow.commission / 1e8 | number: '0.0-6' }} </b></p> -->
+        <p *ngIf = "escrow.status !== 1 && escrow.status !== 2">Expired after block height: <b>{{  escrow.timeout + escrow.blockheight | number }} </b></p>
         <!-- <p>Latest: <b>{{ escrow.latest }} </b></p> -->
-        <p>Status: <b>{{ escrow.status }} </b></p>
+    
+        <ion-badge *ngIf = "escrow.status == 0" color="warning"  shape="round">
+        Pending
+        </ion-badge>&nbsp;
+   
+        <ion-badge *ngIf = "escrow.status == 1" color="success"  shape="round">
+        Approved
+        </ion-badge>&nbsp;
+   
+
+        <ion-badge *ngIf = "escrow.status == 2" color="danger"  shape="round">
+        Rejected
+        </ion-badge>&nbsp;
+
+
+        <ion-badge *ngIf = "escrow.status == 3" color="warning"  shape="round">
+        Expired
+        </ion-badge>&nbsp;
+
+        <ion-badge *ngIf = "escrow.status == 4" color="warning"  shape="round">
+        Unknown
+        </ion-badge>&nbsp;
+
+
       </ion-label>
 
-      <ion-text class="amount send">
-        {{ escrow.amount / 1e8 | number: '0.0-6' }} <span style="color:grey; font-size:0.7em">ZBC</span>
+      <ion-text slot='end' class="amount ion-text-right" >
+        <p> <span style='font-size: 0.7em;'>Amount</span> <br/>
+        {{ escrow.amount / 1e8 | number: '0.0-6' }} <span style="font-size:0.8em">ZBC</span>
+        </p>
       </ion-text>
 
     </ion-item>
