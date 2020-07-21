@@ -1,14 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import { AuthService } from "src/app/Services/auth-service";
-import { DEFAULT_THEME } from "src/environments/variable.const";
-import { ThemeService } from "src/app/Services/theme.service";
-import { AccountService } from "src/app/Services/account.service";
-import { NavController } from "@ionic/angular";
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/Services/auth-service';
+import { DEFAULT_THEME } from 'src/environments/variable.const';
+import { ThemeService } from 'src/app/Services/theme.service';
+import { AccountService } from 'src/app/Services/account.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
-  selector: "app-setup-pin-gp",
-  templateUrl: "./setup-pin-gp.page.html",
-  styleUrls: ["./setup-pin-gp.page.scss"],
+  selector: 'app-setup-pin-gp',
+  templateUrl: './setup-pin-gp.page.html',
+  styleUrls: ['./setup-pin-gp.page.scss'],
 })
 export class SetupPinGpPage implements OnInit {
   public tempPin: string;
@@ -43,10 +43,10 @@ export class SetupPinGpPage implements OnInit {
 
   ionViewDidEnter() {
     this.theme = this.themeSrv.theme;
-    if (!this.theme || this.theme === "" || this.theme === undefined) {
+    if (!this.theme || this.theme === '' || this.theme === undefined) {
       this.theme = DEFAULT_THEME;
     }
-    console.log("=== ionViewDidEnter current theme: ", this.theme);
+    console.log('=== ionViewDidEnter current theme: ', this.theme);
   }
 
   async confirmPin(event: any) {
@@ -61,7 +61,7 @@ export class SetupPinGpPage implements OnInit {
       const loginStatus = await this.authSrv.login(pin);
       if (loginStatus) {
         setTimeout(() => {
-          this.navCtrl.navigateRoot("/");
+          this.navCtrl.navigateRoot('/');
           this.processing = false;
         }, 100);
       }
