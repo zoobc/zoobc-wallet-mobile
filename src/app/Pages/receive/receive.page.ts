@@ -64,8 +64,8 @@ export class ReceivePage implements OnInit {
   }
 
   createQR(addrs: string, amnt: number) {
-    const qrCode = { address: addrs, amount: amnt };
-    this.createdCode = JSON.stringify(qrCode);
+    const qrCode = addrs + '||' + amnt;
+    this.createdCode = qrCode;
   }
 
 
