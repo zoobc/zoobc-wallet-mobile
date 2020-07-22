@@ -279,7 +279,7 @@ export class DashboardPage implements OnInit {
   }
 
   async scanQrCode() {
-      this.router.navigateByUrl('/qr-scanner');
+      // this.router.navigateByUrl('/qr-scanner');
       const navigationExtras: NavigationExtras = {
         queryParams: {
           from: 'dashboard'
