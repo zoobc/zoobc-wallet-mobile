@@ -16,14 +16,14 @@ import { QrScannerService } from 'src/app/Services/qr-scanner.service';
   styleUrls: ['./form-address.component.scss']
 })
 export class FormAddressComponent implements OnInit {
-  @Input() mode: String = 'add';
+  @Input() mode = 'add';
   @Input() addressId: number | null = null;
-  @Input() value: { name: String; address: String } | null = null;
+  @Input() value: { name: string; address: string } | null = null;
   @Output() onSubmit = new EventEmitter();
   @Output() onCancel = new EventEmitter();
   addresses = [];
-
-  submitted: boolean = false;
+  validationMessage = '';
+  submitted = false;
   constructor(
     private addressBookSrv: AddressBookService,
     private router: Router,
@@ -130,8 +130,10 @@ export class FormAddressComponent implements OnInit {
     this.router.navigateByUrl('/scanqr-for-addressbook');
 
     this.qrScannerSrv.listen().subscribe((jsondata: string) => {
-      const data = JSON.parse(jsondata);
-      this.formAddress.controls['address'].setValue(data.address);
+      if (jsondata && jsondata.length > 0) {
+        const result = jsondata.split('||');
+        this.formAddress.controls['address'].setValue(result[0]);
+      }
     });
   }
 
