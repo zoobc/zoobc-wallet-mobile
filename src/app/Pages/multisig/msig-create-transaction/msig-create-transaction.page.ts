@@ -3,34 +3,51 @@ import { Subscription } from 'rxjs';
 import { Account } from 'src/app/Interfaces/account';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TRANSACTION_MINIMUM_FEE, CONST_DEFAULT_CURRENCY, COIN_CODE } from 'src/environments/variable.const';
+import {
+  TRANSACTION_MINIMUM_FEE,
+  CONST_DEFAULT_CURRENCY,
+  COIN_CODE
+} from 'src/environments/variable.const';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { environment } from 'src/environments/environment';
-import { LoadingController, ModalController, AlertController, ToastController, MenuController, Platform } from '@ionic/angular';
+import {
+  LoadingController,
+  ModalController,
+  AlertController,
+  ToastController,
+  MenuController,
+  Platform
+} from '@ionic/angular';
 import { QrScannerService } from '../../../Services/qr-scanner.service';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { TranslateService } from '@ngx-translate/core';
 import { File } from '@ionic-native/file/ngx';
 import { TransactionService } from 'src/app/Services/transaction.service';
-import { calculateMinFee, sanitizeString, stringToBuffer } from 'src/Helpers/utils';
+import {
+  calculateMinFee,
+  sanitizeString,
+  stringToBuffer
+} from 'src/Helpers/utils';
 import { base64ToByteArray } from 'src/Helpers/converters';
-import zoobc, { SendMoneyInterface, generateTransactionHash, sendMoneyBuilder } from 'zoobc-sdk';
+import zoobc, {
+  SendMoneyInterface,
+  generateTransactionHash,
+  sendMoneyBuilder
+} from 'zoobc-sdk';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
 import { TrxstatusPage } from '../../send-coin/modals/trxstatus/trxstatus.page';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
-
 @Component({
   selector: 'app-msig-create-transaction',
   templateUrl: './msig-create-transaction.page.html',
-  styleUrls: ['./msig-create-transaction.page.scss'],
+  styleUrls: ['./msig-create-transaction.page.scss']
 })
 export class MsigCreateTransactionPage implements OnInit, OnDestroy {
-
   recipientAddress = '';
   senderAccount: Account;
 
@@ -60,7 +77,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   private connectionText = '';
   public currencyRate: Currency = {
     name: CONST_DEFAULT_CURRENCY,
-    value: environment.zbcPriceInUSD,
+    value: environment.zbcPriceInUSD
   };
 
   public isLoadingBalance = true;
@@ -74,11 +91,9 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   isLoadingBlockHeight: boolean;
   blockHeight: number;
 
-
   minFee = TRANSACTION_MINIMUM_FEE;
   kindFee: string;
   account: Account;
-
 
   multisig: MultiSigDraft;
   multisigSubs: Subscription;
@@ -110,12 +125,17 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     private platform: Platform,
     private androidPermissions: AndroidPermissions,
     private alertCtrl: AlertController,
+<<<<<<< HEAD
     private trxService: TransactionService) {
 
     this.qrScannerService.qrScannerSubject.subscribe((address) => {
         this.getScannerResult(address);
     });
 
+=======
+    private trxService: TransactionService
+  ) {
+>>>>>>> cb4017381bb18cb1df58385e60eee4adabfa301a
     this.accountService.accountSubject.subscribe(() => {
       this.loadAccount();
     });
@@ -139,10 +159,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
     this.priceInUSD = this.currencyService.getPriceInUSD();
     this.loadData();
-
   }
-
-
 
   async showPopupAccount() {
     const modal = await this.modalController.create({
@@ -152,7 +169,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       }
     });
 
-    modal.onDidDismiss().then((dataReturned) => {
+    modal.onDidDismiss().then(dataReturned => {
       if (dataReturned.data) {
         this.recipientAddress = dataReturned.data.address;
       }
@@ -160,7 +177,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
     return await modal.present();
   }
-
 
   ngOnDestroy() {
     this.multisigSubs.unsubscribe();
@@ -180,7 +196,12 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.multisigSubs = this.multisigServ.multisig.subscribe(async multisig => {
       await this.loadAccount();
 
-      const { multisigInfo, unisgnedTransactions, signaturesInfo, transaction } = multisig;
+      const {
+        multisigInfo,
+        unisgnedTransactions,
+        signaturesInfo,
+        transaction
+      } = multisig;
       if (unisgnedTransactions === undefined) {
         this.router.navigate(['/multisig']);
       }
@@ -191,7 +212,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
         this.isHasTransactionHash = true;
       }
       if (signaturesInfo) {
-        this.isHasTransactionHash = signaturesInfo.txHash !== undefined ? true : false;
+        this.isHasTransactionHash =
+          signaturesInfo.txHash !== undefined ? true : false;
       }
 
       if (this.isHasTransactionHash) {
@@ -218,10 +240,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     return index;
   }
 
-
-
   async next() {
-
     const isValid = this.isFormValid();
     if (!isValid) {
       return;
@@ -237,7 +256,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/msig-send-transaction']);
     }
-
   }
 
   generateHash() {
@@ -280,16 +298,20 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
         for (let i = 0; i < account.participants.length; i++) {
           const participant = {
             address: account.participants[i],
-            signature: stringToBuffer(''),
+            signature: stringToBuffer('')
           };
           participantAccount.push(participant);
         }
       } else {
         // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < this.multisig.multisigInfo.participants.length; i++) {
+        for (
+          let i = 0;
+          i < this.multisig.multisigInfo.participants.length;
+          i++
+        ) {
           const participant = {
             address: this.multisig.multisigInfo.participants[i],
-            signature: stringToBuffer(''),
+            signature: stringToBuffer('')
           };
           participantAccount.push(participant);
         }
@@ -297,7 +319,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       this.txHash = generateTransactionHash(data);
       this.multisig.signaturesInfo = {
         txHash: this.txHash,
-        participants: participantAccount,
+        participants: participantAccount
       };
 
       this.isHasTransactionHash = true;
@@ -315,19 +337,17 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.router.navigate(['/multisig']);
   }
 
-
   updateCreateTransaction() {
     const address = this.multisig.generatedSender || this.account.address;
     this.multisig.transaction = {
       sender: address,
       amount: this.amount,
       fee: this.transactionFee,
-      recipient: sanitizeString(this.recipientAddress),
+      recipient: sanitizeString(this.recipientAddress)
     };
   }
 
   switchCurrency() {
-
     const first = this.primaryCurr.slice();
     if (first === COIN_CODE) {
       this.primaryCurr = this.currencyRate.name;
@@ -345,7 +365,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.amountMsg = '';
     this.isAmountValid = true;
   }
-
 
   loadData() {
     this.recipientAddress = '';
@@ -368,8 +387,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       .finally(() => (this.isLoadingBlockHeight = false));
   }
 
-
-
   openMenu() {
     this.menuController.open('mainMenu');
   }
@@ -379,7 +396,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       component: AccountPopupPage
     });
 
-    modal.onDidDismiss().then((dataReturned) => {
+    modal.onDidDismiss().then(dataReturned => {
       if (dataReturned.data) {
         // this.signByAccount =  dataReturned.data;
         // this.signBy = this.signByAccount.address;
@@ -388,7 +405,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
     return await modal.present();
   }
-
 
   async presentGetAddressOption() {
     const alert = await this.alertController.create({
@@ -405,7 +421,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
         {
           name: 'opsi2',
           type: 'radio',
-          label: 'Address Book',
+          label: 'Contacts',
           value: 'address'
         },
         {
@@ -423,9 +439,10 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
           handler: () => {
             // console.log('Confirm Cancel', val);
           }
-        }, {
+        },
+        {
           text: 'Ok',
-          handler: (val) => {
+          handler: val => {
             if (val === 'address') {
               this.openAddresses();
             } else if (val === 'account') {
@@ -447,7 +464,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       cssClass: 'modal-fullscreen'
     });
 
-    currencyModal.onDidDismiss().then((returnedData) => {
+    currencyModal.onDidDismiss().then(returnedData => {
       if (returnedData && returnedData.data !== '-') {
         const currCode = returnedData.data;
         this.currencyService.setActiveCurrency(currCode);
@@ -457,14 +474,15 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     return await currencyModal.present();
   }
 
-
   showLoading() {
-    this.loadingController.create({
-      message: 'Loading ...',
-      duration: 2000
-    }).then((res) => {
-      res.present();
-    });
+    this.loadingController
+      .create({
+        message: 'Loading ...',
+        duration: 2000
+      })
+      .then(res => {
+        res.present();
+      });
   }
 
   doRefresh(event: any) {
@@ -474,10 +492,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     setTimeout(() => {
       event.target.complete();
     }, 5000);
-
   }
-
-
 
   async getAccountBalance(addr: string) {
     this.isLoadingBalance = true;
@@ -498,9 +513,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       .finally(() => (this.isLoadingBalance = false));
   }
 
-
   validateCustomFee() {
-
     this.convertCustomeFee();
     if (this.minimumFee > this.customfee) {
       this.isCustomFeeValid = false;
@@ -517,13 +530,14 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   convertCustomeFee() {
     if (this.primaryCurr === COIN_CODE) {
       this.customfee = this.customfeeTemp;
-      this.customfee2 = this.customfeeTemp * this.priceInUSD * this.currencyRate.value;
+      this.customfee2 =
+        this.customfeeTemp * this.priceInUSD * this.currencyRate.value;
     } else {
-      this.customfee = this.customfeeTemp / this.priceInUSD / this.currencyRate.value;
+      this.customfee =
+        this.customfeeTemp / this.priceInUSD / this.currencyRate.value;
       this.customfee2 = this.customfee;
     }
   }
-
 
   convertAmount() {
     if (!this.amountTemp) {
@@ -531,7 +545,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     }
     if (this.primaryCurr === COIN_CODE) {
       this.amount = this.amountTemp;
-      this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;
+      this.amountSecond =
+        this.amountTemp * this.priceInUSD * this.currencyRate.value;
     } else {
       this.amount = this.amountTemp / this.priceInUSD / this.currencyRate.value;
       this.amountSecond = this.amount;
@@ -539,7 +554,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   }
 
   validateAmount() {
-
     this.convertAmount();
 
     this.isAmountValid = true;
@@ -561,24 +575,30 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     }
 
     if (!this.isLoadingBalance) {
-
-      if (this.isAmountValid && (this.amount + Number(this.optionFee)) > this.account.balance) {
+      if (
+        this.isAmountValid &&
+        this.amount + Number(this.optionFee) > this.account.balance
+      ) {
         this.amountMsg = this.translateService.instant('Insufficient balance');
         this.isAmountValid = false;
         return;
       }
     }
-
   }
-
 
   validateRecipient() {
     this.isRecipientValid = true;
     this.recipientAddress = sanitizeString(this.recipientAddress);
 
-    if (!this.recipientAddress || this.recipientAddress === '' || this.recipientAddress === null) {
+    if (
+      !this.recipientAddress ||
+      this.recipientAddress === '' ||
+      this.recipientAddress === null
+    ) {
       this.isRecipientValid = false;
-      this.recipientMsg = this.translateService.instant('Recipient is required!');
+      this.recipientMsg = this.translateService.instant(
+        'Recipient is required!'
+      );
       return;
     }
 
@@ -586,7 +606,9 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       const addressBytes = base64ToByteArray(this.recipientAddress);
       if (this.isRecipientValid && addressBytes.length !== 33) {
         this.isRecipientValid = false;
-        this.recipientMsg = this.translateService.instant('Address is not valid!');
+        this.recipientMsg = this.translateService.instant(
+          'Address is not valid!'
+        );
         return;
       }
     }
@@ -598,7 +620,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
         const json = JSON.parse(params.jsonData);
         this.recipientAddress = json.address;
         this.amountTemp = Number(json.amount);
-        this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;
+        this.amountSecond =
+          this.amountTemp * this.priceInUSD * this.currencyRate.value;
       }
     });
   }
@@ -642,7 +665,13 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       }
     }
 
-    if (!this.amount || !this.recipientAddress || !this.isRecipientValid || !this.isAmountValid || !this.isFeeValid) {
+    if (
+      !this.amount ||
+      !this.recipientAddress ||
+      !this.isRecipientValid ||
+      !this.isAmountValid ||
+      !this.isFeeValid
+    ) {
       return false;
     }
 
@@ -657,7 +686,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       return false;
     }
 
-    const total = (amount + this.transactionFee);
+    const total = amount + this.transactionFee;
     if (total > Number(this.account.balance)) {
       this.isAmountValid = false;
       this.amountMsg = 'Insuficient balance';
@@ -665,7 +694,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     }
     return true;
   }
-
 
   async showSuccessMessage() {
     const modal = await this.modalController.create({
@@ -676,8 +704,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       }
     });
 
-    modal.onDidDismiss().then(data => {
-    });
+    modal.onDidDismiss().then(data => {});
 
     return await modal.present();
   }
@@ -701,7 +728,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   openAddresses() {
     this.router.navigateByUrl('/address-book');
   }
-
 
   async getMinimumFee(timeout: number) {
     const fee: number = calculateMinFee(timeout);
@@ -738,18 +764,27 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
     const fileName = this.getDraftFileName();
     await this.file.createFile(pathFile, fileName, true);
-    await this.file.writeFile(pathFile, fileName, blob, { replace: true, append: false });
+    await this.file.writeFile(pathFile, fileName, blob, {
+      replace: true,
+      append: false
+    });
     alert('File saved in Download folder with name: ' + fileName);
   }
 
   private getDraftFileName() {
     const currentDatetime = new Date();
-    const formattedDate = currentDatetime.getDate() + '-'
-    + (currentDatetime.getMonth() + 1)
-    + '-' + currentDatetime.getFullYear()
-    + '-' + currentDatetime.getHours()
-    + '-' + currentDatetime.getMinutes()
-    + '-' + currentDatetime.getSeconds();
+    const formattedDate =
+      currentDatetime.getDate() +
+      '-' +
+      (currentDatetime.getMonth() + 1) +
+      '-' +
+      currentDatetime.getFullYear() +
+      '-' +
+      currentDatetime.getHours() +
+      '-' +
+      currentDatetime.getMinutes() +
+      '-' +
+      currentDatetime.getSeconds();
     return 'Multisig-draft-' + formattedDate + '.json';
   }
 
@@ -760,13 +795,17 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
     // To be able to save files on Android, we first need to ask the user for permission.
     // We do not let the download proceed until they grant access
-    await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(
-      result => {
+    await this.androidPermissions
+      .checkPermission(
+        this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+      )
+      .then(result => {
         if (!result.hasPermission) {
-          return this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE);
+          return this.androidPermissions.requestPermission(
+            this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+          );
         }
-      }
-    );
+      });
 
     return this.file.externalRootDirectory + '/Download/';
   }
@@ -775,7 +814,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Are you sure?',
-      message: '<strong>You will not be able to update the form anymore</strong>!!',
+      message:
+        '<strong>You will not be able to update the form anymore</strong>!!',
       buttons: [
         {
           text: 'Cancel',
@@ -784,7 +824,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
           handler: () => {
             // type here from tata hire
           }
-        }, {
+        },
+        {
           text: 'Yes, continue it!',
           handler: () => {
             this.generateHash();
@@ -795,5 +836,4 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
     await alert.present();
   }
-
 }

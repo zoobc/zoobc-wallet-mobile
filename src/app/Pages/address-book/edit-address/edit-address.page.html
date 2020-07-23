@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Edit Address" | translate }}</ion-title>
+    <ion-title>{{ "Edit Contact" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
         Feedback
@@ -13,12 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <app-form-address
-    (onSubmit)="onSubmit($event)"
-    (onCancel)="goBack()"
-    [value]="value"
-    mode="edit"
-    [addressId]="addressId"
-  >
+  <app-form-address (onSubmit)="onSubmit($event)" (onCancel)="goBack()" [value]="value" mode="edit"
+    [addressId]="addressId">
   </app-form-address>
 </ion-content>
