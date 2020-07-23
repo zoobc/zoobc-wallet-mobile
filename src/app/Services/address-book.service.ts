@@ -14,18 +14,30 @@ import { Contact } from '../Interfaces/contact';
   providedIn: 'root'
 })
 export class AddressBookService {
+
   counter = 0;
   private selectedAddress: string;
   private addresses: any;
 
   public addressSubject: Subject<string> = new Subject<string>();
+  public recipientSubject: Subject<any> = new Subject<any>();
+  public approverSubject: Subject<any> = new Subject<any>();
 
   public getSelectedAddress() {
     return this.selectedAddress;
   }
-  public setSelectedAddress(value) {
-    this.selectedAddress = value;
-    this.addressSubject.next(this.selectedAddress);
+
+  public setSelectedAddress(arg) {
+    this.selectedAddress = arg;
+    this.addressSubject.next(arg);
+  }
+
+  public setApproverAddress(arg: any) {
+    this.approverSubject.next(arg);
+  }
+
+  public setRecipientAddress(arg: any) {
+    this.recipientSubject.next(arg);
   }
 
   constructor(

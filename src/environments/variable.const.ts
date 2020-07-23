@@ -27,6 +27,7 @@ export const TRANSACTION_MINIMUM_FEE = 0.01;
 export const TRANSACTION_VERSION = Buffer.from([1]);
 export const FOR_SENDER = 'sender';
 export const FOR_RECIPIENT = 'recipient';
+export const FOR_APPROVER = 'approver';
 export const FOR_ACCOUNT = 'account';
 export const MODE_EDIT = 'edit';
 export const MODE_NEW = 'new';

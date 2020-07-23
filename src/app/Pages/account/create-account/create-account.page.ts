@@ -38,7 +38,6 @@ export class CreateAccountPage implements OnInit {
   }
 
   async ngOnInit() {
-    // const pathNumber = await this.accountService.generateDerivationPath();
     this.accounts = await this.accountService.allAccount('normal');
     const len = this.accounts.length + 1;
     this.accountName = `Account ${len}`;

@@ -12,7 +12,7 @@ import { StoragedevService } from './storagedev.service';
 import { Account } from '../Interfaces/account';
 import { KeyringService } from './keyring.service';
 import { getAddressFromPublicKey, sanitizeString } from 'src/Helpers/utils';
-import zoobc, { MultiSigAddress } from 'zoobc-sdk';
+import zoobc, { MultiSigAddress, ZooKeyring, getZBCAdress, TransactionListParams, TransactionsResponse } from 'zoobc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +21,11 @@ export class AccountService {
 
   account: Account;
   private forWhat: string;
-  private recipient: Account;
-
   private plainPassphrase: string;
   private arrayPhrase = [];
   private plainPin: string;
+  private keyring: ZooKeyring;
+  private restoring = false;
 
 
   constructor(
@@ -34,7 +34,8 @@ export class AccountService {
 
   public accountSubject: Subject<Account> = new Subject<Account>();
   public recipientSubject: Subject<Account> = new Subject<Account>();
-
+  public approverSubject: Subject<Account> = new Subject<Account>();
+  public senderSubject: Subject<Account> = new Subject<Account>();
 
   setForWhat(arg: string) {
     this.forWhat = arg;
@@ -45,12 +46,15 @@ export class AccountService {
   }
 
   setRecipient(arg: Account) {
-    this.recipient = arg;
-    this.recipientSubject.next(this.recipient);
+    this.recipientSubject.next(arg);
   }
 
-  getRecipient() {
-    return this.recipient;
+  setApprover(arg: Account) {
+    this.approverSubject.next(arg);
+  }
+
+  setSender(arg: Account) {
+    this.senderSubject.next(arg);
   }
 
   async getAccount(address: string) {
@@ -96,9 +100,7 @@ export class AccountService {
   }
 
   async setActiveAccount(account: Account) {
-    console.log('=== setActiveAccount account:', account);
     await this.strgSrv.set(STORAGE_CURRENT_ACCOUNT, account);
-    console.log('===== savve storage Account');
     this.broadCastNewAccount(account);
   }
 
@@ -107,7 +109,6 @@ export class AccountService {
   }
 
   async addAccount(account: Account) {
-    console.log('==== Account', account);
     let accounts = await this.allAccount();
 
     if (accounts === null) {
@@ -144,13 +145,11 @@ export class AccountService {
   }
 
   async updateAccount(account: Account) {
-    console.log('== acount will updated: ', account);
     const accounts = await this.allAccount();
 
     for (let i = 0; i < accounts.length; i++) {
       const acc = accounts[i];
       if (acc.address === account.address) {
-          console.log('=== finded, ' + i + ':', acc);
           accounts[i] = account;
           this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
           this.broadCastNewAccount(account);
@@ -206,9 +205,7 @@ export class AccountService {
       path: pathNumber,
       type: 'normal',
       nodeIP: null,
-      created: new Date(),
-      address: newAddress,
-      shortAddress: makeShortAddress(newAddress)
+      address: newAddress
     };
     return account;
   }
@@ -225,12 +222,60 @@ export class AccountService {
       participants: multiParam.participants,
       nonce: multiParam.nonce,
       minSig: multiParam.minSigs,
-      signByAddress: signByAccount.address,
-      created: new Date(),
-      shortAddress: makeShortAddress(multiSignAddress)
+      signByAddress: signByAccount.address
     };
 
     return account;
+  }
+
+  async restoreAccounts() {
+    const isRestored: boolean = await this.strgSrv.get('IS_RESTORED') === 'true';
+    if (!isRestored && !this.restoring) {
+      this.restoring = true;
+      const keyring = this.keyring;
+
+      let accountPath = 0;
+      let accountsTemp = [];
+      let accounts = [];
+      let counter = 0;
+
+      while (counter < 20) {
+        const childSeed = keyring.calcDerivationPath(accountPath);
+        const publicKey = childSeed.publicKey;
+        const address = getZBCAdress(publicKey);
+        const account: Account = {
+          name: 'Account '.concat((accountPath + 1).toString()),
+          path: accountPath,
+          nodeIP: null,
+          address,
+          type: 'normal',
+        };
+        const params: TransactionListParams = {
+          address,
+          transactionType: 1,
+          pagination: {
+            page: 1,
+            limit: 1,
+          },
+        };
+        await zoobc.Transactions.getList(params).then((res: TransactionsResponse) => {
+          // tslint:disable-next-line:radix
+          const totalTx = parseInt(res.total);
+          accountsTemp.push(account);
+          if (totalTx > 0) {
+            accounts = accounts.concat(accountsTemp);
+            accountsTemp = [];
+            counter = 0;
+          }
+        });
+        accountPath++;
+        counter++;
+      }
+      this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
+      this.strgSrv.set('IS_RESTORED', 'true');
+
+      this.restoring = false;
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -15,7 +15,8 @@ import { QrScannerService } from 'src/app/Services/qr-scanner.service';
   templateUrl: './form-address.component.html',
   styleUrls: ['./form-address.component.scss']
 })
-export class FormAddressComponent implements OnInit {
+export class FormAddressComponent implements OnInit, OnChanges {
+
   @Input() mode = 'add';
   @Input() addressId: number | null = null;
   @Input() value: { name: string; address: string } | null = null;
@@ -28,7 +29,13 @@ export class FormAddressComponent implements OnInit {
     private addressBookSrv: AddressBookService,
     private router: Router,
     private qrScannerSrv: QrScannerService
-  ) {}
+  ) {
+
+    this.qrScannerSrv.qrScannerSubject.subscribe((address) => {
+      this.getScannerResult(address);
+    });
+
+  }
 
   formAddress = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -59,7 +66,7 @@ export class FormAddressComponent implements OnInit {
       (oldValue !== null && oldValue.name !== this.name.value && nameExists) ||
       (oldValue === null && nameExists)
     ) {
-      this.formAddress.controls['name'].setErrors({ nameExists: nameExists });
+      this.formAddress.controls['name'].setErrors({ nameExists });
     }
 
     const addressExists = this.isAddressExists(this.address.value);
@@ -70,7 +77,7 @@ export class FormAddressComponent implements OnInit {
       (oldValue === null && addressExists)
     ) {
       this.formAddress.controls['address'].setErrors({
-        addressExists: addressExists
+        addressExists
       });
     }
 
@@ -128,13 +135,13 @@ export class FormAddressComponent implements OnInit {
 
   scanQRCode() {
     this.router.navigateByUrl('/scanqr-for-addressbook');
+  }
 
-    this.qrScannerSrv.listen().subscribe((jsondata: string) => {
-      if (jsondata && jsondata.length > 0) {
-        const result = jsondata.split('||');
-        this.formAddress.controls['address'].setValue(result[0]);
-      }
-    });
+  getScannerResult(jsondata: string) {
+    if (jsondata && jsondata.length > 0) {
+      const result = jsondata.split('||');
+      this.formAddress.controls['address'].setValue(result[0]);
+    }
   }
 
   cancel() {

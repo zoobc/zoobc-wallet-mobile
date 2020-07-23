@@ -90,6 +90,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   txHash: string;
   createTransactionFormEnable = true;
   isMultiSignature = true;
+  recipientName: any;
 
   constructor(
     private multisigServ: MultisigService,
@@ -111,6 +112,9 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private trxService: TransactionService) {
 
+    this.qrScannerService.qrScannerSubject.subscribe((address) => {
+        this.getScannerResult(address);
+    });
 
     this.accountService.accountSubject.subscribe(() => {
       this.loadAccount();
@@ -688,12 +692,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   scanQrCode() {
     this.router.navigateByUrl('/qr-scanner');
-    this.qrScannerService.listen().subscribe((jsonData: string) => {
-      const data = JSON.parse(jsonData);
-      this.recipientAddress = data.address;
-      this.amountTemp = Number(data.amount);
-      this.amountSecond = this.amountTemp * this.priceInUSD * this.currencyRate.value;
-    });
   }
 
   goDashboard() {
@@ -708,6 +706,21 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   async getMinimumFee(timeout: number) {
     const fee: number = calculateMinFee(timeout);
     return fee;
+  }
+
+  getScannerResult(jsonData: string) {
+    const result = jsonData.split('||');
+    this.recipientAddress = result[0];
+    this.recipientName = null;
+    if (result.length > 1) {
+      this.amountTemp = Number(result[1]);
+      if (result[1] !== null) {
+        this.amountSecond =
+          this.amountTemp * this.priceInUSD * this.currencyRate.value;
+      } else {
+        this.amountSecond = undefined;
+      }
+    }
   }
 
   async exportDraft() {

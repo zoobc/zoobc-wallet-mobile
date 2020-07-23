@@ -214,11 +214,14 @@ export class TransactionsPage implements OnInit {
 
   }
 
-  getName(address) {
+  getName(address: string) {
     let nama =  '';
+    console.log('== addresses: ', this.addresses);
+
     if (this.addresses && this.addresses.length > 0) {
       this.addresses.forEach((obj: { name: any; address: string; }) => {
            if (address === obj.address) {
+              console.log('===== found name: ', obj.name);
               nama = obj.name;
            }
         });

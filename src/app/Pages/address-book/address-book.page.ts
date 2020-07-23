@@ -4,6 +4,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Location } from '@angular/common';
 import { UtilService } from 'src/app/Services/util.service';
 import { NavController, AlertController } from '@ionic/angular';
+import { FOR_RECIPIENT, FOR_APPROVER } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-address-book',
@@ -13,15 +14,15 @@ import { NavController, AlertController } from '@ionic/angular';
 export class AddressBookPage implements OnInit, OnDestroy {
   addresses = [];
   navigationSubscription: any;
+  forWhat: string;
 
   constructor(
-    private location: Location,
     private router: Router,
     private navCtrl: NavController,
     private utilService: UtilService,
     private addressBookSrv: AddressBookService,
     private alertCtrl: AlertController,
-    private activeRoute: ActivatedRoute
+    private route: ActivatedRoute
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
@@ -37,6 +38,13 @@ export class AddressBookPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    this.route.queryParams.subscribe( () => {
+      if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
+        this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
+      } else {
+        this.forWhat = null;
+      }
+    });
     this.getAllAddress();
   }
 
@@ -53,13 +61,15 @@ export class AddressBookPage implements OnInit, OnDestroy {
   }
 
   selectAddress(address: any) {
-    this.addressBookSrv.setSelectedAddress(address.address);
-
-    this.activeRoute.queryParams.subscribe(params => {
-      if (params.dismissOnClick) {
-        this.location.back();
-      }
-    });
+    if (!this.forWhat) {
+      return;
+    }
+    if (this.forWhat === FOR_RECIPIENT) {
+      this.addressBookSrv.setRecipientAddress(address);
+    } else if (this.forWhat === FOR_APPROVER) {
+      this.addressBookSrv.setApproverAddress(address);
+    }
+    this.navCtrl.pop();
   }
 
   editAddress(index: number) {
