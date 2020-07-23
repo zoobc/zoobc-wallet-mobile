@@ -296,7 +296,7 @@ export class SendCoinPage implements OnInit {
         {
           name: 'opsi2',
           type: 'radio',
-          label: 'Address Book',
+          label: 'Contacts',
           value: 'address'
         },
         {
