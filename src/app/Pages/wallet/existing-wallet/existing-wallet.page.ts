@@ -27,6 +27,7 @@ export class ExistingWalletPage implements OnInit {
   private lang: string;
   public arrayPhrase = [];
   constructor(
+    private authService: AuthService,
     public loadingController: LoadingController,
     private navCtrl: NavController,
     private location: Location,
@@ -138,6 +139,7 @@ export class ExistingWalletPage implements OnInit {
         // set pin to service
         this.accountSrv.setPlainPin(this.plainPin);
         this.createAccount();
+        this.authService.restoreAccounts();
       }
     });
     return await pinmodal.present();
