@@ -17,7 +17,6 @@ export class PopupLanguagesPage implements OnInit {
   }
 
   async languageClicked(code: string) {
-    console.log('=== Language clicked:', code);
     await this.modalController.dismiss(code);
   }
 

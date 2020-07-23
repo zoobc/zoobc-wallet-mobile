@@ -54,7 +54,6 @@ export class MultisigPage implements OnInit {
     this.isTransaction = false;
 
     this.multisigSubs = this.multisigServ.multisig.subscribe( () => {
-      console.log('== refreshing draft ');
       this.getMultiSigDraft();
     });
 
@@ -112,8 +111,6 @@ export class MultisigPage implements OnInit {
     if (this.isTransaction) { multisig.unisgnedTransactions = null; }
     if (this.isSignature) { multisig.signaturesInfo = null; }
 
-    console.log('=== Multisig: ', multisig);
-
     if (this.isMultiSignature) {
       multisig.multisigInfo = {
         minSigs: this.account.minSig,
@@ -156,7 +153,6 @@ export class MultisigPage implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            console.log('Confirm Cancel: blah');
             // this.router.navigate(['/multisig']);
           }
         }, {
@@ -258,8 +254,5 @@ export class MultisigPage implements OnInit {
     this.addSignature = !this.createTransaction;
   }
 
-  refresh() {
-    console.log('Refresh clicked');
-  }
 
 }

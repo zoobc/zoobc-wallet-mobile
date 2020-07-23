@@ -18,7 +18,7 @@ export class EditAddressPage implements OnInit {
   ) {}
 
   addressId: number;
-  value: { name: String; address: String };
+  value: { name: string; address: string };
 
   ngOnInit() {
     this.activeRoute.params.subscribe(async params => {
@@ -33,16 +33,8 @@ export class EditAddressPage implements OnInit {
 
   async onSubmit(value: any) {
     const { name, address } = value;
-
-    // check if nothing changed
-    /*if (this.name === this.oldName) {
-      // console.log('Nothing changed ');
-      this.goListAddress();
-      return;
-    }*/
-
     const contact: Contact = {
-      name: name,
+      name,
       address: sanitizeString(address),
       shortAddress: makeShortAddress(sanitizeString(address))
     };

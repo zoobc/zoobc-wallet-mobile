@@ -24,7 +24,6 @@ export class CreateWalletPage implements OnInit {
   ngOnInit() {
     this.arrayPhrase = this.accountSrv.getArrayPassphrase().slice();
     this.arrayPhraseOri = this.accountSrv.getArrayPassphrase().slice();
-    // console.log('===== Array phrase: ', this.arrayPhrase);
     this.generateRandomBlanks();
   }
 
@@ -38,7 +37,6 @@ export class CreateWalletPage implements OnInit {
   }
 
   isReadonly(arg: number) {
-    // console.log('number of box: ', arg);
     if (this.disabledBox[arg] === '') {
       return true;
     } else {

@@ -131,16 +131,11 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       }
 
       this.multisig = multisig;
-
-      console.log('== this.multisig:', this.multisig);
-
       const { accountAddress, fee, generatedSender } = this.multisig;
       if (this.isMultiSigAccount) {
-        console.log('== masuk 1');
         this.multisigAccount = this.account;
         this.account.address = generatedSender;
       } else {
-        console.log('== masuk 2');
         this.multisigAccount = await this.accountService.getAccount(generatedSender);
         this.account.address = accountAddress;
       }
@@ -297,10 +292,8 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       signaturesInfo,
     } = this.multisig;
 
-    console.log('=== signaturesInfo:', signaturesInfo);
     let data: MultiSigInterface;
     if (signaturesInfo !== undefined) {
-      console.log('=== masuk 1:');
       const signatureInfoFilter: SignatureInfo = {
         txHash: signaturesInfo.txHash,
         participants: [],
@@ -311,8 +304,6 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
       // == manuall
       const trx = this.multisig.transaction;
-
-      console.log('== transaction: ', trx);
 
       const dataUnsig: SendMoneyInterface = {
         sender: trx.sender,
@@ -331,7 +322,6 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         signaturesInfo: signatureInfoFilter,
       };
     } else {
-      console.log('=== masuk 2:');
       data = {
         accountAddress,
         fee,
@@ -340,17 +330,12 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         signaturesInfo,
       };
     }
-
-    console.log('== data: ', data);
-
     const key = this.authSrv.tempKey;
 
     const signByAddress = this.multisigAccount.signByAddress;
     const signByAcc = await this.accountService.getAccount(signByAddress);
     const childSeed = await this.utilService.generateSeed(key, signByAcc.path);
     // const childSeed = await this.utilService.generateSeed(key, this.account.path);
-    console.log('== childSeed: ', childSeed);
-
     zoobc.MultiSignature.postTransaction(data, childSeed)
       .then(  () => {
         const message = 'Your Transaction is processing!';
@@ -366,7 +351,6 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         this.utilService.showConfirmation('Fail', message, false, null);
         this.router.navigateByUrl('/dashboard');
       }).finally(() => {
-        console.log('=== data after: ', data);
         loading.dismiss();
       });
   }

@@ -63,7 +63,6 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data) {
-        console.log('== data returned: ', dataReturned.data);
         this.msigAccount = dataReturned.data;
         if (this.msigAccount !== undefined) {
           this.petchMsigAccount(this.msigAccount);
@@ -176,8 +175,6 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
     };
     const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
     multisig.generatedSender = address;
-    console.log('=== Multisig: ', multisig);
-
     this.multisigSrv.update(multisig);
   }
 

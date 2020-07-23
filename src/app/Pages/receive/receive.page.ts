@@ -35,7 +35,6 @@ export class ReceivePage implements OnInit {
 
   async loadData() {
     this.account = await this.accountService.getCurrAccount();
-    console.log('=== account: ', this.account);
     this.createQR(this.account.address, this.amount);
   }
 
@@ -64,8 +63,8 @@ export class ReceivePage implements OnInit {
   }
 
   createQR(addrs: string, amnt: number) {
-    const qrCode = { address: addrs, amount: amnt };
-    this.createdCode = JSON.stringify(qrCode);
+    const qrCode = addrs + '||' + amnt;
+    this.createdCode = qrCode;
   }
 
 

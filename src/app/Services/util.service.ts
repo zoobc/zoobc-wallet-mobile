@@ -77,7 +77,6 @@ export class UtilService {
     });
 
     modal.onDidDismiss().then(data => {
-      console.log(data);
       if (path) {
         this.router.navigateByUrl(path);
       }
@@ -88,10 +87,6 @@ export class UtilService {
 
 
   public async generateSeed(pin: any, path: number) {
-
-    console.log('===== generateSeed, account.path: ', path);
-    console.log('==== generateSeed pin :', pin);
-
     const passEncryptSaved = await this.storageService.get(STORAGE_ENC_PASSPHRASE_SEED);
     const decryptedArray = doDecrypt(passEncryptSaved, pin);
     const passphrase = decryptedArray.toString(CryptoJS.enc.Utf8);

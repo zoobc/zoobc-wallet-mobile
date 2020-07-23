@@ -40,11 +40,9 @@ export class SetupPinPage implements OnInit {
     if (!this.theme || this.theme === '' || this.theme === undefined) {
       this.theme = DEFAULT_THEME;
     }
-    console.log('=== ionViewDidEnter current theme: ', this.theme);
   }
 
   setupPin(event: any) {
-    // console.log('====event:', event);
     this.loginFail = false;
     this.tempPin = event.pin;
     this.processing = true;
@@ -58,9 +56,7 @@ export class SetupPinPage implements OnInit {
     const { pin } = event;
     this.loginFail = false;
     this.processing = true;
-    // console.log('====pin:', pin);
     if (this.tempPin === pin) {
-      // console.log('==== key existing: ', pin);
       this.modalCtrl.dismiss(pin);
       setTimeout(() => {
         this.processing = false;

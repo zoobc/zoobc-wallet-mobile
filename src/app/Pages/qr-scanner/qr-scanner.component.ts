@@ -51,7 +51,7 @@ export class QrScannerComponent implements OnInit {
         this.navCtrl.pop();
       })
       .catch(err => {
-        // console.log('Error', err);
+        console.log(err);
       });
   }
 

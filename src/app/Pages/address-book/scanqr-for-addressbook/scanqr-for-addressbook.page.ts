@@ -46,7 +46,7 @@ export class ScanqrForAddressbookPage implements OnInit {
         this.location.back();
       })
       .catch(err => {
-        console.log('Error', err);
+        console.log(err);
       });
   }
 
