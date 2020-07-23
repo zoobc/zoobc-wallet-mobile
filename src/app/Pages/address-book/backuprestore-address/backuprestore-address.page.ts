@@ -36,7 +36,6 @@ export class BackuprestoreAddressPage implements OnInit {
     this.getAllAddress();
     this.getAllAccounts();
     if (this.authService.userDetails() && this.authService.userDetails().uid) {
-      console.log('==== Current User: ', this.authService.userDetails().uid);
       this.uid =  this.authService.userDetails().uid;
     } else {
       this.navCtrl.navigateBack('/login-backup');
@@ -47,7 +46,6 @@ export class BackuprestoreAddressPage implements OnInit {
   logout() {
     this.authService.logoutUser()
     .then(res => {
-      console.log(res);
       this.navCtrl.navigateBack('/login-backup');
     })
     .catch(error => {
@@ -64,9 +62,6 @@ export class BackuprestoreAddressPage implements OnInit {
   }
 
   backup() {
-    console.log('=== All address will backup: ', this.addresses);
-    console.log('=== All length will backup: ', this.addresses.length);
-
     if (!this.addresses || this.addresses.length < 1) {
       this.presentAlert();
       return;
@@ -95,7 +90,6 @@ export class BackuprestoreAddressPage implements OnInit {
   async createBackup(mainAcc: string, all: any) {
     const obj = { id: mainAcc, addresses: all };
     await this.addressBookSrv.createBackup(mainAcc, obj).then(resp => {
-      console.log(resp);
     }).catch(error => {
         console.log(error);
       });
@@ -106,16 +100,13 @@ export class BackuprestoreAddressPage implements OnInit {
     this.isRestore = true;
     this.isRestoreFinish = false;
     const mainAcc = this.accounts[0].address;
-    console.log('=== Main Account: ', mainAcc);
     this.addressBookSrv.restoreBackup(mainAcc).then( doc => {
-
-         console.log('============ Contact will restored: ', doc);
-         if (doc.exists && doc.data().addresses) {
+        if (doc.exists && doc.data().addresses) {
             const addresses = doc.data().addresses;
             this.addressBookSrv.insertBatch(addresses);
         }
       }).catch(error => {
-        console.log('Error getting document:', error);
+        console.log(error);
       });
     this.isRestore = false;
     this.isRestoreFinish = true;

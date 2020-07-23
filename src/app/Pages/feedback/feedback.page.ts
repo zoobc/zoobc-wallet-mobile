@@ -74,18 +74,16 @@ export class FeedbackPage implements OnInit {
   }
 
   changeRating() {
-    // console.log('Your rate:', event);
+
   }
 
   // Create a new item
   createItem(item: any) {
-    // console.log('Dta will send: ', item);
     const postData = (item);
     let url = environment.feedbackUrl + '/applications/11045/submit';
     url += '?key=6iiLMDdWejJrMi831uTdnZg4vSWlguwLBjbw5962Zu5EPA6c8xvKyhItme6hFWTs';
     this.http.post(url, postData, this.httpOptions)
       .subscribe(() => {
-        // console.log('Response from server: ', data);
         this.isSending = false;
       }, error => {
         this.isSending = false;
@@ -98,7 +96,6 @@ export class FeedbackPage implements OnInit {
           this.errorMsg = error.error;
         }
         // this.showToast();
-        // console.log('== Have error when submit: ', error);
       });
   }
 
@@ -107,7 +104,6 @@ export class FeedbackPage implements OnInit {
       // tslint:disable-next-line:max-line-length
       const regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
       serchfind = regexp.test(search);
-      // console.log('is email valid', serchfind);
       return serchfind;
   }
 

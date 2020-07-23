@@ -35,7 +35,6 @@ export class ReceivePage implements OnInit {
 
   async loadData() {
     this.account = await this.accountService.getCurrAccount();
-    console.log('=== account: ', this.account);
     this.createQR(this.account.address, this.amount);
   }
 

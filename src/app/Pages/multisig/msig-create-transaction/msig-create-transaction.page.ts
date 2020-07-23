@@ -182,7 +182,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.accounts = await this.accountService.allAccount();
-    console.log('=== this.multisigDraft: ', this.multiSigDraft);
     // Multisignature Subscription
     this.multisigSubs = this.multisigServ.multisig.subscribe(async multisig => {
       await this.loadAccount();
@@ -212,18 +211,15 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       }
 
       if (unisgnedTransactions) {
-        console.log('== enter 1');
         const { sender, recipient, amount, fee } = transaction;
         this.account.address = sender;
         this.recipientAddress = recipient;
         this.amount = amount;
         this.transactionFee = fee;
       } else if (this.isMultiSignature) {
-        console.log('== enter 2');
         this.multisig.generatedSender = this.account.address;
         this.senderAccount = this.account;
       } else {
-        console.log('== enter 3');
         const address = this.multisig.generatedSender;
         this.senderAccount = await this.accountService.getAccount(address);
       }
@@ -437,7 +433,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
         {
           text: 'Ok',
           handler: val => {
-            // console.log('Confirm Ok', val);
             if (val === 'address') {
               this.openAddresses();
             } else if (val === 'account') {
@@ -481,7 +476,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   }
 
   doRefresh(event: any) {
-    // console.log('Reloading data ....');
     this.showLoading();
     this.loadData();
 
@@ -700,9 +694,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       }
     });
 
-    modal.onDidDismiss().then(data => {
-      console.log(data);
-    });
+    modal.onDidDismiss().then(data => {});
 
     return await modal.present();
   }
@@ -812,7 +804,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            console.log('Canceled');
+            // type here from tata hire
           }
         },
         {

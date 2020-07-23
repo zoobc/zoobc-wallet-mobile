@@ -46,13 +46,10 @@ export class GeneratePassphrasePage implements OnInit {
   }
 
   onLanguageChanged(language: string) {
-    console.log('== language:', language);
-    // this.lang = language;
     this.generatePassphrase();
   }
 
   setupPin(event: any) {
-    // console.log('====event:', event);
     this.loginFail = false;
     const { first } = event;
     // set loginFail false && clear error message

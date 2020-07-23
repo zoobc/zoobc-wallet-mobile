@@ -49,9 +49,8 @@ export class EditAddressPage implements OnInit {
 
   async onSubmit(value: any) {
     const { name, address } = value;
-
     const contact: Contact = {
-      name: name,
+      name,
       address: sanitizeString(address),
       shortAddress: makeShortAddress(sanitizeString(address))
     };

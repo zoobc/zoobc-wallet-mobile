@@ -22,7 +22,6 @@ export class AddressBookListComponent implements OnInit, OnDestroy {
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
-        // console.log('=== NavigationEnd');
         this.getAllAddress();
       }
     });
@@ -35,12 +34,10 @@ export class AddressBookListComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    // console.log('=== ngOninit');
     this.getAllAddress();
   }
 
-  ionViewWillEnter(){
-    // console.log('=== ionViewWillEnter');
+  ionViewWillEnter() {
   }
 
   async getAllAddress() {

@@ -58,38 +58,21 @@ export class BackupPhrasePage implements OnInit {
 
   async getPassprase(pin: any) {
 
-
-      // console.log('==== pin backup:', pin);
       const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
-      // console.log('==== passEncryptSaved:', passEncryptSaved);
-
       const isPinValid = this.authService.isPinValid(passEncryptSaved, pin);
-      // console.log('==== isPinValid:', isPinValid);
-
       if (isPinValid) {
          const decryptedArray =  doDecrypt(passEncryptSaved, pin);
-
-         // console.log('decryptedArray:', decryptedArray);
          this.decrypted = decryptedArray.toString(CryptoJS.enc.Utf8);
-         // console.log('===== decrypted: ', this.decrypted);
-
          this.passDecrypted = this.decrypted.split(' ');
-
       }
 
 
-    // console.log('==== PIN:', arg);
-
     // const passEncryptSaved = await this.storage.get('PASS_STORAGE');
     // this.passSaved = passEncryptSaved;
-    // console.log('===== passEncryptSaved: ', passEncryptSaved);
-    // console.log('===== passEncryptSaved Length: ', passEncryptSaved.length);
 
     // const decryptedArray =  doDecrypt(passEncryptSaved, arg);
-    // console.log('decryptedArray:', decryptedArray);
     // this.decrypted = decryptedArray.toString(CryptoJS.enc.Utf8);
     // this.passDecrypted = this.decrypted.split(' ');
-    // console.log('===== decrypted: ', this.decrypted);
   }
 
   // async wrongPwdAlert() {

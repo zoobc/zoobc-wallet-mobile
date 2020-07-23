@@ -54,12 +54,7 @@ export class ChatPage implements OnInit {
   }
 
   segmentChanged(ev: any) {
-    console.log('Segment changed', ev);
   }
-
-  // getName(address) {
-  //   this.addressBookSrv.getNameByAddress(address);
-  // }
 
   ngOnInit() {
     this.chatContent =  'chats';
@@ -68,16 +63,10 @@ export class ChatPage implements OnInit {
     if (this.recentChats && this.recentChats.length > 0) {
       this.chatGroup = this.groupBy(this.recentChats, 'sender');
       this.chatSenders = Object.keys(this.chatGroup);
-      console.log('== Group by: ', this.chatGroup[this.chatSenders[0]]);
-      console.log('=== group length: ', Object.keys(this.chatGroup));
-
     }
-
-
     this.getFcmId();
     this.loadAccount();
     this.getAllAddress();
-    console.log('---- All address in chat---- :', this.addresses);
   }
 
   openChatSession(address: string, name: string) {
