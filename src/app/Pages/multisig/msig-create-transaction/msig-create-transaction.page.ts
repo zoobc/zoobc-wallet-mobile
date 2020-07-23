@@ -125,17 +125,12 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     private platform: Platform,
     private androidPermissions: AndroidPermissions,
     private alertCtrl: AlertController,
-<<<<<<< HEAD
     private trxService: TransactionService) {
 
     this.qrScannerService.qrScannerSubject.subscribe((address) => {
         this.getScannerResult(address);
     });
 
-=======
-    private trxService: TransactionService
-  ) {
->>>>>>> cb4017381bb18cb1df58385e60eee4adabfa301a
     this.accountService.accountSubject.subscribe(() => {
       this.loadAccount();
     });
