@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth-service';
 import { QrScannerComponent } from './Pages/qr-scanner/qr-scanner.component';
+import { AuthenticationService } from './Services/authentication.service';
 
 const routes: Routes = [
   {
@@ -61,7 +62,7 @@ const routes: Routes = [
     path: 'address-book',
     loadChildren:
       './Pages/address-book/address-book.module#AddressBookPageModule',
-    canActivate: [AuthService]
+    canActivate: [AuthService, AuthenticationService]
   },
   {
     path: 'transaction/:transId',
@@ -246,6 +247,12 @@ const routes: Routes = [
     path: 'msig-task-detail',
     loadChildren:
       './Pages/my-tasks/msig-task-detail/msig-task-detail.module#MsigTaskDetailPageModule',
+    canActivate: [AuthService]
+  },
+  {
+    path: 'authentication',
+    loadChildren:
+      './Pages/authentication/authentication.module#AuthenticationPageModule',
     canActivate: [AuthService]
   }
 ];

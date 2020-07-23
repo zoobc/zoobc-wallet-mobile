@@ -9,6 +9,8 @@ import { base64ToByteArray } from 'src/Helpers/converters';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Router } from '@angular/router';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AccountService } from 'src/app/Services/account.service';
 
 @Component({
   selector: 'app-form-address',
@@ -27,7 +29,9 @@ export class FormAddressComponent implements OnInit {
   constructor(
     private addressBookSrv: AddressBookService,
     private router: Router,
-    private qrScannerSrv: QrScannerService
+    private qrScannerSrv: QrScannerService,
+    private afs: AngularFirestore,
+    private accountSrv: AccountService
   ) {}
 
   formAddress = new FormGroup({
@@ -51,10 +55,21 @@ export class FormAddressComponent implements OnInit {
 
     let oldValue: any | null = null;
     if (this.addressId !== null) {
-      oldValue = await this.addressBookSrv.getOneByIndex(this.addressId);
+      //oldValue = await this.addressBookSrv.getOneByIndex(this.addressId);
+      const addressPath0 = await this.accountSrv.getPath0Address();
+      const account = await new Promise(resolve => {
+        this.afs
+          .doc('account/' + addressPath0 + '/contact/' + this.addressId)
+          .valueChanges()
+          .subscribe((data: any) => {
+            resolve(data);
+          });
+      });
+
+      oldValue = account;
     }
 
-    const nameExists = this.isNameExists(this.name.value);
+    const nameExists = await this.isNameExists(this.name.value);
     if (
       (oldValue !== null && oldValue.name !== this.name.value && nameExists) ||
       (oldValue === null && nameExists)
@@ -62,7 +77,7 @@ export class FormAddressComponent implements OnInit {
       this.formAddress.controls['name'].setErrors({ nameExists: nameExists });
     }
 
-    const addressExists = this.isAddressExists(this.address.value);
+    const addressExists = await this.isAddressExists(this.address.value);
     if (
       (oldValue !== null &&
         oldValue.address !== this.address.value &&
@@ -79,29 +94,74 @@ export class FormAddressComponent implements OnInit {
     }
   }
 
-  isNameExists(name: string) {
+  async isNameExists(name: string) {
     let address = '';
-    if (
-      this.addresses.findIndex(addrs => {
-        address = addrs.address;
-        return addrs.name === name;
-      }) >= 0
-    ) {
-      return 'Name is exist, with address: ' + address;
+
+    /*if (
+          this.addresses.findIndex(addrs => {
+            address = addrs.address;
+            return addrs.name === name;
+          }) >= 0
+        ) {
+          return 'Name is exist, with address: ' + address;
+        }*/
+
+    const addressPath0 = await this.accountSrv.getPath0Address();
+    const accountCollection = this.afs.collection(
+      'account/' + addressPath0 + '/contact',
+      ref => {
+        return ref.where('name', '==', name);
+      }
+    );
+
+    const account = await accountCollection.get().toPromise();
+
+    if (account.size >= 1) {
+      return await new Promise(resolve => {
+        const accSubscriber = accountCollection
+          .valueChanges()
+          .subscribe((acc: any) => {
+            accSubscriber.unsubscribe();
+            address = acc[0].address;
+            resolve('Name is exist, with address: ' + address);
+          });
+      });
     }
 
     return null;
   }
 
-  isAddressExists(addressValue: string) {
+  async isAddressExists(address: string) {
     let name = '';
-    if (
+    /*if (
       this.addresses.findIndex(addrs => {
         name = addrs.name;
         return addrs.address === addressValue;
       }) >= 0
     ) {
       return 'Address is exist, with name: ' + name;
+    }*/
+
+    const addressPath0 = await this.accountSrv.getPath0Address();
+    const accountCollection = this.afs.collection(
+      'account/' + addressPath0 + '/contact',
+      ref => {
+        return ref.where('address', '==', address);
+      }
+    );
+
+    const account = await accountCollection.get().toPromise();
+
+    if (account.size >= 1) {
+      return await new Promise(resolve => {
+        const accSubscriber = accountCollection
+          .valueChanges()
+          .subscribe((acc: any) => {
+            accSubscriber.unsubscribe();
+            name = acc[0].name;
+            resolve('Address is exist, with name: ' + name);
+          });
+      });
     }
 
     return null;

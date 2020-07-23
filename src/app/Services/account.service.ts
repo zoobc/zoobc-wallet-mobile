@@ -5,7 +5,8 @@ import {
   STORAGE_ENC_MASTER_SEED,
   STORAGE_ENC_PASSPHRASE_SEED,
   COIN_CODE,
-  SALT_PASSPHRASE} from 'src/environments/variable.const';
+  SALT_PASSPHRASE
+} from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
 import { doEncrypt, makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
@@ -18,7 +19,6 @@ import zoobc, { MultiSigAddress } from 'zoobc-sdk';
   providedIn: 'root'
 })
 export class AccountService {
-
   account: Account;
   private forWhat: string;
   private recipient: Account;
@@ -27,14 +27,13 @@ export class AccountService {
   private arrayPhrase = [];
   private plainPin: string;
 
-
   constructor(
     private keyringService: KeyringService,
-    private strgSrv: StoragedevService) { }
+    private strgSrv: StoragedevService
+  ) {}
 
   public accountSubject: Subject<Account> = new Subject<Account>();
   public recipientSubject: Subject<Account> = new Subject<Account>();
-
 
   setForWhat(arg: string) {
     this.forWhat = arg;
@@ -60,23 +59,30 @@ export class AccountService {
     for (let i = 0; i < accounts.length; i++) {
       const acc = accounts[i];
       if (acc.address === address) {
-          account = acc;
-          break;
+        account = acc;
+        break;
       }
     }
     return account;
   }
 
+  async getPath0Address() {
+    const accounts = await this.allAccount();
+    return accounts[0].address;
+  }
+
   async allAccount(type?: 'normal' | 'multisig') {
-    const allAccount: Account[] = await this.strgSrv.get(STORAGE_ALL_ACCOUNTS).then(accounts => {
-      if (type && type === 'multisig') {
-        return accounts.filter(acc => acc.type === 'multisig');
-      } else if (type && type === 'normal') {
-        return accounts.filter(acc => acc.type !== 'multisig');
-      } else {
-        return accounts;
-      }
-    });
+    const allAccount: Account[] = await this.strgSrv
+      .get(STORAGE_ALL_ACCOUNTS)
+      .then(accounts => {
+        if (type && type === 'multisig') {
+          return accounts.filter(acc => acc.type === 'multisig');
+        } else if (type && type === 'normal') {
+          return accounts.filter(acc => acc.type !== 'multisig');
+        } else {
+          return accounts;
+        }
+      });
     return allAccount;
   }
 
@@ -150,14 +156,13 @@ export class AccountService {
     for (let i = 0; i < accounts.length; i++) {
       const acc = accounts[i];
       if (acc.address === account.address) {
-          console.log('=== finded, ' + i + ':', acc);
-          accounts[i] = account;
-          this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
-          this.broadCastNewAccount(account);
-          break;
+        console.log('=== finded, ' + i + ':', acc);
+        accounts[i] = account;
+        this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
+        this.broadCastNewAccount(account);
+        break;
       }
     }
-
   }
 
   setPlainPassphrase(arg: string) {
@@ -199,7 +204,10 @@ export class AccountService {
   }
 
   createNewAccount(arg: string, pathNumber: number) {
-    const childSeed = this.keyringService.calcForDerivationPathForCoin(COIN_CODE, pathNumber);
+    const childSeed = this.keyringService.calcForDerivationPathForCoin(
+      COIN_CODE,
+      pathNumber
+    );
     const newAddress = getAddressFromPublicKey(childSeed.publicKey);
     const account: Account = {
       name: sanitizeString(arg),
@@ -213,9 +221,14 @@ export class AccountService {
     return account;
   }
 
-  createNewMultisigAccount(name: string, multiParam: MultiSigAddress, signByAccount: Account) {
-
-    const multiSignAddress: string = zoobc.MultiSignature.createMultiSigAddress(multiParam);
+  createNewMultisigAccount(
+    name: string,
+    multiParam: MultiSigAddress,
+    signByAccount: Account
+  ) {
+    const multiSignAddress: string = zoobc.MultiSignature.createMultiSigAddress(
+      multiParam
+    );
     const account: Account = {
       name: sanitizeString(name),
       type: 'multisig',
@@ -232,5 +245,4 @@ export class AccountService {
 
     return account;
   }
-
 }
