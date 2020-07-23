@@ -16,13 +16,9 @@ export class AccountPopupPage implements OnInit {
               private modalController: ModalController) { }
 
   async ngOnInit() {
-    console.log('== acctype: ', this.accType);
-
     if (this.accType === 'multisig') {
-      console.log('== enter multisig');
       this.accounts = await this.accountService.allAccount('multisig');
     } else {
-      console.log('== enter non multisig');
       this.accounts = await this.accountService.allAccount('normal');
     }
   }

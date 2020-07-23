@@ -86,7 +86,6 @@ export class MsigTaskDetailPage implements OnInit {
 
   changeFee() {
     this.customeChecked = false;
-    console.log('==== changeFee, trxFee: ', this.optionFee);
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
       this.customfeeTemp = this.allFees[2].fee;
@@ -98,7 +97,6 @@ export class MsigTaskDetailPage implements OnInit {
     this.account = await this.accountService.getCurrAccount();
     const hashHex = base64ToHex(this.msigHash);
     this.isLoading = true;
-    console.log('=== hashHex: ', hashHex);
     zoobc.MultiSignature.getPendingByTxHash(hashHex).then((res: MultisigPendingTxDetailResponse) => {
       const list = [];
       list.push(res.pendingtransaction);
@@ -110,20 +108,11 @@ export class MsigTaskDetailPage implements OnInit {
 
       const txFilter = toGetPendingList(tx);
       this.multiSigDetail = txFilter.pendingtransactionsList[0];
-
       this.pendingSignatures = res.pendingsignaturesList;
-      console.log('=== pendingSignatures: ', this.pendingSignatures);
-
       this.participants = res.multisignatureinfo.addressesList;
-      console.log('=== participants: ', this.participants);
-
-      console.log('=== this.account.signByAddress: ', this.account.signByAddress);
       const idx = this.pendingSignatures.findIndex(
         sign => sign.accountaddress === this.account.signByAddress
       );
-
-      console.log('=== idx: ', idx);
-
       if (idx >= 0) {
         this.enabledSign = false;
       } else {
@@ -183,7 +172,6 @@ export class MsigTaskDetailPage implements OnInit {
     });
 
     pinmodal.onDidDismiss().then((returnedData) => {
-      console.log('=== returned after entr pin: ', returnedData);
       if (returnedData && returnedData.data !== 0) {
           this.doAccept();
       }
@@ -224,7 +212,6 @@ export class MsigTaskDetailPage implements OnInit {
     const signByAddress = this.account.signByAddress;
     const signByAcc = await this.accountService.getAccount(signByAddress);
     const seed = await this.utilService.generateSeed(key, signByAcc.path);
-    console.log('== sign Adddress: ', signByAcc.address);
     this.isLoadingTx = true;
 
     const data: MultiSigInterface = {
@@ -240,24 +227,19 @@ export class MsigTaskDetailPage implements OnInit {
         ],
       },
     };
-
-    console.log('== data: ', data);
-
     zoobc.MultiSignature.postTransaction(data, seed)
       .then( () => {
         const message = 'Transaction has been accepted';
         this.utilService.showConfirmation('Succes', message, true, null);
       })
       .catch( err => {
-        console.log('== Error: ', err.message);
+        console.log(err);
         const message = 'An error occurred while processing your request';
         this.utilService.showConfirmation('Fail', message, false, null);
       })
       .finally(() => {
         this.isLoadingTx = false;
         loading.dismiss();
-        console.log('-- data afer: ', data);
-        // this.goBack();
         this.router.navigate(['/dashboard']);
       });
   }

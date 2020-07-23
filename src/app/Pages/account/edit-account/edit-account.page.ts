@@ -81,9 +81,6 @@ export class EditAccountPage implements OnInit {
       this.isNameValid = false;
       return;
     }
-
-    console.log('=== account will saved: ', this.account);
-
     this.account.name = sanitizeString(this.account.name);
     this.accountService.updateAccount(this.account);
     this.accountService.broadCastNewAccount(this.account);
@@ -109,13 +106,11 @@ export class EditAccountPage implements OnInit {
 
 
   addParticipant() {
-    console.log('=== participants: ', this.account.participants);
     this.account.participants.push('');
   }
 
   reduceParticipant() {
     const len = this.account.participants.length;
-    console.log('=== Length particpants: ', len);
     if (len > 2) {
       this.account.participants.splice((len - 1), 1);
     }
@@ -137,7 +132,6 @@ export class EditAccountPage implements OnInit {
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data) {
         this.account.participants[this.indexSelected] =  dataReturned.data.address;
-        console.log('=== dataReturned: ', dataReturned.data);
       }
     });
 

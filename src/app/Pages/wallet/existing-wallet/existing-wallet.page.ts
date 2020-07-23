@@ -51,12 +51,9 @@ export class ExistingWalletPage implements OnInit {
   }
 
   comparePassphrase() {
-    // console.log(' ==== changed ');
   }
 
   onPaste(event: ClipboardEvent) {
-    // console.log('Oke punya');
-
     const clipboardData = event.clipboardData;
     const passphrase = clipboardData.getData('text').toLowerCase();
     const phraseWord = passphrase.trim().split(' ');
@@ -108,9 +105,7 @@ export class ExistingWalletPage implements OnInit {
 
   async createAccount() {
     await this.accountSrv.createInitialAccount();
-    // console.log('=== create account existing this.ploian pin: ', this.plainPin);
     const loginStatus = this.authSrv.login(this.plainPin);
-    // console.log('==== login status: ', loginStatus);
     if (loginStatus) {
       this.presentLoading();
     }
@@ -138,14 +133,11 @@ export class ExistingWalletPage implements OnInit {
     });
 
     pinmodal.onDidDismiss().then(returnedData => {
-      // console.log('===== returnedData: ', returnedData);
       if (returnedData && returnedData.data !== '-') {
         this.plainPin = returnedData.data;
         // set pin to service
         this.accountSrv.setPlainPin(this.plainPin);
         this.createAccount();
-      } else {
-        // console.log('==== PIN canceled ');
       }
     });
     return await pinmodal.present();

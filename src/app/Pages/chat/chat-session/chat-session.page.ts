@@ -79,7 +79,6 @@ export class ChatSessionPage implements OnInit {
       })
       .valueChanges()
       .subscribe(chats => {
-        console.log('== all chat is: ', chats);
         this.loader = true;
         this.chats = chats;
         this.scrollToBottom();
@@ -88,7 +87,6 @@ export class ChatSessionPage implements OnInit {
   }
 
   ionViewDidLeave() {
-    console.log('=== Chat session closed === ');
     this.chatService.isChatOpen = false;
   }
 
@@ -101,22 +99,16 @@ export class ChatSessionPage implements OnInit {
 
 
     this.activeRoute.queryParams.subscribe(params => {
-      console.log('=== queryParams Params: ', params);
-      // this.index = params.idx;
       this.sender = params.sender;
       this.sendername = params.sendername;
       this.pair = params.pair;
       this.pairname = params.pairname;
       this.chatId = params.chatId;
-      console.log('== Sender on chat session: ', this.sender);
     });
 
     this.chatService.isChatOpen =  true;
 
     this.getFcmId();
-
-    console.log('=== currentChatPairId: ', this.chatService.currentChatPairId);
-    console.log('=== currentChatPairId2: ', this.chatService.currentChatPairId2);
     this.db
       .collection<Chat>(FIREBASE_CHAT, res => {
         return res.where('chatId', 'in', [this.chatService.currentChatPairId,
@@ -124,7 +116,6 @@ export class ChatSessionPage implements OnInit {
       })
       .valueChanges()
       .subscribe(chats => {
-        console.log('== all chat is: ', chats);
         this.loader = true;
         this.chats = chats;
         this.scrollToBottom();
@@ -135,8 +126,7 @@ export class ChatSessionPage implements OnInit {
 
   getFcmId(){
     this.oneSignal.getIds().then(identity => {
-      console.log('== Fcm token: ', identity.pushToken);
-      console.log('== Fcm UserId: ', identity.userId);
+
     });
   }
 
@@ -144,8 +134,6 @@ export class ChatSessionPage implements OnInit {
   async addChat() {
     this.loader = true;
     if (this.message && this.message !== '') {
-      console.log('== Firebase time stamp: ', firestore.FieldValue.serverTimestamp());
-
       this.chatPayload = {
         message: this.message,
         sender: this.sender,

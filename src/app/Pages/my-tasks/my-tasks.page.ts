@@ -64,7 +64,6 @@ export class MyTasksPage implements OnInit {
   }
 
   segmentChanged() {
-    console.log(this.segmentModel);
   }
 
   shortAddress(arg: string) {
@@ -76,7 +75,6 @@ export class MyTasksPage implements OnInit {
     if (this.account.type !== 'normal') {
       this.segmentModel = 'multisig';
     }
-    console.log('=== Account: ', this.account);
     this.getBlockHeight();
     this.getEscrowTransaction();
     this.getMultiSigPendingList(true);
@@ -104,16 +102,11 @@ export class MyTasksPage implements OnInit {
           const tx = toGetPendingList(res);
           this.totalMultiSig = tx.count;
           const pendingList = tx.pendingtransactionsList;
-          // pendingList.map(res => {
-          //   // tslint:disable-next-line:no-string-literal
-          //   res['alias'] = this.contactServ.get(res.senderaddress).alias || '';
-          // });
           if (reload) {
             this.multiSigPendingList = pendingList;
           } else {
             this.multiSigPendingList = this.multiSigPendingList.concat(pendingList);
           }
-          console.log('=== multiSigPendingList:', this.multiSigPendingList);
         })
         .catch(err => {
           this.isErrorMultiSig = true;
@@ -148,7 +141,6 @@ export class MyTasksPage implements OnInit {
           if (tx.latest === true) { return tx; }
         });
 
-        console.log('==== all task: ', trxs);
         const txMap = trxs.map(tx => {
           const alias = this.addresBookSrv.getNameByAddress(tx.recipientaddress) || '';
           return {
@@ -167,10 +159,9 @@ export class MyTasksPage implements OnInit {
           };
         });
         this.escrowTransactions = txMap;
-        console.log('==== getEscrowTransaction, escrowTransactions: ', this.escrowTransactions);
       })
       .catch(err => {
-        console.log('==== getEscrowTransaction, error: ', err);
+        console.log(err);
       }).finally( () => {
         this.isLoading = false;
       });
@@ -211,7 +202,6 @@ export class MyTasksPage implements OnInit {
   }
 
   openDetail(escrowId: string) {
-    console.log('=== escrow Id: ', escrowId);
     const navigationExtras: NavigationExtras = {
       queryParams: {
         escrowId
@@ -221,7 +211,6 @@ export class MyTasksPage implements OnInit {
   }
 
   openMultisigDetail(msigHash: string) {
-    console.log('=== msigHash Id: ', msigHash);
     const navigationExtras: NavigationExtras = {
       queryParams: {
         msigHash
