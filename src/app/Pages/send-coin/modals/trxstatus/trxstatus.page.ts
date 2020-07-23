@@ -19,12 +19,11 @@ export class TrxstatusPage implements OnInit {
   }
 
   async close() {
-    if (this.status) {
-      this.router.navigateByUrl('/transactions');
-    }
     this.modalController.dismiss();
+    if (this.status) {
+      this.router.navigateByUrl('/dashboard');
+    }
    }
-
 
   async newTrx() {
     this.modalController.dismiss();

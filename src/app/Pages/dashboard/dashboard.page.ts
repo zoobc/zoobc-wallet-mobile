@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   MenuController,
   ToastController,
@@ -8,7 +8,7 @@ import {
 } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, NavigationEnd } from '@angular/router';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService } from 'src/app/Services/currency.service';
@@ -20,20 +20,23 @@ import { ThemeService } from 'src/app/Services/theme.service';
 import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
 import { ChatService } from 'src/app/Services/chat.service';
 import { Currency } from 'src/app/Interfaces/currency';
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
-import { QrScannerService } from '../../Services/qr-scanner.service';
+import { DecimalPipe } from '@angular/common';
 import { NetworkService } from 'src/app/Services/network.service';
+import { dateAgo } from 'src/Helpers/utils';
+import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, OnDestroy {
+
+  timeLeft = 12;
+  interval: any;
 
   identity: FcmIdentity;
   clickSub: any;
-  public errorMsg: string;
   public offset: number;
 
   public accountBalance: any;
@@ -47,6 +50,8 @@ export class DashboardPage implements OnInit {
   accounts: Account[];
   notifId = 1;
   theme = DEFAULT_THEME;
+  lastTimeGetBalance: Date;
+  lastBalanceUpdated = 'Just now';
 
   constructor(
     private authService: AuthService,
@@ -63,54 +68,63 @@ export class DashboardPage implements OnInit {
     private themeSrv: ThemeService,
     private chatService: ChatService,
     private alertController: AlertController,
-    private decimalPipe: DecimalPipe,
-    private qrScannerService: QrScannerService
-  ) {
+    private decimalPipe: DecimalPipe  ) {
 
-    // if account changed
-    this.accountService.accountSubject.subscribe(() => {
-      this.loadData();
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      if (e instanceof NavigationEnd) {
+        this.loadData();
+      }
     });
 
+    // // if account changed
+    // this.accountService.accountSubject.subscribe(() => {
+    //   this.loadData();
+    // });
 
-    // if account changed
-    this.themeSrv.themeSubject.subscribe(() => {
-      this.theme = this.themeSrv.theme;
-    });
 
-    // if post send money reload data
-    this.transactionSrv.sendMoneySubject.subscribe(() => {
-      this.loadData();
-    }
-    );
+    // // if account changed
+    // this.themeSrv.themeSubject.subscribe(() => {
+    //   this.theme = this.themeSrv.theme;
+    // });
 
-    // if network changed reload data
-    this.networkSrv.changeNodeSubject.subscribe(() => {
-      // console.log(' == change node network ====');
-      this.loadData();
-    }
-    );
+    // // if post send money reload data
+    // this.transactionSrv.sendMoneySubject.subscribe(() => {
+    //   this.loadData();
+    // }
+    // );
 
-    // if currency changed
-    this.currencySrv.currencySubject.subscribe((rate: Currency) => {
-      this.currencyRate = rate;
-    });
+    // // if network changed reload data
+    // this.networkSrv.changeNodeSubject.subscribe(() => {
+    //   // console.log(' == change node network ====');
+    //   this.loadData();
+    // }
+    // );
 
-   // document.body.classList.toggle('dark', true);
+    // // if currency changed
+    // this.currencySrv.currencySubject.subscribe((rate: Currency) => {
+    //   this.currencyRate = rate;
+    // });
 
-    // this.theme = this.themeSrv.theme;
-    console.log('==== theme:', this.theme);
     this.subscribeAllAccount();
-
+    this.authService.restoreAccounts();
   }
 
+  ngOnDestroy() {
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe();
+    }
+  }
+
+  shortAddress(address: string) {
+    return makeShortAddress(address);
+  }
 
   async showBalanceDetail() {
     const alert = await this.alertController.create({
       header: 'Account:',
       subHeader: this.account.address,
-      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8)  + ' ZBC <br/>'
-      + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
+      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>'
+        + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
       buttons: ['OK']
     });
 
@@ -121,7 +135,6 @@ export class DashboardPage implements OnInit {
     const allAcc = await this.accountService.allAccount();
     const addresses = allAcc.map((acc) => acc.address);
     this.chatService.subscribeNotif(addresses);
-    console.log('==== All addresses: ', addresses);
   }
 
   doRefresh(event: any) {
@@ -140,6 +153,7 @@ export class DashboardPage implements OnInit {
     if (!this.theme || this.theme === undefined || this.theme === null) {
       this.theme = DEFAULT_THEME;
     }
+    this.startTimer();
   }
 
   async loadData() {
@@ -154,7 +168,6 @@ export class DashboardPage implements OnInit {
       latest: false
     };
 
-    this.errorMsg = '';
     this.offset = 1;
     this.accountBalance = 0;
     this.isLoadingBalance = true;
@@ -175,14 +188,15 @@ export class DashboardPage implements OnInit {
    */
   private async getBalanceByAddress(address: string) {
     this.isError = false;
-    const date1 = new Date();
     this.isLoadingBalance = true;
 
     await zoobc.Account.getBalance(address)
       .then(data => {
         this.accountBalance = data.accountbalance;
+        this.lastTimeGetBalance = new Date();
       })
       .catch(error => {
+        console.error(error);
         this.accountBalance = {
           accountaddress: '',
           blockheight: 0,
@@ -191,29 +205,18 @@ export class DashboardPage implements OnInit {
           poprevenue: '',
           latest: false
         };
-        this.errorMsg = '';
-        this.isError = false;
-        if (error === 'error: account not found') {
-          // do something here
-        } else if (error === 'Response closed without headers') {
-          const date2 = new Date();
-          const diff = date2.getTime() - date1.getTime();
-          // console.log('== diff: ', diff);
-          if (diff < 5000) {
-            this.errorMsg = 'Please check internet connection!';
-          } else {
-            this.errorMsg = 'Fail connect to services, please try again later!';
-          }
-
-          this.isError = true;
-        } else if (error === 'all SubConns are in TransientFailure') {
-          this.errorMsg = 'All SubConns are in TransientFailure';
-        } else {
-          this.errorMsg = error;
-        }
-        console.error(' ==== have error: ', error);
+        this.isError = true;
+        alert('An error occurred while processing your request');
       })
-      .finally(() => (this.isLoadingBalance = false));
+      .finally(() => {
+        this.isLoadingBalance = false;
+      });
+  }
+
+  startTimer() {
+    setInterval(() => {
+      this.lastBalanceUpdated = dateAgo(this.lastTimeGetBalance);
+    }, 5000);
   }
 
   openMenu() {
@@ -229,13 +232,17 @@ export class DashboardPage implements OnInit {
     this.router.navigateByUrl('/feedback');
   }
 
-  openListAccount() {
+  switchAccount() {
     const navigationExtras: NavigationExtras = {
       state: {
         forWhat: 'account'
       }
     };
     this.router.navigate(['list-account'], navigationExtras);
+  }
+
+  openListAccount() {
+    this.router.navigate(['list-account']);
   }
 
   openDetailUnconfirm(trx) {
@@ -279,13 +286,13 @@ export class DashboardPage implements OnInit {
   }
 
   async scanQrCode() {
-      // this.router.navigateByUrl('/qr-scanner');
-      const navigationExtras: NavigationExtras = {
-        queryParams: {
-          from: 'dashboard'
-        }
-      };
-      this.router.navigate(['/qr-scanner'], navigationExtras);
+    // this.router.navigateByUrl('/qr-scanner');
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        from: 'dashboard'
+      }
+    };
+    this.router.navigate(['/qr-scanner'], navigationExtras);
   }
 
   sendCoin() {
@@ -296,5 +303,4 @@ export class DashboardPage implements OnInit {
     }
   }
 
-  // [routerLink]="['/sendcoin']"
 }
