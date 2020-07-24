@@ -6,7 +6,6 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddressBookPage } from './address-book.page';
 import { AddressBookComponentModule } from 'src/app/Components/address-book/address-book-list/address-book.module';
-import { AuthService } from 'src/app/Services/auth-service';
 import { AddAddressPage } from './add-address/add-address.page';
 import { FormAddressComponent } from './form-address/form-address.component';
 import { EditAddressPage } from './edit-address/edit-address.page';
@@ -18,13 +17,15 @@ const routes: Routes = [
   },
   {
     path: 'add',
-    component: AddAddressPage,
-    canActivate: [AuthService]
+    component: AddAddressPage
+  },
+  {
+    path: 'export-import',
+    loadChildren: './export-import/export-import.module#ExportImportPageModule'
   },
   {
     path: ':addressId',
-    component: EditAddressPage,
-    canActivate: [AuthService]
+    component: EditAddressPage
   }
 ];
 
