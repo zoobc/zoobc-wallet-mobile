@@ -7,10 +7,10 @@ import { Subscription } from 'rxjs';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import zoobc, { MultiSigInterface } from 'zoobc-sdk';
+import zoobc, { MultiSigInterface, MultisigPostTransactionResponse, sendMoneyBuilder, SendMoneyInterface } from 'zoobc-sdk';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AuthService } from 'src/app/Services/auth-service';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, LoadingController } from '@ionic/angular';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { UtilService } from 'src/app/Services/util.service';
@@ -18,6 +18,8 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { jsonBufferToString } from 'src/Helpers/utils';
 import { SignatureInfo } from 'zoobc-sdk/types/helper/transaction-builder/multisignature';
+import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
+import { makeShortAddress } from 'src/Helpers/converters';
 
 
 @Component({
@@ -76,6 +78,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   indexSelected: number;
   isMultiSigAccount: boolean;
   timeout: number;
+  multisigAccount: Account;
 
   constructor(
     private utilService: UtilService,
@@ -87,6 +90,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     private accountService: AccountService,
     private currencyService: CurrencyService,
     private authSrv: AuthService,
+    private loadingController: LoadingController,
     private trxService: TransactionService  ) {
 
     this.accountService.accountSubject.subscribe(() => {
@@ -106,29 +110,19 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     this.isLoadingBalance = false;
   }
 
-  async showPopupAccount() {
-    const modal = await this.modalController.create({
-      component: AccountPopupPage,
-      componentProps: {
-        idx: 0
-      }
-    });
-
-    modal.onDidDismiss().then((dataReturned) => {
-      if (dataReturned.data) {
-        this.account  =  dataReturned.data;
-      }
-    });
-
-    return await modal.present();
+  async copyAddress(address: string) {
+    this.utilService.copyToClipboard(address);
   }
 
+  shortAddress(arg: string) {
+    return makeShortAddress(arg);
+  }
 
   async ngOnInit() {
     this.loadData();
     await this.loadAccount();
 
-    this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
+    this.multisigSubs = this.multisigServ.multisig.subscribe(async multisig => {
 
       const { multisigInfo } = multisig;
 
@@ -137,12 +131,12 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       }
 
       this.multisig = multisig;
-      console.log('=== multisig: ', this.multisig);
-
       const { accountAddress, fee, generatedSender } = this.multisig;
       if (this.isMultiSigAccount) {
+        this.multisigAccount = this.account;
         this.account.address = generatedSender;
       } else {
+        this.multisigAccount = await this.accountService.getAccount(generatedSender);
         this.account.address = accountAddress;
       }
 
@@ -176,9 +170,9 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     const  fee  = this.transactionFee;
     const multisig = { ...this.multisig };
     if (this.isMultiSigAccount) {
-      multisig.accountAddress = this.account.signByAddress;
+      multisig.accountAddress = this.multisigAccount.signByAddress;
     } else {
-      multisig.accountAddress = this.account.address;
+      multisig.accountAddress = this.multisigAccount.signByAddress;
     }
     multisig.fee = fee;
     this.multisigServ.update(multisig);
@@ -211,7 +205,6 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
   changeFee() {
     this.customeChecked = false;
-    console.log('==== changeFee, trxFee: ', this.optionFee);
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
       this.customfeeTemp = this.allFees[2].fee;
@@ -251,7 +244,8 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     this.secondaryCurr = this.currencyRate.name;
   }
 
-  async sendTransaction() {
+
+  sendTransaction() {
 
     this.transactionFee = Number(this.optionFee);
     if (this.customeChecked) {
@@ -261,6 +255,33 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     if (!this.transactionFee) {
       this.transactionFee =  this.allFees[1].fee;
     }
+
+    this.showPin();
+  }
+
+  async showPin() {
+    const pinmodal = await this.modalController.create({
+      component: EnterpinsendPage
+    });
+
+    pinmodal.onDidDismiss().then(async (returnedData) => {
+       if (returnedData && returnedData.data !== 0) {
+          await this.submit();
+      }
+    });
+    return await pinmodal.present();
+  }
+
+
+  private async submit() {
+    // show loading bar
+    const loading = await this.loadingController.create({
+      message: 'processing ..!',
+      duration: 50000
+    });
+    loading.present();
+    // end off
+
 
     this.updateSendTransaction();
     const {
@@ -280,11 +301,24 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       signatureInfoFilter.participants = signaturesInfo.participants.filter(pcp => {
         if (jsonBufferToString(pcp.signature).length > 0) { return pcp; }
       });
+
+      // == manuall
+      const trx = this.multisig.transaction;
+
+      const dataUnsig: SendMoneyInterface = {
+        sender: trx.sender,
+        recipient: trx.recipient,
+        fee: trx.fee,
+        amount: trx.amount,
+      };
+      const unsigTrx = this.multisig.unisgnedTransactions = sendMoneyBuilder(dataUnsig);
+      // end off
+
       data = {
         accountAddress,
         fee,
         multisigInfo,
-        unisgnedTransactions,
+        unisgnedTransactions: unsigTrx,
         signaturesInfo: signatureInfoFilter,
       };
     } else {
@@ -296,25 +330,28 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         signaturesInfo,
       };
     }
-
-    console.log('=== Data: ', data);
     const key = this.authSrv.tempKey;
-    const childSeed = await this.utilService.generateSeed(key, this.account.path);
 
-    await zoobc.MultiSignature.postTransaction(data, childSeed)
-      .then( async (res: any) => {
-        console.log(res);
+    const signByAddress = this.multisigAccount.signByAddress;
+    const signByAcc = await this.accountService.getAccount(signByAddress);
+    const childSeed = await this.utilService.generateSeed(key, signByAcc.path);
+    // const childSeed = await this.utilService.generateSeed(key, this.account.path);
+    zoobc.MultiSignature.postTransaction(data, childSeed)
+      .then(  () => {
         const message = 'Your Transaction is processing!';
         this.utilService.showConfirmation('Succes', message, true, null);
-
-        this.multisigServ.deleteDraft(this.multisig.id);
         this.router.navigateByUrl('/dashboard');
-
+        if (this.multisig && this.multisig.id) {
+          this.multisigServ.deleteDraft(this.multisig.id);
+        }
       })
-      .catch(async err => {
-        console.log(err.message);
-        const message = 'An error occurred while processing your request';
+      .catch(  err => {
+        console.log(err);
+        const message = err.messsage +  ', An error occurred while processing your request';
         this.utilService.showConfirmation('Fail', message, false, null);
+        this.router.navigateByUrl('/dashboard');
+      }).finally(() => {
+        loading.dismiss();
       });
   }
 

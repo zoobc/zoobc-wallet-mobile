@@ -42,7 +42,6 @@ export class QrScannerComponent implements OnInit {
     this.barcodeScanner
       .scan()
       .then(barcodeData => {
-        // alert("Barcode data " + JSON.stringify(barcodeData));
         if (!barcodeData.cancelled) {
           this.scannedData = barcodeData;
           this.jsonData = barcodeData.text;
@@ -51,25 +50,23 @@ export class QrScannerComponent implements OnInit {
         this.navCtrl.pop();
       })
       .catch(err => {
-        // console.log('Error', err);
+        console.log(err);
       });
   }
 
   ionViewWillLeave() {
     this.qrScannerSrv.setResult(this.jsonData);
-
     if (this.isScanned && this.from && this.from === 'dashboard') {
       // if scanner trigered from tabscan, after scan redirect to scan page.
       const navigationExtras: NavigationExtras = {
         queryParams: {
-          jsonData: this.jsonData
+          jsonData: this.jsonData,
+          from: this.from
         }
       };
       this.navCtrl.navigateForward(['/sendcoin'], navigationExtras);
     }
-
     this.reset();
-
   }
 
   reset() {
@@ -83,6 +80,8 @@ export class QrScannerComponent implements OnInit {
     this.activeRoute.queryParams.subscribe(params => {
       if (params && params.from) {
         this.from = params.from;
+      } else {
+        this.from = '';
       }
     });
 

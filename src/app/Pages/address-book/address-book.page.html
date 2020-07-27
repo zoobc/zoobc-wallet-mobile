@@ -3,8 +3,11 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Address Book" | translate }}</ion-title>
+    <ion-title>{{ "Contacts" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/address-book/export-import">
+        Export/Import
+      </ion-button>
       <ion-button routerLink="/feedback">
         Feedback
       </ion-button>
@@ -35,7 +38,7 @@
             <p class="address">{{ address.shortAddress }}</p>
           </ion-label>
           <ion-button slot="end" (click)="copyAddress(i)" color="meddium">
-            <ion-icon name="copy" ></ion-icon>
+            <ion-icon name="copy"></ion-icon>
           </ion-button>
         </ion-item>
         <ion-item-options>

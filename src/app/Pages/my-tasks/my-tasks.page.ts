@@ -57,19 +57,24 @@ export class MyTasksPage implements OnInit {
   }
 
   reload(event: any) {
+    this.loadTask();
     setTimeout(() => {
       event.target.complete();
     }, 1000);
   }
 
   segmentChanged() {
-    console.log(this.segmentModel);
-    //  console.log(event);
+  }
+
+  shortAddress(arg: string) {
+    return makeShortAddress(arg);
   }
 
   async loadTask() {
     this.account = await this.accountService.getCurrAccount();
-    console.log('=== Account: ', this.account);
+    if (this.account.type !== 'normal') {
+      this.segmentModel = 'multisig';
+    }
     this.getBlockHeight();
     this.getEscrowTransaction();
     this.getMultiSigPendingList(true);
@@ -97,16 +102,11 @@ export class MyTasksPage implements OnInit {
           const tx = toGetPendingList(res);
           this.totalMultiSig = tx.count;
           const pendingList = tx.pendingtransactionsList;
-          // pendingList.map(res => {
-          //   // tslint:disable-next-line:no-string-literal
-          //   res['alias'] = this.contactServ.get(res.senderaddress).alias || '';
-          // });
           if (reload) {
             this.multiSigPendingList = pendingList;
           } else {
             this.multiSigPendingList = this.multiSigPendingList.concat(pendingList);
           }
-          console.log('=== multiSigPendingList:', this.multiSigPendingList);
         })
         .catch(err => {
           this.isErrorMultiSig = true;
@@ -124,7 +124,7 @@ export class MyTasksPage implements OnInit {
     this.isLoading = true;
     const params: EscrowListParams = {
       approverAddress: this.account.address,
-      statusList: [0],
+      // statusList: [0],
       pagination: {
         page: this.page,
         limit: 1000,
@@ -141,7 +141,6 @@ export class MyTasksPage implements OnInit {
           if (tx.latest === true) { return tx; }
         });
 
-        console.log('==== all task: ', trxs);
         const txMap = trxs.map(tx => {
           const alias = this.addresBookSrv.getNameByAddress(tx.recipientaddress) || '';
           return {
@@ -153,17 +152,16 @@ export class MyTasksPage implements OnInit {
             amount: tx.amount,
             commission: tx.commission,
             timeout: Number(tx.timeout),
-            status: this.getStatusName(tx.status),
+            status: tx.status,
             blockheight: tx.blockheight,
             latest: tx.latest,
             instruction: tx.instruction,
           };
         });
         this.escrowTransactions = txMap;
-        console.log('==== getEscrowTransaction, escrowTransactions: ', this.escrowTransactions);
       })
       .catch(err => {
-        console.log('==== getEscrowTransaction, error: ', err);
+        console.log(err);
       }).finally( () => {
         this.isLoading = false;
       });
@@ -204,7 +202,6 @@ export class MyTasksPage implements OnInit {
   }
 
   openDetail(escrowId: string) {
-    console.log('=== escrow Id: ', escrowId);
     const navigationExtras: NavigationExtras = {
       queryParams: {
         escrowId
@@ -214,7 +211,6 @@ export class MyTasksPage implements OnInit {
   }
 
   openMultisigDetail(msigHash: string) {
-    console.log('=== msigHash Id: ', msigHash);
     const navigationExtras: NavigationExtras = {
       queryParams: {
         msigHash

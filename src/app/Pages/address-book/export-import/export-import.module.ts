@@ -5,12 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AccMultisigInfoPage } from './acc-multisig-info.page';
+import { ExportImportPage } from './export-import.page';
+import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   {
     path: '',
-    component: AccMultisigInfoPage
+    component: ExportImportPage
   }
 ];
 
@@ -19,8 +20,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    TranslateModule
   ],
-  declarations: [AccMultisigInfoPage]
+  declarations: [ExportImportPage]
 })
-export class AccMultisigInfoPageModule {}
+export class ExportImportPageModule {}

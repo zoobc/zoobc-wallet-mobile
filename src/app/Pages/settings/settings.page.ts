@@ -70,8 +70,6 @@ export class SettingsPage implements OnInit {
 
     this.activeNetwork = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX);
     this.activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
-    console.log('---- Active Theme: ', this.activeTheme);
-
   }
 
   getLanguages(code: string) {
@@ -89,18 +87,6 @@ export class SettingsPage implements OnInit {
     await this.currencyService.setActiveCurrency(this.activeCurrency);
   }
 
-
-  // async setCurrencyRate(currCode: any) {
-  //   const rates = this.currencyRateList.rates;
-  //   const currencyRate: Currency = {
-  //     name: currCode,
-  //     value: Number(rates[currCode])
-  //   };
-  //   this.currencyRate = currencyRate;
-  //   this.currencyService.changeRate(currencyRate);
-  //   // console.log('== Rates on settings currCode: ', currencyRate);
-  // }
-
   selectActiveLanguage() {
     this.languageService.setLanguage(this.activeLanguage);
   }
@@ -110,7 +96,6 @@ export class SettingsPage implements OnInit {
   }
 
   async changeTheme() {
-    console.log('== changeTheme: theme selected: ', this.activeTheme);
     await this.theme.setTheme(this.activeTheme);
   }
 
@@ -123,7 +108,6 @@ export class SettingsPage implements OnInit {
 
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data) {
-        console.log('== Data returned: ', dataReturned.data);
         const curr = dataReturned.data;
         this.activeCurrency = curr.code;
         this.activeCureencyWithname = curr.code + ' - ' + curr.name;
@@ -144,7 +128,6 @@ export class SettingsPage implements OnInit {
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data) {
         const lang = dataReturned.data;
-        console.log('== Data returned: ', lang);
         this.activeLanguage = lang.code;
         this.activeLanguageWithname = lang.code + ' - ' + lang.country;
         this.selectActiveLanguage();

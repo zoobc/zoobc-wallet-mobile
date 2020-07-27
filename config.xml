@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.zoobc.walletmobile" version="0.1.12" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.zoobc.walletmobile" version="0.1.14" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>ZooBC</name>
     <description>Wallet app for Zoo Blockchain.</description>
     <author email="support@zoobc.com" href="http://zoobc.com/">Zoobc Wallet Team</author>
@@ -12,14 +12,16 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <preference name="ScrollEnabled" value="false" />
-    <preference name="android-minSdkVersion" value="19" />
+    <preference name="android-minSdkVersion" value="20" />
+    <preference name="android-targetSdkVersion" value="29" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="UseSwiftLanguageVersion" value="5" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
-    <preference name="SplashScreenDelay" value="10000" />
+    <preference name="SplashScreenDelay" value="30000" />
     <preference name="FadeSplashScreenDuration" value="500" />
+    <preference name="AndroidExtraFilesystems" value="root" />
     <preference name="WKWebViewOnly" value="true" />
     <preference name="orientation" value="portrait" />
     <platform name="android">

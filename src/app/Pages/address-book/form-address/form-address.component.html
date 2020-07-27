@@ -1,0 +1,71 @@
+<form [formGroup]="formAddress" (ngSubmit)="submit()">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label position="stacked">{{ "Name" | translate }}</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input placeholder="{{ 'Please type the name' | translate }}" formControlName="name" autocomplete="on"
+          autocorrect="on"></ion-input>
+        <ion-text class="text-error"
+          *ngIf="(submitted || name.dirty || name.touched) && name.invalid && name.errors.required">
+          Name cannot be empty.
+        </ion-text>
+        <ion-text class="text-error"
+          *ngIf="(submitted || name.dirty || name.touched) &&  name.invalid && name.errors.nameExists">
+          {{name.errors.nameExists}}
+        </ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-8 align-self-end>
+        <ion-label position="stacked">{{ "Address" | translate }}</ion-label>
+      </ion-col>
+      <ion-col col-4 align-self-end class="ion-text-right btnScanner">
+        <ion-icon name="qr-scanner" (click)="scanQRCode();"></ion-icon><span (click)="scanQRCode();"
+          style="font-size: 0.6em;"> Scan QR</span>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-textarea rows="3" placeholder="{{ 'Please type the address' | translate }}" formControlName="address"
+          autocomplete="on" autocorrect="on">
+        </ion-textarea>
+        <ion-text class="text-error"
+          *ngIf="(submitted || address.dirty || address.touched) && address.invalid && address.errors.required">
+          Address cannot be empty.
+        </ion-text>
+        <ion-text class="text-error"
+          *ngIf="(submitted || address.dirty || address.touched) && address.invalid && (address.errors.minlength || address.errors.bytesLength)">
+          Address is not valid.
+        </ion-text>
+        <ion-text class="text-error"
+          *ngIf="(submitted || address.dirty || address.touched) && address.invalid && address.errors.addressExists">
+          {{address.errors.addressExists}}
+        </ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-label color="danger">{{validationMessage}}&nbsp;</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button strong color="secondary" type="submit" expand="block">
+          <span *ngIf="mode==='add'">{{ "Save" | translate }}</span>
+          <span *ngIf="mode==='edit'">{{ "Update" | translate }}</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="cancel()" fill="outline" expand="block">
+          {{ "Cancel" | translate }}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</form>

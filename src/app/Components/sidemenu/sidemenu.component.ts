@@ -38,35 +38,6 @@ export class SidemenuComponent implements OnInit {
     this.theme = this.themeSrv.theme;
   }
 
-
-//  themes() {
-
-//    this.toggle = document.querySelector('#themeToggle');
-//    this.toggle.addEventListener('ionChange', (ev: { detail: { checked: boolean; }; }) => {
-
-//      console.log('===== Makan Hati =====');
-//      document.body.classList.toggle('dark', true);
-
-//      if (ev.detail.checked) {
-//          this.statusBar.backgroundColorByHexString('#121212');
-//          this.statusBar.styleLightContent();
-//        } else {
-//          this.statusBar.backgroundColorByHexString('#ffffff');
-//          this.statusBar.styleDefault();
-//        }
-//    });
-
-//    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-//    // tslint:disable-next-line: deprecation
-//    prefersDark.addListener((e) => checkToggle(e.matches));
-
-//    function checkToggle(shouldCheck) {
-//      this.toggle.checked = shouldCheck;
-//    }
-
-//  }
-
   goBackupRestore() {
     this.router.navigateByUrl('/backuprestore-address');
     this.menuController.close('mainMenu');
@@ -131,10 +102,7 @@ export class SidemenuComponent implements OnInit {
   }
 
   logout() {
-
     const user =  this.fcm.chatUser;
-    console.log('=== current chat user: ',  user);
-
     if (user) {
       this.fcm.delete(user);
     }

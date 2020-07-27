@@ -16,7 +16,6 @@ export class NetworkService {
 
   setInitialNetwork() {
     this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX).then((val: any) => {
-      console.log('=== Network val: ', val);
       if (!val) {
         this.setNetwork(0);
       } else {
@@ -27,7 +26,6 @@ export class NetworkService {
   }
 
   async setNetwork(idx: number) {
-    console.log('==== Network Index: ', idx);
     this.nodeIndex = idx;
     zoobc.Network.set(idx);
     this.changeNodeSubject.next();

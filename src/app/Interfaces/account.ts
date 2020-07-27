@@ -3,8 +3,6 @@ export interface Account {
     name: string;
     nodeIP: string;
     address: string;
-    shortAddress: string;
-    created: Date;
     balance?: number;
     lastTx?: number;
     type?: 'normal' | 'multisig';

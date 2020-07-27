@@ -44,9 +44,6 @@ export class MsigAddSignaturesPage implements OnInit {
     this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
       const { multisigInfo, unisgnedTransactions } = multisig;
       this.multisig = multisig;
-
-      console.log('==== addd signatures mulstisig:', this.multisig);
-
       this.stepper.multisigInfo = multisigInfo !== undefined ? true : false;
       this.stepper.transaction = unisgnedTransactions !== undefined ? true : false;
     });
@@ -155,8 +152,6 @@ export class MsigAddSignaturesPage implements OnInit {
   async addSignature() {
     const curAcc = await this.accountSrv.getCurrAccount();
     let idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.address);
-    console.log('=== index: ', idx);
-
     if (curAcc.type === 'multisig' && idx === -1) {
       idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.signByAddress);
     }
@@ -166,19 +161,11 @@ export class MsigAddSignaturesPage implements OnInit {
       return;
     }
     const signerAddress =  this.participantsSignature[idx].address;
-
-    console.log('==== Signer address: ', signerAddress);
-
     const signerAccount =  await this.accountSrv.getAccount(signerAddress);
-    console.log('==== Signed Account: ', signerAccount);
-
     const key = this.authSrv.tempKey;
     const seed = await this.utilSrv.generateSeed(key, signerAccount.path);
-
     const signature = signTransactionHash(this.transactionHash, seed);
     const base64Sig = signature.toString('base64');
-    console.log('==== base64Sig: ', base64Sig);
-
     this.participantsSignature[idx].signature = base64Sig;
   }
 
@@ -201,7 +188,7 @@ export class MsigAddSignaturesPage implements OnInit {
     } else {
       this.multisigServ.editDraft();
     }
-    this.router.navigate(['/multisig']);
+    this.router.navigate(['/dashboard']);
   }
 
   async checkReadOnlyAddress(multisig: MultiSigDraft) {

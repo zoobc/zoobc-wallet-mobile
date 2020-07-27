@@ -33,11 +33,9 @@ export class PopupCurrencyPage implements OnInit {
     keys.forEach( (element) => {
       this.currencyList.push({code: element, name: CURRENCY_LIST[element]});
     });
-    console.log('=== Keys:', this.currencyList);
   }
 
   async currencyClicked(curr: any) {
-    console.log('=== Currency clicked:', curr);
     await this.modalController.dismiss(curr);
   }
 

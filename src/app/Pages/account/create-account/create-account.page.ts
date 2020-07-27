@@ -38,14 +38,12 @@ export class CreateAccountPage implements OnInit {
   }
 
   async ngOnInit() {
-    // const pathNumber = await this.accountService.generateDerivationPath();
     this.accounts = await this.accountService.allAccount('normal');
     const len = this.accounts.length + 1;
     this.accountName = `Account ${len}`;
   }
 
   async changeToMultisig() {
-      console.log('=== is multisig: ', this.isMultisig);
       if (this.isMultisig) {
         this.accounts = await this.accountService.allAccount('multisig');
         let len = 1;
@@ -63,7 +61,6 @@ export class CreateAccountPage implements OnInit {
   async createOrUpdateAccount() {
     this.isNameValid = true;
     if (!this.accountName) {
-      // console.log('== name is empty');
       this.validationMessage = 'Name is required';
       this.isNameValid = false;
       return;
@@ -121,7 +118,6 @@ export class CreateAccountPage implements OnInit {
       };
       account = this.accountService.createNewMultisigAccount(this.accountName.trim(), multiParam, this.signByAccount);
     }
-    console.log('== Account: ', account);
     this.accountService.addAccount(account);
     this.accountService.broadCastNewAccount(account);
     this.goListAccount();
@@ -132,13 +128,11 @@ export class CreateAccountPage implements OnInit {
   }
 
   addParticipant() {
-    console.log('=== participants: ', this.participants);
     this.participants.push('');
   }
 
   reduceParticipant() {
     const len = this.participants.length;
-    console.log('=== Length particpants: ', len);
     if (len > 2) {
       this.participants.splice((len - 1), 1);
     }
@@ -151,6 +145,7 @@ export class CreateAccountPage implements OnInit {
   async showPopupAccount(index: number) {
     this.indexSelected = index;
     const modal = await this.modalController.create({
+      cssClass: 'zbc-modal',
       component: AccountPopupPage,
       componentProps: {
         idx: index

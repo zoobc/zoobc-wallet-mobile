@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MsigAddParticipantsPage } from './msig-add-participants.page';
+import { ExportImportPage } from './export-import.page';
 
-describe('MsigAddParticipantsPage', () => {
-  let component: MsigAddParticipantsPage;
-  let fixture: ComponentFixture<MsigAddParticipantsPage>;
+describe('ExportImportPage', () => {
+  let component: ExportImportPage;
+  let fixture: ComponentFixture<ExportImportPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MsigAddParticipantsPage ],
+      declarations: [ ExportImportPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MsigAddParticipantsPage);
+    fixture = TestBed.createComponent(ExportImportPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

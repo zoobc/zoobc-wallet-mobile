@@ -36,14 +36,10 @@
         <ion-item>
           <ion-label (click)="accountClicked(account)">
             <div class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
-            <!-- <div class="address" *ngIf="account.type==='multisig'">(Multisig)</div> -->
-            <div class="address">{{ account.shortAddress }}</div>
+            <div class="address">{{ shortAddress(account.address) }}</div>
             <div class="title" *ngIf="!isLoadingBalance">
               {{account.balance / 1e8 | number: '0.0-2' }} ZBC
             </div>
-            <!-- <div class="created">
-              {{"Created"|translate}}: {{ account.created | date: "short" }}
-            </div> -->
           </ion-label>
           <ion-button slot="end" (click)="copyAddress(account)" color="meddium">
             <ion-icon name="copy" ></ion-icon>

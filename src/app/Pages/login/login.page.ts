@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { DEFAULT_THEME } from 'src/environments/variable.const';
 import { AccountService } from 'src/app/Services/account.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -17,14 +18,13 @@ export class LoginPage implements OnInit {
     private authService: AuthService,
     private accountService: AccountService,
     private router: Router,
-    private themeSrv: ThemeService
+    private themeSrv: ThemeService,
+    private navCtrl: NavController
   ) {
-
     // if theme changed
     this.themeSrv.themeSubject.subscribe(() => {
       this.theme = this.themeSrv.theme;
     });
-
   }
 
   ionViewDidEnter() {
@@ -32,18 +32,14 @@ export class LoginPage implements OnInit {
     if (!this.theme || this.theme === '' || this.theme === undefined) {
       this.theme = DEFAULT_THEME;
     }
-    console.log('=== ionViewDidEnter current theme: ', this.theme);
   }
 
   async ngOnInit() {
     this.theme = this.themeSrv.theme;
-    if (!this.theme || this.theme === '' || this.theme === undefined){
+    if (!this.theme || this.theme === '' || this.theme === undefined) {
       this.theme = DEFAULT_THEME;
     }
-
-    console.log('=== current theme: ', this.theme);
-
-    const acc =  await this.accountService.getCurrAccount();
+    const acc = await this.accountService.getCurrAccount();
     if (acc === null) {
       this.router.navigate(['initial']);
       return;
@@ -51,24 +47,21 @@ export class LoginPage implements OnInit {
 
     const isLoggedIn = this.authService.isLoggedIn();
     if (isLoggedIn) {
-      this.router.navigate(['/dashboard']);
+      this.navCtrl.navigateRoot('/dashboard');
     }
-
   }
 
   async login(e: any) {
-    const {pin} = e;
+    const { pin } = e;
     this.isLoginValid = true;
-    const isUserLoggedIn =  await this.authService.login(pin);
+    const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
-      this.router.navigateByUrl('/dashboard');
+      this.navCtrl.navigateRoot('/dashboard');
     } else {
       this.isLoginValid = false;
       setTimeout(() => {
         this.isLoginValid = true;
-       }, 1500);
+      }, 1500);
     }
   }
-
-
 }

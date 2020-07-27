@@ -27,6 +27,7 @@ export const TRANSACTION_MINIMUM_FEE = 0.01;
 export const TRANSACTION_VERSION = Buffer.from([1]);
 export const FOR_SENDER = 'sender';
 export const FOR_RECIPIENT = 'recipient';
+export const FOR_APPROVER = 'approver';
 export const FOR_ACCOUNT = 'account';
 export const MODE_EDIT = 'edit';
 export const MODE_NEW = 'new';
@@ -213,37 +214,27 @@ export const LANGUAGES = [
 ];
 
 export const NETWORK_LIST = [
-  // {
-  //   name: 'Staging',
-  //   host: 'https://n0.demo.proofofparticipation.network'
-  // },
-  // {
-  //   name: 'Dev 1: ',
-  //   host: 'http://172.104.34.10:8002'
-  // },
-  // {
-  //   name: 'Dev 2',
-  //   host: 'http://45.79.39.58:8002'
-  // },
-  // {
-  //   name: 'Dev 3',
-  //   host: 'http://85.90.246.90:8002'
-  // }
-    {
-      host: '//n1.alpha.proofofparticipation.network:8080',
-      default: true,
-      name: 'Alpha Testnet'
-    },
-    {
-      host: '//85.90.246.90:8002',
-      default: true,
-      name: 'Demo Testnet 1'
-    },
-    {
-      host: '//45.79.39.58:8002',
-      default: true,
-      name: 'Demo Testnet 2'
-    }
+  {
+    name: 'Staging (n0.demo.)',
+    host: 'https://n0.demo.proofofparticipation.network'
+  },
+  {
+    name: 'Demo 1 (x.x.34.10): ',
+    host: 'http://172.104.34.10:8002'
+  },
+  {
+    name: 'Demo 2 (x.x.39.58)',
+    host: 'http://45.79.39.58:8002'
+  },
+  {
+    name: 'Demo 3 (x.x.246.90)',
+    host: 'http://85.90.246.90:8002'
+  },
+  {
+    host: '//n1.alpha.proofofparticipation.network:8080',
+    default: true,
+    name: 'Alpha Testnet (n1.alpha.)'
+  }
 ];
 
 export const TRX_FEE_LIST = [{

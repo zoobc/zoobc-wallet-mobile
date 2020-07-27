@@ -64,7 +64,6 @@ export class ChatService {
 
   //   if (this.platform.is('cordova')) {
   //     this.clickSub = this.localNotifications.on('click').subscribe(data => {
-  //       console.log(data);
   //       this.router.navigateByUrl('/chat');
   //       this.unsub();
   //     });
@@ -91,32 +90,21 @@ export class ChatService {
         return res.where('pair', 'in', addresses).orderBy('time', 'desc').limit(50);
       }).valueChanges()
       .subscribe(async chats => {
-        console.log('=== notif fired, chats: ', chats);
         if (chats && chats.length > 0) {
           this.recentCats = chats;
           const length = chats.length;
-
-          console.log('=== recentCats: ', this.recentCats);
-          console.log('=== Length: ', length);
-          console.log('=== this.chatLength: ', this.chatLength);
 
           // if (length > this.chatLength) {
           //   // const lastChat = chats[length - 1];
           //   const lastChat = chats[0];
           //   //  const name = await this.findAddressInDb(lastChat.sender);
-          //   console.log('=== Name after fince:-', name + "-");
           //   if (!name || name === '' || name === undefined) {
-          //     console.log('=== last chat sender:', lastChat.sender);
-
           //     const contact: Contact = { name: CONST_UNKNOWN_NAME, address: lastChat.sender };
           //     // this.saveToDb(contact);
 
           //   } else {
-          //     console.log('=== checkToDb, name is : ', name);
           //   }
 
-          //   console.log('=== checkToDb, address:', lastChat.sender);
-          //   console.log('=== checkToDb, will save to db:', name);
           //   // this.chatLength = chats.length;
           // }
         }
@@ -131,30 +119,18 @@ export class ChatService {
   //       return res.where('pair', 'in', addresses).orderBy('time', 'desc').limit(50);
   //     }).valueChanges()
   //     .subscribe(async chats => {
-  //       console.log('=== notif fired, chats: ', chats);
   //       if (chats && chats.length > 0) {
   //           const length = chats.length;
-
-  //           console.log('=== Length: ', length);
-  //           console.log('=== this.chatLength: ', this.chatLength);
-
   //           if (length > this.chatLength) {
   //             // const lastChat = chats[length - 1];
   //             const lastChat = chats[0];
   //             const name = await this.findAddressInDb(lastChat.sender);
-  //             console.log('=== Name after fince:-', name + "-") ;
   //             if (!name || name === '' || name === undefined) {
-  //               console.log('=== last chat sender:', lastChat.sender);
-
   //               const contact: Contact = { name: CONST_UNKNOWN_NAME, address: lastChat.sender};
   //               this.saveToDb(contact);
 
   //             } else {
-  //               console.log('=== checkToDb, name is : ', name);
   //             }
-
-  //             console.log('=== checkToDb, address:', lastChat.sender);
-  //             console.log('=== checkToDb, will save to db:', name);
   //             // this.chatLength = chats.length;
   //           }
   //         }

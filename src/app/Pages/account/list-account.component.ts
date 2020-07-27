@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
-import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, MODE_EDIT } from 'src/environments/variable.const';
+import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, MODE_EDIT, FOR_APPROVER } from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
 import zoobc from 'zoobc-sdk';
+import { NavController } from '@ionic/angular';
+import { makeShortAddress } from 'src/Helpers/converters';
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
@@ -21,6 +23,7 @@ export class ListAccountComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private navCtrl: NavController,
     private router: Router,
     private utilService: UtilService,
     private accountService: AccountService  ) {
@@ -39,6 +42,8 @@ export class ListAccountComponent implements OnInit {
     this.route.queryParams.subscribe( () => {
       if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
         this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
+      } else {
+        this.forWhat = null;
       }
     });
     this.getAllAccountBalance();
@@ -52,7 +57,6 @@ export class ListAccountComponent implements OnInit {
       this.accounts.forEach(obj => {
           const adres = obj.address;
           this.getBalanceByAddress(adres).then(balnce => {
-            console.log('===== xxxBalance: ', balnce.spendablebalance);
             obj.balance = Number(balnce.spendablebalance);
           });
       });
@@ -69,27 +73,21 @@ export class ListAccountComponent implements OnInit {
 
 
   accountClicked(account: Account) {
+    if (!this.forWhat) {
+      return;
+    }
+
     this.accountService.setForWhat(this.forWhat);
     if (this.forWhat === FOR_ACCOUNT) {
       this.accountService.setActiveAccount(account);
-      this.goToDashboard();
     } else if (this.forWhat === FOR_SENDER) {
-      this.accountService.setActiveAccount(account);
-      this.goToSendMoney();
-      // this.location.back();
+      this.accountService.setSender(account);
     } else if (this.forWhat === FOR_RECIPIENT) {
       this.accountService.setRecipient(account);
-      // this.location.back();
-      this.goToSendMoney();
+    } else if (this.forWhat === FOR_APPROVER) {
+      this.accountService.setApprover(account);
     }
-  }
-
-  goToDashboard() {
-    this.router.navigateByUrl('/dashboard');
-  }
-
-  goToSendMoney() {
-    this.router.navigateByUrl('/sendcoin');
+    this.navCtrl.pop();
   }
 
   copyAddress(account: Account) {
@@ -106,7 +104,6 @@ export class ListAccountComponent implements OnInit {
   }
 
   async openAddAccount(arg: Account, trxMode: string) {
-    // console.log('====== Accoint will edited', arg);
     const navigationExtras: NavigationExtras = {
       queryParams: {
         account: JSON.stringify(arg),
@@ -114,6 +111,10 @@ export class ListAccountComponent implements OnInit {
       }
     };
     this.router.navigate(['/create-account'], navigationExtras);
+  }
+
+  shortAddress(address: string) {
+      return makeShortAddress(address);
   }
 
   async openEditAccount(arg: Account) {

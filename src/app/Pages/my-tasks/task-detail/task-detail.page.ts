@@ -34,7 +34,6 @@ export class TaskDetailPage implements OnInit {
 
   ngOnInit() {
     this.activeRoute.queryParams.subscribe(params => {
-      console.log('=== task detail Params: ', params);
       this.escrowId = params.escrowId;
     });
     this.loadDetail();
@@ -53,6 +52,10 @@ export class TaskDetailPage implements OnInit {
       this.escrowDetail = res;
     }).finally(() =>
     this.isLoading = false);
+  }
+
+  toNumber(arg: any) {
+    return Number(arg);
   }
 
   closeModal() {
@@ -75,7 +78,6 @@ export class TaskDetailPage implements OnInit {
     });
 
     pinmodal.onDidDismiss().then((returnedData) => {
-      console.log('=== returned after entr pin: ', returnedData);
       if (returnedData && returnedData.data !== 0) {
         const pin = returnedData.data;
         if (this.action === 0) {
@@ -105,7 +107,6 @@ export class TaskDetailPage implements OnInit {
       zoobc.Escrows.approval(data, childSeed)
         .then(
           async res => {
-            console.log('======= res approval:', res);
             this.waitingList.push(escrowId);
             this.storageService.set(
               STORAGE_ESCROW_WAITING_LIST,
@@ -145,7 +146,6 @@ export class TaskDetailPage implements OnInit {
       zoobc.Escrows.approval(data, childSeed)
         .then(
           async res => {
-            console.log('============ success: ', res);
             this.utilService.showConfirmation('Success', 'Transaction has rejected successfully', true, '/my-tasks');
             this.waitingList.push(escrowId);
             this.storageService.set(

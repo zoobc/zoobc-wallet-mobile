@@ -83,7 +83,6 @@ export class AppComponent implements OnInit {
     if (curr === null) {
       await this.strgSrv.set(STORAGE_ACTIVE_CURRENCY, CONST_DEFAULT_CURRENCY);
     }
-    console.log('=== Active Currency: ', curr);
   }
 
   async setTheme() {

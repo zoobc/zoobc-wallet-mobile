@@ -1,17 +1,31 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
-import { Routes, RouterModule } from "@angular/router";
-
-import { IonicModule } from "@ionic/angular";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { AddressBookPage } from "./address-book.page";
-import { AddressBookComponentModule } from "src/app/Components/address-book/address-book-list/address-book.module";
+import { AddressBookPage } from './address-book.page';
+import { AddressBookComponentModule } from 'src/app/Components/address-book/address-book-list/address-book.module';
+import { AddAddressPage } from './add-address/add-address.page';
+import { FormAddressComponent } from './form-address/form-address.component';
+import { EditAddressPage } from './edit-address/edit-address.page';
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: AddressBookPage
+  },
+  {
+    path: 'add',
+    component: AddAddressPage
+  },
+  {
+    path: 'export-import',
+    loadChildren: './export-import/export-import.module#ExportImportPageModule'
+  },
+  {
+    path: ':addressId',
+    component: EditAddressPage
   }
 ];
 
@@ -22,8 +36,14 @@ const routes: Routes = [
     IonicModule,
     TranslateModule,
     RouterModule.forChild(routes),
-    AddressBookComponentModule
+    AddressBookComponentModule,
+    ReactiveFormsModule
   ],
-  declarations: [AddressBookPage]
+  declarations: [
+    AddressBookPage,
+    AddAddressPage,
+    EditAddressPage,
+    FormAddressComponent
+  ]
 })
 export class AddressBookPageModule {}

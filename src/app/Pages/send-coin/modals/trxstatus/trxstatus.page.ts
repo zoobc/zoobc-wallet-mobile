@@ -19,18 +19,14 @@ export class TrxstatusPage implements OnInit {
   }
 
   async close() {
+    this.modalController.dismiss();
     if (this.status) {
-      this.router.navigateByUrl('/transactions');
+      this.router.navigateByUrl('/dashboard');
     }
-    this.modalController.dismiss(); // close modal
-    // console.log('============= status closed --- ');
-  }
-
+   }
 
   async newTrx() {
-    this.router.navigateByUrl('/sendcoin');
-    this.modalController.dismiss(); // close modal
-    // console.log('============= status transaction new ');
+    this.modalController.dismiss();
   }
 
 }
