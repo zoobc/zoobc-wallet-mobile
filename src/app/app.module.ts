@@ -50,7 +50,7 @@ import { PopupCurrencyPageModule } from './Pages/settings/popup-currency/popup-c
 import { PopupLanguagesPageModule } from './Pages/settings/popup-languages/popup-languages.module';
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'assets/languages/locales/', '.json');
 }
 
 @NgModule({
