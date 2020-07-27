@@ -334,8 +334,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
     const signByAddress = this.multisigAccount.signByAddress;
     const signByAcc = await this.accountService.getAccount(signByAddress);
-    const childSeed = await this.utilService.generateSeed(key, signByAcc.path);
-    // const childSeed = await this.utilService.generateSeed(key, this.account.path);
+    const childSeed = this.authSrv.keyring.calcDerivationPath(signByAcc.path);
     zoobc.MultiSignature.postTransaction(data, childSeed)
       .then(  () => {
         const message = 'Your Transaction is processing!';

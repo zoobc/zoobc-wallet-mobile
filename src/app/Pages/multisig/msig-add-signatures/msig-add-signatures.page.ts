@@ -162,8 +162,7 @@ export class MsigAddSignaturesPage implements OnInit {
     }
     const signerAddress =  this.participantsSignature[idx].address;
     const signerAccount =  await this.accountSrv.getAccount(signerAddress);
-    const key = this.authSrv.tempKey;
-    const seed = await this.utilSrv.generateSeed(key, signerAccount.path);
+    const seed = this.authSrv.keyring.calcDerivationPath(signerAccount.path);
     const signature = signTransactionHash(this.transactionHash, seed);
     const base64Sig = signature.toString('base64');
     this.participantsSignature[idx].signature = base64Sig;
