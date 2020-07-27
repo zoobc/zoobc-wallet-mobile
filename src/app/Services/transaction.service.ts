@@ -12,16 +12,8 @@ export class TransactionService {
 
   transactionFees(minimumFee: number) {
     const fees = [{
-      name: 'Slow',
+      name: 'Regular',
       fee: minimumFee
-    },
-    {
-      name: 'Average',
-      fee: minimumFee * 2
-    },
-    {
-      name: 'Fast',
-      fee: minimumFee * 4
     }];
     return fees;
   }
