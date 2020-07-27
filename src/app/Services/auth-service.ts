@@ -2,20 +2,13 @@ import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 
 import {
-  STORAGE_ENC_MASTER_SEED,
-  COIN_CODE,
-  CONST_HEX,
   STORAGE_ENC_PASSPHRASE_SEED,
-  SALT_PASSPHRASE,
-  STORAGE_ALL_ACCOUNTS
+  SALT_PASSPHRASE
 } from 'src/environments/variable.const';
 import { auth } from 'firebase/app';
-import * as CryptoJS from 'crypto-js';
-import { KeyringService } from './keyring.service';
 import { AccountService } from './account.service';
-import { doDecrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
-import zoobc, { ZooKeyring, getZBCAdress, TransactionListParams, TransactionsResponse } from 'zoobc-sdk';
+import zoobc, { ZooKeyring, getZBCAdress } from 'zoobc-sdk';
 import { Account } from '../Interfaces/account';
 
 @Injectable({
@@ -32,7 +25,6 @@ export class AuthService implements CanActivate {
   constructor(
     private router: Router,
     private strgSrv: StoragedevService,
-    private keyringServ: KeyringService,
     private accountService: AccountService) {
       this.isUserLoggenIn = false;
     }
@@ -55,35 +47,14 @@ export class AuthService implements CanActivate {
     return this.isUserLoggenIn;
   }
 
-  isPinValid(encSeed: string, key: string): boolean {
-    let isPinValid = false;
-    try {
-      const seed = doDecrypt(encSeed, key).toString(CryptoJS.enc.Utf8);
-      if (!seed) {
-        throw new Error('pin is not match');
-      }
-      isPinValid = true;
-    } catch (e) {
-      isPinValid = false;
-    }
-    return isPinValid;
-  }
+  async login(pin: string) {
+    this.tempKey = pin;
 
+    const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
+    const passphrase = zoobc.Wallet.decryptPassphrase(passEncryptSaved, pin);
 
-  async login(key: string) {
-    this.tempKey = key;
-    const encSeed = await this.strgSrv.get(STORAGE_ENC_MASTER_SEED);
-    const isPinValid = this.isPinValid(encSeed, key);
-    if (isPinValid) {
-
-      const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
-      const decrypted = doDecrypt(passEncryptSaved, key).toString(CryptoJS.enc.Utf8);
-      this.keyring = new ZooKeyring(decrypted, SALT_PASSPHRASE);
-      // this._seed = this._keyring.calcDerivationPath(account.path);
-
-      const ej = doDecrypt(encSeed, key).toString(CryptoJS.enc.Utf8);
-      const seed = Buffer.from(ej, CONST_HEX);
-      this.keyringServ.calcBip32RootKeyFromSeed(COIN_CODE, seed);
+    if (passphrase) {
+      this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
       this.isUserLoggenIn = true;
       return this.isUserLoggenIn;
     }
@@ -120,7 +91,7 @@ export class AuthService implements CanActivate {
         auth().signOut()
           .then(() => {
             resolve();
-          }).catch((error) => {
+          }).catch(() => {
             reject();
           });
       }
