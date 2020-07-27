@@ -1,30 +1,31 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, NavigationExtras } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Location } from '@angular/common';
-import { EDIT_MODE, NEW_MODE } from 'src/environments/variable.const';
-import { AccountService } from 'src/app/Services/account.service';
 import { UtilService } from 'src/app/Services/util.service';
+import { NavController, AlertController } from '@ionic/angular';
+import { FOR_RECIPIENT, FOR_APPROVER } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-address-book',
   templateUrl: './address-book.page.html',
-  styleUrls: ['./address-book.page.scss'],
+  styleUrls: ['./address-book.page.scss']
 })
 export class AddressBookPage implements OnInit, OnDestroy {
-
   addresses = [];
   navigationSubscription: any;
+  forWhat: string;
 
   constructor(
-    private location: Location,
     private router: Router,
+    private navCtrl: NavController,
     private utilService: UtilService,
-    private addressBookSrv: AddressBookService
+    private addressBookSrv: AddressBookService,
+    private alertCtrl: AlertController,
+    private route: ActivatedRoute
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
-        // console.log('=== NavigationEnd');
         this.getAllAddress();
       }
     });
@@ -32,12 +33,18 @@ export class AddressBookPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.navigationSubscription) {
-       this.navigationSubscription.unsubscribe();
+      this.navigationSubscription.unsubscribe();
     }
   }
 
   async ngOnInit() {
-    // console.log('=== ngOninit');
+    this.route.queryParams.subscribe( () => {
+      if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
+        this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
+      } else {
+        this.forWhat = null;
+      }
+    });
     this.getAllAddress();
   }
 
@@ -49,39 +56,49 @@ export class AddressBookPage implements OnInit, OnDestroy {
   }
 
   copyAddress(index: string | number) {
-    const val =   this.addresses[index];
+    const val = this.addresses[index];
     this.utilService.copyToClipboard(val.address);
   }
 
   selectAddress(address: any) {
-    this.addressBookSrv.setSelectedAddress(address.address);
-    this.location.back();
+    if (!this.forWhat) {
+      return;
+    }
+    if (this.forWhat === FOR_RECIPIENT) {
+      this.addressBookSrv.setRecipientAddress(address);
+    } else if (this.forWhat === FOR_APPROVER) {
+      this.addressBookSrv.setApproverAddress(address);
+    }
+    this.navCtrl.pop();
   }
 
   editAddress(index: number) {
-    const address = this.addresses[index];
-    this.openAddressdForm(address, index, EDIT_MODE);
+    this.navCtrl.navigateForward('/address-book/' + index);
   }
 
-  deleteAddress(index: number) {
-    this.addresses.splice(index, 1);
-    this.addressBookSrv.update(this.addresses);
+  async deleteAddress(index: number) {
+    const alert = await this.alertCtrl.create({
+      message: 'Are you sure want to delete?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.addresses.splice(index, 1);
+            this.addressBookSrv.update(this.addresses);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   createNewAddress() {
-    this.openAddressdForm({name: '', address: ''}, 0, NEW_MODE);
+    this.router.navigate(['/address-book/add']);
   }
-
-  async openAddressdForm(arg: any, idx: number, trxMode: string) {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        name: arg.name,
-        address: arg.address,
-        mode: trxMode,
-        index: idx
-      }
-    };
-    this.router.navigate(['/add-address'], navigationExtras);
-  }
-
 }

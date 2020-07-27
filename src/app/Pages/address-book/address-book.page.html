@@ -3,8 +3,11 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Address Book" | translate }}</ion-title>
+    <ion-title>{{ "Contacts" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/address-book/export-import">
+        Export/Import
+      </ion-button>
       <ion-button routerLink="/feedback">
         Feedback
       </ion-button>
@@ -15,12 +18,12 @@
 <ion-content>
 
   <ion-fab ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="secondary" (click)="createNewAddress()">
+    <ion-fab-button color="tertiary" (click)="createNewAddress()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
-  <div class="address-book-list">
+  <div class="address-book-list" style="margin-bottom: 60px;">
     <ng-template #noData>
       <ion-item lines="none">
         <ion-label>{{ "You dont have any address" | translate }}</ion-label>
@@ -31,10 +34,12 @@
       <ion-item-sliding *ngFor="let address of addresses; let i = index">
         <ion-item>
           <ion-label (click)="selectAddress(address)">
-            <p class="title">{{ address.name }}</p>
-            <p class="address">{{ address.address }}</p>
+            <p class="name">{{ address.name }}</p>
+            <p class="address">{{ address.shortAddress }}</p>
           </ion-label>
-          <ion-icon slot="end" name="copy" (click)="copyAddress(i)"></ion-icon>
+          <ion-button slot="end" (click)="copyAddress(i)" color="meddium">
+            <ion-icon name="copy"></ion-icon>
+          </ion-button>
         </ion-item>
         <ion-item-options>
           <button color="success" (click)="editAddress(i)" class="tool">

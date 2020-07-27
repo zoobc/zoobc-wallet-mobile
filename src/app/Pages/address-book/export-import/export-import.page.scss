@@ -1,0 +1,36 @@
+ion-content {
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-bottom: 20px;
+  --padding-top: 20px;
+
+  >div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .form-container {
+      flex: 1;
+
+      textarea {
+        border: 1px solid #dedede;
+        height: 100%;
+        width: 100%;
+        resize: none;
+        padding: 15px;
+      }
+    }
+  }
+}
+
+.info {
+  text-align: center;
+  font-size: 0.9rem;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.buttons-container {
+  padding-top: 20px;
+}

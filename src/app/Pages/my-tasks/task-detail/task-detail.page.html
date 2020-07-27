@@ -22,11 +22,33 @@
   </div>
   <ion-list *ngIf="escrowDetail">
     <ion-item>
+      {{ "Status" | translate}} &nbsp;
+      <ion-badge *ngIf = "escrowDetail.status == 0" color="warning"  shape="round">
+        Pending
+        </ion-badge>
+   
+        <ion-badge *ngIf = "escrowDetail.status == 1" color="success"  shape="round">
+        Approved
+        </ion-badge>
+   
+
+        <ion-badge *ngIf = "escrowDetail.status == 2" color="danger"  shape="round">
+        Rejected
+        </ion-badge>
+
+
+        <ion-badge *ngIf = "escrowDetail.status == 3" color="warning"  shape="round">
+        Expired
+        </ion-badge>
+
+        <ion-badge *ngIf = "escrowDetail.status == 4" color="warning"  shape="round">
+        Unknown
+        </ion-badge>
+    </ion-item>    
+    <ion-item>
       <ion-label>
-        <h5>{{ "ID" | translate }}</h5>
-        <p>
-          {{escrowDetail.id}}
-        </p>
+        <h5>{{ "ID" | translate }} : {{escrowDetail.id}}
+        </h5>
       </ion-label>
     </ion-item>
     <ion-item>
@@ -47,20 +69,25 @@
     </ion-item>
     <ion-item>
       <ion-label>
-        <h5>{{ "Amount" | translate }}</h5>
         <p>
-          {{escrowDetail.amount / 1e8 | number: '0.0-8' }} ZBC
+          {{ "Amount" | translate }}: {{escrowDetail.amount / 1e8 | number: '0.0-8' }} ZBC
         </p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <h5>{{ "Commission Fee" | translate }}</h5>
-        <p>
+        <p>{{ "Commission Fee" | translate }}: 
           {{ escrowDetail.commission / 1e8 | number: '0.0-8' }} ZBC
         </p>
       </ion-label>
     </ion-item>
+    <ion-item  *ngIf="escrowDetail && (escrowDetail.status !== 1 && escrowDetail.status !== 2)">
+      <ion-label>
+        <p>{{ "Expired after block height" | translate }}: 
+          {{ toNumber(escrowDetail.blockheight) + toNumber(escrowDetail.timeout) | number}}
+        </p>
+      </ion-label>
+    </ion-item>   
     <ion-item>
       <ion-label class="ion-text-wrap">
         <h5>{{ "Instruction" | translate }}</h5>
@@ -71,10 +98,10 @@
     </ion-item>
   </ion-list>
 
-  <ion-grid>
+  <ion-grid *ngIf="escrowDetail && escrowDetail.status == 0">
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="primary" (click)="confirm()">{{ 'Confirm' | translate }}</ion-button>
+        <ion-button  expand="block" color="primary" (click)="confirm()">{{ 'Confirm' | translate }}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>

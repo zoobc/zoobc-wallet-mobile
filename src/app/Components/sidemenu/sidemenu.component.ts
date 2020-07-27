@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/Services/auth-service';
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { DEFAULT_THEME } from 'src/environments/variable.const';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 @Component({
   selector: 'app-sidemenu',
@@ -14,13 +15,15 @@ import { DEFAULT_THEME } from 'src/environments/variable.const';
 export class SidemenuComponent implements OnInit {
 
   theme = DEFAULT_THEME;
+  toggle: any;
 
   constructor(
     private menuController: MenuController,
     private authService: AuthService,
     private fcm: FcmService,
     private router: Router,
-    private themeSrv: ThemeService
+    private themeSrv: ThemeService,
+    private statusBar: StatusBar
   ) {
 
     // if account changed
@@ -99,10 +102,7 @@ export class SidemenuComponent implements OnInit {
   }
 
   logout() {
-
     const user =  this.fcm.chatUser;
-    console.log('=== current chat user: ',  user);
-
     if (user) {
       this.fcm.delete(user);
     }

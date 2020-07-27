@@ -34,8 +34,8 @@
           Network
         </p>
         <div style="border:1px solid #cccccc">
-          <ion-select interface="action-sheet" [(ngModel)]="activeNetwork" (ionChange)="selectActiveNetwork()">
-            <ion-select-option *ngFor="let network of networks" value="{{ network.host }}">
+          <ion-select interface="popover" [(ngModel)]="activeNetwork" (ionChange)="selectActiveNetwork()">
+            <ion-select-option *ngFor="let network of networks let idx = index;" value="{{ idx }}">
               {{ network.name }}
             </ion-select-option>
           </ion-select>
@@ -45,31 +45,57 @@
     <ion-row>
       <ion-col size="12">
         <p>
-          Currency<br />
-          <span style="font-size:0.7em;">Last updated: {{timestamp}}</span>
+          Currency
+          <!-- <br /><span style="font-size:0.7em;">Last updated: {{timestamp}}</span> -->
         </p>
-        <div style="border:1px solid #cccccc">
+      </ion-col>
+    </ion-row>
+    <ion-row>      
+        <!-- <div style="border:1px solid #cccccc">
           <ion-select interface="popover" [(ngModel)]="activeCurrency" (ionChange)="changeRate()">
             <ion-select-option *ngFor="let curr of Object.keys(currencyList)" value="{{curr}}">
                 {{curr}} - {{ currencyList[curr] }}
             </ion-select-option>
           </ion-select>
         </div>
+       -->
+      <ion-col size="10">
+        <div style="border:1px solid #cccccc">
+          <ion-input type="text" placeholder="Select currency" [(ngModel)]="activeCureencyWithname">
+          </ion-input>
+        </div>
       </ion-col>
+      <ion-col size="2">    
+        <ion-button color="meddium" (click)="showPopupCurrency()">
+          <ion-icon name="list"></ion-icon>
+        </ion-button>
+     </ion-col>
+   
     </ion-row>
     <ion-row>
       <ion-col size="12">
-        <p>
          Language
-        </p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="10">
         <div style="border:1px solid #cccccc">
+          <ion-input type="text" placeholder="Select currency" [(ngModel)]="activeLanguageWithname">
+          </ion-input>
+        </div>
+        <!-- <div style="border:1px solid #cccccc">
           <ion-select interface="popover" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
             <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
               {{ language.country }}
             </ion-select-option>
           </ion-select>
-        </div>
+        </div> -->
       </ion-col>
+      <ion-col size="2">    
+        <ion-button  color="meddium" (click)="showPopupLanguage()">
+          <ion-icon name="list"></ion-icon>
+        </ion-button>
+     </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>

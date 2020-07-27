@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, ToastController } from '@ionic/angular';
-import { QrScannerService } from './qr-scanner.service';
+import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { ActivatedRoute, NavigationExtras } from '@angular/router';
 import {
   BarcodeScannerOptions,
@@ -42,7 +42,6 @@ export class QrScannerComponent implements OnInit {
     this.barcodeScanner
       .scan()
       .then(barcodeData => {
-        // alert("Barcode data " + JSON.stringify(barcodeData));
         if (!barcodeData.cancelled) {
           this.scannedData = barcodeData;
           this.jsonData = barcodeData.text;
@@ -51,72 +50,42 @@ export class QrScannerComponent implements OnInit {
         this.navCtrl.pop();
       })
       .catch(err => {
-        // console.log('Error', err);
+        console.log(err);
       });
   }
 
   ionViewWillLeave() {
     this.qrScannerSrv.setResult(this.jsonData);
-
-    if (this.isScanned && this.from && this.from === 'tabscan') {
+    if (this.isScanned && this.from && this.from === 'dashboard') {
       // if scanner trigered from tabscan, after scan redirect to scan page.
       const navigationExtras: NavigationExtras = {
         queryParams: {
-          jsonData: this.jsonData
+          jsonData: this.jsonData,
+          from: this.from
         }
       };
       this.navCtrl.navigateForward(['/sendcoin'], navigationExtras);
     }
+    this.reset();
+  }
 
+  reset() {
     this.from = '';
     this.isScanned = false;
     this.jsonData = '';
-
   }
 
   openScanner() {
-    this.from = '';
-    this.isScanned = false;
-    this.jsonData = '';
-
+    this.reset();
     this.activeRoute.queryParams.subscribe(params => {
-      this.from = JSON.parse(params.from);
-      // console.log('== From: ', this.from);
+      if (params && params.from) {
+        this.from = params.from;
+      } else {
+        this.from = '';
+      }
     });
 
     this.scanCode();
-  }
-
-  async ionViewDidEnter() {
-    // this.openScanner();
-
-    // this.qrScanner.prepare()
-    //   .then((status: QRScannerStatus) => {
-    //     if (status.authorized) {
-    //       // start scanning
-    //       const scanSub = this.qrScanner.scan().subscribe(async (text: string) => {
-    //         this.txtAddress = text;
-    //         scanSub.unsubscribe();
-    //         this.isScanned = true;
-    //         this.navCtrl.pop();
-    //       });
-    //       this.qrScanner.show();
-    //     } else if (status.denied) {
-    //       // camera permission was permanently denied
-    //       // you must use QRScanner.openSettings() method to guide the user to the settings page
-    //       // then they can grant the permission from there
-    //       this.qrScanner.openSettings();
-    //     } else {
-    //       this.isScanned = false;
-    //       // permission was denied, but not permanently. You can ask for permission again at a later time.
-    //     }
-    //   })
-    //   .catch((e: any) => {
-    //     alert(e);
-    //     this.isScanned = false;
-    //     // console.log('Error is', e);
-    //   });
-
   }
 
 }

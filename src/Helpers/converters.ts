@@ -271,6 +271,8 @@ export function bigintToByteArray(bn: BN): Buffer {
 export function readInt64(buff, offset) {
   const buff1 = buff.readUInt32LE(offset);
   const buff2 = buff.readUInt32LE(offset + 4);
+  // tslint:disable-next-line:no-bitwise
   if (!(buff2 & 0x80000000)) { return buff1 + 0x100000000 * buff2; }
+  // tslint:disable-next-line:no-bitwise
   return -((~buff2 >>> 0) * 0x100000000 + (~buff1 >>> 0) + 1);
 }

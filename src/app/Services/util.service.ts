@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastController, ModalController } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { ZooKeyring } from 'zoobc';
+import { ZooKeyring } from 'zoobc-sdk';
 import { STORAGE_ENC_PASSPHRASE_SEED, SALT_PASSPHRASE } from 'src/environments/variable.const';
 import { doDecrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
@@ -61,10 +61,10 @@ export class UtilService {
 
   /**
    * Confirmation page, if success set status = true otherwise false
-   * @param title
-   * @param msg
-   * @param status
-   * @param path
+   * @param title is title
+   * @param msg is message
+   * @param status is status
+   * @param path is path
    */
   public async showConfirmation(title: string, msg: string, status: boolean, path: string) {
     const modal = await this.modalController.create({
@@ -77,8 +77,9 @@ export class UtilService {
     });
 
     modal.onDidDismiss().then(data => {
-      console.log(data);
-      this.router.navigateByUrl(path);
+      if (path) {
+        this.router.navigateByUrl(path);
+      }
     });
 
     return await modal.present();
@@ -86,10 +87,6 @@ export class UtilService {
 
 
   public async generateSeed(pin: any, path: number) {
-
-    console.log('===== generateSeed, account.path: ', path);
-    console.log('==== generateSeed pin :', pin);
-
     const passEncryptSaved = await this.storageService.get(STORAGE_ENC_PASSPHRASE_SEED);
     const decryptedArray = doDecrypt(passEncryptSaved, pin);
     const passphrase = decryptedArray.toString(CryptoJS.enc.Utf8);

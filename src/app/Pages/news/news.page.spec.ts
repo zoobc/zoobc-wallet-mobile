@@ -1,15 +1,20 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { NewsPage } from './news.page';
+import {TranslateModule } from '@ngx-translate/core';
 
-describe('NewsPage', () => {
+
+
+describe('News Page', () => {
   let component: NewsPage;
   let fixture: ComponentFixture<NewsPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ NewsPage ],
+      imports: [
+        TranslateModule.forRoot(),
+        ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();

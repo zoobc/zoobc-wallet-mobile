@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+    <ion-title>List of Currency</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="list-account-page">
+    <ng-template #noData>
+      <ion-item lines="none">
+        <ion-label>You dont have any currency</ion-label>
+      </ion-item>
+    </ng-template>
+
+    <ion-list *ngIf="currencyList; else noData">
+      <ion-item *ngFor="let curr of currencyList; let i = index">
+        <ion-label (click)="currencyClicked(curr)">
+          {{curr.code}} - {{ curr.name }}
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

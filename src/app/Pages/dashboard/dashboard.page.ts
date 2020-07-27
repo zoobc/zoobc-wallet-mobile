@@ -1,46 +1,48 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   MenuController,
   ToastController,
   LoadingController,
-  ModalController
+  ModalController,
+  AlertController
 } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, NavigationEnd } from '@angular/router';
 import { TransactionService } from 'src/app/Services/transaction.service';
-import { TransactionDetailPage } from 'src/app/Pages/transaction-detail/transaction-detail.page';
+import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME } from 'src/environments/variable.const';
-import zoobc from 'zoobc';
-import { Transaction } from 'src/app/Interfaces/transaction';
-
+import zoobc from 'zoobc-sdk';
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
 import { ChatService } from 'src/app/Services/chat.service';
 import { Currency } from 'src/app/Interfaces/currency';
+import { DecimalPipe } from '@angular/common';
+import { NetworkService } from 'src/app/Services/network.service';
+import { dateAgo } from 'src/Helpers/utils';
+import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, OnDestroy {
+
+  timeLeft = 12;
+  interval: any;
 
   identity: FcmIdentity;
   clickSub: any;
-  public errorMsg: string;
   public offset: number;
 
   public accountBalance: any;
   public isLoadingBalance: boolean;
   public currencyRate = CONST_DEFAULT_RATE;
   public priceInUSD: number;
-  public totalTx: number;
-  public recentTx: Transaction[];
-  public unconfirmTx: Transaction[];
   public isError = false;
   public navigationSubscription: any;
 
@@ -48,6 +50,8 @@ export class DashboardPage implements OnInit {
   accounts: Account[];
   notifId = 1;
   theme = DEFAULT_THEME;
+  lastTimeGetBalance: Date;
+  lastBalanceUpdated = 'Just now';
 
   constructor(
     private authService: AuthService,
@@ -56,18 +60,26 @@ export class DashboardPage implements OnInit {
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
-    private transactionServ: TransactionService,
-    private currencyServ: CurrencyService,
+    private transactionSrv: TransactionService,
+    private networkSrv: NetworkService,
+    private currencySrv: CurrencyService,
     public toastController: ToastController,
     private fcmService: FcmService,
     private themeSrv: ThemeService,
-    private chatService: ChatService
-  ) {
+    private chatService: ChatService,
+    private alertController: AlertController,
+    private decimalPipe: DecimalPipe  ) {
 
-    // if account changed
-    this.accountService.accountSubject.subscribe(() => {
-      this.loadData();
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      if (e instanceof NavigationEnd) {
+        this.loadData();
+      }
     });
+
+    // // if account changed
+    // this.accountService.accountSubject.subscribe(() => {
+    //   this.loadData();
+    // });
 
 
     // if account changed
@@ -75,25 +87,53 @@ export class DashboardPage implements OnInit {
       this.theme = this.themeSrv.theme;
     });
 
-    // if post send money reload data
-    this.transactionServ.sendMoneySubject.subscribe(() => {
-      this.loadData();
-    }
-    );
+    // // if post send money reload data
+    // this.transactionSrv.sendMoneySubject.subscribe(() => {
+    //   this.loadData();
+    // }
+    // );
 
     // if network changed reload data
-    this.transactionServ.changeNodeSubject.subscribe(() => {
-      // console.log(' == change node network ====');
+    this.networkSrv.changeNodeSubject.subscribe(() => {
       this.loadData();
     }
     );
 
     // if currency changed
-    this.currencyServ.currencySubject.subscribe((rate: Currency) => {
+    this.currencySrv.currencySubject.subscribe((rate: Currency) => {
       this.currencyRate = rate;
     });
 
-    // this.loadData();
+    this.subscribeAllAccount();
+    this.authService.restoreAccounts();
+  }
+
+  ngOnDestroy() {
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe();
+    }
+  }
+
+  shortAddress(address: string) {
+    return makeShortAddress(address);
+  }
+
+  async showBalanceDetail() {
+    const alert = await this.alertController.create({
+      header: 'Account:',
+      subHeader: this.account.address,
+      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>'
+        + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  async subscribeAllAccount() {
+    const allAcc = await this.accountService.allAccount();
+    const addresses = allAcc.map((acc) => acc.address);
+    this.chatService.subscribeNotif(addresses);
   }
 
   doRefresh(event: any) {
@@ -107,16 +147,17 @@ export class DashboardPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.theme = this.themeSrv.theme;
-    console.log('==== theme:', this.theme);
     this.loadData();
-    // this.account = await this.accountService.getCurrAccount();
+    this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === undefined || this.theme === null) {
+      this.theme = DEFAULT_THEME;
+    }
+    this.startTimer();
   }
-
 
   async loadData() {
 
-    this.priceInUSD = this.currencyServ.getPriceInUSD();
+    this.priceInUSD = this.currencySrv.getPriceInUSD();
     this.accountBalance = {
       accountaddress: '',
       blockheight: 0,
@@ -126,38 +167,35 @@ export class DashboardPage implements OnInit {
       latest: false
     };
 
-    this.errorMsg = '';
     this.offset = 1;
     this.accountBalance = 0;
     this.isLoadingBalance = true;
-    this.totalTx = 0;
-    this.recentTx = [];
-    this.unconfirmTx = [];
     this.isError = false;
 
     this.account = await this.accountService.getCurrAccount();
-    this.currencyRate = this.currencyServ.getRate();
+    this.currencyRate = this.currencySrv.getRate();
     zoobc.Network.list(NETWORK_LIST);
     this.getBalanceByAddress(this.account.address);
     await this.fcmService.getToken(this.account);
     this.identity = this.fcmService.identity;
-    this.chatService.subscribeNotif(this.account.address);
+    this.subscribeAllAccount();
   }
 
   /**
    * Get balance of current active address
    * @ param address
    */
-  async getBalanceByAddress(address: string) {
+  private async getBalanceByAddress(address: string) {
     this.isError = false;
-    const date1 = new Date();
     this.isLoadingBalance = true;
 
     await zoobc.Account.getBalance(address)
       .then(data => {
         this.accountBalance = data.accountbalance;
+        this.lastTimeGetBalance = new Date();
       })
       .catch(error => {
+        console.error(error);
         this.accountBalance = {
           accountaddress: '',
           blockheight: 0,
@@ -166,29 +204,18 @@ export class DashboardPage implements OnInit {
           poprevenue: '',
           latest: false
         };
-        this.errorMsg = '';
-        this.isError = false;
-        if (error === 'error: account not found') {
-          // do something here
-        } else if (error === 'Response closed without headers') {
-          const date2 = new Date();
-          const diff = date2.getTime() - date1.getTime();
-          // console.log('== diff: ', diff);
-          if (diff < 5000) {
-            this.errorMsg = 'Please check internet connection!';
-          } else {
-            this.errorMsg = 'Fail connect to services, please try again later!';
-          }
-
-          this.isError = true;
-        } else if (error === 'all SubConns are in TransientFailure') {
-          this.errorMsg = 'All SubConns are in TransientFailure';
-        } else {
-          this.errorMsg = error;
-        }
-        console.error(' ==== have error: ', error);
+        this.isError = true;
+        alert('An error occurred while processing your request');
       })
-      .finally(() => (this.isLoadingBalance = false));
+      .finally(() => {
+        this.isLoadingBalance = false;
+      });
+  }
+
+  startTimer() {
+    setInterval(() => {
+      this.lastBalanceUpdated = dateAgo(this.lastTimeGetBalance);
+    }, 5000);
   }
 
   openMenu() {
@@ -204,13 +231,17 @@ export class DashboardPage implements OnInit {
     this.router.navigateByUrl('/feedback');
   }
 
-  openListAccount() {
+  switchAccount() {
     const navigationExtras: NavigationExtras = {
       state: {
         forWhat: 'account'
       }
     };
     this.router.navigate(['list-account'], navigationExtras);
+  }
+
+  openListAccount() {
+    this.router.navigate(['list-account']);
   }
 
   openDetailUnconfirm(trx) {
@@ -251,6 +282,24 @@ export class DashboardPage implements OnInit {
 
   openBlog() {
     window.open(BLOCKCHAIN_BLOG_URL, '_system');
+  }
+
+  async scanQrCode() {
+    // this.router.navigateByUrl('/qr-scanner');
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        from: 'dashboard'
+      }
+    };
+    this.router.navigate(['/qr-scanner'], navigationExtras);
+  }
+
+  sendCoin() {
+    if (this.account.type && this.account.type === 'multisig') {
+      this.router.navigate(['/multisig']);
+    } else {
+      this.router.navigate(['/sendcoin']);
+    }
   }
 
 }

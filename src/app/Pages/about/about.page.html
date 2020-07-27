@@ -13,27 +13,98 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+
+  <h2>About This Mobile Wallet</h2>
+  <p>
+    ZooBC wallet is a mobile application that is able to connect with the ZooBC blockchain network, so it can carry out
+    activities such as creating accounts, viewing balances, sending coins, displaying QRcode addresses.
+  </p>
+
   <ion-list>
     <ion-list-header>
       <h3>Release Information</h3>
     </ion-list-header>
-
-    <ion-item>
-      <ion-label>
-        <h2>Version</h2>
-        <p>Alpha - version 0.1.9</p>
-      </ion-label>
-    </ion-item>
   </ion-list>
 
-
   <ion-list>
-    <ion-list-header>
-      Changelog
-    </ion-list-header>
-
     <ion-item>
       <span>
+        <h4>Version 0.1.14</h4>
+        <h5>24 July 2020</h5>
+        <ul>
+          <li>Approver with options: contact, accounts,QRCode</li>
+          <li>Better validation on all field in escrow transaction</li>
+          <li>Add sender name, recipient name, approver name on send detail confirmation if possible</li>
+          <li>Balance last time updated info on dashboard</li>
+          <li>Balance auto update each time open dashboard</li>
+        </ul>
+      </span>
+    </ion-item>
+    <ion-item>
+      <span>
+        <h4>Version 0.1.13</h4>
+        <h5>22 July 2020</h5>
+        <ul>
+          <li>
+            Bug fixing: Receive page QRCode
+          </li>
+          <li>Bug fixing: escrow transaction validation</li>
+          <li>Bug fixing: Contact/Address book</li>
+          <li>My Task list and detil enhancement</li>
+          <li>Bug fixing: send money form not reset after send money</li>
+          <li>Bug fixing: first PIN Character dificult to read</li>
+        </ul>
+      </span>
+    </ion-item>    
+    <ion-item>
+      <span>
+        <h4>Version 0.1.12</h4>
+        <h5>17 July 2020</h5>
+        <ul>
+          <li>
+            Settings  enhancement on  language options and currency options
+          </li>
+          <li>Bug fixing on scan QRCode in address book</li>
+          <li>Bug fixing on account list</li>
+          <li>Bug fixing on contact list</li>
+          <li>Scanning  QRCode from Dashboard</li>
+          <li>Can create multi-signature account</li>
+          <li>Sending  Money with multi-signature account</li>
+          <li>Saving  multi-signature draft</li>
+          <li>Export / import multi-signature draft</li>
+        </ul>
+      </span>
+    </ion-item>    
+    <ion-item>
+      <span>
+        <h4>Version 0.1.11</h4>
+        <h5>27 May 2020</h5>
+        <ul>
+          <li>Add transaction fee on Trasaction History</li>
+          <li>Modify sender/recipient name in Transaction history that get from account or contact list.</li>
+          <li>Add balance information in Account list.</li>
+          <li>Modify transfer/send screen, transaction fee options will depend on escrow timeout.</li>
+          <li>Add blockheight information in transfer/send screen above of escrow timeout.</li>
+          <li>Modify field escrow timeout and commition in transfer/send screen make label in right side more wide.</li>
+        </ul>
+      </span>
+    </ion-item>
+    <ion-item>
+      <span>
+        <h4>Version 0.1.10</h4>
+        <h5>20 May 2020</h5>
+        <ul>
+          <li>Apply theme for all PIN, pin background will use current theme/selected</li>
+          <li>On my task screen, button refresh change to pull to refresh.</li>
+          <li>On transaction list paging use load more.</li>
+          <li>On chat screen, now have to segment chats and contacts.</li>
+          <li>Change default network to staging.</li>
+        </ul>
+      </span>
+    </ion-item>
+    <ion-item>
+      <span>
+        <h4>Version 0.1.9</h4>
         <h5>11 May 2020</h5>
         <ul>
           <li>Change layout of dashboard</li>
@@ -67,12 +138,12 @@
         <h5>19 Desember 2019</h5>
         <ul>
           <li>In Receive page, QR Code now with amount.</li>
-          <li>Change storage from local storage to native storage for better performance</li>     
+          <li>Change storage from local storage to native storage for better performance</li>
           <li>Modify dashboard UI design.</li>
           <li>Modify send coin UI design.</li>
-          <li>Add left menu UI  design</li>
+          <li>Add left menu UI design</li>
           <li>Modify splash screen.</li>
-          <li>Modify generate passphrase,  field number now inside text box as placeholder.</li>
+          <li>Modify generate passphrase, field number now inside text box as placeholder.</li>
           <li>Modify restore wallet, field number now inside text box as placeholder.</li>
           <li>Change copy to clipboard util, from browser clipboard to native clipboard.</li>
           <li>Add blog link in dashboard</li>

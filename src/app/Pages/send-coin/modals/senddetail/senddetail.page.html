@@ -18,6 +18,7 @@
           <h3>{{ "From account" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
+          <p *ngIf="trxSenderName">{{trxSenderName}}</p>
           <p><b>{{ trxSender }}</b></p>
         </ion-text>
       </ion-label>
@@ -29,8 +30,8 @@
         </ion-text>
         <ion-text color="secondary">
           <p><b>{{ trxBalance }} ZBC</b>
-          <br/>
-          {{trxBalance * priceInUSD * currencyRate.value  | number: '0.0-4'}} {{ currencyRate.name }}
+            <br />
+            {{trxBalance * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }}
           </p>
         </ion-text>
       </ion-label>
@@ -43,9 +44,10 @@
     <ion-item>
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{"Recipient Address"|translate}}</h3>
+          <h3>{{"Recipient"|translate}}</h3>
         </ion-text>
         <ion-text color="secondary">
+          <p *ngIf="trxRecipientName">{{trxRecipientName}}</p>
           <p><b>{{ trxRecipient }}</b></p>
         </ion-text>
       </ion-label>
@@ -58,8 +60,8 @@
         </ion-text>
         <ion-text color="secondary">
           <p>
-            <b>{{ trxAmount }} ZBC</b><br/>
-            {{trxAmount * priceInUSD * currencyRate.value  | number: '0.0-4'}} {{ currencyRate.name }}
+            <b>{{ trxAmount }} ZBC</b><br />
+            {{trxAmount * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }}
           </p>
         </ion-text>
       </ion-label>
@@ -73,57 +75,58 @@
         </ion-text>
         <ion-text color="secondary">
           <p>
-            <b>{{ trxFee }} ZBC</b><br/>
-            {{trxFee * priceInUSD * currencyRate.value  | number: '0.0-4'}} {{ currencyRate.name }}
+            <b>{{ trxFee }} ZBC</b><br />
+            {{trxFee * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }}
           </p>
         </ion-text>
       </ion-label>
     </ion-item>
 
-    <!-- Escrow start here -->    
-    <ion-item *ngIf="isAdvance">
+    <!-- Escrow start here -->
+    <ion-item *ngIf="IsEscrow">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{ "Approver Address" | translate }}</h3>
+          <h3>{{ "Approver" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
-          <p><b>{{ escrowApprover }}</b></p>
+          <p *ngIf="escApproverName">{{escApproverName}}</p>
+          <p><b>{{ escApproverAddress }}</b></p>
         </ion-text>
       </ion-label>
     </ion-item>
 
-    <ion-item  *ngIf="isAdvance">
+    <ion-item *ngIf="IsEscrow">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
           <h3>{{ "Approver Comission" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
           <p>
-            <b>{{ escrowCommision }} ZBC</b><br />
-            {{escrowCommision * priceInUSD * currencyRate.value  | number: '0.0-4'}} {{ currencyRate.name }}
+            <b>{{ escCommission }} ZBC</b><br />
+            {{escCommission * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }}
           </p>
         </ion-text>
       </ion-label>
     </ion-item>
 
-    <ion-item *ngIf="isAdvance">
+    <ion-item *ngIf="IsEscrow">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
           <h3>{{ "Timeout" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
-          <p><b>{{ escrowTimout }}</b></p>
+          <p><b>{{ escTimeout }}</b></p>
         </ion-text>
       </ion-label>
     </ion-item>
 
-    <ion-item *ngIf="isAdvance">
+    <ion-item *ngIf="IsEscrow">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
           <h3>{{ "Instruction" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
-          <p><b>{{ escrowInstruction }}</b></p>
+          <p><b>{{ escInstruction }}</b></p>
         </ion-text>
       </ion-label>
     </ion-item>

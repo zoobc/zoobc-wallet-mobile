@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
-import { AccountService } from 'src/app/Services/account.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { DEFAULT_THEME } from 'src/environments/variable.const';
+import { AccountService } from 'src/app/Services/account.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -14,50 +15,53 @@ export class LoginPage implements OnInit {
   public isLoginValid = true;
   theme = DEFAULT_THEME;
   constructor(
-    private accountService: AccountService,
     private authService: AuthService,
+    private accountService: AccountService,
     private router: Router,
-    private themeSrv: ThemeService
+    private themeSrv: ThemeService,
+    private navCtrl: NavController
   ) {
-
-    // if account changed
+    // if theme changed
     this.themeSrv.themeSubject.subscribe(() => {
       this.theme = this.themeSrv.theme;
     });
+  }
 
+  ionViewDidEnter() {
+    this.theme = this.themeSrv.theme;
+    if (!this.theme || this.theme === '' || this.theme === undefined) {
+      this.theme = DEFAULT_THEME;
+    }
   }
 
   async ngOnInit() {
     this.theme = this.themeSrv.theme;
-    const acc =  await this.accountService.getCurrAccount();
+    if (!this.theme || this.theme === '' || this.theme === undefined) {
+      this.theme = DEFAULT_THEME;
+    }
+    const acc = await this.accountService.getCurrAccount();
     if (acc === null) {
       this.router.navigate(['initial']);
       return;
     }
 
     const isLoggedIn = this.authService.isLoggedIn();
-    if (isLoggedIn === true) {
-      this.router.navigate(['/dashboard']);
-      return;
+    if (isLoggedIn) {
+      this.navCtrl.navigateRoot('/dashboard');
     }
   }
 
   async login(e: any) {
-    const {pin} = e;
+    const { pin } = e;
     this.isLoginValid = true;
-    const isUserLoggedIn =  await this.authService.login(pin);
+    const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
-      this.router.navigateByUrl('/dashboard');
+      this.navCtrl.navigateRoot('/dashboard');
     } else {
       this.isLoginValid = false;
       setTimeout(() => {
         this.isLoginValid = true;
-       }, 1500);
+      }, 1500);
     }
   }
-
-  createAccount() {
-    this.router.navigate(['initial']);
-  }
-
 }
