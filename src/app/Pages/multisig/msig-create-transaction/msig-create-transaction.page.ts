@@ -599,7 +599,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
     if (this.isRecipientValid) {
       const addressBytes = base64ToByteArray(this.recipientAddress);
-      if (this.isRecipientValid && addressBytes.length !== 33) {
+      if (this.isRecipientValid && addressBytes.length !== 49) {
         this.isRecipientValid = false;
         this.recipientMsg = this.translateService.instant(
           'Address is not valid!'
