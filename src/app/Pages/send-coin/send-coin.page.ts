@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
   LoadingController,
-  AlertController,
-  ToastController
-} from '@ionic/angular';
+  AlertController} from '@ionic/angular';
 import { MenuController, ModalController } from '@ionic/angular';
 
 import { base64ToByteArray } from 'src/Helpers/converters';
@@ -19,10 +17,8 @@ import { environment } from 'src/environments/environment';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
 import {
   COIN_CODE,
-  TRX_FEE_LIST,
   CONST_DEFAULT_CURRENCY,
   TRANSACTION_MINIMUM_FEE,
-  FOR_RECIPIENT,
   FOR_APPROVER
 } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
@@ -30,7 +26,6 @@ import { AccountService } from 'src/app/Services/account.service';
 import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
 import { calculateMinFee, sanitizeString } from 'src/Helpers/utils';
 import { makeShortAddress } from 'src/Helpers/converters';
-import { UtilService } from 'src/app/Services/util.service';
 import { Approver } from 'src/app/Interfaces/approver';
 import { Currency } from 'src/app/Interfaces/currency';
 import { TransactionService } from 'src/app/Services/transaction.service';
@@ -553,8 +548,16 @@ export class SendCoinPage implements OnInit {
       return;
     }
 
+
+    if (this.escrowApprover) {
+      if (!this.escrowApprover.toUpperCase().startsWith('ZBC')){
+        this.isEscrowApproverValid = false;
+        return;
+      } 
+    }
+
     const addressBytes = base64ToByteArray(this.escrowApprover);
-    if (this.isEscrowApproverValid && addressBytes.length !== 33) {
+    if (this.isEscrowApproverValid && addressBytes.length !== 49) {
       this.isEscrowApproverValid = false;
       return;
     }
@@ -581,14 +584,18 @@ export class SendCoinPage implements OnInit {
     }
 
     if (this.isRecipientValid) {
-      if (!this.recipientAddress.toUpperCase().startsWith('ZBC-')){
+      if (!this.recipientAddress.toUpperCase().startsWith('ZBC')){
+        this.isRecipientValid = false;
+        this.recipientMsg = this.translateService.instant(
+          'Address is not valid!'
+        );
         return;
       } 
     }
 
     if (this.isRecipientValid) {
       const addressBytes = base64ToByteArray(this.recipientAddress);
-      if (this.isRecipientValid && addressBytes.length !== 33) {
+      if (this.isRecipientValid && addressBytes.length !== 49) {
         this.isRecipientValid = false;
         this.recipientMsg = this.translateService.instant(
           'Address is not valid!'
@@ -614,7 +621,7 @@ export class SendCoinPage implements OnInit {
     pinmodal.onDidDismiss().then(returnedData => {
       if (returnedData && returnedData.data !== 0) {
         const pin = returnedData.data;
-        this.sendMoney(pin);
+        this.sendMoney();
       }
     });
     return await pinmodal.present();
@@ -745,10 +752,8 @@ export class SendCoinPage implements OnInit {
       }
     });
 
-    let modalResult: any;
     modalDetail.onDidDismiss().then(dataReturned => {
       if (dataReturned) {
-        modalResult = dataReturned.data;
         if (dataReturned.data === 1) {
           this.inputPIN();
         }
@@ -762,7 +767,7 @@ export class SendCoinPage implements OnInit {
     this.escrowInstruction = sanitizeString(this.escrowInstruction);
   }
 
-  async sendMoney(pin: string) {
+  async sendMoney() {
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
@@ -820,7 +825,7 @@ export class SendCoinPage implements OnInit {
       }
     });
 
-    modal.onDidDismiss().then(data => {});
+    modal.onDidDismiss().then(() => {});
 
     return await modal.present();
   }
@@ -834,7 +839,7 @@ export class SendCoinPage implements OnInit {
       }
     });
 
-    modal.onDidDismiss().then(data => {
+    modal.onDidDismiss().then(() => {
       this.resetValidation();
     });
 

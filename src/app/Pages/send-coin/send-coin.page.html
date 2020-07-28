@@ -63,7 +63,7 @@
     </ion-row>
     <ion-row class="ion-row-cont">
       <ion-col size="10" style="padding:10px">
-        <ion-textarea rows="3" maxlength="60" placeholder="{{'Enter recipient address'|translate}}"
+        <ion-textarea rows="3" maxlength="80" placeholder="{{'Enter recipient address'|translate}}"
           (ionChange)="validateRecipient()" [(ngModel)]="recipientAddress">
         </ion-textarea>
       </ion-col>
@@ -195,7 +195,7 @@
       </ion-row>
       <ion-row class="ion-row-cont">
         <ion-col size="10" style="padding:10px">
-          <ion-textarea rows="3" maxlength="60" placeholder="{{'Enter approver address'|translate}}"
+          <ion-textarea rows="3" maxlength="80" placeholder="{{'Enter approver address'|translate}}"
             (ionChange)="validateApprover()" [(ngModel)]="escrowApprover">
           </ion-textarea>
         </ion-col>
