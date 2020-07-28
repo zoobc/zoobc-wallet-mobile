@@ -19,7 +19,7 @@ export class AccountService {
   private plainPassphrase: string;
   private arrayPhrase = [];
   private plainPin: string;
-  private keyring: ZooKeyring;
+  keyring: ZooKeyring;
   private restoring = false;
 
   constructor(
@@ -180,7 +180,7 @@ export class AccountService {
   }
 
   createNewAccount(arg: string, pathNumber: number) {
-    const childSeed = this.keyring.calcDerivationPath(0);
+    const childSeed = this.keyring.calcDerivationPath(pathNumber);
     const address = getZBCAdress(childSeed.publicKey);
     const account: Account = {
       name: sanitizeString(arg),

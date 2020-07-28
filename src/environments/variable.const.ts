@@ -213,14 +213,14 @@ export const LANGUAGES = [
 
 export const NETWORK_LIST = [
 
-  // {
-  //   name: 'Demo Node (n100.demo)',
-  //   host: 'https://n100.demo.proofofparticipation.network'
-  // }
   {
-    name: 'Staging (n0.demo.)',
-    host: 'https://n0.demo.proofofparticipation.network'
-  },
+    name: 'Demo Node (n100.demo)',
+    host: 'https://n100.demo.proofofparticipation.network:7000'
+  }
+  // {
+  //   name: 'Staging (n0.demo.)',
+  //   host: 'https://n0.demo.proofofparticipation.network'
+  // },
   // {
   //   name: 'Demo 1 (x.x.34.10): ',
   //   host: 'http://172.104.34.10:8002'

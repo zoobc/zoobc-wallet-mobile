@@ -55,6 +55,7 @@ export class AuthService implements CanActivate {
 
     if (passphrase) {
       this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
+      this.accountService.keyring = this.keyring;
       this.isUserLoggenIn = true;
       return this.isUserLoggenIn;
     }
@@ -127,7 +128,6 @@ export class AuthService implements CanActivate {
           address,
           type: 'normal',
         };
-        console.log('== address - ' + counter, address);
         this.tempAccounts.push(account);
         accountPath++;
         counter++;

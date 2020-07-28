@@ -45,10 +45,10 @@ export function timeConverter(unixTimestamp: number) {
 }
 
 export function makeShortAddress(addrs: string) {
-  if (addrs.length < 21) {
-      return addrs;
-  }
-  return addrs.substring(0, 8).concat('...').concat(addrs.substring(addrs.length - 8, addrs.length));
+  // if (addrs.length < 21) {
+  //     return addrs;
+  // }
+  return addrs.substring(0, 21); //.concat('...').concat(addrs.substring(addrs.length - 8, addrs.length));
 }
 
 export function byteArrayToHex(

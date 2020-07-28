@@ -185,7 +185,6 @@ export class ExistingWalletPage implements OnInit {
     pinmodal.onDidDismiss().then(returnedData => {
       if (returnedData && returnedData.data !== '-') {
         this.plainPin = returnedData.data;
-        // set pin to service
         this.accountSrv.setPlainPin(this.plainPin);
         this.createAccount();
         this.authService.restoreAccounts();
