@@ -116,7 +116,8 @@ const routes: Routes = [
   },
   {
     path: 'settings',
-    loadChildren: './Pages/settings/settings.module#SettingsPageModule'
+    loadChildren: './Pages/settings/settings.module#SettingsPageModule',
+    canActivate: [AuthService]
   },
   {
     path: 'applist',
