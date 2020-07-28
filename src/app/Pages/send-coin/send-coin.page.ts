@@ -96,7 +96,6 @@ export class SendCoinPage implements OnInit {
   escrowApproverName: string;
   scanForWhat: string;
 
-
   constructor(
     private router: Router,
     public loadingController: LoadingController,
@@ -113,8 +112,7 @@ export class SendCoinPage implements OnInit {
     private utilService: UtilService,
     private trxService: TransactionService
   ) {
-
-    this.qrScannerService.qrScannerSubject.subscribe((address) => {
+    this.qrScannerService.qrScannerSubject.subscribe(address => {
       this.getScannerResult(address);
     });
 
@@ -135,7 +133,6 @@ export class SendCoinPage implements OnInit {
         this.escrowApproverName = address.name;
       }
     });
-
 
     this.accountService.recipientSubject.subscribe({
       next: recipient => {
@@ -423,6 +420,7 @@ export class SendCoinPage implements OnInit {
   }
 
   validateCustomFee() {
+    this.validateAmount();
     this.isCustomFeeValid = true;
     this.convertCustomeFee();
     if (this.minimumFee > this.customfee) {
@@ -500,7 +498,9 @@ export class SendCoinPage implements OnInit {
     }
 
     if (this.isAmountValid && this.amount < 0.00000001) {
-      this.amountMsg = this.translateService.instant('minimum amount is 0.00000001!');
+      this.amountMsg = this.translateService.instant(
+        'minimum amount is 0.00000001!'
+      );
       this.isAmountValid = false;
       return;
     }
@@ -513,15 +513,33 @@ export class SendCoinPage implements OnInit {
     if (!this.isLoadingBalance) {
       if (
         this.isAmountValid &&
-        this.amount + Number(this.optionFee) > this.account.balance
+        this.amount +
+          (Number(this.optionFee) >= 0
+            ? Number(this.optionFee)
+            : Number(this.customfeeTemp)) >
+          this.account.balance
       ) {
-        this.amountMsg = this.translateService.instant('Insufficient balance');
+        if (this.account.balance > 0) {
+          this.amountMsg =
+            this.translateService.instant(
+              'Insufficient balance. The maximum amount is'
+            ) +
+            ' ' +
+            (Number(this.account.balance) -
+              (Number(this.optionFee) >= 0
+                ? Number(this.optionFee)
+                : Number(this.customfeeTemp))) +
+            ' ZBC';
+        } else {
+          this.amountMsg = this.translateService.instant(
+            'Insufficient balance.'
+          );
+        }
         this.isAmountValid = false;
         return;
       }
     }
   }
-
 
   validateApprover() {
     this.isEscrowApproverValid = true;
@@ -529,10 +547,7 @@ export class SendCoinPage implements OnInit {
       return;
     }
 
-    if (
-      !this.escrowApprover ||
-      this.escrowApprover === ''
-    ) {
+    if (!this.escrowApprover || this.escrowApprover === '') {
       this.isEscrowApproverValid = false;
       return;
     }
@@ -542,7 +557,6 @@ export class SendCoinPage implements OnInit {
       this.isEscrowApproverValid = false;
       return;
     }
-
   }
 
   shortAddress(address: string) {
@@ -557,10 +571,7 @@ export class SendCoinPage implements OnInit {
       return;
     }
 
-    if (
-      !this.recipientAddress ||
-      this.recipientAddress === ''
-    ) {
+    if (!this.recipientAddress || this.recipientAddress === '') {
       this.isRecipientValid = false;
       this.recipientMsg = this.translateService.instant(
         'Recipient is required!'
@@ -607,23 +618,22 @@ export class SendCoinPage implements OnInit {
       if (params && params.jsonData && params.jsonData.length > 0) {
         const result = params.jsonData.split('||');
         if (params.from === 'dashboard') {
-            this.recipientAddress = result[0];
-            if (result.length > 1) {
-              this.amountTemp = Number(result[1]);
-              if (result[1] !== null) {
-                this.amountSecond =
-                  this.amountTemp * this.priceInUSD * this.currencyRate.value;
-              } else {
-                this.amountSecond = undefined;
-              }
+          this.recipientAddress = result[0];
+          if (result.length > 1) {
+            this.amountTemp = Number(result[1]);
+            if (result[1] !== null) {
+              this.amountSecond =
+                this.amountTemp * this.priceInUSD * this.currencyRate.value;
+            } else {
+              this.amountSecond = undefined;
             }
+          }
         }
       }
     });
   }
 
   async showConfirmation() {
-
     // validate recipient
     this.isRecipientValid = true;
     this.recipientMsg = '';
@@ -640,7 +650,7 @@ export class SendCoinPage implements OnInit {
       this.transactionFee = this.customfee;
     }
     this.isFeeValid = true;
-    if ((isNaN(this.transactionFee) || Number(this.transactionFee) <= 0)) {
+    if (isNaN(this.transactionFee) || Number(this.transactionFee) <= 0) {
       this.isFeeValid = false;
     } else if (this.transactionFee < this.minimumFee) {
       this.isFeeValid = false;
@@ -659,12 +669,12 @@ export class SendCoinPage implements OnInit {
       }
 
       this.isEscrowCommitionValid = true;
-      if ((isNaN(this.escrowCommision) || Number(this.escrowCommision) <= 0)) {
+      if (isNaN(this.escrowCommision) || Number(this.escrowCommision) <= 0) {
         this.isEscrowCommitionValid = false;
       }
 
       this.isEscrowTimeoutValid = true;
-      if ((isNaN(this.escrowTimout) || Number(this.escrowTimout) <= 0)) {
+      if (isNaN(this.escrowTimout) || Number(this.escrowTimout) <= 0) {
         this.isEscrowTimeoutValid = false;
       }
 
@@ -673,7 +683,6 @@ export class SendCoinPage implements OnInit {
         this.isEscrowInstructionValid = false;
       }
     }
-
 
     if (
       !this.amount ||
@@ -809,8 +818,7 @@ export class SendCoinPage implements OnInit {
       }
     });
 
-    modal.onDidDismiss().then(data => {
-    });
+    modal.onDidDismiss().then(data => {});
 
     return await modal.present();
   }
@@ -838,6 +846,7 @@ export class SendCoinPage implements OnInit {
   }
 
   changeFee() {
+    this.validateAmount();
     this.customeChecked = false;
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
