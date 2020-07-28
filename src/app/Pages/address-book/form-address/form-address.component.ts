@@ -41,7 +41,7 @@ export class FormAddressComponent implements OnInit, OnChanges {
     name: new FormControl('', [Validators.required]),
     address: new FormControl('', [
       Validators.required,
-      Validators.minLength(44),
+      Validators.minLength(66),
       bytesLengthValidator
     ])
   });
@@ -152,7 +152,7 @@ export class FormAddressComponent implements OnInit, OnChanges {
 function bytesLengthValidator(
   control: AbstractControl
 ): { [key: string]: boolean } | null {
-  return base64ToByteArray(control.value).length !== 33
+  return base64ToByteArray(control.value).length !== 49
     ? { bytesLength: true }
     : null;
 }
