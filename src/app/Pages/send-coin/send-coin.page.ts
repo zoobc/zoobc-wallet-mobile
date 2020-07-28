@@ -420,6 +420,7 @@ export class SendCoinPage implements OnInit {
   }
 
   validateCustomFee() {
+    this.validateAmount();
     this.isCustomFeeValid = true;
     this.convertCustomeFee();
     if (this.minimumFee > this.customfee) {
@@ -512,7 +513,11 @@ export class SendCoinPage implements OnInit {
     if (!this.isLoadingBalance) {
       if (
         this.isAmountValid &&
-        this.amount + Number(this.optionFee) > this.account.balance
+        this.amount +
+          (Number(this.optionFee) >= 0
+            ? Number(this.optionFee)
+            : Number(this.customfeeTemp)) >
+          this.account.balance
       ) {
         if (this.account.balance > 0) {
           this.amountMsg =
@@ -520,7 +525,10 @@ export class SendCoinPage implements OnInit {
               'Insufficient balance. The maximum amount is'
             ) +
             ' ' +
-            (Number(this.account.balance) - Number(this.optionFee)) +
+            (Number(this.account.balance) -
+              (Number(this.optionFee) >= 0
+                ? Number(this.optionFee)
+                : Number(this.customfeeTemp))) +
             ' ZBC';
         } else {
           this.amountMsg = this.translateService.instant(
