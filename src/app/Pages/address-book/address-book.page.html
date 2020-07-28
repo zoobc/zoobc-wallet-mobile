@@ -17,7 +17,7 @@
 
 <ion-content>
 
-  <ion-fab ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab *ngIf="!forWhat" ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button color="tertiary" (click)="createNewAddress()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
@@ -41,7 +41,7 @@
             <ion-icon name="copy"></ion-icon>
           </ion-button>
         </ion-item>
-        <ion-item-options>
+        <ion-item-options *ngIf="!forWhat" >
           <button color="success" (click)="editAddress(i)" class="tool">
             <ion-icon name="create"></ion-icon>{{ "Edit" | translate }}
           </button>
