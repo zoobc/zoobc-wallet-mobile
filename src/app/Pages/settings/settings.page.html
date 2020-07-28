@@ -35,7 +35,7 @@
         </p>
         <div style="border:1px solid #cccccc">
           <ion-select interface="popover" [(ngModel)]="activeNetwork" (ionChange)="selectActiveNetwork()">
-            <ion-select-option *ngFor="let network of networks let idx = index;" value="{{ idx }}">
+            <ion-select-option *ngFor="let network of networks; let idx = index;" value="{{idx}}">
               {{ network.name }}
             </ion-select-option>
           </ion-select>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StoragedevService } from './storagedev.service';
 import zoobc from 'zoobc-sdk';
-import { STORAGE_ACTIVE_NETWORK_IDX } from 'src/environments/variable.const';
+import { STORAGE_ACTIVE_NETWORK_IDX, NETWORK_LIST } from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
@@ -15,9 +15,9 @@ export class NetworkService {
   public changeNodeSubject: Subject<any> = new Subject<any>();
 
   setInitialNetwork() {
+    zoobc.Network.list(NETWORK_LIST);
     this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX).then((val: any) => {
-      console.log('== network value: ', val);
-      if (!val) {
+      if (!val || val === null) {
         this.setNetwork(0);
       } else {
         this.setNetwork(val);

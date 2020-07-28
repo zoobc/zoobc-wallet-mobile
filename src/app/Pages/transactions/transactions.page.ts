@@ -79,7 +79,6 @@ export class TransactionsPage implements OnInit {
     this.currencyServ.currencySubject.subscribe((rate: Currency) => {
       this.currencyRate = rate;
     });
-    zoobc.Network.list(NETWORK_LIST);
   }
 
   doRefresh(event: any) {
@@ -216,12 +215,9 @@ export class TransactionsPage implements OnInit {
 
   getName(address: string) {
     let nama =  '';
-    console.log('== addresses: ', this.addresses);
-
     if (this.addresses && this.addresses.length > 0) {
       this.addresses.forEach((obj: { name: any; address: string; }) => {
            if (address === obj.address) {
-              console.log('===== found name: ', obj.name);
               nama = obj.name;
            }
         });

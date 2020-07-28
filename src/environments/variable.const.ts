@@ -2,7 +2,7 @@ import { Currency } from 'src/app/Interfaces/currency';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = 'p4ssphr4se';
 export const STORAGE_ACTIVE_CURRENCY = 'active_currency';
-export const STORAGE_ACTIVE_NETWORK_IDX = 'current_network_idx';
+export const STORAGE_ACTIVE_NETWORK_IDX = 'current_node_selected';
 export const STORAGE_CURRENCY_RATES = 'currency_rates';
 export const STORAGE_CURRENCY_RATE = 'rate';
 export const STORAGE_ADDRESS_BOOK = 'address_book';
@@ -14,7 +14,7 @@ export const STORAGE_ENC_PASSPHRASE_SEED = 'encrypted_passphrase_seed';
 export const STORAGE_ESCROW_WAITING_LIST = 'escrow_waiting_list';
 export const STORAGE_MULTISIG_DRAFTS = 'multisig_drafts';
 export const STORAGE_ACTIVE_THEME = 'storage_active_theme';
-export const DEFAULT_THEME = 'zoobc';
+export const DEFAULT_THEME = 'bcz';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
 export const FIREBASE_DEVICES = 'devices';
 export const FIREBASE_CHAT = 'chats';
@@ -214,8 +214,8 @@ export const LANGUAGES = [
 export const NETWORK_LIST = [
 
   {
-    name: 'Demo Node (n100.demo)',
-    host: 'https://n100.demo.proofofparticipation.network:7000'
+    name: 'Demo (n100.demo)',
+    host: 'https://n100.demo.proofofparticipation.network:7001'
   }
   // {
   //   name: 'Staging (n0.demo.)',
@@ -240,18 +240,20 @@ export const NETWORK_LIST = [
   // }
 ];
 
-export const TRX_FEE_LIST = [{
-    name: 'Slow',
-    fee: TRANSACTION_MINIMUM_FEE * 2
-  },
-  {
-    name: 'Average',
-    fee: TRANSACTION_MINIMUM_FEE * 4
-  },
-  {
-    name: 'Fast',
-    fee: TRANSACTION_MINIMUM_FEE * 6
-}];
+// export const TRX_FEE_LIST = [{
+//     name: 'Slow',
+//     fee: TRANSACTION_MINIMUM_FEE * 2
+//   }
+//   ,
+//   {
+//     name: 'Average',
+//     fee: TRANSACTION_MINIMUM_FEE * 4
+//   },
+//   {
+//     name: 'Fast',
+//     fee: TRANSACTION_MINIMUM_FEE * 6
+//   }
+//   ];
 
 export const CURRENCY_LIST = {
   // AED: 'United Arab Emirates Dirham', AFN: 'Afghan Afghani',
