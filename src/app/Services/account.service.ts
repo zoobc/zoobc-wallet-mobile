@@ -3,12 +3,13 @@ import {
   STORAGE_ALL_ACCOUNTS,
   STORAGE_CURRENT_ACCOUNT,
   STORAGE_ENC_PASSPHRASE_SEED,
-  SALT_PASSPHRASE} from 'src/environments/variable.const';
+  SALT_PASSPHRASE
+} from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
 import { StoragedevService } from './storagedev.service';
 import { Account } from '../Interfaces/account';
 import { sanitizeString } from 'src/Helpers/utils';
-import zoobc, { MultiSigAddress, ZooKeyring, getZBCAdress, TransactionListParams, TransactionsResponse } from 'zoobc-sdk';
+import zoobc, { MultiSigAddress, ZooKeyring, getZBCAdress } from 'zoobc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class AccountService {
   private arrayPhrase = [];
   private plainPin: string;
   keyring: ZooKeyring;
-  private restoring = false;
+  willRestoreAccounts: boolean;
+  private totalAccountLoaded = 20;
 
   constructor(
     private strgSrv: StoragedevService) { }
@@ -149,6 +151,7 @@ export class AccountService {
 
   setPlainPassphrase(arg: string) {
     this.plainPassphrase = arg;
+    this.keyring = new ZooKeyring(this.plainPassphrase, SALT_PASSPHRASE);
   }
 
   getPassphrase(): string {
@@ -173,7 +176,6 @@ export class AccountService {
 
   async createInitialAccount() {
     await this.removeAllAccounts();
-    this.keyring = new ZooKeyring(this.plainPassphrase, SALT_PASSPHRASE);
     const account = this.createNewAccount('Account 1', 0);
     await this.addAccount(account);
     this.savePassphraseSeed(this.plainPassphrase, this.plainPin);
@@ -215,56 +217,57 @@ export class AccountService {
     return account;
   }
 
+
   async restoreAccounts() {
-    const isRestored: boolean =
-      (await this.strgSrv.get('IS_RESTORED')) === 'true';
-    if (!isRestored && !this.restoring) {
-      this.restoring = true;
-      const keyring = this.keyring;
 
-      let accountPath = 0;
-      let accountsTemp = [];
-      let accounts = [];
-      let counter = 0;
+    console.log('=== willRestoreAccounts: ', this.willRestoreAccounts);
 
-      while (counter < 20) {
-        const childSeed = keyring.calcDerivationPath(accountPath);
-        const publicKey = childSeed.publicKey;
-        const address = getZBCAdress(publicKey);
-        const account: Account = {
-          name: 'Account '.concat((accountPath + 1).toString()),
-          path: accountPath,
-          nodeIP: null,
-          address,
-          type: 'normal'
-        };
-        const params: TransactionListParams = {
-          address,
-          transactionType: 1,
-          pagination: {
-            page: 1,
-            limit: 1
-          }
-        };
-        await zoobc.Transactions.getList(params).then(
-          (res: TransactionsResponse) => {
-            // tslint:disable-next-line:radix
-            const totalTx = parseInt(res.total);
-            accountsTemp.push(account);
-            if (totalTx > 0) {
-              accounts = accounts.concat(accountsTemp);
-              accountsTemp = [];
-              counter = 0;
-            }
-          }
-        );
-        accountPath++;
-        counter++;
-      }
-      this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
-      this.strgSrv.set('IS_RESTORED', 'true');
-
-      this.restoring = false;
+    if (!this.willRestoreAccounts){
+        console.log('=== will return ');
+        return;
     }
+    /// add additional accounts begin
+    const tempAccounts = [];
+
+    for (let i = 1; i < this.totalAccountLoaded + 1; i++) {
+      const account: Account = this.createNewAccount(
+        `Account ${i + 1}`,
+        i
+      );
+      tempAccounts.push(account.address);
+    }
+
+    try {
+      const data = await zoobc.Account.getBalances(tempAccounts);
+      const { accountbalancesList } = data;
+
+      let exists = 0;
+      for (let i = 0; i < tempAccounts.length; i++) {
+        const account: Account = this.createNewAccount(
+          `Account ${i + 1}`,
+          i
+        );
+
+        await this.addAccount(account);
+
+
+        if (
+          accountbalancesList.findIndex(
+            (acc: any) => acc.accountaddress === account.address
+          ) >= 0
+        ) {
+          exists++;
+        }
+
+        if (exists >= accountbalancesList.length) {
+          break;
+        }
+      }
+    } catch (error) {
+      console.log('__error', error);
+    }
+    this.willRestoreAccounts = false;
+    /// add additional accounts end    
   }
+
 }

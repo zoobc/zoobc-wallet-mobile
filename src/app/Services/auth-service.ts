@@ -8,8 +8,7 @@ import {
 import { auth } from 'firebase/app';
 import { AccountService } from './account.service';
 import { StoragedevService } from './storagedev.service';
-import zoobc, { ZooKeyring, getZBCAdress } from 'zoobc-sdk';
-import { Account } from '../Interfaces/account';
+import zoobc, { ZooKeyring } from 'zoobc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -108,35 +107,6 @@ export class AuthService implements CanActivate {
       .then(data => {
         return data.accountbalance;
       });
-  }
-
-  restoreAccounts() {
-    const isRestored = false; //  : boolean = localStorage.getItem('IS_RESTORED') === 'true';
-    if (!isRestored && !this.restoring) {
-      this.restoring = true;
-      let accountPath = 0;
-      let counter = 0;
-
-      while (counter < 5) {
-        const childSeed = this.keyring.calcDerivationPath(accountPath);
-        const publicKey = childSeed.publicKey;
-        const address = getZBCAdress(publicKey);
-        const account: Account = {
-          name: 'Account '.concat((accountPath + 1).toString()),
-          path: accountPath,
-          nodeIP: null,
-          address,
-          type: 'normal',
-        };
-        this.tempAccounts.push(account);
-        accountPath++;
-        counter++;
-      }
-      //  this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
-      localStorage.setItem('IS_RESTORED', 'true');
-
-      this.restoring = false;
-    }
   }
 
 }
