@@ -34,6 +34,7 @@ import { UtilService } from 'src/app/Services/util.service';
 import { Approver } from 'src/app/Interfaces/approver';
 import { Currency } from 'src/app/Interfaces/currency';
 import { TransactionService } from 'src/app/Services/transaction.service';
+import { AuthService } from 'src/app/Services/auth-service';
 
 @Component({
   selector: 'app-send-coin',
@@ -109,7 +110,7 @@ export class SendCoinPage implements OnInit {
     public addressbookService: AddressBookService,
     private translateService: TranslateService,
     private addressBookSrv: AddressBookService,
-    private utilService: UtilService,
+    private authSrv: AuthService,
     private trxService: TransactionService
   ) {
     this.qrScannerService.qrScannerSubject.subscribe(address => {
@@ -580,6 +581,12 @@ export class SendCoinPage implements OnInit {
     }
 
     if (this.isRecipientValid) {
+      if (!this.recipientAddress.toUpperCase().startsWith('ZBC-')){
+        return;
+      } 
+    }
+
+    if (this.isRecipientValid) {
       const addressBytes = base64ToByteArray(this.recipientAddress);
       if (this.isRecipientValid && addressBytes.length !== 33) {
         this.isRecipientValid = false;
@@ -717,10 +724,7 @@ export class SendCoinPage implements OnInit {
       return;
     }
 
-    let modalResult: any;
-    console.log(' reip Name: ', this.recipientName);
-    console.log(' ppocer neme:', this.escrowApproverName);
-
+    
     const modalDetail = await this.modalController.create({
       component: SenddetailPage,
       componentProps: {
@@ -741,6 +745,7 @@ export class SendCoinPage implements OnInit {
       }
     });
 
+    let modalResult: any;
     modalDetail.onDidDismiss().then(dataReturned => {
       if (dataReturned) {
         modalResult = dataReturned.data;
@@ -786,10 +791,7 @@ export class SendCoinPage implements OnInit {
       };
     }
 
-    const childSeed = await this.utilService.generateSeed(
-      pin,
-      this.account.path
-    );
+    const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
     await zoobc.Transactions.sendMoney(data, childSeed)
       .then(
         (resolveTx: any) => {

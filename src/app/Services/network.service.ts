@@ -16,6 +16,7 @@ export class NetworkService {
 
   setInitialNetwork() {
     this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX).then((val: any) => {
+      console.log('== network value: ', val);
       if (!val) {
         this.setNetwork(0);
       } else {

@@ -3,7 +3,6 @@ import { ToastController, ModalController } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ZooKeyring } from 'zoobc-sdk';
 import { STORAGE_ENC_PASSPHRASE_SEED, SALT_PASSPHRASE } from 'src/environments/variable.const';
-import { doDecrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
 import CryptoJS from 'crypto-js';
 import { ConfirmationPage } from '../Components/confirmation/confirmation.page';
@@ -83,16 +82,6 @@ export class UtilService {
     });
 
     return await modal.present();
-  }
-
-
-  public async generateSeed(pin: any, path: number) {
-    const passEncryptSaved = await this.storageService.get(STORAGE_ENC_PASSPHRASE_SEED);
-    const decryptedArray = doDecrypt(passEncryptSaved, pin);
-    const passphrase = decryptedArray.toString(CryptoJS.enc.Utf8);
-    this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
-    const seed = this.keyring.calcDerivationPath(path);
-    return seed;
   }
 
 }

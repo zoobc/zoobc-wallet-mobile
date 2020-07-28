@@ -2,24 +2,13 @@ import { Injectable } from '@angular/core';
 import {
   STORAGE_ALL_ACCOUNTS,
   STORAGE_CURRENT_ACCOUNT,
-  STORAGE_ENC_MASTER_SEED,
   STORAGE_ENC_PASSPHRASE_SEED,
-  COIN_CODE,
-  SALT_PASSPHRASE
-} from 'src/environments/variable.const';
+  SALT_PASSPHRASE} from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
-import { doEncrypt, makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
 import { Account } from '../Interfaces/account';
-import { KeyringService } from './keyring.service';
-import { getAddressFromPublicKey, sanitizeString } from 'src/Helpers/utils';
-import zoobc, {
-  MultiSigAddress,
-  ZooKeyring,
-  getZBCAdress,
-  TransactionListParams,
-  TransactionsResponse
-} from 'zoobc-sdk';
+import { sanitizeString } from 'src/Helpers/utils';
+import zoobc, { MultiSigAddress, ZooKeyring, getZBCAdress, TransactionListParams, TransactionsResponse } from 'zoobc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -30,13 +19,11 @@ export class AccountService {
   private plainPassphrase: string;
   private arrayPhrase = [];
   private plainPin: string;
-  private keyring: ZooKeyring;
+  keyring: ZooKeyring;
   private restoring = false;
 
   constructor(
-    private keyringService: KeyringService,
-    private strgSrv: StoragedevService
-  ) {}
+    private strgSrv: StoragedevService) { }
 
   public accountSubject: Subject<Account> = new Subject<Account>();
   public recipientSubject: Subject<Account> = new Subject<Account>();
@@ -94,7 +81,6 @@ export class AccountService {
 
   async removeAllAccounts() {
     await this.strgSrv.remove(STORAGE_CURRENT_ACCOUNT);
-    await this.strgSrv.remove(STORAGE_ENC_MASTER_SEED);
     await this.strgSrv.remove(STORAGE_ENC_PASSPHRASE_SEED);
     await this.strgSrv.remove(STORAGE_ALL_ACCOUNTS);
   }
@@ -138,13 +124,8 @@ export class AccountService {
     }
   }
 
-  saveMasterSeed(seedBase58: string, pin: string) {
-    const encSeed = doEncrypt(seedBase58, pin);
-    this.strgSrv.set(STORAGE_ENC_MASTER_SEED, encSeed);
-  }
-
-  savePassphraseSeed(passphrase: string, pin: string) {
-    const encPassphraseSeed = doEncrypt(passphrase, pin);
+  savePassphraseSeed(passphrase: string, key: string) {
+    const encPassphraseSeed = zoobc.Wallet.encryptPassphrase(passphrase, key);
     this.strgSrv.set(STORAGE_ENC_PASSPHRASE_SEED, encPassphraseSeed);
   }
 
@@ -192,30 +173,21 @@ export class AccountService {
 
   async createInitialAccount() {
     await this.removeAllAccounts();
-    const { seed } = this.keyringService.calcBip32RootKeyFromMnemonic(
-      COIN_CODE,
-      this.plainPassphrase,
-      SALT_PASSPHRASE
-    );
-    const masterSeed = seed;
+    this.keyring = new ZooKeyring(this.plainPassphrase, SALT_PASSPHRASE);
     const account = this.createNewAccount('Account 1', 0);
     await this.addAccount(account);
     this.savePassphraseSeed(this.plainPassphrase, this.plainPin);
-    this.saveMasterSeed(masterSeed, this.plainPin);
   }
 
   createNewAccount(arg: string, pathNumber: number) {
-    const childSeed = this.keyringService.calcForDerivationPathForCoin(
-      COIN_CODE,
-      pathNumber
-    );
-    const newAddress = getAddressFromPublicKey(childSeed.publicKey);
+    const childSeed = this.keyring.calcDerivationPath(pathNumber);
+    const address = getZBCAdress(childSeed.publicKey);
     const account: Account = {
       name: sanitizeString(arg),
       path: pathNumber,
       type: 'normal',
       nodeIP: null,
-      address: newAddress
+      address
     };
     return account;
   }

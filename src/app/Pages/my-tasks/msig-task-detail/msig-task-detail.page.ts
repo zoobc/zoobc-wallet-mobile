@@ -211,7 +211,7 @@ export class MsigTaskDetailPage implements OnInit {
     const key = this.authSrv.tempKey;
     const signByAddress = this.account.signByAddress;
     const signByAcc = await this.accountService.getAccount(signByAddress);
-    const seed = await this.utilService.generateSeed(key, signByAcc.path);
+    const seed = this.authSrv.keyring.calcDerivationPath(signByAcc.path);
     this.isLoadingTx = true;
 
     const data: MultiSigInterface = {

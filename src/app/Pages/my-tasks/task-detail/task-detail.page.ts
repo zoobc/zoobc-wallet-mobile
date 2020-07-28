@@ -8,6 +8,7 @@ import { Account } from 'src/app/Interfaces/account';
 import { ActivatedRoute } from '@angular/router';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 import { UtilService } from 'src/app/Services/util.service';
+import { AuthService } from 'src/app/Services/auth-service';
 
 @Component({
   selector: 'app-task-detail',
@@ -27,6 +28,7 @@ export class TaskDetailPage implements OnInit {
     private modalCtrl: ModalController,
     private activeRoute: ActivatedRoute,
     private modalController: ModalController,
+    private authSrv: AuthService,
     private utilService: UtilService,
     private accountService: AccountService,
     private storageService: StoragedevService
@@ -93,7 +95,7 @@ export class TaskDetailPage implements OnInit {
   async executeConfirm(pin: string) {
     const escrowId = this.escrowDetail.id;
     const checkWaitList = this.waitingList.includes(escrowId);
-    const childSeed = await this.utilService.generateSeed(pin, this.account.path);
+    const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
     const approval = this.account.address;
     if (checkWaitList !== true) {
 
@@ -132,7 +134,7 @@ export class TaskDetailPage implements OnInit {
   async executeReject(pin: string) {
     const escrowId = this.escrowDetail.id;
     const checkWaitList = this.waitingList.includes(escrowId);
-    const childSeed = await this.utilService.generateSeed(pin, this.account.path);
+    const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
     const approval = this.account.address;
 
     if (checkWaitList !== true) {
