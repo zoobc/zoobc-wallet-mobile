@@ -10,6 +10,8 @@ import { SetupPinPage } from 'src/app/Pages/wallet/existing-wallet/setup-pin/set
 import { Location } from '@angular/common';
 import { ZooKeyring } from 'zoobc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
+import { Account } from 'src/app/Interfaces/account';
+import zoobc from 'zoobc-sdk';
 
 @Component({
   selector: 'app-existing-wallet',
@@ -51,8 +53,7 @@ export class ExistingWalletPage implements OnInit {
     }
   }
 
-  comparePassphrase() {
-  }
+  comparePassphrase() {}
 
   onPaste(event: ClipboardEvent) {
     const clipboardData = event.clipboardData;
@@ -104,8 +105,56 @@ export class ExistingWalletPage implements OnInit {
     this.showPinDialog();
   }
 
+  totalAccountLoaded = 20;
   async createAccount() {
     await this.accountSrv.createInitialAccount();
+
+    /// add additional accounts begin
+    const tempAccounts = [];
+
+    for (let i = 1; i < this.totalAccountLoaded + 1; i++) {
+      const account: Account = this.accountSrv.createNewAccount(
+        `Account ${i + 1}`,
+        i
+      );
+      tempAccounts.push(account.address);
+    }
+
+    try {
+      const data = await zoobc.Account.getBalances(tempAccounts);
+
+      const { accountbalancesList } = data;
+
+      let exists = 0;
+      for (let i = 0; i < tempAccounts.length; i++) {
+        const account: Account = this.accountSrv.createNewAccount(
+          `Account ${i + 1}`,
+          i
+        );
+
+        await this.accountSrv.addAccount(account);
+
+        const index = accountbalancesList.findIndex(
+          (acc: any) => acc.address === account.address
+        );
+
+        if (
+          accountbalancesList.findIndex(
+            (acc: any) => acc.accountaddress === account.address
+          ) >= 0
+        ) {
+          exists++;
+        }
+
+        if (exists >= accountbalancesList.length) {
+          break;
+        }
+      }
+    } catch (error) {
+      console.log('__error', error);
+    }
+    /// add additional accounts end
+
     const loginStatus = this.authSrv.login(this.plainPin);
     if (loginStatus) {
       this.presentLoading();

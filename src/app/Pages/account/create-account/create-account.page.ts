@@ -5,7 +5,7 @@ import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router } from '@angular/router';
 import { sanitizeString } from 'src/Helpers/utils';
-import {MultiSigAddress} from 'zoobc-sdk';
+import { MultiSigAddress } from 'zoobc-sdk';
 import { ModalController } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
 @Component({
@@ -14,8 +14,6 @@ import { AccountPopupPage } from '../account-popup/account-popup.page';
   styleUrls: ['./create-account.page.scss']
 })
 export class CreateAccountPage implements OnInit {
-
-
   account: Account;
   accountName = EMPTY_STRING;
   validationMessage = EMPTY_STRING;
@@ -34,8 +32,7 @@ export class CreateAccountPage implements OnInit {
     private accountService: AccountService,
     private router: Router,
     private modalController: ModalController
-  ) {
-  }
+  ) {}
 
   async ngOnInit() {
     this.accounts = await this.accountService.allAccount('normal');
@@ -44,18 +41,18 @@ export class CreateAccountPage implements OnInit {
   }
 
   async changeToMultisig() {
-      if (this.isMultisig) {
-        this.accounts = await this.accountService.allAccount('multisig');
-        let len = 1;
-        if (this.accounts && this.accounts.length > 0) {
-          len = this.accounts.length + 1;
-        }
-        this.accountName = `Multisig Account ${len}`;
-      } else {
-        this.accounts = await this.accountService.allAccount('normal');
-        const len = this.accounts.length + 1;
-        this.accountName = `Account ${len}`;
+    if (this.isMultisig) {
+      this.accounts = await this.accountService.allAccount('multisig');
+      let len = 1;
+      if (this.accounts && this.accounts.length > 0) {
+        len = this.accounts.length + 1;
       }
+      this.accountName = `Multisig Account ${len}`;
+    } else {
+      this.accounts = await this.accountService.allAccount('normal');
+      const len = this.accounts.length + 1;
+      this.accountName = `Account ${len}`;
+    }
   }
 
   async createOrUpdateAccount() {
@@ -72,14 +69,14 @@ export class CreateAccountPage implements OnInit {
     }
 
     await this.createAccount();
-
   }
 
   isNameExists(name: string) {
     this.validationMessage = '';
     const isExists = this.accounts.find(acc => {
       if (name && acc.name.trim().toLowerCase() === name.trim().toLowerCase()) {
-        this.validationMessage = 'Name exists with address: ' + makeShortAddress(acc.address);
+        this.validationMessage =
+          'Name exists with address: ' + makeShortAddress(acc.address);
         return true;
       }
       return false;
@@ -92,22 +89,23 @@ export class CreateAccountPage implements OnInit {
   }
 
   changeParticipant() {
+    const len = this.participants.length;
+    if (this.numOfParticipant < 2) {
+      this.numOfParticipant = 2;
+      return;
+    }
 
-      const len = this.participants.length;
-      if (this.numOfParticipant < 2) {
-        this.numOfParticipant = 2;
-        return;
-      }
-
-      for (let i = 2; i < this.numOfParticipant; i++) {
-        this.participants.push('');
-      }
+    for (let i = 2; i < this.numOfParticipant; i++) {
+      this.participants.push('');
+    }
   }
 
   async createAccount() {
-
     const pathNumber = await this.accountService.generateDerivationPath();
-    let account: Account = this.accountService.createNewAccount(this.accountName.trim(), pathNumber);
+    let account: Account = this.accountService.createNewAccount(
+      this.accountName.trim(),
+      pathNumber
+    );
 
     if (this.isMultisig) {
       // this.participants = this.participants.sort();
@@ -116,9 +114,13 @@ export class CreateAccountPage implements OnInit {
         nonce: this.nonce,
         minSigs: this.minimumSignature
       };
-      account = this.accountService.createNewMultisigAccount(this.accountName.trim(), multiParam, this.signByAccount);
+      account = this.accountService.createNewMultisigAccount(
+        this.accountName.trim(),
+        multiParam,
+        this.signByAccount
+      );
     }
-    this.accountService.addAccount(account);
+    await this.accountService.addAccount(account);
     this.accountService.broadCastNewAccount(account);
     this.goListAccount();
   }
@@ -134,7 +136,7 @@ export class CreateAccountPage implements OnInit {
   reduceParticipant() {
     const len = this.participants.length;
     if (len > 2) {
-      this.participants.splice((len - 1), 1);
+      this.participants.splice(len - 1, 1);
     }
   }
 
@@ -152,24 +154,23 @@ export class CreateAccountPage implements OnInit {
       }
     });
 
-    modal.onDidDismiss().then((dataReturned) => {
+    modal.onDidDismiss().then(dataReturned => {
       if (dataReturned.data) {
-        this.participants[this.indexSelected] =  dataReturned.data.address;
+        this.participants[this.indexSelected] = dataReturned.data.address;
       }
     });
 
     return await modal.present();
   }
 
-
   async showPopupSignBy() {
     const modal = await this.modalController.create({
       component: AccountPopupPage
     });
 
-    modal.onDidDismiss().then((dataReturned) => {
+    modal.onDidDismiss().then(dataReturned => {
       if (dataReturned.data) {
-        this.signByAccount =  dataReturned.data;
+        this.signByAccount = dataReturned.data;
         this.signBy = this.signByAccount.address;
       }
     });
