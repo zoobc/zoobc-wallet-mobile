@@ -113,7 +113,6 @@ export class SendCoinPage implements OnInit {
     private trxService: TransactionService
   ) {
     this.qrScannerService.qrScannerSubject.subscribe(address => {
-      console.log('== after scn:', address);
       this.getScannerResult(address);
     });
 
@@ -492,6 +491,15 @@ export class SendCoinPage implements OnInit {
     }
 
     if (this.isAmountValid && isNaN(this.amount)) {
+      this.amountMsg = this.translateService.instant('Amount is not valid!');
+      this.isAmountValid = false;
+      return;
+    }
+
+    if (this.isAmountValid && this.amount < 0.00000001) {
+      this.amountMsg = this.translateService.instant(
+        'minimum amount is 0.00000001!'
+      );
       this.isAmountValid = false;
       return;
     }
@@ -601,7 +609,6 @@ export class SendCoinPage implements OnInit {
     this.activeRoute.queryParams.subscribe(params => {
       if (params && params.jsonData && params.jsonData.length > 0) {
         const result = params.jsonData.split('||');
-        alert('from: ' + params.from);
         if (params.from === 'dashboard') {
           this.recipientAddress = result[0];
           if (result.length > 1) {

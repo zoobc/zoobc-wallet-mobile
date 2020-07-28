@@ -82,10 +82,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     // });
 
 
-    // // if account changed
-    // this.themeSrv.themeSubject.subscribe(() => {
-    //   this.theme = this.themeSrv.theme;
-    // });
+    // if account changed
+    this.themeSrv.themeSubject.subscribe(() => {
+      this.theme = this.themeSrv.theme;
+    });
 
     // // if post send money reload data
     // this.transactionSrv.sendMoneySubject.subscribe(() => {
@@ -93,17 +93,16 @@ export class DashboardPage implements OnInit, OnDestroy {
     // }
     // );
 
-    // // if network changed reload data
-    // this.networkSrv.changeNodeSubject.subscribe(() => {
-    //   // console.log(' == change node network ====');
-    //   this.loadData();
-    // }
-    // );
+    // if network changed reload data
+    this.networkSrv.changeNodeSubject.subscribe(() => {
+      this.loadData();
+    }
+    );
 
-    // // if currency changed
-    // this.currencySrv.currencySubject.subscribe((rate: Currency) => {
-    //   this.currencyRate = rate;
-    // });
+    // if currency changed
+    this.currencySrv.currencySubject.subscribe((rate: Currency) => {
+      this.currencyRate = rate;
+    });
 
     this.subscribeAllAccount();
     this.authService.restoreAccounts();
