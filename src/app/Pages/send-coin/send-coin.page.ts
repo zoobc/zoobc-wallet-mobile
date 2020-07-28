@@ -570,6 +570,12 @@ export class SendCoinPage implements OnInit {
     }
 
     if (this.isRecipientValid) {
+      if (!this.recipientAddress.toUpperCase().startsWith('ZBC-')){
+        return;
+      } 
+    }
+
+    if (this.isRecipientValid) {
       const addressBytes = base64ToByteArray(this.recipientAddress);
       if (this.isRecipientValid && addressBytes.length !== 33) {
         this.isRecipientValid = false;
@@ -709,10 +715,7 @@ export class SendCoinPage implements OnInit {
       return;
     }
 
-    let modalResult: any;
-    console.log(' reip Name: ', this.recipientName);
-    console.log(' ppocer neme:', this.escrowApproverName);
-
+    
     const modalDetail = await this.modalController.create({
       component: SenddetailPage,
       componentProps: {
@@ -733,6 +736,7 @@ export class SendCoinPage implements OnInit {
       }
     });
 
+    let modalResult: any;
     modalDetail.onDidDismiss().then(dataReturned => {
       if (dataReturned) {
         modalResult = dataReturned.data;
