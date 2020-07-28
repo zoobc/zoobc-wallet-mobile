@@ -104,8 +104,8 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.currencyRate = rate;
     });
 
+    this.accountService.restoreAccounts();
     this.subscribeAllAccount();
-    this.authService.restoreAccounts();
   }
 
   ngOnDestroy() {
@@ -174,7 +174,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     this.account = await this.accountService.getCurrAccount();
     this.currencyRate = this.currencySrv.getRate();
-    zoobc.Network.list(NETWORK_LIST);
+    
     this.getBalanceByAddress(this.account.address);
     await this.fcmService.getToken(this.account);
     this.identity = this.fcmService.identity;
