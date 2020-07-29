@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  LoadingController,
-  AlertController} from '@ionic/angular';
+import { LoadingController, AlertController } from '@ionic/angular';
 import { MenuController, ModalController } from '@ionic/angular';
 
 import { base64ToByteArray } from 'src/Helpers/converters';
@@ -30,6 +28,7 @@ import { Approver } from 'src/app/Interfaces/approver';
 import { Currency } from 'src/app/Interfaces/currency';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { AuthService } from 'src/app/Services/auth-service';
+import { Network } from '@ionic-native/network/ngx';
 
 @Component({
   selector: 'app-send-coin',
@@ -106,7 +105,9 @@ export class SendCoinPage implements OnInit {
     private translateService: TranslateService,
     private addressBookSrv: AddressBookService,
     private authSrv: AuthService,
-    private trxService: TransactionService
+    private trxService: TransactionService,
+    private network: Network,
+    private alertCtrl: AlertController
   ) {
     this.qrScannerService.qrScannerSubject.subscribe(address => {
       this.getScannerResult(address);
@@ -548,12 +549,11 @@ export class SendCoinPage implements OnInit {
       return;
     }
 
-
     if (this.escrowApprover) {
-      if (!this.escrowApprover.toUpperCase().startsWith('ZBC')){
+      if (!this.escrowApprover.toUpperCase().startsWith('ZBC')) {
         this.isEscrowApproverValid = false;
         return;
-      } 
+      }
     }
 
     const addressBytes = base64ToByteArray(this.escrowApprover);
@@ -584,13 +584,13 @@ export class SendCoinPage implements OnInit {
     }
 
     if (this.isRecipientValid) {
-      if (!this.recipientAddress.toUpperCase().startsWith('ZBC')){
+      if (!this.recipientAddress.toUpperCase().startsWith('ZBC')) {
         this.isRecipientValid = false;
         this.recipientMsg = this.translateService.instant(
           'Address is not valid!'
         );
         return;
-      } 
+      }
     }
 
     if (this.isRecipientValid) {
@@ -731,7 +731,6 @@ export class SendCoinPage implements OnInit {
       return;
     }
 
-    
     const modalDetail = await this.modalController.create({
       component: SenddetailPage,
       componentProps: {
@@ -796,7 +795,9 @@ export class SendCoinPage implements OnInit {
       };
     }
 
-    const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
+    const childSeed = this.authSrv.keyring.calcDerivationPath(
+      this.account.path
+    );
     await zoobc.Transactions.sendMoney(data, childSeed)
       .then(
         (resolveTx: any) => {
@@ -907,5 +908,46 @@ export class SendCoinPage implements OnInit {
   async getMinimumFee(timeout: number) {
     const fee: number = calculateMinFee(timeout);
     return fee;
+  }
+
+  alertConnectionTitle: string = '';
+  alertConnectionMsg: string = '';
+  networkSubscription = null;
+
+  ionViewWillEnter() {
+    this.networkSubscription = this.network
+      .onDisconnect()
+      .subscribe(async () => {
+        const alert = await this.alertCtrl.create({
+          header: this.alertConnectionTitle,
+          message: this.alertConnectionMsg,
+          buttons: [
+            {
+              text: 'OK'
+            }
+          ],
+          backdropDismiss: false
+        });
+
+        alert.present();
+      });
+
+    this.translateService.get('No Internet Access').subscribe((res: string) => {
+      this.alertConnectionTitle = res;
+    });
+
+    this.translateService
+      .get(
+        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+      )
+      .subscribe((res: string) => {
+        this.alertConnectionMsg = res;
+      });
+  }
+
+  ionViewDidLeave() {
+    if (this.networkSubscription) {
+      this.networkSubscription.unsubscribe();
+    }
   }
 }

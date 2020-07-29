@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Platform, ToastController} from '@ionic/angular';
+import { Platform, ToastController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import {
-  STORAGE_ACTIVE_CURRENCY, CONST_DEFAULT_CURRENCY,
-  STORAGE_ACTIVE_THEME, CURRENCY_RATE_LIST, DEFAULT_THEME} from 'src/environments/variable.const';
+  STORAGE_ACTIVE_CURRENCY,
+  CONST_DEFAULT_CURRENCY,
+  STORAGE_ACTIVE_THEME,
+  CURRENCY_RATE_LIST,
+  DEFAULT_THEME
+} from 'src/environments/variable.const';
 
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { environment } from 'src/environments/environment';
@@ -42,7 +46,8 @@ export class AppComponent implements OnInit {
     private strgSrv: StoragedevService,
     private translateService: TranslateService,
     private currencyService: CurrencyService,
-    private themeService: ThemeService  ) {
+    private themeService: ThemeService
+  ) {
     this.initializeApp();
     // this.darkMode();
   }
@@ -53,7 +58,7 @@ export class AppComponent implements OnInit {
     toggleDarkTheme(prefersDark.matches);
 
     // Listen for changes to the prefers-color-scheme media query
-    prefersDark.addListener((mediaQuery) => toggleDarkTheme(mediaQuery.matches));
+    prefersDark.addListener(mediaQuery => toggleDarkTheme(mediaQuery.matches));
 
     // Add or remove the "dark" class based on if the media query matches
     function toggleDarkTheme(shouldAdd: boolean) {
@@ -77,7 +82,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-
   async setDefaultCurrency() {
     const curr = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
     if (curr === null) {
@@ -88,7 +92,7 @@ export class AppComponent implements OnInit {
   async setTheme() {
     const activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
     if (!activeTheme || activeTheme === undefined) {
-        await this.themeService.setTheme(DEFAULT_THEME);
+      await this.themeService.setTheme(DEFAULT_THEME);
     }
   }
 
@@ -109,9 +113,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.network.onDisconnect().subscribe(() => {
+    /*this.network.onDisconnect().subscribe(() => {
       this.presentNoConnectionToast();
-    });
+    });*/
 
     this.translateService
       .get('Please check internet connection')
@@ -123,7 +127,9 @@ export class AppComponent implements OnInit {
   setupPush() {
     this.oneSignal.startInit(environment.signalID, environment.appID);
     // this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
-    this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.Notification);
+    this.oneSignal.inFocusDisplaying(
+      this.oneSignal.OSInFocusDisplayOption.Notification
+    );
     this.oneSignal.handleNotificationReceived().subscribe(data => {
       const msg = data.payload.body;
       this.presentNotificationToast(msg);
@@ -157,5 +163,4 @@ export class AppComponent implements OnInit {
 
   //   alert.present();
   // }
-
 }
