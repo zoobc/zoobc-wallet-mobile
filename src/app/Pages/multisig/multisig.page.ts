@@ -10,6 +10,8 @@ import { Account } from 'src/app/Interfaces/account';
 import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
 import { makeShortAddress } from 'src/Helpers/converters';
+import { TranslateService } from '@ngx-translate/core';
+import { Network } from '@ionic-native/network/ngx';
 
 @Component({
   selector: 'app-multisig',
@@ -47,8 +49,10 @@ export class MultisigPage implements OnInit {
     private accountSrv: AccountService,
     private alertController: AlertController,
     private multisigServ: MultisigService,
-    private utilSrv: UtilService) {
-
+    private utilSrv: UtilService,
+    private translateSrv: TranslateService,
+    private network: Network
+  ) {
     this.isMultisigInfo = true;
     this.isSignature = false;
     this.isTransaction = false;
@@ -78,20 +82,20 @@ export class MultisigPage implements OnInit {
     if (drafts) {
       this.multiSigDrafts = drafts;
 
-    //   this.multiSigDrafts = drafts.filter(draft => {
-    //     const { multisigInfo, transaction, generatedSender } = draft;
-    //     if (generatedSender === currAccount.address) {
-    //       return draft;
-    //     }
-    //     if (multisigInfo.participants.includes(currAccount.address)) {
-    //       return draft;
-    //     }
-    //     if (transaction && transaction.sender === currAccount.address) {
-    //       return draft;
-    //     }
-    //   })
-    //     .sort()
-    //     .reverse();
+      //   this.multiSigDrafts = drafts.filter(draft => {
+      //     const { multisigInfo, transaction, generatedSender } = draft;
+      //     if (generatedSender === currAccount.address) {
+      //       return draft;
+      //     }
+      //     if (multisigInfo.participants.includes(currAccount.address)) {
+      //       return draft;
+      //     }
+      //     if (transaction && transaction.sender === currAccount.address) {
+      //       return draft;
+      //     }
+      //   })
+      //     .sort()
+      //     .reverse();
     }
   }
 
@@ -254,5 +258,44 @@ export class MultisigPage implements OnInit {
     this.addSignature = !this.createTransaction;
   }
 
+  alertConnectionTitle: string = '';
+  alertConnectionMsg: string = '';
+  networkSubscription = null;
 
+  ionViewWillEnter() {
+    this.networkSubscription = this.network
+      .onDisconnect()
+      .subscribe(async () => {
+        const alert = await this.alertController.create({
+          header: this.alertConnectionTitle,
+          message: this.alertConnectionMsg,
+          buttons: [
+            {
+              text: 'OK'
+            }
+          ],
+          backdropDismiss: false
+        });
+
+        alert.present();
+      });
+
+    this.translateSrv.get('No Internet Access').subscribe((res: string) => {
+      this.alertConnectionTitle = res;
+    });
+
+    this.translateSrv
+      .get(
+        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+      )
+      .subscribe((res: string) => {
+        this.alertConnectionMsg = res;
+      });
+  }
+
+  ionViewDidLeave() {
+    if (this.networkSubscription) {
+      this.networkSubscription.unsubscribe();
+    }
+  }
 }

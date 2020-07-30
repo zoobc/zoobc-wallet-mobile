@@ -88,7 +88,7 @@ export class AppComponent implements OnInit {
   async setTheme() {
     const activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
     if (!activeTheme || activeTheme === undefined) {
-        await this.themeService.setTheme(DEFAULT_THEME);
+      await this.themeService.setTheme(DEFAULT_THEME);
     }
   }
 
@@ -109,9 +109,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.network.onDisconnect().subscribe(() => {
+    /*this.network.onDisconnect().subscribe(() => {
       this.presentNoConnectionToast();
-    });
+    });*/
 
     this.translateService
       .get('Please check internet connection')
