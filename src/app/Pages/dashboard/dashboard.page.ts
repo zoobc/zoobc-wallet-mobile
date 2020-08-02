@@ -24,6 +24,8 @@ import { DecimalPipe } from '@angular/common';
 import { NetworkService } from 'src/app/Services/network.service';
 import { dateAgo } from 'src/Helpers/utils';
 import { makeShortAddress } from 'src/Helpers/converters';
+import { Network } from '@ionic-native/network/ngx';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,7 +33,7 @@ import { makeShortAddress } from 'src/Helpers/converters';
   styleUrls: ['./dashboard.page.scss'],
 })
 export class DashboardPage implements OnInit, OnDestroy {
-
+  
   timeLeft = 12;
   interval: any;
 
@@ -68,8 +70,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     private themeSrv: ThemeService,
     private chatService: ChatService,
     private alertController: AlertController,
-    private decimalPipe: DecimalPipe  ) {
-
+    private decimalPipe: DecimalPipe,
+    private network: Network,
+    private alertCtrl: AlertController,
+    private translateSrv: TranslateService  ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
         this.loadData();
@@ -122,8 +126,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     const alert = await this.alertController.create({
       header: 'Account:',
       subHeader: this.account.address,
-      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>'
-        + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
+      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>' 
+      + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
       buttons: ['OK']
     });
 
@@ -155,6 +159,47 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.startTimer();
   }
 
+  alertConnectionTitle: string = '';
+  alertConnectionMsg: string = '';
+  networkSubscription = null;
+
+  ionViewWillEnter() {
+    this.networkSubscription = this.network
+      .onDisconnect()
+      .subscribe(async () => {
+        const alert = await this.alertCtrl.create({
+          header: this.alertConnectionTitle,
+          message: this.alertConnectionMsg,
+          buttons: [
+            {
+              text: 'OK'
+            }
+          ],
+          backdropDismiss: false
+        });
+
+        alert.present();
+      });
+
+    this.translateSrv.get('No Internet Access').subscribe((res: string) => {
+      this.alertConnectionTitle = res;
+    });
+
+    this.translateSrv
+      .get(
+        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+      )
+      .subscribe((res: string) => {
+        this.alertConnectionMsg = res;
+      });
+  }
+
+  ionViewDidLeave() {
+    if (this.networkSubscription) {
+      this.networkSubscription.unsubscribe();
+    }
+  }
+
   async loadData() {
 
     this.priceInUSD = this.currencySrv.getPriceInUSD();
@@ -174,7 +219,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     this.account = await this.accountService.getCurrAccount();
     this.currencyRate = this.currencySrv.getRate();
-    
+
     this.getBalanceByAddress(this.account.address);
     await this.fcmService.getToken(this.account);
     this.identity = this.fcmService.identity;
@@ -205,7 +250,10 @@ export class DashboardPage implements OnInit, OnDestroy {
           latest: false
         };
         this.isError = true;
-        alert('An error occurred while processing your request');
+        console.log(
+          'dashboard balance',
+          'An error occurred while processing your request'
+        );
       })
       .finally(() => {
         this.isLoadingBalance = false;
@@ -254,11 +302,11 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   showLoading() {
     this.loadingController.create({
-      message: 'Loading ...',
-      duration: 200
-    }).then((res) => {
-      res.present();
-    });
+        message: 'Loading ...',
+        duration: 200
+      }).then((res) => {
+        res.present();
+      });
   }
 
   /**
