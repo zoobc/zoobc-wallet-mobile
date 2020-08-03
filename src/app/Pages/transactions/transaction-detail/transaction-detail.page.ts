@@ -22,9 +22,12 @@ export class TransactionDetailPage implements OnInit {
     private translateSrv: TranslateService,
     private network: Network,
     private alertCtrl: AlertController
-  ) {}
+  ) {
+
+  }
 
   ngOnInit() {
+    
     if (this.navParams && this.navParams.data) {
       this.transaction = this.navParams.data.transaction;
       this.account = this.navParams.data.account;

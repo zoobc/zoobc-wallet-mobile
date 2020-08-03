@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController, AlertController } from '@ionic/angular';
+import { 
+  LoadingController, 
+  AlertController} from '@ionic/angular';
 import { MenuController, ModalController } from '@ionic/angular';
 
 import { base64ToByteArray } from 'src/Helpers/converters';

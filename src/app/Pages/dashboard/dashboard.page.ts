@@ -38,6 +38,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./dashboard.page.scss']
 })
 export class DashboardPage implements OnInit, OnDestroy {
+  
   timeLeft = 12;
   interval: any;
 
@@ -77,8 +78,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     private decimalPipe: DecimalPipe,
     private network: Network,
     private alertCtrl: AlertController,
-    private translateSrv: TranslateService
-  ) {
+    private translateSrv: TranslateService  ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
         this.loadData();
@@ -129,14 +129,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     const alert = await this.alertController.create({
       header: 'Account:',
       subHeader: this.account.address,
-      message:
-        'Balance: <br/>' +
-        this.decimalPipe.transform(this.accountBalance.balance / 1e8) +
-        ' ZBC <br/>' +
-        '<br/>' +
-        'Spendable Balance: <br/>' +
-        this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) +
-        ' ZBC  <br/>',
+      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>' 
+      + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
       buttons: ['OK']
     });
 
@@ -308,12 +302,10 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   showLoading() {
-    this.loadingController
-      .create({
+    this.loadingController.create({
         message: 'Loading ...',
         duration: 200
-      })
-      .then(res => {
+      }).then((res) => {
         res.present();
       });
   }

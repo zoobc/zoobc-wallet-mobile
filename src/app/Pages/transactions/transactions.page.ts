@@ -10,12 +10,10 @@ import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
-import { CurrencyService } from 'src/app/Services/currency.service';
-import {
-  NUMBER_OF_RECORD_IN_TRANSACTIONS,
+import { CurrencyService} from 'src/app/Services/currency.service';
+import { NUMBER_OF_RECORD_IN_TRANSACTIONS,
   CONST_DEFAULT_RATE,
-  NETWORK_LIST
-} from 'src/environments/variable.const';
+  NETWORK_LIST} from 'src/environments/variable.const';
 import zoobc, {
   TransactionListParams,
   toTransactionListWallet,
@@ -186,15 +184,15 @@ export class TransactionsPage implements OnInit {
       transactionType: 1,
       pagination: {
         page: this.page,
-        limit: NUMBER_OF_RECORD_IN_TRANSACTIONS
-      }
+        limit: NUMBER_OF_RECORD_IN_TRANSACTIONS,
+      },
     };
 
     try {
       const tx = await zoobc.Transactions.getList(params).then(res =>
         toTransactionListWallet(res, this.account.address)
       );
-      const trxs = tx.transactions.map(recent => {
+      const trxs  =  tx.transactions.map(  (recent) => {
         return {
           ...recent,
           sender: recent.type === 'receive' ? recent.address : address,
@@ -217,7 +215,7 @@ export class TransactionsPage implements OnInit {
   getName(address: string) {
     let nama = '';
     if (this.addresses && this.addresses.length > 0) {
-      this.addresses.forEach((obj: { name: any; address: string }) => {
+      this.addresses.forEach((obj: { name: any; address: string; }) => {
         if (address === obj.address) {
           nama = obj.name;
         }
@@ -255,17 +253,16 @@ export class TransactionsPage implements OnInit {
   }
 
   private showLoading() {
-    this.loadingController
-      .create({
+    this.loadingController.create({
         message: 'Loading ...',
         duration: 500
-      })
-      .then(res => {
+      }).then((res) => {
         res.present();
       });
   }
 
   public async loadDetailTransaction(trx: any, trxStatus: string) {
+    
     this.showLoading();
 
     const modal = await this.modalCtrl.create({
