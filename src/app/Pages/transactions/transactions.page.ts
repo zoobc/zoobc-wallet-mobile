@@ -3,7 +3,8 @@ import { makeShortAddress } from 'src/Helpers/converters';
 import {
   ToastController,
   LoadingController,
-  ModalController
+  ModalController,
+  AlertController
 } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
@@ -11,8 +12,8 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService} from 'src/app/Services/currency.service';
 import { NUMBER_OF_RECORD_IN_TRANSACTIONS,
-   CONST_DEFAULT_RATE,
-   NETWORK_LIST} from 'src/environments/variable.const';
+  CONST_DEFAULT_RATE,
+  NETWORK_LIST} from 'src/environments/variable.const';
 import zoobc, {
   TransactionListParams,
   toTransactionListWallet,
@@ -24,6 +25,8 @@ import { Router } from '@angular/router';
 import { Transaction } from 'src/app/Interfaces/transaction';
 import { Currency } from 'src/app/Interfaces/currency';
 import { NetworkService } from 'src/app/Services/network.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Network } from '@ionic-native/network/ngx';
 
 @Component({
   selector: 'app-transactions',
@@ -57,7 +60,10 @@ export class TransactionsPage implements OnInit {
     private  networkSrv: NetworkService,
     private currencyServ: CurrencyService,
     private addressBookSrv: AddressBookService,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private translateSrv: TranslateService,
+    private network: Network,
+    private alertCtrl: AlertController
   ) {
 
     // if account changed
@@ -177,39 +183,39 @@ export class TransactionsPage implements OnInit {
    * @ param address
    */
   private async getTransactions(address: string) {
-      this.isLoadingRecentTx = true;
-      this.isErrorRecentTx = false;
-      const params: TransactionListParams = {
-        address,
-        transactionType: 1,
-        pagination: {
-          page: this.page,
-          limit: NUMBER_OF_RECORD_IN_TRANSACTIONS,
-        },
-      };
+    this.isLoadingRecentTx = true;
+    this.isErrorRecentTx = false;
+    const params: TransactionListParams = {
+      address,
+      transactionType: 1,
+      pagination: {
+        page: this.page,
+        limit: NUMBER_OF_RECORD_IN_TRANSACTIONS,
+      },
+    };
 
-      try {
-        const tx = await zoobc.Transactions.getList(params).then(res =>
-          toTransactionListWallet(res, this.account.address)
-        );
-        const trxs  =  tx.transactions.map(  (recent) => {
-          return {
-            ...recent,
-            sender: recent.type === 'receive' ? recent.address : address,
-            recipient: recent.type === 'receive' ? address : recent.address,
-            total: 0,
-            name:  this.getName(recent.address),
-            shortaddress: makeShortAddress(recent.address)
-          };
-        });
+    try {
+      const tx = await zoobc.Transactions.getList(params).then(res =>
+        toTransactionListWallet(res, this.account.address)
+      );
+      const trxs  =  tx.transactions.map(  (recent) => {
+        return {
+          ...recent,
+          sender: recent.type === 'receive' ? recent.address : address,
+          recipient: recent.type === 'receive' ? address : recent.address,
+          total: 0,
+          name:  this.getName(recent.address),
+          shortaddress: makeShortAddress(recent.address)
+        };
+      });
 
-        this.totalTx = tx.total;
-        this.recentTxs = this.recentTxs.concat(trxs);
-      } catch {
-        this.isError = true;
-      } finally {
-        this.isLoadingRecentTx = false;
-      }
+      this.totalTx = tx.total;
+      this.recentTxs = this.recentTxs.concat(trxs);
+    } catch {
+      this.isError = true;
+    } finally {
+      this.isLoadingRecentTx = false;
+    }
 
   }
 
@@ -217,10 +223,10 @@ export class TransactionsPage implements OnInit {
     let nama =  '';
     if (this.addresses && this.addresses.length > 0) {
       this.addresses.forEach((obj: { name: any; address: string; }) => {
-           if (address === obj.address) {
-              nama = obj.name;
-           }
-        });
+        if (address === obj.address) {
+          nama = obj.name;
+        }
+      });
     }
 
     return nama;
@@ -255,15 +261,15 @@ export class TransactionsPage implements OnInit {
 
   private showLoading() {
     this.loadingController.create({
-      message: 'Loading ...',
-      duration: 500
-    }).then((res) => {
-      res.present();
-    });
+        message: 'Loading ...',
+        duration: 500
+      }).then((res) => {
+        res.present();
+      });
   }
 
   public async loadDetailTransaction(trx: any, trxStatus: string) {
-
+    
     this.showLoading();
 
     const modal = await this.modalCtrl.create({
@@ -284,4 +290,44 @@ export class TransactionsPage implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
+  alertConnectionTitle: string = '';
+  alertConnectionMsg: string = '';
+  networkSubscription = null;
+
+  ionViewWillEnter() {
+    this.networkSubscription = this.network
+      .onDisconnect()
+      .subscribe(async () => {
+        const alert = await this.alertCtrl.create({
+          header: this.alertConnectionTitle,
+          message: this.alertConnectionMsg,
+          buttons: [
+            {
+              text: 'OK'
+            }
+          ],
+          backdropDismiss: false
+        });
+
+        alert.present();
+      });
+
+    this.translateSrv.get('No Internet Access').subscribe((res: string) => {
+      this.alertConnectionTitle = res;
+    });
+
+    this.translateSrv
+      .get(
+        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+      )
+      .subscribe((res: string) => {
+        this.alertConnectionMsg = res;
+      });
+  }
+
+  ionViewDidLeave() {
+    if (this.networkSubscription) {
+      this.networkSubscription.unsubscribe();
+    }
+  }
 }

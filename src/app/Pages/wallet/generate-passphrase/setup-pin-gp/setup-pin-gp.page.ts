@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/Services/auth-service';
-import { DEFAULT_THEME } from 'src/environments/variable.const';
+import {
+  DEFAULT_THEME,
+  STORAGE_ADDRESS_BOOK
+} from 'src/environments/variable.const';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { NavController } from '@ionic/angular';
+import { StoragedevService } from 'src/app/Services/storagedev.service';
 
 @Component({
   selector: 'app-setup-pin-gp',
@@ -23,7 +27,8 @@ export class SetupPinGpPage implements OnInit {
     private accountSrv: AccountService,
     private authSrv: AuthService,
     private navCtrl: NavController,
-    private themeSrv: ThemeService
+    private themeSrv: ThemeService,
+    private storageSrv: StoragedevService
   ) {
     this.pagePosition = 0;
     this.processing = false;
@@ -57,6 +62,7 @@ export class SetupPinGpPage implements OnInit {
       this.accountSrv.setPlainPassphrase(this.plainPassphrase);
       this.accountSrv.setPlainPin(pin);
       await this.accountSrv.createInitialAccount();
+      await this.storageSrv.remove(STORAGE_ADDRESS_BOOK);
       const loginStatus = await this.authSrv.login(pin);
       if (loginStatus) {
         setTimeout(() => {
