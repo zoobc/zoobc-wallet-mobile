@@ -4,7 +4,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Location } from '@angular/common';
 import { UtilService } from 'src/app/Services/util.service';
 import { NavController, AlertController } from '@ionic/angular';
-import { FOR_RECIPIENT, FOR_APPROVER } from 'src/environments/variable.const';
+import { FOR_RECIPIENT, FOR_APPROVER, FOR_PARTICIPANT, FOR_SIGNBY } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-address-book',
@@ -68,6 +68,10 @@ export class AddressBookPage implements OnInit, OnDestroy {
       this.addressBookSrv.setRecipientAddress(address);
     } else if (this.forWhat === FOR_APPROVER) {
       this.addressBookSrv.setApproverAddress(address);
+    } else if (this.forWhat === FOR_PARTICIPANT) {
+      this.addressBookSrv.setParticipant(address);
+    } else if (this.forWhat === FOR_SIGNBY) {
+      this.addressBookSrv.setSignBy(address);
     }
     this.navCtrl.pop();
   }

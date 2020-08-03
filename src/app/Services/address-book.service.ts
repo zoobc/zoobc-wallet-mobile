@@ -22,6 +22,8 @@ export class AddressBookService {
   public addressSubject: Subject<string> = new Subject<string>();
   public recipientSubject: Subject<any> = new Subject<any>();
   public approverSubject: Subject<any> = new Subject<any>();
+  public signBySubject: Subject<any> = new Subject<any>();
+  public participantSubject: Subject<any> = new Subject<any>();
 
   public getSelectedAddress() {
     return this.selectedAddress;
@@ -39,6 +41,14 @@ export class AddressBookService {
   public setRecipientAddress(arg: any) {
     this.recipientSubject.next(arg);
   }
+
+  public setSignBy(arg: any) {
+    this.signBySubject.next(arg);
+  }
+  public setParticipant(arg: any) {
+    this.participantSubject.next(arg);
+  }
+
 
   constructor(
     private strgSrv: StoragedevService,
