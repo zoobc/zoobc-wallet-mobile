@@ -58,32 +58,43 @@
     <div *ngIf="isMultisig">
       <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
         <ion-col size="10">
-          <ion-input type="text" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
-            [(ngModel)]="participants[i]">
-          </ion-input>
+          <ion-textarea rows="3" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
+          [(ngModel)]="participants[i]"></ion-textarea>
         </ion-col>
-        <ion-col size="2">
-          <ion-button (click)="showPopupAccount(i)">
-            ..
-          </ion-button>
+        <ion-col size="2" class="ion-text-center" style="padding-top: 20px">
+          <ion-icon name="arrow-dropdown" (click)="presentGetAddressOption('participant',i);"></ion-icon>
         </ion-col>
       </ion-row>
     </div>
-
+    <ion-row *ngIf="isParticipntValid === false">
+      <ion-col>
+        <ion-label color="danger">Please input all participants!</ion-label>
+      </ion-col>
+    </ion-row>
     <ion-row *ngIf="isMultisig">
       <ion-col>
         <ion-label>
           <h2>Nonce</h2>
-          <ion-input [(ngModel)]="nonce" type="number" placeholder="Nonce ..."></ion-input>
+          <ion-input [(ngModel)]="nonce" type="number" (ionChange)="validateNonce()" placeholder="Nonce ..." ></ion-input>
         </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="isNonceValid === false">
+      <ion-col>
+        <ion-label color="danger">Nonce is not valid, minimum 1 .!</ion-label>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="isMultisig">
       <ion-col>
         <ion-label>
           <h2>Minimum signature</h2>
-          <ion-input type="number" [(ngModel)]="minimumSignature" placeholder="Minimum signature..."></ion-input>
+          <ion-input type="number" [(ngModel)]="minimumSignature" (ionChange)="validateMinimumSig()" placeholder="Minimum signature..."></ion-input>
         </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="isMinSigValid === false">
+      <ion-col>
+        <ion-label color="danger">Minimum signature is 2 and cannot more than number of participants.</ion-label>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="isMultisig">
@@ -97,15 +108,11 @@
       <ion-col size="10">
         <ion-label>
           <h3 *ngIf="signByAccount">{{signByAccount.name}}</h3>
-          <ion-textarea rows="2" cols="20" [(ngModel)]="signBy" placeholder="Enter sign by..."></ion-textarea>
-
-          <!-- <ion-input type="text" ></ion-input> -->
+          <ion-textarea rows="3" [(ngModel)]="signBy" placeholder="Enter sign by..."></ion-textarea>
         </ion-label>
       </ion-col>
       <ion-col size="2">
-        <ion-button (click)="showPopupSignBy()">
-          ..
-        </ion-button>
+        <ion-icon name="arrow-dropdown" (click)="showPopupSignBy();"></ion-icon>
       </ion-col>
     </ion-row>
     <ion-row>
