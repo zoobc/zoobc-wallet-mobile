@@ -13,7 +13,12 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME } from 'src/environments/variable.const';
+import {
+  BLOCKCHAIN_BLOG_URL,
+  CONST_DEFAULT_RATE,
+  NETWORK_LIST,
+  DEFAULT_THEME
+} from 'src/environments/variable.const';
 import zoobc from 'zoobc-sdk';
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
@@ -30,7 +35,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
-  styleUrls: ['./dashboard.page.scss'],
+  styleUrls: ['./dashboard.page.scss']
 })
 export class DashboardPage implements OnInit, OnDestroy {
   
@@ -85,7 +90,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     //   this.loadData();
     // });
 
-
     // if account changed
     this.themeSrv.themeSubject.subscribe(() => {
       this.theme = this.themeSrv.theme;
@@ -100,8 +104,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     // if network changed reload data
     this.networkSrv.changeNodeSubject.subscribe(() => {
       this.loadData();
-    }
-    );
+    });
 
     // if currency changed
     this.currencySrv.currencySubject.subscribe((rate: Currency) => {
@@ -136,7 +139,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   async subscribeAllAccount() {
     const allAcc = await this.accountService.allAccount();
-    const addresses = allAcc.map((acc) => acc.address);
+    const addresses = allAcc.map(acc => acc.address);
     this.chatService.subscribeNotif(addresses);
   }
 
@@ -147,7 +150,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     setTimeout(() => {
       event.target.complete();
     }, 2000);
-
   }
 
   async ngOnInit() {
@@ -201,7 +203,6 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   async loadData() {
-
     this.priceInUSD = this.currencySrv.getPriceInUSD();
     this.accountBalance = {
       accountaddress: '',
@@ -349,5 +350,4 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.router.navigate(['/sendcoin']);
     }
   }
-
 }

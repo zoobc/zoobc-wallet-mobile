@@ -18,7 +18,7 @@ import zoobc, {
   TransactionListParams,
   toTransactionListWallet,
   MempoolListParams,
-  toUnconfirmedSendMoneyWallet,
+  toUnconfirmedSendMoneyWallet
 } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Router } from '@angular/router';
@@ -31,17 +31,16 @@ import { Network } from '@ionic-native/network/ngx';
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.page.html',
-  styleUrls: ['./transactions.page.scss'],
+  styleUrls: ['./transactions.page.scss']
 })
 export class TransactionsPage implements OnInit {
-
   account: Account;
   errorMsg: string;
   page: number;
   accountBalance: any;
   // isLoadingBalance: boolean;
   isLoadingRecentTx: boolean;
-  currencyRate =  CONST_DEFAULT_RATE;
+  currencyRate = CONST_DEFAULT_RATE;
   priceInUSD: number;
   totalTx: number;
   recentTxs = [];
@@ -57,7 +56,7 @@ export class TransactionsPage implements OnInit {
     public loadingController: LoadingController,
     private accountService: AccountService,
     private transactionServ: TransactionService,
-    private  networkSrv: NetworkService,
+    private networkSrv: NetworkService,
     private currencyServ: CurrencyService,
     private addressBookSrv: AddressBookService,
     public toastController: ToastController,
@@ -65,7 +64,6 @@ export class TransactionsPage implements OnInit {
     private network: Network,
     private alertCtrl: AlertController
   ) {
-
     // if account changed
     this.accountService.accountSubject.subscribe(() => {
       this.loadData();
@@ -123,17 +121,16 @@ export class TransactionsPage implements OnInit {
 
     this.priceInUSD = this.currencyServ.getPriceInUSD();
     this.account = await this.accountService.getCurrAccount();
-    this.currencyRate =  this.currencyServ.getRate();
+    this.currencyRate = this.currencyServ.getRate();
     this.getUnconfirmTransactions(this.account.address);
     this.getTransactions(this.account.address);
   }
-
 
   async getAllAddress() {
     const alladdress = await this.addressBookSrv.getAll();
 
     if (alladdress && alladdress.length > 0) {
-      alladdress.forEach((obj: { name: any; address: string; }) => {
+      alladdress.forEach((obj: { name: any; address: string }) => {
         const app = {
           name: obj.name,
           address: obj.address
@@ -142,13 +139,12 @@ export class TransactionsPage implements OnInit {
       });
     }
   }
-
 
   async getAllAccount() {
     const accounts = await this.accountService.allAccount();
 
     if (accounts && accounts.length > 0) {
-      accounts.forEach((obj: { name: any; address: string; }) => {
+      accounts.forEach((obj: { name: any; address: string }) => {
         const app = {
           name: obj.name,
           address: obj.address
@@ -156,9 +152,7 @@ export class TransactionsPage implements OnInit {
         this.addresses.push(app);
       });
     }
-
   }
-
 
   /**
    * Get more transactions
@@ -204,7 +198,7 @@ export class TransactionsPage implements OnInit {
           sender: recent.type === 'receive' ? recent.address : address,
           recipient: recent.type === 'receive' ? address : recent.address,
           total: 0,
-          name:  this.getName(recent.address),
+          name: this.getName(recent.address),
           shortaddress: makeShortAddress(recent.address)
         };
       });
@@ -216,11 +210,10 @@ export class TransactionsPage implements OnInit {
     } finally {
       this.isLoadingRecentTx = false;
     }
-
   }
 
   getName(address: string) {
-    let nama =  '';
+    let nama = '';
     if (this.addresses && this.addresses.length > 0) {
       this.addresses.forEach((obj: { name: any; address: string; }) => {
         if (address === obj.address) {
@@ -282,9 +275,7 @@ export class TransactionsPage implements OnInit {
       }
     });
     await modal.present();
-
   }
-
 
   public goDashboard() {
     this.router.navigate(['/dashboard']);
