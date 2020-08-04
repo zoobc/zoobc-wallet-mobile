@@ -29,7 +29,7 @@
     </ng-template>
 
     <ion-list *ngIf="accounts && accounts.length >= 1; else noData">
-      <ion-list-header>
+      <ion-list-header  *ngIf="forWhat==='account'">
         <ion-label><span>{{"Tap list to switch account" | translate}}.</span></ion-label>
       </ion-list-header>
       <ion-item-sliding *ngFor="let account of accounts; let i = index">

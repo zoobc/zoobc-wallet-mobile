@@ -1,19 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { EMPTY_STRING } from 'src/environments/variable.const';
+import { EMPTY_STRING, FOR_PARTICIPANT, FOR_SIGNBY } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import { sanitizeString } from 'src/Helpers/utils';
 import { MultiSigAddress } from 'zoobc-sdk';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
+import { AddressBookService } from 'src/app/Services/address-book.service';
+import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 @Component({
   selector: 'app-create-account',
   templateUrl: './create-account.page.html',
   styleUrls: ['./create-account.page.scss']
 })
 export class CreateAccountPage implements OnInit {
+  scanForWhat: string;
   account: Account;
   accountName = EMPTY_STRING;
   validationMessage = EMPTY_STRING;
@@ -27,17 +30,62 @@ export class CreateAccountPage implements OnInit {
   minimumSignature: number;
   numOfParticipant = 2;
   indexSelected: number;
+  fieldSource: string;
+  isMinSigValid = true;
+  isNonceValid = true;
+  isParticipntValid = true;
 
   constructor(
     private accountService: AccountService,
+    private addressbookService: AddressBookService,
     private router: Router,
-    private modalController: ModalController
-  ) {}
+    private modalController: ModalController,
+    private qrScannerService: QrScannerService,
+    private alertController: AlertController
+  ) {
+
+    this.addressbookService.participantSubject.subscribe({
+      next: address => {
+        this.participants[this.indexSelected] = address.address;
+      }
+    });
+
+    this.qrScannerService.qrScannerSubject.subscribe(address => {
+      this.getScannerResult(address);
+    });
+  }
 
   async ngOnInit() {
     this.accounts = await this.accountService.allAccount('normal');
     const len = this.accounts.length + 1;
     this.accountName = `Account ${len}`;
+  }
+
+  async getScannerResult(arg: string) {
+    const result = arg.split('||');
+    if (this.scanForWhat === FOR_PARTICIPANT) {
+      this.participants[this.indexSelected] = result[0];
+    }
+
+    // else if (this.scanForWhat === FOR_SIGNBY) {
+    //   this.signBy = result[0];
+    //   this.signByAccount = await this.accountService.getAccount(this.signBy);
+    // }
+  }
+
+  validateNonce() {
+      if (this.nonce <= 0) {
+          this.isNonceValid = false;
+      } else {
+          this.isNonceValid = true;
+      }
+  }
+  validateMinimumSig() {
+    if (this.minimumSignature < 2 || this.minimumSignature > this.participants.length) {
+        this.isMinSigValid = false;
+    } else {
+        this.isMinSigValid = true;
+  }
   }
 
   async changeToMultisig() {
@@ -57,18 +105,42 @@ export class CreateAccountPage implements OnInit {
 
   async createOrUpdateAccount() {
     this.isNameValid = true;
-    if (!this.accountName) {
+    this.isMinSigValid = true;
+    this.isNonceValid = true;
+    this.isParticipntValid = true;
+
+    this.participants.forEach((prc) => {
+          if (prc === undefined || prc.trim() === '') {
+              this.isParticipntValid = false;
+          }
+    });
+
+    if (this.accountName === undefined || !this.accountName) {
       this.validationMessage = 'Name is required';
       this.isNameValid = false;
-      return;
     }
 
     if (this.isNameExists(this.accountName)) {
       this.isNameValid = false;
-      return;
     }
 
+    if (this.minimumSignature === undefined || this.minimumSignature > this.participants.length) {
+      this.isMinSigValid = false;
+    }
+
+    if (this.nonce === undefined || this.nonce <= 0) {
+      this.isNonceValid = false;
+    }
+
+    if (
+      !this.isNonceValid
+      || !this.isMinSigValid
+      || !this.isNameValid
+      || !this.isParticipntValid) {
+        return;
+    }
     await this.createAccount();
+
   }
 
   isNameExists(name: string) {
@@ -101,6 +173,15 @@ export class CreateAccountPage implements OnInit {
   }
 
   async createAccount() {
+
+    if (!this.isNameValid) {
+      return;
+    }
+
+    if ( this.isMultisig &&  (this.isMinSigValid === false || this.isNonceValid === false)) {
+      return;
+    }
+
     const pathNumber = await this.accountService.generateDerivationPath();
     let account: Account = this.accountService.createNewAccount(
       this.accountName.trim(),
@@ -144,19 +225,20 @@ export class CreateAccountPage implements OnInit {
     return index;
   }
 
-  async showPopupAccount(index: number) {
-    this.indexSelected = index;
+  async openListAccount() {
     const modal = await this.modalController.create({
       cssClass: 'zbc-modal',
       component: AccountPopupPage,
       componentProps: {
-        idx: index
+        idx: this.indexSelected
       }
     });
 
     modal.onDidDismiss().then(dataReturned => {
       if (dataReturned.data) {
-        this.participants[this.indexSelected] = dataReturned.data.address;
+        if (this.fieldSource === 'participant') {
+          this.participants[this.indexSelected] = dataReturned.data.address;
+        }
       }
     });
 
@@ -177,4 +259,74 @@ export class CreateAccountPage implements OnInit {
 
     return await modal.present();
   }
+
+  async presentGetAddressOption(source: string, index: number) {
+    this.indexSelected = index;
+    this.fieldSource = source;
+    const alert = await this.alertController.create({
+      header: 'Select Option',
+      cssClass: 'alertCss',
+      inputs: [
+        {
+          name: 'opsi1',
+          type: 'radio',
+          label: 'Scan QR Code',
+          value: 'scan',
+          checked: true
+        },
+        {
+          name: 'opsi2',
+          type: 'radio',
+          label: 'Contacts',
+          value: 'address'
+        },
+        {
+          name: 'opsi3',
+          type: 'radio',
+          label: 'My Accounts',
+          value: 'account'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            // console.log('Confirm Cancel', val);
+          }
+        },
+        {
+          text: 'Ok',
+          handler: val => {
+            if (val === 'address') {
+              this.openAddresses();
+            } else if (val === 'account') {
+              this.openListAccount();
+            } else {
+              this.scanQrCode();
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  openAddresses() {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        forWhat: this.fieldSource
+      }
+    };
+
+    this.router.navigate(['/address-book'], navigationExtras);
+  }
+
+  scanQrCode() {
+    this.scanForWhat = this.fieldSource;
+    this.router.navigateByUrl('/qr-scanner');
+  }
+
 }
