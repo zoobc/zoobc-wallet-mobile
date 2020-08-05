@@ -51,17 +51,14 @@
           </ion-button>
         </ion-col>
       </ion-row>
-      <div>
-        <ion-row *ngFor="let participant of account.participants; let i = index; trackBy: customTrackBy">
+      <div *ngIf="isMultisig">
+        <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
           <ion-col size="10">
-            <ion-input type="text" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
-              [(ngModel)]="account.participants[i]">
-            </ion-input>
+            <ion-textarea rows="3" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
+            [(ngModel)]="participants[i]"></ion-textarea>
           </ion-col>
-          <ion-col size="2">
-            <ion-button (click)="showPopupAccount(i)">
-              ..
-            </ion-button>
+          <ion-col size="2" class="ion-text-center" style="padding-top: 20px">
+            <ion-icon name="arrow-dropdown" (click)="presentGetAddressOption('participant',i);"></ion-icon>
           </ion-col>
         </ion-row>
       </div>
@@ -89,19 +86,15 @@
           </ion-label>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="isMultisig">
         <ion-col size="10">
           <ion-label>
             <h3 *ngIf="signByAccount">{{signByAccount.name}}</h3>
-            <ion-textarea rows="2" cols="20" [(ngModel)]="account.signByAddress" placeholder="Enter sign by...">
-            </ion-textarea>
+            <ion-textarea rows="3" [(ngModel)]="signBy" placeholder="Enter sign by..."></ion-textarea>
           </ion-label>
         </ion-col>
         <ion-col size="2">
-          <br/><br/>
-          <ion-button (click)="showPopupSignBy()">
-            ..
-          </ion-button>
+          <ion-icon name="arrow-dropdown" (click)="showPopupSignBy();"></ion-icon>
         </ion-col>
       </ion-row>
 

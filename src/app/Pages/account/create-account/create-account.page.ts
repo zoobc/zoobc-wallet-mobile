@@ -74,18 +74,19 @@ export class CreateAccountPage implements OnInit {
   }
 
   validateNonce() {
-      if (this.nonce <= 0) {
-          this.isNonceValid = false;
-      } else {
-          this.isNonceValid = true;
-      }
+    if (this.nonce <= 0) {
+      this.isNonceValid = false;
+    } else {
+      this.isNonceValid = true;
+    }
   }
+
   validateMinimumSig() {
     if (this.minimumSignature < 2 || this.minimumSignature > this.participants.length) {
-        this.isMinSigValid = false;
+      this.isMinSigValid = false;
     } else {
-        this.isMinSigValid = true;
-  }
+      this.isMinSigValid = true;
+    }
   }
 
   async changeToMultisig() {
@@ -110,9 +111,9 @@ export class CreateAccountPage implements OnInit {
     this.isParticipntValid = true;
 
     this.participants.forEach((prc) => {
-          if (prc === undefined || prc.trim() === '') {
-              this.isParticipntValid = false;
-          }
+      if (prc === undefined || prc.trim() === '') {
+        this.isParticipntValid = false;
+      }
     });
 
     if (this.accountName === undefined || !this.accountName) {
@@ -137,7 +138,7 @@ export class CreateAccountPage implements OnInit {
       || !this.isMinSigValid
       || !this.isNameValid
       || !this.isParticipntValid) {
-        return;
+      return;
     }
     await this.createAccount();
 
@@ -178,7 +179,7 @@ export class CreateAccountPage implements OnInit {
       return;
     }
 
-    if ( this.isMultisig &&  (this.isMinSigValid === false || this.isNonceValid === false)) {
+    if (this.isMultisig && (this.isMinSigValid === false || this.isNonceValid === false)) {
       return;
     }
 
