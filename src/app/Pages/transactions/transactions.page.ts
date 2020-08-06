@@ -50,6 +50,9 @@ export class TransactionsPage implements OnInit {
   navigationSubscription: any;
   isErrorRecentTx: boolean;
   addresses = [];
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
 
   constructor(
     private router: Router,
@@ -269,7 +272,7 @@ export class TransactionsPage implements OnInit {
   }
 
   public async loadDetailTransaction(trx: any, trxStatus: string) {
-    
+
     this.showLoading();
 
     const modal = await this.modalCtrl.create({
@@ -289,10 +292,6 @@ export class TransactionsPage implements OnInit {
   public goDashboard() {
     this.router.navigate(['/dashboard']);
   }
-
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
@@ -318,7 +317,7 @@ export class TransactionsPage implements OnInit {
 
     this.translateSrv
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;
