@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EMPTY_STRING, FOR_PARTICIPANT, FOR_SIGNBY } from 'src/environments/variable.const';
+import { EMPTY_STRING, FOR_PARTICIPANT } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
@@ -20,6 +20,7 @@ export class CreateAccountPage implements OnInit {
   account: Account;
   accountName = EMPTY_STRING;
   validationMessage = EMPTY_STRING;
+  nameErrorMessage = EMPTY_STRING;
   isNameValid = true;
   accounts: Account[];
   isMultisig: boolean;
@@ -67,10 +68,6 @@ export class CreateAccountPage implements OnInit {
       this.participants[this.indexSelected] = result[0];
     }
 
-    // else if (this.scanForWhat === FOR_SIGNBY) {
-    //   this.signBy = result[0];
-    //   this.signByAccount = await this.accountService.getAccount(this.signBy);
-    // }
   }
 
   validateNonce() {
@@ -104,43 +101,54 @@ export class CreateAccountPage implements OnInit {
     }
   }
 
-  async createOrUpdateAccount() {
+  isFormValid() {
     this.isNameValid = true;
-    this.isMinSigValid = true;
-    this.isNonceValid = true;
-    this.isParticipntValid = true;
-
-    this.participants.forEach((prc) => {
-      if (prc === undefined || prc.trim() === '') {
-        this.isParticipntValid = false;
-      }
-    });
-
     if (this.accountName === undefined || !this.accountName) {
-      this.validationMessage = 'Name is required';
+      this.nameErrorMessage = 'Name is required';
       this.isNameValid = false;
     }
 
     if (this.isNameExists(this.accountName)) {
+      this.nameErrorMessage = 'Name already exists';
       this.isNameValid = false;
     }
 
-    if (this.minimumSignature === undefined || this.minimumSignature > this.participants.length) {
-      this.isMinSigValid = false;
+    if (!this.isMultisig && !this.isNameValid) {
+      return false;
     }
 
-    if (this.nonce === undefined || this.nonce <= 0) {
-      this.isNonceValid = false;
+    // validate multisig
+    if (this.isMultisig) {
+      this.isMinSigValid = true;
+      this.isNonceValid = true;
+      this.isParticipntValid = true;
+      console.log(' enter 1');
+      this.participants.forEach((prc) => {
+        if (prc === undefined || prc.trim() === '') {
+          this.isParticipntValid = false;
+        }
+      });
+      console.log(' enter 2');
+      if (this.minimumSignature === undefined || this.minimumSignature > this.participants.length) {
+        this.isMinSigValid = false;
+      }
+      console.log(' enter 3');
+      if (this.nonce === undefined || this.nonce <= 0) {
+        this.isNonceValid = false;
+      }
+      console.log(' enter 4');
+      if (
+        !this.isNonceValid
+        || !this.isMinSigValid
+        || !this.isNameValid
+        || !this.isParticipntValid) {
+        return false;
+      }
+      console.log(' enter 4');
+      return true;
+    } else {
+      return true;
     }
-
-    if (
-      !this.isNonceValid
-      || !this.isMinSigValid
-      || !this.isNameValid
-      || !this.isParticipntValid) {
-      return;
-    }
-    await this.createAccount();
 
   }
 
@@ -162,7 +170,6 @@ export class CreateAccountPage implements OnInit {
   }
 
   changeParticipant() {
-    const len = this.participants.length;
     if (this.numOfParticipant < 2) {
       this.numOfParticipant = 2;
       return;
@@ -174,8 +181,7 @@ export class CreateAccountPage implements OnInit {
   }
 
   async createAccount() {
-
-    if (!this.isNameValid) {
+    if (!this.isFormValid()) {
       return;
     }
 
@@ -190,7 +196,6 @@ export class CreateAccountPage implements OnInit {
     );
 
     if (this.isMultisig) {
-      // this.participants = this.participants.sort();
       const multiParam: MultiSigAddress = {
         participants: this.participants,
         nonce: this.nonce,

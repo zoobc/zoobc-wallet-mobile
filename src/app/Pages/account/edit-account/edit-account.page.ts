@@ -35,6 +35,7 @@ export class EditAccountPage implements OnInit {
   isMultisig: boolean;
   minimumSignature: number;
   nonce: number;
+  nameErrorMessage = EMPTY_STRING;
 
   constructor(
     private accountService: AccountService,
@@ -84,8 +85,9 @@ export class EditAccountPage implements OnInit {
 
   async loadMultisigAccount() {
     this.accounts = await this.accountService.allAccount('multisig');
-    this.participants = this.account.participants.sort();
+    this.participants = this.account.participants; // .sort();
     this.signByAccount = await this.accountService.getAccount(this.account.signByAddress);
+    this.signBy = this.signByAccount.address;
   }
 
   async loadNormalAccount() {
@@ -95,19 +97,15 @@ export class EditAccountPage implements OnInit {
   async UpdateAccount() {
 
     this.isNameValid = true;
+    if (this.oldName === this.account.name) {
+      this.accountService.broadCastNewAccount(this.account);
+      this.goListAccount();
+      return;
+    }
+
     if (!this.account.name) {
       this.validationMessage = 'Name is required';
       this.isNameValid = false;
-      return;
-    }
-
-    if ( this.isMultisig &&  (this.isMinSigValid === false || this.isNonceValid === false)) {
-      return;
-    }
-
-    if (this.account.type !== 'multisig' && this.oldName === this.account.name) {
-      this.accountService.broadCastNewAccount(this.account);
-      this.goListAccount();
       return;
     }
 
@@ -117,25 +115,25 @@ export class EditAccountPage implements OnInit {
       return;
     }
 
-    const pathNumber = await this.accountService.generateDerivationPath();
-    let account: Account = this.accountService.createNewAccount(
-      this.accountName.trim(),
-      pathNumber
-    );
+    // // const pathNumber = await this.accountService.generateDerivationPath();
+    // // let account: Account = this.accountService.createNewAccount(
+    // //   this.accountName.trim(),
+    // //   pathNumber
+    // // );
 
-    if (this.isMultisig) {
-      // this.participants = this.participants.sort();
-      const multiParam: MultiSigAddress = {
-        participants: this.participants,
-        nonce: this.nonce,
-        minSigs: this.minimumSignature
-      };
-      account = this.accountService.createNewMultisigAccount(
-        this.accountName.trim(),
-        multiParam,
-        this.signByAccount
-      );
-    }
+    // if (this.isMultisig) {
+    //   // this.participants = this.participants.sort();
+    //   const multiParam: MultiSigAddress = {
+    //     participants: this.participants,
+    //     nonce: this.nonce,
+    //     minSigs: this.minimumSignature
+    //   };
+    //   account = this.accountService.createNewMultisigAccount(
+    //     this.accountName.trim(),
+    //     multiParam,
+    //     this.signByAccount
+    //   );
+    // }
 
     this.account.name = sanitizeString(this.account.name);
     this.accountService.updateAccount(this.account);
