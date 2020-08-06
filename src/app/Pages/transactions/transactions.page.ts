@@ -19,6 +19,8 @@ import zoobc, {
   toTransactionListWallet,
   MempoolListParams,
   toUnconfirmedSendMoneyWallet,
+  EscrowListParams,
+  OrderBy,
 } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Router } from '@angular/router';
@@ -27,6 +29,7 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { NetworkService } from 'src/app/Services/network.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
+import { GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
 
 @Component({
   selector: 'app-transactions',
@@ -53,6 +56,9 @@ export class TransactionsPage implements OnInit {
   alertConnectionTitle = '';
   alertConnectionMsg = '';
   networkSubscription = null;
+  total: number;
+  escrowTransactions: any;
+  isLoading: boolean;
 
   constructor(
     private router: Router,
@@ -129,6 +135,7 @@ export class TransactionsPage implements OnInit {
     this.currencyRate =  this.currencyServ.getRate();
     this.getUnconfirmTransactions(this.account.address);
     this.getTransactions(this.account.address);
+    this.getEscrowTransaction();
   }
 
 
@@ -201,6 +208,7 @@ export class TransactionsPage implements OnInit {
       const tx = await zoobc.Transactions.getList(params).then(res =>
         toTransactionListWallet(res, this.account.address)
       );
+
       const trxs  =  tx.transactions.map(  (recent) => {
         return {
           ...recent,
@@ -235,6 +243,53 @@ export class TransactionsPage implements OnInit {
     return nama;
   }
 
+  getEscrowTransaction() {
+    this.isLoading = true;
+    const params: EscrowListParams = {
+      approverAddress: this.account.address,
+      // statusList: [0],
+      pagination: {
+        page: this.page,
+        limit: 1000,
+        orderBy: OrderBy.DESC,
+        orderField: 'timeout',
+      },
+    };
+
+    zoobc.Escrows.getList(params)
+      .then((res: GetEscrowTransactionsResponse.AsObject) => {
+        this.total = Number(res.total);
+
+        const trxs = res.escrowsList.filter(tx => {
+          if (tx.latest === true) { return tx; }
+        });
+
+        const txMap = trxs.map(tx => {
+          const alias = this.getName(tx.recipientaddress) || '';
+          return {
+            id: tx.id,
+            alias,
+            senderaddress: makeShortAddress(tx.senderaddress),
+            recipientaddress: makeShortAddress(tx.recipientaddress),
+            approveraddress: makeShortAddress(tx.approveraddress),
+            amount: tx.amount,
+            commission: tx.commission,
+            timeout: Number(tx.timeout),
+            status: tx.status,
+            blockheight: tx.blockheight,
+            latest: tx.latest,
+            instruction: tx.instruction,
+          };
+        });
+        this.escrowTransactions = txMap;
+      })
+      .catch(err => {
+        console.log(err);
+      }).finally( () => {
+        this.isLoading = false;
+      });
+  }
+
   /**
    * Get Unconfirm transaction by address
    * @ param address
@@ -244,6 +299,7 @@ export class TransactionsPage implements OnInit {
     this.unconfirmTxs = await zoobc.Mempool.getList(mempoolParams).then(res =>
       toUnconfirmedSendMoneyWallet(res, address)
     );
+    console.log('==this.unconfirmTxs: ', this.unconfirmTxs);
   }
 
   /**
