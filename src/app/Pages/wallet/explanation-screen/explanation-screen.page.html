@@ -1,0 +1,27 @@
+<ion-content>
+  <ion-slides pager="true">
+    <ion-slide class="ion-padding">
+      <div>
+        <div>
+          <h2>Protect Your Funds!</h2>
+          <p>
+            In case you lose access to your device you can only re-gain access to the wallet with your <strong>seed phrase.</strong>
+          </p>
+          <p>No backups. No password reset.</p>
+        </div>
+        <ion-button (click)="next()">I Understand</ion-button>
+      </div>
+    </ion-slide>
+    <ion-slide class="ion-padding">
+      <div>
+        <div>
+          <h2>What's a seed phrase?</h2>
+          <p>Seed phrase is a private key to your wallet and its funds. It consists of 24 randomly generated words.</p>
+          <p>Write down your seed phrase and store it safely.</p>
+          <p>Don't share your seed phrase with anyone.</p>
+        </div>
+        <ion-button (click)="finish()">Reveal Seed Phrase</ion-button>
+      </div>
+    </ion-slide>
+  </ion-slides>  
+</ion-content>

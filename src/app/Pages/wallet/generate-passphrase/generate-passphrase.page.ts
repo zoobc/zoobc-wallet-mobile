@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { UtilService } from 'src/app/Services/util.service';
 import { ZooKeyring } from 'zoobc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
+import { NavController, Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-generate-passphrase',
@@ -36,13 +37,30 @@ export class GeneratePassphrasePage implements OnInit {
   constructor(
     private router: Router,
     private utilService: UtilService,
-    private accountSrv: AccountService
+    private accountSrv: AccountService,
+    private navCtrl: NavController,
+    private platform: Platform
   ) {
   }
 
   ngOnInit() {
     this.lang = 'english';
-    this.generatePassphrase();
+    this.generatePassphrase(); 
+  }
+
+  backButtonSubscription;
+  ionViewDidEnter(){
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.backToInitial();
+    })
+  }
+
+  ionViewWillLeave(){
+    this.backButtonSubscription.unsubscribe()
+  }
+
+  backToInitial(){
+    this.navCtrl.navigateBack("/initial")
   }
 
   onLanguageChanged(language: string) {
