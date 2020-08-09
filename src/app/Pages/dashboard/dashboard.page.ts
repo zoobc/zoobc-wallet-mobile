@@ -240,6 +240,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.lastTimeGetBalance = new Date();
       })
       .catch(error => {
+        this.lastTimeGetBalance = new Date();
         console.error(error);
         this.accountBalance = {
           accountaddress: '',
