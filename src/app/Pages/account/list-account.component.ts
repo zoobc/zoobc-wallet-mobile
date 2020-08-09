@@ -66,6 +66,7 @@ export class ListAccountComponent implements OnInit {
       allBalances = data.accountbalancesList;
     } catch (error) {
       console.log('__error', error);
+      this.isLoadingBalance = false;
     }
 
     accounts.forEach(obj => {

@@ -33,7 +33,7 @@
       </ion-col>
     </ion-row>
 
-    <!-- <div *ngIf="account && account.type==='multisig'">
+    <div *ngIf="account && account.type==='multisig'">
       <ion-row>
         <ion-col>
           <ion-label>
@@ -41,24 +41,11 @@
           </ion-label>
         </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-button (click)="addParticipant()">
-            +
-          </ion-button>
-          <ion-button (click)="reduceParticipant()">
-            -
-          </ion-button>
-        </ion-col>
-      </ion-row>
       <div *ngIf="isMultisig">
         <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
-          <ion-col size="10">
-            <ion-textarea rows="3" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
+          <ion-col size="12">
+            <ion-textarea rows="3" disabled="true" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
             [(ngModel)]="participants[i]"></ion-textarea>
-          </ion-col>
-          <ion-col size="2" class="ion-text-center" style="padding-top: 20px">
-            <ion-icon name="arrow-dropdown" (click)="presentGetAddressOption('participant',i);"></ion-icon>
           </ion-col>
         </ion-row>
       </div>
@@ -67,7 +54,7 @@
         <ion-col>
           <ion-label>
             <h2>Nonce</h2>
-            <ion-input [(ngModel)]="account.nonce" type="number" placeholder="Nonce ..."></ion-input>
+            <ion-input disabled="true" [(ngModel)]="account.nonce" type="number" placeholder="Nonce ..."></ion-input>
           </ion-label>
         </ion-col>
       </ion-row>
@@ -75,30 +62,27 @@
         <ion-col>
           <ion-label>
             <h2>Minimum signature</h2>
-            <ion-input type="number" [(ngModel)]="account.minSig" placeholder="Minimum signature..."></ion-input>
+            <ion-input disabled="true" type="number" [(ngModel)]="account.minSig" placeholder="Minimum signature..."></ion-input>
           </ion-label>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="isMultisig && signByAccount">
         <ion-col>
           <ion-label>
             <h2>Sign by</h2>
           </ion-label>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="isMultisig">
-        <ion-col size="10">
+      <ion-row *ngIf="isMultisig && signByAccount">
+        <ion-col size="12">
           <ion-label>
             <h3 *ngIf="signByAccount">{{signByAccount.name}}</h3>
             <ion-textarea rows="3" [(ngModel)]="signBy" placeholder="Enter sign by..."></ion-textarea>
           </ion-label>
         </ion-col>
-        <ion-col size="2">
-          <ion-icon name="arrow-dropdown" (click)="showPopupSignBy();"></ion-icon>
-        </ion-col>
       </ion-row>
 
-    </div> -->
+    </div>
     <ion-row>
       <ion-col>
         <ion-button strong color="secondary" (click)="UpdateAccount()" type="submit" expand="block">
