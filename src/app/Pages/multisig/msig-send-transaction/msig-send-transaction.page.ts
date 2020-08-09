@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import zoobc, { MultiSigInterface, MultisigPostTransactionResponse, sendMoneyBuilder, SendMoneyInterface } from 'zoobc-sdk';
+import zoobc, { MultiSigInterface, sendMoneyBuilder, SendMoneyInterface } from 'zoobc-sdk';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AuthService } from 'src/app/Services/auth-service';
 import { AlertController, ModalController, LoadingController } from '@ionic/angular';
@@ -33,8 +33,10 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   subscription: Subscription = new Subscription();
   account: Account;
   senderAccount: Account;
+  senderAccounts =  [];
   minFee = TRANSACTION_MINIMUM_FEE;
-
+  isValidSigner = true;
+  accBalance = 0;
   currencyRate: Currency;
   trxFee: string;
   advancedMenu = false;
@@ -79,6 +81,11 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   isMultiSigAccount: boolean;
   timeout: number;
   multisigAccount: Account;
+  signByAccount: any;
+  signBy: any;
+  participants = ['', ''];
+  isValidFee = true;
+  isBalanceNotEnough: boolean;
 
   constructor(
     private utilService: UtilService,
@@ -99,10 +106,31 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     this.loadAccount();
   }
 
+  async getAccountBalance(addr: string) {
+    this.isLoadingBalance = true;
+    await zoobc.Account.getBalance(addr)
+      .then(data => {
+        if (data.accountbalance && data.accountbalance.spendablebalance) {
+          const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
+          this.signByAccount.balance = blnc;
+        }
+      })
+      .catch(error => {
+        this.errorMsg = '';
+        if (error === 'Response closed without headers') {
+          this.errorMsg = 'Fail connect to services, please try again!';
+        }
+        this.account.balance = 0;
+      })
+      .finally(() => (this.isLoadingBalance = false));
+  }
+
   async loadAccount() {
     this.senderAccount = await this.accountService.getCurrAccount();
     this.account = this.senderAccount;
+
     if (this.account.type !== 'multisig') {
+      this.participants = this.account.participants; // .sort();
       this.isMultiSigAccount = false;
     } else {
       this.isMultiSigAccount = true;
@@ -134,13 +162,16 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       const { accountAddress, fee, generatedSender } = this.multisig;
       if (this.isMultiSigAccount) {
         this.multisigAccount = this.account;
+        this.signBy = this.multisigAccount.signByAddress;
+        if (this.signBy) {
+          this.getAccountBalance(this.signBy);
+          this.signByAccount = await this.accountService.getAccount(generatedSender);
+        }
         this.account.address = generatedSender;
       } else {
         this.multisigAccount = await this.accountService.getAccount(generatedSender);
         this.account.address = accountAddress;
       }
-
-      // this.optionFee = multisig.fee.toString();
       this.transactionFee = fee;
       this.feeFormCurr =  multisig.fee * this.currencyRate.value;
       this.timeout = 0;
@@ -149,6 +180,19 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
     this.getMultiSigDraft();
 
+  }
+
+  async changeSigner() {
+    console.log('== this.signBy: ', this.signBy);
+    this.signByAccount = await this.accountService.getAccount(this.signBy);
+    this.getAccountBalance(this.signByAccount.address);
+
+    console.log('== this.signByAccount: ', this.signByAccount);
+    if (!this.signByAccount) {
+        this.isValidSigner = false;
+    } else {
+        this.isValidSigner = true;
+    }
   }
 
   async getMultiSigDraft() {
@@ -170,9 +214,13 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     const  fee  = this.transactionFee;
     const multisig = { ...this.multisig };
     if (this.isMultiSigAccount) {
-      multisig.accountAddress = this.multisigAccount.signByAddress;
+      console.log('== sign by: ', this.signBy);
+      console.log('== sign by account: ', this.signByAccount.address);
+
+      multisig.accountAddress = this.signByAccount.address;
+
     } else {
-      multisig.accountAddress = this.multisigAccount.signByAddress;
+      multisig.accountAddress = this.account.address;
     }
     multisig.fee = fee;
     this.multisigServ.update(multisig);
@@ -204,10 +252,12 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   }
 
   changeFee() {
+    this.isValidFee = true;
+    this.isCustomFeeValid = true;
     this.customeChecked = false;
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
-      this.customfeeTemp = this.allFees[2].fee;
+      this.customfeeTemp = this.allFees[0].fee;
     }
   }
 
@@ -239,21 +289,37 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
   loadData() {
     this.recipientAddress = '';
-    this.optionFee = this.allFees[1].fee.toString();
+    this.optionFee = this.allFees[0].fee.toString();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
   }
 
 
   sendTransaction() {
-
+    this.isValidSigner = true;
+    this.isValidFee = true;
+    this.isBalanceNotEnough = true;
     this.transactionFee = Number(this.optionFee);
     if (this.customeChecked) {
       this.transactionFee = this.customfee;
     }
 
     if (!this.transactionFee) {
-      this.transactionFee =  this.allFees[1].fee;
+      this.isValidFee = false;
+    }
+
+    if (!this.signBy) {
+      this.isValidSigner = false;
+    }
+
+
+    if (this.signByAccount && this.signByAccount.balance < this.transactionFee) {
+      this.isBalanceNotEnough = false;
+      return;
+    }
+
+    if (!this.transactionFee || !this.signBy) {
+      return;
     }
 
     this.showPin();
@@ -266,14 +332,28 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
     pinmodal.onDidDismiss().then(async (returnedData) => {
        if (returnedData && returnedData.data !== 0) {
-          await this.submit();
+          await this.sendTrx();
       }
     });
     return await pinmodal.present();
   }
 
+  async showPopupSignBy() {
+    const modal = await this.modalController.create({
+      component: AccountPopupPage
+    });
 
-  private async submit() {
+    modal.onDidDismiss().then(dataReturned => {
+      if (dataReturned.data) {
+        this.signByAccount = dataReturned.data;
+        this.signBy = this.signByAccount.address;
+      }
+    });
+
+    return await modal.present();
+  }
+
+  private async sendTrx() {
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'processing ..!',
@@ -330,11 +410,11 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         signaturesInfo,
       };
     }
-    const key = this.authSrv.tempKey;
+    const childSeed = this.authSrv.keyring.calcDerivationPath(this.signByAccount.path);
 
-    const signByAddress = this.multisigAccount.signByAddress;
-    const signByAcc = await this.accountService.getAccount(signByAddress);
-    const childSeed = this.authSrv.keyring.calcDerivationPath(signByAcc.path);
+    // loading.dismiss();
+    // return;
+
     zoobc.MultiSignature.postTransaction(data, childSeed)
       .then(  () => {
         const message = 'Your Transaction is processing!';
