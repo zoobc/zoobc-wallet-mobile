@@ -52,7 +52,7 @@ import { PopupLanguagesPageModule } from './Pages/settings/popup-languages/popup
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'assets/languages/locales/', '.json');
 }
 
 @NgModule({

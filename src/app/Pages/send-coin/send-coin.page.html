@@ -6,7 +6,7 @@
     <ion-title>{{ "Send" | translate }}</ion-title>
     <ion-buttons color="primary" slot="end">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "Feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -42,7 +42,7 @@
               </span>
             </p>
             <p>&nbsp;</p>
-            <p>Current Balance</p>
+            <p>{{ "Current Balance"  | translate }}</p>
             <h1>{{ account.balance | number: '0.0-2' }} ZBC</h1>
             <p>
               {{ balanceInUSD | number:
@@ -147,8 +147,8 @@
           <ion-select-option *ngFor="let sfee of allFees" value="{{sfee.fee}}">
             {{ sfee.name }} {{ sfee.fee | number: '0.0-4' }} ZBC
           </ion-select-option>
-          <ion-select-option value="custom">
-            Custom Fee
+          <ion-select-option value="-1">
+            Custom {{ "Fee" | translate}}
           </ion-select-option>
         </ion-select>
       </ion-col>

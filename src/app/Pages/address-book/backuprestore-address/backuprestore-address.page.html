@@ -3,11 +3,11 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Backup / Restore</ion-title>
+    <ion-title>{{ "Backup" | translate}}  / {{ "Restore" | translate}} </ion-title>
 
     <ion-buttons slot="end" color="primary">
         <ion-button routerLink="/feedback">
-          Feedback
+          {{ "Feedback" | translate}} 
         </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -39,7 +39,7 @@
       <ion-col>
         <ion-button (click)="backup()" color="primary" expand="block">Backup</ion-button>
         <ion-progress-bar *ngIf="isBackup" type="indeterminate"></ion-progress-bar>
-        <ion-label *ngIf="isBackupFinish" color="success">Backup succesfull</ion-label>
+        <ion-label *ngIf="isBackupFinish" color="success">Backup {{ "succesfull" | translate}} </ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -51,7 +51,7 @@
       <ion-col>
         <ion-button (click)="restore()" color="secondary" expand="block">Restore</ion-button>
         <ion-progress-bar *ngIf="isRestore" type="indeterminate" reversed="true"></ion-progress-bar>
-        <ion-label *ngIf="isRestoreFinish" color="success">Restoring {{numBerOfRestored}} address finish</ion-label>
+        <ion-label *ngIf="isRestoreFinish" color="success">{{ "Restoring" | translate}}  {{numBerOfRestored}} address {{ "finish" | translate}} </ion-label>
       </ion-col>
     </ion-row>
   </ion-grid>

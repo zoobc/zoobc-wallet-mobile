@@ -3,7 +3,7 @@
     <ion-buttons slot="end">
       <ion-button (click)="close()">Close</ion-button>
     </ion-buttons>
-    <ion-title>List of Languages</ion-title>
+    <ion-title>{{ "List of Languages"| translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,7 +11,7 @@
   <div class="list-account-page">
     <ng-template #noData>
       <ion-item lines="none">
-        <ion-label>You dont have any languages</ion-label>
+        <ion-label>{{ "You dont have any languages" | translate}}</ion-label>
       </ion-item>
     </ng-template>
 

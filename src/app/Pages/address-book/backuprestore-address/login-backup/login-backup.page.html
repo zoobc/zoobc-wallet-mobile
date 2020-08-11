@@ -1,11 +1,14 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Login to Backup Service</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "Login to Backup Service" | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <p>Backup / Restore Address Book using third party services, please register / login to use this services.</p>
+  <p>{{ "Backup / Restore Address Book using third party services, please register / login to use this services." | translate}}</p>
   <form class="form" [formGroup]="validationsForm"  (ngSubmit)="loginUser(validationsForm.value)">
 
     <ion-item>
@@ -32,11 +35,11 @@
       </ng-container>
     </div>
 
-    <ion-button  class="submit-btn" type="submit"  [disabled]="!validationsForm.valid">Log In</ion-button>
+    <ion-button  class="submit-btn" type="submit"  [disabled]="!validationsForm.valid">{{ "Log In" | translate}}</ion-button>
     <br/>
     <label class="error-message">{{errorMessage}}</label>
   </form>
   <p class="go-to-register">
-    No account yet? <a (click)="goToRegisterPage()">Create an account.</a>
+    {{ "No account yet"| translate }}? <a (click)="goToRegisterPage()">{{ "Create an account."| translate}}</a>
   </p>
 </ion-content>
