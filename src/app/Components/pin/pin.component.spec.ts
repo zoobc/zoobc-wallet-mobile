@@ -24,4 +24,9 @@ describe('PinComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it("should return a non empty array", () => {
+    let result = component.initialPin();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
 });
