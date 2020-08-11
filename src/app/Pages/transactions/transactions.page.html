@@ -68,6 +68,44 @@
     </ion-item>
   </ion-list>
 
+  <ion-list *ngIf="escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
+    <ion-item *ngFor="let escrow of escrowTransactions; let i = index;">
+      <ion-label>
+        <p>{{ escrow.senderaddress }} </p> 
+        <ion-badge *ngIf = "escrow.status == 0" color="warning"  shape="round">
+        Pending
+        </ion-badge>&nbsp;
+   
+        <ion-badge *ngIf = "escrow.status == 1" color="success"  shape="round">
+        Approved
+        </ion-badge>&nbsp;
+   
+
+        <ion-badge *ngIf = "escrow.status == 2" color="danger"  shape="round">
+        Rejected
+        </ion-badge>&nbsp;
+
+
+        <ion-badge *ngIf = "escrow.status == 3" color="warning"  shape="round">
+        Expired
+        </ion-badge>&nbsp;
+
+        <ion-badge *ngIf = "escrow.status == 4" color="warning"  shape="round">
+        Unknown
+        </ion-badge>&nbsp;
+
+
+      </ion-label>
+
+      <ion-text slot='end' color="success" class="ion-text-right" >
+        <span style='font-size: 0.7em;'>Commission</span> <br/>
+         + {{ escrow.commission / 1e8 | number: '0.0-6' }} <span style="font-size:0.8em">ZBC</span>
+      </ion-text>
+
+    </ion-item>
+  </ion-list>
+
+
   <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length > 0" class="ion-margin-top">
     <ion-item *ngFor="let transaction of recentTxs; let i = index" button (click)="openDetailTransction(transaction)">
       <ion-label *ngIf="transaction.name" color="dark">
