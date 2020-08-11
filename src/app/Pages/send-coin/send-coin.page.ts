@@ -3,8 +3,6 @@ import {
   LoadingController, 
   AlertController} from '@ionic/angular';
 import { MenuController, ModalController } from '@ionic/angular';
-
-import { base64ToByteArray } from 'src/Helpers/converters';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { SenddetailPage } from 'src/app/Pages/send-coin/modals/senddetail/senddetail.page';
@@ -31,6 +29,8 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Network } from '@ionic-native/network/ngx';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { addressFormatValidator } from 'src/Helpers/validators';
 
 @Component({
   selector: 'app-send-coin',
@@ -42,29 +42,14 @@ export class SendCoinPage implements OnInit {
   rootPage: any;
   status: any;
   account: Account;
-  recipientAddress: string;
   senderAddress: string;
-  amount: number;
-  amountSecond: number;
-  amountTemp: number;
-  customfeeTemp: number;
   optionFee: string;
-  customfee: number;
-  customfee2: number;
   transactionFee: number;
+  withEscrow: boolean;
   allFees = this.trxService.transactionFees(TRANSACTION_MINIMUM_FEE);
-  isAdvance = false;
-  isAmountValid = true;
-  isFeeValid = true;
-  isCustomFeeValid = true;
-  isRecipientValid = true;
-  isBalanceValid = true;
   accountName: string;
-  recipientMsg = '';
-  amountMsg = '';
   allAccounts = [];
   errorMsg: string;
-  customeChecked: boolean;
   // private connectionText = '';
   public currencyRate: Currency = {
     name: CONST_DEFAULT_CURRENCY,
@@ -74,24 +59,29 @@ export class SendCoinPage implements OnInit {
   public isLoadingBalance = true;
   public isLoadingRecentTx = true;
   public isLoadingTxFee = false;
-  public priceInUSD: number;
+  public balanceInUSD: number;
   public primaryCurr = COIN_CODE;
   public secondaryCurr: string;
-
-  escrowApprover: string;
-  escrowCommision: number;
-  escrowTimout: number;
-  escrowInstruction: string;
   private minimumFee = TRANSACTION_MINIMUM_FEE;
   isLoadingBlockHeight: boolean;
   blockHeight: number;
-  isEscrowInstructionValid = true;
-  isEscrowCommitionValid = true;
-  isEscrowApproverValid = true;
-  isEscrowTimeoutValid = true;
   recipientName: string;
   escrowApproverName: string;
   scanForWhat: string;
+
+  sendForm = new FormGroup({
+    recipientAddress: new FormControl('',[Validators.required, addressFormatValidator]),
+    amount: new FormControl(0,[Validators.required, Validators.min(0.00000001)]),
+    fee: new FormControl(this.allFees[0].fee,[Validators.required, Validators.min(this.minimumFee)]),
+    escrow: new FormGroup({
+      escrowApprover: new FormControl(''),
+      escrowCommision: new FormControl(0),
+      escrowTimeout: new FormControl(0),
+      escrowInstruction: new FormControl(''),
+    })
+  });
+
+  submitted = false
 
   constructor(
     private router: Router,
@@ -121,28 +111,28 @@ export class SendCoinPage implements OnInit {
 
     this.addressbookService.recipientSubject.subscribe({
       next: address => {
-        this.recipientAddress = address.address;
+        this.sendForm.controls['recipientAddress'].setValue(address.address);
         this.recipientName = address.name;
       }
     });
 
     this.addressbookService.approverSubject.subscribe({
       next: address => {
-        this.escrowApprover = address.address;
+        this.sendForm.get("escrow").get('escrowApprover').setValue(address.address);
         this.escrowApproverName = address.name;
       }
     });
 
     this.accountService.recipientSubject.subscribe({
       next: recipient => {
-        this.recipientAddress = recipient.address;
+        this.sendForm.controls['recipientAddress'].setValue(recipient.address);
         this.recipientName = recipient.name;
       }
     });
 
     this.accountService.approverSubject.subscribe({
       next: approver => {
-        this.escrowApprover = approver.address;
+        this.sendForm.get("escrow").get('escrowApprover').setValue(approver.address);
         this.escrowApproverName = approver.name;
       }
     });
@@ -152,38 +142,39 @@ export class SendCoinPage implements OnInit {
       this.secondaryCurr = rate.name;
     });
 
-    this.priceInUSD = this.currencyService.getPriceInUSD();
     this.loadAccount();
   }
 
-  validateEscCommition() {
-    this.isEscrowCommitionValid = true;
-    if (isNaN(this.escrowCommision)) {
-      return;
-    }
-
-    if (this.escrowCommision <= 0) {
-      this.isEscrowCommitionValid = false;
-    }
+  get recipientAddress() {
+    return this.sendForm.get('recipientAddress');
   }
 
-  validateInstruction() {
-    this.isEscrowInstructionValid = true;
-    if (!this.escrowInstruction) {
-      this.isEscrowInstructionValid = false;
-    }
+  get amount() {
+    return this.sendForm.get('amount');
   }
 
-  selectApprover() {
-    if (!this.isAdvance) {
-      return;
-    }
+  get fee() {
+    return this.sendForm.get('fee');
+  }
 
-    if (this.escrowApprover) {
-      this.isEscrowApproverValid = true;
-    } else {
-      this.isEscrowApproverValid = false;
-    }
+  get escrow(){
+    return this.sendForm.get("escrow")
+  }
+
+  get escrowApprover(){
+    return this.sendForm.get("escrow").get("escrowApprover")
+  }
+
+  get escrowCommision(){
+    return this.sendForm.get("escrow").get("escrowCommision")
+  }
+
+  get escrowTimeout(){
+    return this.sendForm.get("escrow").get("escrowTimeout")
+  }
+
+  get escrowInstruction(){
+    return this.sendForm.get("escrow").get("escrowInstruction")
   }
 
   switchCurrency() {
@@ -196,47 +187,15 @@ export class SendCoinPage implements OnInit {
       this.secondaryCurr = this.currencyRate.name;
     }
 
-    this.convertAmount();
-    this.convertCustomeFee();
+    this.onAmountChange()
+    this.onFeeChange()
   }
 
   async ngOnInit() {
-    this.recipientAddress = '';
     this.approvers = [];
     this.loadData();
     this.getAllAddress();
     this.getAllAccount();
-  }
-
-  resetForm() {
-    this.isRecipientValid = true;
-    this.recipientAddress = '';
-    this.recipientMsg = '';
-    this.amountMsg = '';
-    this.amountTemp = 0;
-    this.amountSecond = 0;
-    this.amount = 0;
-    this.isAmountValid = true;
-    this.escrowApprover = null;
-    this.escrowCommision = null;
-    this.escrowTimout = null;
-    this.escrowInstruction = null;
-    this.isAdvance = false;
-  }
-
-  resetValidation() {
-    this.isRecipientValid = true;
-    this.isAmountValid = true;
-    this.isEscrowInstructionValid = true;
-    this.isEscrowCommitionValid = true;
-    this.isEscrowApproverValid = true;
-    this.isEscrowTimeoutValid = true;
-  }
-
-  ionViewDidEnter() {
-    this.amountMsg = '';
-    this.isAmountValid = true;
-    this.isEscrowCommitionValid = true;
   }
 
   async getAllAccount() {
@@ -406,6 +365,10 @@ export class SendCoinPage implements OnInit {
         if (data.accountbalance && data.accountbalance.spendablebalance) {
           const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
           this.account.balance = blnc;
+
+          this.balanceInUSD = this.currencyService.convertCurrency(blnc,"ZBC","USD");
+          this.setAmountValidation();
+
         }
       })
       .catch(error => {
@@ -414,205 +377,123 @@ export class SendCoinPage implements OnInit {
           this.errorMsg = 'Fail connect to services, please try again!';
         }
         this.account.balance = 0;
+        this.setAmountValidation();
       })
       .finally(() => (this.isLoadingBalance = false));
   }
 
-  validateCustomFee() {
-    this.validateAmount();
-    this.isCustomFeeValid = true;
-    this.convertCustomeFee();
-    if (this.minimumFee > this.customfee) {
-      this.isCustomFeeValid = false;
-      return;
+  conversionValue = {
+    amount: {
+      ZBC: 0,
+      USD: 0
+    },
+    fee: {
+      ZBC: this.allFees[0].fee,
+      USD: 0
     }
+  };
 
-    if (this.customfee && this.customfee > 0) {
-      this.isCustomFeeValid = true;
-    } else {
-      this.isCustomFeeValid = false;
-    }
+  onAmountChange() {
+    const amount = this.sendForm.get("amount").value;
+    const amountCurr = this.primaryCurr
+    this.conversionValue.amount.ZBC = this.currencyService.convertCurrency(
+      amount,
+      amountCurr,
+      "ZBC"
+    );
+    this.conversionValue.amount.USD = this.currencyService.convertCurrency(
+      amount,
+      amountCurr,
+      "USD"
+    );
   }
 
-  validateTimeout() {
-    this.isEscrowTimeoutValid = true;
-    if (isNaN(this.escrowTimout)) {
-      return;
-    }
+  onFeeChange() {
+    const fee = this.sendForm.get("fee").value;
+    const feeCurr = this.primaryCurr
+    this.conversionValue.fee.ZBC = this.currencyService.convertCurrency(
+      fee,
+      feeCurr,
+      "ZBC"
+    );
+    this.conversionValue.fee.USD = this.currencyService.convertCurrency(
+      fee,
+      feeCurr,
+      "USD"
+    );
 
-    if (this.escrowTimout <= 0) {
-      this.isEscrowTimeoutValid = false;
-      return;
-    }
-
-    this.minimumFee = calculateMinFee(this.escrowTimout);
-    this.allFees = this.trxService.transactionFees(this.minimumFee);
-    this.optionFee = this.allFees[0].fee.toString();
-    if (this.customeChecked) {
-      this.validateCustomFee();
-    }
-    this.getBlockHeight();
+    this.setAmountValidation();
   }
 
-  convertCustomeFee() {
-    if (this.primaryCurr === COIN_CODE) {
-      this.customfee = this.customfeeTemp;
-      this.customfee2 =
-        this.customfeeTemp * this.priceInUSD * this.currencyRate.value;
-    } else {
-      this.customfee =
-        this.customfeeTemp / this.priceInUSD / this.currencyRate.value;
-      this.customfee2 = this.customfee;
-    }
+  onEscrowTimeoutChange(){
+  
+    this.minimumFee = calculateMinFee(this.escrowTimeout.value)
+
+    this.setFeeValidation();
+    this.setAmountValidation();
   }
 
-  convertAmount() {
-    if (!this.amountTemp) {
-      this.amountTemp = 0;
-    }
-    if (this.primaryCurr === COIN_CODE) {
-      this.amount = this.amountTemp;
-      this.amountSecond =
-        this.amountTemp * this.priceInUSD * this.currencyRate.value;
-    } else {
-      this.amount = this.amountTemp / this.priceInUSD / this.currencyRate.value;
-      this.amountSecond = this.amount;
-    }
-  }
-
-  validateAmount() {
-    this.convertAmount();
-    this.isAmountValid = true;
-    this.amountMsg = '';
-    if (!this.amount) {
-      this.amountMsg = this.translateService.instant('Amount required!');
-      this.isAmountValid = false;
-      return;
-    }
-
-    if (this.isAmountValid && isNaN(this.amount)) {
-      this.amountMsg = this.translateService.instant('Amount is not valid!');
-      this.isAmountValid = false;
-      return;
-    }
-
-    if (this.isAmountValid && this.amount < 0.00000001) {
-      this.amountMsg = this.translateService.instant(
-        'minimum amount is 0.00000001!'
-      );
-      this.isAmountValid = false;
-      return;
-    }
-
-    if (this.isAmountValid && this.amount <= 0) {
-      this.isAmountValid = false;
-      return;
-    }
-
-    if (!this.isLoadingBalance) {
-      if (
-        this.isAmountValid &&
-        this.amount +
-          (Number(this.optionFee) >= 0
-            ? Number(this.optionFee)
-            : Number(this.customfeeTemp)) >
-          this.account.balance
-      ) {
-        if (this.account.balance > 0) {
-          this.amountMsg =
-            this.translateService.instant(
-              'Insufficient balance. The maximum amount is'
-            ) +
-            ' ' +
-            (Number(this.account.balance) -
-              (Number(this.optionFee) >= 0
-                ? Number(this.optionFee)
-                : Number(this.customfeeTemp))) +
-            ' ZBC';
-        } else {
-          this.amountMsg = this.translateService.instant(
-            'Insufficient balance.'
-          );
-        }
-        this.isAmountValid = false;
-        return;
-      }
-    }
-  }
-
-  validateApprover() {
-    this.isEscrowApproverValid = true;
-    if (this.escrowApprover === null || this.escrowApprover === undefined) {
-      return;
-    }
-
-    if (!this.escrowApprover || this.escrowApprover === '') {
-      this.isEscrowApproverValid = false;
-      return;
-    }
-
-
-    if (this.escrowApprover) {
-      if (!this.escrowApprover.toUpperCase().startsWith('ZBC')){
-        this.isEscrowApproverValid = false;
-        return;
-      }
-    }
-
-    const addressBytes = base64ToByteArray(this.escrowApprover);
-    if (this.isEscrowApproverValid && addressBytes.length !== 49) {
-      this.isEscrowApproverValid = false;
-      return;
-    }
+  onCommisionChange(){
+    this.setAmountValidation();
   }
 
   shortAddress(address: string) {
     return makeShortAddress(address);
   }
 
-  validateRecipient() {
-    this.isRecipientValid = true;
-    this.recipientAddress = sanitizeString(this.recipientAddress);
-
-    if (this.recipientAddress === null || this.recipientAddress === undefined) {
-      return;
-    }
-
-    if (!this.recipientAddress || this.recipientAddress === '') {
-      this.isRecipientValid = false;
-      this.recipientMsg = this.translateService.instant(
-        'Recipient is required!'
-      );
-      return;
-    }
-
-    if (this.isRecipientValid) {
-      if (!this.recipientAddress.toUpperCase().startsWith('ZBC')){
-        this.isRecipientValid = false;
-        this.recipientMsg = this.translateService.instant(
-          'Address is not valid!'
-        );
-        return;
-      }
-    }
-
-    if (this.isRecipientValid) {
-      const addressBytes = base64ToByteArray(this.recipientAddress);
-      if (this.isRecipientValid && addressBytes.length !== 49) {
-        this.isRecipientValid = false;
-        this.recipientMsg = this.translateService.instant(
-          'Address is not valid!'
-        );
-        return;
-      }
-    }
+  setAmountValidation(){
+    this.amount.setValidators([Validators.required, Validators.min(0.00000001), 
+      Validators.max(this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC?this.minimumFee:this.conversionValue.fee.ZBC) 
+      - this.escrowCommision.value)]
+     )
+    this.amount.updateValueAndValidity();
   }
 
-  showAdvance() {
-    this.getBlockHeight();
-    if (!this.isAdvance) {
+  setFeeValidation(){
+    this.fee.setValidators([Validators.required, Validators.min(this.minimumFee)])
+    this.fee.updateValueAndValidity();
+  }
+
+  addEscrowValidation(){
+    this.escrow.get("escrowApprover").setValidators([Validators.required, addressFormatValidator])
+    this.escrow.get("escrowCommision").setValidators([Validators.required, Validators.min(0.00000001)])
+    this.escrow.get("escrowTimeout").setValidators([Validators.required, Validators.min(1)])
+    this.escrow.get("escrowInstruction").setValidators(Validators.required)
+
+    this.escrowUpdateValueAndValidity()
+  }
+
+  removeEscrowValidation(){
+    this.escrow.get("escrowApprover").clearValidators()
+    this.escrow.get("escrowCommision").clearValidators()
+    this.escrow.get("escrowTimeout").clearValidators()
+    this.escrow.get("escrowInstruction").clearValidators()
+
+    this.escrowUpdateValueAndValidity()
+  }
+
+  escrowUpdateValueAndValidity(){
+    this.escrow.get("escrowApprover").updateValueAndValidity()
+    this.escrow.get("escrowCommision").updateValueAndValidity()
+    this.escrow.get("escrowTimeout").updateValueAndValidity()
+    this.escrow.get("escrowInstruction").updateValueAndValidity()
+  }
+
+  changeWithEscrow(value: boolean) {
+    this.withEscrow = value
+
+    if(value){
+      this.addEscrowValidation();
+      this.minimumFee = calculateMinFee(this.escrowTimeout.value)
+    }else{
+      this.removeEscrowValidation();
       this.minimumFee = TRANSACTION_MINIMUM_FEE;
     }
+    
+    this.getBlockHeight();
+    
+    this.setFeeValidation();
+    this.setAmountValidation();
   }
 
   async inputPIN() {
@@ -635,15 +516,10 @@ export class SendCoinPage implements OnInit {
       if (params && params.jsonData && params.jsonData.length > 0) {
         const result = params.jsonData.split('||');
         if (params.from === 'dashboard') {
-          this.recipientAddress = result[0];
+          this.sendForm.controls["recipientAddress"].setValue(result[0])
           if (result.length > 1) {
-            this.amountTemp = Number(result[1]);
-            if (result[1] !== null) {
-              this.amountSecond =
-                this.amountTemp * this.priceInUSD * this.currencyRate.value;
-            } else {
-              this.amountSecond = undefined;
-            }
+            this.sendForm.controls["amount"].setValue(result[1]?Number(result[1]):0);
+            this.onAmountChange();
           }
         }
       }
@@ -651,161 +527,73 @@ export class SendCoinPage implements OnInit {
   }
 
   async showConfirmation() {
-    // validate recipient
-    this.isRecipientValid = true;
-    this.recipientMsg = '';
-    this.validateRecipient();
+    this.submitted = true
 
-    // validate amount
-    this.isAmountValid = true;
-    this.amountMsg = '';
-    this.validateAmount();
-    this.transactionFee = Number(this.optionFee);
-
-    // validate transaction fee
-    if (this.customeChecked) {
-      this.transactionFee = this.customfee;
-    }
-    this.isFeeValid = true;
-    if (isNaN(this.transactionFee) || Number(this.transactionFee) <= 0) {
-      this.isFeeValid = false;
-    } else if (this.transactionFee < this.minimumFee) {
-      this.isFeeValid = false;
-      if (this.customeChecked) {
-        this.isCustomFeeValid = false;
-      }
-    }
-
-    // validate advance field
-    if (this.isAdvance) {
-      this.minimumFee = await this.getMinimumFee(this.escrowTimout);
-
-      this.isEscrowApproverValid = true;
-      if (!this.escrowApprover) {
-        this.isEscrowApproverValid = false;
-      }
-
-      this.isEscrowCommitionValid = true;
-      if (isNaN(this.escrowCommision) || Number(this.escrowCommision) <= 0) {
-        this.isEscrowCommitionValid = false;
-      }
-
-      this.isEscrowTimeoutValid = true;
-      if (isNaN(this.escrowTimout) || Number(this.escrowTimout) <= 0) {
-        this.isEscrowTimeoutValid = false;
-      }
-
-      this.isEscrowInstructionValid = true;
-      if (!this.escrowInstruction) {
-        this.isEscrowInstructionValid = false;
-      }
-    }
-
-    if (
-      !this.amount ||
-      !this.recipientAddress ||
-      !this.isRecipientValid ||
-      !this.isAmountValid ||
-      !this.isFeeValid ||
-      !this.isEscrowInstructionValid ||
-      !this.isEscrowCommitionValid ||
-      !this.isEscrowApproverValid ||
-      !this.isEscrowTimeoutValid
-    ) {
-      return;
-    }
-
-    const amount = this.amount;
-    if (amount > 0 && amount < 0.000000001) {
-      this.isAmountValid = false;
-      return;
-    }
-
-    if (this.amount === 0) {
-      this.isAmountValid = false;
-      return;
-    }
-
-    const total = amount + this.transactionFee;
-
-    if (total > Number(this.account.balance)) {
-      this.isAmountValid = false;
-      this.amountMsg = 'Insuficient balance';
-      return;
-    }
-
-
-    const modalDetail = await this.modalController.create({
-      component: SenddetailPage,
-      componentProps: {
-        trxFee: this.transactionFee,
-        trxAmount: Number(this.amount),
-        trxBalance: this.account.balance,
-        trxSenderName: this.account.name,
-        trxSender: this.account.address,
-        trxRecipient: this.recipientAddress,
-        trxRecipientName: this.recipientName,
-        trxCurrencyRate: this.currencyRate,
-        IsEscrow: this.isAdvance,
-        escApproverAddress: this.escrowApprover,
-        escApproverName: this.escrowApproverName,
-        escCommission: this.escrowCommision,
-        escTimeout: this.escrowTimout,
-        escInstruction: this.escrowInstruction
-      }
-    });
-
-    modalDetail.onDidDismiss().then(dataReturned => {
-      if (dataReturned) {
-        if (dataReturned.data === 1) {
-          this.inputPIN();
+    if(this.sendForm.valid){
+      const modalDetail = await this.modalController.create({
+        component: SenddetailPage,
+        componentProps: {
+          trxFee: this.fee.value,
+          trxAmount: this.amount.value,
+          trxBalance: this.account.balance,
+          trxSenderName: this.account.name,
+          trxSender: this.account.address,
+          trxRecipient: this.recipientAddress.value,
+          trxRecipientName: this.recipientName,
+          trxCurrencyRate: this.currencyRate,
+          IsEscrow: this.withEscrow,
+          escApproverAddress: this.escrowApprover.value,
+          escApproverName: this.escrowApproverName,
+          escCommission: this.escrowCommision.value,
+          escTimeout: this.escrowTimeout.value,
+          escInstruction: this.escrowInstruction.value
         }
-      }
-    });
+      });
 
-    return await modalDetail.present();
+      modalDetail.onDidDismiss().then(dataReturned => {
+        if (dataReturned) {
+          if (dataReturned.data === 1) {
+            this.inputPIN();
+          }
+        }
+      });
+
+      await modalDetail.present();
+    }
   }
 
-  sanitizeInput() {
-    this.escrowInstruction = sanitizeString(this.escrowInstruction);
-  }
-
-  async sendMoney() {
+  async sendMoney() { 
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
       duration: 50000
     });
 
+
     await loading.present();
 
     let data: SendMoneyInterface = {
       sender: this.account.address,
-      recipient: sanitizeString(this.recipientAddress),
-      fee: this.transactionFee,
-      amount: this.amount
+      recipient: sanitizeString(this.recipientAddress.value),
+      fee: Number(this.fee.value),
+      amount: this.amount.value
     };
 
-    if (this.isAdvance) {
-      data = {
-        sender: this.account.address,
-        recipient: sanitizeString(this.recipientAddress),
-        fee: this.transactionFee,
-        amount: this.amount,
-        approverAddress: this.escrowApprover,
-        commission: this.escrowCommision,
-        timeout: this.escrowTimout,
-        instruction: sanitizeString(this.escrowInstruction)
-      };
+    if (this.withEscrow) {
+      data.approverAddress = this.escrowApprover.value;
+      data.commission = this.escrowCommision.value;
+      data.timeout = this.escrowTimeout.value;
+      data.instruction = sanitizeString(this.escrowInstruction.value)
     }
 
-    const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
+    const childSeed = this.authSrv.keyring.calcDerivationPath(
+      this.account.path
+    );
     await zoobc.Transactions.sendMoney(data, childSeed)
       .then(
         (resolveTx: any) => {
           if (resolveTx) {
             this.ngOnInit();
-            this.resetForm();
             this.showSuccessMessage();
             return;
           }
@@ -843,43 +631,34 @@ export class SendCoinPage implements OnInit {
     });
 
     modal.onDidDismiss().then(() => {
-      this.resetValidation();
+      //this.resetValidation();
     });
 
     return await modal.present();
   }
 
-  switchAccount() {
-    this.isAmountValid = true;
-    this.isRecipientValid = true;
-    this.amount = null;
-  }
+  changeFee(value:string) {
+    this.optionFee = value
 
-  changeFee() {
-    this.validateAmount();
-    this.customeChecked = false;
-    if (Number(this.optionFee) < 0) {
-      this.customeChecked = true;
-      this.customfeeTemp = this.allFees[0].fee;
+    if(value==="custom"){
+      this.sendForm.controls['fee'].setValue(0);
+    }else{
+      this.sendForm.controls['fee'].setValue(value);
     }
   }
 
   getScannerResult(arg: string) {
     const result = arg.split('||');
     if (this.scanForWhat === FOR_APPROVER) {
-      this.escrowApprover = result[0];
+      this.sendForm.get("escrow").get('escrowApprover').setValue(result[0]);
       this.escrowApproverName = null;
     } else {
-      this.recipientAddress = result[0];
+      this.sendForm.controls["recipientAddress"].setValue(result[0])
+
       this.recipientName = null;
       if (result.length > 1) {
-        this.amountTemp = Number(result[1]);
-        if (result[1] !== null) {
-          this.amountSecond =
-            this.amountTemp * this.priceInUSD * this.currencyRate.value;
-        } else {
-          this.amountSecond = undefined;
-        }
+        this.sendForm.controls["amount"].setValue(result[1]?Number(result[1]):0);
+        this.onAmountChange();
       }
     }
   }

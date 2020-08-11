@@ -6,6 +6,24 @@ import { STORAGE_CURRENCY_RATE, STORAGE_ACTIVE_CURRENCY, CURRENCY_LIST, CONST_DE
 import { StoragedevService } from './storagedev.service';
 import { Currency } from '../Interfaces/currency';
 
+interface ICurrency {
+  name: string;
+  code: string;
+}
+
+const currencies: ICurrency[] = [
+  {
+    name: "United States Dollars",
+    code: "USD"
+  },
+];
+
+export const currencyRates = {
+  ZBC: 1, // ZBC is always 1
+  USD: 1,
+};
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -73,4 +91,14 @@ export class CurrencyService {
     await this.strgSrv.set(STORAGE_CURRENCY_RATE, this.getRate());
   }
 
+  convertCurrency(price: number, currFrom: string, currTo: string) {
+    if (currFrom === currTo) {
+      return price * 1;
+    } else {
+      const currFromVal = currencyRates[currFrom];
+      const currToVal = currencyRates[currTo];
+
+      return (currToVal / currFromVal) * price;
+    }
+  }
 }
