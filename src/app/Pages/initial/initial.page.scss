@@ -19,9 +19,14 @@
 
 .btnNew{
   margin-bottom:10px;
-  color: purple;
+  --background: purple;
 }
 
+.opnExisting{
+  color: white;
+  background-color: transparent;
+  --border-color: purple;
+}
 
 ion-footer {
   --ion-color-base: transparent !important;
