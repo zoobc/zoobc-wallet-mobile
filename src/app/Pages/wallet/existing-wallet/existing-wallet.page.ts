@@ -10,6 +10,8 @@ import { SetupPinPage } from 'src/app/Pages/wallet/existing-wallet/setup-pin/set
 import { Location } from '@angular/common';
 import { ZooKeyring } from 'zoobc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
+import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { STORAGE_ADDRESS_BOOK } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-existing-wallet',
@@ -27,13 +29,13 @@ export class ExistingWalletPage implements OnInit {
   private lang: string;
   public arrayPhrase = [];
   constructor(
-    private authService: AuthService,
     public loadingController: LoadingController,
     private navCtrl: NavController,
     private location: Location,
     private authSrv: AuthService,
     private modalController: ModalController,
-    private accountSrv: AccountService
+    private accountSrv: AccountService,
+    private storageSrv: StoragedevService
   ) {
     this.lang = 'english';
   }
@@ -49,9 +51,6 @@ export class ExistingWalletPage implements OnInit {
     for (let i = 0; i < 24; i++) {
       this.arrayPhrase[i] = '';
     }
-  }
-
-  comparePassphrase() {
   }
 
   onPaste(event: ClipboardEvent) {
@@ -106,6 +105,7 @@ export class ExistingWalletPage implements OnInit {
 
   async createAccount() {
     await this.accountSrv.createInitialAccount();
+    await this.storageSrv.remove(STORAGE_ADDRESS_BOOK);
     const loginStatus = this.authSrv.login(this.plainPin);
     if (loginStatus) {
       this.presentLoading();
@@ -136,10 +136,9 @@ export class ExistingWalletPage implements OnInit {
     pinmodal.onDidDismiss().then(returnedData => {
       if (returnedData && returnedData.data !== '-') {
         this.plainPin = returnedData.data;
-        // set pin to service
         this.accountSrv.setPlainPin(this.plainPin);
+        this.accountSrv.willRestoreAccounts = true;
         this.createAccount();
-        this.authService.restoreAccounts();
       }
     });
     return await pinmodal.present();

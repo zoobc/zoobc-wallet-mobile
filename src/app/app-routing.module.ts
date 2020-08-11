@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth-service';
 import { QrScannerComponent } from './Pages/qr-scanner/qr-scanner.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   {
@@ -116,7 +117,8 @@ const routes: Routes = [
   },
   {
     path: 'settings',
-    loadChildren: './Pages/settings/settings.module#SettingsPageModule'
+    loadChildren: './Pages/settings/settings.module#SettingsPageModule',
+    canActivate: [AuthService]
   },
   {
     path: 'applist',
@@ -247,12 +249,16 @@ const routes: Routes = [
     loadChildren:
       './Pages/my-tasks/msig-task-detail/msig-task-detail.module#MsigTaskDetailPageModule',
     canActivate: [AuthService]
-  }
+  },  { path: 'explanation-screen', loadChildren: './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule' }
+
 ];
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
-  exports: [RouterModule]
+  exports: [
+    RouterModule,
+    TranslateModule
+  ]
 })
 export class AppRoutingModule {}

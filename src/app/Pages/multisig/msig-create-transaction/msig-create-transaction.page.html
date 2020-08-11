@@ -6,7 +6,7 @@
     <ion-title>{{ "Send Money" | translate }}</ion-title>
     <ion-buttons color="primary" slot="end">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "Feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -160,7 +160,7 @@
     </ion-row>
     <ion-row *ngIf="!isCustomFeeValid">
       <ion-col>
-        <ion-label color="danger">Transaction fee is not valid! minimum fee is {{ minimumFee }}
+        <ion-label color="danger">{{ "Transaction fee is not valid! minimum fee is" | translate }} {{ minimumFee }}
         </ion-label>
       </ion-col>
     </ion-row>

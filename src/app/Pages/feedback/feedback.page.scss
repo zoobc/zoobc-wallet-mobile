@@ -2,3 +2,26 @@ ion-rating {
     --color: gray;
     --color-filled: green;
   }
+.feedback-input {
+    --border-color:#dcd8d9;
+    --border-radius: 5px;
+    --border-width: 2px;
+    --box-shadow: 1px gray;
+    --highlight-height: 0;
+   }
+.feedback-input:hover {
+    --border-color:#89168c;
+    --border-radius: 5px;
+    --border-width: 2px;
+    --box-shadow: 1px gray;
+    --highlight-height: 0;
+   }
+.feedback-submit{
+    --background: #89168c;
+    --border-radius: 5px;
+    --border-width: 1px;
+    --highlight-height: 0;
+  }
+  .feedback-label{
+    font-weight: bold;
+  }

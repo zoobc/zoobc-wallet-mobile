@@ -10,14 +10,15 @@ import { Account } from 'src/app/Interfaces/account';
 import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
 import { makeShortAddress } from 'src/Helpers/converters';
+import { TranslateService } from '@ngx-translate/core';
+import { Network } from '@ionic-native/network/ngx';
 
 @Component({
   selector: 'app-multisig',
   templateUrl: './multisig.page.html',
-  styleUrls: ['./multisig.page.scss'],
+  styleUrls: ['./multisig.page.scss']
 })
 export class MultisigPage implements OnInit {
-
   multiSigDrafts: MultiSigDraft[];
 
   addInfo = true;
@@ -47,16 +48,17 @@ export class MultisigPage implements OnInit {
     private accountSrv: AccountService,
     private alertController: AlertController,
     private multisigServ: MultisigService,
-    private utilSrv: UtilService) {
-
+    private utilSrv: UtilService,
+    private translateSrv: TranslateService,
+    private network: Network
+  ) {
     this.isMultisigInfo = true;
     this.isSignature = false;
     this.isTransaction = false;
 
-    this.multisigSubs = this.multisigServ.multisig.subscribe( () => {
+    this.multisigSubs = this.multisigServ.multisig.subscribe(() => {
       this.getMultiSigDraft();
     });
-
   }
 
   ngOnInit() {
@@ -78,20 +80,20 @@ export class MultisigPage implements OnInit {
     if (drafts) {
       this.multiSigDrafts = drafts;
 
-    //   this.multiSigDrafts = drafts.filter(draft => {
-    //     const { multisigInfo, transaction, generatedSender } = draft;
-    //     if (generatedSender === currAccount.address) {
-    //       return draft;
-    //     }
-    //     if (multisigInfo.participants.includes(currAccount.address)) {
-    //       return draft;
-    //     }
-    //     if (transaction && transaction.sender === currAccount.address) {
-    //       return draft;
-    //     }
-    //   })
-    //     .sort()
-    //     .reverse();
+      //   this.multiSigDrafts = drafts.filter(draft => {
+      //     const { multisigInfo, transaction, generatedSender } = draft;
+      //     if (generatedSender === currAccount.address) {
+      //       return draft;
+      //     }
+      //     if (multisigInfo.participants.includes(currAccount.address)) {
+      //       return draft;
+      //     }
+      //     if (transaction && transaction.sender === currAccount.address) {
+      //       return draft;
+      //     }
+      //   })
+      //     .sort()
+      //     .reverse();
     }
   }
 
@@ -104,21 +106,29 @@ export class MultisigPage implements OnInit {
     const multisig: MultiSigDraft = {
       accountAddress: '',
       fee: 0,
-      id: 0,
+      id: 0
     };
 
-    if (this.isMultisigInfo) { multisig.multisigInfo = null; }
-    if (this.isTransaction) { multisig.unisgnedTransactions = null; }
-    if (this.isSignature) { multisig.signaturesInfo = null; }
+    if (this.isMultisigInfo) {
+      multisig.multisigInfo = null;
+    }
+    if (this.isTransaction) {
+      multisig.unisgnedTransactions = null;
+    }
+    if (this.isSignature) {
+      multisig.signaturesInfo = null;
+    }
 
     if (this.isMultiSignature) {
       multisig.multisigInfo = {
         minSigs: this.account.minSig,
         nonce: this.account.nonce,
         participants: this.account.participants,
-        multisigAddress: '',
+        multisigAddress: ''
       };
-      const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
+      const address = zoobc.MultiSignature.createMultiSigAddress(
+        multisig.multisigInfo
+      );
       multisig.generatedSender = address;
       this.multisigServ.update(multisig);
       if (this.isTransaction) {
@@ -155,7 +165,8 @@ export class MultisigPage implements OnInit {
           handler: () => {
             // this.router.navigate(['/multisig']);
           }
-        }, {
+        },
+        {
           text: 'Oke',
           handler: () => {
             this.multisigServ.deleteDraft(id);
@@ -185,7 +196,6 @@ export class MultisigPage implements OnInit {
     } else if (multisigInfo) {
       this.router.navigate(['/msig-add-info']);
     }
-
   }
 
   validationFile(file: any): file is MultiSigDraft {
@@ -209,7 +219,7 @@ export class MultisigPage implements OnInit {
 
   public uploadFile(files: FileList) {
     if (files && files.length > 0) {
-      const file  = files.item(0);
+      const file = files.item(0);
       const fileReader: FileReader = new FileReader();
       fileReader.readAsText(file, 'JSON');
       fileReader.onload = async () => {
@@ -221,7 +231,9 @@ export class MultisigPage implements OnInit {
         } else {
           this.multisigServ.update(fileResult);
           const listdraft = this.multisigServ.getDrafts();
-          const checkExistDraft = listdraft.some(res => res.id === fileResult.id);
+          const checkExistDraft = listdraft.some(
+            res => res.id === fileResult.id
+          );
 
           if (checkExistDraft === true) {
             const message = 'There is same id in your draft';
@@ -254,5 +266,44 @@ export class MultisigPage implements OnInit {
     this.addSignature = !this.createTransaction;
   }
 
+  alertConnectionTitle: string = '';
+  alertConnectionMsg: string = '';
+  networkSubscription = null;
 
+  ionViewWillEnter() {
+    this.networkSubscription = this.network
+      .onDisconnect()
+      .subscribe(async () => {
+        const alert = await this.alertController.create({
+          header: this.alertConnectionTitle,
+          message: this.alertConnectionMsg,
+          buttons: [
+            {
+              text: 'OK'
+            }
+          ],
+          backdropDismiss: false
+        });
+
+        alert.present();
+      });
+
+    this.translateSrv.get('No Internet Access').subscribe((res: string) => {
+      this.alertConnectionTitle = res;
+    });
+
+    this.translateSrv
+      .get(
+        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+      )
+      .subscribe((res: string) => {
+        this.alertConnectionMsg = res;
+      });
+  }
+
+  ionViewDidLeave() {
+    if (this.networkSubscription) {
+      this.networkSubscription.unsubscribe();
+    }
+  }
 }

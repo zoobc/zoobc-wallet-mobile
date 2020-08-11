@@ -9,7 +9,7 @@
     <ion-title></ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "Feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -36,7 +36,7 @@
 
     <ion-row style="flex-shrink: 0;">
       <ion-col class="ion-text-center" style="padding-bottom: 60px;">
-        <ion-button expand="block" class="btnNew" color="tertiary" routerLink="/generate-passphrase">
+        <ion-button expand="block" class="btnNew" color="tertiary" routerLink="/explanation-screen">
           {{ "Create New Wallet" | translate }}</ion-button>
         <ion-button expand="block" color="dbred" routerLink="/existing-wallet">
           {{ "Open Existing Wallet" | translate }} </ion-button>

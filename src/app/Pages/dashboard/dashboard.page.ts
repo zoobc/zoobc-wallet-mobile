@@ -13,7 +13,12 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { BLOCKCHAIN_BLOG_URL, CONST_DEFAULT_RATE, NETWORK_LIST, DEFAULT_THEME } from 'src/environments/variable.const';
+import {
+  BLOCKCHAIN_BLOG_URL,
+  CONST_DEFAULT_RATE,
+  NETWORK_LIST,
+  DEFAULT_THEME
+} from 'src/environments/variable.const';
 import zoobc from 'zoobc-sdk';
 import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
@@ -24,14 +29,16 @@ import { DecimalPipe } from '@angular/common';
 import { NetworkService } from 'src/app/Services/network.service';
 import { dateAgo } from 'src/Helpers/utils';
 import { makeShortAddress } from 'src/Helpers/converters';
+import { Network } from '@ionic-native/network/ngx';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
-  styleUrls: ['./dashboard.page.scss'],
+  styleUrls: ['./dashboard.page.scss']
 })
 export class DashboardPage implements OnInit, OnDestroy {
-
+  
   timeLeft = 12;
   interval: any;
 
@@ -68,8 +75,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     private themeSrv: ThemeService,
     private chatService: ChatService,
     private alertController: AlertController,
-    private decimalPipe: DecimalPipe  ) {
-
+    private decimalPipe: DecimalPipe,
+    private network: Network,
+    private alertCtrl: AlertController,
+    private translateSrv: TranslateService  ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
         this.loadData();
@@ -80,7 +89,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     // this.accountService.accountSubject.subscribe(() => {
     //   this.loadData();
     // });
-
 
     // if account changed
     this.themeSrv.themeSubject.subscribe(() => {
@@ -96,16 +104,15 @@ export class DashboardPage implements OnInit, OnDestroy {
     // if network changed reload data
     this.networkSrv.changeNodeSubject.subscribe(() => {
       this.loadData();
-    }
-    );
+    });
 
     // if currency changed
     this.currencySrv.currencySubject.subscribe((rate: Currency) => {
       this.currencyRate = rate;
     });
 
+    this.accountService.restoreAccounts();
     this.subscribeAllAccount();
-    this.authService.restoreAccounts();
   }
 
   ngOnDestroy() {
@@ -122,8 +129,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     const alert = await this.alertController.create({
       header: 'Account:',
       subHeader: this.account.address,
-      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>'
-        + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
+      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>' 
+      + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
       buttons: ['OK']
     });
 
@@ -132,7 +139,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   async subscribeAllAccount() {
     const allAcc = await this.accountService.allAccount();
-    const addresses = allAcc.map((acc) => acc.address);
+    const addresses = allAcc.map(acc => acc.address);
     this.chatService.subscribeNotif(addresses);
   }
 
@@ -143,7 +150,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     setTimeout(() => {
       event.target.complete();
     }, 2000);
-
   }
 
   async ngOnInit() {
@@ -155,8 +161,48 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.startTimer();
   }
 
-  async loadData() {
+  alertConnectionTitle: string = '';
+  alertConnectionMsg: string = '';
+  networkSubscription = null;
 
+  ionViewWillEnter() {
+    this.networkSubscription = this.network
+      .onDisconnect()
+      .subscribe(async () => {
+        const alert = await this.alertCtrl.create({
+          header: this.alertConnectionTitle,
+          message: this.alertConnectionMsg,
+          buttons: [
+            {
+              text: 'OK'
+            }
+          ],
+          backdropDismiss: false
+        });
+
+        alert.present();
+      });
+
+    this.translateSrv.get('No Internet Access').subscribe((res: string) => {
+      this.alertConnectionTitle = res;
+    });
+
+    this.translateSrv
+      .get(
+        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+      )
+      .subscribe((res: string) => {
+        this.alertConnectionMsg = res;
+      });
+  }
+
+  ionViewDidLeave() {
+    if (this.networkSubscription) {
+      this.networkSubscription.unsubscribe();
+    }
+  }
+
+  async loadData() {
     this.priceInUSD = this.currencySrv.getPriceInUSD();
     this.accountBalance = {
       accountaddress: '',
@@ -174,7 +220,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     this.account = await this.accountService.getCurrAccount();
     this.currencyRate = this.currencySrv.getRate();
-    zoobc.Network.list(NETWORK_LIST);
+
     this.getBalanceByAddress(this.account.address);
     await this.fcmService.getToken(this.account);
     this.identity = this.fcmService.identity;
@@ -205,7 +251,10 @@ export class DashboardPage implements OnInit, OnDestroy {
           latest: false
         };
         this.isError = true;
-        alert('An error occurred while processing your request');
+        console.log(
+          'dashboard balance',
+          'An error occurred while processing your request'
+        );
       })
       .finally(() => {
         this.isLoadingBalance = false;
@@ -254,11 +303,11 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   showLoading() {
     this.loadingController.create({
-      message: 'Loading ...',
-      duration: 200
-    }).then((res) => {
-      res.present();
-    });
+        message: 'Loading ...',
+        duration: 200
+      }).then((res) => {
+        res.present();
+      });
   }
 
   /**
@@ -301,5 +350,4 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.router.navigate(['/sendcoin']);
     }
   }
-
 }

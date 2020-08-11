@@ -13,6 +13,10 @@ ion-input, ion-textarea {
   border: solid 1px #cccccc;
 }
 
+ion-icon{
+  font-size: 1.5em;
+}
+
 .zbc-modal{
   position: absolute;
   top: 0;
@@ -20,4 +24,9 @@ ion-input, ion-textarea {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.ion-row-cont{    
+  border: 1px solid #989aa2;
+  border-radius: 1px;
 }

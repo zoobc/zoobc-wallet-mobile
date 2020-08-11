@@ -6,7 +6,7 @@
     <ion-title>{{"About"|translate}}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "Feedback" | translate}} 
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -22,11 +22,22 @@
 
   <ion-list>
     <ion-list-header>
-      <h3>Release Information</h3>
+      <h3>{{ "Release Information" | translate }}</h3>
     </ion-list-header>
   </ion-list>
 
   <ion-list>
+    <ion-item>
+      <span>
+        <h4>Version 0.2.0-Beta</h4>
+        <h5>28 July 2020</h5>
+        <ul>
+          <li>New Address Format, address start with ZBC</li>
+          <li>Restore accounts when open existing wallet</li>
+          <li>Export/import address book</li>
+        </ul>
+      </span>
+    </ion-item>    
     <ion-item>
       <span>
         <h4>Version 0.1.14</h4>

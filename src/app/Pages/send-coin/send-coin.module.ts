@@ -20,7 +20,8 @@ import { CurrencyComponent } from 'src/app/Components/currency/currency.componen
     ReactiveFormsModule,
     TranslateModule,
     RouterModule.forChild([{ path: '', component: SendCoinPage }]),
-    AddressBookComponentModule
+    AddressBookComponentModule,
+    ReactiveFormsModule
   ],
   entryComponents: [CurrencyComponent],
   // providers: [QRScanner],

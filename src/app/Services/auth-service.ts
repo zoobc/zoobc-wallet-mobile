@@ -2,21 +2,13 @@ import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 
 import {
-  STORAGE_ENC_MASTER_SEED,
-  COIN_CODE,
-  CONST_HEX,
   STORAGE_ENC_PASSPHRASE_SEED,
-  SALT_PASSPHRASE,
-  STORAGE_ALL_ACCOUNTS
+  SALT_PASSPHRASE
 } from 'src/environments/variable.const';
 import { auth } from 'firebase/app';
-import * as CryptoJS from 'crypto-js';
-import { KeyringService } from './keyring.service';
 import { AccountService } from './account.service';
-import { doDecrypt } from 'src/Helpers/converters';
 import { StoragedevService } from './storagedev.service';
-import zoobc, { ZooKeyring, getZBCAdress, TransactionListParams, TransactionsResponse } from 'zoobc-sdk';
-import { Account } from '../Interfaces/account';
+import zoobc, { ZooKeyring } from 'zoobc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +24,6 @@ export class AuthService implements CanActivate {
   constructor(
     private router: Router,
     private strgSrv: StoragedevService,
-    private keyringServ: KeyringService,
     private accountService: AccountService) {
       this.isUserLoggenIn = false;
     }
@@ -55,35 +46,15 @@ export class AuthService implements CanActivate {
     return this.isUserLoggenIn;
   }
 
-  isPinValid(encSeed: string, key: string): boolean {
-    let isPinValid = false;
-    try {
-      const seed = doDecrypt(encSeed, key).toString(CryptoJS.enc.Utf8);
-      if (!seed) {
-        throw new Error('pin is not match');
-      }
-      isPinValid = true;
-    } catch (e) {
-      isPinValid = false;
-    }
-    return isPinValid;
-  }
+  async login(pin: string) {
+    this.tempKey = pin;
 
+    const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
+    const passphrase = zoobc.Wallet.decryptPassphrase(passEncryptSaved, pin);
 
-  async login(key: string) {
-    this.tempKey = key;
-    const encSeed = await this.strgSrv.get(STORAGE_ENC_MASTER_SEED);
-    const isPinValid = this.isPinValid(encSeed, key);
-    if (isPinValid) {
-
-      const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
-      const decrypted = doDecrypt(passEncryptSaved, key).toString(CryptoJS.enc.Utf8);
-      this.keyring = new ZooKeyring(decrypted, SALT_PASSPHRASE);
-      // this._seed = this._keyring.calcDerivationPath(account.path);
-
-      const ej = doDecrypt(encSeed, key).toString(CryptoJS.enc.Utf8);
-      const seed = Buffer.from(ej, CONST_HEX);
-      this.keyringServ.calcBip32RootKeyFromSeed(COIN_CODE, seed);
+    if (passphrase) {
+      this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
+      this.accountService.keyring = this.keyring;
       this.isUserLoggenIn = true;
       return this.isUserLoggenIn;
     }
@@ -120,7 +91,7 @@ export class AuthService implements CanActivate {
         auth().signOut()
           .then(() => {
             resolve();
-          }).catch((error) => {
+          }).catch(() => {
             reject();
           });
       }
@@ -136,36 +107,6 @@ export class AuthService implements CanActivate {
       .then(data => {
         return data.accountbalance;
       });
-  }
-
-  restoreAccounts() {
-    const isRestored = false; //  : boolean = localStorage.getItem('IS_RESTORED') === 'true';
-    if (!isRestored && !this.restoring) {
-      this.restoring = true;
-      let accountPath = 0;
-      let counter = 0;
-
-      while (counter < 5) {
-        const childSeed = this.keyring.calcDerivationPath(accountPath);
-        const publicKey = childSeed.publicKey;
-        const address = getZBCAdress(publicKey);
-        const account: Account = {
-          name: 'Account '.concat((accountPath + 1).toString()),
-          path: accountPath,
-          nodeIP: null,
-          address,
-          type: 'normal',
-        };
-        console.log('== address - ' + counter, address);
-        this.tempAccounts.push(account);
-        accountPath++;
-        counter++;
-      }
-      //  this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
-      localStorage.setItem('IS_RESTORED', 'true');
-
-      this.restoring = false;
-    }
   }
 
 }

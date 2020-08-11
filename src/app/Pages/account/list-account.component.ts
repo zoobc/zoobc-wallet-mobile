@@ -14,7 +14,7 @@ import { makeShortAddress } from 'src/Helpers/converters';
 })
 export class ListAccountComponent implements OnInit {
 
-  private forWhat: string;
+  forWhat: string;
   accounts: Account[];
   isError: boolean;
   isLoadingBalance: boolean;
@@ -26,7 +26,7 @@ export class ListAccountComponent implements OnInit {
     private navCtrl: NavController,
     private router: Router,
     private utilService: UtilService,
-    private accountService: AccountService  ) {
+    private accountService: AccountService) {
     this.accountService.accountSubject.subscribe(() => {
       setTimeout(() => {
         this.loadData();
@@ -39,38 +39,51 @@ export class ListAccountComponent implements OnInit {
   }
 
   async loadData() {
-    this.route.queryParams.subscribe( () => {
+    this.route.queryParams.subscribe(() => {
       if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
         this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
       } else {
         this.forWhat = null;
       }
     });
-    this.getAllAccountBalance();
-  }
-
-
-  async getAllAccountBalance() {
     this.accounts = await this.accountService.allAccount();
     if (this.accounts && this.accounts.length > 0) {
-      this.isLoadingBalance = true;
-      this.accounts.forEach(obj => {
-          const adres = obj.address;
-          this.getBalanceByAddress(adres).then(balnce => {
-            obj.balance = Number(balnce.spendablebalance);
-          });
-      });
+      this.getAllAccountBalance(this.accounts);
+    }
+  }
+
+
+  async getAllAccountBalance(accounts: any) {
+    this.isLoadingBalance = true;
+    const accountAddresses = [];
+    let allBalances = null;
+    accounts.forEach((acc) => {
+      accountAddresses.push(acc.address);
+    });
+
+    try {
+      const data = await zoobc.Account.getBalances(accountAddresses);
+      allBalances = data.accountbalancesList;
+    } catch (error) {
+      console.log('__error', error);
     }
 
+    accounts.forEach(obj => {
+      const adres = obj.address;
+      obj.balance =  this.getBalanceByAddress(allBalances, adres);
+    });
+    this.isLoadingBalance = false;
   }
 
-  private async getBalanceByAddress(address: string) {
-    return await zoobc.Account.getBalance(address)
-      .then(data => {
-        return data.accountbalance;
-      }).finally(() => (this.isLoadingBalance = false));
+  private getBalanceByAddress(allBalances: any, address: string) {
+    const accInfo = allBalances.filter(acc => {
+      return acc.accountaddress === address;
+    });
+    if (accInfo && accInfo.length > 0) {
+      return accInfo[0].balance;
+    }
+    return 0;
   }
-
 
   accountClicked(account: Account) {
     if (!this.forWhat) {
@@ -114,7 +127,7 @@ export class ListAccountComponent implements OnInit {
   }
 
   shortAddress(address: string) {
-      return makeShortAddress(address);
+    return makeShortAddress(address);
   }
 
   async openEditAccount(arg: Account) {
