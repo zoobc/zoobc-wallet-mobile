@@ -92,6 +92,13 @@
     </ion-row>
     <ion-row>
       <ion-col>
+        <ion-button strong color="secondary" (click)="ExportAccount()" type="submit" expand="block">
+          <span>{{"Export"|translate}}</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
         <ion-button expand="block" color="secondary" routerLink="/list-account" fill="outline" expand="block">
           {{ "cancel" | translate }}</ion-button>
       </ion-col>

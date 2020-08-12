@@ -5,9 +5,10 @@ import { Account } from 'src/app/Interfaces/account';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, FOR_APPROVER, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
 import zoobc from 'zoobc-sdk';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController, AlertController } from '@ionic/angular';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { ImportAccountPage } from './import-account/import-account.page';
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
@@ -23,9 +24,11 @@ export class ListAccountComponent implements OnInit {
   errorMsg: string;
 
   constructor(
+    private alertCtrl: AlertController,
     private route: ActivatedRoute,
     private navCtrl: NavController,
     private strgSrv: StoragedevService,
+    private modalController: ModalController,
     private router: Router,
     private utilService: UtilService,
     private accountService: AccountService) {
@@ -54,17 +57,32 @@ export class ListAccountComponent implements OnInit {
     }
   }
 
+  async deleteAccount(index: number) {
+    const currAccount = await this.accountService.getCurrAccount();
+    if (this.accounts[index].address === currAccount.address) {
+        alert('Cannot delete active account, please switch account, and try again!');
+        return;
+    }
 
-  async onDelete(index: number) {
-        const currAccount = await this.accountService.getCurrAccount();
-
-        if (this.accounts[index].address === currAccount.address) {
-            alert('Cannot delete active account, please switch account, and try again!');
-            return;
+    const confirmation = await this.alertCtrl.create({
+      message: 'Are you sure want to delete this account?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.accounts.splice(index, 1);
+            this.strgSrv.set(STORAGE_ALL_ACCOUNTS, this.accounts);
+          }
         }
+      ]
+    });
 
-        this.accounts.splice(index, 1);
-        this.strgSrv.set(STORAGE_ALL_ACCOUNTS, this.accounts);
+    await confirmation.present();
   }
 
   async getAllAccountBalance(accounts: any) {
@@ -98,6 +116,22 @@ export class ListAccountComponent implements OnInit {
       return accInfo[0].balance;
     }
     return 0;
+  }
+
+
+  async importAccount() {
+    const pinmodal = await this.modalController.create({
+      component: ImportAccountPage,
+      componentProps: {}
+    });
+
+    pinmodal.onDidDismiss().then(returnedData => {
+      console.log('=== returneddata: ', returnedData);
+      if (returnedData && returnedData.data !== 0) {
+        alert('Account has been successfully imported');
+      }
+    });
+    return await pinmodal.present();
   }
 
   accountClicked(account: Account) {
