@@ -50,6 +50,7 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { PopupCurrencyPageModule } from './Pages/settings/popup-currency/popup-currency.module';
 import { PopupLanguagesPageModule } from './Pages/settings/popup-languages/popup-languages.module';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { ImportAccountPageModule } from './Pages/account/import-account/import-account.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -79,6 +80,7 @@ export function createTranslateLoader(http: HttpClient) {
     SetupPinGpPageModule,
     SetupPinPageModule,
     EnterpinsendPageModule,
+    ImportAccountPageModule,
     PinBackupPageModule,
     ChatProfilePageModule,
     AccountPopupPageModule,

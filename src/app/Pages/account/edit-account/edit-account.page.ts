@@ -94,6 +94,10 @@ export class EditAccountPage implements OnInit {
     this.accounts = await this.accountService.allAccount('normal');
   }
 
+  ExportAccount() {
+
+  }
+
   async UpdateAccount() {
 
     this.isNameValid = true;
