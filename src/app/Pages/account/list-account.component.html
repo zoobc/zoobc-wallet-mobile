@@ -32,8 +32,8 @@
         <ion-label><span>{{"tap list to switch account" | translate}}.</span></ion-label>
       </ion-list-header>
       <ion-item-sliding *ngFor="let account of accounts; let idx = index">
-        <ion-item (click)="accountClicked(account)">
-          <ion-label>
+        <ion-item>
+          <ion-label (click)="accountClicked(account)">
             <div class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
             <div class="address">
               <app-with-copy title="{{ account.address | shortAddress }}" value="{{ account.address }}"></app-with-copy>

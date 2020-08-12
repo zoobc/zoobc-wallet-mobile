@@ -14,7 +14,7 @@ import { QrScannerService } from 'src/app/Services/qr-scanner.service';
   styleUrls: ['./list-account.component.scss']
 })
 export class ListAccountComponent implements OnInit {
-  
+
   forWhat: string;
   accounts: Account[];
   isError: boolean;
