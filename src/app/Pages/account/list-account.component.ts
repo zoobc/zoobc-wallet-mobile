@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
-import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, MODE_EDIT, FOR_APPROVER } from 'src/environments/variable.const';
+import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, FOR_APPROVER, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
 import zoobc from 'zoobc-sdk';
 import { NavController } from '@ionic/angular';
 import { makeShortAddress } from 'src/Helpers/converters';
+import { StoragedevService } from 'src/app/Services/storagedev.service';
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
@@ -24,6 +25,7 @@ export class ListAccountComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private navCtrl: NavController,
+    private strgSrv: StoragedevService,
     private router: Router,
     private utilService: UtilService,
     private accountService: AccountService) {
@@ -53,6 +55,18 @@ export class ListAccountComponent implements OnInit {
   }
 
 
+  async onDelete(index: number) {
+        const currAccount = await this.accountService.getCurrAccount();
+
+        if (this.accounts[index].address === currAccount.address) {
+            alert('Cannot delete active account, please switch account, and try again!');
+            return;
+        }
+
+        this.accounts.splice(index, 1);
+        this.strgSrv.set(STORAGE_ALL_ACCOUNTS, this.accounts);
+  }
+
   async getAllAccountBalance(accounts: any) {
     this.isLoadingBalance = true;
     const accountAddresses = [];
@@ -66,6 +80,7 @@ export class ListAccountComponent implements OnInit {
       allBalances = data.accountbalancesList;
     } catch (error) {
       console.log('__error', error);
+      this.isLoadingBalance = false;
     }
 
     accounts.forEach(obj => {

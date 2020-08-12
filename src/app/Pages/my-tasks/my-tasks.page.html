@@ -46,7 +46,7 @@
   </div>
 
   <ion-list *ngIf="segmentModel === 'escrow' && escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
-    <ion-item *ngFor="let escrow of escrowTransactions; let i = index" (click)="openDetail(escrow.id)">
+    <ion-item *ngFor="let escrow of escrowTransactions; let i = index;" (click)="openDetail(escrow.id)">
       <ion-label>
         <!-- <h3>Transaction ID: {{escrow.id}}</h3> -->
         <p>Sender: <b> {{ escrow.senderaddress }} </b></p>
@@ -80,10 +80,12 @@
 
       </ion-label>
 
-      <ion-text slot='end' class="amount ion-text-right" >
-        <p> <span style='font-size: 0.7em;'>Amount</span> <br/>
+      <ion-text slot='end' class="ion-text-right" >
+        <span style='font-size: 0.7em;'>Amount</span> <br/>
         {{ escrow.amount / 1e8 | number: '0.0-6' }} <span style="font-size:0.8em">ZBC</span>
-        </p>
+        <br/>
+        <span style='font-size: 0.7em;'>Commission</span> <br/>
+          {{ escrow.commission / 1e8 | number: '0.0-6' }} <span style="font-size:0.8em">ZBC</span>
       </ion-text>
 
     </ion-item>
