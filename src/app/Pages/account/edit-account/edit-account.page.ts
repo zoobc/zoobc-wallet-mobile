@@ -7,9 +7,9 @@ import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { sanitizeString } from 'src/Helpers/utils';
 import { ModalController, AlertController } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
-import { MultiSigAddress } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-edit-account',
@@ -94,8 +94,24 @@ export class EditAccountPage implements OnInit {
     this.accounts = await this.accountService.allAccount('normal');
   }
 
-  ExportAccount() {
+  async ExportAccount() {
+    const accountJson = JSON.stringify(this.account);
+    const blob = new Blob([accountJson], { type: 'application/JSON' });
+    saveAs(blob, `Multisignature-info-${this.account.name}`);
+    alert('Multisig Info successfully exported');
 
+
+    // const theJSON = JSON.stringify(this.multisig);
+    // const blob = new Blob([theJSON], { type: 'application/JSON' });
+    // const pathFile = await this.getDownloadPath();
+
+    // const fileName = this.getDraftFileName();
+    // await this.file.createFile(pathFile, fileName, true);
+    // await this.file.writeFile(pathFile, fileName, blob, {
+    //   replace: true,
+    //   append: false
+    // });
+    // alert('File saved in Download folder with name: ' + fileName);
   }
 
   async UpdateAccount() {
