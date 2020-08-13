@@ -5,11 +5,12 @@ import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { sanitizeString } from 'src/Helpers/utils';
-import { ModalController, AlertController } from '@ionic/angular';
+import { ModalController, AlertController, Platform } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
-import { saveAs } from 'file-saver';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { File } from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-edit-account',
@@ -41,7 +42,10 @@ export class EditAccountPage implements OnInit {
     private accountService: AccountService,
     private activeRoute: ActivatedRoute,
     private addressbookService: AddressBookService,
+    private androidPermissions: AndroidPermissions,
     private router: Router,
+    private file: File,
+    private platform: Platform,
     private qrScannerService: QrScannerService,
     private alertController: AlertController,
     private modalController: ModalController
@@ -95,23 +99,59 @@ export class EditAccountPage implements OnInit {
   }
 
   async ExportAccount() {
-    const accountJson = JSON.stringify(this.account);
-    const blob = new Blob([accountJson], { type: 'application/JSON' });
-    saveAs(blob, `Multisignature-info-${this.account.name}`);
-    alert('Multisig Info successfully exported');
 
+    const theJSON = JSON.stringify(this.account);
+    const blob = new Blob([theJSON], { type: 'application/JSON' });
+    const pathFile = await this.getDownloadPath();
 
-    // const theJSON = JSON.stringify(this.multisig);
-    // const blob = new Blob([theJSON], { type: 'application/JSON' });
-    // const pathFile = await this.getDownloadPath();
+    const fileName = this.getFileName(this.account.name);
+    await this.file.createFile(pathFile, fileName, true);
+    await this.file.writeFile(pathFile, fileName, blob, {
+      replace: true,
+      append: false
+    });
+    alert('File saved in Download folder with name: ' + fileName);
 
-    // const fileName = this.getDraftFileName();
-    // await this.file.createFile(pathFile, fileName, true);
-    // await this.file.writeFile(pathFile, fileName, blob, {
-    //   replace: true,
-    //   append: false
-    // });
-    // alert('File saved in Download folder with name: ' + fileName);
+  }
+
+  private getFileName(bame: string) {
+    const currentDatetime = new Date();
+    const formattedDate =
+      currentDatetime.getDate() +
+      '-' +
+      (currentDatetime.getMonth() + 1) +
+      '-' +
+      currentDatetime.getFullYear() +
+      '-' +
+      currentDatetime.getHours() +
+      '-' +
+      currentDatetime.getMinutes() +
+      '-' +
+      currentDatetime.getSeconds();
+
+    return 'Multisignature-info-' + name + formattedDate + '.json';
+  }
+
+  async getDownloadPath() {
+    if (this.platform.is('ios')) {
+      return this.file.documentsDirectory;
+    }
+
+    // To be able to save files on Android, we first need to ask the user for permission.
+    // We do not let the download proceed until they grant access
+    await this.androidPermissions
+      .checkPermission(
+        this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+      )
+      .then(result => {
+        if (!result.hasPermission) {
+          return this.androidPermissions.requestPermission(
+            this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+          );
+        }
+      });
+
+    return this.file.externalRootDirectory + '/Download/';
   }
 
   async UpdateAccount() {
