@@ -364,7 +364,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   loadData() {
     this.recipientAddress = '';
     this.getRecipientFromScanner();
-    this.optionFee = this.allFees[1].fee.toString();
+    this.optionFee = this.allFees[0].fee.toString();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
     this.multiSigDraft = this.multisigServ.multisigDraft;
@@ -708,7 +708,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.customeChecked = false;
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
-      this.customfeeTemp = this.allFees[2].fee;
+      this.customfeeTemp = this.allFees[0].fee;
     }
   }
 

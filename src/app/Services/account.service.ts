@@ -202,27 +202,31 @@ export class AccountService {
     const multiSignAddress: string = zoobc.MultiSignature.createMultiSigAddress(
       multiParam
     );
+
+    let signByPath = null;
+    let sgnByAddrss = null;
+    if (signByAccount && signByAccount.path) {
+      signByPath = signByAccount.path;
+      sgnByAddrss = signByAccount.address;
+    }
+
+
     const account: Account = {
       name: sanitizeString(name),
       type: 'multisig',
-      path: signByAccount.path,
+      path: signByPath,
       nodeIP: null,
       address: multiSignAddress,
       participants: multiParam.participants,
       nonce: multiParam.nonce,
       minSig: multiParam.minSigs,
-      signByAddress: signByAccount.address
+      signByAddress: sgnByAddrss
     };
-
     return account;
   }
 
-
   async restoreAccounts() {
-
-    console.log('=== willRestoreAccounts: ', this.willRestoreAccounts);
-
-    if (!this.willRestoreAccounts){
+    if (!this.willRestoreAccounts) {
         console.log('=== will return ');
         return;
     }
@@ -267,7 +271,7 @@ export class AccountService {
       console.log('__error', error);
     }
     this.willRestoreAccounts = false;
-    /// add additional accounts end    
+    /// add additional accounts end
   }
 
 }
