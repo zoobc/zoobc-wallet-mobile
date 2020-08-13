@@ -1,0 +1,92 @@
+<ion-content>
+  <div class="home-header">
+    <ion-label class="account" *ngIf="account" color="medium" (click)="switchAccount()">
+      <div class="account-name-container">
+        <h1 class="account-name">{{ account.name }}</h1>
+        <ion-icon name="zbc-chevron-down" color="secondary"></ion-icon>
+      </div>
+      <p>{{ account.address | shortAddress }}</p>
+    </ion-label>
+
+    <ion-label class="main-balance">
+      <ion-text class="amount">
+        <span class="sufix">ZBC</span>
+        {{ accountBalance.balance/1e8 | number: '0.0-2' }}
+      </ion-text>
+    </ion-label>
+
+    <ion-label class="other-balance">
+      <ion-text class="amount">
+        spendable
+        <span class="sufix">ZBC</span>
+        {{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }}
+      </ion-text>
+    </ion-label>
+  </div>
+
+  <ion-card class="card-buttons">
+    <ion-card-content>
+      <ion-label (click)="goToSend()">
+        <ion-icon name="zbc-arrow-up" color="secondary"></ion-icon>
+        <ion-text>
+          <h2>{{ "Send" | translate }}</h2>
+        </ion-text>
+      </ion-label>
+      <ion-label (click)="goToReceive()">
+        <ion-icon name="zbc-arrow-down" color="secondary"></ion-icon>
+        <ion-text>
+          <h2>Receive</h2>
+        </ion-text>
+      </ion-label>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-list class="transaction-list" lines="none">
+        <ion-item>
+          <div class="transaction-header">
+            <div>
+              <ion-icon name="zbc-clock" color="secondary"></ion-icon>
+              <span>Transactions</span>
+            </div>
+            <span class="all">See All</span>
+          </div>
+        </ion-item>
+        <ion-item *ngFor="let transaction of recentTx; let i = index">
+          <div class="transaction-item">
+            <div class="info">
+              <span class="sender">
+                <div class="name" *ngIf="transaction.alias">
+                  {{ transaction.alias }}
+                </div>
+                <div class="address" *ngIf="!transaction.alias">
+                  <span>{{ transaction.address | shortAddress }}</span>
+                </div>
+              </span>
+              <span class="time">{{ transaction.timestamp | dateAgo }}</span>
+            </div>
+            <div class="amount">
+              <ion-text class="main-amount" *ngIf="transaction.type==='send'" color="danger">
+                - ZBC {{ transaction.amount / 1e8 | number: '0.2-4' }}
+              </ion-text>
+              <ion-text class="main-amount" *ngIf="transaction.type!=='send'">
+                {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC
+              </ion-text>
+              <span class="other-amount">USD 3.00</span>
+            </div>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="card-article">
+    <ion-img src="assets/images/sampleblog1.jpg"></ion-img>
+    <div class="cover"></div>
+    <div class="title">What Is Lightning Network? And How Does It Work?</div>
+  </ion-card>
+
+
+
+</ion-content>

@@ -248,8 +248,14 @@ const routes: Routes = [
     loadChildren:
       './Pages/my-tasks/msig-task-detail/msig-task-detail.module#MsigTaskDetailPageModule',
     canActivate: [AuthService]
-  },  { path: 'explanation-screen', loadChildren: './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule' }
-
+  },
+  {
+    path: 'explanation-screen',
+    loadChildren:
+      './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule'
+  },
+  { path: 'tabs', loadChildren: './Pages/tabs/tabs.module#TabsPageModule' },
+  { path: 'home', loadChildren: './Pages/home/home.module#HomePageModule' }
 ];
 @NgModule({
   imports: [
