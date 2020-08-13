@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { DEFAULT_THEME } from 'src/environments/variable.const';
 import { AccountService } from 'src/app/Services/account.service';
-import { NavController } from '@ionic/angular';
+import { NavController, LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +18,7 @@ export class LoginPage implements OnInit {
     private authService: AuthService,
     private accountService: AccountService,
     private router: Router,
+    private loadingController: LoadingController,
     private themeSrv: ThemeService,
     private navCtrl: NavController
   ) {
@@ -52,6 +53,12 @@ export class LoginPage implements OnInit {
   }
 
   async login(e: any) {
+    const loading = await this.loadingController.create({
+      message: 'Loading ...',
+      duration: 3000
+    });
+    await loading.present();
+
     const { pin } = e;
     this.isLoginValid = true;
     const isUserLoggedIn = await this.authService.login(pin);
@@ -63,5 +70,7 @@ export class LoginPage implements OnInit {
         this.isLoginValid = true;
       }, 1500);
     }
+
+    await loading.dismiss();
   }
 }
