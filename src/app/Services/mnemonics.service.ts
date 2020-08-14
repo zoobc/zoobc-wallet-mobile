@@ -38,11 +38,9 @@ export class MnemonicsService {
   public mnemonics = new Map<string, any>();
 
   constructor(@Inject('global') private global: any) {
-    this.Mnemonic = global.Mnemonic;
     const language = environment.mnemonicLanguage;
-
-    const Mnemonic = this.Mnemonic;
-    this.mnemonic = new Mnemonic(language);
+    
+    this.mnemonic = this.Mnemonic;
     this.mnemonics.set(language, this.mnemonic);
   }
 
