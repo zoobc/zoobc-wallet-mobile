@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Settings" | translate }}</ion-title>
+    <ion-title>{{ "settings" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -17,7 +17,7 @@
     <ion-row>
       <ion-col size="12">
         <p>
-          Theme
+          {{ "theme" | translate}}
         </p>
         <div style="border:1px solid #cccccc">
           <ion-select interface="popover" [(ngModel)]="activeTheme" (ionChange)="changeTheme()">
@@ -31,7 +31,7 @@
     <ion-row>
       <ion-col size="12">
         <p>
-          Network
+          {{ "network" | translate}}
         </p>
         <div style="border:1px solid #cccccc">
           <ion-select interface="popover" [(ngModel)]="activeNetwork" (ionChange)="selectActiveNetwork()">
@@ -45,7 +45,7 @@
     <ion-row>
       <ion-col size="12">
         <p>
-          Currency
+          {{ "currency" | translate}}
           <!-- <br /><span style="font-size:0.7em;">Last updated: {{timestamp}}</span> -->
         </p>
       </ion-col>
@@ -74,7 +74,7 @@
     </ion-row>
     <ion-row>
       <ion-col size="12">
-         Language
+         {{ "language" | translate}}
       </ion-col>
     </ion-row>
     <ion-row>

@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button> </ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Send" | translate }}</ion-title>
+    <ion-title>{{ "send" | translate }}</ion-title>
     <ion-buttons color="primary" slot="end">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -21,14 +21,14 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12">
-        {{ "Sign by Account" | translate }}
+        {{ "sign by account" | translate }}
       </ion-col>
     </ion-row>
     <ion-row >
       <ion-col size="12" style="border: 1px solid #cccccc">
         <ion-select interface="popover" [(ngModel)]="signBy" (ionChange)="changeSigner()">
           <ion-select-option *ngFor="let participant of participants; let idx = index;" value="{{participant}}">
-            {{ participant}}
+            {{ participant }}
           </ion-select-option>
         </ion-select>
       </ion-col>
@@ -36,16 +36,16 @@
     <ion-row *ngIf="signByAccount">
       <ion-col>
         <ion-label>
-          <p>Name: {{signByAccount.name}}</p>
-          <p>Balance: {{signByAccount.balance}} ZBC</p>
+          <p>{{ "name" | translate }}: {{signByAccount.name}}</p>
+          <p>{{ "balance" | translate}}: {{signByAccount.balance}} ZBC</p>
         </ion-label>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="!isValidSigner || !isBalanceNotEnough">
       <ion-col>
         <ion-label color="danger">
-          <p *ngIf="!isValidSigner">Signer is empty,  or the address is not your account!</p>
-          <p *ngIf="!isBalanceNotEnough">Balance is not enought</p>
+          <p *ngIf="!isValidSigner">{{ "signer is empty,  or the address is not your account!" | translate}}</p>
+          <p *ngIf="!isBalanceNotEnough">{{ "balance is not enough" | translate}}</p>
         </ion-label>
       </ion-col>
     </ion-row>
@@ -57,7 +57,7 @@
     <ion-row>
       <ion-col>
         <ion-label>
-          {{ "Commition Fee" | translate }}
+          {{ "commition fee" | translate }}
           <ion-text color="danger">*</ion-text>
         </ion-label>
       </ion-col>
@@ -70,7 +70,7 @@
             {{ sfee.name }} {{ sfee.fee | number: '0.0-4' }} ZBC
           </ion-select-option>
           <ion-select-option value="-1">
-            Custom Fee
+            {{ "custom fee" | translate}}
           </ion-select-option>
         </ion-select>
       </ion-col>
@@ -78,7 +78,7 @@
     <ion-row *ngIf="!isValidFee">
       <ion-col>
         <ion-label color="danger">
-          Commitin fee is not valid!
+          {{ "commitin fee is not valid!" | translate}}
         </ion-label>
       </ion-col>
     </ion-row>
@@ -99,7 +99,7 @@
     </ion-row>
     <ion-row *ngIf="!isCustomFeeValid">
       <ion-col>
-        <ion-label color="danger">Transaction fee is not valid! minimum fee is {{ minimumFee }}
+        <ion-label color="danger">{{ "transaction fee is not valid! minimum fee is" | translate}} {{ minimumFee }}
         </ion-label>
       </ion-col>
     </ion-row>
@@ -116,10 +116,10 @@
         </ion-button> -->
         <ion-button color="secondary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="sendTransaction()"
           expand="block">
-          {{ "Send" | translate }}
+          {{ "send" | translate }}
         </ion-button>
         <ion-button disabled color="secondary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
-          {{ "Send" | translate }}
+          {{ "send" | translate }}
         </ion-button>
       </ion-col>
     </ion-row>

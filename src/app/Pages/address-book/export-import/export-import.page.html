@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Export/Import" | translate }}</ion-title>
+    <ion-title>{{ "export/import" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -14,7 +14,7 @@
 
 <ion-content>
   <div>
-    <p class="info">Copy the text below to export or paste below to import contacts</p>
+    <p class="info">{{ "copy the text below to export or paste below to import contacts" | translate}}</p>
 
     <div class="form-container">
       <textarea [(ngModel)]="addresses" #addressesModel="ngModel"
@@ -22,8 +22,8 @@
     </div>
 
     <div class="buttons-container">
-      <ion-button (click)="save()" color="tertiary">Save</ion-button>
-      <ion-button (click)="copy()">Copy</ion-button>
+      <ion-button (click)="save()" color="tertiary">{{ "save" | translate}}</ion-button>
+      <ion-button (click)="copy()">{{ "copy" | translate}}</ion-button>
     </div>
   </div>
 </ion-content>

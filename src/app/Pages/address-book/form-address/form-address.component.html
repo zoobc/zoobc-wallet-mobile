@@ -2,7 +2,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-label position="stacked">{{ "Name" | translate }}</ion-label>
+        <ion-label position="stacked">{{ "name" | translate }}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -11,7 +11,7 @@
           autocorrect="on"></ion-input>
         <ion-text class="text-error"
           *ngIf="(submitted || name.dirty || name.touched) && name.invalid && name.errors.required">
-          Name cannot be empty.
+          {{ "name cannot be empty" | translate}}
         </ion-text>
         <ion-text class="text-error"
           *ngIf="(submitted || name.dirty || name.touched) &&  name.invalid && name.errors.nameExists">
@@ -21,7 +21,7 @@
     </ion-row>
     <ion-row>
       <ion-col col-8 align-self-end>
-        <ion-label position="stacked">{{ "Address" | translate }}</ion-label>
+        <ion-label position="stacked">{{ "address" | translate }}</ion-label>
       </ion-col>
       <ion-col col-4 align-self-end class="ion-text-right btnScanner">
         <ion-icon name="qr-scanner" (click)="scanQRCode();"></ion-icon><span (click)="scanQRCode();"
@@ -35,11 +35,11 @@
         </ion-textarea>
         <ion-text class="text-error"
           *ngIf="(submitted || address.dirty || address.touched) && address.invalid && address.errors.required">
-          Address cannot be empty.
+          {{ "address cannot be empty" | translate}}
         </ion-text>
         <ion-text class="text-error"
           *ngIf="(submitted || address.dirty || address.touched) && address.invalid && (address.errors.minlength || address.errors.bytesLength)">
-          Address is not valid.
+          {{ "address is not valid" | translate}}
         </ion-text>
         <ion-text class="text-error"
           *ngIf="(submitted || address.dirty || address.touched) && address.invalid && address.errors.addressExists">
@@ -55,15 +55,15 @@
     <ion-row>
       <ion-col>
         <ion-button strong color="secondary" type="submit" expand="block">
-          <span *ngIf="mode==='add'">{{ "Save" | translate }}</span>
-          <span *ngIf="mode==='edit'">{{ "Update" | translate }}</span>
+          <span *ngIf="mode==='add'">{{ "save" | translate }}</span>
+          <span *ngIf="mode==='edit'">{{ "update" | translate }}</span>
         </ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-button expand="block" (click)="cancel()" fill="outline" expand="block">
-          {{ "Cancel" | translate }}
+          {{ "cancel" | translate }}
         </ion-button>
       </ion-col>
     </ion-row>

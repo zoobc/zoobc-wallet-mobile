@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary"  hideBackButton="true">
-    <ion-title>{{ "Transaction Status" | translate }}</ion-title>
+    <ion-title>{{ "transaction status" | translate }}</ion-title>
     <!-- <ion-buttons slot="end" color="primary">
         <ion-button routerLink="/feedback">
           Feedback
@@ -22,21 +22,21 @@
     <ion-row>
       <ion-col class="ion-text-center">
         <ion-text color="dark">
-            <h3 *ngIf="!status">{{ "Transaction Fail" | translate }}</h3>
-            <h3 *ngIf="status">{{ "Transaction Successful" | translate }}</h3>
+            <h3 *ngIf="!status">{{ "transaction fail" | translate }}</h3>
+            <h3 *ngIf="status">{{ "transaction successful" | translate }}</h3>
         </ion-text>
       </ion-col>  
     </ion-row>
     <ion-row style="margin-bottom:20px;">
         <ion-col class="ion-text-center">
-            <ion-text *ngIf="status" color="dark">{{ "Transaction will need a few seconds to confirmed" | translate }}.</ion-text>
+            <ion-text *ngIf="status" color="dark">{{ "transaction will need a few seconds to confirmed" | translate }}.</ion-text>
             <ion-text *ngIf="!status" color="danger">{{ msg }}.</ion-text>   
         </ion-col>  
     </ion-row>
 
     <ion-row>
       <ion-col class="ion-text-center">
-          <ion-button color="secondary" expand="block" (click)="close();">{{ "Close" | translate }}</ion-button>
+          <ion-button color="secondary" expand="block" (click)="close();">{{ "close" | translate }}</ion-button>
       </ion-col>
     </ion-row>
 

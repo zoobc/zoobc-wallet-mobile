@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button (click)="backToInitial()"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Create Wallet" | translate }}</ion-title>
+    <ion-title>{{ "create wallet" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -15,7 +15,7 @@
   <ion-grid>
     <ion-row>
       <ion-col  style="background-color:#ffffff; text-align: center;">
-        <h5>Your Passphrase</h5>
+        <h5>{{ "your passphrase" | translate}}</h5>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -117,37 +117,37 @@
     <ion-row>
       <ion-col style="background-color:#ffffff">
         <ion-button no-shadow color="secondary" class="btn-action" expand="block" (click)="copyToClipboard()">
-          <ion-icon name="copy"></ion-icon>{{ "Copy" | translate }}
+          <ion-icon name="copy"></ion-icon>{{ "copy" | translate }}
         </ion-button>
       </ion-col>
       <ion-col style="background-color:#ffffff">
         <ion-button no-shadow color="secondary" class="btn-action" expand="block" (click)="generatePassphrase()">
-          <ion-icon name="refresh-circle"></ion-icon> {{ "Regenerate" | translate }}
+          <ion-icon name="refresh-circle"></ion-icon> {{ "regenerate" | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
 
   <div class="warning ion-margin-horizontal">
-    {{ "Remember: Never tell your passphrase. If you lose it, you lose access to
+    {{ "remember: never tell your passphrase. if you lose it, you lose access to
         your account!" | translate }}
   </div>
   <div class="ion-margin-horizontal checklist">
     <div>
       <ion-checkbox [(ngModel)]="writtenDown"></ion-checkbox>
     </div>
-    <span>{{ "I have written or saved my passphrase safely" | translate }}</span>
+    <span>{{ "i have written or saved my passphrase safely" | translate }}</span>
   </div>
   <div class="ion-margin-horizontal checklist">
     <div>
       <ion-checkbox [(ngModel)]="terms"></ion-checkbox>
     </div>
-    <span>{{ "I Agree Terms & Conditions" | translate }} </span>
+    <span>{{ "i agree terms & conditions" | translate }} </span>
   </div>
   <div class="footer-generate-passphrase" class="ion-text-center" style="margin-top:20px;margin-bottom: 50px;">
     <ion-button color="tertiary" class="ion-margin-horizontal btn-submit" expand="block"
       (click)="passphraseConfirmation()" *ngIf="!isPinSetup" disabled="{{ !(writtenDown && terms) }}">
-      <b>{{ "Create Wallet" | translate }}</b>
+      <b>{{ "create wallet" | translate }}</b>
     </ion-button>
   </div>
 </ion-content>

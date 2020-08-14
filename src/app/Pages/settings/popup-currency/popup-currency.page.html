@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="end">
-      <ion-button (click)="close()">Close</ion-button>
+      <ion-button (click)="close()">{{ "close" | translate}}</ion-button>
     </ion-buttons>
-    <ion-title>List of Currency</ion-title>
+    <ion-title>{{ "list of currency" | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,7 +11,7 @@
   <div class="list-account-page">
     <ng-template #noData>
       <ion-item lines="none">
-        <ion-label>You dont have any currency</ion-label>
+        <ion-label>{{ "you dont have any currency" | translate}}</ion-label>
       </ion-item>
     </ng-template>
 

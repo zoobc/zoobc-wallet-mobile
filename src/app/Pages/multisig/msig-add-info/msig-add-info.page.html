@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Send Money</ion-title>
+    <ion-title>{{ "send money" | translate}}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -16,7 +16,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <h5>Multi Signature Info</h5>
+        <h5>{{ "multisignature" | translate}} {{ "info" | translate}}</h5>
       </ion-col>
     </ion-row>
 
@@ -38,7 +38,7 @@
     <ion-row style="margin-top:10px">
       <ion-col>
         <ion-label>
-          <h2>Participants</h2>
+          <h2>{{ "participants" | translate}}</h2>
         </ion-label>
       </ion-col>
     </ion-row>
@@ -65,7 +65,7 @@
     <ion-row>
       <ion-col>
         <ion-label>
-          <h2>Nonce</h2>
+          <h2>{{ "nonce" | translate}}</h2>
           <ion-input [(ngModel)]="nonce" type="number" placeholder="Nonce ..."></ion-input>
         </ion-label>
       </ion-col>
@@ -73,14 +73,14 @@
     <ion-row>
       <ion-col>
         <ion-label>
-          <h2>Minimum signature</h2>
+          <h2>{{ "minimum signature" | translate}}</h2>
           <ion-input type="number" [(ngModel)]="minSig" placeholder="Minimum signature..."></ion-input>
         </ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button (click)="next()" color="secondary" expand="block">Next</ion-button>
+        <ion-button (click)="next()" color="secondary" expand="block">{{ "next" | translate}}</ion-button>
         <!-- <ion-button (click)="saveDraft()" expand="block" color="secondary" fill="outline" expand="block" expand="block">
           Save to draft</ion-button> -->
       </ion-col>
