@@ -75,11 +75,11 @@
     </ion-item>
     <ion-item>
       <ion-label color="danger" *ngIf="pendingSignatures.length == 0">
-        <p> {{ 'no participants have signed yet' | translate }}</p>
+        <p> {{ "no participants have signed yet" | translate }}</p>
       </ion-label>
       <ion-label color="danger" *ngIf="pendingSignatures.length > 0">
-        <p>{{ 'signed by' | translate }} {{ pendingSignatures.length }} of {{ participants.length }}
-          {{ 'participants' | translate }}</p>
+        <p>{{ "signed by" | translate }} {{ pendingSignatures.length }} of {{ participants.length }}
+          {{ "participants" | translate }}</p>
       </ion-label>
     </ion-item>
 
@@ -133,12 +133,12 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="secondary" (click)="confirm()">{{ 'accept' | translate }}</ion-button>
+        <ion-button expand="block" color="secondary" (click)="confirm()">{{ "accept" | translate }}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="secondary" (click)="doIgnore()">{{ 'ignore' | translate }}
+        <ion-button expand="block" color="secondary" (click)="doIgnore()">{{ "ignore" | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
