@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { 
-  LoadingController, 
-  AlertController} from '@ionic/angular';
+import {
+  LoadingController,
+  AlertController,
+  NavController} from '@ionic/angular';
 import { MenuController, ModalController } from '@ionic/angular';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
@@ -99,7 +100,8 @@ export class SendCoinPage implements OnInit {
     private authSrv: AuthService,
     private trxService: TransactionService,
     private network: Network,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private navCtrl: NavController
   ) {
     this.qrScannerService.qrScannerSubject.subscribe(address => {
       this.getScannerResult(address);
@@ -426,7 +428,7 @@ export class SendCoinPage implements OnInit {
   }
 
   onEscrowTimeoutChange(){
-  
+
     this.minimumFee = calculateMinFee(this.escrowTimeout.value)
 
     this.setFeeValidation();
@@ -442,10 +444,10 @@ export class SendCoinPage implements OnInit {
   }
 
   setAmountValidation(){
-    this.amount.setValidators([Validators.required, Validators.min(0.00000001), 
+    this.amount.setValidators([Validators.required, Validators.min(0.00000001),
       Validators.max(this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC?this.minimumFee:this.conversionValue.fee.ZBC) 
-      - this.escrowCommision.value)]
-     )
+        - this.escrowCommision.value)]
+        )
     this.amount.updateValueAndValidity();
   }
 
@@ -489,9 +491,9 @@ export class SendCoinPage implements OnInit {
       this.removeEscrowValidation();
       this.minimumFee = TRANSACTION_MINIMUM_FEE;
     }
-    
+
     this.getBlockHeight();
-    
+
     this.setFeeValidation();
     this.setAmountValidation();
   }
@@ -503,7 +505,7 @@ export class SendCoinPage implements OnInit {
     });
 
     pinmodal.onDidDismiss().then(returnedData => {
-      if (returnedData && returnedData.data !== 0) {
+      if (returnedData && returnedData.data && returnedData.data !== 0) {
         const pin = returnedData.data;
         this.sendMoney();
       }
@@ -562,7 +564,7 @@ export class SendCoinPage implements OnInit {
     }
   }
 
-  async sendMoney() { 
+  async sendMoney() {
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
@@ -595,6 +597,9 @@ export class SendCoinPage implements OnInit {
           if (resolveTx) {
             this.ngOnInit();
             this.showSuccessMessage();
+            this.sendForm.reset();
+            this.submitted = false;
+            this.withEscrow = false;
             return;
           }
         },
@@ -631,7 +636,7 @@ export class SendCoinPage implements OnInit {
     });
 
     modal.onDidDismiss().then(() => {
-      //this.resetValidation();
+      this.navCtrl.pop();
     });
 
     return await modal.present();
