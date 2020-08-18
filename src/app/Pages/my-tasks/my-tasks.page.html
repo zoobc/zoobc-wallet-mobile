@@ -49,8 +49,8 @@
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index;" (click)="openDetail(escrow.id)">
       <ion-label>
         <!-- <h3>Transaction ID: {{escrow.id}}</h3> -->
-        <p>{{ "sender" |" translate}}: <b> {{ escrow.senderaddress }} </b></p>
-        <p>{{ "recipient"| translate}}: <strong>{{ escrow.recipientaddress }}</strong></p>
+        <p>{{ "sender" | translate}}: <b> {{ escrow.senderaddress }} </b></p>
+        <p>{{ "recipient" | translate}}: <strong>{{ escrow.recipientaddress }}</strong></p>
         <!-- <p>Commision: <b>{{ escrow.commission / 1e8 | number: '0.0-6' }} </b></p> -->
         <p *ngIf = "escrow.status !== 1 && escrow.status !== 2">{{ "expired after block height" | translate}}: <b>{{  escrow.timeout + escrow.blockheight | number }} </b></p>
         <!-- <p>Latest: <b>{{ escrow.latest }} </b></p> -->
