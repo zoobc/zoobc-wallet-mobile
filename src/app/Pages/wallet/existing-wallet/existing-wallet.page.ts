@@ -121,7 +121,7 @@ export class ExistingWalletPage implements OnInit {
     });
 
     loading.onDidDismiss().then(() => {
-      this.navCtrl.navigateRoot('/');
+      this.navCtrl.navigateRoot('/tabs/home');
     });
 
     return await loading.present();

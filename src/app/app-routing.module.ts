@@ -254,8 +254,8 @@ const routes: Routes = [
     loadChildren:
       './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule'
   },
-  { path: 'tabs', loadChildren: './Pages/tabs/tabs.module#TabsPageModule' },
-  { path: 'home', loadChildren: './Pages/home/home.module#HomePageModule' }
+  { path: 'tabs', loadChildren: './Pages/tabs/tabs.module#TabsPageModule', canActivate: [AuthService] },
+  { path: 'home', loadChildren: './Pages/home/home.module#HomePageModule', canActivate: [AuthService] }
 ];
 @NgModule({
   imports: [
