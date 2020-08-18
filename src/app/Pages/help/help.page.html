@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Help" | translate }}</ion-title>
+    <ion-title>{{ "help" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
         <ion-button routerLink="/feedback">
-          Feedback
+          {{ "feedback" | translate}}
         </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -15,31 +15,31 @@
 
 
 <ion-content class="ion-padding">
-  <h2>Overview</h2>
+  <h2>{{ "overview" | translate}}</h2>
   <p>
-    ZooBC wallet is a mobile application that is able to connect with the ZooBC blockchain network, so it can carry out
-    activities such as creating accounts, viewing balances, sending coins, displaying QRcode addresses.
+    {{ "zoobc wallet is a mobile application that is able to connect with the zoobc blockchain network, so it can carry out
+    activities such as creating accounts, viewing balances, sending coins, displaying qrcode addresses" | translate}}.
   </p>
 
-  <h2>Dashboard</h2>
+  <h2>{{ "dashboard" | translate}}</h2>
   <p>
-    In the application dashboard you can see the total balance of all accounts that you have created in this
-    application.
+    {{ "in the application dashboard you can see the total balance of all accounts that you have created in this
+    application" | translate}}.
   </p>
 
 
-  <h2>Receive</h2>
+  <h2>{{ "receive" | translate}}</h2>
   <p>
-    Will have QRCode of your account address. Your friend can scan qrcode and then send a number of coins to you.
+    {{ "will have qrcode of your account address. your friend can scan qrcode and then send a number of coins to you" | translate}}.
   </p>
 
-  <h2>Send</h2>
+  <h2>{{ "send" | translate}}</h2>
   <p>
-    The send button for sending coins from your account to your other account or to someone else's account, you need a
-    destination coin address.
+    {{ "the send button for sending coins from your account to your other account or to someone else's account, you need a
+    destination coin address" | translate}}.
   </p>
 
-  <h2>Link</h2>
+  <h2>{{ "link" | translate}}</h2>
   <ul>
      <li><a href="https://zoobc.org">ZooBC Forum</a></li>
      <li><a href="https://zoobc.net">ZooBC Eplorer</a></li>

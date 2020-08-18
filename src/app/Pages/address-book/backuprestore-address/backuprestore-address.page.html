@@ -3,21 +3,21 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Backup / Restore</ion-title>
+    <ion-title>{{ "backup / restore" | translate}}</ion-title>
 
     <ion-buttons slot="end" color="primary">
         <ion-button routerLink="/feedback">
-          Feedback
+          {{ "feedback" | translate}}
         </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <h3>Backup / Restore Address Book</h3>
+  <h3>{{ "backup / restore address book" | translate}}</h3>
   <p>
-    Here you can backup or restore address book.<br/>
-    Backup / Restore service are using third party services.<br/>
+    {{ "here you can backup or restore address book" | translate}}<br/>
+    {{ "backup / restore service are using third party services" | translate}}<br/>
     <!-- Please register / login to allow backup / restore address book.<br/> -->
   </p>
 
@@ -37,9 +37,9 @@
     </ion-row> -->
     <ion-row>
       <ion-col>
-        <ion-button (click)="backup()" color="primary" expand="block">Backup</ion-button>
+        <ion-button (click)="backup()" color="primary" expand="block">{{ "backup" | translate}}</ion-button>
         <ion-progress-bar *ngIf="isBackup" type="indeterminate"></ion-progress-bar>
-        <ion-label *ngIf="isBackupFinish" color="success">Backup succesfull</ion-label>
+        <ion-label *ngIf="isBackupFinish" color="success">{{ "backup succesfull" | translate}}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -49,9 +49,9 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button (click)="restore()" color="secondary" expand="block">Restore</ion-button>
+        <ion-button (click)="restore()" color="secondary" expand="block">{{ "restore" | translate}}</ion-button>
         <ion-progress-bar *ngIf="isRestore" type="indeterminate" reversed="true"></ion-progress-bar>
-        <ion-label *ngIf="isRestoreFinish" color="success">Restoring {{numBerOfRestored}} address finish</ion-label>
+        <ion-label *ngIf="isRestoreFinish" color="success">{{ "restoring" | translate}} {{numBerOfRestored}} {{ "address" | translate}} {{ "finish" | translate}}</ion-label>
       </ion-col>
     </ion-row>
   </ion-grid>

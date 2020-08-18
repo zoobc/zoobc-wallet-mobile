@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Backup Phrase" | translate }}</ion-title>
+    <ion-title>{{ "backup phrase" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
         <ion-button routerLink="/feedback">
-          Feedback
+          {{ "feedback" | translate}}
         </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -19,29 +19,29 @@
     <div *ngSwitchCase=1>
 
       <ion-text>
-        <h2>Backup Phrase</h2>
+        <h2>{{ "backup phrase" | translate}}</h2>
       </ion-text>
       <p>
-        For your security, Blockchain does not keep any passwords on file. The following 24 word Backup Phrase will
-        give you access to your funds in case you lose your password. Be sure to write it on a piece of paper and to
+        {{ "for your security, blockchain does not keep any passwords on file. the following 24 word backup phrase will
+        give you access to your funds in case you lose your password. be sure to write it on a piece of paper and to
         keep
-        it somewhere safe and secure.
+        it somewhere safe and secure" | translate}}.
       </p>
-      <ion-button expand="block" color="secondary" (click)="backupClick();">{{ "Reveal seed words" | translate }}</ion-button>
+      <ion-button expand="block" color="secondary" (click)="backupClick();">{{ "reveal seed words" | translate }}</ion-button>
 
     </div>
 
     <div *ngSwitchCase=2>
       <p>
-        If you ever change device, you will need this seed phrase to access your accounts. Save them
-        somewhere safe and secret.
+        {{ "if you ever change device, you will need this seed phrase to access your accounts. save them
+        somewhere safe and secret" | translate}}.
       </p>
 
       <div class="box-warning">
-        DO NOT share this phrase with anyone! These words can be used to steal all your accounts.
+        {{ "do not share this phrase with anyone! these words can be used to steal all your accounts" | translate}}.
       </div>
 
-      <h4>Your private seed phrase</h4>
+      <h4>{{ "your private seed phrase" | translate}}</h4>
       <div class="box-pass">
         
         <ion-grid>
@@ -138,7 +138,7 @@
 
       <div style="text-align: center;margin-top: 10px;">
           <ion-button (click)="copyToClipboard()" color="secondary">
-              <ion-icon name="copy"></ion-icon> {{ "Copy to clipboard" | translate }}
+              <ion-icon name="copy"></ion-icon> {{ "copy to clipboard" | translate }}
           </ion-button>
       </div>
       

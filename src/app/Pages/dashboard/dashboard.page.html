@@ -9,7 +9,7 @@
     <!-- <ion-title>ZooBC v0.1</ion-title> -->
     <ion-buttons slot="end">
       <ion-button (click)="openSendFeedbak()">
-        Feedback
+        {{ "feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -51,14 +51,14 @@
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-right">
-          <ion-label color="medium" style="font-size: 0.9em; font-style: italic;">Last updated: {{lastBalanceUpdated}}&nbsp;&nbsp;</ion-label>
+          <ion-label color="medium" style="font-size: 0.9em; font-style: italic;">{{ "last updated" | translate}}: {{lastBalanceUpdated}}&nbsp;&nbsp;</ion-label>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="6">
           <ion-item color="dbbalance" (click)='showBalanceDetail()'>
             <ion-label>
-              <p>{{ "Balance" | translate }}</p>
+              <p>{{ "balance" | translate }}</p>
               <ion-text class="amount"
                 >{{ accountBalance.balance/1e8 | number: '0.0-2' }}
                 <span class="sufix">ZBC</span>
@@ -74,7 +74,7 @@
         <ion-col size="6" style="text-align: left; padding-bottom: 10px;">
           <ion-item color="dbspbalance" (click)='showBalanceDetail()'>
             <ion-label>
-              <p>{{ "Spendable Balance" | translate }}</p>
+              <p>{{ "spendable balance" | translate }}</p>
               <ion-text class="amount"
                 >{{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }}
                 <span class="sufix">ZBC</span></ion-text
@@ -99,7 +99,7 @@
         <ion-card color="light" (click)="openListAccount()">
           <ion-icon name="wallet" color="secondary"></ion-icon>
           <ion-text>
-            <h2>Accounts</h2>
+            <h2>{{ "accounts" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -108,7 +108,7 @@
         <ion-card color="light" (click)="sendCoin()">
           <ion-icon name="arrow-round-up" color="secondary"></ion-icon>
           <ion-text>
-            <h2>{{ "Send" | translate }}</h2>
+            <h2>{{ "send" | translate }}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -117,7 +117,7 @@
         <ion-card color="light" [routerLink]="['/receive']">
           <ion-icon name="arrow-round-down"  color="secondary"></ion-icon>
           <ion-text>
-            <h2>Receive</h2>
+            <h2>{{ "receive" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -126,7 +126,7 @@
         <ion-card color="light" routerLink="/transactions">
           <ion-icon name="swap" color="secondary"></ion-icon>
           <ion-text>
-            <h2>Transactions</h2>
+            <h2>{{ "transactions" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -135,7 +135,7 @@
         <ion-card color="light" routerLink="/my-tasks">
           <ion-icon name="list" color="secondary"></ion-icon>
           <ion-text>
-            <h2>My Tasks</h2>
+            <h2>{{ "my tasks" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -144,7 +144,7 @@
         <ion-card color="light" routerLink="/multisig">
           <ion-icon name="key" color="secondary"></ion-icon>
           <ion-text>
-            <h2>Multisignature</h2>
+            <h2>{{ "multisignature" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -153,7 +153,7 @@
         <ion-card color="light" routerLink="/multisig" (click)="scanQrCode()">
           <ion-icon name="radio-button-on" color="secondary"></ion-icon>
           <ion-text>
-            <h2>Scan</h2>
+            <h2>{{ "scan" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -163,7 +163,7 @@
         <ion-card color="light" routerLink="/address-book">
           <ion-icon name="people" color="secondary"></ion-icon>
           <ion-text>
-            <h2>Contacts</h2>
+            <h2>{{ "contacts" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -172,7 +172,7 @@
         <ion-card color="light" routerLink="/settings">
           <ion-icon name="settings" color="secondary"></ion-icon>
           <ion-text>
-            <h2>Settings</h2>
+            <h2>{{ "settings" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -181,7 +181,7 @@
         <ion-card color="light" (click)="openBlog()">
           <ion-icon name="paper" color="secondary"></ion-icon>
           <ion-text>
-            <h2>Blog</h2>
+            <h2>{{ "blog" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -190,7 +190,7 @@
         <ion-card color="light" routerLink="/chat">
           <ion-icon name="chatboxes" color="secondary"></ion-icon>
           <ion-text>
-            <h2>{{ "Chat" | translate }}</h2>
+            <h2>{{ "chat" | translate }}</h2>
           </ion-text>
         </ion-card>
       </ion-col>
@@ -199,7 +199,7 @@
         <ion-card color="light" routerLink="/applist">
           <ion-icon name="apps" color="secondary"></ion-icon>
           <ion-text>
-            <h2>Apps</h2>
+            <h2>{{ "apps" | translate}}</h2>
           </ion-text>
         </ion-card>
       </ion-col>

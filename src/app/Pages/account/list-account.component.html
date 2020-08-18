@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "List of Account" | translate }}</ion-title>
+    <ion-title>{{ "list of account" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -14,7 +14,7 @@
 
 <ion-content>
   <ion-item>
-    <ion-button class="ion-text-right">Import</ion-button>
+    <ion-button class="ion-text-right">{{ "import" | translate}}</ion-button>
   </ion-item>
   <div *ngIf="isLoadingBalance" style="margin-top:5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -27,13 +27,13 @@
   <div class="list-account-page" style="margin-bottom: 60px;">
     <ng-template #noData>
       <ion-item lines="none">
-        <ion-label>{{ "You dont have any address" | translate }}</ion-label>
+        <ion-label>{{ "you dont have any address" | translate }}</ion-label>
       </ion-item>
     </ng-template>
 
     <ion-list *ngIf="accounts && accounts.length >= 1; else noData">
       <ion-list-header  *ngIf="forWhat==='account'">
-        <ion-label><span>{{"Tap list to switch account" | translate}}.</span></ion-label>
+        <ion-label><span>{{"tap list to switch account" | translate}}.</span></ion-label>
       </ion-list-header>
       <ion-item-sliding *ngFor="let account of accounts; let i = index">
         <ion-item>

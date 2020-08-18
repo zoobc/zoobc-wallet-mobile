@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Task Detail</ion-title>
+    <ion-title>{{ "task detail" | translate}}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -18,42 +18,42 @@
   </div>
 
   <div style="text-align: center;">
-    <h5> Escrow Transaction Detail </h5>
+    <h5> {{ "escrow transaction detail" | translate}} </h5>
   </div>
   <ion-list *ngIf="escrowDetail">
     <ion-item>
-      {{ "Status" | translate}} &nbsp;
+      {{ "status" | translate}} &nbsp;
       <ion-badge *ngIf = "escrowDetail.status == 0" color="warning"  shape="round">
-        Pending
+        {{ "pending" | translate}}
         </ion-badge>
    
         <ion-badge *ngIf = "escrowDetail.status == 1" color="success"  shape="round">
-        Approved
+        {{ "approved" | translate}}
         </ion-badge>
    
 
         <ion-badge *ngIf = "escrowDetail.status == 2" color="danger"  shape="round">
-        Rejected
+        {{ "rejected" | translate}}
         </ion-badge>
 
 
         <ion-badge *ngIf = "escrowDetail.status == 3" color="warning"  shape="round">
-        Expired
+        {{ "expired" | translate}}
         </ion-badge>
 
         <ion-badge *ngIf = "escrowDetail.status == 4" color="warning"  shape="round">
-        Unknown
+        {{ "unknown" | translate}}
         </ion-badge>
     </ion-item>    
     <ion-item>
       <ion-label>
-        <h5>{{ "ID" | translate }} : {{escrowDetail.id}}
+        <h5>{{ "id" | translate }} : {{escrowDetail.id}}
         </h5>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "Sender" | translate }}</h5>
+        <h5>{{ "sender" | translate }}</h5>
         <p>
           {{ escrowDetail.senderaddress }}
         </p>
@@ -61,7 +61,7 @@
     </ion-item>
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "Recipient" | translate }}</h5>
+        <h5>{{ "recipient" | translate }}</h5>
         <p>
           {{ escrowDetail.recipientaddress }}
         </p>
@@ -70,27 +70,27 @@
     <ion-item>
       <ion-label>
         <p>
-          {{ "Amount" | translate }}: {{escrowDetail.amount / 1e8 | number: '0.0-8' }} ZBC
+          {{ "amount" | translate }}: {{escrowDetail.amount / 1e8 | number: '0.0-8' }} ZBC
         </p>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <p>{{ "Commission Fee" | translate }}: 
+        <p>{{ "commission fee" | translate }}: 
           {{ escrowDetail.commission / 1e8 | number: '0.0-8' }} ZBC
         </p>
       </ion-label>
     </ion-item>
     <ion-item  *ngIf="escrowDetail && (escrowDetail.status !== 1 && escrowDetail.status !== 2)">
       <ion-label>
-        <p>{{ "Expired after block height" | translate }}: 
+        <p>{{ "expired after block height" | translate }}: 
           {{ toNumber(escrowDetail.blockheight) + toNumber(escrowDetail.timeout) | number}}
         </p>
       </ion-label>
     </ion-item>   
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "Instruction" | translate }}</h5>
+        <h5>{{ "instruction" | translate }}</h5>
         <p>
           {{escrowDetail.instruction}}
         </p>
@@ -101,12 +101,12 @@
   <ion-grid *ngIf="escrowDetail && escrowDetail.status == 0">
     <ion-row>
       <ion-col>
-        <ion-button  expand="block" color="primary" (click)="confirm()">{{ 'Confirm' | translate }}</ion-button>
+        <ion-button  expand="block" color="primary" (click)="confirm()">{{ "confirm" | translate }}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="primary" fill="outline" (click)="reject()">{{ 'Reject' | translate }}</ion-button>
+        <ion-button expand="block" color="primary" fill="outline" (click)="reject()">{{ "reject" | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

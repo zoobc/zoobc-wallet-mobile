@@ -7,7 +7,7 @@
 <div class="address-book-list">
   <ng-template #noData>
     <ion-item lines="none">
-      <ion-label>{{ "You dont have any address" | translate }}</ion-label>
+      <ion-label>{{ "you dont have any address" | translate }}</ion-label>
     </ion-item>
   </ng-template>
 
@@ -21,8 +21,8 @@
         <ion-icon slot="end" name="copy" (click)="copyAddress(i)"></ion-icon>
       </ion-item>
       <ion-item-options>
-          <button color="success" (click)="editAddress(i)" class="tool"><ion-icon name="create"></ion-icon>{{ "Edit" | translate }}</button>
-          <button color="danger" (click)="deleteAddress(i)" class="tool"><ion-icon name="trash"></ion-icon>{{ "Delete" | translate }}</button>
+          <button color="success" (click)="editAddress(i)" class="tool"><ion-icon name="create"></ion-icon>{{ "edit" | translate }}</button>
+          <button color="danger" (click)="deleteAddress(i)" class="tool"><ion-icon name="trash"></ion-icon>{{ "delete" | translate }}</button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>

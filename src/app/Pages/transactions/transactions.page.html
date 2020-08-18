@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button  (click)="goDashboard()"> </ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Transactions" | translate }}</ion-title>
+    <ion-title>{{ "transactions" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -27,7 +27,7 @@
   </ion-label>
 
   <p *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-padding-horizontal">
-    {{ "Queue" | translate }} ({{unconfirmTxs.length}})
+    {{ "queue" | translate }} ({{unconfirmTxs.length}})
   </p>
   <ion-list *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-margin-top">
     <ion-item *ngFor="let pendingtrx of unconfirmTxs; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
@@ -57,13 +57,13 @@
   </ion-list>
 
   <h4 class="ion-padding-horizontal ion-text-center">
-    {{ "Transaction(s) History" | translate }}
+    {{ "transactions history" | translate }}
   </h4>
   <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length === 0" class="ion-margin-top">
     <ion-item class="ion-text-center">
       <ion-label>
         <br/> <br/>
-          You don't have any transaction. 
+          {{ "you don't have any transaction" | translate}}
       </ion-label>
     </ion-item>
   </ion-list>
@@ -73,32 +73,32 @@
       <ion-label>
         <p>{{ escrow.senderaddress }} </p> 
         <ion-badge *ngIf = "escrow.status == 0" color="warning"  shape="round">
-        Pending
+        {{ "pending" | translate}}
         </ion-badge>&nbsp;
    
         <ion-badge *ngIf = "escrow.status == 1" color="success"  shape="round">
-        Approved
+        {{ "approved" | translate}}
         </ion-badge>&nbsp;
    
 
         <ion-badge *ngIf = "escrow.status == 2" color="danger"  shape="round">
-        Rejected
+        {{ "rejected" | translate}}
         </ion-badge>&nbsp;
 
 
         <ion-badge *ngIf = "escrow.status == 3" color="warning"  shape="round">
-        Expired
+        {{ "expired" | translate}}
         </ion-badge>&nbsp;
 
         <ion-badge *ngIf = "escrow.status == 4" color="warning"  shape="round">
-        Unknown
+        {{ "unknown" | translate}}
         </ion-badge>&nbsp;
 
 
       </ion-label>
 
       <ion-text slot='end' color="success" class="ion-text-right" >
-        <span style='font-size: 0.7em;'>Commission</span> <br/>
+        <span style='font-size: 0.7em;'>{{ "commission" | translate}}</span> <br/>
          + {{ escrow.commission / 1e8 | number: '0.0-6' }} <span style="font-size:0.8em">ZBC</span>
       </ion-text>
 

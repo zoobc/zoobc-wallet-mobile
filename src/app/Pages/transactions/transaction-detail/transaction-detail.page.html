@@ -5,7 +5,7 @@
         <ion-icon name="close-circle"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>{{ "Transaction Detail" | translate }}</ion-title>
+    <ion-title>{{ "transaction detail" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,7 +13,7 @@
   <ion-list class="info-list">
     <ion-item>
       <ion-label>
-        <p class="info-label">{{ "Status" | translate }}</p>
+        <p class="info-label">{{ "status" | translate }}</p>
         <p *ngIf="status==='confirm'" class="info-val-confirm">{{ status | uppercase}}</p>
         <p *ngIf="status!=='confirm'" class="info-val-pending">{{ status | uppercase}}</p>
       </ion-label>
@@ -21,7 +21,7 @@
 
     <ion-item *ngIf="transaction.id">
       <ion-label>
-        <p class="info-label">{{ "Transaction ID" | translate }}</p>
+        <p class="info-label">{{ "transaction id" | translate }}</p>
         <p class="info-val">
           {{ transaction.id }}
         </p>
@@ -30,7 +30,7 @@
 
     <ion-item *ngIf="transaction.blockId">
       <ion-label>
-        <p class="info-label">{{ "Block ID" | translate }}</p>
+        <p class="info-label">{{ "block id" | translate }}</p>
         <p class="info-val">
           {{ transaction.blockId }}
         </p>
@@ -39,7 +39,7 @@
 
     <ion-item *ngIf="transaction.height || transaction.height === 0">
       <ion-label>
-        <p class="info-label">{{ "Height" | translate }}</p>
+        <p class="info-label">{{ "height" | translate }}</p>
         <p class="info-val">
           {{ transaction.height }}
         </p>
@@ -48,7 +48,7 @@
 
     <ion-item>
       <ion-label>
-        <p class="info-label">{{ "Transaction Date" | translate }}</p>
+        <p class="info-label">{{ "transaction date" | translate }}</p>
         <p class="info-val">
           {{ transaction.timestamp | date: "medium" }}
         </p>
@@ -65,7 +65,7 @@
 
     <ion-item *ngIf="transaction.type !== 'send'">
       <ion-label>
-        <p class="info-label">{{ "Sender Address" | translate }}</p>
+        <p class="info-label">{{ "sender address" | translate }}</p>
         <p class="info-val">{{ transaction.sender }}</p>
       </ion-label>
       <ion-icon
@@ -76,7 +76,7 @@
     </ion-item>
     <ion-item *ngIf="transaction.type === 'send'">
       <ion-label>
-        <p class="info-label">{{ "Recipient Address" | translate }}</p>
+        <p class="info-label">{{ "recipient address" | translate }}</p>
         <p class="info-val">{{ transaction.recipient }}</p>
       </ion-label>
       <ion-icon
@@ -88,21 +88,21 @@
 
     <ion-item *ngIf="transaction.type === 'send'">
       <ion-label>
-        <p class="info-label">{{ "Amount" | translate }}</p>
+        <p class="info-label">{{ "amount" | translate }}</p>
         <p class="info-val-send">- {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC</p>
       </ion-label>
     </ion-item>
 
     <ion-item  *ngIf="transaction.type !== 'send'">
         <ion-label>
-          <p class="info-label">{{ "Amount" | translate }}</p>
+          <p class="info-label">{{ "amount" | translate }}</p>
           <p class="info-val-receive">+ {{ transaction.amount / 1e8 | number: '0.2-4'}} ZBC</p>
         </ion-label>
     </ion-item>
 
     <ion-item *ngIf="transaction.type === 'send'">
       <ion-label>
-        <p class="info-label">{{ "Fee" | translate }}</p>
+        <p class="info-label">{{ "fee" | translate }}</p>
         <p class="info-val-send">- {{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC</p>
       </ion-label>
     </ion-item>
@@ -134,7 +134,7 @@
     <ion-row>
       <ion-col class="ion-text-center">
         <ion-button (click)="close()" color="secondary"
-          >{{ "Close" | translate }}</ion-button
+          >{{ "close" | translate }}</ion-button
         >
       </ion-col>
     </ion-row>
