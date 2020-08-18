@@ -1,0 +1,184 @@
+.home-header {
+  background-repeat: no-repeat;
+  background-image: url(../../../assets/images/home-bg.png);
+  background-size: cover;
+  text-align: center;
+  min-height: 240px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  color: #FFFFFF;
+
+  .main-balance {
+    font-size: 32px;
+  }
+
+  .other-balance {
+    color: #FFFFFF;
+    opacity: 0.6;
+  }
+
+  .account {
+    .account-name-container {
+      font-size: 16px;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      ion-icon {
+        margin-left: 10px;
+        font-size: 12px;
+      }
+    }
+
+    margin-bottom: 20px;
+  }
+}
+
+ion-card {
+  background: #FFFFFF;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.card-buttons {
+  margin-top: -25px;
+
+  ion-card-content {
+    display: flex;
+    justify-content: space-between;
+
+    ion-label {
+      color: #4576BA;
+      text-transform: uppercase;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      ion-icon {
+        margin-right: 5px;
+      }
+
+      &:first-child {
+        padding-right: 16px;
+        border-right: 1px solid #DADCE7
+      }
+    }
+  }
+}
+
+.transaction-list {
+  background-color: transparent;
+
+  ion-item {
+    --background: transparent;
+    --padding-start: 0;
+    --padding-end: 0;
+    --inner-padding-end: 0;
+
+    .transaction-header {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #DADCE7;
+      padding-top: 10px;
+      padding-bottom: 10px;
+
+      >div {
+        display: flex;
+        align-items: center;
+
+        ion-icon {
+          margin-right: 5px;
+        }
+      }
+
+      .all {
+        text-transform: uppercase;
+        color: #4576BA;
+        ;
+      }
+    }
+
+    .transaction-item {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #DADCE7;
+
+      >div {
+        display: flex;
+        flex-direction: column;
+
+        &:last-child {
+          align-items: flex-end;
+        }
+
+        &.info {
+          .sender {
+            color: #222428;
+            font-size: 16px;
+          }
+
+          .time {
+            color: #727588;
+            font-size: 12px;
+          }
+        }
+
+        &.amount {
+          .main-amount {
+            font-size: 16px;
+          }
+
+          .other-amount {
+            color: #727588;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+
+    &:last-child .transaction-item {
+      border-bottom: none;
+    }
+  }
+}
+
+.card-article {
+  position: relative;
+
+  .cover {
+    background-image: url(../../../assets/images/card-shadow.png);
+    background-repeat: repeat-x;
+    background-position: center bottom;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 3;
+  }
+
+  .title {
+    color: #fff;
+    z-index: 4;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    font-size: 24px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 10px;
+  }
+
+}

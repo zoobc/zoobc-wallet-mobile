@@ -66,7 +66,7 @@ export class SetupPinGpPage implements OnInit {
       const loginStatus = await this.authSrv.login(pin);
       if (loginStatus) {
         setTimeout(() => {
-          this.navCtrl.navigateRoot('/');
+          this.navCtrl.navigateRoot('/tabs/home');
           this.processing = false;
         }, 100);
       }

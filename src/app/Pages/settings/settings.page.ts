@@ -19,6 +19,8 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { ModalController } from '@ionic/angular';
 import { PopupCurrencyPage } from './popup-currency/popup-currency.page';
 import { PopupLanguagesPage } from './popup-languages/popup-languages.page';
+import { AuthService } from 'src/app/Services/auth-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -49,7 +51,9 @@ export class SettingsPage implements OnInit {
     private networkService: NetworkService,
     private theme: ThemeService,
     private modalController: ModalController,
-    private currencyService: CurrencyService) {
+    private currencyService: CurrencyService,
+    private authService: AuthService,
+    private router: Router) {
 
       this.currencyService.currencySubject.subscribe((rate: Currency) => {
         this.currencyRate = rate;
@@ -137,6 +141,9 @@ export class SettingsPage implements OnInit {
     return await modal.present();
   }
 
-
+  logout(){
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
+  }
 
 }
