@@ -1,86 +1,149 @@
 {
-	"About this wallet": "Tentang dompet ini",
-	"Account Name": "Nama akun",
-	"Add": "Menambahkan",
-	"Add New Address": "Tambahkan alamat baru",
-	"Address": "Alamat",
-	"Address Book": "Daftar Alamat",
-	"Address is not valid": "Alamat tidak valid",
-	"Amount": "Jumlah",
-	"Amount is not allowed": "Jumlah tidak diizinkan",
-	"Average": "Rata - rata",
-	"Back": "Kembali",
-	"Balance": "Saldo",
-	"Cancel": "Batal",
-	"Close": "Close",
-	"Confirm": "Konfirmasi",
-	"Confirm your PIN": "Konfirmasikan PIN Anda",
-	"Copy Passphrase": "Salinan",
-	"Create New Account": "Buat akun baru",
-	"Create New Wallet": "Membuat Dompet Baru",
-	"Created": "Dibuat",
-	"Currency": "Mata uang",
-	"Delete": "Menghapus",
-	"Edit": "Edit",
-	"Edit Account": "Mengedit akun",
-	"Edit Address": "Edit Alamat",
-	"Enter amount": "Masukan jumlah",
-	"Enter recipient address": "Masukkan alamat penerima",
-	"Fast": "Cepat",
-	"Fee": "Biaya",
-	"From": "Dari",
-	"From account": "Dari akun",
-	"Generate Passphrase": "Buat Frasa Sandi",
-	"Help": "Membantu",
-	"Help & Support": "Pusat Bantuan",
-	"I agree to the terms & conditions": "Saya menyetujui syarat & ketentuan",
-	"I have written down or otherwise securely stored my passphrase": "Saya telah menulis atau menyimpan frasa sandi saya dengan aman",
-	"Invalid PIN": "PIN salah",
-	"Language": "Bahasa",
-	"List of Account": "Daftar akun",
-	"Log out": "Keluar",
-	"New Transaction": "Transaksi Baru",
-	"OR": "OR",
-	"Open Existing Wallet": "Pulihkan Dompet",
-	"Open Wallet": "Buka Dompet",
-	"Others": "Lainnya",
-	"Pay to": "Penerima",
-	"Please Enter Your PIN": "Masukkan PIN",
-	"Please choose": "Silahkan pilih",
-	"Please enter your 24 words": "Silakan masukkan 24 kata Anda",
-	"Please enter your account name": "Masukkan nama akun",
-	"Please type the address": "Silakan ketik alamatnya",
-	"Please type the name": "Silakan ketik nama",
-	"Receive": "Terima",
-	"Recent Transaction(s)": "Transaksi terbaru",
+	"About this wallet": "Tentang dompet ini", X
+	"Accept" : "Terima", X
+	"Account Name": "Nama akun", V
+	"Accounts": "Akun", V
+	"Add": "Menambahkan", V
+	"Add Address": "Tambah alamat", V
+	"Add Account": "Tambah akun", V
+	"Add New Address": "Tambahkan alamat baru", X
+	"Address": "Alamat", V
+	"Address Book": "Daftar Alamat", V
+	"Address is not valid": "Alamat tidak valid",X
+	"Advanced": "Tingkat lanjut",X
+	"Amount": "Jumlah",V
+	"Amount is not allowed": "Jumlah tidak diizinkan", X
+	"Average": "Rata - rata", V
+	"Back": "Kembali", V
+	"Backup / Restore Address": "Cadangkan / Pulihkan Alamat", X
+	"Backup Phrase" : "Cadangkan Frasa", X
+	"Balance": "Saldo",V
+	"Buy and sell zoobc app": "Jual dan beli zoobc app", X
+	"Cancel": "Batal",V
+	"Create an account.": "Buat akun", X
+	"Chat": "Percakapan", X
+	"Change Wallet": "Ganti Dompet", X
+	"Close": "Tutup", V
+	"Coming Soon": "Segera akan datang", V
+	"Comment": "Komentar", X
+	"Confirm": "Konfirmasi",V
+	"Confirm your PIN": "Konfirmasikan PIN Anda", V
+	"Contacts" : "Kontak", V
+	"Copy": "Salin", X
+	"Copy Passphrase": "Salinan", V
+	"Copy to clipboard": "Salin ke clipboard", X
+	"Create New Account": "Buat akun baru",V
+	"Create New Wallet": "Membuat Dompet Baru",V
+	"Created": "Dibuat", X
+	"Currency": "Mata uang", V
+	"Currency List": "Daftar mata uang", X
+	"Current": "Saat ini", X
+	"Current Balance": "Saldo saat ini", X
+	"Days": "Hari", X
+	"Delete": "Hapus", V
+	"DO NOT share this phrase with anyone! These words can be used to steal all your accounts.":"JANGAN bagikan frasa ini dengan siapa pun! Kata-kata ini dapat digunakan untuk mencuri semua akun Anda.", X
+	"Edit": "Edit", V
+	"Edit Account": "Ubah akun", V
+	"Edit Address": "Ubah Alamat",V
+	"Enter amount": "Masukan jumlah", X
+	"Enter recipient address": "Masukkan alamat penerima",X
+	"Enter Your PIN": "Masukan PIN anda", X
+	"Expired after block height" : "Kadaluarsa setelah block height", X
+	"Fast": "Cepat", V
+	"For your security, Blockchain does not keep any passwords on file. The following 24 word Backup Phrase will give you access to your funds in case you lose your password. Be sure to write it on a piece of paper and to keep it somewhere safe and secure.": "Demi keamanan Anda, Blockchain tidak menyimpan kata sandi apa pun. Frase Cadangan 24 kata berikut akan memberi Anda akses ke dana Anda jika Anda kehilangan kata sandi Anda. Pastikan untuk menuliskannya di selembar kertas dan untuk Pertahankan di suatu tempat yang aman dan terjamin.", X
+	"Fee": "Biaya", V
+	"Feedback": "Saran", V
+	"Fill in the blanks with the correct words!":"Isi yang kosong dengan kata yang benar!", X
+	"From": "Dari", V
+	"From account": "Dari akun", X
+	"Generate Passphrase": "Buat Frasa Sandi", X
+	"Help": "Bantuan", X
+	"Help & Support": "Bantuan & Dukungan", X
+	"Hide Advance": "Sembunyikan tingkat lanjut", X
+	"I agree to the terms & conditions": "Saya menyetujui syarat & ketentuan", X
+	"I have written down or otherwise securely stored my passphrase": "Saya telah menulis atau menyimpan frasa sandi saya dengan aman",X
+	"If you ever change device, you will need this seed phrase to access your accounts. Save them somewhere safe and secret." : "Jika Anda pernah mengganti perangkat, Anda akan memerlukan frase awal ini untuk mengakses akun Anda. Selamatkan mereka suatu tempat yang aman dan rahasia.", X
+	"Invalid PIN": "PIN salah", X
+	"Instruction": "Petunjuk", V
+	"Language": "Bahasa", V
+	"List of Account": "Daftar akun", X
+	"List of Languages": "Daftar bahasa", X
+	"Log out": "Keluar", X
+	"Log In": "Masuk", X
+	"Login to Backup Service": "Masuk untuk layanan cadangan", X
+	"Backup / Restore Address Book using third party services, please register / login to use this services." : "Cadangkan / Pulihkan alamat dengan layanan pihak ketiga, silahkan daftar / login dengan layanan ini", X
+	"Name": "Nama", V
+	"Network" : "Jaringan", V
+	"Next": "Selanjutnya", V
+	"No account yet": "Belum punya akun", X
+	"No Escrow Approval Request Available": "Tidak ada persetujuan permintaan Escrow", X
+	"Notifications": "Pemberitahuan", X
+	"My Tasks": "Tugas saya", V
+	"New Transaction": "Transaksi Baru", X
+	"OR": "OR",X
+	"Open Existing Wallet": "Pulihkan Dompet", X
+	"Open Wallet": "Buka Dompet", V
+	"Others": "Lainnya", V
+	"Other ZooBC cool apps" : "Aplikasi keren zoobc lainnya", X
+	"Participants": "Peserta", V
+	"Pay to": "Bayar ke",X
+	"Please Enter Your PIN": "Masukkan PIN", X
+	"Please choose": "Silahkan pilih", X
+	"Please enter your 24 words": "Silakan masukkan 24 kata Anda", X
+	"Please enter your account name": "Masukkan nama akun", X
+	"Please type the address": "Silakan ketik alamatnya", X
+	"Please type the name": "Silakan ketik nama", X
+	"Queue": "Antrian", X
+	"Receive": "Terima", V
+	"Recent Transaction(s)": "Transaksi terbaru", V
 	"Recipient Address": "Alamat penerima",
 	"Refreshing": "Memuat ulang",
 	"Regenerate": "Buat kembali",
+	"Reject": "Tolak",
+	"Reveal Passphrase": "Perlihatkan Passphrase",
+	"Reveal seed words" : "Perlihatkan seed words",
 	"Remember: Never tell your passphrase. If you lose it, you lose access to your account!": "Ingat: Jangan pernah memberi tahu frasa sandi Anda. Jika Anda kehilangan itu, Anda kehilangan akses ke akun Anda!",
 	"Save": "Simpan",
+	"Save to draft": "Simpan ke konsep",
 	"Scan": "Pindai",
 	"Select one transaction fee": "Pilih salah satu  biaya transaksi",
+	"Sell" : "Jual",
 	"Send": "Kirim",
 	"Sender Address": "Alamat pengirim",
+	"Settings": "Pengaturan",
 	"Setup PIN": "Siapkan PIN",
 	"Setup your PIN": "Siapkan PIN Anda",
+	"Show this qrcode to your friend to transfer zoobc coin to your account" : "Perlihatkan qrcode ini kepada rekan anda untuk transfer koin zoobc ke akun anda",
+	"Signatures": "Tandatangan",
+	"Signed By": "Ditandatangani oleh",
+	"Sign this transaction": "Tandatangani transaksi ini",
 	"Slow": "Lambat",
 	"Spendable Balance": "Saldo Tersedia",
 	"Status": "Status",
+	"Submit" : "Ajukan",
 	"Tap list to switch account": "Ketuk daftar untuk beralih akun",
 	"This keeps your account secure, and lets you open your wallet on multiple devices. It's very important you write this down.": "Ini menjaga keamanan akun Anda, dan memungkinkan Anda membuka dompet di beberapa perangkat. Sangat penting bagi Anda untuk membuat salinan di tempat yang aman.",
+	"Theme": "Tema",
 	"Total": "Total",
+	"Transactions": "Transaksi",
 	"Transaction Date": "Tanggal transaksi",
+	"Transaction Detail": "Detail Transaksi",
 	"Transaction Fee": "Biaya transaksi",
+	"Transaction fee is not valid! minimum fee is" : "Biaya transaksi tidak valid! minimum biaya adalah",
 	"Transaction Status": "Status Transaksi",
+	"Transaction Fail" : "Transaksi Gagal", 
 	"Transaction Successful": "Transaksi berhasil",
 	"Transaction will need a few seconds to confirmed": "Transaksi akan memerlukan beberapa detik untuk dikonfirmasi",
+	"Transaction(s) History": "Riwayat Transaksi",
 	"Transfer Detail": "Detail Transfer",
+	"Timeout": "Batas waktu",
 	"Update": "Memperbarui",
 	"Wallets": "Dompet",
 	"We're about to generate your very own passphrase": "Kami akan membuat frasa sandi Anda",
 	"Welcome to ZooBC Wallet.": "Selamat datang di dompet ZooBC.",
 	"You dont have any address": "Anda belum memiliki alamat",
+	"You dont have any languages": "Anda tidak mempunyai bahasa apapun",
+	"You don't have any transaction. ": "Anda tidak mempunyai transaksi",
 	"one of signin methods bellow": "salah satu cara login di bawah",
 	"show this qrcode to your friend to transfer money to your account": "perlihatkan kode sandi ini kepada teman Anda untuk mentransfer uang ke akun Anda"
 }

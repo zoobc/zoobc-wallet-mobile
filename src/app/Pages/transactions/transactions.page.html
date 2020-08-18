@@ -6,7 +6,7 @@
     <ion-title>{{ "Transactions" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "Feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -63,7 +63,7 @@
     <ion-item class="ion-text-center">
       <ion-label>
         <br/> <br/>
-          You don't have any transaction. 
+          {{ "You don't have any transaction. "  | translate }}"
       </ion-label>
     </ion-item>
   </ion-list>

@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button (click)="goDashboard()"></ion-back-button>
     </ion-buttons>
-    <ion-title>My Tasks</ion-title>
+    <ion-title>{{ "My Tasks"  | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "Feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -19,7 +19,7 @@
       </ion-segment-button>
 
       <ion-segment-button value="escrow">
-        <ion-label>Escrow</ion-label>
+        <ion-label>{{ "Escrow" |  translate }}</ion-label>
       </ion-segment-button>
 
     </ion-segment>
@@ -42,7 +42,7 @@
 
   <div style="text-align: center; border-top: 1px solid #cccccc;"
     *ngIf="segmentModel === 'escrow' && (!escrowTransactions || escrowTransactions.length < 1) ">
-    <p>{{ 'No Escrow Approval Request Available' | translate }}</p>
+    <p>{{ "No Escrow Approval Request Available" | translate }}</p>
   </div>
 
   <ion-list *ngIf="segmentModel === 'escrow' && escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">

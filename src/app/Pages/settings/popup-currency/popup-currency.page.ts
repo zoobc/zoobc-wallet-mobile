@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CURRENCY_LIST } from 'src/environments/variable.const';
 import { ModalController, LoadingController } from '@ionic/angular';
 
+
 @Component({
   selector: 'app-popup-currency',
   templateUrl: './popup-currency.page.html',

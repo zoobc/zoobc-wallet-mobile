@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Feedback</ion-title>
+    <ion-title>{{ "Feedback"  | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,9 +11,9 @@
   <ion-grid fixed>
     <ion-row>
       <ion-col>
-        <ion-label position="stacked" class="feedback-label">Name:</ion-label>
-        <ion-item class="feedback-input">
-          <ion-input placeholder="Enter Name" [(ngModel)]="Name" class="feedback-input"></ion-input>
+        <ion-item>
+          <ion-label position="stacked">{{ "Name"  | translate }}:</ion-label>
+          <ion-input placeholder="Enter Name" [(ngModel)]="Name"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -31,6 +31,8 @@
       <ion-col>
         <ion-label position="stacked" class="feedback-label">Comment:</ion-label>
         <ion-item class="feedback-input">
+        <ion-item>
+          <ion-label position="stacked">{{ "Comment"  | translate }}:</ion-label>
           <ion-textarea [(ngModel)]="Comment" placeholder="Enter Comment here..." rows="6"></ion-textarea>
         </ion-item>
       </ion-col>
@@ -42,14 +44,14 @@
     </ion-row>
     <ion-row *ngIf="errorMsg">
       <ion-col class="ion-text-center">
-        <ion-label color="danger">Message: <br/> {{errorMsg}}</ion-label>
+        <ion-label color="danger">{{ "Message"  | translate }}: <br/> {{errorMsg}}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col text-center>
         <!-- <ion-button type="submit" expand="block">Submit</ion-button> -->
-        <ion-button class="feedback-submit"  expand="block" (click)="CreateRecord()" [disabled]="!Name || !AccAddress || !Comment">
-          {{ "Submit" | translate }}
+        <ion-button color="secondary" expand="block" (click)="CreateRecord()" [disabled]="!Name || !AccAddress || !Comment">
+          {{ "Send" | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
