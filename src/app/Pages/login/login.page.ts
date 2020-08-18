@@ -47,7 +47,7 @@ export class LoginPage implements OnInit {
 
     const isLoggedIn = this.authService.isLoggedIn();
     if (isLoggedIn) {
-      this.navCtrl.navigateRoot('/dashboard');
+      this.navCtrl.navigateRoot('/tabs/home');
     }
   }
 
@@ -56,7 +56,7 @@ export class LoginPage implements OnInit {
     this.isLoginValid = true;
     const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
-      this.navCtrl.navigateRoot('/dashboard');
+      this.navCtrl.navigateRoot('/tabs/home');
     } else {
       this.isLoginValid = false;
       setTimeout(() => {
