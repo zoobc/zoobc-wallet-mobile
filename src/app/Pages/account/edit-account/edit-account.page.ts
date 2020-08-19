@@ -11,6 +11,7 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-edit-account',
@@ -45,6 +46,7 @@ export class EditAccountPage implements OnInit {
     private androidPermissions: AndroidPermissions,
     private router: Router,
     private file: File,
+    private utilService: UtilService,
     private platform: Platform,
     private qrScannerService: QrScannerService,
     private alertController: AlertController,
@@ -91,11 +93,16 @@ export class EditAccountPage implements OnInit {
     this.accounts = await this.accountService.allAccount('multisig');
     this.participants = this.account.participants; // .sort();
     this.signByAccount = await this.accountService.getAccount(this.account.signByAddress);
-    this.signBy = this.signByAccount.address;
+    // this.signBy = this.signByAccount.address;
   }
 
   async loadNormalAccount() {
     this.accounts = await this.accountService.allAccount('normal');
+  }
+
+  copyToClipboard() {
+    const theJSON = JSON.stringify(this.account);
+    this.utilService.copyToClipboard(theJSON);
   }
 
   async ExportAccount() {
