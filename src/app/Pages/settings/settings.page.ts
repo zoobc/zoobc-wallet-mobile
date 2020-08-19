@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LanguageService } from 'src/app/Services/language.service';
-import { CurrencyService} from 'src/app/Services/currency.service';
+import { CurrencyService, ICurrency} from 'src/app/Services/currency.service';
 import {
   LANGUAGES,
   SELECTED_LANGUAGE,
@@ -16,9 +16,6 @@ import { getFormatedDate } from 'src/Helpers/converters';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { Currency } from 'src/app/Interfaces/currency';
-import { ModalController } from '@ionic/angular';
-import { PopupCurrencyPage } from './popup-currency/popup-currency.page';
-import { PopupLanguagesPage } from './popup-languages/popup-languages.page';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
 
@@ -31,9 +28,9 @@ export class SettingsPage implements OnInit {
 
   public Object = Object;
   public languages = LANGUAGES;
-  public activeLanguage = 'en';
+  public activeLanguage: any | null;
   public activeTheme: string;
-  public activeCurrency: string;
+  public activeCurrency: any;
   public activeNetwork: any;
   public currencyRateList: any;
   public currencyList = CURRENCY_LIST;
@@ -41,16 +38,12 @@ export class SettingsPage implements OnInit {
   public currencyRate: Currency;
   public timestamp: string;
   public themes = THEME_OPTIONS;
-  indexSelected: any;
-  activeCureencyWithname: string;
-  activeLanguageWithname: string;
 
   constructor(
     private strgSrv: StoragedevService,
     private languageService: LanguageService,
     private networkService: NetworkService,
-    private theme: ThemeService,
-    private modalController: ModalController,
+    private themeSrv: ThemeService,
     private currencyService: CurrencyService,
     private authService: AuthService,
     private router: Router) {
@@ -65,19 +58,56 @@ export class SettingsPage implements OnInit {
     this.getCurrencyRates();
     this.currencyRate = this.currencyService.getRate();
 
-    this.activeLanguage = await this.strgSrv.get(SELECTED_LANGUAGE);
-    const lang = this.getLanguages(this.activeLanguage);
-    this.activeLanguageWithname = lang.code + ' - ' + lang.country;
+    const activeLanguageCode = await this.strgSrv.get(SELECTED_LANGUAGE);
+    this.activeLanguage = this.languageService.getOne(activeLanguageCode?activeLanguageCode:"en");
 
-    this.activeCurrency = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
-    this.activeCureencyWithname = this.activeCurrency + ' - ' + this.currencyList[this.activeCurrency];
+    const activeCurrencyCode = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
+    this.activeCurrency = this.currencyService.getOne(activeCurrencyCode)
 
-    this.activeNetwork = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX);
+    this.activeNetwork = this.networks[await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX)].name;
+
     this.activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
   }
 
-  getLanguages(code: string) {
-    return this.languages.find(e => e.code === code);
+  private selectThemeSubscription = null;
+  private selectNetworkSubscription = null;
+  private selectLanguageSubscription = null;
+  private selectCurrencySubscription = null;
+
+  ionViewWillEnter() {
+    this.selectThemeSubscription = this.themeSrv.themeSubject.subscribe((value: string)=>{
+      this.activeTheme = value
+    })
+
+    this.selectNetworkSubscription = this.networkService.changeNodeSubject.subscribe((network: any)=>{
+      this.activeNetwork = network.name
+    })
+
+    this.selectLanguageSubscription = this.languageService.selectLanguageSubject.subscribe((language: any)=>{
+      this.activeLanguage = language
+    })
+
+    this.selectCurrencySubscription = this.currencyService.selectCurrencySubject.subscribe((currency: ICurrency)=>{
+      this.activeCurrency = currency
+    })
+  }
+
+  ionViewWillLeave() {
+    if (this.selectThemeSubscription) {
+      this.selectThemeSubscription.unsubscribe();
+    }
+
+    if (this.selectNetworkSubscription) {
+      this.selectNetworkSubscription.unsubscribe();
+    }
+
+    if (this.selectLanguageSubscription) {
+      this.selectLanguageSubscription.unsubscribe();
+    }
+
+    if (this.selectCurrencySubscription) {
+      this.selectCurrencySubscription.unsubscribe();
+    }
   }
 
   async getCurrencyRates() {
@@ -87,58 +117,48 @@ export class SettingsPage implements OnInit {
     }
   }
 
-  async changeRate() {
-    await this.currencyService.setActiveCurrency(this.activeCurrency);
+  goToAccount(){
+    this.router.navigateByUrl('/list-account');
   }
 
-  selectActiveLanguage() {
-    this.languageService.setLanguage(this.activeLanguage);
+  goToMultisig(){
+    this.router.navigateByUrl('/multisig');
   }
 
-  selectActiveNetwork() {
-    this.networkService.setNetwork(this.activeNetwork);
+  goToTheme(){
+    this.router.navigateByUrl('/theme');
   }
 
-  async changeTheme() {
-    await this.theme.setTheme(this.activeTheme);
+  goToNetwork(){
+    this.router.navigateByUrl('/network');
   }
 
-  async showPopupCurrency() {
-    const modal = await this.modalController.create({
-      component: PopupCurrencyPage,
-      componentProps: {
-      }
-    });
-
-    modal.onDidDismiss().then((dataReturned) => {
-      if (dataReturned.data) {
-        const curr = dataReturned.data;
-        this.activeCurrency = curr.code;
-        this.activeCureencyWithname = curr.code + ' - ' + curr.name;
-        this.changeRate();
-      }
-    });
-
-    return await modal.present();
+  goToCurrency(){
+    this.router.navigateByUrl('/popup-currency');
   }
 
-  async showPopupLanguage() {
-    const modal = await this.modalController.create({
-      component: PopupLanguagesPage,
-      componentProps: {
-      }
-    });
+  goToLanguage(){
+    this.router.navigateByUrl('/popup-languages');
+  }
 
-    modal.onDidDismiss().then((dataReturned) => {
-      if (dataReturned.data) {
-        const lang = dataReturned.data;
-        this.activeLanguage = lang.code;
-        this.activeLanguageWithname = lang.code + ' - ' + lang.country;
-        this.selectActiveLanguage();
-      }
-    });
+  goToSeedPhrase(){
+    //this.router.navigateByUrl('/login');
+  }
 
-    return await modal.present();
+  goToBackupRestore(){
+    this.router.navigateByUrl('/backup-phrase');
+  }
+
+  goToHelpAndSupport(){
+    this.router.navigateByUrl('/help');
+  }
+
+  goToFeedback(){
+    this.router.navigateByUrl('/feedback');
+  }
+
+  goToAbout(){
+    this.router.navigateByUrl('/about');
   }
 
   logout(){

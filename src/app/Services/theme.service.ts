@@ -63,6 +63,7 @@ export class ThemeService {
       dbspbalance: '#c1a57b'
     }
   };
+  
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private strgSrv: StoragedevService
@@ -78,6 +79,7 @@ export class ThemeService {
   }
 
   public themeSubject: Subject<string> = new Subject<string>();
+  public selectThemeSubject: Subject<string> = new Subject<string>();
   // Override all global variables with a new theme
   async setTheme(themename: string) {
     this.theme = themename;
@@ -88,6 +90,9 @@ export class ThemeService {
     this.themeSubject.next(this.theme);
   }
 
+  broadcastSelectTheme(value: string){
+    this.selectThemeSubject.next(value)
+  }
   // Define a single CSS variable
   setVariable(name: string, value: string) {
     this.document.documentElement.style.setProperty(name, value);

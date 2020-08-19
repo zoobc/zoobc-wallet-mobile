@@ -29,8 +29,11 @@ export class NetworkService {
   async setNetwork(idx: number) {
     this.nodeIndex = idx;
     zoobc.Network.set(idx);
-    this.changeNodeSubject.next();
     await this.strgSrv.set(STORAGE_ACTIVE_NETWORK_IDX, idx);
+  }
+
+  broadcastSelectNetwork(network: any){
+    this.changeNodeSubject.next(network);
   }
 
   async getNetwork() {
