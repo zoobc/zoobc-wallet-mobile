@@ -9,12 +9,40 @@ import { ModalController, AlertController } from '@ionic/angular';
   styleUrls: ['./import-account.page.scss'],
 })
 export class ImportAccountPage implements OnInit {
-
+  multisifInfo: string;
   constructor(
     private accountService: AccountService,
     private modalController: ModalController) { }
 
   ngOnInit() {
+  }
+
+  async importText() {
+    const fileResult = JSON.parse(this.multisifInfo);
+    if (!this.isSavedAccount(fileResult)) {
+      alert('You imported the wrong file');
+      return;
+    }
+
+    const accountSave: Account = fileResult;
+    console.log('== accountSave: ', accountSave);
+
+    const allAcc  = await this.accountService.allAccount('multisig');
+    const idx = allAcc.findIndex(acc => acc.address === accountSave.address);
+    if (idx >= 0) {
+      alert('Account with that address is already exist');
+      return;
+    }
+
+    try {
+      await this.accountService.addAccount(accountSave).then(() => {
+          this.close(1);
+      });
+    } catch {
+      alert ('Error when importing account, please try again later!');
+    } finally {
+    }
+
   }
 
   async close(status: number) {
