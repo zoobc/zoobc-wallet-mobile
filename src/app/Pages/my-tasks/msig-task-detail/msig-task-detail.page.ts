@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TRANSACTION_MINIMUM_FEE, COIN_CODE } from 'src/environments/variable.const';
-import zoobc, { MultisigPendingTxDetailResponse,
-  MultisigPendingTxResponse, toGetPendingList, MultiSigInterface, signTransactionHash } from 'zoobc-sdk';
+import zoobc, {
+  MultisigPendingTxDetailResponse,
+  MultisigPendingTxResponse, toGetPendingList, MultiSigInterface, signTransactionHash
+} from 'zoobc-sdk';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 import { Account } from 'src/app/Interfaces/account';
 import { base64ToHex } from 'src/Helpers/utils';
@@ -50,6 +52,9 @@ export class MsigTaskDetailPage implements OnInit {
   customeChecked: boolean;
   minimumFee = TRANSACTION_MINIMUM_FEE;
   isNeedSign = false;
+  signer: any;
+  signerAcc: any;
+  participantsWithSignatures = [];
 
   constructor(
     private modalCtrl: ModalController,
@@ -76,10 +81,10 @@ export class MsigTaskDetailPage implements OnInit {
   }
 
   loadFeeAndCurrency() {
-    this.optionFee = this.allFees[1].fee.toString();
+    this.optionFee = this.allFees[0].fee.toString();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
-    this.customfeeTemp = this.allFees[2].fee;
+    this.customfeeTemp = this.allFees[0].fee;
     this.customfee = this.customfeeTemp;
     this.customfee2 = this.customfeeTemp * this.priceInUSD * this.currencyRate.value;
   }
@@ -88,16 +93,17 @@ export class MsigTaskDetailPage implements OnInit {
     this.customeChecked = false;
     if (Number(this.optionFee) < 0) {
       this.customeChecked = true;
-      this.customfeeTemp = this.allFees[2].fee;
+      this.customfeeTemp = this.allFees[0].fee;
       this.convertCustomeFee();
     }
   }
 
   async loadDetail() {
+    this.participantsWithSignatures = [];
     this.account = await this.accountService.getCurrAccount();
     const hashHex = base64ToHex(this.msigHash);
     this.isLoading = true;
-    zoobc.MultiSignature.getPendingByTxHash(hashHex).then((res: MultisigPendingTxDetailResponse) => {
+    await zoobc.MultiSignature.getPendingByTxHash(hashHex).then(async (res: MultisigPendingTxDetailResponse) => {
       const list = [];
       list.push(res.pendingtransaction);
       const tx: MultisigPendingTxResponse = {
@@ -110,18 +116,41 @@ export class MsigTaskDetailPage implements OnInit {
       this.multiSigDetail = txFilter.pendingtransactionsList[0];
       this.pendingSignatures = res.pendingsignaturesList;
       this.participants = res.multisignatureinfo.addressesList;
-      const idx = this.pendingSignatures.findIndex(
-        sign => sign.accountaddress === this.account.signByAddress
-      );
-      if (idx >= 0) {
-        this.enabledSign = false;
-      } else {
-        this.enabledSign = true;
+
+      console.log('=== this participatns: ', this.participants);
+      console.log('== this.pendingSignatures: ', this.pendingSignatures);
+
+      this.enabledSign = false;
+      for (let i = 0; i <= this.participants.length; i++) {
+        const partAddress = this.participants[i];
+        const partAcc = await this.accountService.getAccount(partAddress);
+        if (partAcc) {
+          // this.enabledSign = true;
+          const idx = this.pendingSignatures.findIndex(
+            sign => sign.accountaddress === partAddress
+          );
+          if (idx < 0) {
+            console.log('== Signer-' + i + ': ', this.signer);
+            this.signer = partAddress;
+            this.signerAcc = partAcc;
+            const sgSeed = this.authSrv.keyring.calcDerivationPath(partAcc.path);
+            this.participantsWithSignatures.push({
+              address: partAddress,
+              signature: signTransactionHash(this.multiSigDetail.transactionhash, sgSeed)
+            });
+            this.enabledSign = true;
+            // break;
+          }
+
+        }
       }
+
     }).finally(() => {
       this.isLoading = false;
     }
     );
+    console.log('== participantsWithSignatures: ', this.participantsWithSignatures);
+    console.log('== Signer Acc: ', this.signerAcc);
   }
 
   async copyAddress(address: string) {
@@ -159,6 +188,17 @@ export class MsigTaskDetailPage implements OnInit {
   }
 
   confirm() {
+    // TODO VALIDATE THIS
+    this.transactionFee = Number(this.optionFee);
+    if (this.customeChecked) {
+      this.transactionFee = this.customfee;
+    }
+
+    if (!this.transactionFee) {
+      this.transactionFee = this.allFees[0].fee;
+    }
+    // end
+
     this.showPin();
   }
 
@@ -173,7 +213,7 @@ export class MsigTaskDetailPage implements OnInit {
 
     pinmodal.onDidDismiss().then((returnedData) => {
       if (returnedData && returnedData.data !== 0) {
-          this.doAccept();
+        this.doAccept();
       }
     });
     return await pinmodal.present();
@@ -181,7 +221,7 @@ export class MsigTaskDetailPage implements OnInit {
 
 
   doIgnore() {
-   this.goBack();
+    this.goBack();
   }
 
   goBack() {
@@ -197,42 +237,49 @@ export class MsigTaskDetailPage implements OnInit {
     });
     loading.present();
 
-    // TODO VALIDATE THIS
-    this.transactionFee = Number(this.optionFee);
-    if (this.customeChecked) {
-      this.transactionFee = this.customfee;
-    }
-
-    if (!this.transactionFee) {
-      this.transactionFee =  this.allFees[1].fee;
-    }
-    // end
-
-    const key = this.authSrv.tempKey;
-    const signByAddress = this.account.signByAddress;
-    const signByAcc = await this.accountService.getAccount(signByAddress);
-    const seed = this.authSrv.keyring.calcDerivationPath(signByAcc.path);
     this.isLoadingTx = true;
+    const key = this.authSrv.tempKey;
+    // const participantsWithSignatures = [];
+
+    // for (let i = 0; i <= this.participants.length; i++) {
+    //   const signer = this.participants[i];
+    //   const signerAcc = await this.accountService.getAccount(signer);
+    //   if (signerAcc) {
+    //     const idx = this.pendingSignatures.findIndex(
+    //       sign => sign.accountaddress === signer
+    //     );
+    //     if (idx < 0) {
+    //       const sgSeed = this.authSrv.keyring.calcDerivationPath(signerAcc.path);
+    //       participantsWithSignatures.push({
+    //         address: signer,
+    //         signature: signTransactionHash(this.multiSigDetail.transactionhash, sgSeed)
+    //       });
+    //     }
+    //   }
+    // }
+
+    const signerSeed = this.authSrv.keyring.calcDerivationPath(this.signerAcc.path);
+    console.log('== participantsWithSignatures: ', this.participantsWithSignatures);
+    console.log('== signer-2:', this.signer);
+    console.log('== signerAcc-2:', this.signerAcc);
+    console.log('== seed-2:', signerSeed);
 
     const data: MultiSigInterface = {
-      accountAddress: signByAcc.address,
+      accountAddress: this.signer,
       fee: this.transactionFee,
       signaturesInfo: {
         txHash: this.multiSigDetail.transactionhash,
-        participants: [
-          {
-            address: this.account.signByAddress,
-            signature: signTransactionHash(this.multiSigDetail.transactionhash, seed),
-          },
-        ],
+        participants: this.participantsWithSignatures
       },
     };
-    zoobc.MultiSignature.postTransaction(data, seed)
-      .then( () => {
+
+    // const seedMsig = this.authSrv.keyring.calcDerivationPath(signerAcc.path);
+    zoobc.MultiSignature.postTransaction(data, signerSeed)
+      .then(() => {
         const message = 'Transaction has been accepted';
         this.utilService.showConfirmation('Succes', message, true, null);
       })
-      .catch( err => {
+      .catch(err => {
         console.log(err);
         const message = 'An error occurred while processing your request';
         this.utilService.showConfirmation('Fail', message, false, null);
