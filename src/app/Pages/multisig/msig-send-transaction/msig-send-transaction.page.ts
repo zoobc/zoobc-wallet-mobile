@@ -85,7 +85,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   signBy: any;
   participants = ['', ''];
   isValidFee = true;
-  isBalanceNotEnough: boolean;
+  isBalanceNotEnough = true;
 
   constructor(
     private utilService: UtilService,
@@ -130,9 +130,9 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     this.account = this.senderAccount;
 
     if (this.account.type !== 'multisig') {
-      this.participants = this.account.participants; // .sort();
       this.isMultiSigAccount = false;
     } else {
+      this.participants = this.account.participants; // .sort();
       this.isMultiSigAccount = true;
     }
     this.isLoadingBalance = false;
@@ -193,6 +193,13 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     } else {
         this.isValidSigner = true;
     }
+
+    if (this.signByAccount && this.signByAccount.balance < this.transactionFee) {
+      this.isBalanceNotEnough = false;
+    } else {
+      this.isBalanceNotEnough = true;
+    }
+
   }
 
   async getMultiSigDraft() {
