@@ -271,10 +271,10 @@ export class TransactionsPage implements OnInit {
             status: tx.status,
             blockheight: tx.blockheight,
             latest: tx.latest,
-            instruction: tx.instruction,
+            instruction: tx.instruction
           };
         });
-        this.escrowTransactions = txMap;
+        this.escrowTransactions = txMap.filter( s => s.status === 1);
       })
       .catch(err => {
         console.log(err);
