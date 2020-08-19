@@ -13,10 +13,6 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'dashboard',
-        loadChildren: '../dashboard/dashboard.module#DashboardPageModule'
-      },
-      {
         path: 'home',
         loadChildren: '../home/home.module#HomePageModule'
       },
@@ -36,7 +32,7 @@ const routes: Routes = [
       {
         path: 'setting',
         loadChildren: '../settings/settings.module#SettingsPageModule'
-      }
+      },
     ]
   }
 ];

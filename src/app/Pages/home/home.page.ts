@@ -243,6 +243,7 @@ export class HomePage implements OnInit, OnDestroy {
     await this.fcmService.getToken(this.account);
     this.identity = this.fcmService.identity;
     this.subscribeAllAccount();
+    this.getTransactions();
   }
 
   /**

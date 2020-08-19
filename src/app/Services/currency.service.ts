@@ -6,7 +6,7 @@ import { STORAGE_CURRENCY_RATE, STORAGE_ACTIVE_CURRENCY, CURRENCY_LIST, CONST_DE
 import { StoragedevService } from './storagedev.service';
 import { Currency } from '../Interfaces/currency';
 
-interface ICurrency {
+export interface ICurrency {
   name: string;
   code: string;
 }
@@ -29,6 +29,7 @@ export const currencyRates = {
 })
 export class CurrencyService {
   public currencySubject: Subject<any> = new Subject<any>();
+  public selectCurrencySubject: Subject<ICurrency> = new Subject<ICurrency>();
   public currentRate: Currency;
   public activeCurrency: string;
   public currencyRateList: any;
@@ -37,6 +38,16 @@ export class CurrencyService {
 
   constructor(private http: HttpClient, private strgSrv: StoragedevService) {
    this.loadRate();
+  }
+
+  public currencies = CURRENCY_LIST;
+
+  getOne(currencyCode: string){
+    const currencyName = this.currencies[currencyCode.toLocaleUpperCase()];
+    return {
+      code: currencyCode,
+      name: currencyName
+    }
   }
 
   async loadRate() {
@@ -89,6 +100,10 @@ export class CurrencyService {
     this.currencySubject.next(this.getRate());
      // set to local storage
     await this.strgSrv.set(STORAGE_CURRENCY_RATE, this.getRate());
+  }
+
+  broadcastSelectCurrency(currency: ICurrency){
+    this.selectCurrencySubject.next(currency)
   }
 
   convertCurrency(price: number, currFrom: string, currTo: string) {

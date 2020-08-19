@@ -4,99 +4,97 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{ "settings" | translate }}</ion-title>
-    <ion-buttons slot="end" color="primary">
-      <ion-button routerLink="/feedback">
-        {{ "feedback" | translate}}
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12">
-        <p>
-          {{ "theme" | translate}}
-        </p>
-        <div style="border:1px solid #cccccc">
-          <ion-select interface="popover" [(ngModel)]="activeTheme" (ionChange)="changeTheme()">
-            <ion-select-option *ngFor="let theme of themes" value="{{ theme.value }}">
-              {{ theme.name }}
-            </ion-select-option>
-          </ion-select>
-        </div>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="12">
-        <p>
-          {{ "network" | translate}}
-        </p>
-        <div style="border:1px solid #cccccc">
-          <ion-select interface="popover" [(ngModel)]="activeNetwork" (ionChange)="selectActiveNetwork()">
-            <ion-select-option *ngFor="let network of networks; let idx = index;" value="{{idx}}">
-              {{ network.name }}
-            </ion-select-option>
-          </ion-select>
-        </div>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="12">
-        <p>
-          {{ "currency" | translate}}
-          <!-- <br /><span style="font-size:0.7em;">Last updated: {{timestamp}}</span> -->
-        </p>
-      </ion-col>
-    </ion-row>
-    <ion-row>      
-        <!-- <div style="border:1px solid #cccccc">
-          <ion-select interface="popover" [(ngModel)]="activeCurrency" (ionChange)="changeRate()">
-            <ion-select-option *ngFor="let curr of Object.keys(currencyList)" value="{{curr}}">
-                {{curr}} - {{ currencyList[curr] }}
-            </ion-select-option>
-          </ion-select>
-        </div>
-       -->
-      <ion-col size="10">
-        <div style="border:1px solid #cccccc">
-          <ion-input type="text" placeholder="Select currency" [(ngModel)]="activeCureencyWithname">
-          </ion-input>
-        </div>
-      </ion-col>
-      <ion-col size="2">    
-        <ion-button color="meddium" (click)="showPopupCurrency()">
-          <ion-icon name="list"></ion-icon>
-        </ion-button>
-     </ion-col>
-   
-    </ion-row>
-    <ion-row>
-      <ion-col size="12">
-         {{ "language" | translate}}
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="10">
-        <div style="border:1px solid #cccccc">
-          <ion-input type="text" placeholder="Select currency" [(ngModel)]="activeLanguageWithname">
-          </ion-input>
-        </div>
-        <!-- <div style="border:1px solid #cccccc">
-          <ion-select interface="popover" [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
-            <ion-select-option *ngFor="let language of languages; let i = index" value="{{ language.code }}">
-              {{ language.country }}
-            </ion-select-option>
-          </ion-select>
-        </div> -->
-      </ion-col>
-      <ion-col size="2">    
-        <ion-button  color="meddium" (click)="showPopupLanguage()">
-          <ion-icon name="list"></ion-icon>
-        </ion-button>
-     </ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-button (click)="logout()">Logout</ion-button>
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>
+        <h2>{{ "general" | translate}}</h2>
+      </ion-label>
+    </ion-list-header>
+    <ion-item (click)="goToAccount()" detail>
+      <ion-label>
+        <h3>{{ "account" | translate}}</h3>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="goToMultisig()" detail>
+      <ion-label>
+        <h3>{{ "multisignature" | translate}}</h3>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="goToTheme()" detail>
+      <ion-label>
+        <h3>{{ "theme" | translate}}</h3>
+        <p>{{ activeTheme }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="goToNetwork()" detail>
+      <ion-label>
+        <h3>{{ "network" | translate}}</h3>
+        <p>{{ activeNetwork }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="goToCurrency()" detail>
+      <ion-label>
+        <h3>{{ "currency" | translate}}</h3>
+        <p>{{ activeCurrency ? (activeCurrency.code + " - " + activeCurrency.name) : "" }}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="goToLanguage()" detail>
+      <ion-label>
+        <h3>{{ "language" | translate}}</h3>
+        <p>{{ activeLanguage ? (activeLanguage.code + " - " + activeLanguage.country) : "" }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>
+        <h2>{{ "security" | translate}}</h2>
+      </ion-label>
+    </ion-list-header>
+    <ion-item detail>
+      <ion-label>
+        <h3>{{ "seed phrase" | translate}}</h3>
+      </ion-label>
+    </ion-item>
+    <ion-item detail>
+      <ion-label>
+        <h3>{{ "backup / restore address" | translate}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-list-header>
+        <ion-label>
+          <h2>{{ "app" | translate}}</h2>
+        </ion-label>
+    </ion-list-header>
+    <ion-item (click)="goToHelpAndSupport()" detail>
+      <ion-label>
+        <h3>{{ "help and support" | translate}}</h3>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="goToFeedback()" detail>
+      <ion-label>
+        <h3>{{ "feedback" | translate}}</h3>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="goToAbout()" detail>
+      <ion-label>
+        <h3>{{ "about this wallet" | translate}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item (click)="logout()" class="logout">
+      <ion-label>
+        <h3>{{ "logout" | translate}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+ 
 </ion-content>

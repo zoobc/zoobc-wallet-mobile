@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "theme" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-radio-group value="{{ activeTheme }}">
+      <ion-item *ngFor="let theme of themes; let i = index" (click)="selectTheme(theme.name)">
+        <ion-radio slot="start" value="{{ theme.name }}"></ion-radio>
+        <ion-label>
+          {{ theme.name }}
+        </ion-label>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+</ion-content>

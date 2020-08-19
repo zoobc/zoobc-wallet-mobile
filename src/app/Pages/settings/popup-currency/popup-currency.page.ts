@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CURRENCY_LIST } from 'src/environments/variable.const';
-import { ModalController, LoadingController } from '@ionic/angular';
+import { CURRENCY_LIST, SELECTED_LANGUAGE, STORAGE_ACTIVE_CURRENCY } from 'src/environments/variable.const';
+import { LoadingController, NavController } from '@ionic/angular';
+import { CurrencyService, ICurrency } from 'src/app/Services/currency.service';
+import { StoragedevService } from 'src/app/Services/storagedev.service';
 
 @Component({
   selector: 'app-popup-currency',
@@ -10,21 +12,30 @@ import { ModalController, LoadingController } from '@ionic/angular';
 export class PopupCurrencyPage implements OnInit {
   public currencyList = [];
   public Object = Object;
-  constructor(private modalController: ModalController,
-              private loadingController: LoadingController) { }
+  public activeCurrency = null;
+
+  constructor(
+    private navCtrl: NavController,
+    private loadingController: LoadingController,
+    private currencySrv: CurrencyService,
+    private strgSrv: StoragedevService
+  ) { }
 
   async ngOnInit() {
      // show loading bar
-     const loading = await this.loadingController.create({
+    const loading = await this.loadingController.create({
       message: 'loading ...',
       duration: 50000
     });
 
-     await loading.present();
+    await loading.present();
 
-     this.convertList();
+    this.convertList();
 
-     loading.dismiss();
+    loading.dismiss();
+
+    const activeCurrencyCode = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
+    this.activeCurrency = this.currencySrv.getOne(activeCurrencyCode)
   }
 
   convertList() {
@@ -35,11 +46,11 @@ export class PopupCurrencyPage implements OnInit {
     });
   }
 
-  async currencyClicked(curr: any) {
-    await this.modalController.dismiss(curr);
-  }
-
-  async close() {
-    await this.modalController.dismiss();
+  currencyClicked(currency: ICurrency) {
+    this.currencySrv.setActiveCurrency(currency.code)
+    this.currencySrv.broadcastSelectCurrency(currency);
+    this.navCtrl.pop();
   }
 }
+
+
