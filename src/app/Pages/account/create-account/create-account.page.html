@@ -97,14 +97,14 @@
         <ion-label color="danger">{{ "minimum signature is 2 and cannot more than number of participants" | translate }}.</ion-label>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="isMultisig">
+    <!-- <ion-row *ngIf="isMultisig">
       <ion-col>
         <ion-label>
           <h2>{{ "sign by" | translate }}</h2>
         </ion-label>
       </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isMultisig">
+    </ion-row> -->
+    <!-- <ion-row *ngIf="isMultisig">
       <ion-col size="10">
         <ion-label>
           <h3 *ngIf="signByAccount">{{signByAccount.name}}</h3>
@@ -114,7 +114,7 @@
       <ion-col size="2">
         <ion-icon name="arrow-dropdown" (click)="showPopupSignBy();"></ion-icon>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
     <ion-row>
       <ion-col>
         <ion-button strong color="secondary" (click)="createAccount()" type="submit" expand="block">
