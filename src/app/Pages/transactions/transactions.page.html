@@ -76,7 +76,7 @@
   <ion-list *ngIf="escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index;">
       <ion-label *ngIf="escrow.status == 1">
-        <p>{{ escrow.senderaddress | shortAddress }} </p> 
+        <p>{{ escrow.senderaddress }} </p> 
         <ion-badge *ngIf = "escrow.status == 0" color="warning"  shape="round">
         {{ "pending" | translate}}
         </ion-badge>&nbsp;
