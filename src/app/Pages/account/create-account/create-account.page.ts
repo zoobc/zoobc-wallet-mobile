@@ -28,7 +28,7 @@ export class CreateAccountPage implements OnInit {
   signBy: string;
   signByAccount: Account;
   nonce: number;
-  minimumSignature: number;
+  minimumSignature = 2;
   numOfParticipant = 2;
   indexSelected: number;
   fieldSource: string;
