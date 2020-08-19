@@ -2,8 +2,13 @@
   <ion-grid>
     <ion-row>
       <ion-col>
+        <h3>Import Multisignature Account</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
         <ion-label>
-          <h5>Import Account</h5>
+          <h2>Import From File</h2>
           <p>Please select file</p>
         </ion-label>
       </ion-col>
@@ -13,9 +18,32 @@
         <input type="file" (change)="uploadFile($event.target.files)">
       </ion-col>
     </ion-row>
+
     <ion-row>
       <ion-col>
-        <ion-button (click)="close(0)">Cancel</ion-button>
+        &nbsp;
+      </ion-col>
+    </ion-row>
+    <ion-col>
+      <ion-label>
+        <h2>Import from Text</h2>
+      </ion-label>
+      <ion-textarea rows="10" style="border: 1px #cccccc solid" placeholder="Enter multisig info here"
+        [(ngModel)]="multisifInfo">
+      </ion-textarea>
+    </ion-col>
+    <ion-row>
+      <ion-col>
+        <ion-button color="secondary" (click)="importText()">
+          Save
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row>
+      <ion-col style="margin-top:20px">
+        <ion-button expand="block" (click)="close(0)">Cancel</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
