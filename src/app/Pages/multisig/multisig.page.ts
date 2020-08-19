@@ -30,7 +30,7 @@ export class MultisigPage implements OnInit {
 
   isAddMultisigInfo: boolean;
   isSignature = false;
-  isTransaction = false;
+  isTransaction = true;
   isMultisigInfo = true;
   isMultiSignature = true;
   account: Account;
@@ -54,15 +54,16 @@ export class MultisigPage implements OnInit {
   ) {
     this.isMultisigInfo = true;
     this.isSignature = false;
-    this.isTransaction = false;
+    this.isTransaction = true;
 
     this.multisigSubs = this.multisigServ.multisig.subscribe(() => {
       this.getMultiSigDraft();
     });
   }
 
-  ngOnInit() {
-    this.getMultiSigDraft();
+  async ngOnInit() {
+    await this.getMultiSigDraft();
+    this.goNextStep();
   }
 
   shortAddress(arg: string) {
