@@ -220,8 +220,8 @@ export const NETWORK_LIST = [
     host: 'http://n1.alpha.proofofparticipation.network:7003'
   },
   {
-    name: 'Experimental',
-    host: 'http://n100.demo.proofofparticipation.network:7001'
+    name: 'Dev',
+    host: 'http://85.90.246.90:7001'
   }
   // {
   //   name: 'Staging (n0.demo.)',
