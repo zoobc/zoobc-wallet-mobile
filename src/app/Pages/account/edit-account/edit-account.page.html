@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Edit Account" | translate }}</ion-title>
+    <ion-title *ngIf="isMultisig &&  mode && mode == 1">{{ "Edit Account" | translate }}</ion-title>
+    <ion-title *ngIf="isMultisig &&  mode && mode == 0">{{ "View Account" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
         Feedback
@@ -14,7 +15,7 @@
 
 <ion-content>
   <ion-grid>
-    <ion-row *ngIf="isMultisig">
+    <ion-row *ngIf="isMultisig &&  mode && mode == 0">
       <ion-col>
         <ion-button strong  (click)="ExportAccount()" type="submit">
           <span>{{"Export to File"|translate}}</span>
@@ -24,12 +25,30 @@
         </ion-button>
       </ion-col>
     </ion-row>
+    <ion-row *ngIf="isMultisig &&  mode == 0">
+      <ion-col class="ion-text-center">
+        <h5>Scan this QRCode to import this multi-signature account</h5>
+        <div *ngIf="accountJSON">
+          <ngx-qrcode [qrc-value]="accountJSON"
+           cssClass="qrcode"
+           errorCorrectionLevel="L">
+          </ngx-qrcode>
+        </div>
+      </ion-col>
+    </ion-row>
     <ion-row>
       <ion-col>
         <ion-label position="stacked">{{ "Account Name" | translate }}</ion-label>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="isMultisig &&  mode && mode == 0">
+      <ion-col>
+       
+          {{account.name}} 
+       
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="isMultisig &&  mode && mode == 1">
       <ion-col>
         <ion-input padding="false" placeholder="{{ 'Please enter your account name' | translate }}"
           [(ngModel)]="account.name"></ion-input>
@@ -43,7 +62,7 @@
       </ion-col>
     </ion-row>
 
-    <div *ngIf="account && account.type==='multisig'">
+    <div *ngIf="account && isMultisig &&  mode == 0">
       <ion-row>
         <ion-col>
           <ion-label>
@@ -60,41 +79,10 @@
           </ion-col>
         </ion-row>
       </div>
-
-      <!-- <ion-row>
-        <ion-col>
-          <ion-label>
-            <h2>Nonce</h2>
-            <ion-input disabled="true" [(ngModel)]="account.nonce" type="number" placeholder="Nonce ..."></ion-input>
-          </ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-label>
-            <h2>Minimum signature</h2>
-            <ion-input disabled="true" type="number" [(ngModel)]="account.minSig" placeholder="Minimum signature..."></ion-input>
-          </ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="isMultisig && signByAccount">
-        <ion-col>
-          <ion-label>
-            <h2>Sign by</h2>
-          </ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="isMultisig && signByAccount">
-        <ion-col size="12">
-          <ion-label>
-            <h3 *ngIf="signByAccount">{{signByAccount.name}}</h3>
-            <ion-textarea rows="3" [(ngModel)]="signBy" placeholder="Enter sign by..."></ion-textarea>
-          </ion-label>
-        </ion-col>
-      </ion-row> -->
-
     </div>
-    <ion-row>
+
+ 
+    <ion-row *ngIf="account && isMultisig &&  mode == 1">
       <ion-col>
         <ion-button strong color="secondary" (click)="UpdateAccount()" type="submit" expand="block">
           <span>{{"Update"|translate}}</span>
@@ -102,7 +90,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row>
+    <ion-row *ngIf="account && isMultisig &&  mode == 1">
       <ion-col>
         <ion-button expand="block" color="secondary" routerLink="/list-account" fill="outline" expand="block">
           {{ "Cancel" | translate }}</ion-button>
