@@ -38,6 +38,8 @@ export class EditAccountPage implements OnInit {
   minimumSignature: number;
   nonce: number;
   nameErrorMessage = EMPTY_STRING;
+  accountJSON: string;
+  mode: number;
 
   constructor(
     private accountService: AccountService,
@@ -75,6 +77,7 @@ export class EditAccountPage implements OnInit {
   ngOnInit() {
     this.activeRoute.queryParams.subscribe(params => {
       this.account = JSON.parse(params.account);
+      this.mode = params.mode;
       if (this.account) {
         this.oldName = this.account.name;
       }
@@ -87,13 +90,14 @@ export class EditAccountPage implements OnInit {
       this.isMultisig = false;
       this.loadNormalAccount();
     }
+    console.log('this mode: ', this.mode);
   }
 
   async loadMultisigAccount() {
     this.accounts = await this.accountService.allAccount('multisig');
+    this.accountJSON = JSON.stringify(this.account);
     this.participants = this.account.participants; // .sort();
     this.signByAccount = await this.accountService.getAccount(this.account.signByAddress);
-    // this.signBy = this.signByAccount.address;
   }
 
   async loadNormalAccount() {

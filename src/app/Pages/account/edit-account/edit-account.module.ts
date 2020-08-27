@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { EditAccountPage } from './edit-account.page';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    NgxQRCodeModule,
     TranslateModule,
     RouterModule.forChild(routes)
   ],
