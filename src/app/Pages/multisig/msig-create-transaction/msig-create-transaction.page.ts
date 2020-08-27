@@ -36,7 +36,8 @@ import { base64ToByteArray } from 'src/Helpers/converters';
 import zoobc, {
   SendMoneyInterface,
   generateTransactionHash,
-  sendMoneyBuilder
+  sendMoneyBuilder,
+  isZBCAddressValid
 } from 'zoobc-sdk';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
 import { TrxstatusPage } from '../../send-coin/modals/trxstatus/trxstatus.page';
@@ -140,6 +141,12 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.addressbookService.addressSubject.subscribe({
       next: address => {
         this.recipientAddress = address;
+      }
+    });
+
+    this.addressbookService.recipientSubject.subscribe({
+      next: recipient => {
+        this.recipientAddress = recipient.address;
       }
     });
 
@@ -579,8 +586,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   validateRecipient() {
     this.isRecipientValid = true;
-    this.recipientAddress = sanitizeString(this.recipientAddress);
-
     if (
       !this.recipientAddress ||
       this.recipientAddress === '' ||
@@ -593,9 +598,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.isRecipientValid) {
-      const addressBytes = base64ToByteArray(this.recipientAddress);
-      if (this.isRecipientValid && addressBytes.length !== 49) {
+    if (!isZBCAddressValid(this.recipientAddress)) {
+      {
         this.isRecipientValid = false;
         this.recipientMsg = this.translateService.instant(
           'Address is not valid!'
