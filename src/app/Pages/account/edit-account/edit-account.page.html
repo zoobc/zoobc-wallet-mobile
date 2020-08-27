@@ -80,6 +80,8 @@
         </ion-row>
       </div>
     </div>
+
+ 
     <ion-row *ngIf="account && isMultisig &&  mode == 1">
       <ion-col>
         <ion-button strong color="secondary" (click)="UpdateAccount()" type="submit" expand="block">
@@ -89,13 +91,6 @@
     </ion-row>
 
     <ion-row *ngIf="account && isMultisig &&  mode == 1">
-      <ion-col>
-        <ion-button strong color="secondary" (click)="ExportAccount()" type="submit" expand="block">
-          <span>{{"Export"|translate}}</span>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
       <ion-col>
         <ion-button expand="block" color="secondary" routerLink="/list-account" fill="outline" expand="block">
           {{ "cancel" | translate }}</ion-button>
