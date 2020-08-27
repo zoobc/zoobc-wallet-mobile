@@ -15,6 +15,7 @@
 <ion-content>
   <ion-item>
     <ion-button color="secondary" (click)="importAccount()">Import Account</ion-button>
+    <ion-button color="secondary" (click)="scanQrCode()">Scan</ion-button>
   </ion-item>
   <div *ngIf="isLoadingBalance" style="margin-top:5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -50,15 +51,18 @@
           <ion-button *ngIf="!forWhat && account.type==='multisig'" class="ion-text-right" (click)="deleteAccount(idx)" color="meddium">
             <ion-icon name="trash"></ion-icon>
           </ion-button>          
-          <ion-button *ngIf="!forWhat" (click)="editName(account)" class="ion-text-right" color="meddium">
+          <ion-button *ngIf="!forWhat && account.type==='multisig'" (click)="viewAccount(account)" class="ion-text-right" color="meddium">
+            <ion-icon name="eye"></ion-icon>
+          </ion-button>  
+          <!-- <ion-button *ngIf="!forWhat" (click)="editName(account)" class="ion-text-right" color="meddium">
             <ion-icon name="create"></ion-icon>
-          </ion-button>          
+          </ion-button>           -->
         </ion-item>
-        <!-- <ion-item-options *ngIf="!forWhat" >
+        <ion-item-options *ngIf="!forWhat" >
           <button color="success" (click)="editName(account)" class="tool">
             <ion-icon name="create"></ion-icon>{{ "Edit" | translate}}
           </button>
-        </ion-item-options> -->
+        </ion-item-options>
       </ion-item-sliding>
     </ion-list>
 
