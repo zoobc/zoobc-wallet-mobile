@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToastController, ModalController } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { ZooKeyring } from 'zoobc-sdk';
-import { STORAGE_ENC_PASSPHRASE_SEED, SALT_PASSPHRASE } from 'src/environments/variable.const';
-import { StoragedevService } from './storagedev.service';
-import CryptoJS from 'crypto-js';
 import { ConfirmationPage } from '../Components/confirmation/confirmation.page';
 import { Router } from '@angular/router';
 
@@ -13,13 +9,12 @@ import { Router } from '@angular/router';
 })
 
 export class UtilService {
-  private keyring: ZooKeyring;
+
   constructor(
     private toastController: ToastController,
     private clipboard: Clipboard,
     private router: Router,
-    private modalController: ModalController,
-    private storageService: StoragedevService) { }
+    private modalController: ModalController) { }
 
   public copyToClipboard(arg: any) {
     this.clipboard.copy(arg);
