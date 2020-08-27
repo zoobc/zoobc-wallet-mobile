@@ -9,13 +9,14 @@ import { NavController, ModalController, AlertController } from '@ionic/angular'
 import { makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { ImportAccountPage } from './import-account/import-account.page';
+import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
   styleUrls: ['./list-account.component.scss']
 })
 export class ListAccountComponent implements OnInit {
-
+  
   forWhat: string;
   accounts: Account[];
   isError: boolean;
@@ -30,9 +31,15 @@ export class ListAccountComponent implements OnInit {
     private strgSrv: StoragedevService,
     private modalController: ModalController,
     private router: Router,
+    private qrScannerService: QrScannerService,
     private utilService: UtilService,
     private accountService: AccountService) {
-    this.accountService.accountSubject.subscribe(() => {
+
+      this.qrScannerService.qrScannerSubject.subscribe(address => {
+        this.getScannerResult(address);
+      });
+
+      this.accountService.accountSubject.subscribe(() => {
       setTimeout(() => {
         this.loadData();
       }, 500);
@@ -41,6 +48,40 @@ export class ListAccountComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+  }
+
+  isSavedAccount(obj: any): obj is Account {
+    if ((obj as Account).type) { return true; }
+    return false;
+  }
+
+  async getScannerResult(arg: string) {
+
+    const fileResult = JSON.parse(arg);
+    if (!this.isSavedAccount(fileResult)) {
+      alert('You scan wrong QRCode');
+      return;
+    }
+
+    const accountSave: Account = fileResult;
+    console.log('== accountSave: ', accountSave);
+
+    const allAcc  = await this.accountService.allAccount('multisig');
+    const idx = allAcc.findIndex(acc => acc.address === accountSave.address);
+    if (idx >= 0) {
+      alert('Account with that address is already exist');
+      return;
+    }
+
+    try {
+      await this.accountService.addAccount(accountSave).then(() => {
+
+      });
+    } catch {
+      alert ('Error when scanning account, please try again later!');
+    } finally {
+    }
+
   }
 
   async loadData() {
@@ -118,6 +159,9 @@ export class ListAccountComponent implements OnInit {
     return 0;
   }
 
+  scanQrCode() {
+    this.router.navigateByUrl('/qr-scanner');
+  }
 
   async importAccount() {
     const pinmodal = await this.modalController.create({
@@ -162,7 +206,11 @@ export class ListAccountComponent implements OnInit {
   }
 
   editName(account: Account) {
-    this.openEditAccount(account);
+    this.openEditAccount(account, 1);
+  }
+
+  viewAccount(account: Account) {
+    this.openEditAccount(account, 0);
   }
 
   async openAddAccount(arg: Account, trxMode: string) {
@@ -179,10 +227,11 @@ export class ListAccountComponent implements OnInit {
     return makeShortAddress(address);
   }
 
-  async openEditAccount(arg: Account) {
+  async openEditAccount(arg: Account, mode: number) {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         account: JSON.stringify(arg),
+        mode
       }
     };
     this.router.navigate(['/edit-account'], navigationExtras);
