@@ -86,6 +86,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   participants = ['', ''];
   isValidFee = true;
   isBalanceNotEnough = true;
+  accounts: Account[];
 
   constructor(
     private utilService: UtilService,
@@ -104,6 +105,11 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       this.loadAccount();
     });
     this.loadAccount();
+    this.loadAllAccount();
+  }
+
+  async loadAllAccount() {
+    this.accounts = await this.accountService.allAccount();
   }
 
   async getAccountBalance(addr: string) {
