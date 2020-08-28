@@ -142,13 +142,13 @@ export class SettingsPage implements OnInit {
   }
 
   goToSeedPhrase(){
-    //this.router.navigateByUrl('/login');
-  }
-
-  goToBackupRestore(){
     this.router.navigateByUrl('/backup-phrase');
   }
 
+  goToBackupRestoreAddress(){
+    this.router.navigateByUrl('/backuprestore-address');
+  }
+  
   goToHelpAndSupport(){
     this.router.navigateByUrl('/help');
   }

@@ -55,12 +55,12 @@
         <h2>{{ "security" | translate}}</h2>
       </ion-label>
     </ion-list-header>
-    <ion-item detail>
+    <ion-item (click)="goToSeedPhrase()" detail>
       <ion-label>
         <h3>{{ "seed phrase" | translate}}</h3>
       </ion-label>
     </ion-item>
-    <ion-item detail>
+    <ion-item (click)="goToBackupRestoreAddress()" detail>
       <ion-label>
         <h3>{{ "backup / restore address" | translate}}</h3>
       </ion-label>
