@@ -269,7 +269,6 @@ export class MultisigPage implements OnInit {
     this.addSignature = !this.createTransaction;
   }
 
-
   ionViewWillEnter() {
     this.networkSubscription = this.network
       .onDisconnect()
