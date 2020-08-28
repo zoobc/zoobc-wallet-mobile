@@ -21,6 +21,7 @@ import zoobc, {
   toUnconfirmedSendMoneyWallet,
   EscrowListParams,
   OrderBy,
+  TransactionType,
 } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Router } from '@angular/router';
@@ -191,37 +192,80 @@ export class TransactionsPage implements OnInit {
     this.isErrorRecentTx = false;
     const params: TransactionListParams = {
       address,
-      transactionType: 1,
+      transactionType: TransactionType.SENDMONEYTRANSACTION,
       pagination: {
         page: this.page,
         limit: NUMBER_OF_RECORD_IN_TRANSACTIONS,
       },
     };
 
+
     try {
-      const tx = await zoobc.Transactions.getList(params).then(res =>
-        toTransactionListWallet(res, this.account.address)
-      );
 
-      const trxs  =  tx.transactions.map(  (recent) => {
-        return {
-          ...recent,
-          sender: recent.type === 'receive' ? recent.address : address,
-          recipient: recent.type === 'receive' ? address : recent.address,
-          total: 0,
-          name: this.getName(recent.address),
-          shortaddress: makeShortAddress(recent.address)
-        };
+      const trxList = await zoobc.Transactions.getList(params);
+
+      let lastHeight = 0;
+      let firstHeight = 0;
+      if (Number(trxList.total) > 0) {
+        lastHeight = trxList.transactionsList[0].height;
+        firstHeight = trxList.transactionsList[trxList.transactionsList.length - 1].height;
+      }
+
+      const multisigTx = trxList.transactionsList
+      .filter(trx => trx.multisigchild === true)
+      .map(trx => trx.id);
+
+      const paramEscrowSend: EscrowListParams = {
+        sender: address,
+        // blockHeightStart: firstHeight,
+        // blockHeightEnd: lastHeight,
+        statusList: [0, 1, 2, 3],
+      };
+
+      const paramEscrowReceive: EscrowListParams = {
+        recipient: address,
+        // blockHeightStart: firstHeight,
+        // blockHeightEnd: lastHeight,
+        statusList: [0, 1, 2, 3],
+      };
+
+      const escrowSend = await zoobc.Escrows.getList(paramEscrowSend);
+      const escrowReceive = await zoobc.Escrows.getList(paramEscrowReceive);
+
+      const escrowList = escrowSend.escrowsList.concat(escrowReceive.escrowsList);
+      const tx = toTransactionListWallet(trxList, address);
+      tx.transactions.map(recent => {
+        recent['alias'] = this.getName(recent.address);
+        recent['escrow'] = recent['escrow'] = this.checkIdOnEscrow(recent.id, escrowList);
+        if (recent['escrow']) {
+          recent['escrowStatus'] = this.getEscrowStatus(recent.id, escrowList); 
+        }
+        recent['multisigchild'] = multisigTx.includes(recent.id);
+        recent['shortaddress'] =  makeShortAddress(recent.address);
+        return recent;
       });
+      this.total = tx.total;
+      this.recentTxs = this.recentTxs.concat(tx.transactions);
+      // ---------------
 
-      this.totalTx = tx.total;
-      this.recentTxs = this.recentTxs.concat(trxs);
     } catch {
       this.isError = true;
     } finally {
       this.isLoadingRecentTx = false;
     }
   }
+
+  checkIdOnEscrow(id: any, escrowArr: any[]) {
+    const filter = escrowArr.filter(arr => arr.id === id);
+    if (filter.length > 0) { return true; }
+    return false;
+  }
+
+  getEscrowStatus(id: any, escrowArr: any[]) {
+    const idx = escrowArr.findIndex(esc => esc.id === id);
+    return escrowArr[idx].status;
+  }
+
 
   getName(address: string) {
     let nama = '';
