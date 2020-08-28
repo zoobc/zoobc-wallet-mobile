@@ -1,6 +1,6 @@
 import { Currency } from 'src/app/Interfaces/currency';
 export const COIN_CODE = 'ZBC';
-export const SALT_PASSPHRASE = 'p4ssphr4se';
+export const SALT_PASSPHRASE = '';
 export const STORAGE_ACTIVE_CURRENCY = 'active_currency';
 export const STORAGE_ACTIVE_NETWORK_IDX = 'current_node_selected1';
 export const STORAGE_CURRENCY_RATES = 'currency_rates';
@@ -222,7 +222,7 @@ export const NETWORK_LIST = [
   {
     name: 'Dev',
     host: 'http://85.90.246.90:7001'
-  }
+  },
   // {
   //   name: 'Staging (n0.demo.)',
   //   host: 'https://n0.demo.proofofparticipation.network'
@@ -231,10 +231,10 @@ export const NETWORK_LIST = [
   //   name: 'Demo 1 (x.x.34.10): ',
   //   host: 'http://172.104.34.10:8002'
   // },
-  // {
-  //   name: 'Demo 2 (x.x.39.58)',
-  //   host: 'http://45.79.39.58:8002'
-  // },
+  {
+    name: 'Demo 2 (x.x.39.58)',
+    host: 'http://45.79.39.58:8002'
+  },
   // {
   //   name: 'Demo 3 (x.x.246.90)',
   //   host: 'http://85.90.246.90:8002'
