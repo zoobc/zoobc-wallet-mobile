@@ -5,16 +5,18 @@ import { Account } from 'src/app/Interfaces/account';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, FOR_APPROVER, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
 import zoobc from 'zoobc-sdk';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController, AlertController } from '@ionic/angular';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { ImportAccountPage } from './import-account/import-account.page';
+import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
   styleUrls: ['./list-account.component.scss']
 })
 export class ListAccountComponent implements OnInit {
-
+  
   forWhat: string;
   accounts: Account[];
   isError: boolean;
@@ -23,13 +25,21 @@ export class ListAccountComponent implements OnInit {
   errorMsg: string;
 
   constructor(
+    private alertCtrl: AlertController,
     private route: ActivatedRoute,
     private navCtrl: NavController,
     private strgSrv: StoragedevService,
+    private modalController: ModalController,
     private router: Router,
+    private qrScannerService: QrScannerService,
     private utilService: UtilService,
     private accountService: AccountService) {
-    this.accountService.accountSubject.subscribe(() => {
+
+      this.qrScannerService.qrScannerSubject.subscribe(address => {
+        this.getScannerResult(address);
+      });
+
+      this.accountService.accountSubject.subscribe(() => {
       setTimeout(() => {
         this.loadData();
       }, 500);
@@ -38,6 +48,40 @@ export class ListAccountComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+  }
+
+  isSavedAccount(obj: any): obj is Account {
+    if ((obj as Account).type) { return true; }
+    return false;
+  }
+
+  async getScannerResult(arg: string) {
+
+    const fileResult = JSON.parse(arg);
+    if (!this.isSavedAccount(fileResult)) {
+      alert('You scan wrong QRCode');
+      return;
+    }
+
+    const accountSave: Account = fileResult;
+    console.log('== accountSave: ', accountSave);
+
+    const allAcc  = await this.accountService.allAccount('multisig');
+    const idx = allAcc.findIndex(acc => acc.address === accountSave.address);
+    if (idx >= 0) {
+      alert('Account with that address is already exist');
+      return;
+    }
+
+    try {
+      await this.accountService.addAccount(accountSave).then(() => {
+
+      });
+    } catch {
+      alert ('Error when scanning account, please try again later!');
+    } finally {
+    }
+
   }
 
   async loadData() {
@@ -54,17 +98,32 @@ export class ListAccountComponent implements OnInit {
     }
   }
 
+  async deleteAccount(index: number) {
+    const currAccount = await this.accountService.getCurrAccount();
+    if (this.accounts[index].address === currAccount.address) {
+        alert('Cannot delete active account, please switch account, and try again!');
+        return;
+    }
 
-  async onDelete(index: number) {
-        const currAccount = await this.accountService.getCurrAccount();
-
-        if (this.accounts[index].address === currAccount.address) {
-            alert('Cannot delete active account, please switch account, and try again!');
-            return;
+    const confirmation = await this.alertCtrl.create({
+      message: 'Are you sure want to delete this account?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.accounts.splice(index, 1);
+            this.strgSrv.set(STORAGE_ALL_ACCOUNTS, this.accounts);
+          }
         }
+      ]
+    });
 
-        this.accounts.splice(index, 1);
-        this.strgSrv.set(STORAGE_ALL_ACCOUNTS, this.accounts);
+    await confirmation.present();
   }
 
   async getAllAccountBalance(accounts: any) {
@@ -100,6 +159,25 @@ export class ListAccountComponent implements OnInit {
     return 0;
   }
 
+  scanQrCode() {
+    this.router.navigateByUrl('/qr-scanner');
+  }
+
+  async importAccount() {
+    const pinmodal = await this.modalController.create({
+      component: ImportAccountPage,
+      componentProps: {}
+    });
+
+    pinmodal.onDidDismiss().then(returnedData => {
+      console.log('=== returneddata: ', returnedData);
+      if (returnedData && returnedData.data !== 0) {
+        alert('Account has been successfully imported');
+      }
+    });
+    return await pinmodal.present();
+  }
+
   accountClicked(account: Account) {
     if (!this.forWhat) {
       return;
@@ -128,7 +206,11 @@ export class ListAccountComponent implements OnInit {
   }
 
   editName(account: Account) {
-    this.openEditAccount(account);
+    this.openEditAccount(account, 1);
+  }
+
+  viewAccount(account: Account) {
+    this.openEditAccount(account, 0);
   }
 
   async openAddAccount(arg: Account, trxMode: string) {
@@ -145,10 +227,11 @@ export class ListAccountComponent implements OnInit {
     return makeShortAddress(address);
   }
 
-  async openEditAccount(arg: Account) {
+  async openEditAccount(arg: Account, mode: number) {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         account: JSON.stringify(arg),
+        mode
       }
     };
     this.router.navigate(['/edit-account'], navigationExtras);

@@ -85,12 +85,16 @@ export class MsigAddSignaturesPage implements OnInit {
 
   patchParticipant(participant: any[]) {
     participant.forEach(pcp => {
+      console.log('===Pcp: ', pcp);
+
       let address = '';
       let signature = '';
       if (typeof pcp === 'object') {
         address = pcp.address;
         signature = Buffer.from(pcp.signature).toString('base64');
-      } else { address = pcp; }
+      } else {
+        address = pcp;
+      }
       this.participantsSignature.push(this.createParticipant(address, signature));
     });
   }
@@ -150,22 +154,27 @@ export class MsigAddSignaturesPage implements OnInit {
   }
 
   async addSignature() {
-    const curAcc = await this.accountSrv.getCurrAccount();
-    let idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.address);
-    if (curAcc.type === 'multisig' && idx === -1) {
-      idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.signByAddress);
+    // const curAcc = await this.accountSrv.getCurrAccount();
+    // let idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.address);
+    // if (curAcc.type === 'multisig' && idx === -1) {
+    //   idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.signByAddress);
+    // }
+
+    // if (idx === -1) {
+    //   this.utilSrv.showConfirmation('Error', 'This account is not in Participant List', false, null);
+    //   return;
+    // }
+
+
+    for (let idx = 0; idx <= this.participantsSignature.length; idx++ ){
+          const signerAddress =  this.participantsSignature[idx].address;
+          const signerAccount =  await this.accountSrv.getAccount(signerAddress);
+          const seed = this.authSrv.keyring.calcDerivationPath(signerAccount.path);
+          const signature = signTransactionHash(this.transactionHash, seed);
+          const base64Sig = signature.toString('base64');
+          this.participantsSignature[idx].signature = base64Sig;
     }
 
-    if (idx === -1) {
-      this.utilSrv.showConfirmation('Error', 'This account is not in Participant List', false, null);
-      return;
-    }
-    const signerAddress =  this.participantsSignature[idx].address;
-    const signerAccount =  await this.accountSrv.getAccount(signerAddress);
-    const seed = this.authSrv.keyring.calcDerivationPath(signerAccount.path);
-    const signature = signTransactionHash(this.transactionHash, seed);
-    const base64Sig = signature.toString('base64');
-    this.participantsSignature[idx].signature = base64Sig;
   }
 
   async next() {

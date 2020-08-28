@@ -2,15 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
+
 import { IonicModule } from '@ionic/angular';
-import { EditAccountPage } from './edit-account.page';
-import { TranslateModule } from '@ngx-translate/core';
-import { NgxQRCodeModule } from 'ngx-qrcode2';
+
+import { ImportAccountPage } from './import-account.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: EditAccountPage
+    component: ImportAccountPage
   }
 ];
 
@@ -19,10 +19,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    NgxQRCodeModule,
-    TranslateModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [EditAccountPage]
+  declarations: [ImportAccountPage]
 })
-export class EditAccountPageModule {}
+export class ImportAccountPageModule {}

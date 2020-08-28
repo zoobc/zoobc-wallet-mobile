@@ -5,11 +5,13 @@ import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { sanitizeString } from 'src/Helpers/utils';
-import { ModalController, AlertController } from '@ionic/angular';
+import { ModalController, AlertController, Platform } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
-import { MultiSigAddress } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-edit-account',
@@ -36,12 +38,18 @@ export class EditAccountPage implements OnInit {
   minimumSignature: number;
   nonce: number;
   nameErrorMessage = EMPTY_STRING;
+  accountJSON: string;
+  mode: number;
 
   constructor(
     private accountService: AccountService,
     private activeRoute: ActivatedRoute,
     private addressbookService: AddressBookService,
+    private androidPermissions: AndroidPermissions,
     private router: Router,
+    private file: File,
+    private utilService: UtilService,
+    private platform: Platform,
     private qrScannerService: QrScannerService,
     private alertController: AlertController,
     private modalController: ModalController
@@ -69,6 +77,7 @@ export class EditAccountPage implements OnInit {
   ngOnInit() {
     this.activeRoute.queryParams.subscribe(params => {
       this.account = JSON.parse(params.account);
+      this.mode = params.mode;
       if (this.account) {
         this.oldName = this.account.name;
       }
@@ -81,17 +90,79 @@ export class EditAccountPage implements OnInit {
       this.isMultisig = false;
       this.loadNormalAccount();
     }
+    console.log('this mode: ', this.mode);
   }
 
   async loadMultisigAccount() {
     this.accounts = await this.accountService.allAccount('multisig');
+    this.accountJSON = JSON.stringify(this.account);
     this.participants = this.account.participants; // .sort();
     this.signByAccount = await this.accountService.getAccount(this.account.signByAddress);
-    this.signBy = this.signByAccount.address;
   }
 
   async loadNormalAccount() {
     this.accounts = await this.accountService.allAccount('normal');
+  }
+
+  copyToClipboard() {
+    const theJSON = JSON.stringify(this.account);
+    this.utilService.copyToClipboard(theJSON);
+  }
+
+  async ExportAccount() {
+
+    const theJSON = JSON.stringify(this.account);
+    const blob = new Blob([theJSON], { type: 'application/JSON' });
+    const pathFile = await this.getDownloadPath();
+
+    const fileName = this.getFileName(this.account.name);
+    await this.file.createFile(pathFile, fileName, true);
+    await this.file.writeFile(pathFile, fileName, blob, {
+      replace: true,
+      append: false
+    });
+    alert('File saved in Download folder with name: ' + fileName);
+
+  }
+
+  private getFileName(bame: string) {
+    const currentDatetime = new Date();
+    const formattedDate =
+      currentDatetime.getDate() +
+      '-' +
+      (currentDatetime.getMonth() + 1) +
+      '-' +
+      currentDatetime.getFullYear() +
+      '-' +
+      currentDatetime.getHours() +
+      '-' +
+      currentDatetime.getMinutes() +
+      '-' +
+      currentDatetime.getSeconds();
+
+    return 'Multisignature-info-' + name + formattedDate + '.json';
+  }
+
+  async getDownloadPath() {
+    if (this.platform.is('ios')) {
+      return this.file.documentsDirectory;
+    }
+
+    // To be able to save files on Android, we first need to ask the user for permission.
+    // We do not let the download proceed until they grant access
+    await this.androidPermissions
+      .checkPermission(
+        this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+      )
+      .then(result => {
+        if (!result.hasPermission) {
+          return this.androidPermissions.requestPermission(
+            this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+          );
+        }
+      });
+
+    return this.file.externalRootDirectory + '/Download/';
   }
 
   async UpdateAccount() {

@@ -46,6 +46,7 @@ export class MyTasksPage implements OnInit {
   enabledSign = true;
   pendingSignatures = [];
   participants = [];
+  PerPage = 1000;
 
   constructor(
     private router: Router,
@@ -83,18 +84,17 @@ export class MyTasksPage implements OnInit {
   getMultiSigPendingList(reload: boolean = false) {
     if (!this.isLoadingMultisig) {
       this.isLoadingMultisig = true;
-      const perPage = Math.ceil(window.outerHeight / 72);
-
       if (reload) {
         this.multiSigPendingList = null;
         this.pageMultiSig = 1;
       }
       const params: MultisigPendingListParams = {
         address: this.account.address,
-        status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
+        // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
         pagination: {
           page: this.pageMultiSig,
-          limit: perPage,
+          limit: this.PerPage,
+          orderBy: OrderBy.DESC
         },
       };
       zoobc.MultiSignature.getPendingList(params)
@@ -127,7 +127,7 @@ export class MyTasksPage implements OnInit {
       // statusList: [0],
       pagination: {
         page: this.page,
-        limit: 1000,
+        limit: this.PerPage,
         orderBy: OrderBy.DESC,
         orderField: 'timeout',
       },

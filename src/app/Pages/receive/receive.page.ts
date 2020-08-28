@@ -14,7 +14,7 @@ import { UtilService } from 'src/app/Services/util.service';
 export class ReceivePage implements OnInit {
 
   createdCode: any;
-  amount = 0;
+  amount: number;
   account: Account;
 
   constructor(

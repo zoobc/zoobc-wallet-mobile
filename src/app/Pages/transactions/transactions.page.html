@@ -26,9 +26,9 @@
     <h2>{{ errorMsg }}</h2>
   </ion-label>
 
-  <p *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-padding-horizontal">
-    {{ "queue" | translate }} ({{unconfirmTxs.length}})
-  </p>
+  <h3 *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-padding-horizontal">
+    {{ "Pending Transactions" | translate }} 
+  </h3>
   <ion-list *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-margin-top">
     <ion-item *ngFor="let pendingtrx of unconfirmTxs; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
       <ion-label>
@@ -37,7 +37,7 @@
             <ion-label *ngIf="pendingtrx.name" class="title">
               {{ pendingtrx.name }}
             </ion-label>
-            <ion-label *ngIf="!pendingtrx.name" class="title">
+            <ion-label class="title">
               {{ pendingtrx.shortaddress }}
             </ion-label>
             <ion-label class="date" style="font-size: 0.7em">{{
@@ -56,9 +56,14 @@
     </ion-item>
   </ion-list>
 
-  <h4 class="ion-padding-horizontal ion-text-center">
-    {{ "transactions history" | translate }}
-  </h4>
+  <!-- <h4 class="ion-padding-horizontal">
+    {{ "Transaction(s) History" | translate }}
+  </h4> -->
+
+  <h3 *ngIf="recentTxs.length > 0" class="ion-padding-horizontal">
+    {{ "Transactions History" | translate }} 
+  </h3>
+
   <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length === 0" class="ion-margin-top">
     <ion-item class="ion-text-center">
       <ion-label>
@@ -70,7 +75,7 @@
 
   <ion-list *ngIf="escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index;">
-      <ion-label>
+      <ion-label *ngIf="escrow.status == 1">
         <p>{{ escrow.senderaddress }} </p> 
         <ion-badge *ngIf = "escrow.status == 0" color="warning"  shape="round">
         {{ "pending" | translate}}
@@ -86,19 +91,19 @@
         </ion-badge>&nbsp;
 
 
-        <ion-badge *ngIf = "escrow.status == 3" color="warning"  shape="round">
-        {{ "expired" | translate}}
+        <!-- <ion-badge *ngIf = "escrow.status == 3" color="warning"  shape="round">
+        Expired
         </ion-badge>&nbsp;
 
         <ion-badge *ngIf = "escrow.status == 4" color="warning"  shape="round">
-        {{ "unknown" | translate}}
-        </ion-badge>&nbsp;
+        Unknown
+        </ion-badge>&nbsp; -->
 
 
       </ion-label>
 
-      <ion-text slot='end' color="success" class="ion-text-right" >
-        <span style='font-size: 0.7em;'>{{ "commission" | translate}}</span> <br/>
+      <ion-text slot='end' *ngIf="escrow.status == 1" color="success" class="ion-text-right" >
+        <span style='font-size: 0.7em;'>Commission</span> <br/>
          + {{ escrow.commission / 1e8 | number: '0.0-6' }} <span style="font-size:0.8em">ZBC</span>
       </ion-text>
 
@@ -127,8 +132,9 @@
       <ion-text *ngIf="transaction.type==='send'" color="danger" class="amount ion-text-end">
         - {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC
         <br/>
-        <span>
-         - {{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC
+        <span style="font-size:0.8em">
+          Fee <br/>
+         - {{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC 
         </span>
       </ion-text>
      

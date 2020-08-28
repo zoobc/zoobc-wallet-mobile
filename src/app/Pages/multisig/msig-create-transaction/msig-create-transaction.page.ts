@@ -2,11 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Account } from 'src/app/Interfaces/account';
 import { MultisigService } from 'src/app/Services/multisig.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import {
   TRANSACTION_MINIMUM_FEE,
   CONST_DEFAULT_CURRENCY,
-  COIN_CODE
+  COIN_CODE,
+  FOR_APPROVER
 } from 'src/environments/variable.const';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AccountService } from 'src/app/Services/account.service';
@@ -35,7 +36,8 @@ import { base64ToByteArray } from 'src/Helpers/converters';
 import zoobc, {
   SendMoneyInterface,
   generateTransactionHash,
-  sendMoneyBuilder
+  sendMoneyBuilder,
+  isZBCAddressValid
 } from 'zoobc-sdk';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
 import { TrxstatusPage } from '../../send-coin/modals/trxstatus/trxstatus.page';
@@ -106,6 +108,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
   createTransactionFormEnable = true;
   isMultiSignature = true;
   recipientName: any;
+  scanForWhat: string;
 
   constructor(
     private multisigServ: MultisigService,
@@ -138,6 +141,12 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.addressbookService.addressSubject.subscribe({
       next: address => {
         this.recipientAddress = address;
+      }
+    });
+
+    this.addressbookService.recipientSubject.subscribe({
+      next: recipient => {
+        this.recipientAddress = recipient.address;
       }
     });
 
@@ -386,22 +395,16 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.menuController.open('mainMenu');
   }
 
-  async openListAccount() {
-    const modal = await this.modalController.create({
-      component: AccountPopupPage
-    });
-
-    modal.onDidDismiss().then(dataReturned => {
-      if (dataReturned.data) {
-        // this.signByAccount =  dataReturned.data;
-        // this.signBy = this.signByAccount.address;
+  openListAccount(arg: string) {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        forWhat: arg
       }
-    });
-
-    return await modal.present();
+    };
+    this.router.navigate(['list-account'], navigationExtras);
   }
 
-  async presentGetAddressOption() {
+  async presentGetAddressOption(source: string) {
     const alert = await this.alertController.create({
       header: 'Select Option',
       cssClass: 'alertCss',
@@ -439,11 +442,11 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
           text: 'Ok',
           handler: val => {
             if (val === 'address') {
-              this.openAddresses();
+              this.openAddresses(source);
             } else if (val === 'account') {
-              this.openListAccount();
+              this.openListAccount(source);
             } else {
-              this.scanQrCode();
+              this.scanQrCode(source);
             }
           }
         }
@@ -583,8 +586,6 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   validateRecipient() {
     this.isRecipientValid = true;
-    this.recipientAddress = sanitizeString(this.recipientAddress);
-
     if (
       !this.recipientAddress ||
       this.recipientAddress === '' ||
@@ -597,9 +598,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.isRecipientValid) {
-      const addressBytes = base64ToByteArray(this.recipientAddress);
-      if (this.isRecipientValid && addressBytes.length !== 49) {
+    if (!isZBCAddressValid(this.recipientAddress)) {
+      {
         this.isRecipientValid = false;
         this.recipientMsg = this.translateService.instant(
           'Address is not valid!'
@@ -712,7 +712,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     }
   }
 
-  scanQrCode() {
+  scanQrCode(arg: string) {
+    this.scanForWhat = arg;
     this.router.navigateByUrl('/qr-scanner');
   }
 
@@ -720,8 +721,14 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.router.navigate(['/dashboard']);
   }
 
-  openAddresses() {
-    this.router.navigateByUrl('/address-book');
+  openAddresses(arg: string) {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        forWhat: arg
+      }
+    };
+
+    this.router.navigate(['/address-book'], navigationExtras);
   }
 
   async getMinimumFee(timeout: number) {
