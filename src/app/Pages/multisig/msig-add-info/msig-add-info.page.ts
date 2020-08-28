@@ -170,8 +170,7 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
     multisig.multisigInfo = {
       minSigs: this.minSig,
       nonce: this.nonce,
-      participants: this.participants,
-      multisigAddress: '',
+      participants: this.participants
     };
     const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
     multisig.generatedSender = address;

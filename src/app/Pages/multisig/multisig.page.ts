@@ -42,6 +42,9 @@ export class MultisigPage implements OnInit {
   multisig: MultiSigDraft;
   jsonFilePath = '';
   draftConent = '';
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
 
   constructor(
     private router: Router,
@@ -124,8 +127,7 @@ export class MultisigPage implements OnInit {
       multisig.multisigInfo = {
         minSigs: this.account.minSig,
         nonce: this.account.nonce,
-        participants: this.account.participants,
-        multisigAddress: ''
+        participants: this.account.participants
       };
       const address = zoobc.MultiSignature.createMultiSigAddress(
         multisig.multisigInfo
@@ -267,10 +269,6 @@ export class MultisigPage implements OnInit {
     this.addSignature = !this.createTransaction;
   }
 
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
-
   ionViewWillEnter() {
     this.networkSubscription = this.network
       .onDisconnect()
@@ -295,7 +293,7 @@ export class MultisigPage implements OnInit {
 
     this.translateSrv
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;
