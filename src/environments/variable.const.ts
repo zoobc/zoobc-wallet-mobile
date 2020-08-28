@@ -1,6 +1,6 @@
 import { Currency } from 'src/app/Interfaces/currency';
 export const COIN_CODE = 'ZBC';
-export const SALT_PASSPHRASE = 'p4ssphr4se';
+export const SALT_PASSPHRASE = '';
 export const STORAGE_ACTIVE_CURRENCY = 'active_currency';
 export const STORAGE_ACTIVE_NETWORK_IDX = 'current_node_selected1';
 export const STORAGE_CURRENCY_RATES = 'currency_rates';
