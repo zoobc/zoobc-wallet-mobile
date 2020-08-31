@@ -79,6 +79,7 @@ export class MyTasksPage implements OnInit {
     this.getBlockHeight();
     this.getEscrowTransaction();
     this.getMultiSigPendingList(true);
+    this.startTimer();
   }
 
   getMultiSigPendingList(reload: boolean = false) {
@@ -115,6 +116,13 @@ export class MyTasksPage implements OnInit {
         .finally(() => (this.isLoadingMultisig = false));
     }
   }
+
+  startTimer() {
+    setInterval(() => {
+      this.loadTask();
+    }, 20000);
+  }
+
 
   doDateAgo(pDate: any) {
     return dateAgo(pDate);
