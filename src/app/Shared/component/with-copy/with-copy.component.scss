@@ -1,0 +1,10 @@
+.with-copy{
+  display: flex;
+  align-items: center;
+
+  span:last-child{
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+  }
+}

@@ -439,10 +439,6 @@ export class SendCoinPage implements OnInit {
     this.setAmountValidation();
   }
 
-  shortAddress(address: string) {
-    return makeShortAddress(address);
-  }
-
   setAmountValidation(){
     this.amount.setValidators([Validators.required, Validators.min(0.00000001),
       Validators.max(this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC?this.minimumFee:this.conversionValue.fee.ZBC) 

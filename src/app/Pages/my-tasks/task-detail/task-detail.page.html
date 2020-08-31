@@ -55,7 +55,7 @@
       <ion-label class="ion-text-wrap">
         <h5>{{ "sender" | translate }}</h5>
         <p>
-          {{ escrowDetail.senderaddress }}
+          {{ escrowDetail.senderaddress | shortAddress }}
         </p>
       </ion-label>
     </ion-item>
@@ -63,7 +63,7 @@
       <ion-label class="ion-text-wrap">
         <h5>{{ "recipient" | translate }}</h5>
         <p>
-          {{ escrowDetail.recipientaddress }}
+          {{ escrowDetail.recipientaddress | shortAddress }}
         </p>
       </ion-label>
     </ion-item>

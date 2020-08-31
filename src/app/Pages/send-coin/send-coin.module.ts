@@ -10,6 +10,7 @@ import { SendCoinPage } from './send-coin.page';
 import { AddressBookComponentModule } from 'src/app/Components/address-book/address-book-list/address-book.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
+import { SharedModule } from 'src/app/Shared/shared.module';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { CurrencyComponent } from 'src/app/Components/currency/currency.componen
     TranslateModule,
     RouterModule.forChild([{ path: '', component: SendCoinPage }]),
     AddressBookComponentModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ],
   entryComponents: [CurrencyComponent],
   // providers: [QRScanner],

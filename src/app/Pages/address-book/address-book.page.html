@@ -35,11 +35,10 @@
         <ion-item>
           <ion-label (click)="selectAddress(address)">
             <p class="name">{{ address.name }}</p>
-            <p class="address">{{ address.shortAddress }}</p>
+            <p class="address">
+              <app-with-copy title="{{ address.address | shortAddress }}" value="{{ address.address }}"></app-with-copy>
+            </p>
           </ion-label>
-          <ion-button slot="end" (click)="copyAddress(i)" color="meddium">
-            <ion-icon name="copy"></ion-icon>
-          </ion-button>
         </ion-item>
         <ion-item-options *ngIf="!forWhat" >
           <button color="success" (click)="editAddress(i)" class="tool">

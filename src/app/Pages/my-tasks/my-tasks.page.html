@@ -49,8 +49,8 @@
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index;" (click)="openDetail(escrow.id)">
       <ion-label>
         <!-- <h3>Transaction ID: {{escrow.id}}</h3> -->
-        <p>{{ "sender" | translate}}: <b> {{ escrow.senderaddress }} </b></p>
-        <p>{{ "recipient" | translate}}: <strong>{{ escrow.recipientaddress }}</strong></p>
+        <p>{{ "sender" | translate}}: <b> {{ escrow.senderaddress | shortAddress }} </b></p>
+        <p>{{ "recipient" | translate}}: <strong>{{ escrow.recipientaddress | shortAddress }}</strong></p>
         <!-- <p>Commision: <b>{{ escrow.commission / 1e8 | number: '0.0-6' }} </b></p> -->
         <p *ngIf = "escrow.status !== 1 && escrow.status !== 2">{{ "expired after block height" | translate}}: <b>{{  escrow.timeout + escrow.blockheight | number }} </b></p>
         <!-- <p>Latest: <b>{{ escrow.latest }} </b></p> -->
@@ -96,7 +96,7 @@
     <ion-item *ngFor="let msig of multiSigPendingList; let i = index" button>
   
       <ion-label color="dark" (click)="openMultisigDetail(msig.transactionhash)">
-        <h3>{{ shortAddress(msig.senderaddress) }}</h3>
+        <h3>{{ msig.senderaddress | shortAddress }}</h3>
         <ion-text class="dateago">{{ doDateAgo(msig.timestamp * 1000)}}</ion-text>
       </ion-label>
   

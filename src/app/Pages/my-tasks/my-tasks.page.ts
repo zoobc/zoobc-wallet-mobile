@@ -67,10 +67,6 @@ export class MyTasksPage implements OnInit {
   segmentChanged() {
   }
 
-  shortAddress(arg: string) {
-    return makeShortAddress(arg);
-  }
-
   async loadTask() {
     this.account = await this.accountService.getCurrAccount();
     if (this.account.type !== 'normal') {

@@ -9,6 +9,7 @@ import { AddressBookComponentModule } from 'src/app/Components/address-book/addr
 import { AddAddressPage } from './add-address/add-address.page';
 import { FormAddressComponent } from './form-address/form-address.component';
 import { EditAddressPage } from './edit-address/edit-address.page';
+import { SharedModule } from 'src/app/Shared/shared.module';
 
 const routes: Routes = [
   {
@@ -37,7 +38,8 @@ const routes: Routes = [
     TranslateModule,
     RouterModule.forChild(routes),
     AddressBookComponentModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ],
   declarations: [
     AddressBookPage,

@@ -40,15 +40,7 @@
       <ion-col class="qrcode">
         <div style="margin-bottom: 5px; font-weight: bold;">{{ "address" | translate}}:</div>
         <div *ngIf="account">
-          {{ account.address }}
-          <ion-button
-            fill="outline"
-            expand="block"
-            size="small"
-            (click)="copyToClipboard()"
-          >
-            <ion-icon name="copy"></ion-icon> {{ "copy" | translate}}
-          </ion-button>
+          <app-with-copy title="{{ account.address | shortAddress }}" value="{{ account.address }}"></app-with-copy>
         </div>
       </ion-col>
     </ion-row>
