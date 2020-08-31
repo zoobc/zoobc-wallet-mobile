@@ -254,7 +254,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     }
     const { signaturesInfo } = this.multisig;
     if (!this.multisig.unisgnedTransactions) {
-      this.showNextConfirmation();
+      // this.showNextConfirmation();
+      this.generateHash();
     } else if (signaturesInfo !== undefined) {
       this.router.navigate(['/msig-add-signatures']);
     } else {
