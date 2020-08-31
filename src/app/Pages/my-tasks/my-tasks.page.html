@@ -13,15 +13,12 @@
   <ion-toolbar>
     <ion-segment value="multisig" [(ngModel)]="segmentModel"
       (ionChange)="segmentChanged()">
-
-      <ion-segment-button value="multisig">
+      <ion-segment-button *ngIf="account && account.type != 'normal'" value="multisig">        
         <ion-label>{{ "multisignature" | translate}}</ion-label>
       </ion-segment-button>
-
       <ion-segment-button value="escrow">
         <ion-label>{{ "escrow" | translate}}</ion-label>
       </ion-segment-button>
-
     </ion-segment>
   </ion-toolbar>
 </ion-header>
@@ -42,8 +39,14 @@
 
   <div style="text-align: center; border-top: 1px solid #cccccc;"
     *ngIf="segmentModel === 'escrow' && (!escrowTransactions || escrowTransactions.length < 1) ">
-    <p>{{ "no escrow approval request available" | translate }}</p>
+    <p>{{ 'No escrow approval request available' | translate }}</p>
   </div>
+
+  <div style="text-align: center; border-top: 1px solid #cccccc;"
+  *ngIf="segmentModel == 'multisig' && (!multiSigPendingList || multiSigPendingList.length < 1) ">
+  <p>{{ 'No multisig approval request available' | translate }}</p>
+</div>
+
 
   <ion-list *ngIf="segmentModel === 'escrow' && escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index;" (click)="openDetail(escrow.id)">
@@ -54,7 +57,8 @@
         <!-- <p>Commision: <b>{{ escrow.commission / 1e8 | number: '0.0-6' }} </b></p> -->
         <p *ngIf = "escrow.status !== 1 && escrow.status !== 2">{{ "expired after block height" | translate}}: <b>{{  escrow.timeout + escrow.blockheight | number }} </b></p>
         <!-- <p>Latest: <b>{{ escrow.latest }} </b></p> -->
-    
+        <p class="dateago">{{ doDateAgo(escrow.timestamp * 1000)}}</p>
+
         <ion-badge *ngIf = "escrow.status == 0" color="warning"  shape="round">
         {{ "pending" | translate}}
         </ion-badge>&nbsp;
@@ -98,13 +102,37 @@
       <ion-label color="dark" (click)="openMultisigDetail(msig.transactionhash)">
         <h3>{{ msig.senderaddress | shortAddress }}</h3>
         <ion-text class="dateago">{{ doDateAgo(msig.timestamp * 1000)}}</ion-text>
+      
+        <ion-badge *ngIf = "msig.status == 0" color="warning"  shape="round">
+          Pending
+          </ion-badge>&nbsp;
+     
+          <ion-badge *ngIf = "msig.status == 1" color="success"  shape="round">
+          Approved
+          </ion-badge>&nbsp;
+     
+  
+          <ion-badge *ngIf = "msig.status == 2" color="danger"  shape="round">
+          Rejected
+          </ion-badge>&nbsp;
+  
+  
+          <ion-badge *ngIf = "msig.status == 3" color="warning"  shape="round">
+          Expired
+          </ion-badge>&nbsp;
+  
+          <ion-badge *ngIf = "msig.status == 4" color="warning"  shape="round">
+          Unknown
+          </ion-badge>&nbsp;
+  
+  
       </ion-label>
   
-      <ion-text color="danger" class="amount ion-text-end">
+      <ion-text color="danger" class="ion-text-right">
         - {{ msig.amount / 1e8 | number: '0.2-4' }} ZBC
         <br/>
         <span>
-         - {{ msig.fee / 1e8 | number: '0.2-4'}} ZBC
+         - {{ msig.fee / 1e8 | number: '0.2-4'}} ZBC Fee
         </span>
       </ion-text>     
     </ion-item>
