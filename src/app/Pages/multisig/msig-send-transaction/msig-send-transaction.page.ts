@@ -109,7 +109,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   }
 
   async loadAllAccount() {
-    this.accounts = await this.accountService.allAccount();
+    this.accounts = await this.accountService.allAccount('normal');
   }
 
   async getAccountBalance(addr: string) {
