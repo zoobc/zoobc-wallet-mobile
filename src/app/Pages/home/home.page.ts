@@ -358,6 +358,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.router.navigate(['/receive']);
   }
 
+  goToTransactions() {
+    this.router.navigate(['/transactions']);
+  }
+
   isLoadingRecentTx: boolean = false;
   recentTx: any;
   unconfirmTx: any;

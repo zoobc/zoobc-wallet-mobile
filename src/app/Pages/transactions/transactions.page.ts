@@ -336,10 +336,6 @@ export class TransactionsPage implements OnInit {
     await modal.present();
   }
 
-  public goDashboard() {
-    this.router.navigate(['/dashboard']);
-  }
-
   ionViewWillEnter() {
     this.networkSubscription = this.network
       .onDisconnect()

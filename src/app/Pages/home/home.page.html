@@ -50,7 +50,7 @@
               <ion-icon name="zbc-clock" color="secondary"></ion-icon>
               <span>Transactions</span>
             </div>
-            <span class="all">See All</span>
+            <span class="all" (click)="goToTransactions()">See All</span>
           </div>
         </ion-item>
         <ion-item *ngFor="let transaction of recentTx; let i = index">
