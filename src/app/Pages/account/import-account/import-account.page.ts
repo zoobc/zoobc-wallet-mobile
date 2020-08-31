@@ -10,7 +10,6 @@ import { ModalController } from '@ionic/angular';
 })
 export class ImportAccountPage implements OnInit {
   multisifInfo: string;
-
   constructor(
     private accountService: AccountService,
     private modalController: ModalController) { }
