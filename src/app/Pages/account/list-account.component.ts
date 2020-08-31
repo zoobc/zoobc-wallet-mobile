@@ -3,10 +3,8 @@ import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, FOR_APPROVER, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
-import { UtilService } from 'src/app/Services/util.service';
 import zoobc from 'zoobc-sdk';
 import { NavController, ModalController, AlertController } from '@ionic/angular';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { ImportAccountPage } from './import-account/import-account.page';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
@@ -32,7 +30,6 @@ export class ListAccountComponent implements OnInit {
     private modalController: ModalController,
     private router: Router,
     private qrScannerService: QrScannerService,
-    private utilService: UtilService,
     private accountService: AccountService) {
 
       this.qrScannerService.qrScannerSubject.subscribe(address => {
@@ -196,11 +193,6 @@ export class ListAccountComponent implements OnInit {
     this.navCtrl.pop();
   }
 
-  copyAddress(account: Account) {
-    const val = account.address;
-    this.utilService.copyToClipboard(val);
-  }
-
   createNewAccount() {
     this.openAddAccount(null, MODE_NEW);
   }
@@ -221,10 +213,6 @@ export class ListAccountComponent implements OnInit {
       }
     };
     this.router.navigate(['/create-account'], navigationExtras);
-  }
-
-  shortAddress(address: string) {
-    return makeShortAddress(address);
   }
 
   async openEditAccount(arg: Account, mode: number) {

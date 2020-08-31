@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Location } from '@angular/common';
-import { UtilService } from 'src/app/Services/util.service';
 import { NavController, AlertController } from '@ionic/angular';
 import { FOR_RECIPIENT, FOR_APPROVER, FOR_PARTICIPANT, FOR_SIGNBY } from 'src/environments/variable.const';
 
@@ -19,7 +18,6 @@ export class AddressBookPage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private navCtrl: NavController,
-    private utilService: UtilService,
     private addressBookSrv: AddressBookService,
     private alertCtrl: AlertController,
     private route: ActivatedRoute
@@ -53,11 +51,6 @@ export class AddressBookPage implements OnInit, OnDestroy {
     if (alladdress) {
       this.addresses = alladdress;
     }
-  }
-
-  copyAddress(index: string | number) {
-    const val = this.addresses[index];
-    this.utilService.copyToClipboard(val.address);
   }
 
   selectAddress(address: any) {

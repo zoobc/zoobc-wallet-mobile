@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Transaction } from 'src/app/Interfaces/transaction';
 import { NavParams, ModalController, AlertController } from '@ionic/angular';
-import { UtilService } from 'src/app/Services/util.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
 
@@ -16,7 +15,6 @@ export class TransactionDetailPage implements OnInit {
   status: string;
 
   constructor(
-    private utilService: UtilService,
     private navParams: NavParams,
     public modalCtrl: ModalController,
     private translateSrv: TranslateService,
@@ -42,10 +40,6 @@ export class TransactionDetailPage implements OnInit {
       this.transaction.recipient = this.account.address;
     }
     this.transaction.total = this.transaction.amount + this.transaction.fee;
-  }
-
-  async copyAddress(address: string) {
-    this.utilService.copyToClipboard(address);
   }
 
   async close() {
