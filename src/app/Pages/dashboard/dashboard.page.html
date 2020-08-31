@@ -51,7 +51,7 @@
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-right">
-          <ion-label color="medium" style="font-size: 0.9em; font-style: italic;">{{ "last updated" | translate}}: {{lastBalanceUpdated}}&nbsp;&nbsp;</ion-label>
+          <ion-label color="medium" style="font-size: 0.9em; font-style: italic;">{{ "last refresh" | translate}}: {{lastBalanceUpdated}}&nbsp;&nbsp;</ion-label>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -140,7 +140,8 @@
         </ion-card>
       </ion-col>
 
-      <ion-col size="4" *ngIf="account && account.type !== 'multisig'">
+      <!-- <ion-col size="4" *ngIf="account && account.type !== 'multisig'"> -->
+      <ion-col size="4">        
         <ion-card color="light" routerLink="/multisig">
           <ion-icon name="key" color="secondary"></ion-icon>
           <ion-text>
@@ -186,14 +187,14 @@
         </ion-card>
       </ion-col>
 
-      <ion-col size="4">
+      <!-- <ion-col size="4">
         <ion-card color="light" routerLink="/chat">
           <ion-icon name="chatboxes" color="secondary"></ion-icon>
           <ion-text>
             <h2>{{ "chat" | translate }}</h2>
           </ion-text>
         </ion-card>
-      </ion-col>
+      </ion-col> -->
 
       <ion-col size="4">
         <ion-card color="light" routerLink="/applist">
