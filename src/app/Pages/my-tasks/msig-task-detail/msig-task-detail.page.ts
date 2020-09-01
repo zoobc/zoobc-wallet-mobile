@@ -80,6 +80,13 @@ export class MsigTaskDetailPage implements OnInit {
 
   }
 
+  reload(event: any) {
+    this.loadDetail();
+    setTimeout(() => {
+      event.target.complete();
+    }, 2000);
+  }
+
   loadFeeAndCurrency() {
     this.optionFee = this.allFees[0].fee.toString();
     this.currencyRate = this.currencyService.getRate();

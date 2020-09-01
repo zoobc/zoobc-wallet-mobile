@@ -36,7 +36,14 @@
         </div>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="isMultisig &&  mode && mode == 0">
+      <ion-col>
+       
+          {{account.name}} 
+       
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="isMultisig &&  mode && mode == 1">
       <ion-col>
         <ion-label position="stacked">{{ "account name" | translate }}</ion-label>
       </ion-col>

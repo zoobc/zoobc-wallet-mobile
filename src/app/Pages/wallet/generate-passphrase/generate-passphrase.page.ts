@@ -11,6 +11,16 @@ import { NavController, Platform } from '@ionic/angular';
   styleUrls: ['./generate-passphrase.page.scss']
 })
 export class GeneratePassphrasePage implements OnInit {
+
+
+  constructor(
+    private router: Router,
+    private utilService: UtilService,
+    private accountSrv: AccountService,
+    private navCtrl: NavController,
+    private platform: Platform
+  ) {
+  }
   writtenDown = false;
   terms = false;
   plainPassphrase: string;
@@ -19,8 +29,9 @@ export class GeneratePassphrasePage implements OnInit {
   pagePosition = 1;
   pageStep = 1;
   tempPin = '';
-  public loginFail = false;
+  loginFail = false;
   lang: string;
+  backButtonSubscription: any;
 
   languages: Languages[] = [
     { value: 'chinese_simplified', viewValue: 'Chinese Simplified' },
@@ -33,34 +44,22 @@ export class GeneratePassphrasePage implements OnInit {
     { value: 'chinese_traditional', viewValue: 'Chinese Traditional' },
   ];
 
-
-  constructor(
-    private router: Router,
-    private utilService: UtilService,
-    private accountSrv: AccountService,
-    private navCtrl: NavController,
-    private platform: Platform
-  ) {
-  }
-
   ngOnInit() {
     this.lang = 'english';
-    this.generatePassphrase(); 
+    this.generatePassphrase();
   }
-
-  backButtonSubscription;
-  ionViewDidEnter(){
+  ionViewDidEnter() {
     this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
       this.backToInitial();
-    })
+    });
   }
 
-  ionViewWillLeave(){
-    this.backButtonSubscription.unsubscribe()
+  ionViewWillLeave() {
+    this.backButtonSubscription.unsubscribe();
   }
 
-  backToInitial(){
-    this.navCtrl.navigateBack("/initial")
+  backToInitial() {
+    this.navCtrl.navigateBack('/initial');
   }
 
   onLanguageChanged(language: string) {
