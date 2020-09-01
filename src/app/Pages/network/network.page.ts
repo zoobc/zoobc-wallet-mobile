@@ -12,9 +12,8 @@ export class NetworkPage implements OnInit {
 
   constructor(private navCtrl: NavController, private networkSrv: NetworkService) { }
 
-  private networks = NETWORK_LIST;
-
-  public activeNetwork = null
+  networks = NETWORK_LIST;
+  activeNetwork = null;
 
   async ngOnInit() {
     this.activeNetwork = await this.networkSrv.getNetwork();
@@ -22,7 +21,7 @@ export class NetworkPage implements OnInit {
 
   selectNetwork(index: any){
     this.networkSrv.setNetwork(index)
-    this.networkSrv.broadcastSelectNetwork(this.networks[index])
+    this.networkSrv.broadcastSelectNetwork(this.networks[index]);
     this.navCtrl.pop();
   }
 
