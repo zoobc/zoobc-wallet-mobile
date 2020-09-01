@@ -42,7 +42,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { ChatProfilePageModule } from './Pages/chat/chat-profile/chat-profile.module';
 import { ConfirmationPageModule } from './Components/confirmation/confirmation.module';
 import { DecimalPipe } from '@angular/common';
-import { DateAgoPipe } from './pipes/date-ago.pipe';
+import { DateAgoPipe } from './Shared/pipe/date-ago.pipe';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { AccountPopupPageModule } from './Pages/account/account-popup/account-popup.module';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
