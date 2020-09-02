@@ -30,7 +30,7 @@
       <ion-label class="ion-text-wrap">
         <h5>{{ "Sender" | translate }}</h5>
         <p class="info-val">
-          {{ shortAddress(multiSigDetail.senderaddress) }}
+          {{ multiSigDetail.senderaddress | shortAddress}}
         </p>
       </ion-label>
       <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.senderaddress)">
@@ -40,7 +40,7 @@
       <ion-label class="ion-text-wrap">
         <h5>{{ "Recipient" | translate }}</h5>
         <p class="info-val">
-          {{ shortAddress(multiSigDetail.recipientaddress) }}
+          {{ multiSigDetail.recipientaddress | shortAddress }}
         </p>
       </ion-label>
       <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.recipientaddress)">

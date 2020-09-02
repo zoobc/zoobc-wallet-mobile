@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { sanitizeString } from 'src/Helpers/utils';
 import { Contact } from 'src/app/Interfaces/contact';
 import { AddressBookService } from 'src/app/Services/address-book.service';
@@ -19,9 +18,8 @@ export class AddAddressPage implements OnInit {
     const { name, address } = value;
 
     const contact: Contact = {
-      name: name,
-      address: sanitizeString(address),
-      shortAddress: makeShortAddress(sanitizeString(address))
+      name,
+      address: sanitizeString(address)
     };
 
     await this.addressBookSrv.insert(contact);

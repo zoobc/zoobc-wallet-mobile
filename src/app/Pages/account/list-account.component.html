@@ -41,7 +41,7 @@
           <ion-label (click)="accountClicked(account)">
             <div class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
             <div class="address">
-              {{ shortAddress(account.address) }}
+              {{ account.address | shortAddress }}
               <span class="icon-copy"><ion-icon name="copy" (click)="copyAddress(account)"></ion-icon></span>
             </div>
             <div class="title" *ngIf="!isLoadingBalance">

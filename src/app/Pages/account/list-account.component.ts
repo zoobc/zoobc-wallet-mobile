@@ -6,7 +6,6 @@ import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, FOR_APPROVER, STORAGE
 import { UtilService } from 'src/app/Services/util.service';
 import zoobc from 'zoobc-sdk';
 import { NavController, ModalController, AlertController } from '@ionic/angular';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { ImportAccountPage } from './import-account/import-account.page';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
@@ -221,10 +220,6 @@ export class ListAccountComponent implements OnInit {
       }
     };
     this.router.navigate(['/create-account'], navigationExtras);
-  }
-
-  shortAddress(address: string) {
-    return makeShortAddress(address);
   }
 
   async openEditAccount(arg: Account, mode: number) {

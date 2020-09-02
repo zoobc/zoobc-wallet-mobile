@@ -24,7 +24,7 @@
       <ion-col size="10"  class="ion-text-center">
         <ion-label *ngIf="msigAccount">
           <p>{{msigAccount.name}}</p>
-          <p>{{ shortAddress(msigAccount.address) }}</p>
+          <p>{{ msigAccount.address | shortAddress }}</p>
         
           <!-- <p>{{msigAccount.address}}</p> -->
         </ion-label>

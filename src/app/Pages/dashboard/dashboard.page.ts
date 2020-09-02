@@ -28,7 +28,6 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { DecimalPipe } from '@angular/common';
 import { NetworkService } from 'src/app/Services/network.service';
 import { dateAgo } from 'src/Helpers/utils';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -119,10 +118,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (this.navigationSubscription) {
       this.navigationSubscription.unsubscribe();
     }
-  }
-
-  shortAddress(address: string) {
-    return makeShortAddress(address);
   }
 
   async showBalanceDetail() {

@@ -36,7 +36,7 @@
           <ion-label>
             <h2>{{ account.name }}</h2>
             <p>
-              {{ shortAddress(account.address) }}&nbsp;&nbsp;
+              {{ account.address | shortAddress }}&nbsp;&nbsp;
               <span>
                 <ion-icon name="arrow-dropdown"></ion-icon>
               </span>

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { makeShortAddress } from 'src/Helpers/converters';
 import {
   ToastController,
   LoadingController,
@@ -241,7 +240,6 @@ export class TransactionsPage implements OnInit {
           recent['escrowStatus'] = this.getEscrowStatus(recent.id, escrowList); 
         }
         recent['multisigchild'] = multisigTx.includes(recent.id);
-        recent['shortaddress'] =  makeShortAddress(recent.address);
         return recent;
       });
       this.total = tx.total;
@@ -306,9 +304,9 @@ export class TransactionsPage implements OnInit {
           return {
             id: tx.id,
             alias,
-            senderaddress: makeShortAddress(tx.senderaddress),
-            recipientaddress: makeShortAddress(tx.recipientaddress),
-            approveraddress: makeShortAddress(tx.approveraddress),
+            senderaddress: tx.senderaddress,
+            recipientaddress: tx.recipientaddress,
+            approveraddress: tx.approveraddress,
             amount: tx.amount,
             commission: tx.commission,
             timeout: Number(tx.timeout),

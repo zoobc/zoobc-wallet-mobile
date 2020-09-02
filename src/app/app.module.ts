@@ -42,7 +42,6 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { ChatProfilePageModule } from './Pages/chat/chat-profile/chat-profile.module';
 import { ConfirmationPageModule } from './Components/confirmation/confirmation.module';
 import { DecimalPipe } from '@angular/common';
-import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { AccountPopupPageModule } from './Pages/account/account-popup/account-popup.module';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
@@ -51,6 +50,8 @@ import { PopupCurrencyPageModule } from './Pages/settings/popup-currency/popup-c
 import { PopupLanguagesPageModule } from './Pages/settings/popup-languages/popup-languages.module';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { ImportAccountPageModule } from './Pages/account/import-account/import-account.module';
+import { SharedModule } from './Shared/shared.module';
+import { DateAgoPipe } from './Shared/pipe/date-ago.pipe';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -91,6 +92,7 @@ export function createTranslateLoader(http: HttpClient) {
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFireStorageModule,
+    SharedModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

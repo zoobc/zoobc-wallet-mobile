@@ -23,7 +23,6 @@ import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
 import { calculateMinFee, sanitizeString } from 'src/Helpers/utils';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { Approver } from 'src/app/Interfaces/approver';
 import { Currency } from 'src/app/Interfaces/currency';
 import { TransactionService } from 'src/app/Services/transaction.service';
@@ -205,8 +204,7 @@ export class SendCoinPage implements OnInit {
       accounts.forEach((obj: { name: any; address: string }) => {
         const app: Approver = {
           name: obj.name,
-          address: obj.address,
-          shortAddress: makeShortAddress(obj.address)
+          address: obj.address
         };
         this.approvers.push(app);
       });
@@ -239,8 +237,7 @@ export class SendCoinPage implements OnInit {
       alladdress.forEach((obj: { name: any; address: string }) => {
         const app: Approver = {
           name: obj.name,
-          address: obj.address,
-          shortAddress: makeShortAddress(obj.address)
+          address: obj.address
         };
         this.approvers.push(app);
       });
@@ -435,10 +432,6 @@ export class SendCoinPage implements OnInit {
 
   onCommisionChange(){
     this.setAmountValidation();
-  }
-
-  shortAddress(address: string) {
-    return makeShortAddress(address);
   }
 
   setAmountValidation(){

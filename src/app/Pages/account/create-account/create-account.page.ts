@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EMPTY_STRING, FOR_PARTICIPANT } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { sanitizeString } from 'src/Helpers/utils';
@@ -157,7 +156,7 @@ export class CreateAccountPage implements OnInit {
     const isExists = this.accounts.find(acc => {
       if (name && acc.name.trim().toLowerCase() === name.trim().toLowerCase()) {
         this.validationMessage =
-          'Name exists with address: ' + makeShortAddress(acc.address);
+          'Name exists with address: ' + acc.address;
         return true;
       }
       return false;

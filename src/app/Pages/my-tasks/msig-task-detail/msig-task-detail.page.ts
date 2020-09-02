@@ -15,7 +15,6 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { UtilService } from 'src/app/Services/util.service';
-import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-msig-task-detail',
@@ -208,11 +207,7 @@ export class MsigTaskDetailPage implements OnInit {
 
     this.showPin();
   }
-
-  shortAddress(arg: string) {
-    return makeShortAddress(arg);
-  }
-
+  
   async showPin() {
     const pinmodal = await this.modalController.create({
       component: EnterpinsendPage

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { sanitizeString } from 'src/Helpers/utils';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { Contact } from 'src/app/Interfaces/contact';
 import { UtilService } from 'src/app/Services/util.service';
 import { AlertController, NavController } from '@ionic/angular';
@@ -19,7 +18,7 @@ export class ExportImportPage implements OnInit {
     private navCtrl: NavController
   ) {}
 
-  addresses: string = '';
+  addresses = '';
   async ngOnInit() {
     const alladdress = await this.addressBookSrv.getAll();
     if (alladdress) {
@@ -46,9 +45,8 @@ export class ExportImportPage implements OnInit {
         const { name, address } = arrAddresses[i];
         if (name && address) {
           const contact: Contact = {
-            name: name,
-            address: sanitizeString(address),
-            shortAddress: makeShortAddress(sanitizeString(address))
+            name,
+            address: sanitizeString(address)
           };
           addresses.push(contact);
         }

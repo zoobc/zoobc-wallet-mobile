@@ -11,10 +11,8 @@ import zoobc, {
 
 import { GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
 import { OrderBy } from 'zoobc-sdk/grpc/model/pagination_pb';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { Router, NavigationExtras } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { PendingTransactionStatus } from 'zoobc-sdk/grpc/model/multiSignature_pb';
 import { dateAgo } from 'src/Helpers/utils';
 import { Currency } from 'src/app/Interfaces/currency';
 
@@ -65,10 +63,6 @@ export class MyTasksPage implements OnInit {
   }
 
   segmentChanged() {
-  }
-
-  shortAddress(arg: string) {
-    return makeShortAddress(arg);
   }
 
   async loadTask() {
@@ -154,9 +148,9 @@ export class MyTasksPage implements OnInit {
           return {
             id: tx.id,
             alias,
-            senderaddress: makeShortAddress(tx.senderaddress),
-            recipientaddress: makeShortAddress(tx.recipientaddress),
-            approveraddress: makeShortAddress(tx.approveraddress),
+            senderaddress: tx.senderaddress,
+            recipientaddress: tx.recipientaddress,
+            approveraddress: tx.approveraddress,
             amount: tx.amount,
             commission: tx.commission,
             timeout: Number(tx.timeout),

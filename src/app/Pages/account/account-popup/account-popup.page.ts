@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { ModalController } from '@ionic/angular';
-import { makeShortAddress } from 'src/Helpers/converters';
 import zoobc from 'zoobc-sdk';
 @Component({
   selector: 'app-account-popup',
@@ -28,10 +27,6 @@ export class AccountPopupPage implements OnInit {
       this.getAllAccountBalance(this.accounts);
     }
 
-  }
-
-  shortAddress(address: string) {
-    return makeShortAddress(address);
   }
 
   accountClicked(account: any) {

@@ -8,8 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { DashboardPage } from './dashboard.page';
 import { ComponentsModule } from 'src/app/Components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { PipeModule } from 'src/pipe/pipe.module';
-
+import { SharedModule } from 'src/app/Shared/shared.module';
 const routes: Routes = [
   {
     path: '',
@@ -25,7 +24,7 @@ const routes: Routes = [
     ComponentsModule,
     RouterModule.forChild(routes),
     TranslateModule,
-    PipeModule
+    SharedModule
   ],
   declarations: [DashboardPage]
 })

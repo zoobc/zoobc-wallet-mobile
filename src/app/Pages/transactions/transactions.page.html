@@ -78,14 +78,14 @@
       <ion-label *ngIf="transaction.name" color="dark">
         <h3>{{ transaction.name }}
           <br/>
-          {{transaction.shortaddress}}
+          {{transaction.address | shortAddress}}
         </h3>
         <ion-text class="dateago">{{
           transaction.timestamp | dateAgo
           }}</ion-text>
       </ion-label>
       <ion-label *ngIf="!transaction.name" color="dark">
-        <h3>{{ transaction.shortaddress }}</h3>
+        <h3>{{ transaction.address | shortAddress }}</h3>
         <ion-text class="dateago">{{
           transaction.timestamp | dateAgo
           }}</ion-text>

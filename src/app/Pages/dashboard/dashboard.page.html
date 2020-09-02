@@ -38,7 +38,7 @@
         <ion-col size="8" style="margin-bottom: 25px;">
           <ion-label *ngIf="account" color="medium" (click)="switchAccount()">
             <h1>{{ account.name }}</h1>
-            <p>{{ shortAddress(account.address) }}</p>
+            <p>{{ account.address | shortAddress }}</p>
           </ion-label>
         </ion-col>
         <ion-col size="2" style="text-align: left;">

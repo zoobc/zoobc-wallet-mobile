@@ -19,8 +19,6 @@ import { AccountPopupPage } from '../../account/account-popup/account-popup.page
 import { jsonBufferToString } from 'src/Helpers/utils';
 import { SignatureInfo } from 'zoobc-sdk/types/helper/transaction-builder/multisignature';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
-import { makeShortAddress } from 'src/Helpers/converters';
-
 
 @Component({
   selector: 'app-msig-send-transaction',
@@ -146,10 +144,6 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
   async copyAddress(address: string) {
     this.utilService.copyToClipboard(address);
-  }
-
-  shortAddress(arg: string) {
-    return makeShortAddress(arg);
   }
 
   async ngOnInit() {

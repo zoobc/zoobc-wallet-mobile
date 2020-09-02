@@ -9,7 +9,6 @@ import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
 
@@ -67,10 +66,6 @@ export class MultisigPage implements OnInit {
   async ngOnInit() {
     await this.getMultiSigDraft();
     this.goNextStep();
-  }
-
-  shortAddress(arg: string) {
-    return makeShortAddress(arg);
   }
 
   async getMultiSigDraft() {

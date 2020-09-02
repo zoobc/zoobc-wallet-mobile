@@ -8,7 +8,6 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Subscription } from 'rxjs';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { ModalController } from '@ionic/angular';
-import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-msig-add-info',
@@ -160,10 +159,6 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
 
   back() {
     this.router.navigateByUrl('/multisig');
-  }
-
-  shortAddress(address: string) {
-    return makeShortAddress(address);
   }
 
   updateMultisig() {
