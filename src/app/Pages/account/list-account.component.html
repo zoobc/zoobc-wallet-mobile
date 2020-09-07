@@ -38,10 +38,10 @@
       </ion-list-header>
       <ion-item-sliding *ngFor="let account of accounts; let idx = index">
         <ion-item>
-          <ion-label (click)="accountClicked(account)">
-            <div class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
+          <ion-label >
+            <div (click)="accountClicked(account)" class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
             <div class="address">
-              {{ account.address | shortAddress }}
+              <span (click)="accountClicked(account)">{{ account.address | shortAddress }}</span>
               <span class="icon-copy"><ion-icon name="copy" (click)="copyAddress(account)"></ion-icon></span>
             </div>
             <div class="title" *ngIf="!isLoadingBalance">
@@ -54,9 +54,9 @@
           <ion-button *ngIf="!forWhat && account.type==='multisig'" (click)="viewAccount(account)" class="ion-text-right" color="meddium">
             <ion-icon name="eye"></ion-icon>
           </ion-button>  
-          <!-- <ion-button *ngIf="!forWhat" (click)="editName(account)" class="ion-text-right" color="meddium">
-            <ion-icon name="create"></ion-icon>
-          </ion-button>           -->
+          <ion-button (click)="editDataSet(account)" class="ion-text-right" color="meddium">
+            <ion-icon name="bookmark"></ion-icon>
+          </ion-button>          
         </ion-item>
         <ion-item-options *ngIf="!forWhat" >
           <button color="success" (click)="editName(account)" class="tool">

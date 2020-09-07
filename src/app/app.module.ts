@@ -52,6 +52,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { ImportAccountPageModule } from './Pages/account/import-account/import-account.module';
 import { SharedModule } from './Shared/shared.module';
 import { DateAgoPipe } from './Shared/pipe/date-ago.pipe';
+import { DatasetAccountPageModule } from './Pages/account/dataset-account/dataset-account.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -82,6 +83,7 @@ export function createTranslateLoader(http: HttpClient) {
     SetupPinPageModule,
     EnterpinsendPageModule,
     ImportAccountPageModule,
+    DatasetAccountPageModule,
     PinBackupPageModule,
     ChatProfilePageModule,
     AccountPopupPageModule,

@@ -9,13 +9,15 @@ import { NavController, ModalController, AlertController } from '@ionic/angular'
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { ImportAccountPage } from './import-account/import-account.page';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
+import { DatasetAccountPage } from './dataset-account/dataset-account.page';
+
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
   styleUrls: ['./list-account.component.scss']
 })
 export class ListAccountComponent implements OnInit {
-  
+
   forWhat: string;
   accounts: Account[];
   isError: boolean;
@@ -173,6 +175,20 @@ export class ListAccountComponent implements OnInit {
       if (returnedData && returnedData.data !== 0) {
         alert('Account has been successfully imported');
       }
+    });
+    return await pinmodal.present();
+  }
+
+  async editDataSet() {
+    const pinmodal = await this.modalController.create({
+      component: DatasetAccountPage,
+      componentProps: {}
+    });
+
+    pinmodal.onDidDismiss().then(returnedData => {
+      console.log('=== returneddata: ', returnedData);
+
+
     });
     return await pinmodal.present();
   }

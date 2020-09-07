@@ -251,8 +251,9 @@ const routes: Routes = [
   },
   { path: 'explanation-screen', loadChildren: './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule' },
   { path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
+   canActivate: [AuthService]},
+  { path: 'dataset-account', loadChildren: './Pages/account/dataset-account/dataset-account.module#DatasetAccountPageModule' ,
    canActivate: [AuthService]}
-
 ];
 @NgModule({
   imports: [
