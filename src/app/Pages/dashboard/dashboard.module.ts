@@ -8,7 +8,6 @@ import { IonicModule } from '@ionic/angular';
 import { DashboardPage } from './dashboard.page';
 import { ComponentsModule } from 'src/app/Components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { PipeModule } from 'src/pipe/pipe.module';
 
 const routes: Routes = [
   {
@@ -24,8 +23,7 @@ const routes: Routes = [
     IonicModule,
     ComponentsModule,
     RouterModule.forChild(routes),
-    TranslateModule,
-    PipeModule
+    TranslateModule
   ],
   declarations: [DashboardPage]
 })
