@@ -21,7 +21,7 @@ export class FormAddressComponent implements OnInit, OnChanges {
   @Input() addressId: number | null = null;
   @Input() value: { name: string; address: string } | null = null;
   @Output() onSubmit = new EventEmitter();
-  @Output() onCancel = new EventEmitter();
+
   addresses = [];
   validationMessage = '';
   submitted = false;
@@ -142,10 +142,6 @@ export class FormAddressComponent implements OnInit, OnChanges {
       const result = jsondata.split('||');
       this.formAddress.controls['address'].setValue(result[0]);
     }
-  }
-
-  cancel() {
-    this.onCancel.emit();
   }
 }
 

@@ -25,12 +25,8 @@ export class AddAddressPage implements OnInit {
     };
 
     await this.addressBookSrv.insert(contact);
-    this.goBack();
+    this.navCtrl.pop();
   }
 
   ngOnInit() {}
-
-  goBack() {
-    this.navCtrl.navigateBack('/address-book');
-  }
 }

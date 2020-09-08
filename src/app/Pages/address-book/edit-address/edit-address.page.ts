@@ -41,10 +41,6 @@ export class EditAddressPage implements OnInit {
 
     await this.addressBookSrv.updateByIndex(contact, this.addressId);
 
-    this.goBack();
-  }
-
-  goBack() {
-    this.navCtrl.navigateBack('/address-book');
+    this.navCtrl.pop();
   }
 }
