@@ -4,6 +4,7 @@ import { NavParams, ModalController, AlertController } from '@ionic/angular';
 import { UtilService } from 'src/app/Services/util.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
+import { getZBCAddress } from 'zoobc-sdk';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -14,6 +15,9 @@ export class TransactionDetailPage implements OnInit {
   transaction: Transaction;
   account: any;
   status: string;
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
 
   constructor(
     private utilService: UtilService,
@@ -27,7 +31,7 @@ export class TransactionDetailPage implements OnInit {
   }
 
   ngOnInit() {
-    
+
     if (this.navParams && this.navParams.data) {
       this.transaction = this.navParams.data.transaction;
       this.account = this.navParams.data.account;
@@ -52,9 +56,12 @@ export class TransactionDetailPage implements OnInit {
     await this.modalCtrl.dismiss();
   }
 
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
+  toZbcFormat(id: string, prefix: string) {
+    const buf = new TextEncoder().encode(id);
+    console.log(buf);
+    const address = getZBCAddress(buf, prefix);
+    return address;
+  }
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
@@ -80,7 +87,7 @@ export class TransactionDetailPage implements OnInit {
 
     this.translateSrv
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;

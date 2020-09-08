@@ -23,7 +23,11 @@
       <ion-label>
         <p class="info-label">{{ "Transaction ID" | translate }}</p>
         <p class="info-val">
-          {{ transaction.id }}
+          {{ toZbcFormat(transaction.id, 'ZTX') | shortAddress }}
+          <ion-icon class="iconCopy"
+          slot="end"
+          name="copy"
+          (click)="copyAddress(toZbcFormat(transaction.id, 'ZTX'))"></ion-icon>
         </p>
       </ion-label>
     </ion-item>
@@ -32,7 +36,11 @@
       <ion-label>
         <p class="info-label">{{ "Block ID" | translate }}</p>
         <p class="info-val">
-          {{ transaction.blockId }}
+          {{ toZbcFormat(transaction.blockId, 'ZBL') | shortAddress}}
+          <ion-icon class="iconCopy"
+          slot="end"
+          name="copy"
+          (click)="copyAddress(toZbcFormat(transaction.blockId, 'ZBL'))"></ion-icon>
         </p>
       </ion-label>
     </ion-item>
@@ -54,37 +62,31 @@
         </p>
       </ion-label>
     </ion-item>
-    <!-- <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Transaction Type" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.type }}
-        </p>
-      </ion-label>
-    </ion-item> -->
 
     <ion-item *ngIf="transaction.type !== 'send'">
       <ion-label>
         <p class="info-label">{{ "Sender Address" | translate }}</p>
-        <p class="info-val">{{ transaction.sender }}</p>
+        <p class="info-val">{{ transaction.sender | shortAddress }}
+          <ion-icon class="iconCopy"
+          slot="end"
+          name="copy"
+          (click)="copyAddress(transaction.sender)"></ion-icon>
+        </p>
       </ion-label>
-      <ion-icon
-        slot="end"
-        name="copy"
-        (click)="copyAddress(transaction.sender)"
-      ></ion-icon>
     </ion-item>
     <ion-item *ngIf="transaction.type === 'send'">
       <ion-label>
         <p class="info-label">{{ "Recipient Address" | translate }}</p>
-        <p class="info-val">{{ transaction.recipient }}</p>
+        <p class="info-val">{{ transaction.recipient | shortAddress }}
+          <ion-icon class="iconCopy"
+          slot="end"
+          name="copy"
+          (click)="copyAddress(transaction.recipient)"
+        ></ion-icon>
+  
+        </p>
       </ion-label>
-      <ion-icon
-        slot="end"
-        name="copy"
-        (click)="copyAddress(transaction.recipient)"
-      ></ion-icon>
-    </ion-item>
+     </ion-item>
 
     <ion-item *ngIf="transaction.type === 'send'">
       <ion-label>
