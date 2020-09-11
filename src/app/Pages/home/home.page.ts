@@ -362,6 +362,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.router.navigate(['/transactions']);
   }
 
+  goToScan() {
+    this.router.navigate(['/qr-scanner']);
+  }
+
   isLoadingRecentTx: boolean = false;
   recentTx: any;
   unconfirmTx: any;
