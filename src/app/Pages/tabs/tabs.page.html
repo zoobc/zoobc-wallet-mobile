@@ -1,31 +1,51 @@
 <ion-content>
-  <ion-tabs>
+  <ion-tabs #homeTabs (ionTabsDidChange)="tabChanged()">
     <ion-tab-bar slot="bottom">
       <ion-tab-button tab="home">
-        <ion-icon name="zbc-home"></ion-icon>
+        <ion-icon *ngIf="activeTab=='home'; else iconHome" name="zbc-home-active"></ion-icon>
         <ion-label>Home</ion-label>
       </ion-tab-button>
 
       <ion-tab-button tab="task">
-        <ion-icon name="zbc-task"></ion-icon>
+        <ion-icon *ngIf="activeTab=='task'; else iconTask" name="zbc-task-active"></ion-icon>
         <ion-label>Tasks</ion-label>
       </ion-tab-button>
 
       <ion-tab-button tab="app">
-        <ion-icon name="zbc-app"></ion-icon>
+        <ion-icon *ngIf="activeTab=='app'; else iconApp" name="zbc-app-active"></ion-icon>
         <ion-label>Apps</ion-label>
       </ion-tab-button>
 
       <ion-tab-button tab="contact">
-        <ion-icon name="zbc-contact"></ion-icon>
+        <ion-icon *ngIf="activeTab=='contact'; else iconContact" name="zbc-contact-active">
+        </ion-icon>
         <ion-label>Contacts</ion-label>
-        <ion-badge>99+</ion-badge>
       </ion-tab-button>
 
       <ion-tab-button tab="setting">
-        <ion-icon name="zbc-setting"></ion-icon>
+        <ion-icon *ngIf="activeTab=='setting'; else iconSetting" name="zbc-setting-active"></ion-icon>
         <ion-label>Settings</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>
 </ion-content>
+
+<ng-template #iconHome>
+  <ion-icon name="zbc-home"></ion-icon>
+</ng-template>
+
+<ng-template #iconTask>
+  <ion-icon name="zbc-task"></ion-icon>
+</ng-template>
+
+<ng-template #iconApp>
+  <ion-icon name="zbc-app"></ion-icon>
+</ng-template>
+
+<ng-template #iconContact>
+  <ion-icon name="zbc-contact"></ion-icon>
+</ng-template>
+
+<ng-template #iconSetting>
+  <ion-icon name="zbc-setting"></ion-icon>
+</ng-template>
