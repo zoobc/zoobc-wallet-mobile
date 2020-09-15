@@ -54,9 +54,9 @@
           <ion-button *ngIf="!forWhat && account.type==='multisig'" (click)="viewAccount(account)" class="ion-text-right" color="meddium">
             <ion-icon name="eye"></ion-icon>
           </ion-button>  
-          <ion-button (click)="editDataSet(account)" class="ion-text-right" color="meddium">
+          <!-- <ion-button (click)="editDataSet(account)" class="ion-text-right" color="meddium">
             <ion-icon name="bookmark"></ion-icon>
-          </ion-button>          
+          </ion-button>           -->
         </ion-item>
         <ion-item-options *ngIf="!forWhat" >
           <button color="success" (click)="editName(account)" class="tool">

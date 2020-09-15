@@ -42,13 +42,11 @@
       </ion-col>
     </ion-row>
     <ion-row *ngIf="isMultisig &&  mode && mode == 0">
-      <ion-col>
-       
-          {{account.name}} 
-       
+      <ion-col>       
+          {{account.name}}        
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="isMultisig &&  mode && mode == 1">
+    <ion-row *ngIf="mode && mode == 1">
       <ion-col>
         <ion-input padding="false" placeholder="{{ 'Please enter your account name' | translate }}"
           [(ngModel)]="account.name"></ion-input>
@@ -82,7 +80,7 @@
     </div>
 
  
-    <ion-row *ngIf="account && isMultisig &&  mode == 1">
+    <ion-row *ngIf="account &&  mode == 1">
       <ion-col>
         <ion-button strong color="secondary" (click)="UpdateAccount()" type="submit" expand="block">
           <span>{{"Update"|translate}}</span>
@@ -90,7 +88,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row *ngIf="account && isMultisig &&  mode == 1">
+    <ion-row *ngIf="account &&  mode == 1">
       <ion-col>
         <ion-button expand="block" color="secondary" routerLink="/list-account" fill="outline" expand="block">
           {{ "Cancel" | translate }}</ion-button>
