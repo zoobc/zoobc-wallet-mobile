@@ -214,7 +214,18 @@ export const LANGUAGES = [
 ];
 
 export const NETWORK_LIST = [
-
+  {
+    name: 'Beta 1',
+    host: 'http://n1.beta.proofofparticipation.network:7001/'
+  },
+  {
+    name: 'Beta 2',
+    host: 'http://n2.beta.proofofparticipation.network:7001/'
+  },
+  {
+    name: 'Beta 3',
+    host: 'http://n3.beta.proofofparticipation.network:7001/'
+  },
   {
     name: 'Alpha',
     host: 'http://n1.alpha.proofofparticipation.network:7003'
@@ -223,16 +234,8 @@ export const NETWORK_LIST = [
     name: 'Dev',
     host: 'http://85.90.246.90:7001'
   },
-  // {
-  //   name: 'Staging (n0.demo.)',
-  //   host: 'https://n0.demo.proofofparticipation.network'
-  // },
-  // {
-  //   name: 'Demo 1 (x.x.34.10): ',
-  //   host: 'http://172.104.34.10:8002'
-  // },
   {
-    name: 'Demo 2 (x.x.39.58)',
+    name: 'Demo',
     host: 'http://45.79.39.58:8002'
   },
   // {
