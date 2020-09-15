@@ -67,9 +67,9 @@ export class MyTasksPage implements OnInit {
 
   async loadTask() {
     this.account = await this.accountService.getCurrAccount();
-    if (this.account.type !== 'normal') {
-      this.segmentModel = 'multisig';
-    }
+    // if (this.account.type !== 'normal') {
+    //   this.segmentModel = 'multisig';
+    // }
     this.getBlockHeight();
     this.getEscrowTransaction();
     this.getMultiSigPendingList(true);
