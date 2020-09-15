@@ -19,7 +19,7 @@
       <ion-item *ngFor="let account of accounts; let i = index">
         <ion-label (click)="accountClicked(account)">
           <div class="title" *ngIf="account.name">{{ account.name }}</div>
-          <div class="address">{{ shortAddress(account.address) }}</div>
+          <div class="address">{{ account.address | shortAddress }}</div>
           <div class="title" *ngIf="!isLoadingBalance">
             {{account.balance / 1e8 | number: '0.0-2' }} ZBC
           </div>

@@ -64,11 +64,11 @@
       <ion-col>
         <ion-label>
           <h3>Sender</h3>
-          <p> {{ shortAddress(draft.transaction.sender)}}</p>
+          <p> {{ draft.transaction.sender | shortAddress}}</p>
         </ion-label>
         <ion-label>
           <h3>Recipient</h3>
-          <p> {{ shortAddress(draft.transaction.recipient) }}</p>
+          <p> {{ draft.transaction.recipient |shortAddress }}</p>
         </ion-label>
       </ion-col>
     </ion-row>

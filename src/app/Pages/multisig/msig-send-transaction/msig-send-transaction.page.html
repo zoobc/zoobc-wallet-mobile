@@ -28,7 +28,7 @@
       <ion-col size="12" style="border: 1px solid #cccccc">
         <ion-select interface="popover" [(ngModel)]="signBy" (ionChange)="changeSigner()">
           <ion-select-option *ngFor="let account of accounts; let idx = index;" value="{{account.address}}">
-            {{ account.name || shortAddress(account.address)}}
+            {{ account.name || (account.address | shortAddress)}}
           </ion-select-option>
         </ion-select>
       </ion-col>

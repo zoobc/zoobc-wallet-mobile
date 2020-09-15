@@ -4,6 +4,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ShortAddressPipe implements PipeTransform {
   transform(addrs: string): string {
-    return addrs.substring(0, 12).concat('...').concat(addrs.substring(addrs.length - 8, addrs.length));
+    return addrs.substring(0, 8).concat('...').concat(addrs.substring(addrs.length - 4, addrs.length));
   }
 }
