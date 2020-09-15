@@ -37,7 +37,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./dashboard.page.scss']
 })
 export class DashboardPage implements OnInit, OnDestroy {
-  
+
   timeLeft = 12;
   interval: any;
 
@@ -58,6 +58,9 @@ export class DashboardPage implements OnInit, OnDestroy {
   theme = DEFAULT_THEME;
   lastTimeGetBalance: Date;
   lastBalanceUpdated = 'Just now';
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
 
   constructor(
     private authService: AuthService,
@@ -156,9 +159,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.startTimer();
   }
 
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
