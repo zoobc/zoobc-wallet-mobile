@@ -114,7 +114,7 @@ export class MyTasksPage implements OnInit {
   startTimer() {
     setInterval(() => {
       this.loadTask();
-    }, 20000);
+    }, 100000);
   }
 
 
@@ -133,6 +133,7 @@ export class MyTasksPage implements OnInit {
         orderBy: OrderBy.DESC,
         orderField: 'timeout',
       },
+      latest: true
     };
 
     zoobc.Escrows.getList(params)
