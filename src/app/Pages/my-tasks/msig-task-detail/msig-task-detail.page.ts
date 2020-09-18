@@ -207,7 +207,7 @@ export class MsigTaskDetailPage implements OnInit {
 
     this.showPin();
   }
-  
+
   async showPin() {
     const pinmodal = await this.modalController.create({
       component: EnterpinsendPage
@@ -283,7 +283,15 @@ export class MsigTaskDetailPage implements OnInit {
       })
       .catch(err => {
         console.log(err);
-        const message = err + 'An error occurred while processing your request';
+        let message = '';
+        const errMsg = err.message;
+        if (err.code === 13 && errMsg.includes('UserBalanceNotEnough')) {
+          message = 'Signer balance is not enough!';
+        } else if (err.code === 13 && errMsg.includes('TXSenderNotFound')) {
+          message = 'Signer account not register yet, please do transaction first!';
+        } else {
+          message = 'Unknown reason!';
+        }
         this.utilService.showConfirmation('Fail', message, false, null);
       })
       .finally(() => {
