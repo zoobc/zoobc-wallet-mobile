@@ -42,7 +42,6 @@ export class SendCoinPage implements OnInit {
   status: any;
   account: Account;
   senderAddress: string;
-  optionFee: string;
   transactionFee: number;
   withEscrow: boolean;
   allFees = this.trxService.transactionFees(TRANSACTION_MINIMUM_FEE);
@@ -89,7 +88,7 @@ export class SendCoinPage implements OnInit {
     escrow: new FormGroup({
       escrowApprover: new FormControl(''),
       escrowCommision: new FormControl(0),
-      escrowTimeout: new FormControl(0),
+      escrowTimeout: new FormControl(0, [Validators.required, Validators.min(1), Validators.max(720)]),
       escrowInstruction: new FormControl(''),
     })
   });
@@ -209,6 +208,7 @@ export class SendCoinPage implements OnInit {
     this.loadData();
     this.getAllAddress();
     this.getAllAccount();
+    this.onFeeChange();
   }
 
   async getAllAccount() {
@@ -227,7 +227,6 @@ export class SendCoinPage implements OnInit {
 
   loadData() {
     this.getRecipientFromScanner();
-    this.optionFee = this.allFees[0].fee.toString();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
   }
@@ -428,6 +427,7 @@ export class SendCoinPage implements OnInit {
   onEscrowTimeoutChange() {
 
     this.minimumFee = calculateMinFee(this.escrowTimeout.value);
+    this.fee.setValue(this.minimumFee);
 
     this.setFeeValidation();
     this.setAmountValidation();
@@ -438,10 +438,15 @@ export class SendCoinPage implements OnInit {
   }
 
   setAmountValidation() {
-    this.amount.setValidators([Validators.required, Validators.min(0.00000001),
-      Validators.max(this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC ?
+    let max = 0;
+    if (this.account.balance >= (this.fee.value + this.escrowCommision.value)) {
+        max = this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC ?
         this.minimumFee : this.conversionValue.fee.ZBC)
-      - this.escrowCommision.value)]
+      - this.escrowCommision.value;
+    }
+
+    this.amount.setValidators([Validators.required, Validators.min(0.00000001),
+      Validators.max(max)]
      );
     this.amount.updateValueAndValidity();
   }
@@ -454,7 +459,7 @@ export class SendCoinPage implements OnInit {
   addEscrowValidation() {
     this.escrow.get('escrowApprover').setValidators([Validators.required, addressFormatValidator]);
     this.escrow.get('escrowCommision').setValidators([Validators.required, Validators.min(0.00000001)]);
-    this.escrow.get('escrowTimeout').setValidators([Validators.required, Validators.min(1)]);
+    this.escrow.get('escrowTimeout').setValidators([Validators.required, Validators.min(1), Validators.max(720)]);
     this.escrow.get('escrowInstruction').setValidators(Validators.required);
 
     this.escrowUpdateValueAndValidity();
@@ -635,13 +640,7 @@ export class SendCoinPage implements OnInit {
   }
 
   changeFee(value: string) {
-    this.optionFee = value;
-
-    if (value === 'custom') {
-      this.sendForm.controls.fee.setValue(0);
-    } else {
-      this.sendForm.controls.fee.setValue(value);
-    }
+    this.sendForm.controls.fee.setValue(value);
   }
 
   getScannerResult(arg: string) {
