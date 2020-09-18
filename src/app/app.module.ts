@@ -55,7 +55,7 @@ import { DateAgoPipe } from './Shared/pipe/date-ago.pipe';
 import { DatasetAccountPageModule } from './Pages/account/dataset-account/dataset-account.module';
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'assets/zoobc-language-files/locales/', '.json');
 }
 
 @NgModule({
