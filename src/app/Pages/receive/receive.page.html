@@ -3,76 +3,57 @@
     <ion-buttons slot="start">
       <ion-back-button> </ion-back-button>
     </ion-buttons>
-
-    <ion-title>{{ "Receive" | translate }} ZBC</ion-title>
+    <ion-title>{{ "receive" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
-      </ion-button>
-    </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button (click)="openSharing()">
-        <ion-icon slot="icon-only" name="share"></ion-icon>
+        {{ "feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
   <ion-grid>
     <ion-row>
-      <ion-col class="warning">
-        {{ "Show this qrcode to your friend to transfer zoobc coin to your
-        account" | translate }}
+      <ion-col class="ion-text-center" size="12">
+        <ion-label>
+          <p>{{ "amount" | translate }}</p>
+        </ion-label>
+      </ion-col>
+      <ion-col size="3">&nbsp;</ion-col>
+      <ion-col class="ion-text-end" size="6">
+        <ion-input type="number" class="amount" (ionChange)="changeBarcode()" [(ngModel)]="amount">
+        </ion-input>
+      </ion-col>
+      <ion-col class="ion-text-left" size="2" class="postfix">
+        <ion-text>ZBC</ion-text>
       </ion-col>
     </ion-row>
-
     <ion-row>
-      <ion-col class="ion-text-center">
+      <ion-col class="ion-text-center space">
+        <ion-label>{{ 'show this QR code to your friend to transfer money to your account' | translate }}</ion-label>
         <div *ngIf="createdCode">
-          <ngx-qrcode [qrc-value]="createdCode"
-           cssClass="qrcode"
-           errorCorrectionLevel="L">
+          <ngx-qrcode [qrc-value]="createdCode" cssClass="qrcode" errorCorrectionLevel="L">
           </ngx-qrcode>
         </div>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col class="qrcode">
-        <div style="margin-bottom: 5px; font-weight: bold;">Address:</div>
-        <div *ngIf="account">
-          {{ account.address }}
-          <ion-button
-            fill="outline"
-            expand="block"
-            size="small"
-            (click)="copyToClipboard()"
-          >
-            <ion-icon name="copy"></ion-icon> Copy
-          </ion-button>
-        </div>
+      <ion-col class="ion-text-center">
+        <ion-label>
+          <p> {{ 'your zoobc address' | translate }}:</p>
+          <ion-text *ngIf="account">{{ account.address }}</ion-text>
+        </ion-label>
       </ion-col>
     </ion-row>
-
     <ion-row>
-      <ion-col class="qrcode">
-        <div style="margin-bottom: 5px; font-weight: bold;">Amount</div>
-      </ion-col>
-    </ion-row>
-
-    <ion-row class="qrcode">
-      <ion-col size="7">
-        <ion-input
-          class="ion-text-end"
-          style="border:1px solid #cccccc;"
-          type="number"
-          (ionChange)="changeBarcode()"
-          [(ngModel)]="amount"
-        >
-        </ion-input>
-      </ion-col>
-      <ion-col size="5">
-        <div style="margin-top: 10px">ZBC</div>
+      <ion-col class="ion-text-center space">
+        <ion-button fill="outline" (click)="copyToClipboard()">
+          <ion-icon name="copy"></ion-icon> {{ "copy" | translate }}
+        </ion-button>
+        <ion-button fill="outline" (click)="openSharing()">
+          <ion-icon slot="icon-only" name="share"></ion-icon> {{ "share" | translate }}
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
