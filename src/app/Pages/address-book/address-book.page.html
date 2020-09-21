@@ -3,19 +3,25 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Contacts" | translate }}</ion-title>
+    <ion-title>{{ 'contacts' | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
-      <ion-button routerLink="/address-book/export-import">
-        Export/Import
-      </ion-button>
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" |  translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-end horizontalline" >
+        <ion-button color="tertiary" routerLink="/address-book/export-import">
+          {{ 'export' | translate }} / {{ 'import' | translate }}
+        </ion-button>      
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <ion-fab *ngIf="!forWhat" ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button color="tertiary" (click)="createNewAddress()">
@@ -25,8 +31,8 @@
 
   <div class="address-book-list" style="margin-bottom: 60px;">
     <ng-template #noData>
-      <ion-item lines="none">
-        <ion-label>{{ "You dont have any address" | translate }}</ion-label>
+      <ion-item lines="none" class="ion-text-center">
+        <ion-label>{{ 'no contacts available' | translate }}</ion-label>
       </ion-item>
     </ng-template>
 
