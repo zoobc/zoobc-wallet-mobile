@@ -26,27 +26,16 @@
         <ion-label>{{ "you dont have any address" | translate }}</ion-label>
       </ion-item>
     </ng-template>
-
     <ion-list *ngIf="addresses && addresses.length >= 1; else noData">
-      <ion-item-sliding *ngFor="let address of addresses; let i = index">
-        <ion-item>
-          <ion-label (click)="selectAddress(address)">
-            <p class="name">{{ address.name }}</p>
-            <p class="address">
-              <app-with-copy title="{{ address.address | shortAddress }}" value="{{ address.address }}"></app-with-copy>
-            </p>
-          </ion-label>
-        </ion-item>
-        <ion-item-options *ngIf="!forWhat" >
-          <button color="success" (click)="editAddress(i)" class="tool">
-            <ion-icon name="create"></ion-icon>{{ "edit" | translate }}
-          </button>
-          <button color="danger" (click)="deleteAddress(i)" class="tool">
-            <ion-icon name="trash"></ion-icon>{{ "delete" | translate }}
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
+      <ion-item *ngFor="let address of addresses; let i = index">
+        <ion-label (click)="selectAddress(address)" class="ion-text-wrap">
+          <p class="name">{{ address.name }}</p>
+          <p class="address">
+            {{ address.address }}
+          </p>
+        </ion-label>
+        <ion-icon *ngIf="!forWhat" name="zbc-option" slot="end" (click)="showOption($event, i)"></ion-icon>
+      </ion-item>
     </ion-list>
   </div>
-
 </ion-content>
