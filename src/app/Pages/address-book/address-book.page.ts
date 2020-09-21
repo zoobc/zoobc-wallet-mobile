@@ -2,8 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Location } from '@angular/common';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, PopoverController } from '@ionic/angular';
 import { FOR_RECIPIENT, FOR_APPROVER, FOR_PARTICIPANT, FOR_SIGNBY } from 'src/environments/variable.const';
+import { PopoverAddressComponent } from './popover-address/popover-address.component';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-address-book',
@@ -20,13 +22,44 @@ export class AddressBookPage implements OnInit, OnDestroy {
     private navCtrl: NavController,
     private addressBookSrv: AddressBookService,
     private alertCtrl: AlertController,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public popoverController: PopoverController,
+    private utilService: UtilService
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
         this.getAllAddress();
       }
     });
+  }
+
+
+
+  async showOption(ev: any, addressIndex: number) {
+    const popover = await this.popoverController.create({
+      component: PopoverAddressComponent,
+      event: ev,
+      translucent: true
+    });
+
+    const address = this.addresses[addressIndex];
+
+    popover.onDidDismiss().then(({ data }) => {
+      switch (data) {
+        case 'copy':
+          this.utilService.copyToClipboard(address.address);
+          break;
+        case 'edit':
+          this.editAddress(addressIndex);
+          break;
+        case 'delete':
+          this.deleteAddress(addressIndex);
+          break;
+      }
+
+    });
+
+    return popover.present();
   }
 
   ngOnDestroy() {

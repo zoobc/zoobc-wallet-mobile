@@ -10,6 +10,7 @@ import { AddAddressPage } from './add-address/add-address.page';
 import { FormAddressComponent } from './form-address/form-address.component';
 import { EditAddressPage } from './edit-address/edit-address.page';
 import { SharedModule } from 'src/app/Shared/shared.module';
+import { PopoverAddressComponent } from './popover-address/popover-address.component';
 
 const routes: Routes = [
   {
@@ -45,7 +46,11 @@ const routes: Routes = [
     AddressBookPage,
     AddAddressPage,
     EditAddressPage,
-    FormAddressComponent
+    FormAddressComponent,
+    PopoverAddressComponent
+  ],
+  entryComponents: [
+    PopoverAddressComponent
   ]
 })
-export class AddressBookPageModule {}
+export class AddressBookPageModule { }
