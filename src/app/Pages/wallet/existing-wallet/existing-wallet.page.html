@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Open Existing Wallet" | translate }}</ion-title>
+    <ion-title>{{ 'open another wallet' | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -16,139 +16,138 @@
 
   <ion-grid>
     <ion-row>
-      <ion-col size="12" style="margin-bottom: 10px;">
-        <h4>
-          {{ "Please Enter Your Passphrase" | translate }}
-        </h4>
-        <p>Copy your 24 words passphrase and paste here, it will fill in all input field. </p>
+      <ion-col size="12" class="ion-text-center">
+        <h5>
+          {{ 'please enter your seed phrase' | translate }}
+        </h5>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="1"
           [(ngModel)]="arrayPhrase[0]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="2"
           [(ngModel)]="arrayPhrase[1]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="3"
           [(ngModel)]="arrayPhrase[2]"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="4"
           [(ngModel)]="arrayPhrase[3]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="5"
           [(ngModel)]="arrayPhrase[4]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="6"
           [(ngModel)]="arrayPhrase[5]"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="7"
           [(ngModel)]="arrayPhrase[6]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="8"
           [(ngModel)]="arrayPhrase[7]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="9"
           [(ngModel)]="arrayPhrase[8]"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="10"
           [(ngModel)]="arrayPhrase[9]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="11"
           [(ngModel)]="arrayPhrase[10]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="12"
           [(ngModel)]="arrayPhrase[11]"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="13"
           [(ngModel)]="arrayPhrase[12]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="14"
           [(ngModel)]="arrayPhrase[13]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="15"
           [(ngModel)]="arrayPhrase[14]"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="16"
           [(ngModel)]="arrayPhrase[15]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="17"
           [(ngModel)]="arrayPhrase[16]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="18"
           [(ngModel)]="arrayPhrase[17]"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="19"
           [(ngModel)]="arrayPhrase[18]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="20"
           [(ngModel)]="arrayPhrase[19]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="21"
           [(ngModel)]="arrayPhrase[20]"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col class="ion-text-center">
+      <ion-col class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="22"
           [(ngModel)]="arrayPhrase[21]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="23"
           [(ngModel)]="arrayPhrase[22]"></ion-input>
       </ion-col>
-      <ion-col  class="ion-text-center">
+      <ion-col  class="ion-text-left">
         <ion-input (paste)="onPaste($event)" placeholder="24"
           [(ngModel)]="arrayPhrase[23]"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="errorMsg">
-        <ion-col class="ion-text-center">
-          <ion-text class="errormsg" style="color:#f68989">{{errorMsg}} </ion-text>
+        <ion-col class="ion-text-left">
+          <ion-text class="errormsg" color="danger">{{errorMsg}} </ion-text>
         </ion-col>
     </ion-row>  
     <ion-row style="margin-top:20px;">
-      <ion-col class="ion-text-center">
-        <ion-button color="secondary" expand="block" (click)="openExistingWallet()">{{ "Restore Wallet" | translate }}
+      <ion-col class="ion-text-left">
+        <ion-button color="secondary" expand="block" (click)="openExistingWallet()">{{ 'open wallet' | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
     <ion-row style="margin-bottom:20px;">
-      <ion-col class="ion-text-center">
-        <ion-button expand="block" fill="outline" color="secondary" (click)="resetForm()">Reset</ion-button>
+      <ion-col class="ion-text-left">
+        <ion-button expand="block" fill="outline" color="secondary" (click)="resetForm()">{{ 'clear' | translate }}</ion-button>
       </ion-col>
     </ion-row>
 
