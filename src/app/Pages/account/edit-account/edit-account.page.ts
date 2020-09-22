@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EMPTY_STRING, FOR_PARTICIPANT } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { sanitizeString } from 'src/Helpers/utils';
@@ -75,6 +74,8 @@ export class EditAccountPage implements OnInit {
   }
 
   ngOnInit() {
+    console.log('==== Node: ', this.mode);
+
     this.activeRoute.queryParams.subscribe(params => {
       this.account = JSON.parse(params.account);
       this.mode = params.mode;
@@ -186,26 +187,6 @@ export class EditAccountPage implements OnInit {
       return;
     }
 
-    // // const pathNumber = await this.accountService.generateDerivationPath();
-    // // let account: Account = this.accountService.createNewAccount(
-    // //   this.accountName.trim(),
-    // //   pathNumber
-    // // );
-
-    // if (this.isMultisig) {
-    //   // this.participants = this.participants.sort();
-    //   const multiParam: MultiSigAddress = {
-    //     participants: this.participants,
-    //     nonce: this.nonce,
-    //     minSigs: this.minimumSignature
-    //   };
-    //   account = this.accountService.createNewMultisigAccount(
-    //     this.accountName.trim(),
-    //     multiParam,
-    //     this.signByAccount
-    //   );
-    // }
-
     this.account.name = sanitizeString(this.account.name);
     this.accountService.updateAccount(this.account);
     this.accountService.broadCastNewAccount(this.account);
@@ -217,7 +198,7 @@ export class EditAccountPage implements OnInit {
     this.validationMessage = '';
     const isExists = this.accounts.find(acc => {
       if (name && acc.name.trim().toLowerCase() === name.trim().toLowerCase()) {
-        this.validationMessage = 'Name exists with address: ' + makeShortAddress(acc.address);
+        this.validationMessage = 'Name exists with address: ' + acc.address;
         return true;
       }
       return false;
