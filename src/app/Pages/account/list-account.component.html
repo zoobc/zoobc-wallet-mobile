@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "List of Account" | translate }}</ion-title>
+    <ion-title>{{ 'accounts' | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{ "feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -14,8 +14,8 @@
 
 <ion-content>
   <ion-item>
-    <ion-button color="secondary" (click)="importAccount()">Import Account</ion-button>
-    <ion-button color="secondary" (click)="scanQrCode()">Scan</ion-button>
+    <ion-button color="tertiary" (click)="importAccount()">{{"import" | translate}} {{ "accounts" | translate }}</ion-button>
+    <ion-button color="tertiary" (click)="scanQrCode()">{{ "scan" | translate }}</ion-button>
   </ion-item>
   <div *ngIf="isLoadingBalance" style="margin-top:5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -28,7 +28,7 @@
   <div class="list-account-page" style="margin-bottom: 60px;">
     <ng-template #noData>
       <ion-item lines="none">
-        <ion-label>{{ "You dont have any address" | translate }}</ion-label>
+        <ion-label>{{ "you dont have any address" | translate }}</ion-label>
       </ion-item>
     </ng-template>
 
@@ -40,23 +40,27 @@
         <ion-item>
           <ion-label >
             <div (click)="accountClicked(account)" class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
-            <div class="address">
-              <span (click)="accountClicked(account)">{{ account.address | shortAddress }}</span>
-              <span class="icon-copy"><ion-icon name="copy" (click)="copyAddress(account)"></ion-icon></span>
+            <div class="address ion-text-wrap" >
+              <span (click)="accountClicked(account)">{{ account.address }}</span>
             </div>
             <div class="title" *ngIf="!isLoadingBalance">
               {{account.balance / 1e8 | number: '0.0-2' }} ZBC
             </div>
+            <div>
+              <ion-button *ngIf="!forWhat && account.type==='multisig'" class="ion-text-right" (click)="deleteAccount(idx)" color="meddium">
+                <ion-icon name="trash"></ion-icon>
+              </ion-button>          
+              <ion-button *ngIf="!forWhat && account.type==='multisig'" (click)="viewAccount(account)" class="ion-text-right" color="meddium">
+                <ion-icon name="eye"></ion-icon>
+              </ion-button>  
+              <ion-button (click)="editDataSet(account)" class="ion-text-right" color="meddium">
+                <ion-icon name="filing"></ion-icon>
+              </ion-button>  
+              <ion-button (click)="copyAddress(account)" class="ion-text-right" color="meddium">
+                <ion-icon name="copy"></ion-icon>
+              </ion-button>
+            </div>
           </ion-label>
-          <ion-button *ngIf="!forWhat && account.type==='multisig'" class="ion-text-right" (click)="deleteAccount(idx)" color="meddium">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>          
-          <ion-button *ngIf="!forWhat && account.type==='multisig'" (click)="viewAccount(account)" class="ion-text-right" color="meddium">
-            <ion-icon name="eye"></ion-icon>
-          </ion-button>  
-          <!-- <ion-button (click)="editDataSet(account)" class="ion-text-right" color="meddium">
-            <ion-icon name="bookmark"></ion-icon>
-          </ion-button>           -->
         </ion-item>
         <ion-item-options *ngIf="!forWhat" >
           <button color="success" (click)="editName(account)" class="tool">

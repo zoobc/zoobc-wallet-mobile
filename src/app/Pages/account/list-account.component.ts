@@ -179,18 +179,13 @@ export class ListAccountComponent implements OnInit {
     return await pinmodal.present();
   }
 
-  async editDataSet() {
-    const pinmodal = await this.modalController.create({
-      component: DatasetAccountPage,
-      componentProps: {}
-    });
-
-    pinmodal.onDidDismiss().then(returnedData => {
-      console.log('=== returneddata: ', returnedData);
-
-
-    });
-    return await pinmodal.present();
+  async editDataSet(acc: Account) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        account: JSON.stringify(acc)
+      }
+    };
+    this.router.navigate(['/dataset-account'], navigationExtras);
   }
 
   accountClicked(account: Account) {
