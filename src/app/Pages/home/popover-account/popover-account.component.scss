@@ -1,0 +1,30 @@
+ion-item ion-radio{
+  margin-right: 20px;
+}
+
+ion-item ion-label{
+  display: flex;
+  justify-content: space-between;
+
+  .title{
+    font-size: 0.9rem;
+  }
+
+  .address{
+    font-size: 0.8rem;
+    color: #727588;
+  }
+
+  .main-balance{
+    font-size: 0.9rem;
+  }
+}
+
+.actions{
+  display: flex;
+  justify-content: space-between;
+  ion-button {
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+}

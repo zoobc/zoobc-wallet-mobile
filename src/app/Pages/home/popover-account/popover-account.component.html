@@ -1,0 +1,22 @@
+<ion-list lines="none">
+  <ion-radio-group value="{{ selectedIndex }}">
+    <ion-item *ngFor="let account of accounts; let idx = index" (click)="selectAccount(account)">
+      <ion-radio slot="start" value="{{idx}}"></ion-radio>
+      <ion-label>
+        <div>
+          <div class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
+          <div class="address">
+            {{ account.address | shortAddress }}
+          </div>
+        </div>
+        <div class="main-balance" *ngIf="!isLoadingBalance">
+          {{account.balance / 1e8 | number: '0.0-2' }} ZBC
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-radio-group>
+</ion-list>
+<div class="actions">
+  <ion-button fill="clear" (click)="goToAccount()">{{ "manage accounts" | translate }}</ion-button>
+  <ion-button fill="clear" (click)="cancel()">{{ "cancel" | translate }}</ion-button>
+</div>
