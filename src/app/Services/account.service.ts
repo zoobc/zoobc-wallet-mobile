@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 import { StoragedevService } from './storagedev.service';
 import { Account } from '../Interfaces/account';
 import { sanitizeString } from 'src/Helpers/utils';
-import zoobc, { MultiSigAddress, ZooKeyring, getZBCAdress } from 'zoobc-sdk';
+import zoobc, { MultiSigAddress, ZooKeyring, getZBCAddress } from 'zoobc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -183,7 +183,7 @@ export class AccountService {
 
   createNewAccount(arg: string, pathNumber: number) {
     const childSeed = this.keyring.calcDerivationPath(pathNumber);
-    const address = getZBCAdress(childSeed.publicKey);
+    const address = getZBCAddress(childSeed.publicKey);
     const account: Account = {
       name: sanitizeString(arg),
       path: pathNumber,

@@ -33,7 +33,7 @@ import { TranslateService } from '@ngx-translate/core';
 import zoobc, {
   TransactionListParams,
   toTransactionListWallet,
-  getZBCAdress,
+  getZBCAddress,
   MempoolListParams,
   toUnconfirmedSendMoneyWallet,
   AccountBalanceResponse,
@@ -364,6 +364,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   goToScan() {
     this.router.navigate(['/qr-scanner']);
+  }
+
+  goToTransactionDetail(transactionId) {
+    this.router.navigate(['/transaction/' + transactionId]);
   }
 
   isLoadingRecentTx: boolean = false;
