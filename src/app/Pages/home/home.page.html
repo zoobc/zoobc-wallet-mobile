@@ -57,7 +57,7 @@
           </div>
         </ion-item>
         <ng-container *ngIf="recentTx && recentTx.length>=1; else noTransaction">
-          <ion-item *ngFor="let transaction of recentTx; let i = index">
+          <ion-item *ngFor="let transaction of recentTx; let i = index" (click)="goToTransactionDetail(transaction.id)">
             <div class="transaction-item">
               <div class="info">
                 <span class="sender">

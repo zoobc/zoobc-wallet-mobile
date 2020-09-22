@@ -1,47 +1,93 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="end">
-      <ion-button (click)="close()">
-        <ion-icon name="close-circle"></ion-icon>
-      </ion-button>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{ "transaction detail" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+
   <ion-list class="info-list">
-    <ion-item>
+    <!--<ion-item>
       <ion-label>
         <p class="info-label">{{ "status" | translate }}</p>
         <p *ngIf="status==='confirm'" class="info-val-confirm">{{ status | uppercase}}</p>
         <p *ngIf="status!=='confirm'" class="info-val-pending">{{ status | uppercase}}</p>
       </ion-label>
-    </ion-item>
+    </ion-item>-->
 
-    <ion-item *ngIf="transaction.id">
-      <ion-label>
-        <p class="info-label">{{ "transaction id" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.id }}
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">{{ "transaction hash" | translate }}</p>
+        <p class="info-val" *ngIf="transactionWallet">
+          <app-with-copy title="{{ transactionWallet.transactionhash }}" value="{{ transactionWallet.transactionhash }}">
+          </app-with-copy>
         </p>
       </ion-label>
     </ion-item>
 
-    <ion-item *ngIf="transaction.blockId">
+    <ion-item>
       <ion-label>
         <p class="info-label">{{ "block id" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.blockId }}
+        <p class="info-val" *ngIf="transactionWallet">
+          {{ transactionWallet.blockId }}
         </p>
       </ion-label>
     </ion-item>
 
-    <ion-item *ngIf="transaction.height || transaction.height === 0">
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "transaction type" | translate }}</p>
+        <p class="info-val" *ngIf="transactionWallet">
+          {{ transactionWallet.type }}
+        </p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="transactionWallet">
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">
+          <span *ngIf="transactionWallet.type !== 'send'">{{ "sender address" | translate }}</span>
+          <span *ngIf="transactionWallet.type === 'send'">{{ "recipient address" | translate }}</span></p>
+        <div class="info-val">
+          <app-with-copy title="{{ transactionWallet.address }}" value="{{ transactionWallet.address }}">
+          </app-with-copy>
+        </div>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "amount" | translate }}</p>
+        <ng-container *ngIf="transactionWallet">
+          <p
+          [ngClass]="transactionWallet.type !== 'send' ? 'info-val-receive':'info-val-send'"
+          >
+            <span *ngIf="transactionWallet.type === 'send'">-</span> <span *ngIf="transactionWallet.type !== 'send'">+</span> {{ transactionWallet.amount / 1e8 | number: '0.2-4' }} ZBC
+          </p>
+        </ng-container>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <ng-container *ngIf="transactionWallet">
+        <p class="info-label">{{ "fee" | translate }}</p>
+        <p 
+          [ngClass]="transactionWallet.type === 'send' ? 'info-val-send':'info-val'">
+          <span *ngIf="transactionWallet.type === 'send'">- </span>{{ transactionWallet.fee / 1e8 | number: '0.2-4'}} ZBC
+        </p>
+      </ng-container>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
       <ion-label>
         <p class="info-label">{{ "height" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.height }}
+        <p class="info-val" *ngIf="transactionWallet || (transactionWallet && transactionWallet.height===0)">
+          {{ transactionWallet.height }}
         </p>
       </ion-label>
     </ion-item>
@@ -49,64 +95,13 @@
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "transaction date" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.timestamp | date: "medium" }}
-        </p>
-      </ion-label>
-    </ion-item>
-    <!-- <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Transaction Type" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.type }}
-        </p>
-      </ion-label>
-    </ion-item> -->
-
-    <ion-item *ngIf="transaction.type !== 'send'">
-      <ion-label>
-        <p class="info-label">{{ "sender address" | translate }}</p>
-        <p class="info-val">
-          <app-with-copy title="{{ transaction.sender | shortAddress }}" value="{{ transaction.sender }}"></app-with-copy>
-        </p>
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="transaction.type === 'send'">
-      <ion-label>
-        <p class="info-label">{{ "recipient address" | translate }}</p>
-        <p class="info-val">
-          <app-with-copy title="{{ transaction.recipient | shortAddress }}" value="{{ transaction.recipient }}"></app-with-copy>
+        <p class="info-val" *ngIf="transactionWallet">
+          {{ transactionWallet.timestamp | date: "medium" }}
         </p>
       </ion-label>
     </ion-item>
 
-    <ion-item *ngIf="transaction.type === 'send'">
-      <ion-label>
-        <p class="info-label">{{ "amount" | translate }}</p>
-        <p class="info-val-send">- {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC</p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item  *ngIf="transaction.type !== 'send'">
-        <ion-label>
-          <p class="info-label">{{ "amount" | translate }}</p>
-          <p class="info-val-receive">+ {{ transaction.amount / 1e8 | number: '0.2-4'}} ZBC</p>
-        </ion-label>
-    </ion-item>
-
-    <ion-item *ngIf="transaction.type === 'send'">
-      <ion-label>
-        <p class="info-label">{{ "fee" | translate }}</p>
-        <p class="info-val-send">- {{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC</p>
-      </ion-label>
-    </ion-item>
-
-    <!-- <ion-item *ngIf="transaction.type !== 'send'">
-      <ion-label>
-        <p class="info-label">{{ "Fee" | translate }}</p>
-        <p class="info-val-receive">{{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC</p>
-      </ion-label>
-    </ion-item> -->
+    
 
     <!-- <ion-item>
       <ion-label>
@@ -115,22 +110,5 @@
       </ion-label>
     </ion-item> -->
 
-    <!-- 
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Fee" | translate }} USD</p>
-        <p class="info-val">{{ transaction.fee / 1e8 }} ZBC</p>
-      </ion-label>
-    </ion-item> -->
   </ion-list>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-button (click)="close()" color="secondary"
-          >{{ "close" | translate }}</ion-button
-        >
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 </ion-content>

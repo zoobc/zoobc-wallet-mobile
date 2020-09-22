@@ -416,4 +416,8 @@ export class TransactionsPage implements OnInit {
       this.networkSubscription.unsubscribe();
     }
   }
+
+  goToTransactionDetail(transactionId) {
+    this.router.navigate(['/transaction/' + transactionId]);
+  }
 }

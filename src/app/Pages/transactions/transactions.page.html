@@ -51,14 +51,6 @@
     </ion-item>
   </ion-list>
 
-  <!-- <h4 class="ion-padding-horizontal">
-    {{ "Transaction(s) History" | translate }}
-  </h4> -->
-
-  <h3 *ngIf="recentTxs.length > 0" class="ion-padding-horizontal">
-    {{ "Transactions History" | translate }} 
-  </h3>
-
   <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length === 0" class="ion-margin-top">
     <ion-item class="ion-text-center">
       <ion-label>
@@ -69,7 +61,7 @@
   </ion-list>
 
   <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length > 0" class="ion-margin-top">
-    <ion-item *ngFor="let transaction of recentTxs; let i = index" button (click)="openDetailTransction(transaction)">
+    <ion-item *ngFor="let transaction of recentTxs; let i = index" button (click)="goToTransactionDetail(transaction.id)">
       <ion-label *ngIf="transaction.name" color="dark">
         <h3>{{ transaction.name }}
           <br/>
