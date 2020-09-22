@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/Shared/shared.module';
+import { PopoverAccountComponent } from './popover-account/popover-account.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     TranslateModule,
     SharedModule
   ],
-  declarations: [HomePage]
+  declarations: [HomePage, PopoverAccountComponent],
+  entryComponents: [PopoverAccountComponent]
 })
 export class HomePageModule {}

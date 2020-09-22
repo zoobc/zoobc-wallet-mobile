@@ -3,7 +3,7 @@
     <div class="scan-container">
       <ion-icon name="zbc-scan" (click)="goToScan()"></ion-icon>
     </div>
-    <ion-label class="account" *ngIf="account" color="medium" (click)="switchAccount()">
+    <ion-label class="account" *ngIf="account" color="medium" (click)="switchAccount($event)">
       <div class="account-name-container">
         <h1 class="account-name">{{ account.name }}</h1>
         <ion-icon name="zbc-chevron-down" color="secondary"></ion-icon>

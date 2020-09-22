@@ -4,7 +4,8 @@ import {
   ToastController,
   LoadingController,
   ModalController,
-  AlertController
+  AlertController,
+  PopoverController
 } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
@@ -41,6 +42,7 @@ import zoobc, {
   TransactionType
 } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
+import { PopoverAccountComponent } from './popover-account/popover-account.component';
 
 @Component({
   selector: 'app-home',
@@ -87,7 +89,8 @@ export class HomePage implements OnInit, OnDestroy {
     private network: Network,
     private alertCtrl: AlertController,
     private translateSrv: TranslateService,
-    private addressBookSrv: AddressBookService
+    private addressBookSrv: AddressBookService,
+    private popoverCtrl: PopoverController
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
@@ -295,13 +298,24 @@ export class HomePage implements OnInit, OnDestroy {
     this.router.navigate(['login']);
   }
 
-  switchAccount() {
-    const navigationExtras: NavigationExtras = {
-      state: {
-        forWhat: 'account'
+  async switchAccount(ev: any) {
+    const popover = await this.popoverCtrl.create({
+      component: PopoverAccountComponent,
+      event: ev,
+      cssClass: 'popover-account',
+      translucent: true
+    });
+
+    popover.onWillDismiss().then(async ({ data }: {data: Account}) => {
+      if (data) {
+        this.account = data;
+        this.accountService.setActiveAccount(data);
+        this.getBalanceByAddress(data.address);
+        this.getTransactions();
       }
-    };
-    this.router.navigate(['list-account'], navigationExtras);
+    });
+
+    return popover.present();
   }
 
   openListAccount() {
