@@ -12,11 +12,18 @@ export class ThemeService {
   theme = DEFAULT_THEME;
   themes = {
     zoobc: {
-      primary: '#373854',
-      secondary: '#493267',
-      tertiary: '#9e379f',
-      dbbalance: '#9e379f',
-      dbspbalance: '#7bb3ff'
+      primary: '#0c0f32',
+      secondary: '#4B4F75',
+      tertiary: '#359ADB',
+      dbbalance: '#359ADB',
+      dbspbalance: '#E0A06E'
+    },
+    zoobc2: {
+      primary: '#28456d',
+      secondary: '#4d6587',
+      tertiary: '#415775',
+      dbbalance: '#21D1DB',
+      dbspbalance: '#DB67B0'
     },
     bcz: {
       primary: '#005b96',
