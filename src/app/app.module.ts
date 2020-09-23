@@ -53,6 +53,7 @@ import { ImportAccountPageModule } from './Pages/account/import-account/import-a
 import { SharedModule } from './Shared/shared.module';
 import { DateAgoPipe } from './Shared/pipe/date-ago.pipe';
 import { DatasetAccountPageModule } from './Pages/account/dataset-account/dataset-account.module';
+import { NewDatasetPageModule } from './Pages/account/dataset-account/new-dataset/new-dataset.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/zoobc-language-files/locales/', '.json');
@@ -103,6 +104,7 @@ export function createTranslateLoader(http: HttpClient) {
       }
     }),
     NgxQRCodeModule,
+    NewDatasetPageModule,
   ],
   providers: [
     Network,

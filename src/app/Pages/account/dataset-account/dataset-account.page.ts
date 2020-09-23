@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { Account } from 'src/app/Interfaces/account';
@@ -10,6 +11,7 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { truncate } from 'src/Helpers/utils';
 import zoobc, { AccountDatasetListParams, AccountDatasetsResponse, BIP32Interface, RemoveDatasetInterface } from 'zoobc-sdk';
+import { NewDatasetPage } from './new-dataset/new-dataset.page';
 
 @Component({
   selector: 'app-dataset-account',
@@ -36,6 +38,7 @@ export class DatasetAccountPage implements OnInit {
   constructor(
     private activeRoute: ActivatedRoute,
     private currencyServ: CurrencyService,
+    private modalCtrl: ModalController,
     private authServ: AccountService,
     private translate: TranslateService
   ) {
@@ -62,6 +65,16 @@ export class DatasetAccountPage implements OnInit {
       this.getDataSetList();
     });
 
+  }
+
+  async createNewDataset() {
+    const modal = await this.modalCtrl.create({
+      component: NewDatasetPage,
+      componentProps: {
+        account: this.account
+      }
+    });
+    return await modal.present();
   }
 
   getDataSetList() {

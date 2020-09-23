@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title >{{ "account dataset" | translate }}</ion-title>
+    <ion-title>{{ "account dataset" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
         {{"feedback" | translate}}
@@ -13,17 +13,18 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+
   <ion-grid>
-  <ion-row>
-    <ion-col class="ion-text-center">
-      <h3>{{ account.name }}</h3>
-      <h5>{{ "account data set" | translate }}</h5>    
-    </ion-col>
-  </ion-row>    
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <h3>{{ account.name }}</h3>
+        <h5>{{ "account data set" | translate }}</h5>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 
   <ion-list>
-    <ion-item *ngFor="let dataSet of dataSetList;" >
+    <ion-item *ngFor="let dataSet of dataSetList;">
       <ion-label>
         <p>{{dataSet.property}}</p>
         <p>{{dataSet.value}}</p>
@@ -31,8 +32,13 @@
       <div class="ion-text-end">
         <ion-button class="ion-text-right" color="meddium">
           <ion-icon name="trash"></ion-icon>
-        </ion-button>        
-      </div> 
+        </ion-button>
+      </div>
     </ion-item>
   </ion-list>
+  <ion-fab  ion-fab vertical="bottom" horizontal="end">
+    <ion-fab-button color="tertiary" (click)="createNewDataset()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
