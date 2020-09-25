@@ -42,7 +42,7 @@ import zoobc, {
   TransactionType
 } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { PopoverAccountComponent } from './popover-account/popover-account.component';
+import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
 
 @Component({
   selector: 'app-home',
@@ -306,7 +306,7 @@ export class HomePage implements OnInit, OnDestroy {
       translucent: true
     });
 
-    popover.onWillDismiss().then(async ({ data }: {data: Account}) => {
+    popover.onWillDismiss().then(async ({ data }: { data: Account }) => {
       if (data) {
         this.account = data;
         this.accountService.setActiveAccount(data);
