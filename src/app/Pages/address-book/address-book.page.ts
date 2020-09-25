@@ -2,10 +2,19 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Location } from '@angular/common';
-import { NavController, AlertController, PopoverController } from '@ionic/angular';
-import { FOR_RECIPIENT, FOR_APPROVER, FOR_PARTICIPANT, FOR_SIGNBY } from 'src/environments/variable.const';
-import { PopoverAddressComponent } from './popover-address/popover-address.component';
+import {
+  NavController,
+  AlertController,
+  PopoverController
+} from '@ionic/angular';
+import {
+  FOR_RECIPIENT,
+  FOR_APPROVER,
+  FOR_PARTICIPANT,
+  FOR_SIGNBY
+} from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
+import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
 
 @Component({
   selector: 'app-address-book',
@@ -33,18 +42,32 @@ export class AddressBookPage implements OnInit, OnDestroy {
     });
   }
 
-
-
   async showOption(ev: any, addressIndex: number) {
     const popover = await this.popoverController.create({
-      component: PopoverAddressComponent,
+      component: PopoverOptionComponent,
+      componentProps: {
+        options: [
+          {
+            key: 'copy',
+            label: 'copy address'
+          },
+          {
+            key: 'edit',
+            label: 'edit address'
+          },
+          {
+            key: 'delete',
+            label: 'delete address'
+          }
+        ]
+      },
       event: ev,
       translucent: true
     });
 
     const address = this.addresses[addressIndex];
 
-    popover.onDidDismiss().then(({ data }) => {
+    popover.onWillDismiss().then(({ data }) => {
       switch (data) {
         case 'copy':
           this.utilService.copyToClipboard(address.address);
@@ -56,7 +79,6 @@ export class AddressBookPage implements OnInit, OnDestroy {
           this.deleteAddress(addressIndex);
           break;
       }
-
     });
 
     return popover.present();
@@ -69,8 +91,11 @@ export class AddressBookPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.route.queryParams.subscribe( () => {
-      if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
+    this.route.queryParams.subscribe(() => {
+      if (
+        this.router.getCurrentNavigation() &&
+        this.router.getCurrentNavigation().extras.state
+      ) {
         this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
       } else {
         this.forWhat = null;
