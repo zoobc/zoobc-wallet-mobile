@@ -139,6 +139,12 @@ const routes: Routes = [
       './Pages/transactions/transactions.module#TransactionsPageModule',
     canActivate: [AuthService]
   },
+  {
+    path: 'transaction-form',
+    loadChildren:
+      './Pages/transactions/transaction-form/transaction-form.module#TransactionFormPageModule',
+    canActivate: [AuthService]
+  },
   { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' },
   {
     path: 'backuprestore-address',
@@ -260,8 +266,8 @@ const routes: Routes = [
   { path: 'network', loadChildren: './Pages/network/network.module#NetworkPageModule' },
   { path: 'explanation-screen', loadChildren: './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule' },
   { path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
-   canActivate: [AuthService]}
-
+    canActivate: [AuthService]}
+    
 ];
 @NgModule({
   imports: [

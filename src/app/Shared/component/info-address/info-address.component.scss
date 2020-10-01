@@ -1,0 +1,18 @@
+.info-address {
+  .name {
+    color: var(--ion-color-dark);
+    font-size: 1rem;
+  }
+
+  .address {
+    color: var(--ion-color-dark);
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .name+.address {
+    font-size: 0.8rem;
+    color: #727588;
+    line-height: 1.4;
+  }
+}

@@ -1,0 +1,11 @@
+<ion-select [(ngModel)]="optionFee" (ionChange)="changeOptionFee()" interface="popover">
+  <ion-select-option *ngFor="let fee of fees" value="{{ fee.fee }}">
+    {{ fee.name }} {{ fee.fee | number: '0.0-4' }} ZBC
+  </ion-select-option>
+  <ion-select-option value="custom">{{ 'custom' | translate }}</ion-select-option>
+</ion-select>
+
+<div class="custom-fee-container" *ngIf="optionFee==='custom'">
+  <app-form-amount-conversion [(ngModel)]="textFee" (keyup)="changeTextFee()">
+  </app-form-amount-conversion>
+</div>

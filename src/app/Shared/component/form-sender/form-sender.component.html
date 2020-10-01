@@ -1,0 +1,11 @@
+<div class="sender-block" (click)="switchAccount($event)">
+  <div class="account-name">{{ account && account.name }}</div>
+  <div class="account-address">
+    <span>{{ account && account.address }}</span>
+    <ion-icon name="zbc-chevron-right"></ion-icon>
+  </div>
+  <div class="account-balance">
+    <span class="main-balance">ZBC {{ account && account.balance }}</span>
+    <span class="other-balance">USD 3.00</span>
+  </div>
+</div>
