@@ -8,23 +8,42 @@ import { PopoverOptionComponent } from './component/popover-option/popover-optio
 import { CommonModule } from '@angular/common';
 import { PopoverAccountComponent } from './component/popover-account/popover-account.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormAmountConversionComponent } from './component/form-amount-conversion/form-amount-conversion.component';
+import { FormsModule } from '@angular/forms';
+import { FormGetAddressComponent } from './component/form-get-address/form-get-address.component';
+import { InfoAddressComponent } from './component/info-address/info-address.component';
+import { InfoAmountConversionComponent } from './component/info-amount-conversion/info-amount-conversion.component';
+import { FormSenderComponent } from './component/form-sender/form-sender.component';
+import { FormFeeComponent } from './component/form-fee/form-fee.component';
 
 @NgModule({
-  imports: [IonicModule, CommonModule, TranslateModule],
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
   declarations: [
     DateAgoPipe,
     ShortAddressPipe,
     WithCopyComponent,
     ExchangePipe,
     PopoverOptionComponent,
-    PopoverAccountComponent
+    PopoverAccountComponent,
+    FormAmountConversionComponent,
+    FormGetAddressComponent,
+    FormSenderComponent,
+    FormFeeComponent,
+    InfoAddressComponent,
+    InfoAmountConversionComponent
   ],
   exports: [
     DateAgoPipe,
     ShortAddressPipe,
     WithCopyComponent,
     PopoverOptionComponent,
-    PopoverAccountComponent
+    PopoverAccountComponent,
+    FormAmountConversionComponent,
+    FormGetAddressComponent,
+    FormSenderComponent,
+    FormFeeComponent,
+    InfoAddressComponent,
+    InfoAmountConversionComponent
   ]
 })
 export class SharedModule {}

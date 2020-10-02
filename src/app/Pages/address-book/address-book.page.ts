@@ -112,9 +112,16 @@ export class AddressBookPage implements OnInit, OnDestroy {
   }
 
   selectAddress(address: any) {
-    if (!this.forWhat) {
-      return;
-    }
+    this.addressBookSrv.setSelectedAddress({
+      identity: this.forWhat,
+      address: address
+    });
+
+    // need to change
+    //if (!this.forWhat) {
+    // return;
+    //}
+
     if (this.forWhat === FOR_RECIPIENT) {
       this.addressBookSrv.setRecipientAddress(address);
     } else if (this.forWhat === FOR_APPROVER) {

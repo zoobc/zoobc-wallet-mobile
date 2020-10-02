@@ -19,13 +19,13 @@
 
 .modal-zbc {
   .modal-wrapper {
-      top: 0;
-      left: 0;
-      display: block;
-      width: 100%;
-      height: 100%;
-      max-height: 100%;
-      max-width: 100%;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    max-width: 100%;
   }
 }
 
@@ -91,8 +91,8 @@ ion-title{
 
 ion-list.form-list{
   ion-item.form-item{
-    margin-bottom: 1.6rem; 
-    
+    margin-bottom: 1rem;
+
     &:last-child{
       margin-bottom: 0;
     }
@@ -101,7 +101,8 @@ ion-list.form-list{
 
 ion-item.form-item{
 
-  ion-input, ion-textarea{
+  ion-input, ion-textarea,
+  .input-container {
     padding-left: 2px !important;
     padding-right: 2px !important;
     padding-bottom: 2px !important;
@@ -109,38 +110,102 @@ ion-item.form-item{
   }
 
   &.item-label-stacked{
-    .label-stacked.sc-ion-label-md-h{
-      transform: translate3d(0,0,0) scale(.75);
+    display: flex;
+    flex-direction: row;
+
+    >* {
+      width: 100%;
     }
 
-    .sc-ion-textarea-md-h{
+    .label-stacked.sc-ion-label-md-h {
+      transform: translate3d(0, 0, 0) scale(.75);
+    }
+
+    .sc-ion-textarea-md-h {
       margin-top: 0;
     }
 
-    input, textarea{
-      -webkit-box-shadow: 0px 0px 0px 1px rgba(114,117,136,0.4);
-      -moz-box-shadow: 0px 0px 0px 1px rgba(114,117,136,0.4);
-      box-shadow: 0px 0px 0px 1px rgba(114,117,136,0.4);
+    input,
+    textarea,
+    ion-select {
+      -webkit-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+      -moz-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+      box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
 
       padding-left: 8px !important;
       padding-right: 8px !important;
-      
 
       -webkit-border-radius: 2px !important;
       -moz-border-radius: 2px !important;
       border-radius: 2px !important;
+
+      &:read-only {
+        color: #777;
+
+        -webkit-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4) !important;
+        -moz-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4) !important;
+        box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4) !important;
+      }
+    }
+
+    ion-select {
+      margin: 2px;
+      max-width: none;
+    }
+
+    &.item-has-focus {
+
+      input,
+      textarea {
+        -webkit-box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+        -moz-box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+        box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+      }
     }
   }
 
-  &.item-label-stacked.item-has-focus{
+  .input-container {
+
     input,
-    textarea{
-      -webkit-box-shadow: 0px 0px 0px 2px rgba(69,118,186,1);
-      -moz-box-shadow: 0px 0px 0px 2px rgba(69,118,186,1);
-      box-shadow: 0px 0px 0px 2px rgba(69,118,186,1);
+    button {
+      height: 36px;
+      width: 100%;
+      border: none;
+      background: transparent;
+
+      -webkit-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+      -moz-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+      box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+
+      -webkit-border-radius: 2px !important;
+      -moz-border-radius: 2px !important;
+      border-radius: 2px !important;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    input:focus {
+      -webkit-box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+      -moz-box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+      box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+    }
+
+    .button-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      ion-icon {
+        color: red;
+      }
     }
   }
-  
+
 }
 
 .popover-account .popover-content {

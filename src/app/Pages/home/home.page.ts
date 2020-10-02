@@ -364,7 +364,8 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.account.type && this.account.type === 'multisig') {
       this.router.navigate(['/multisig']);
     } else {
-      this.router.navigate(['/sendcoin']);
+      //this.router.navigate(['/sendcoin']);
+      this.router.navigate(['/transaction-form/send-money']);
     }
   }
 

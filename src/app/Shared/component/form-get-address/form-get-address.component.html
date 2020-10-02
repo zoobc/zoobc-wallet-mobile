@@ -1,0 +1,11 @@
+<div class="input-container" (click)="showOption($event)">
+  <button type="button" class="button-option">
+    <span>{{buttonTitle}}</span>
+    <ion-icon name="zbc-chevron-down"></ion-icon>
+  </button>
+</div>
+<div class="text-area-container">
+  <ion-icon *ngIf="isNewAddress" name="zbc-scan" (click)="goToScan()"></ion-icon>
+  <ion-textarea rows="4" [(ngModel)]="textAddress" (ionChange)="changeTextAddress()" [readonly]="!isNewAddress">
+  </ion-textarea>
+</div>
