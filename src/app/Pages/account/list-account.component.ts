@@ -4,11 +4,14 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, FOR_APPROVER, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
 import zoobc from 'zoobc-sdk';
-import { NavController, ModalController, AlertController } from '@ionic/angular';
+import { NavController, ModalController, AlertController, PopoverController } from '@ionic/angular';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { ImportAccountPage } from './import-account/import-account.page';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
+import { UtilService } from 'src/app/Services/util.service';
+import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
+import { PopoverActionComponent } from './popover-action/popover-action.component';
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
@@ -31,7 +34,10 @@ export class ListAccountComponent implements OnInit {
     private modalController: ModalController,
     private router: Router,
     private qrScannerService: QrScannerService,
-    private accountService: AccountService) {
+    private accountService: AccountService,
+    private popoverCtrl: PopoverController,
+    private utilSrv: UtilService
+  ) {
 
       this.qrScannerService.qrScannerSubject.subscribe(address => {
         this.getScannerResult(address);
@@ -228,5 +234,88 @@ export class ListAccountComponent implements OnInit {
       }
     };
     this.router.navigate(['/edit-account'], navigationExtras);
+  }
+
+  async showAction(ev: any) {
+    const popover = await this.popoverCtrl.create({
+      component: PopoverActionComponent,
+      event: ev,
+      translucent: true
+    });
+
+    popover.onWillDismiss().then(({ data: action }) => {
+      switch (action) {
+        case 'add':
+          this.createNewAccount();
+          break;
+        case 'import':
+          this.importAccount();
+          break;
+        case 'scan':
+          this.scanQrCode();
+          break;
+      }
+    });
+
+    return popover.present();
+  }
+
+  async showOption(ev: any, index: number) {
+
+    const account = this.accounts[index];
+
+    const popoverOptions = [
+      {
+        key: 'edit',
+        label: 'edit account'
+      },
+      {
+        key: 'copy',
+        label: 'copy address'
+      }
+    ];
+
+    if (account.type && account.type === 'multisig') {
+      popoverOptions.push(
+        {
+          key: 'view',
+          label: 'view account'
+        }
+      );
+      popoverOptions.push(
+        {
+          key: 'delete',
+          label: 'delete account'
+        }
+      );
+    }
+
+    const popover = await this.popoverCtrl.create({
+      component: PopoverOptionComponent,
+      componentProps: {
+        options: popoverOptions
+      },
+      event: ev,
+      translucent: true
+    });
+
+    popover.onWillDismiss().then(({ data: action }) => {
+      switch (action) {
+        case 'edit':
+        this.editName(account);
+        break;
+        case 'copy':
+        this.utilSrv.copyToClipboard(account.address);
+        break;
+        case 'view':
+        this.viewAccount(account);
+        break;
+        case 'delete':
+        this.deleteAccount(index);
+        break;
+      }
+    });
+
+    return popover.present();
   }
 }

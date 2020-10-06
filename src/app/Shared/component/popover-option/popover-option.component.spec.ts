@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PopoverAddressComponent } from './popover-address.component';
+import { PopoverOptionComponent } from './popover-option.component';
 
-describe('PopoverAddressComponent', () => {
-  let component: PopoverAddressComponent;
-  let fixture: ComponentFixture<PopoverAddressComponent>;
+describe('PopoverOptionComponent', () => {
+  let component: PopoverOptionComponent;
+  let fixture: ComponentFixture<PopoverOptionComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PopoverAddressComponent ],
+      declarations: [ PopoverOptionComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PopoverAddressComponent);
+    fixture = TestBed.createComponent(PopoverOptionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

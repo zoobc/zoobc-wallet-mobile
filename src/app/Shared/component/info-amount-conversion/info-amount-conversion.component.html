@@ -1,0 +1,12 @@
+<div class="info-amount-conversion">
+  <div class="main-amount">ZBC {{ value | number:'0.0-2' }}</div>
+  <div class="other-amount">
+    <div *ngIf="otherCurrencyDecoration==='BRACKET'; else noDecoration">
+      ({{ otherCurrency }} {{ otherValue | number:'0.0-2' }})
+    </div>
+  </div>
+</div>
+
+<ng-template #noDecoration>
+  {{ otherCurrency }} {{ otherValue | number:'0.0-2' }}
+</ng-template>

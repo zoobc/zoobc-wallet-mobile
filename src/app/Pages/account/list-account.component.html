@@ -9,17 +9,11 @@
 
 <ion-content>
   <ion-item>
-    <ion-button color="secondary" (click)="importAccount()">Import Account</ion-button>
-    <ion-button color="secondary" (click)="scanQrCode()">Scan</ion-button>
+    <ion-button fill="clear" (click)="showAction($event)">{{ "add account" | translate }}</ion-button>
   </ion-item>
   <div *ngIf="isLoadingBalance" style="margin-top:5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
-  <ion-fab *ngIf="!forWhat" ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="tertiary" (click)="createNewAccount()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
   <div class="list-account-page" style="margin-bottom: 60px;">
     <ng-template #noData>
       <ion-item lines="none">
@@ -28,36 +22,23 @@
     </ng-template>
 
     <ion-list *ngIf="accounts && accounts.length >= 1; else noData">
-      <ion-list-header  *ngIf="forWhat==='account'">
+      <ion-list-header *ngIf="forWhat==='account'">
         <ion-label><span>{{"tap list to switch account" | translate}}.</span></ion-label>
       </ion-list-header>
-      <ion-item-sliding *ngFor="let account of accounts; let idx = index">
-        <ion-item>
-          <ion-label (click)="accountClicked(account)">
+      <ion-item class="ion-text-wrap" *ngFor="let account of accounts; let idx = index">
+        <ion-label (click)="accountClicked(account)">
+          <div>
             <div class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
             <div class="address">
-              <app-with-copy title="{{ account.address | shortAddress }}" value="{{ account.address }}"></app-with-copy>
+              {{ account.address | shortAddress }}
             </div>
-            <div class="title" *ngIf="!isLoadingBalance">
-              {{account.balance / 1e8 | number: '0.0-2' }} ZBC
-            </div>
-          </ion-label>
-          <ion-button *ngIf="!forWhat && account.type==='multisig'" class="ion-text-right" (click)="deleteAccount(idx)" color="meddium">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>          
-          <ion-button *ngIf="!forWhat && account.type==='multisig'" (click)="viewAccount(account)" class="ion-text-right" color="meddium">
-            <ion-icon name="eye"></ion-icon>
-          </ion-button>  
-          <!-- <ion-button *ngIf="!forWhat" (click)="editName(account)" class="ion-text-right" color="meddium">
-            <ion-icon name="create"></ion-icon>
-          </ion-button>           -->
-        </ion-item>
-        <ion-item-options *ngIf="!forWhat" >
-          <button color="success" (click)="editName(account)" class="tool">
-            <ion-icon name="create"></ion-icon>{{ "Edit" | translate}}
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
+          </div>
+          <div class="price" *ngIf="!isLoadingBalance">
+            {{account.balance / 1e8 | number: '0.0-2' }} ZBC
+          </div>
+        </ion-label>
+        <ion-icon *ngIf="!forWhat" name="zbc-option" slot="end" (click)="showOption($event, idx)"></ion-icon>
+      </ion-item>
     </ion-list>
 
   </div>
