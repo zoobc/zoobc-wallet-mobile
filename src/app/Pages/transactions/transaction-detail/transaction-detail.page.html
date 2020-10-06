@@ -21,28 +21,42 @@
     <ion-item>
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "transaction hash" | translate }}</p>
-        <p class="info-val" *ngIf="transactionWallet">
-          <app-with-copy title="{{ transactionWallet.transactionhash }}" value="{{ transactionWallet.transactionhash }}">
-          </app-with-copy>
-        </p>
+        <ng-container *ngIf="loading; else transactionHash">
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 20%;"></div>
+        </ng-container>
+        <ng-template #transactionHash>
+          <p class="info-val" *ngIf="transactionWallet">
+            <app-with-copy title="{{ transactionWallet.transactionhash }}"
+              value="{{ transactionWallet.transactionhash }}">
+            </app-with-copy>
+          </p>
+        </ng-template>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "block id" | translate }}</p>
-        <p class="info-val" *ngIf="transactionWallet">
-          {{ transactionWallet.blockId }}
-        </p>
+        <div *ngIf="loading; else transactionBlockId" class="skeleton-text" style="width: 60%;"></div>
+        <ng-template #transactionBlockId>
+          <p class="info-val" *ngIf="transactionWallet">
+            {{ transactionWallet.blockId }}
+          </p>
+        </ng-template>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "transaction type" | translate }}</p>
-        <p class="info-val" *ngIf="transactionWallet">
-          {{ transactionWallet.type }}
-        </p>
+        <div *ngIf="loading; else transactionType" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #transactionType>
+          <p class="info-val" *ngIf="transactionWallet">
+            {{ transactionWallet.type }}
+          </p>
+        </ng-template>
       </ion-label>
     </ion-item>
 
@@ -51,57 +65,78 @@
         <p class="info-label">
           <span *ngIf="transactionWallet.type !== 'send'">{{ "sender address" | translate }}</span>
           <span *ngIf="transactionWallet.type === 'send'">{{ "recipient address" | translate }}</span></p>
-        <div class="info-val">
-          <app-with-copy title="{{ transactionWallet.address }}" value="{{ transactionWallet.address }}">
-          </app-with-copy>
-        </div>
+        <ng-container *ngIf="loading; else sender">
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 20%;"></div>
+        </ng-container>
+        <ng-template #sender>
+          <div class="info-val">
+            <app-with-copy title="{{ transactionWallet.address }}" value="{{ transactionWallet.address }}">
+            </app-with-copy>
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "amount" | translate }}</p>
-        <ng-container *ngIf="transactionWallet">
-          <p
-          [ngClass]="transactionWallet.type !== 'send' ? 'info-val-receive':'info-val-send'"
-          >
-            <span *ngIf="transactionWallet.type === 'send'">-</span> <span *ngIf="transactionWallet.type !== 'send'">+</span> {{ transactionWallet.amount / 1e8 | number: '0.2-4' }} ZBC
-          </p>
-        </ng-container>
+        <div *ngIf="loading; else amount" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #amount>
+          <ng-container *ngIf="transactionWallet">
+            <p [ngClass]="transactionWallet.type !== 'send' ? 'info-val-receive':'info-val-send'">
+              <span *ngIf="transactionWallet.type === 'send'">-</span> <span
+                *ngIf="transactionWallet.type !== 'send'">+</span>
+              {{ transactionWallet.amount / 1e8 | number: '0.2-4' }}
+              ZBC
+            </p>
+          </ng-container>
+        </ng-template>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label>
-        <ng-container *ngIf="transactionWallet">
         <p class="info-label">{{ "fee" | translate }}</p>
-        <p 
-          [ngClass]="transactionWallet.type === 'send' ? 'info-val-send':'info-val'">
-          <span *ngIf="transactionWallet.type === 'send'">- </span>{{ transactionWallet.fee / 1e8 | number: '0.2-4'}} ZBC
-        </p>
-      </ng-container>
+        <div *ngIf="loading; else fee" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #fee>
+          <ng-container *ngIf="transactionWallet">
+            <p [ngClass]="transactionWallet.type === 'send' ? 'info-val-send':'info-val'">
+              <span *ngIf="transactionWallet.type === 'send'">-
+              </span>{{ transactionWallet.fee / 1e8 | number: '0.2-4'}}
+              ZBC
+            </p>
+          </ng-container>
+        </ng-template>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "height" | translate }}</p>
-        <p class="info-val" *ngIf="transactionWallet || (transactionWallet && transactionWallet.height===0)">
-          {{ transactionWallet.height }}
-        </p>
+        <div *ngIf="loading; else height" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #height>
+          <p class="info-val" *ngIf="transactionWallet || (transactionWallet && transactionWallet.height===0)">
+            {{ transactionWallet.height }}
+          </p>
+        </ng-template>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "transaction date" | translate }}</p>
-        <p class="info-val" *ngIf="transactionWallet">
-          {{ transactionWallet.timestamp | date: "medium" }}
-        </p>
+        <div *ngIf="loading; else date" class="skeleton-text" style="width: 50%;"></div>
+        <ng-template #date>
+          <p class="info-val" *ngIf="transactionWallet">
+            {{ transactionWallet.timestamp | date: "medium" }}
+          </p>
+        </ng-template>
       </ion-label>
     </ion-item>
 
-    
+
 
     <!-- <ion-item>
       <ion-label>
