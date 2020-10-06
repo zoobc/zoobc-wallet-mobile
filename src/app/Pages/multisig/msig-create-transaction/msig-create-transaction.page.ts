@@ -321,7 +321,8 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
           participantAccount.push(participant);
         }
       }
-      this.txHash = generateTransactionHash(data);
+      const dataBuffer = sendMoneyBuilder(data);
+      this.txHash = generateTransactionHash(dataBuffer);
       this.multisig.signaturesInfo = {
         txHash: this.txHash,
         participants: participantAccount
