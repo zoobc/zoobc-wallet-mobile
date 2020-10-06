@@ -1,0 +1,17 @@
+<div class="transaction-item">
+  <div class="info">
+    <span class="sender">
+      <div class="name" *ngIf="transaction.alias">
+        {{ transaction.alias }}
+      </div>
+      <div class="address" *ngIf="!transaction.alias">
+        <span>{{ transaction.address | shortAddress }}</span>
+      </div>
+    </span>
+    <span class="time">{{ transaction.timestamp | dateAgo }}</span>
+  </div>
+  <div class="amount" [ngClass]="transaction.type">
+    <app-info-amount-conversion value="{{ transaction.amount / 1e8 }}" otherCurrency="USD"
+      [prefix]="transaction.type==='send'?'-':'+'"></app-info-amount-conversion>
+  </div>
+</div>

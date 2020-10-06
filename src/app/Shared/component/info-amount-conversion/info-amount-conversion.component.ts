@@ -14,9 +14,11 @@ export class InfoAmountConversionComponent implements OnInit {
   @Input() value: number;
   @Input() otherCurrency: string;
   @Input() otherCurrencyDecoration: OtherCurrencyDecoration;
+  @Input() prefix: string;
+
   public otherValue: number;
 
-  constructor(private currencySrv: CurrencyService) {}
+  constructor(private currencySrv: CurrencyService) { }
 
   ngOnInit() {
     this.otherValue = this.currencySrv.convertCurrency(

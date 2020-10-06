@@ -113,45 +113,8 @@ ion-card {
       }
     }
 
-    .transaction-item {
+    app-transaction-item{
       width: 100%;
-      display: flex;
-      justify-content: space-between;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #DADCE7;
-
-      >div {
-        display: flex;
-        flex-direction: column;
-
-        &:last-child {
-          align-items: flex-end;
-        }
-
-        &.info {
-          .sender {
-            color: #222428;
-            font-size: 16px;
-          }
-
-          .time {
-            color: #727588;
-            font-size: 12px;
-          }
-        }
-
-        &.amount {
-          .main-amount {
-            font-size: 16px;
-          }
-
-          .other-amount {
-            color: #727588;
-            font-size: 12px;
-          }
-        }
-      }
     }
 
     &:last-child .transaction-item {
