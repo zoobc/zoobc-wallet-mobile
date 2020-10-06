@@ -22,7 +22,7 @@
   </ion-label>
 
   <h3 *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-padding-horizontal">
-    {{ "Pending Transactions" | translate }} 
+    {{ "Pending Transactions" | translate }}
   </h3>
   <ion-list *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-margin-top">
     <ion-item *ngFor="let pendingtrx of unconfirmTxs; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
@@ -54,48 +54,16 @@
   <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length === 0" class="ion-margin-top">
     <ion-item class="ion-text-center">
       <ion-label>
-        <br/> <br/>
-          {{ "you don't have any transaction" | translate}}
+        <br /> <br />
+        {{ "you don't have any transaction" | translate}}
       </ion-label>
     </ion-item>
   </ion-list>
 
-  <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length > 0" class="ion-margin-top">
-    <ion-item *ngFor="let transaction of recentTxs; let i = index" button (click)="goToTransactionDetail(transaction.id)">
-      <ion-label *ngIf="transaction.name" color="dark">
-        <h3>{{ transaction.name }}
-          <br/>
-          {{transaction.address | shortAddress}}
-        </h3>
-        <ion-text class="dateago">{{
-          transaction.timestamp | dateAgo
-          }}</ion-text>
-      </ion-label>
-      <ion-label *ngIf="!transaction.name" color="dark">
-        <h3>{{ transaction.address | shortAddress }}</h3>
-        <ion-text class="dateago">{{
-          transaction.timestamp | dateAgo
-          }}</ion-text>
-      </ion-label>
-
-      <ion-text *ngIf="transaction.type==='send'" color="danger" class="amount ion-text-end">
-        - {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC
-        <br/>
-        <span style="font-size:0.8em">
-         - {{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC  (Fee)
-        </span>
-        <br/>
-        <ion-badge *ngIf="transaction.escrow" color="tertiary">Escrow</ion-badge>
-        <ion-badge *ngIf="transaction.multisigchild" color="tertiary">Multisig</ion-badge>
-      </ion-text>
-     
-      <ion-text *ngIf="transaction.type!=='send'" color="success" class="amount ion-text-end">
-       + {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC
-       <br/>
-       <ion-badge *ngIf="transaction.escrow" color="tertiary" shape="round">Escrow</ion-badge>
-       <ion-badge *ngIf="transaction.multisigchild" color="tertiary" shape="round">Multisig</ion-badge>
-      </ion-text>
-
+  <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length > 0" class="ion-margin-top transaction-list">
+    <ion-item *ngFor="let transaction of recentTxs; let i = index" button
+      (click)="goToTransactionDetail(transaction.id)">
+      <app-transaction-item [transaction]="transaction"></app-transaction-item>
     </ion-item>
   </ion-list>
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)">

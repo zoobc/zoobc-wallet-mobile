@@ -1,7 +1,7 @@
-.amount{
-    font-size: 0.8em;
-}
-.dateago{
-    color: var(--ion-color-medium);
-    font-size: 0.8em;
+.transaction-list {
+  ion-item {
+    app-transaction-item {
+      width: 100%;
+    }
+  }
 }

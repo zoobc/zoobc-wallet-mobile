@@ -13,5 +13,8 @@
   <div class="amount" [ngClass]="transaction.type">
     <app-info-amount-conversion value="{{ transaction.amount / 1e8 }}" otherCurrency="USD"
       [prefix]="transaction.type==='send'?'-':'+'"></app-info-amount-conversion>
+
+    <ion-badge *ngIf="transaction.escrow" color="tertiary">Escrow</ion-badge>
+    <ion-badge *ngIf="transaction.multisigchild" color="tertiary">Multisig</ion-badge>
   </div>
 </div>
