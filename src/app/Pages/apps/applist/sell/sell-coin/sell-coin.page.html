@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Sell coin" | translate }}</ion-title>
+    <ion-title>{{ 'sell zoobc' | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{"feedback" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -14,37 +14,48 @@
 
 <ion-content>
   <div style="text-align: center;">
-      <h5>(Coming Soon)</h5>
+      <h5>{{ 'sell zoobc' | translate }} <i>({{ 'coming soon' | translate }})</i></h5>
   </div>
   <ion-list>
     <ion-item>
-      <ion-label position="stacked">Sell From account</ion-label>
-      <ion-textarea  rows="1">kLuJ-Sf3QkZf3l-Eig7fNq_5FzyTyovB3l6mpivPolKu</ion-textarea>
+      <ion-label position="stacked">{{ 'sell from account' | translate }}</ion-label>
+      <ion-textarea  rows="1" placeholder="{{ 'sell from account' | translate }}..." >
+      </ion-textarea>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked">Buyer Address
+      <ion-label position="stacked">{{ 'buyer address' | translate }}
       </ion-label>
-      <ion-textarea rows="1">dUT-Sf3QkZf3l-Eig7fNq_5FzyTyovB3l6mpivMYshO</ion-textarea>
+      <ion-textarea rows="1" placeholder="{{ 'buyer address' | translate }}..." >
+      </ion-textarea>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked">Amount Sell
+      <ion-label position="stacked">{{ 'amount sell (zbc)' | translate }}
       </ion-label>
-      <ion-input>20 ZBC</ion-input>
+      <ion-input type="number" placeholder="{{ 'amount' | translate }}..."></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked">Amount you will get
+      <ion-label position="stacked">{{ 'amount you will get' | translate }}
       </ion-label>
-      <ion-input>19.99 ZBC</ion-input>
+      <ion-input type="number" placeholder="{{ 'amount' | translate }}"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked">Fee
+      <ion-label position="stacked">{{ 'fee' | translate }}
       </ion-label>
-      <ion-input>0.01 ZBC</ion-input>
+      <ion-input type="number" placeholder="{{ 'Fee' | translate }}..." ></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked">Timeout
+      <ion-label position="stacked">{{ 'timeout' | translate }}
       </ion-label>
-      <ion-input>10 days</ion-input>
+      <ion-input type="number" placeholder="input timeout in height"></ion-input>block
     </ion-item>
   </ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button color="secondary">
+          <span>{{ 'send' | translate }}</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
