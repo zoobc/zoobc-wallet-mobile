@@ -46,7 +46,7 @@
 
   <ion-card>
     <ion-card-content>
-      <ion-list class="transaction-list" lines="none">
+      <ion-list class="transaction-list">
         <ion-item>
           <div class="transaction-header">
             <div>
@@ -56,11 +56,24 @@
             <span *ngIf="recentTx && recentTx.length>=1" class="all" (click)="goToTransactions()">See All</span>
           </div>
         </ion-item>
-        <ng-container *ngIf="recentTx && recentTx.length>=1; else noTransaction">
-          <ion-item *ngFor="let transaction of recentTx; let i = index" (click)="goToTransactionDetail(transaction.id)">
-            <app-transaction-item [transaction]="transaction"></app-transaction-item>
+        <ng-container *ngIf="isLoadingRecentTx; else transactionList">
+          <ion-item *ngFor="let i of [0, 1, 2, 3, 4, 5]">
+            <app-skeleton-transaction></app-skeleton-transaction>
           </ion-item>
         </ng-container>
+        <ng-template #transactionList>
+          <ng-container *ngIf="recentTx && recentTx.length>=1; else noTransaction">
+            <ion-item *ngFor="let transaction of recentTx; let i = index"
+              (click)="goToTransactionDetail(transaction.id)">
+              <app-transaction-item [transaction]="transaction"></app-transaction-item>
+            </ion-item>
+          </ng-container>
+        </ng-template>
+        <ng-template #noTransaction>
+          <ion-item>
+            <ion-label>You don't have any transctions</ion-label>
+          </ion-item>
+        </ng-template>
       </ion-list>
     </ion-card-content>
   </ion-card>
@@ -71,7 +84,3 @@
     <div class="title">What Is Lightning Network? And How Does It Work?</div>
   </ion-card>
 </ion-content>
-
-<ng-template #noTransaction>
-  <ion-label>You don't have any transctions</ion-label>
-</ng-template>

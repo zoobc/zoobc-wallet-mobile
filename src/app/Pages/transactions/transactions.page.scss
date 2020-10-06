@@ -1,6 +1,15 @@
+ion-content {
+  --background: #fff;
+}
+
 .transaction-list {
+  background-color: transparent;
+
   ion-item {
-    app-transaction-item {
+    --background: transparent;
+
+    app-transaction-item,
+    app-skeleton-transaction {
       width: 100%;
     }
   }

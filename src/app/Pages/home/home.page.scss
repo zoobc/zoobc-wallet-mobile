@@ -93,7 +93,6 @@ ion-card {
       width: 100%;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #DADCE7;
       padding-top: 10px;
       padding-bottom: 10px;
 
@@ -113,7 +112,8 @@ ion-card {
       }
     }
 
-    app-transaction-item{
+    app-transaction-item,
+    app-skeleton-transaction {
       width: 100%;
     }
 

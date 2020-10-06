@@ -16,6 +16,7 @@ import { InfoAmountConversionComponent } from './component/info-amount-conversio
 import { FormSenderComponent } from './component/form-sender/form-sender.component';
 import { FormFeeComponent } from './component/form-fee/form-fee.component';
 import { TransactionItemComponent } from './component/transaction-item/transaction-item.component';
+import { SkeletonTransactionComponent } from './component/skeleton-transaction/skeleton-transaction.component';
 
 @NgModule({
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
@@ -32,7 +33,8 @@ import { TransactionItemComponent } from './component/transaction-item/transacti
     FormFeeComponent,
     InfoAddressComponent,
     InfoAmountConversionComponent,
-    TransactionItemComponent
+    TransactionItemComponent,
+    SkeletonTransactionComponent
   ],
   exports: [
     DateAgoPipe,
@@ -46,7 +48,8 @@ import { TransactionItemComponent } from './component/transaction-item/transacti
     FormFeeComponent,
     InfoAddressComponent,
     InfoAmountConversionComponent,
-    TransactionItemComponent
+    TransactionItemComponent,
+    SkeletonTransactionComponent
   ]
 })
 export class SharedModule {}

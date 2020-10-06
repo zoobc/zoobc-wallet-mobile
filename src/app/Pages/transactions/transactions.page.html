@@ -13,10 +13,6 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <div *ngIf="isLoadingRecentTx">
-    <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div>
-
   <ion-label *ngIf="isError" color="danger" class="ion-text-center">
     <h2>{{ errorMsg }}</h2>
   </ion-label>
@@ -60,11 +56,25 @@
     </ion-item>
   </ion-list>
 
-  <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length > 0" class="ion-margin-top transaction-list">
-    <ion-item *ngFor="let transaction of recentTxs; let i = index" button
-      (click)="goToTransactionDetail(transaction.id)">
-      <app-transaction-item [transaction]="transaction"></app-transaction-item>
-    </ion-item>
+  <ion-list class="ion-margin-top transaction-list">
+    <ng-container *ngIf="isLoadingRecentTx; else transactionList">
+      <ion-item *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
+        <app-skeleton-transaction></app-skeleton-transaction>
+      </ion-item>
+    </ng-container>
+    <ng-template #transactionList>
+      <ng-container *ngIf="recentTxs && recentTxs.length>=1; else noTransaction">
+        <ion-item *ngFor="let transaction of recentTxs; let i = index" button
+          (click)="goToTransactionDetail(transaction.id)">
+          <app-transaction-item [transaction]="transaction"></app-transaction-item>
+        </ion-item>
+      </ng-container>
+    </ng-template>
+    <ng-template #noTransaction>
+      <ion-item>
+        <ion-label>You don't have any transctions</ion-label>
+      </ion-item>
+    </ng-template>
   </ion-list>
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)">
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
