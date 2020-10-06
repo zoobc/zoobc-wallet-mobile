@@ -20,11 +20,36 @@
 
   .main-balance {
     font-size: 32px;
+
+    .amount{
+      display: flex;
+      align-items: center;
+      
+      .skeleton-text{
+        height: 24px;
+      }
+
+      span:first-child{
+        margin-right: 7px;
+      }
+    }
   }
 
   .other-balance {
     color: #FFFFFF;
     opacity: 0.6;
+
+    .amount{
+      display: flex;
+      align-items: center;
+
+      span:first-child{
+        margin-right: 5px;
+      }
+      span:nth-child(2){
+        margin-right: 5px;
+      }
+    }
   }
 
   .account {
@@ -93,7 +118,6 @@ ion-card {
       width: 100%;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #DADCE7;
       padding-top: 10px;
       padding-bottom: 10px;
 
@@ -113,45 +137,9 @@ ion-card {
       }
     }
 
-    .transaction-item {
+    app-transaction-item,
+    app-skeleton-transaction {
       width: 100%;
-      display: flex;
-      justify-content: space-between;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #DADCE7;
-
-      >div {
-        display: flex;
-        flex-direction: column;
-
-        &:last-child {
-          align-items: flex-end;
-        }
-
-        &.info {
-          .sender {
-            color: #222428;
-            font-size: 16px;
-          }
-
-          .time {
-            color: #727588;
-            font-size: 12px;
-          }
-        }
-
-        &.amount {
-          .main-amount {
-            font-size: 16px;
-          }
-
-          .other-amount {
-            color: #727588;
-            font-size: 12px;
-          }
-        }
-      }
     }
 
     &:last-child .transaction-item {

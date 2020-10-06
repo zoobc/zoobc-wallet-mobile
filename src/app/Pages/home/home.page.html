@@ -1,4 +1,10 @@
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
+      refreshingText="{{ 'Refreshing' | translate }} ...">
+    </ion-refresher-content>
+  </ion-refresher>
+  
   <div class="home-header">
     <div class="scan-container">
       <ion-icon name="zbc-scan" (click)="goToScan()"></ion-icon>
@@ -14,15 +20,21 @@
     <ion-label class="main-balance">
       <ion-text class="amount">
         <span class="sufix">ZBC</span>
-        {{ accountBalance.balance/1e8 | number: '0.0-2' }}
+        <span *ngIf="isLoadingBalance; else boxAccountBalance" class="skeleton-text" style="width: 80px"></span>
+        <ng-template #boxAccountBalance>
+          <span>{{ accountBalance.balance/1e8 | number: '0.0-2' }}</span>
+        </ng-template>
       </ion-text>
     </ion-label>
 
     <ion-label class="other-balance">
       <ion-text class="amount">
-        spendable
+        <span>spendable</span>
         <span class="sufix">ZBC</span>
-        {{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }}
+        <span *ngIf="isLoadingBalance; else boxSpendableBalance" class="skeleton-text" style="width: 80px"></span>
+        <ng-template #boxSpendableBalance>
+          <span>{{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }}</span>
+        </ng-template>
       </ion-text>
     </ion-label>
   </div>
@@ -46,7 +58,7 @@
 
   <ion-card>
     <ion-card-content>
-      <ion-list class="transaction-list" lines="none">
+      <ion-list class="transaction-list">
         <ion-item>
           <div class="transaction-header">
             <div>
@@ -56,32 +68,24 @@
             <span *ngIf="recentTx && recentTx.length>=1" class="all" (click)="goToTransactions()">See All</span>
           </div>
         </ion-item>
-        <ng-container *ngIf="recentTx && recentTx.length>=1; else noTransaction">
-          <ion-item *ngFor="let transaction of recentTx; let i = index" (click)="goToTransactionDetail(transaction.id)">
-            <div class="transaction-item">
-              <div class="info">
-                <span class="sender">
-                  <div class="name" *ngIf="transaction.alias">
-                    {{ transaction.alias }}
-                  </div>
-                  <div class="address" *ngIf="!transaction.alias">
-                    <span>{{ transaction.address | shortAddress }}</span>
-                  </div>
-                </span>
-                <span class="time">{{ transaction.timestamp | dateAgo }}</span>
-              </div>
-              <div class="amount">
-                <ion-text class="main-amount" *ngIf="transaction.type==='send'" color="danger">
-                  - ZBC {{ transaction.amount / 1e8 | number: '0.2-4' }}
-                </ion-text>
-                <ion-text class="main-amount" *ngIf="transaction.type!=='send'">
-                  {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC
-                </ion-text>
-                <span class="other-amount">USD 3.00</span>
-              </div>
-            </div>
+        <ng-container *ngIf="isLoadingRecentTx; else transactionList">
+          <ion-item *ngFor="let i of [0, 1, 2, 3, 4, 5]">
+            <app-skeleton-transaction></app-skeleton-transaction>
           </ion-item>
         </ng-container>
+        <ng-template #transactionList>
+          <ng-container *ngIf="recentTx && recentTx.length>=1; else noTransaction">
+            <ion-item *ngFor="let transaction of recentTx; let i = index"
+              (click)="goToTransactionDetail(transaction.id)">
+              <app-transaction-item [transaction]="transaction"></app-transaction-item>
+            </ion-item>
+          </ng-container>
+        </ng-template>
+        <ng-template #noTransaction>
+          <ion-item>
+            <ion-label>You don't have any transctions</ion-label>
+          </ion-item>
+        </ng-template>
       </ion-list>
     </ion-card-content>
   </ion-card>
@@ -92,7 +96,3 @@
     <div class="title">What Is Lightning Network? And How Does It Work?</div>
   </ion-card>
 </ion-content>
-
-<ng-template #noTransaction>
-  <ion-label>You don't have any transctions</ion-label>
-</ng-template>

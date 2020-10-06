@@ -117,10 +117,6 @@ export class SettingsPage implements OnInit {
     }
   }
 
-  goToAccount(){
-    this.router.navigateByUrl('/list-account');
-  }
-
   goToMultisig(){
     this.router.navigateByUrl('/multisig');
   }

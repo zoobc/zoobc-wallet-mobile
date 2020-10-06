@@ -162,13 +162,9 @@ export class HomePage implements OnInit, OnDestroy {
     this.chatService.subscribeNotif(addresses);
   }
 
-  doRefresh(event: any) {
-    this.showLoading();
-    this.loadData();
-
-    setTimeout(() => {
-      event.target.complete();
-    }, 2000);
+  async doRefresh(event: any) {
+    await this.loadData()
+    event.target.complete();
   }
 
   async ngOnInit() {
@@ -330,24 +326,12 @@ export class HomePage implements OnInit, OnDestroy {
     this.loadDetailTransaction(trx, 'confirm');
   }
 
-  showLoading() {
-    this.loadingController
-      .create({
-        message: 'Loading ...',
-        duration: 200
-      })
-      .then(res => {
-        res.present();
-      });
-  }
-
   /**
    * Load detail transaction
    * @ param trx
    * @ param trxStatus
    */
   async loadDetailTransaction(trx: any, trxStatus: string) {
-    this.showLoading();
     const modal = await this.modalCtrl.create({
       component: TransactionDetailPage,
       cssClass: 'modal-zbc',
@@ -414,7 +398,6 @@ export class HomePage implements OnInit, OnDestroy {
           const tx = toTransactionListWallet(res, this.account.address);
           this.recentTx = tx.transactions;
           this.recentTx.map(async recent => {
-            console.log('__recent', recent);
             recent['alias'] = await this.addressBookSrv.getNameByAddress(
               recent.address
             );
@@ -425,7 +408,6 @@ export class HomePage implements OnInit, OnDestroy {
             address: this.account.address
           };
 
-          console.log('__recentTx', this.recentTx);
           return zoobc.Mempool.getList(params);
         })
         .then(

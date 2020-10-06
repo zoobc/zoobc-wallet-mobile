@@ -14,11 +14,6 @@
         <h2>{{ "general" | translate}}</h2>
       </ion-label>
     </ion-list-header>
-    <ion-item (click)="goToAccount()" detail>
-      <ion-label>
-        <h3>{{ "account" | translate}}</h3>
-      </ion-label>
-    </ion-item>
     <ion-item (click)="goToMultisig()" detail>
       <ion-label>
         <h3>{{ "multisignature" | translate}}</h3>
@@ -68,9 +63,9 @@
   </ion-list>
   <ion-list>
     <ion-list-header>
-        <ion-label>
-          <h2>{{ "app" | translate}}</h2>
-        </ion-label>
+      <ion-label>
+        <h2>{{ "app" | translate}}</h2>
+      </ion-label>
     </ion-list-header>
     <ion-item (click)="goToHelpAndSupport()" detail>
       <ion-label>
@@ -96,5 +91,5 @@
       </ion-label>
     </ion-item>
   </ion-list>
- 
+
 </ion-content>

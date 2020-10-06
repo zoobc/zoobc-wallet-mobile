@@ -18,6 +18,7 @@ export class TransactionDetailPage implements OnInit {
   transactionId: string;
   transaction: TransactionResponse = null;
   transactionWallet: any;
+  loading: boolean;
 
   constructor(
     private translateSrv: TranslateService,
@@ -30,6 +31,7 @@ export class TransactionDetailPage implements OnInit {
   }
 
   ngOnInit() {
+    this.loading = true;
 
     this.activeRoute.params.subscribe(async params => {
 
@@ -45,6 +47,8 @@ export class TransactionDetailPage implements OnInit {
       this.transactionWallet.transactionhash = getZBCAddress(pubkey, 'ZTX');
 
       this.transaction = transaction;
+
+      this.loading = false;
 
     });
 

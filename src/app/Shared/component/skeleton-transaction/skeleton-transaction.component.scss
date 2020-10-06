@@ -1,0 +1,35 @@
+.skeleton-transaction {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  .info {
+    flex: 2;
+
+    .skeleton-text.address {
+      margin-bottom: 8px;
+    }
+
+    .skeleton-text.time {
+      width: 50%;
+    }
+  }
+
+  .amount {
+    flex: 1;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .skeleton-text.main-amount {
+      width: 50%;
+      margin-bottom: 8px;
+    }
+
+    .skeleton-text.other-amount {
+      width: 50%;
+    }
+  }
+}
