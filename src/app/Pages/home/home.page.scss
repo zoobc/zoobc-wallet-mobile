@@ -20,11 +20,36 @@
 
   .main-balance {
     font-size: 32px;
+
+    .amount{
+      display: flex;
+      align-items: center;
+      
+      .skeleton-text{
+        height: 24px;
+      }
+
+      span:first-child{
+        margin-right: 7px;
+      }
+    }
   }
 
   .other-balance {
     color: #FFFFFF;
     opacity: 0.6;
+
+    .amount{
+      display: flex;
+      align-items: center;
+
+      span:first-child{
+        margin-right: 5px;
+      }
+      span:nth-child(2){
+        margin-right: 5px;
+      }
+    }
   }
 
   .account {

@@ -1,4 +1,10 @@
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
+      refreshingText="{{ 'Refreshing' | translate }} ...">
+    </ion-refresher-content>
+  </ion-refresher>
+  
   <div class="home-header">
     <div class="scan-container">
       <ion-icon name="zbc-scan" (click)="goToScan()"></ion-icon>
@@ -14,15 +20,21 @@
     <ion-label class="main-balance">
       <ion-text class="amount">
         <span class="sufix">ZBC</span>
-        {{ accountBalance.balance/1e8 | number: '0.0-2' }}
+        <span *ngIf="isLoadingBalance; else boxAccountBalance" class="skeleton-text" style="width: 80px"></span>
+        <ng-template #boxAccountBalance>
+          <span>{{ accountBalance.balance/1e8 | number: '0.0-2' }}</span>
+        </ng-template>
       </ion-text>
     </ion-label>
 
     <ion-label class="other-balance">
       <ion-text class="amount">
-        spendable
+        <span>spendable</span>
         <span class="sufix">ZBC</span>
-        {{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }}
+        <span *ngIf="isLoadingBalance; else boxSpendableBalance" class="skeleton-text" style="width: 80px"></span>
+        <ng-template #boxSpendableBalance>
+          <span>{{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }}</span>
+        </ng-template>
       </ion-text>
     </ion-label>
   </div>
