@@ -269,12 +269,21 @@ export class SendMoneyFormComponent implements OnInit {
           }
         },
         error => {
+          console.log("__error", error);
           this.showErrorMessage(error);
         }
       )
       .finally(() => {
         loading.dismiss();
       });
+  }
+
+  onBehaviorEscrowChange() {
+    this.minimumFee = this.behaviorEscrow.value && this.behaviorEscrow.value.timeout ?
+      calculateMinFee(this.behaviorEscrow.value.timeout) : TRANSACTION_MINIMUM_FEE;
+
+    this.setFeeValidation();
+    this.setAmountValidation();
   }
 
   async showErrorMessage(error) {

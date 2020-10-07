@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Contact } from 'src/app/Interfaces/contact';
 import zoobc from 'zoobc-sdk';
@@ -27,6 +27,7 @@ export class BehaviorEscrowFormComponent
   constructor() {}
 
   @Input() errors: any;
+  @Output() onChange = new EventEmitter<IEscrow>();
 
   public escrow: IEscrow;
   public blockHeight: number;
@@ -54,10 +55,11 @@ export class BehaviorEscrowFormComponent
   }
 
   changeForm() {
-    this.onChange(this.escrow);
+    this.onFormChange(this.escrow);
+    this.onChange.emit(this.escrow);
   }
 
-  onChange = (value: IEscrow) => {};
+  onFormChange = (value: IEscrow) => {};
 
   onTouched = () => {};
 
@@ -66,7 +68,7 @@ export class BehaviorEscrowFormComponent
   }
 
   registerOnChange(fn: (value: IEscrow) => void) {
-    this.onChange = fn;
+    this.onFormChange = fn;
   }
 
   registerOnTouched(fn: () => void) {

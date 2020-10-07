@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
 
   <div class="page-receive">
     <div class="amount-container">
@@ -29,15 +29,15 @@
         <ion-row>
           <ion-col class="ion-text-center">
             <div style="margin-bottom: 5px; font-weight: bold;">{{ "address" | translate}}:</div>
-            <div *ngIf="account">
+            <div class="address" *ngIf="account">
               {{ account.address }}
             </div>
           </ion-col>
         </ion-row>
 
-        <ion-row>
+        <ion-row class="buttons">
           <ion-col>
-            <ion-button fill="outline" expand="block">
+            <ion-button fill="outline" expand="block" (click)="copy()">
               <ion-icon name="zbc-copy"></ion-icon> Copy
             </ion-button>
           </ion-col>

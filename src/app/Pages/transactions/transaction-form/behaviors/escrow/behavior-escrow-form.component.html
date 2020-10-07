@@ -37,6 +37,9 @@
     <ion-text color="danger" *ngIf="errors && errors.timeoutMin">
       {{ "minimum timeout is 1" | translate}}
     </ion-text>
+    <ion-text color="danger" *ngIf="errors && errors.timeoutMax">
+      {{ "maximumm timeout is 750" | translate}}
+    </ion-text>
   </ion-item>
 
   <ion-item lines="none" class="form-item">

@@ -17,6 +17,7 @@ import { FormSenderComponent } from './component/form-sender/form-sender.compone
 import { FormFeeComponent } from './component/form-fee/form-fee.component';
 import { TransactionItemComponent } from './component/transaction-item/transaction-item.component';
 import { SkeletonTransactionComponent } from './component/skeleton-transaction/skeleton-transaction.component';
+import { AccountItemComponent } from './component/account-item/account-item.component';
 
 @NgModule({
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
@@ -34,6 +35,7 @@ import { SkeletonTransactionComponent } from './component/skeleton-transaction/s
     InfoAddressComponent,
     InfoAmountConversionComponent,
     TransactionItemComponent,
+    AccountItemComponent,
     SkeletonTransactionComponent
   ],
   exports: [
@@ -49,6 +51,7 @@ import { SkeletonTransactionComponent } from './component/skeleton-transaction/s
     InfoAddressComponent,
     InfoAmountConversionComponent,
     TransactionItemComponent,
+    AccountItemComponent,
     SkeletonTransactionComponent
   ]
 })
