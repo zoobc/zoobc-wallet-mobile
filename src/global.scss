@@ -240,6 +240,14 @@ ion-item.form-item{
   }
 }
 
+ion-button.item-btn-add{
+  font-weight: 700;
+  margin-left: 0;
+  margin-right: 0;
+
+  --padding-start: 0;
+  --padding-end: 0;
+}
 
 @keyframes shine-lines {
   0% {
