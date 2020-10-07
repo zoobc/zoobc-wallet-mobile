@@ -59,6 +59,8 @@ export function escrowFieldsValidator(
     errors.timeoutRequired = true;
   } else if (control.value && control.value.timeout < 1) {
     errors.timeoutMin = true;
+  } else if (control.value && control.value.timeout > 750) {
+    errors.timeoutMax = true;
   }
 
   if (control.value && !control.value.instruction) {
