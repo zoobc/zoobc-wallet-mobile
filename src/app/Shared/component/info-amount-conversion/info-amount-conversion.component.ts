@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CurrencyService } from 'src/app/Services/currency.service';
 
 enum OtherCurrencyDecoration {
@@ -10,7 +10,7 @@ enum OtherCurrencyDecoration {
   templateUrl: './info-amount-conversion.component.html',
   styleUrls: ['./info-amount-conversion.component.scss']
 })
-export class InfoAmountConversionComponent implements OnInit {
+export class InfoAmountConversionComponent implements OnInit, OnChanges {
   @Input() value: number;
   @Input() otherCurrency: string;
   @Input() otherCurrencyDecoration: OtherCurrencyDecoration;
@@ -20,11 +20,21 @@ export class InfoAmountConversionComponent implements OnInit {
 
   constructor(private currencySrv: CurrencyService) { }
 
-  ngOnInit() {
+  setOtherValue() {
     this.otherValue = this.currencySrv.convertCurrency(
       this.value,
       'ZBC',
       'USD'
     );
+  }
+
+  ngOnInit() {
+    this.setOtherValue();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.value) {
+      this.setOtherValue();
+    }
   }
 }
