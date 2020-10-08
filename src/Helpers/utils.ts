@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import {
   toBase64Url,
   base64ToByteArray,
@@ -19,6 +20,19 @@ export function getAddressFromPublicKey(publicKey: Uint8Array): string {
   const address = toBase64Url(window.btoa(binary));
 
   return address;
+}
+
+export function getTranslation(
+  value: string,
+  translateService: TranslateService,
+  // tslint:disable-next-line:ban-types
+  interpolateParams?: Object
+) {
+  let message: string;
+  translateService.get(value, interpolateParams).subscribe(res => {
+    message = res;
+  });
+  return message;
 }
 
 export function getChecksumByte(bytes): any {

@@ -15,7 +15,7 @@
     <ion-item lines="none">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{ "From account" | translate }}</h3>
+          <h3>{{ "sender" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
           <p *ngIf="trxSenderName">{{trxSenderName}}</p>
@@ -26,12 +26,12 @@
     <ion-item lines="none">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{ "Balance" | translate }}</h3>
+          <h3>{{ "spendable balance" | translate }}</h3>
         </ion-text>
         <ion-text color="secondary">
           <p><b>{{ trxBalance }} ZBC</b>
             <br />
-            {{trxBalance * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }}
+            ({{trxBalance * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }})
           </p>
         </ion-text>
       </ion-label>
@@ -44,7 +44,9 @@
     <ion-item>
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{"Recipient"|translate}}</h3>
+          <h3>
+            {{ "recipient" | translate }}
+          </h3>
         </ion-text>
         <ion-text color="secondary">
           <p *ngIf="trxRecipientName">{{trxRecipientName}}</p>
@@ -56,12 +58,14 @@
     <ion-item>
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{ "Amount" | translate }}</h3>
+          <h3>
+            {{ "coin amount" | translate }}
+          </h3>
         </ion-text>
         <ion-text color="secondary">
           <p>
             <b>{{ trxAmount }} ZBC</b><br />
-            {{trxAmount * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }}
+            ({{trxAmount * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }})
           </p>
         </ion-text>
       </ion-label>
@@ -71,12 +75,14 @@
     <ion-item>
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{ "Transaction Fee" | translate }}</h3>
+          <h3>
+            {{ "fee" | translate }}
+          </h3>
         </ion-text>
         <ion-text color="secondary">
           <p>
             <b>{{ trxFee }} ZBC</b><br />
-            {{trxFee * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }}
+            ({{trxFee * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }})
           </p>
         </ion-text>
       </ion-label>
@@ -86,7 +92,9 @@
     <ion-item *ngIf="IsEscrow">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{ "Approver" | translate }}</h3>
+          <h3>
+            {{ "approver address" | translate }}
+          </h3>
         </ion-text>
         <ion-text color="secondary">
           <p *ngIf="escApproverName">{{escApproverName}}</p>
@@ -98,12 +106,14 @@
     <ion-item *ngIf="IsEscrow">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{ "Approver Comission" | translate }}</h3>
+          <h3>
+            {{ 'approver commission' | translate }}
+          </h3>
         </ion-text>
         <ion-text color="secondary">
           <p>
             <b>{{ escCommission }} ZBC</b><br />
-            {{escCommission * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }}
+            ({{escCommission * priceInUSD * trxCurrencyRate.value  | number: '0.0-4'}} {{ trxCurrencyRate.name }})
           </p>
         </ion-text>
       </ion-label>
@@ -112,7 +122,9 @@
     <ion-item *ngIf="IsEscrow">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{ "Timeout" | translate }}</h3>
+          <h3>
+            {{ 'timeout' | translate }}
+          </h3>
         </ion-text>
         <ion-text color="secondary">
           <p><b>{{ escTimeout }}</b></p>
@@ -123,7 +135,9 @@
     <ion-item *ngIf="IsEscrow">
       <ion-label class="ion-text-wrap">
         <ion-text class="ion-text-uppercase">
-          <h3>{{ "Instruction" | translate }}</h3>
+          <h3>
+            {{ 'instruction' | translate }}
+          </h3>
         </ion-text>
         <ion-text color="secondary">
           <p><b>{{ escInstruction }}</b></p>
@@ -136,12 +150,12 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button (click)="confirm()" expand="block" color="tertiary">{{ "Confirm" | translate }}</ion-button>
+        <ion-button (click)="confirm()" expand="block" color="tertiary">{{ "confirm" | translate }}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button (click)="cancel()" expand="block" fill="outline" color="tertiary">{{ "Cancel" | translate }}
+        <ion-button (click)="cancel()" expand="block" fill="outline" color="tertiary">{{ "cancel" | translate }}
         </ion-button>
       </ion-col>
     </ion-row>

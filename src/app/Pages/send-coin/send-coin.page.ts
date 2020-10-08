@@ -94,6 +94,7 @@ export class SendCoinPage implements OnInit {
   });
 
   submitted = false;
+  priceInUSD: number;
 
   constructor(
     private router: Router,
@@ -209,6 +210,8 @@ export class SendCoinPage implements OnInit {
     this.getAllAddress();
     this.getAllAccount();
     this.onFeeChange();
+    this.priceInUSD = this.currencyService.getPriceInUSD();
+    this.changeWithEscrow(false);
   }
 
   async getAllAccount() {
@@ -439,7 +442,7 @@ export class SendCoinPage implements OnInit {
 
   setAmountValidation() {
     let max = 0;
-    if (this.account.balance >= (this.fee.value + this.escrowCommision.value)) {
+    if (this.account && this.account.balance >= (this.fee.value + this.escrowCommision.value)) {
         max = this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC ?
         this.minimumFee : this.conversionValue.fee.ZBC)
       - this.escrowCommision.value;
@@ -530,7 +533,6 @@ export class SendCoinPage implements OnInit {
 
   async showConfirmation() {
     this.submitted = true;
-
     if (this.sendForm.valid) {
       const modalDetail = await this.modalController.create({
         component: SenddetailPage,
@@ -609,11 +611,11 @@ export class SendCoinPage implements OnInit {
       });
   }
 
-  async showErrorMessage(error) {
+  async showErrorMessage(error: any) {
     const modal = await this.modalController.create({
       component: TrxstatusPage,
       componentProps: {
-        msg: error,
+        message: error,
         status: false
       }
     });
@@ -624,10 +626,17 @@ export class SendCoinPage implements OnInit {
   }
 
   async showSuccessMessage() {
+    const msgSuccess = this.getTranslation('you send coins to', this.translateService, {
+      amount: this.amount.value,
+      recipient: this.recipientAddress.value,
+      currencyValue:  this.amount.value * this.priceInUSD * this.currencyRate.value,
+      currencyName: this.currencyRate.name
+    });
+
     const modal = await this.modalController.create({
       component: TrxstatusPage,
       componentProps: {
-        msg: 'transaction succes',
+        message: msgSuccess,
         status: true
       }
     });
@@ -638,6 +647,21 @@ export class SendCoinPage implements OnInit {
 
     return await modal.present();
   }
+
+
+  getTranslation(
+    value: string,
+    translateService: TranslateService,
+    // tslint:disable-next-line:ban-types
+    interpolateParams?: Object
+  ) {
+    let message: string;
+    translateService.get(value, interpolateParams).subscribe(res => {
+      message = res;
+    });
+    return message;
+  }
+
 
   changeFee(value: string) {
     this.sendForm.controls.fee.setValue(value);
