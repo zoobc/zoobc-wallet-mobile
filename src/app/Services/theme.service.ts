@@ -12,11 +12,11 @@ export class ThemeService {
   theme = DEFAULT_THEME;
   themes = {
     zoobc: {
-      primary: '#0c0f32',
-      secondary: '#4B4F75',
-      tertiary: '#359ADB',
-      dbbalance: '#359ADB',
-      dbspbalance: '#E0A06E'
+      primary: '#041C3F',
+      secondary: '#041C3F',
+      tertiary: '#2C85FB',
+      dbbalance: '#1BCA7F',
+      dbspbalance: '#2C85FB'
     },
     zoobc2: {
       primary: '#28456d',
@@ -109,12 +109,12 @@ export class ThemeService {
 const defaults = {
   primary: '#1d2647',
   secondary: '#6cc3d8',
-  tertiary: '#8f4791',
+  tertiary: '#2C85FB',
   light: '#f4f5f8',
   medium: '#92949c',
   dark: '#222428',
   dbbalance: '#eae3d0',
-  dbspbalance: '#6cc3d8',
+  dbspbalance: '#2C85FB',
   danger: '#eb445a',
   success: '#2dd36f',
   warning: '#ffc409'
@@ -214,6 +214,10 @@ function CSSTextGenerator(colors) {
     --ion-color-light-tint: ${Color(light).lighten(tintRatio)};
 
     --ion-color-dbbalance: ${dbbalance};
+    --ion-color-secondary-rgb: 12,209,232;
+    --ion-color-secondary-contrast: #ffffff;
+    --ion-color-secondary-contrast-rgb: 255,255,255;
+
     --ion-color-dbbalance-rgb: 244,244,244;
     --ion-color-dbbalance-contrast: $${contrast(dbbalance)};
     --ion-color-dbbalance-contrast-rgb: 0,0,0;

@@ -82,7 +82,7 @@
  
     <ion-row *ngIf="account &&  mode == 1">
       <ion-col>
-        <ion-button strong color="secondary" (click)="UpdateAccount()" type="submit" expand="block">
+        <ion-button strong color="tertiary" (click)="UpdateAccount()" type="submit" expand="block">
           <span>{{"Update"|translate}}</span>
         </ion-button>
       </ion-col>
@@ -90,7 +90,7 @@
 
     <ion-row *ngIf="account &&  mode == 1">
       <ion-col>
-        <ion-button expand="block" color="secondary" routerLink="/list-account" fill="outline" expand="block">
+        <ion-button expand="block" color="tertiary" routerLink="/list-account" fill="outline" expand="block">
           {{ "Cancel" | translate }}</ion-button>
       </ion-col>
     </ion-row>

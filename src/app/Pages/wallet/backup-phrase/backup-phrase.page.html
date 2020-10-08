@@ -27,7 +27,7 @@
         keep
         it somewhere safe and secure.
       </p>
-      <ion-button expand="block" color="secondary" (click)="backupClick();">{{ "Reveal seed words" | translate }}
+      <ion-button expand="block" color="tertiary" (click)="backupClick();">{{ "Reveal seed words" | translate }}
       </ion-button>
 
     </div>
@@ -138,7 +138,7 @@
       </div>
 
       <div style="text-align: center;margin-top: 10px;">
-        <ion-button *ngIf="decrypted" (click)="copyToClipboard()" color="secondary">
+        <ion-button *ngIf="decrypted" (click)="copyToClipboard()" color="tertiary">
           <ion-icon name="copy"></ion-icon> {{ "Copy to clipboard" | translate }}
         </ion-button>
       </div>
