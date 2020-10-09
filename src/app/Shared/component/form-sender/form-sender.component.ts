@@ -1,4 +1,9 @@
-import { Component, forwardRef, OnInit } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  OnInit,
+  ViewEncapsulation
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { PopoverController } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
@@ -16,7 +21,8 @@ import zoobc from 'zoobc-sdk';
       useExisting: forwardRef(() => FormSenderComponent),
       multi: true
     }
-  ]
+  ],
+  encapsulation: ViewEncapsulation.None
 })
 export class FormSenderComponent implements OnInit, ControlValueAccessor {
   constructor(
