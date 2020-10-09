@@ -350,7 +350,7 @@ export class TransactionsPage implements OnInit {
    * @param trx is tranaction object
    */
   public async openDetailTransction(trx) {
-    this.loadDetailTransaction(trx, 'confirm');
+    this.loadDetailTransaction(trx, 'confirmed');
   }
 
   private showLoading() {

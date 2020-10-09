@@ -4,7 +4,7 @@ import { NavParams, ModalController, AlertController } from '@ionic/angular';
 import { UtilService } from 'src/app/Services/util.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
-import { getZBCAddress } from 'zoobc-sdk';
+import zoobc, { TransactionResponse, getZBCAddress } from 'zoobc-sdk';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -13,11 +13,13 @@ import { getZBCAddress } from 'zoobc-sdk';
 })
 export class TransactionDetailPage implements OnInit {
   transaction: Transaction;
+  transactionDetail: TransactionResponse;
   account: any;
   status: string;
   alertConnectionTitle = '';
   alertConnectionMsg = '';
   networkSubscription = null;
+  isLoading = true;
 
   constructor(
     private utilService: UtilService,
@@ -31,6 +33,13 @@ export class TransactionDetailPage implements OnInit {
   }
 
   ngOnInit() {
+    zoobc.Transactions.get(this.transaction.id).then((transaction: TransactionResponse) => {
+      const pubkey = Buffer.from(transaction.transactionhash.toString(), 'base64');
+      transaction.transactionhash = getZBCAddress(pubkey, 'ZTX');
+      this.transactionDetail = transaction;
+      this.isLoading = false;
+      console.log('==transactionDetail:', this.transactionDetail);
+    });
 
     if (this.navParams && this.navParams.data) {
       this.transaction = this.navParams.data.transaction;

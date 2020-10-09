@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button  (click)="goDashboard()"> </ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Transactions" | translate }}</ion-title>
+    <ion-title>{{ 'transaction history' | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{"feedback" | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -23,11 +23,11 @@
   </div>
 
   <ion-label *ngIf="isError" color="danger" class="ion-text-center">
-    <h2>{{ errorMsg }}</h2>
+    <h2>{{ 'an error occurred while processing your request' | translate }}</h2>
   </ion-label>
 
   <h3 *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-padding-horizontal">
-    {{ "Pending Transactions" | translate }} 
+    {{ 'pending transaction' | translate }}
   </h3>
   <ion-list *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-margin-top">
     <ion-item *ngFor="let pendingtrx of unconfirmTxs; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
@@ -56,22 +56,18 @@
     </ion-item>
   </ion-list>
 
-  <h3 *ngIf="recentTxs.length > 0" class="ion-padding-horizontal">
-    {{ "Transactions History" | translate }} 
-  </h3>
-
   <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length === 0" class="ion-margin-top">
     <ion-item class="ion-text-center">
       <ion-label>
         <br/> <br/>
-          You don't have any transaction. 
+        {{ 'no transaction record' | translate }}
       </ion-label>
     </ion-item>
   </ion-list>
 
   <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length > 0" class="ion-margin-top">
     <ion-item *ngFor="let transaction of recentTxs; let i = index" button (click)="openDetailTransction(transaction)">
-      <ion-label *ngIf="transaction.name" color="dark">
+      <ion-label *ngIf="transaction.alias" color="dark">
         <h3>{{ transaction.name }}
           <br/>
           {{transaction.address | shortAddress}}
@@ -80,7 +76,7 @@
           transaction.timestamp | dateAgo
           }}</ion-text>
       </ion-label>
-      <ion-label *ngIf="!transaction.name" color="dark">
+      <ion-label *ngIf="!transaction.alias" color="dark">
         <h3>{{ transaction.address | shortAddress }}</h3>
         <ion-text class="dateago">{{
           transaction.timestamp | dateAgo
