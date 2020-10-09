@@ -1,12 +1,13 @@
 import {
   Component,
   forwardRef,
+  Input,
   OnInit,
   ViewEncapsulation
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { PopoverController } from '@ionic/angular';
-import { Account } from 'src/app/Interfaces/account';
+import { Account, AccountType } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
 import zoobc from 'zoobc-sdk';
@@ -25,12 +26,13 @@ import zoobc from 'zoobc-sdk';
   encapsulation: ViewEncapsulation.None
 })
 export class FormSenderComponent implements OnInit, ControlValueAccessor {
+  public account: Account;
+  @Input() accountType: AccountType;
+
   constructor(
     private popoverCtrl: PopoverController,
     private accountSrv: AccountService
   ) {}
-
-  public account: Account;
 
   async ngOnInit() {
     this.account = await this.accountSrv.getCurrAccount();
@@ -42,6 +44,7 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
       component: PopoverAccountComponent,
       event: ev,
       cssClass: 'popover-account',
+      componentProps: { accountType: this.accountType },
       translucent: true
     });
 

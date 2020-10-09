@@ -20,7 +20,7 @@
   <form [formGroup]="sendForm" (ngSubmit)="submit()">
     <ion-list class="form-list">
       <ion-item lines="none" class="form-item">
-        <app-form-sender formControlName="sender"></app-form-sender>
+        <app-form-sender formControlName="sender" accountType="normal"></app-form-sender>
       </ion-item>
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "send to" | translate }}</ion-label>
@@ -71,8 +71,8 @@
     </ion-item>
 
     <app-behavior-escrow-form *ngIf="withEscrow" formControlName="behaviorEscrow" [errors]="behaviorEscrow.errors"
-    (onChange)="onBehaviorEscrowChange($event)"
-    >
+      (onChange)="onBehaviorEscrowChange($event)"
+      >
     </app-behavior-escrow-form>
 
     <ion-button type="submit" color="tertiary" expand="block">
