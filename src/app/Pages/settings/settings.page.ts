@@ -18,6 +18,7 @@ import { ThemeService } from 'src/app/Services/theme.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-settings',
@@ -46,13 +47,14 @@ export class SettingsPage implements OnInit {
     private themeSrv: ThemeService,
     private currencyService: CurrencyService,
     private authService: AuthService,
-    private router: Router) {
+    private router: Router,
+    private alertCtrl: AlertController
+  ) {
+    this.currencyService.currencySubject.subscribe((rate: Currency) => {
+      this.currencyRate = rate;
+    });
 
-      this.currencyService.currencySubject.subscribe((rate: Currency) => {
-        this.currencyRate = rate;
-      });
-
-    }
+  }
 
   async ngOnInit() {
     this.getCurrencyRates();
@@ -76,20 +78,20 @@ export class SettingsPage implements OnInit {
 
   ionViewWillEnter() {
     this.selectThemeSubscription = this.themeSrv.themeSubject.subscribe((value: string)=>{
-      this.activeTheme = value
-    })
+        this.activeTheme = value
+      })
 
     this.selectNetworkSubscription = this.networkService.changeNodeSubject.subscribe((network: any)=>{
-      this.activeNetwork = network.name
-    })
+        this.activeNetwork = network.name
+      })
 
     this.selectLanguageSubscription = this.languageService.selectLanguageSubject.subscribe((language: any)=>{
-      this.activeLanguage = language
-    })
+        this.activeLanguage = language
+      })
 
     this.selectCurrencySubscription = this.currencyService.selectCurrencySubject.subscribe((currency: ICurrency)=>{
-      this.activeCurrency = currency
-    })
+        this.activeCurrency = currency
+      })
   }
 
   ionViewWillLeave() {
@@ -117,9 +119,6 @@ export class SettingsPage implements OnInit {
     }
   }
 
-  goToMultisig(){
-    this.router.navigateByUrl('/multisig');
-  }
 
   goToTheme(){
     this.router.navigateByUrl('/theme');
@@ -144,7 +143,7 @@ export class SettingsPage implements OnInit {
   goToBackupRestoreAddress(){
     this.router.navigateByUrl('/backuprestore-address');
   }
-  
+
   goToHelpAndSupport(){
     this.router.navigateByUrl('/help');
   }
@@ -157,9 +156,25 @@ export class SettingsPage implements OnInit {
     this.router.navigateByUrl('/about');
   }
 
-  logout(){
-    this.authService.logout();
-    this.router.navigateByUrl('/login');
-  }
+  async logout() {
+    const alert = await this.alertCtrl.create({
+      message: 'Are you sure want to logout?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.authService.logout();
+            this.router.navigateByUrl('/login');
+          }
+        }
+      ]
+    });
 
+    await alert.present();
+  }
 }
