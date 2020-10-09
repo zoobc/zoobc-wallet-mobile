@@ -15,28 +15,21 @@ export class ThemeService {
       primary: '#041C3F',
       secondary: '#041C3F',
       tertiary: '#2C85FB',
-      dbbalance: '#1BCA7F',
+      dbbalance: '#395B8F',
       dbspbalance: '#2C85FB'
-    },
-    zoobc2: {
-      primary: '#28456d',
-      secondary: '#4d6587',
-      tertiary: '#415775',
-      dbbalance: '#21D1DB',
-      dbspbalance: '#DB67B0'
     },
     bcz: {
       primary: '#005b96',
       secondary: '#6497b1',
       tertiary: '#03396c',
-      dbbalance: '#ffdf7b',
+      dbbalance: '#396D8F',
       dbspbalance: '#6cc3d8'
     },
     day: {
       primary: '#317873',
       secondary: '#5f9ea0',
       tertiary: '#49796b',
-      dbbalance: '#ffe8df',
+      dbbalance: '#40A8A1',
       dbspbalance: '#ffdf7b'
     },
     night: {
@@ -115,6 +108,7 @@ const defaults = {
   dark: '#222428',
   dbbalance: '#eae3d0',
   dbspbalance: '#2C85FB',
+  pinbutton: '#ffffff',
   danger: '#eb445a',
   success: '#2dd36f',
   warning: '#ffc409'
@@ -208,25 +202,28 @@ function CSSTextGenerator(colors) {
 
     --ion-color-light: ${light};
     --ion-color-light-rgb: 244,244,244;
-    --ion-color-light-contrast: $${contrast(light)};
+    --ion-color-light-contrast: ${contrast(light)};
     --ion-color-light-contrast-rgb: 0,0,0;
     --ion-color-light-shade: ${Color(light).darken(shadeRatio)};
     --ion-color-light-tint: ${Color(light).lighten(tintRatio)};
 
     --ion-color-dbbalance: ${dbbalance};
-    --ion-color-secondary-rgb: 12,209,232;
-    --ion-color-secondary-contrast: #ffffff;
-    --ion-color-secondary-contrast-rgb: 255,255,255;
-
-    --ion-color-dbbalance-rgb: 244,244,244;
-    --ion-color-dbbalance-contrast: $${contrast(dbbalance)};
+    --ion-color-secondary-rgb: 112,68,255;
+    --ion-color-dbbalance-contrast: #ffffff;
     --ion-color-dbbalance-contrast-rgb: 0,0,0;
     --ion-color-dbbalance-shade: ${Color(dbbalance).darken(shadeRatio)};
     --ion-color-dbbalance-tint: ${Color(dbbalance).lighten(tintRatio)};
 
+    --ion-color-pinbutton: ${dbspbalance};
+    --ion-color-pinbutton-rgb: 112,68,255;
+    --ion-color-pinbutton-contrast: #ffffff;
+    --ion-color-pinbutton-contrast-rgb: 0,0,0;
+    --ion-color-pinbutton-shade: ${Color(dbspbalance).darken(shadeRatio)};
+    --ion-color-pinbutton-tint: ${Color(dbspbalance).lighten(tintRatio)};
+
     --ion-color-dbspbalance: ${dbspbalance};
-    --ion-color-dbspbalance-rgb: 244,244,244;
-    --ion-color-dbspbalance-contrast: $${contrast(dbspbalance)};
+    --ion-color-dbspbalance-rgb: 112,68,255;
+    --ion-color-dbspbalance-contrast: #ffffff;
     --ion-color-dbspbalance-contrast-rgb: 0,0,0;
     --ion-color-dbspbalance-shade: ${Color(dbspbalance).darken(shadeRatio)};
     --ion-color-dbspbalance-tint: ${Color(dbspbalance).lighten(tintRatio)};`;
