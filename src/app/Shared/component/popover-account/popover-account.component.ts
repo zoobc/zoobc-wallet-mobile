@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
-import { Account } from 'src/app/Interfaces/account';
+import { Account, AccountType } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import zoobc from 'zoobc-sdk';
 
@@ -11,9 +11,9 @@ import zoobc from 'zoobc-sdk';
   styleUrls: ['./popover-account.component.scss']
 })
 export class PopoverAccountComponent implements OnInit {
-
-  accounts: any[];
+  accounts: Account[];
   selectedIndex: number;
+  @Input() accountType: AccountType;
 
   constructor(
     public popoverCtrl: PopoverController,
@@ -22,13 +22,20 @@ export class PopoverAccountComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.accounts = await this.accountSrv.allAccount();
+    const accounts: Account[] = await this.accountSrv.allAccount();
+    if (this.accountType) {
+      this.accounts = accounts.filter((account: Account) => {
+        return account.type && account.type == this.accountType;
+      });
+    } else {
+      this.accounts = accounts;
+    }
+
     if (this.accounts && this.accounts.length > 0) {
       this.getAllAccountBalance(this.accounts);
     }
 
     const selectedAccount = await this.accountSrv.getCurrAccount();
-    console.log("__selectedAccount", selectedAccount);
     this.selectedIndex = this.accounts.findIndex((account: Account) => {
       return account.address === selectedAccount.address;
     });

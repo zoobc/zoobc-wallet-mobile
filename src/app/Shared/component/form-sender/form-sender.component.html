@@ -5,7 +5,6 @@
     <ion-icon name="zbc-chevron-right"></ion-icon>
   </div>
   <div class="account-balance">
-    <span class="main-balance">ZBC {{ account && account.balance }}</span>
-    <span class="other-balance">USD 3.00</span>
+    <app-info-amount-conversion [value]="account.balance / 1e8" otherCurrency="USD"></app-info-amount-conversion>
   </div>
 </div>
