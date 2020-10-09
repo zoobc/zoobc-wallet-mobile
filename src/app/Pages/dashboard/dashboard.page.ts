@@ -127,7 +127,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     const alert = await this.alertController.create({
       header: 'Account:',
       subHeader: this.account.address,
-      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>' 
+      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>'
       + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
       buttons: ['OK']
     });
@@ -184,7 +184,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     this.translateSrv
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;
@@ -267,9 +267,16 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.menuController.open('mainMenu');
   }
 
+
   logout() {
+    // const user =  this.fcm.chatUser;
+    // if (user) {
+    //   this.fcm.delete(user);
+    // }
+
     this.authService.logout();
-    this.router.navigate(['login']);
+    this.router.navigateByUrl('/login');
+    this.menuController.close('mainMenu');
   }
 
   openSendFeedbak() {
