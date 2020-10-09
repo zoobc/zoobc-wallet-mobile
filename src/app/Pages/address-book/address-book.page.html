@@ -41,7 +41,7 @@
         <ion-item>
           <ion-label (click)="selectAddress(address)">
             <p class="name">{{ address.name }}</p>
-            <p class="address">{{ address.shortAddress }}</p>
+            <p class="address ion-text-wrap">{{ address.address }}</p>
           </ion-label>
           <ion-button slot="end" (click)="copyAddress(i)" color="meddium">
             <ion-icon name="copy"></ion-icon>
