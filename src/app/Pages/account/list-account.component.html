@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-item>
+  <ion-item *ngIf="!forWhat">
     <ion-button color="tertiary" (click)="importAccount()">{{"import" | translate}} {{ "accounts" | translate }}</ion-button>
     <ion-button color="tertiary" (click)="scanQrCode()">{{ "scan" | translate }}</ion-button>
   </ion-item>
