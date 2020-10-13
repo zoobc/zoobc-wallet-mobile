@@ -18,17 +18,18 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-no-padding">
-  <div class="bg-header-{{theme}}">
-    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-      <ion-refresher-content  refreshingText="{{ 'Refreshing' | translate }} ...">
-      </ion-refresher-content>
-    </ion-refresher>
+<ion-content class="ion-padding">
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content refreshingText="{{ 'Refreshing' | translate }} ...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <div *ngIf="theme" class="bg-header-{{theme}}">
     <ion-grid>
       <ion-row>
         <ion-col size="12">
-          <ion-item color="dbbalance" lines="none">
-            <img src="assets/images/logo-white.png" width="60px" class="logo"/>
+          <ion-item lines="none">
+            <img src="assets/images/logo-white.png" width="60px" class="logo" />
             <ion-label *ngIf="account" (click)="switchAccount()">
               <h1 class="name">{{ account.name }}</h1>
               <p class="shortaddres">{{ account.address | shortAddress }}</p>
@@ -38,155 +39,156 @@
               </ion-icon>
             </span>
           </ion-item>
-          <ion-item color="dbbalance" (click)='showBalanceDetail()' lines="none">
+          <ion-item  lines="none">
             <ion-label>
               <p>{{ "balance" | translate }}</p>
-              <ion-text class="amount">{{ accountBalance.balance/1e8 | number: '0.0-2' }} <span class="sufix">ZBC</span>                
+              <ion-text class="amount">{{ accountBalance.balance/1e8 | number: '0.0-2' }} <span class="sufix">ZBC</span>
               </ion-text>
               <p>
-                (  {{ (accountBalance.balance / 1e8) * priceInUSD *
+                ( {{ (accountBalance.balance / 1e8) * priceInUSD *
                 currencyRate.value | number: '0.0-2' }}
                 <span class="sufix">{{ currencyRate.name }}</span>)
               </p>
               <p class="spendable">{{ "spendable balance" | translate }}</p>
               <ion-text class="amount">
-                 {{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }} <span class="sufix">ZBC</span>
+                {{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }} <span class="sufix">ZBC</span>
               </ion-text>
               <p>
-                (  {{ (accountBalance.spendablebalance / 1e8) * priceInUSD *
+                ( {{ (accountBalance.spendablebalance / 1e8) * priceInUSD *
                 currencyRate.value | number: '0.0-2' }} <span class="sufix">{{ currencyRate.name }}</span>
                 )
               </p>
             </ion-label>
           </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col class="ion-text-right">
-          <ion-label color="light" class="last-refresh">{{"last refresh" | translate}}:
-            {{lastBalanceUpdated}}&nbsp;&nbsp;</ion-label>
+          <ion-item class="ion-text-right" lines="none">
+            <ion-label class="last-refresh">{{"last refresh" | translate}}:
+              {{lastBalanceUpdated}}&nbsp;&nbsp;</ion-label>
+          </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
-    <div *ngIf="isLoadingBalance" style="margin-top: 5px;">
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
-    </div>
-    <ion-grid class="menu-grid">
-      <ion-row>
-        <ion-col size="3">
-          <ion-card color="light" (click)="openListAccount()">
-            <ion-icon name="wallet" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "accounts" | translate }}</h2>
-          </ion-text>
-        </ion-col>
+  </div>
+  <div *ngIf="isLoadingBalance" style="margin-top: 5px;">
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
+  <ion-grid class="menu-grid">
+    <ion-row>
+      <ion-col size="3">
+        <ion-card (click)="openListAccount()" color="secondary">
+          <ion-icon name="wallet"></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "accounts" | translate }}</h2>
+        </ion-text>
+      </ion-col>
 
-        <ion-col size="3">
-          <ion-card color="light" (click)="sendCoin()">
-            <ion-icon name="arrow-round-up" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "send" | translate }}</h2>
-          </ion-text>
-        </ion-col>
+      <ion-col size="3">
+        <ion-card (click)="sendCoin()" color="secondary">
+          <ion-icon name="arrow-round-up" ></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "send" | translate }}</h2>
+        </ion-text>
+      </ion-col>
 
-        <ion-col size="3">
-          <ion-card color="light" [routerLink]="['/receive']">
-            <ion-icon name="arrow-round-down" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "receive" | translate }}</h2>
-          </ion-text>
-        </ion-col>
+      <ion-col size="3">
+        <ion-card [routerLink]="['/receive']" color="secondary">
+          <ion-icon name="arrow-round-down" ></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "receive" | translate }}</h2>
+        </ion-text>
+      </ion-col>
 
-        <ion-col size="3">
-          <ion-card color="light" routerLink="/transactions">
-            <ion-icon name="swap" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "transactions" | translate }} </h2>
-          </ion-text>
-        </ion-col>
+      <ion-col size="3">
+        <ion-card routerLink="/transactions" color="secondary">
+          <ion-icon name="swap"></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "transactions" | translate }} </h2>
+        </ion-text>
+      </ion-col>
 
-        <ion-col size="3">
-          <ion-card color="light" routerLink="/my-tasks">
-            <ion-icon name="reorder" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "my tasks" | translate }}</h2>
-          </ion-text>
-        </ion-col>
-        <ion-col size="3">
-          <ion-card color="light" routerLink="/multisig">
-            <ion-icon name="key" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "multisignature" | translate }}</h2>
-          </ion-text>
-        </ion-col>
+      <ion-col size="3">
+        <ion-card routerLink="/my-tasks" color="secondary">
+          <ion-icon name="reorder"></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "my tasks" | translate }}</h2>
+        </ion-text>
+      </ion-col>
+      <ion-col size="3">
+        <ion-card routerLink="/multisig" color="secondary">
+          <ion-icon name="key"></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "multisignature" | translate }}</h2>
+        </ion-text>
+      </ion-col>
 
-        <ion-col size="3">
-          <ion-card color="light" routerLink="/multisig" (click)="scanQrCode()">
-            <ion-icon name="qr-scanner"  color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "scan" | translate }}</h2>
-          </ion-text>
-        </ion-col>
+      <ion-col size="3">
+        <ion-card routerLink="/multisig" (click)="scanQrCode()" color="secondary">
+          <ion-icon name="qr-scanner" ></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "scan" | translate }}</h2>
+        </ion-text>
+      </ion-col>
 
 
-        <ion-col size="3">
-          <ion-card color="light" routerLink="/address-book">
-            <ion-icon name="people" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "contacts" | translate }}</h2>
-          </ion-text>
-        </ion-col>
+      <ion-col size="3">
+        <ion-card routerLink="/address-book" color="secondary">
+          <ion-icon name="people"></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "contacts" | translate }}</h2>
+        </ion-text>
+      </ion-col>
 
-        <ion-col size="3">
-          <ion-card color="light" routerLink="/settings">
-            <ion-icon name="settings" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "settings" | translate }}</h2>
-          </ion-text>          
-        </ion-col>
+      <ion-col size="3">
+        <ion-card routerLink="/settings" color="secondary">
+          <ion-icon name="settings"></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "settings" | translate }}</h2>
+        </ion-text>
+      </ion-col>
 
-        <ion-col size="3">
-          <ion-card color="light" (click)="openBlog()">
-            <ion-icon name="paper" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "blog" | translate }}</h2>
-          </ion-text>
-        </ion-col>
+      <ion-col size="3">
+        <ion-card (click)="openBlog()" color="secondary">
+          <ion-icon name="paper"></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "blog" | translate }}</h2>
+        </ion-text>
+      </ion-col>
 
-        <ion-col size="3">
-          <ion-card color="light" routerLink="/applist">
-            <ion-icon name="apps" color="secondary"></ion-icon>
-          </ion-card>
-          <ion-text color="light">
-            <h2 class="smallerText">{{ "apps" | translate }}</h2>
-          </ion-text>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col class="ion-text-left ion-padding">
-          <h1 style="color: #ffffff" >Crypto News</h1>
-          <ion-list  *ngIf="!error;else errorContent">
-            <ion-item *ngFor="let news of newsList.slice(0, 5); let i = index" >
-              <ion-label class="ion-text-wrap">
-                <h3>{{news.title}}</h3>
-                <p>{{news.published_on }}</p>
-                <p>{{news.body}}</p>
-              </ion-label>
-            </ion-item>  
-          </ion-list>
-          <ng-template #errorContent><p><span style="color: red;">{{error}}</span></p></ng-template>
-<!-- 
-          <ion-card color="light">
+      <ion-col size="3">
+        <ion-card routerLink="/applist" color="secondary">
+          <ion-icon name="apps"></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "apps" | translate }}</h2>
+        </ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-left ion-padding">
+        <h1 style="color: #ffffff">Crypto News</h1>
+        <ion-list *ngIf="!error;else errorContent">
+          <ion-item *ngFor="let news of newsList.slice(0, 5); let i = index">
+            <ion-label class="ion-text-wrap">
+              <h3>{{news.title}}</h3>
+              <p>{{news.published_on | date :  "dd.MM.y"}}</p>
+              <!-- <p>{{news.body}}</p> -->
+            </ion-label>
+          </ion-item>
+        </ion-list>
+        <ng-template #errorContent>
+          <p><span style="color: red;">{{error}}</span></p>
+        </ng-template>
+        <!-- 
+          <ion-card >
             <div class="ion-text-left" style="padding: 15px;">
             <h1>News</h1>
             <h2>Top Blockchain News of 2019</h2>
@@ -195,8 +197,7 @@
             </p>
           </div>
           </ion-card> -->
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

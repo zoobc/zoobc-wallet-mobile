@@ -32,10 +32,49 @@ ion-icon{
   padding: 3px;
 }
 
+
+
+ion-item{
+  --background: none;
+  // background-image: url("src/assets/images/background.png");
+  // background-repeat:no-repeat;
+  // background-size: cover;
+  // // background-attachment: fixed;
+  // background-position: center center;
+}
+
+
+ion-col{
+  --background: none;
+  // background-image: url("src/assets/images/background.png");
+  // background-repeat:no-repeat;
+  // background-size: cover;
+  // background-attachment: fixed;
+  // background-position: center center;
+}
+
+// ion-grid{
+//   --background: none;
+//   background-image: url("src/assets/images/background.png");
+//   background-repeat:no-repeat;
+//   background-size: cover;
+//   background-attachment: fixed;
+//   background-position: center center;
+// }
+
+// ion-row{
+//   --background: none;
+//   background-image: url("src/assets/images/background.png");
+//   background-repeat:no-repeat;
+//   background-size: cover;
+//   background-attachment: fixed;
+//   background-position: center center;
+// }
+
 ion-card{
-  padding-top: 10px;
+  padding-top: 5px;
   text-align: center;
-  box-shadow: none !important;
+  // box-shadow: none !important;
 }
 
 .amount{
@@ -51,7 +90,7 @@ ion-card{
 }
 
 .smallerText{
-  font-size: 0.7em;;
+  font-size: 0.8em;;
 }
 
 .sufix{
