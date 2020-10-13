@@ -173,7 +173,19 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
+        <ion-col class="ion-text-left ion-padding">
+          <h1 style="color: #ffffff" >Crypto News</h1>
+          <ion-list  *ngIf="!error;else errorContent">
+            <ion-item *ngFor="let news of newsList.slice(0, 5); let i = index" >
+              <ion-label class="ion-text-wrap">
+                <h3>{{news.title}}</h3>
+                <p>{{news.published_on }}</p>
+                <p>{{news.body}}</p>
+              </ion-label>
+            </ion-item>  
+          </ion-list>
+          <ng-template #errorContent><p><span style="color: red;">{{error}}</span></p></ng-template>
+<!-- 
           <ion-card color="light">
             <div class="ion-text-left" style="padding: 15px;">
             <h1>News</h1>
@@ -182,7 +194,7 @@
               2018 was a tough year for many blockchain projects and cryptocurrencies, yet 2019 offered a strong rebound for blockchain infrastructure improvements, supply chain use cases, and ongoing investments from big financial players. In addition, many blockchain projects started transitioning from pilot programs to consumer products.
             </p>
           </div>
-          </ion-card>
+          </ion-card> -->
         </ion-col>
       </ion-row>
     </ion-grid>
