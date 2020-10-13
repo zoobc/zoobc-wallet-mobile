@@ -1,6 +1,3 @@
-ion-button {
-  width: 60px;
-}
 
 ion-col {
   text-align: center;
@@ -11,4 +8,13 @@ ion-col {
   margin-left: 4px;
   margin-right: 4px;
   color: #ffffff;
+}
+
+.sqare_button {
+  height: 100px;
+  --vertical-align: middle;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-bottom: 2px !important;
+  --box-shadow: none;
 }
