@@ -1,0 +1,14 @@
+.list-apps{
+    ion-item{
+        h3{
+            font-size: 1.2rem;
+            color: #000;
+        }
+
+        ion-button{
+            margin-top: 10px;
+        }
+
+        --inner-padding-end: 0px;
+    }
+}

@@ -26,7 +26,7 @@
       <ion-list-header *ngIf="forWhat==='account'">
         <ion-label><span>{{"tap list to switch account" | translate}}.</span></ion-label>
       </ion-list-header>
-      <ion-item class="ion-text-wrap" *ngFor="let account of accounts; let idx = index">
+      <ion-item class="ion-text-wrap" *ngFor="let account of accounts; let idx = index" (click)="accountClicked(account)">
         <app-account-item [account]="account"></app-account-item>
         <ion-icon *ngIf="!forWhat" name="zbc-option" slot="end" (click)="showOption($event, idx)"></ion-icon>
       </ion-item>
