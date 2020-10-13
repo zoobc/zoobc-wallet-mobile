@@ -15,6 +15,10 @@
 <ion-content>
   <div class="address-book-list" style="margin-bottom: 60px;">
     <ng-template #noData>
+      <ion-item>
+        <ion-button class="item-btn-add" fill="clear" (click)="createNewAddress()">{{ "add contact" | translate }}
+        </ion-button>
+      </ion-item>
       <ion-item lines="none">
         <ion-label>{{ "you dont have any address" | translate }}</ion-label>
       </ion-item>
