@@ -30,7 +30,7 @@
         <ion-col size="12">
           <ion-item lines="none">
             <img src="assets/images/logo-white.png" width="60px" class="logo" />
-            <ion-label *ngIf="account" (click)="switchAccount()">
+            <ion-label *ngIf="account" (click)="switchAccount()" color="light">
               <h1 class="name">{{ account.name }}</h1>
               <p class="shortaddres">{{ account.address | shortAddress }}</p>
             </ion-label>
@@ -40,7 +40,7 @@
             </span>
           </ion-item>
           <ion-item  lines="none">
-            <ion-label>
+            <ion-label color="light">
               <p>{{ "balance" | translate }}</p>
               <ion-text class="amount">{{ accountBalance.balance/1e8 | number: '0.0-2' }} <span class="sufix">ZBC</span>
               </ion-text>
@@ -172,11 +172,16 @@
         </ion-text>
       </ion-col>
     </ion-row>
+  </ion-grid>
+  <ion-grid style='border:1px solid #cccccc'> 
     <ion-row>
-      <ion-col class="ion-text-left ion-padding">
-        <h1 style="color: #ffffff">Crypto News</h1>
+      <ion-col class="ion-text-left ion-no-padding" color="light">
+        <h1>Crypto News</h1>
         <ion-list *ngIf="!error;else errorContent">
           <ion-item *ngFor="let news of newsList.slice(0, 5); let i = index">
+            <ion-thumbnail slot="start">
+              <img src="{{news.imageurl}}">
+            </ion-thumbnail>
             <ion-label class="ion-text-wrap">
               <h3>{{news.title}}</h3>
               <p>{{news.published_on | date :  "dd.MM.y"}}</p>
