@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Add Account" | translate }}</ion-title>
+    <ion-title>{{ 'add new account' | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/feedback">
-        Feedback
+        {{"feedback"|translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -16,7 +16,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-label position="stacked">{{ "Account Name" | translate }}</ion-label>
+        <ion-label position="stacked">{{ 'account name' | translate }}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -35,13 +35,13 @@
     <ion-row>
       <ion-col>
         <ion-checkbox [(ngModel)]="isMultisig" (ionChange)="changeToMultisig()" color="primary"></ion-checkbox>
-        <ion-label>Multi-signature Account</ion-label>
+        <ion-label> {{ 'multisignature account' | translate }}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="isMultisig">
       <ion-col>
         <ion-label>
-          <h2>Participants</h2>
+          <h2>{{ 'participants' | translate }}</h2>
         </ion-label>
       </ion-col>
     </ion-row>
@@ -68,64 +68,46 @@
     </div>
     <ion-row *ngIf="isParticipntValid === false">
       <ion-col>
-        <ion-label color="danger">Please input all participants!</ion-label>
+        <ion-label color="danger">{{ 'participant address is invalid' | translate }}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="isMultisig">
       <ion-col>
         <ion-label>
-          <h2>Nonce</h2>
-          <ion-input [(ngModel)]="nonce" type="number" (ionChange)="validateNonce()" placeholder="Nonce ..." ></ion-input>
+          <h2>{{ 'nonce' | translate }}</h2>
+          <ion-input [(ngModel)]="nonce" type="number" (ionChange)="validateNonce()" placeholder="{{ 'nonce' | translate }}" ></ion-input>
         </ion-label>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="isNonceValid === false">
       <ion-col>
-        <ion-label color="danger">Nonce is not valid, minimum 1 .!</ion-label>
+        <ion-label color="danger">{{ 'minimum nonce is 1' | translate }}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="isMultisig">
       <ion-col>
         <ion-label>
-          <h2>Minimum signature</h2>
-          <ion-input type="number" [(ngModel)]="minimumSignature" (ionChange)="validateMinimumSig()" placeholder="Minimum signature..."></ion-input>
+          <h2>{{ 'minimum signature' | translate }}</h2>
+          <ion-input type="number" [(ngModel)]="minimumSignature" (ionChange)="validateMinimumSig()" placeholder="{{ 'minimum signature' | translate }}"></ion-input>
         </ion-label>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="isMinSigValid === false">
       <ion-col>
-        <ion-label color="danger">Minimum signature is 2 and cannot more than number of participants.</ion-label>
+        <ion-label color="danger">{{ 'minimum signature is 2' | translate }}</ion-label>
       </ion-col>
     </ion-row>
-    <!-- <ion-row *ngIf="isMultisig">
-      <ion-col>
-        <ion-label>
-          <h2>Sign by</h2>
-        </ion-label>
-      </ion-col>
-    </ion-row> -->
-    <!-- <ion-row *ngIf="isMultisig">
-      <ion-col size="10">
-        <ion-label>
-          <h3 *ngIf="signByAccount">{{signByAccount.name}}</h3>
-          <ion-textarea rows="3" [(ngModel)]="signBy" placeholder="Enter sign by..."></ion-textarea>
-        </ion-label>
-      </ion-col>
-      <ion-col size="2">
-        <ion-icon name="arrow-dropdown" (click)="showPopupSignBy();"></ion-icon>
-      </ion-col>
-    </ion-row> -->
     <ion-row>
       <ion-col>
         <ion-button strong color="tertiary" (click)="createAccount()" type="submit" expand="block">
-          <span>{{"Save"|translate}}</span>
+          <span>{{ 'save' | translate }}</span>
         </ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-button expand="block" color="tertiary" routerLink="/list-account" fill="outline" expand="block">
-          {{ "Cancel" | translate }}</ion-button>
+          {{ "cancel" | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
