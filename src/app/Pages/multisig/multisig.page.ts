@@ -65,7 +65,7 @@ export class MultisigPage implements OnInit {
 
   async ngOnInit() {
     await this.getMultiSigDraft();
-    this.goNextStep();
+    // this.goNextStep();
   }
 
   async getMultiSigDraft() {
@@ -75,7 +75,7 @@ export class MultisigPage implements OnInit {
     this.isMultiSignature = this.account.type !== 'multisig' ? false : true;
 
     const drafts = this.multisigServ.getDrafts();
-
+    console.log('=== Drfts: ', drafts);
     if (drafts) {
       this.multiSigDrafts = drafts;
 
