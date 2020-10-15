@@ -30,7 +30,7 @@
         <ion-col size="12">
           <ion-item lines="none">
             <img src="assets/images/logo-white.png" width="60px" class="logo" />
-            <ion-label *ngIf="account" (click)="switchAccount()" color="light">
+            <ion-label *ngIf="account" (click)="switchAccount()" color="dbbalance">
               <h1 class="name">{{ account.name }}</h1>
               <p class="shortaddres">{{ account.address | shortAddress }}</p>
             </ion-label>
@@ -40,7 +40,7 @@
             </span>
           </ion-item>
           <ion-item  lines="none">
-            <ion-label color="light">
+            <ion-label color="dbbalance">
               <p>{{ "balance" | translate }}</p>
               <ion-text class="amount">{{ accountBalance.balance/1e8 | number: '0.0-2' }} <span class="sufix">ZBC</span>
               </ion-text>
@@ -173,35 +173,36 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid style='border:1px solid #cccccc'> 
+  <ion-grid style='border:1px solid #cccccc; background-color: #dddddd;'> 
     <ion-row>
-      <ion-col class="ion-text-left ion-no-padding" color="light">
-        <h1>Crypto News</h1>
+      <ion-col class="ion-text-left ion-no-padding">
         <ion-list *ngIf="!error;else errorContent">
-          <ion-item *ngFor="let news of newsList.slice(0, 5); let i = index">
-            <ion-thumbnail slot="start">
-              <img src="{{news.imageurl}}">
-            </ion-thumbnail>
-            <ion-label class="ion-text-wrap">
-              <h3>{{news.title}}</h3>
-              <p>{{news.published_on | date :  "dd.MM.y"}}</p>
-              <!-- <p>{{news.body}}</p> -->
+          <ion-item lines="none">
+            <ion-label slot="start">
+            <h1 >Crypto News</h1>
             </ion-label>
+          </ion-item>
+          <ion-item *ngFor="let news of newsList.slice(0, 1); let i = index">
+            <ion-label class="ion-text-wrap">
+              <h1 style="font-size: 1.5em; margin-bottom:10px;">{{news.title}}</h1>
+              <!-- <p>{{news.published_on | date :  "dd.MM.y"}}</p> -->
+              <p> 
+                <img src="{{news.imageurl}}" style="margin-right:10px; margin-bottom:10px; width:100px;" align="left">
+                {{news.published_on | date :  "dd.MM.y"}}<br/>{{news.body}}
+              </p>
+              <p style="text-align: right;" (click)="visitSite(news.url)">read more ...</p>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label slot="end">
+            <p style="text-align: right;" routerLink="/news">Show all news ><p>
+          </ion-label>
           </ion-item>
         </ion-list>
         <ng-template #errorContent>
           <p><span style="color: red;">{{error}}</span></p>
         </ng-template>
-        <!-- 
-          <ion-card >
-            <div class="ion-text-left" style="padding: 15px;">
-            <h1>News</h1>
-            <h2>Top Blockchain News of 2019</h2>
-            <p>
-              2018 was a tough year for many blockchain projects and cryptocurrencies, yet 2019 offered a strong rebound for blockchain infrastructure improvements, supply chain use cases, and ongoing investments from big financial players. In addition, many blockchain projects started transitioning from pilot programs to consumer products.
-            </p>
-          </div>
-          </ion-card> -->
+        
       </ion-col>
     </ion-row>
   </ion-grid>

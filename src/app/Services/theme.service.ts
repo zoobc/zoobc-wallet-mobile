@@ -15,21 +15,21 @@ export class ThemeService {
       primary: '#041C3F',
       secondary: '#041C3F',
       tertiary: '#2C85FB',
-      dbbalance: '#395B8F',
+      dbbalance: '#cccddd',
       dbspbalance: '#2C85FB'
     },
     bcz: {
       primary: '#005b96',
       secondary: '#6497b1',
       tertiary: '#03396c',
-      dbbalance: '#396D8F',
+      dbbalance: '#cccddd',
       dbspbalance: '#6cc3d8'
     },
     day: {
       primary: '#317873',
       secondary: '#5f9ea0',
       tertiary: '#49796b',
-      dbbalance: '#40A8A1',
+      dbbalance: '#000000',
       dbspbalance: '#ffdf7b'
     },
     night: {
@@ -39,7 +39,7 @@ export class ThemeService {
       medium: '#BCC2C7',
       dark: '#dedede',
       light: '#495867',
-      dbbalance: '#c1a57b',
+      dbbalance: '#dddddd',
       dbspbalance: '#8CBA80'
     },
     neon: {

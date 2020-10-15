@@ -375,6 +375,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     window.open(BLOCKCHAIN_BLOG_URL, '_system');
   }
 
+  visitSite(url) {
+    window.open(url, '_system');
+  }
+  
   async scanQrCode() {
     // this.router.navigateByUrl('/qr-scanner');
     const navigationExtras: NavigationExtras = {
