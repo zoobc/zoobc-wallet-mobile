@@ -154,7 +154,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   doRefresh(event: any) {
     this.showLoading();
     this.loadData();
-
+    this.loadNews();
     setTimeout(() => {
       event.target.complete();
     }, 2000);

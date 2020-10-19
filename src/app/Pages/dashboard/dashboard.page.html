@@ -35,25 +35,25 @@
               <p class="shortaddres">{{ account.address | shortAddress }}</p>
             </ion-label>
             <span style="font-size: 0.7em;">
-              <ion-icon name="arrow-dropdown" (click)="openListAccount()">
+              <ion-icon name="arrow-dropdown" color="dbbalance" (click)="openListAccount()">
               </ion-icon>
             </span>
           </ion-item>
           <ion-item  lines="none">
             <ion-label color="dbbalance">
-              <p>{{ "balance" | translate }}</p>
+              <p  style="font-size:0.9em">{{ "balance" | translate }}</p>
               <ion-text class="amount">{{ accountBalance.balance/1e8 | number: '0.0-2' }} <span class="sufix">ZBC</span>
               </ion-text>
-              <p>
+              <p style="font-size:1.2em">
                 ( {{ (accountBalance.balance / 1e8) * priceInUSD *
                 currencyRate.value | number: '0.0-2' }}
                 <span class="sufix">{{ currencyRate.name }}</span>)
               </p>
-              <p class="spendable">{{ "spendable balance" | translate }}</p>
+              <p class="spendable"  style="font-size:0.9em">{{ "spendable balance" | translate }}</p>
               <ion-text class="amount">
                 {{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }} <span class="sufix">ZBC</span>
               </ion-text>
-              <p>
+              <p  style="font-size:1.2em">
                 ( {{ (accountBalance.spendablebalance / 1e8) * priceInUSD *
                 currencyRate.value | number: '0.0-2' }} <span class="sufix">{{ currencyRate.name }}</span>
                 )
@@ -61,7 +61,7 @@
             </ion-label>
           </ion-item>
           <ion-item class="ion-text-right" lines="none">
-            <ion-label class="last-refresh">{{"last refresh" | translate}}:
+            <ion-label class="last-refresh" color="dbbalance">{{"last refresh" | translate}}:
               {{lastBalanceUpdated}}&nbsp;&nbsp;</ion-label>
           </ion-item>
         </ion-col>
@@ -145,14 +145,6 @@
         </ion-text>
       </ion-col>
 
-      <ion-col size="3">
-        <ion-card routerLink="/settings" color="secondary">
-          <ion-icon name="settings"></ion-icon>
-        </ion-card>
-        <ion-text>
-          <h2 class="smallerText">{{ "settings" | translate }}</h2>
-        </ion-text>
-      </ion-col>
 
       <ion-col size="3">
         <ion-card (click)="openBlog()" color="secondary">
@@ -171,6 +163,16 @@
           <h2 class="smallerText">{{ "apps" | translate }}</h2>
         </ion-text>
       </ion-col>
+
+      <ion-col size="3">
+        <ion-card routerLink="/settings" color="secondary">
+          <ion-icon name="settings"></ion-icon>
+        </ion-card>
+        <ion-text>
+          <h2 class="smallerText">{{ "settings" | translate }}</h2>
+        </ion-text>
+      </ion-col>
+
     </ion-row>
   </ion-grid>
   <ion-grid style='border:1px solid #cccccc; background-color: #dddddd;'> 
@@ -178,24 +180,24 @@
       <ion-col class="ion-text-left ion-no-padding">
         <ion-list *ngIf="!error;else errorContent">
           <ion-item lines="none">
-            <ion-label slot="start">
-            <h1 >Crypto News</h1>
+            <ion-label slot="start" color="secondary">
+            <p style="font-size:1.2em">Crypto News</p>
             </ion-label>
-          </ion-item>
+          </ion-item> 
           <ion-item *ngFor="let news of newsList.slice(0, 1); let i = index">
-            <ion-label class="ion-text-wrap">
-              <h1 style="font-size: 1.5em; margin-bottom:10px;">{{news.title}}</h1>
+            <ion-label class="ion-text-wrap" color="secondary">
+              <h1 (click)="visitSite(news.url)" style="font-size: 1.5em; margin-bottom:10px;">{{news.title}}</h1>
               <!-- <p>{{news.published_on | date :  "dd.MM.y"}}</p> -->
               <p> 
                 <img src="{{news.imageurl}}" style="margin-right:10px; margin-bottom:10px; width:100px;" align="left">
-                {{news.published_on | date :  "dd.MM.y"}}<br/>{{news.body}}
+                {{news.published_on * 1000| date :  "dd MMM y"}}<br/>{{news.body}}
               </p>
               <p style="text-align: right;" (click)="visitSite(news.url)">read more ...</p>
             </ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-label slot="end">
-            <p style="text-align: right;" routerLink="/news">Show all news ><p>
+            <ion-label slot="end" color="secondary">
+            <p style="text-align: right; font-size:1.2em" routerLink="/news">Show all news ><p>
           </ion-label>
           </ion-item>
         </ion-list>
