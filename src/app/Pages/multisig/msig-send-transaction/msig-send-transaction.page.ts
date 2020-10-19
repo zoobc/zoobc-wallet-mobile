@@ -85,6 +85,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
   isValidFee = true;
   isBalanceNotEnough = true;
   accounts: Account[];
+  participantAccounts = [];
 
   constructor(
     private utilService: UtilService,
@@ -108,6 +109,29 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
   async loadAllAccount() {
     this.accounts = await this.accountService.allAccount('normal');
+    const participants = this.participants.map(prc => {
+      console.log('=== participatn: ', prc);
+      const account = this.accounts.find(acc => acc.address === prc);
+      if (account) {
+        this.participantAccounts.push(account);
+      }
+      console.log('== Account: ', account);
+      // this.myFunction(prc);
+    });
+  }
+
+  async myFunction(prt) {
+    // find participatn on acount then add to arry;
+    // const acc = await this.accountService.getAccount(prt);
+
+    // .then(acc => {
+    //   if (acc) {
+    //     console.log('== acc fouind', acc);
+    //     // this.participantAccounts.push(acc);
+    //   }
+    // });
+    console.log('=Particitpant: ', prt);
+    return prt;
   }
 
   async getAccountBalance(addr: string) {
