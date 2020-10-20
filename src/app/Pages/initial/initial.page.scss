@@ -1,14 +1,33 @@
-.cMiddle{
-  padding-top: 20px;
-  height: 50%;
+ion-content{
+  --background: #333;
 }
 
-.cBottom{
-  margin-bottom: 20px;
+.content{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
 }
 
-.scroll-content {
-  margin-bottom: 0!important;
+ion-toolbar{
+  --background: transparent;
+  --ion-color-base: transparent !important;
+
+  ion-select{
+    color: #ffffff;
+  }
+}
+
+.welcome-container{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome{
+  font-size: 1.4rem;
 }
 
 .logo{
@@ -18,23 +37,19 @@
 }
 
 .btnNew{
-  margin-bottom:10px;
-  --background: purple;
+  margin-bottom:20px;
+  --background: white;
+  color:#28456D;
 }
 
 .opnExisting{
   color: white;
   background-color: transparent;
-  --border-color: purple;
-}
-
-ion-footer {
-  --ion-color-base: transparent !important;
+  --border-color: white;
 }
 
 .background-zoobc{
-  --background: transparent;
-  background-image: url("src/assets/images/zoobc.png");
+  --background: url("src/assets/images/zoobc.png");
   background-repeat:no-repeat;
   background-size: cover;
   background-attachment: fixed;

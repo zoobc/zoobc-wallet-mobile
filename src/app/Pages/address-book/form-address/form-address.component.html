@@ -42,19 +42,9 @@
     </ion-item>
   </ion-list>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-label color="danger">{{validationMessage}}&nbsp;</ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button strong color="secondary" type="submit" expand="block">
-          <span *ngIf="mode==='add'">{{ "save" | translate }}</span>
-          <span *ngIf="mode==='edit'">{{ "update" | translate }}</span>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-button strong color="secondary" type="submit" expand="block">
+    <span *ngIf="mode==='add'">{{ "save" | translate }}</span>
+    <span *ngIf="mode==='edit'">{{ "update" | translate }}</span>
+  </ion-button>
+
 </form>

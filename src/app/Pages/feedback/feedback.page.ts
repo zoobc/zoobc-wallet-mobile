@@ -6,6 +6,7 @@ import { throwError } from 'rxjs';
 import { Location } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export class Feedback {
   name: string;
@@ -23,15 +24,21 @@ export class Feedback {
 
 export class FeedbackPage implements OnInit {
 
-  feedbackform: any;
-  Name: string;
-  Email: string;
   AccAddress = '';
   errorMsg = '';
   isSending = false;
-  Comment: string;
   rate: number;
   msgerror = '';
+  submitted = false;
+
+  formFeedback = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    comment: new FormControl('', [
+      Validators.required,
+      Validators.minLength(10)
+    ])
+  });
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -40,8 +47,7 @@ export class FeedbackPage implements OnInit {
     })
   };
 
-   toast: any;
-
+  toast: any;
 
   constructor(
     private feedbackService: FeedbackService,
@@ -99,54 +105,25 @@ export class FeedbackPage implements OnInit {
       });
   }
 
-  isEmail(search: string): boolean {
-      let serchfind: boolean;
-      // tslint:disable-next-line:max-line-length
-      const regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-      serchfind = regexp.test(search);
-      return serchfind;
-  }
-
   CreateRecord() {
-    this.errorMsg = '';
-    this.isSending = false;
-    if (!this.Name) {
-      this.errorMsg = 'Name is empty';
-      return;
+    this.submitted = true;
+
+    if (this.formFeedback.valid) {
+      this.isSending = true;
+
+      const fb = {email: this.email.value, name: this.name.value, message: this.comment.value};
+      this.createItem(fb);
     }
-
-    if (this.Name.length < 4) {
-      this.errorMsg = 'Name is to short';
-      return;
-    }
-
-    if (!this.Email) {
-      this.errorMsg = 'Email is empty';
-      return;
-    }
-
-    if (!this.isEmail(this.Email)) {
-      this.errorMsg = 'Email is not valid';
-      return;
-    }
-
-    if (!this.Comment) {
-      this.errorMsg = 'Comment is empty';
-      return;
-    }
-
-
-    if (this.Comment.length < 10) {
-      this.errorMsg = 'Comment is to short';
-      return;
-    }
-
-    this.isSending = true;
-    const fb = {email: this.Email, name: this.Name, message: this.Comment};
-    this.createItem(fb);
   }
 
   async showConfirmationSuccess() {
+
+    this.formFeedback.reset();
+
+    this.submitted = false;
+
+    this.isSending = false;
+
     const alert = await this.alertController.create({
       header: 'Thank you for your feedback!',
       subHeader: 'If needed we will get back to you as soon as possible!',
@@ -161,10 +138,16 @@ export class FeedbackPage implements OnInit {
     await alert.present();
   }
 
-  clearForm() {
-    this.Email = '';
-    this.Name  = '';
-    this.Comment  = '';
+  get name() {
+    return this.formFeedback.get('name');
+  }
+
+  get email() {
+    return this.formFeedback.get('email');
+  }
+
+  get comment() {
+    return this.formFeedback.get('comment');
   }
 
   RemoveRecord(rowID) {

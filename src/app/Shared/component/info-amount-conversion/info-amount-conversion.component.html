@@ -3,7 +3,7 @@
     <span *ngIf="prefix">{{ prefix }}</span>
     ZBC {{ value | number:'0.0-2' }}
   </div>
-  <div class="other-amount">
+  <div class="other-amount" *ngIf="otherCurrency">
     <div *ngIf="otherCurrencyDecoration==='BRACKET'; else noDecoration">
       ({{ otherCurrency }} {{ otherValue | number:'0.0-2' }})
     </div>
