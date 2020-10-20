@@ -9,7 +9,7 @@ import zoobc, {
   EscrowListParams,
 } from 'zoobc-sdk';
 
-import { GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
+import { EscrowStatus, GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
 import { OrderBy } from 'zoobc-sdk/grpc/model/pagination_pb';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { Router, NavigationExtras } from '@angular/router';
@@ -129,12 +129,14 @@ export class MyTasksPage implements OnInit {
     const params: EscrowListParams = {
       approverAddress: this.account.address,
       // statusList: [0],
+      statusList: [EscrowStatus.PENDING],
       pagination: {
         page: this.page,
         limit: this.PerPage,
         orderBy: OrderBy.DESC,
         orderField: 'timeout',
       },
+      latest: true,
     };
 
     zoobc.Escrows.getList(params)
@@ -147,6 +149,7 @@ export class MyTasksPage implements OnInit {
 
         const txMap = trxs.map(tx => {
           const alias = this.addresBookSrv.getNameByAddress(tx.recipientaddress) || '';
+          
           return {
             id: tx.id,
             alias,
