@@ -8,109 +8,54 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-grid fixed>
-    <ion-row>
-      <ion-col>
-        <ion-label position="stacked" class="feedback-label">{{ "name" | translate}}:</ion-label>
-        <ion-item class="feedback-input">
-          <ion-input placeholder="Enter Name" [(ngModel)]="Name" class="feedback-input"></ion-input>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-label position="stacked" class="feedback-label">{{ "email" | translate}}:</ion-label>
-        <ion-item class="feedback-input">
-          <ion-input type="email" name="email" [(ngModel)]="Email" placeholder="Enter email"
-          pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})">
-          </ion-input>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-label position="stacked" class="feedback-label">{{ "comment" | translate}}:</ion-label>
-        <ion-item class="feedback-input">
-          <ion-textarea [(ngModel)]="Comment" placeholder="Enter Comment here..." rows="6"></ion-textarea>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isSending">
-      <ion-col>
-          <ion-progress-bar type="indeterminate"></ion-progress-bar>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="errorMsg">
-      <ion-col class="ion-text-center">
-        <ion-label color="danger">{{ "message" | translate}}: <br/> {{errorMsg}}</ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col text-center>
-        <!-- <ion-button type="submit" expand="block">Submit</ion-button> -->
-        <ion-button class="feedback-submit"  expand="block" (click)="CreateRecord()" [disabled]="!Name || !AccAddress || !Comment">
-          {{ "submit" | translate }}
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col text-center>
-        <ion-text color="danger" *ngIf="msgerror">{{msgerror}}</ion-text>
-      </ion-col>
-    </ion-row>
-
-    <!-- <ion-row>
-      <ion-col text-center>
-        <ion-button expand="block" color="light" routerLink="/list-feedback">
-          {{ "Show All Feedback" | translate }}
-        </ion-button>
-      </ion-col>
-    </ion-row> -->
-  </ion-grid>
-</ion-content>
-
-<!-- 
-<ion-content padding>
-  <form >
-    <ion-list lines="full" class="ion-no-margin ion-no-padding">
-      <ion-item>
-        <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
-        <ion-input required type="text"></ion-input>
+  <form [formGroup]="formFeedback" (ngSubmit)="CreateRecord()">
+    <ion-list class="form-list">
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "name" | translate }}</ion-label>
+        <ion-input placeholder="{{ 'please type your name' | translate }}" formControlName="name"></ion-input>
+        <ng-container *ngIf="(submitted || name.dirty || name.touched) && name.invalid">
+          <ion-text class="text-error"
+            *ngIf="name.errors.required">
+            {{ "name cannot be empty" | translate}}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="name.errors.minlength">
+            {{ "the name is too short" | translate}}
+          </ion-text>
+        </ng-container>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Email <ion-text color="danger">*</ion-text></ion-label>
-        <ion-input required type="text"></ion-input>
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "email" | translate }}</ion-label>
+        <ion-input placeholder="{{ 'please type your email' | translate }}" formControlName="email"></ion-input>
+        <ng-container *ngIf="(submitted || email.dirty || email.touched) && email.invalid" >
+          <ion-text class="text-error" *ngIf="email.errors.required">
+            {{ "email cannot be empty" | translate}}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="email.errors.email">
+            {{ "email is not valid" | translate}}
+          </ion-text>
+        </ng-container>
       </ion-item>
 
-
-      <ion-item>
-        <ion-label position="stacked">Subject<ion-text color="danger">*</ion-text></ion-label>
-        <ion-input required type="text"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Message<ion-text color="danger">*</ion-text></ion-label>
-        <ion-textarea rows="4"></ion-textarea>
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "comment" | translate }}</ion-label>
+        <ion-textarea placeholder="{{ 'please write some comment' | translate }}" formControlName="comment"></ion-textarea>
+        <ng-container *ngIf="(submitted || comment.dirty || comment.touched) && comment.invalid">
+          <ion-text class="text-error" *ngIf="comment.errors.required">
+            {{ "comment cannot be empty" | translate}}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="comment.errors.minlength">
+            {{ "the comment is too short" | translate}}
+          </ion-text>
+        </ng-container>
       </ion-item>
     </ion-list>
 
+    <p *ngIf="isSending"><ion-progress-bar type="indeterminate"></ion-progress-bar></p>
 
-    <div padding>
-
-        <ion-row>          
-            <ion-col col-12 text-center>
-                <ion-button
-                color="secondary"
-                (click)="addAddress()"
-                type="submit"
-                expand="block"><b>Submit</b>
-              </ion-button>        
-            </ion-col>
-        </ion-row>
-    
-    </div>
-
+    <ion-button class="btn-submit" color="secondary" expand="block" type="submit" [disabled]="formFeedback.invalid">
+      {{ "submit" | translate }}
+    </ion-button>
 
   </form>
-</ion-content> -->
+</ion-content>

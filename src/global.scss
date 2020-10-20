@@ -92,6 +92,9 @@ ion-title{
 
 ion-list.form-list{
   ion-item.form-item{
+    --padding-start: 0;
+    --inner-padding-end: 0;
+
     margin-bottom: 1rem;
 
     &:last-child{
