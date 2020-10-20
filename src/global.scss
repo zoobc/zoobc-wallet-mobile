@@ -79,6 +79,7 @@ ion-title{
 }
 
 .alertCss{
-  --background: var(--ion-color-light);
-  --color: var(--ion-color-dark);
+  // --background: var(--ion-color-light) !important;
+  // --color: var(--ion-color-dark) !important;
+  --background: #ffffff !important;
 }
