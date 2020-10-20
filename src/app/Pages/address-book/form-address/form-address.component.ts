@@ -23,7 +23,6 @@ export class FormAddressComponent implements OnInit, OnChanges {
   @Output() onSubmit = new EventEmitter();
 
   addresses = [];
-  validationMessage = '';
   submitted = false;
   constructor(
     private addressBookSrv: AddressBookService,
