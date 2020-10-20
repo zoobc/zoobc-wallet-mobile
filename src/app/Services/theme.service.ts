@@ -16,31 +16,35 @@ export class ThemeService {
       secondary: '#041C3F',
       tertiary: '#2C85FB',
       dbbalance: '#cccddd',
-      dbspbalance: '#2C85FB'
+      dbspbalance: '#6E6E6E',
+      pinbutton: '#ffffff'
     },
     bcz: {
       primary: '#005b96',
       secondary: '#6497b1',
       tertiary: '#03396c',
       dbbalance: '#cccddd',
-      dbspbalance: '#6cc3d8'
+      pinbutton: '#ffffff',
+      dbspbalance: '#6E6E6E'
     },
     day: {
       primary: '#317873',
       secondary: '#5f9ea0',
       tertiary: '#49796b',
-      dbbalance: '#000000',
-      dbspbalance: '#ffdf7b'
+      dbbalance: '#dddddd',
+      pinbutton: '#ffffff',
+      dbspbalance: '#6E6E6E'
     },
     night: {
-      primary: '#8CBA80',
-      secondary: '#c1a57b',
+      primary: '#737373',
+      secondary: '#737373',
       tertiary: '#FE5F55',
       medium: '#BCC2C7',
       dark: '#dedede',
-      light: '#495867',
+      light: '#000000',
+      pinbutton: '#ffffff',
       dbbalance: '#dddddd',
-      dbspbalance: '#8CBA80'
+      dbspbalance: '#6E6E6E'
     },
     neon: {
       primary: '#39BFBD',
@@ -49,8 +53,9 @@ export class ThemeService {
       light: '#F4EDF2',
       medium: '#B682A5',
       dark: '#34162A',
+      pinbutton: '#ffffff',
       dbbalance: '#ececec',
-      dbspbalance: '#c1a57b'
+      dbspbalance: '#6E6E6E'
     },
     autumn: {
       primary: '#F78154',
@@ -59,8 +64,9 @@ export class ThemeService {
       light: '#FDE8DF',
       medium: '#FCD0A2',
       dark: '#B89876',
+      pinbutton: '#ffffff',
       dbbalance: '#ececec',
-      dbspbalance: '#c1a57b'
+      dbspbalance: '#6E6E6E'
     }
   };
   constructor(
