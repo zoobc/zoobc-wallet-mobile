@@ -12,17 +12,27 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
+      refreshingText="{{ 'Refreshing' | translate }} ...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="isLoadingNews">
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
+
   <ion-grid style='border:1px solid #cccccc'> 
     <ion-row>
-      <ion-col class="ion-text-left ion-no-padding" style="background-color: #cccccc;" color="light">
-        <ion-list *ngIf="!error;else errorContent" color="secondary">
+      <ion-col class="ion-text-left ion-no-padding">
+        <ion-list *ngIf="!error;else errorContent">
           <ion-item *ngFor="let news of newsList; let i = index">
-            <ion-label class="ion-text-wrap">
-              <h1 style="margin-bottom:10px;">{{news.title}}</h1>
+            <ion-label class="ion-text-wrap" color="secondary">
+              <h1 style="margin-bottom:10px;" (click)="visitSite(news.url)">{{news.title}}</h1>
               <!-- <p>{{news.published_on | date :  "dd.MM.y"}}</p> -->
               <p > 
                 <img src="{{news.imageurl}}" style="margin-right:10px; margin-bottom:10px; width:100px;" align="left">
-                {{news.published_on | date :  "dd.MM.y"}}<br/>{{news.body}}
+                {{news.published_on * 1000| date :  "dd.MM.y"}}<br/>{{news.body}}
               </p>
               <p style="text-align: right;" (click)="visitSite(news.url)">read more ...</p>
             </ion-label>

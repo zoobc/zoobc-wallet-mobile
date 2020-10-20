@@ -10,6 +10,7 @@ import { NewsService } from 'src/app/Services/news.service';
 export class NewsPage implements OnInit {
   error: string;
   newsList: any;
+  isLoadingNews = true;
 
   constructor(private newsSrv: NewsService, ) { }
 
@@ -21,7 +22,16 @@ export class NewsPage implements OnInit {
     window.open(url, '_system');
   }
 
+  doRefresh(event: any) {
+    this.loadNews();
+    setTimeout(() => {
+      event.target.complete();
+    }, 2000);
+  }
+
+
   async loadNews() {
+    this.isLoadingNews = true;
     console.log('=== Will load news;');
     // Present a loading controller until the data is loaded
     // await this.presentLoading();
@@ -30,6 +40,7 @@ export class NewsPage implements OnInit {
         .pipe(
             finalize(async () => {
               console.log('==== news: ', this.newsList);
+              this.isLoadingNews = false;
               // Hide the loading spinner on success or error
               // await this.loading.dismiss();
             })
@@ -42,6 +53,7 @@ export class NewsPage implements OnInit {
             err => {
               // Set the error information to display in the template
               console.log('==== news: ', err.statusText);
+              this.isLoadingNews = false;
               this.error = `An error occurred, news could not be retrieved: Status: ${err.status}, Message: ${err.statusText}`;
             }
         );
