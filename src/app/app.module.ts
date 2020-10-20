@@ -54,6 +54,7 @@ import { SharedModule } from './Shared/shared.module';
 import { DateAgoPipe } from './Shared/pipe/date-ago.pipe';
 import { DatasetAccountPageModule } from './Pages/account/dataset-account/dataset-account.module';
 import { NewDatasetPageModule } from './Pages/account/dataset-account/new-dataset/new-dataset.module';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/zoobc-language-files/locales/', '.json');
@@ -111,6 +112,7 @@ export function createTranslateLoader(http: HttpClient) {
     StatusBar,
     SplashScreen,
     File,
+    AppVersion,
     FileChooser,
     FilePath,
     BarcodeScanner,

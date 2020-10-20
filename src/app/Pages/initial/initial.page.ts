@@ -4,6 +4,7 @@ import { LanguageService } from 'src/app/Services/language.service';
 import { LANGUAGES, DEFAULT_THEME } from 'src/environments/variable.const';
 import { TranslateService } from '@ngx-translate/core';
 import { ThemeService } from 'src/app/Services/theme.service';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 @Component({
   selector: 'app-initial',
@@ -14,8 +15,10 @@ export class InitialPage implements OnInit {
 
   activeLanguage = 'en';
   languages = [];
+  appVersion: string;
   constructor(
     private router: Router,
+    private appVersionService: AppVersion,
     private languageService: LanguageService,
     private themeSrv: ThemeService,
     private translate: TranslateService
@@ -27,6 +30,13 @@ export class InitialPage implements OnInit {
 
   ngOnInit() {
     this.themeSrv.setTheme(DEFAULT_THEME);
+    this.appVersionService.getVersionNumber().then(
+      (versionNumber) => {
+        this.appVersion = versionNumber;
+      },
+      (error) => {
+        console.log(error);
+      });
   }
 
   openSendFeedbak() {
