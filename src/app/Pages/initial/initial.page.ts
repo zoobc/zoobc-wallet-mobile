@@ -39,4 +39,8 @@ export class InitialPage implements OnInit {
     this.languageService.setLanguage(this.activeLanguage);
   }
 
+  goToFeedback() {
+    this.router.navigateByUrl('/feedback');
+  }
+
 }

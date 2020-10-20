@@ -1,43 +1,28 @@
 <ion-header no-border no-shadow>
-  <ion-toolbar color="primary">
-    <ion-select slot="start" style="margin-right:8px;" color="primary" interface="action-sheet"
+  <ion-toolbar>
+    <ion-select slot="start" color="light" interface="action-sheet"
       [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
       <ion-select-option *ngFor="let language of languages" value="{{ language.code }}">
         {{ language.country }}
       </ion-select-option>
     </ion-select>
-    <ion-title></ion-title>
+    <ion-button slot="end" fill="clear" (click)="goToFeedback()" color="light">FeedBack</ion-button>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="initial-page ion-padding background-zoobc" fullscreen>
-  <ion-grid style="height: 100%; display: flex; flex-flow: column;">
-
-    <ion-row style="flex-shrink: 0;">
-      <ion-col class="ion-text-center">
-        <img src="assets/images/logo-color.png" class='logo' />
-      </ion-col>
-    </ion-row>
-
-    <ion-row style="flex-grow: 1;">
-      <ion-col class="ion-text-center" style="padding-top:40px">
-        <ion-label color="light">
-        <h3>{{ "Welcome to ZooBC" | translate }}</h3>
-        <p>{{ "The easy way to send, receive " | translate }} <br />
-          {{ " ZooBC" | translate }}</p>
-          <p>{{ "Version: 0.2.4" }}</p>
-        </ion-label> 
-      </ion-col>
-    </ion-row>
-
-    <ion-row style="flex-shrink: 0;">
-      <ion-col class="ion-text-center" style="padding-bottom: 60px;">
-        <ion-button expand="block" class="btnNew" routerLink="/explanation-screen">
-          {{ "create new wallet" | translate }}</ion-button>
-        <ion-button expand="block"  class="opnExisting" fill="outline" routerLink="/existing-wallet">
-          {{ "open existing wallet" | translate }} </ion-button>
-      </ion-col>
-    </ion-row>
-
-  </ion-grid>
+<ion-content class="ion-padding background-zoobc" fullscreen>
+  <div class="content">
+    <div class="welcome-container">
+      <p><img src="assets/images/logo-color.png" class='logo' /></p>
+      <ion-text color="light">
+        <h3 class="welcome ion-text-center">{{ "Welcome to ZooBC" | translate }}</h3>
+        <p class="ion-text-center">{{ "The easy way to send, receive ZooBC" | translate }}</p>
+      </ion-text>
+    </div>
+    <div>
+      <ion-button expand="block" class="btnNew" routerLink="/explanation-screen">
+        {{ "create new wallet" | translate }}</ion-button>
+      <ion-button expand="block"  class="opnExisting" fill="outline" routerLink="/existing-wallet">
+        {{ "open existing wallet" | translate }} </ion-button></div>
+    </div>
 </ion-content>
