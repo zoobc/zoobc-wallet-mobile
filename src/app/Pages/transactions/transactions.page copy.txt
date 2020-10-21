@@ -21,6 +21,8 @@ import zoobc, {
   EscrowListParams,
   OrderBy,
   TransactionType,
+  MempoolTransactionsResponse,
+  toZBCTransactions,
 } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Router } from '@angular/router';
@@ -58,6 +60,7 @@ export class TransactionsPage implements OnInit {
   // total: number;
   escrowTransactions: any;
   isLoading: boolean;
+  startMatch = 0;
 
   constructor(
     private router: Router,
@@ -211,7 +214,8 @@ export class TransactionsPage implements OnInit {
 
       const trxList = await zoobc.Transactions.getList(params);
       this.totalTx = Number(trxList.total);
-      console.log('== totl: ', trxList.total);
+      console.log('== trxList.total: ', trxList.total);
+      console.log('=== trxList.transactionsList.length: ', trxList.transactionsList.length);
       let lastHeight = 0;
       let firstHeight = 0;
       if (Number(trxList.total) > 0) {
@@ -223,36 +227,72 @@ export class TransactionsPage implements OnInit {
       .filter(trx => trx.multisigchild === true)
       .map(trx => trx.id);
 
-      const paramEscrowSend: EscrowListParams = {
-        sender: address,
+      // const paramEscrowSend: EscrowListParams = {
+      //   sender: address,
+      //   // blockHeightStart: firstHeight,
+      //   // blockHeightEnd: lastHeight,
+      //   statusList: [0, 1, 2, 3],
+      // };
+
+      const paramEscrow: EscrowListParams = {
         blockHeightStart: firstHeight,
         blockHeightEnd: lastHeight,
-        statusList: [0, 1, 2, 3],
-      };
-
-      const paramEscrowReceive: EscrowListParams = {
         recipient: address,
-        blockHeightStart: firstHeight,
-        blockHeightEnd: lastHeight,
         statusList: [0, 1, 2, 3],
+        latest: false,
+        pagination: {
+          orderBy: OrderBy.DESC,
+          orderField: 'block_height',
+        },
       };
-
-      const escrowSend = await zoobc.Escrows.getList(paramEscrowSend);
-      const escrowReceive = await zoobc.Escrows.getList(paramEscrowReceive);
-
-      const escrowList = escrowSend.escrowsList.concat(escrowReceive.escrowsList);
-      const tx = toTransactionListWallet(trxList, address);
-      tx.transactions.map(recent => {
-        recent['alias'] = this.getName(recent.address);
-        recent['escrow'] = recent['escrow'] = this.checkIdOnEscrow(recent.id, escrowList);
-        if (recent['escrow']) {
-          recent['escrowStatus'] = this.getEscrowStatus(recent.id, escrowList);
-        }
-        recent['multisigchild'] = multisigTx.includes(recent.id);
+      this.startMatch = 0;
+      const escrowTx = await zoobc.Escrows.getList(paramEscrow);
+      const escrowList = escrowTx.escrowsList;
+      const escrowGroup = this.groupEscrowList(escrowList);
+      const txs = toZBCTransactions(trxList.transactionsList);
+      txs.map(recent => {
+        const escStatus = this.matchEscrowGroup(recent.height, escrowGroup);
+        // recent['alias'] = this.getName(recent.sender);
+        recent.senderAlias = this.getName(recent.sender) || '';
+        recent.recipientAlias = this.getName(recent.recipient) || '';
+        // if (this.txType == 2 || this.txType == 258 || this.txType == 514 || this.txType == 770) {
+        //   if (recent.txBody.nodepublickey) {
+        //     const buffer = Buffer.from(recent.txBody.nodepublickey.toString(), 'base64');
+        //     const pubkey = getZBCAddress(buffer, 'ZNK');
+        //     recent['txBody'].nodepublickey = pubkey;
+        //   }
+        // }
+        if (escStatus) {
+          recent.escrow = true;
+          recent.escrowStatus = escStatus.status;
+        } else { recent.escrow = false; }
+        recent.multisig = multisigTx.includes(recent.id);
         return recent;
       });
+
+      // const paramEscrowReceive: EscrowListParams = {
+      //   recipient: address,
+      //   // blockHeightStart: firstHeight,
+      //   // blockHeightEnd: lastHeight,
+      //   statusList: [0, 1, 2, 3],
+      // };
+
+      // const escrowSend = await zoobc.Escrows.getList(paramEscrowSend);
+      // const escrowReceive = await zoobc.Escrows.getList(paramEscrowReceive);
+
+      // const escrowList = escrowSend.escrowsList.concat(escrowReceive.escrowsList);
+      // const tx = toTransactionListWallet(trxList, address);
+      // tx.transactions.map(recent => {
+      //   recent['alias'] = this.getName(recent.address);
+        // recent['escrow'] = recent['escrow'] = this.checkIdOnEscrow(recent.id, escrowList);
+        // if (recent['escrow']) {
+        //   recent['escrowStatus'] = this.getEscrowStatus(recent.id, escrowList);
+        // }
+        // recent['multisigchild'] = multisigTx.includes(recent.id);
+      //   return recent;
+      // });
       // this.total = tx.total;
-      this.recentTxs = this.recentTxs.concat(tx.transactions);
+      this.recentTxs = this.recentTxs.concat(txs);
       // ---------------
 
     } catch {
@@ -260,6 +300,36 @@ export class TransactionsPage implements OnInit {
     } finally {
       this.isLoadingRecentTx = false;
     }
+  }
+
+  groupEscrowList(escrowList: any[]) {
+    const escrowCopy = escrowList.map(x => Object.assign({}, x));
+    const escrowGroup = [];
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < escrowCopy.length; i++) {
+      const idx = escrowGroup.findIndex(eg => eg.id === escrowCopy[i].id);
+      if (idx < 0) { escrowGroup.push(escrowCopy[i]);
+      } else {
+        if (escrowGroup[idx].blockheight > escrowCopy[i].blockheight) {
+          escrowGroup[idx]['blockheight'] = escrowCopy[i].blockheight;
+        }
+      }
+    }
+    escrowGroup.sort((a, b) => {
+      return b.blockheight - a.blockheight;
+    });
+    return escrowGroup;
+  }
+
+  matchEscrowGroup(blockheight, escrowList: any[]) {
+    let escrowObj: any;
+    for (let i = this.startMatch; i < escrowList.length; i++) {
+      if (escrowList[i].blockheight === blockheight) {
+        escrowObj = Object.assign({}, escrowList[i]);
+        this.startMatch = i;
+      }
+    }
+    return escrowObj;
   }
 
   checkIdOnEscrow(id: any, escrowArr: any[]) {
@@ -293,7 +363,7 @@ export class TransactionsPage implements OnInit {
    */
   private async getUnconfirmTransactions(address: string) {
     const mempoolParams: MempoolListParams = { address };
-    this.unconfirmTxs = await zoobc.Mempool.getList(mempoolParams).then(res =>
+    this.unconfirmTxs = await zoobc.Mempool.getList(mempoolParams).then((res: MempoolTransactionsResponse) =>
       toUnconfirmedSendMoneyWallet(res, address)
     );
     console.log('==this.unconfirmTxs: ', this.unconfirmTxs);
