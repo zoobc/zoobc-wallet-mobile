@@ -8,23 +8,26 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class LanguageService {
-  selected = '';
-
   public selectLanguageSubject: Subject<any> = new Subject<any>();
 
   constructor(
     private translate: TranslateService,
-    private strgSrv: StoragedevService  ) { }
+    private strgSrv: StoragedevService  ) {    
+  }
 
   private languages = LANGUAGES;
 
   setInitialAppLanguage() {
+    this.translate.setDefaultLang("en");
+
     const language = this.translate.getBrowserLang();
+    
     this.setLanguage(language);
 
     // check if have selected language
     this.strgSrv.get(SELECTED_LANGUAGE).then(val => {
       if (val) {
+        console.log("__val", val)
         this.setLanguage(val);
       }
     });
@@ -36,8 +39,6 @@ export class LanguageService {
 
   setLanguage(lng: string) {
     this.translate.use(lng);
-    this.selected = lng;
-    this.translate.setDefaultLang(lng);
     this.strgSrv.set(SELECTED_LANGUAGE, lng);
   }
 

@@ -3,28 +3,28 @@
     <ion-tab-bar slot="bottom">
       <ion-tab-button tab="home">
         <ion-icon *ngIf="activeTab=='home'; else iconHome" name="zbc-home-active"></ion-icon>
-        <ion-label>Home</ion-label>
+        <ion-label>{{ "home" | translate }}</ion-label>
       </ion-tab-button>
 
       <ion-tab-button tab="task">
         <ion-icon *ngIf="activeTab=='task'; else iconTask" name="zbc-task-active"></ion-icon>
-        <ion-label>Tasks</ion-label>
+        <ion-label>{{ "tasks" | translate }}</ion-label>
       </ion-tab-button>
 
       <ion-tab-button tab="app">
         <ion-icon *ngIf="activeTab=='app'; else iconApp" name="zbc-app-active"></ion-icon>
-        <ion-label>Apps</ion-label>
+        <ion-label>{{ "apps" | translate }}</ion-label>
       </ion-tab-button>
 
       <ion-tab-button tab="contact">
         <ion-icon *ngIf="activeTab=='contact'; else iconContact" name="zbc-contact-active">
         </ion-icon>
-        <ion-label>Contacts</ion-label>
+        <ion-label>{{ "contacts" | translate }}</ion-label>
       </ion-tab-button>
 
       <ion-tab-button tab="setting">
         <ion-icon *ngIf="activeTab=='setting'; else iconSetting" name="zbc-setting-active"></ion-icon>
-        <ion-label>Settings</ion-label>
+        <ion-label>{{ "settings" | translate }}</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>

@@ -19,6 +19,7 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
@@ -48,13 +49,18 @@ export class SettingsPage implements OnInit {
     private currencyService: CurrencyService,
     private authService: AuthService,
     private router: Router,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private translateSrv: TranslateService
   ) {
     this.currencyService.currencySubject.subscribe((rate: Currency) => {
       this.currencyRate = rate;
     });
 
   }
+
+  private textConfirmLogout: string;
+  private textYes: string;
+  private textCancel: string;
 
   async ngOnInit() {
     this.getCurrencyRates();
@@ -69,6 +75,24 @@ export class SettingsPage implements OnInit {
     this.activeNetwork = this.networks[await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX)].name;
 
     this.activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
+
+    this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translateLang();
+    });
+
+    this.translateLang();
+  }
+
+  translateLang(){
+    this.translateSrv.get([
+      'are you sure want to logout?', 
+      'logout', 
+      'cancel', 
+    ]).subscribe((res: any)=>{
+      this.textConfirmLogout = res["are you sure want to logout?"];
+      this.textYes = res["logout"];
+      this.textCancel = res["cancel"];
+    })
   }
 
   private selectThemeSubscription = null;
@@ -158,15 +182,15 @@ export class SettingsPage implements OnInit {
 
   async logout() {
     const alert = await this.alertCtrl.create({
-      message: 'Are you sure want to logout?',
+      message: this.textConfirmLogout,
       buttons: [
         {
-          text: 'Cancel',
+          text: this.textCancel,
           role: 'cancel',
           cssClass: 'secondary'
         },
         {
-          text: 'Yes',
+          text: this.textYes,
           handler: () => {
             this.authService.logout();
             this.router.navigateByUrl('/login');

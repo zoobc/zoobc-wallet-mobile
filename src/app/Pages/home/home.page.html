@@ -29,7 +29,7 @@
 
     <ion-label class="other-balance">
       <ion-text class="amount">
-        <span>spendable</span>
+        <span>{{ "spendable" | translate }}</span>
         <span class="sufix">ZBC</span>
         <span *ngIf="isLoadingBalance; else boxSpendableBalance" class="skeleton-text" style="width: 80px"></span>
         <ng-template #boxSpendableBalance>
@@ -44,13 +44,13 @@
       <ion-label (click)="goToSend()">
         <ion-icon name="zbc-arrow-up" color="secondary"></ion-icon>
         <ion-text>
-          <h2>{{ "Send" | translate }}</h2>
+          <h2>{{ "send" | translate }}</h2>
         </ion-text>
       </ion-label>
       <ion-label (click)="goToReceive()">
         <ion-icon name="zbc-arrow-down" color="secondary"></ion-icon>
         <ion-text>
-          <h2>Receive</h2>
+          <h2>{{ "receive" | translate }}</h2>
         </ion-text>
       </ion-label>
     </ion-card-content>
@@ -63,9 +63,9 @@
           <div class="transaction-header">
             <div>
               <ion-icon name="zbc-clock" color="secondary"></ion-icon>
-              <span>Transactions</span>
+              <span>{{ "transactions" | translate }}</span>
             </div>
-            <span *ngIf="recentTx && recentTx.length>=1" class="all" (click)="goToTransactions()">See All</span>
+            <span *ngIf="recentTx && recentTx.length>=1" class="all" (click)="goToTransactions()">{{ "see all" | translate }}</span>
           </div>
         </ion-item>
         <ng-container *ngIf="isLoadingRecentTx; else transactionList">
@@ -83,7 +83,7 @@
         </ng-template>
         <ng-template #noTransaction>
           <ion-item>
-            <ion-label>You don't have any transctions</ion-label>
+            <ion-label>{{ "you don't have any transaction" | translate }}</ion-label>
           </ion-item>
         </ng-template>
       </ion-list>
