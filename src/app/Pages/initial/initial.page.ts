@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LanguageService } from 'src/app/Services/language.service';
 import { LANGUAGES, DEFAULT_THEME } from 'src/environments/variable.const';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { ThemeService } from 'src/app/Services/theme.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { ThemeService } from 'src/app/Services/theme.service';
 })
 export class InitialPage implements OnInit {
 
-  activeLanguage = 'en';
+  activeLanguage:string;
   languages = [];
   constructor(
     private router: Router,
@@ -22,11 +22,15 @@ export class InitialPage implements OnInit {
   ) {
 
     this.languages = LANGUAGES;
-    this.languageService.setLanguage(this.activeLanguage);
   }
 
   ngOnInit() {
     this.themeSrv.setTheme(DEFAULT_THEME);
+    this.activeLanguage = this.translate.currentLang;
+
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.activeLanguage = event.lang;
+    });
   }
 
   openSendFeedbak() {
@@ -34,9 +38,7 @@ export class InitialPage implements OnInit {
   }
 
   selectActiveLanguage() {
-    this.translate.use(this.activeLanguage);
-    this.translate.setDefaultLang(this.activeLanguage);
-    this.languageService.setLanguage(this.activeLanguage);
+    this.languageService.setLanguage(this.activeLanguage)
   }
 
   goToFeedback() {

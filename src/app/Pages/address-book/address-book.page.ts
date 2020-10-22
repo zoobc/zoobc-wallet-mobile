@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { Location } from '@angular/common';
 import {
   NavController,
   AlertController,
@@ -15,6 +14,7 @@ import {
 } from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
 import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-address-book',
@@ -33,7 +33,8 @@ export class AddressBookPage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private route: ActivatedRoute,
     public popoverController: PopoverController,
-    private utilService: UtilService
+    private utilService: UtilService,
+    private translateSrv: TranslateService
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
@@ -49,15 +50,15 @@ export class AddressBookPage implements OnInit, OnDestroy {
         options: [
           {
             key: 'copy',
-            label: 'copy address'
+            label: this.textCopyAddress
           },
           {
             key: 'edit',
-            label: 'edit address'
+            label: this.textEditAddress
           },
           {
             key: 'delete',
-            label: 'delete address'
+            label: this.textDeleteAddress
           }
         ]
       },
@@ -90,6 +91,10 @@ export class AddressBookPage implements OnInit, OnDestroy {
     }
   }
 
+  private textCopyAddress: string;
+  private textEditAddress: string;
+  private textDeleteAddress: string;
+
   async ngOnInit() {
     this.route.queryParams.subscribe(() => {
       if (
@@ -102,6 +107,25 @@ export class AddressBookPage implements OnInit, OnDestroy {
       }
     });
     this.getAllAddress();
+
+    this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translateLang();
+    });
+
+    this.translateLang();
+    
+  }
+
+  translateLang(){
+    this.translateSrv.get([
+      'copy', 
+      'edit', 
+      'delete', 
+    ]).subscribe((res: any)=>{
+      this.textCopyAddress = res["copy"];
+      this.textEditAddress = res["edit"];
+      this.textDeleteAddress = res["delete"];
+    })
   }
 
   async getAllAddress() {

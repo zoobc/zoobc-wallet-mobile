@@ -12,6 +12,8 @@ import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { UtilService } from 'src/app/Services/util.service';
 import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
 import { PopoverActionComponent } from './popover-action/popover-action.component';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
@@ -36,7 +38,8 @@ export class ListAccountComponent implements OnInit {
     private qrScannerService: QrScannerService,
     private accountService: AccountService,
     private popoverCtrl: PopoverController,
-    private utilSrv: UtilService
+    private utilSrv: UtilService,
+    private translateSrv: TranslateService
   ) {
 
       this.qrScannerService.qrScannerSubject.subscribe(address => {
@@ -50,8 +53,45 @@ export class ListAccountComponent implements OnInit {
     });
   }
 
+  private textCopyAddress: string;
+  private textEditAccount: string;
+  private textViewAccount: string;
+  private textDeleteAccount: string;
+  private textWrongQrCode: string;
+  private textAddressExists: string;
+  private textErrorScan: string;
+  private textAccountImported: string;
+
   ngOnInit() {
     this.loadData();
+
+    this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translateLang();
+    });
+
+    this.translateLang();
+  }
+
+  translateLang(){
+    this.translateSrv.get([
+      'copy address', 
+      'edit account', 
+      'view account', 
+      'delete account', 
+      'you scan wrong qrcode', 
+      'account with that address is already exist',
+      'error when scanning account, please try again later!',
+      'account has been successfully imported'
+  ]).subscribe((res: any)=>{
+      this.textCopyAddress = res["copy address"];
+      this.textEditAccount = res["edit account"];
+      this.textViewAccount = res["view account"];
+      this.textDeleteAccount = res["delete account"];
+      this.textWrongQrCode = res["you scan wrong qrcode"];
+      this.textAddressExists = res["account with that address is already exist"];
+      this.textErrorScan = res["error when scanning account, please try again later!"];
+      this.textAccountImported = res['account has been successfully imported'];
+    })
   }
 
   isSavedAccount(obj: any): obj is Account {
@@ -63,7 +103,7 @@ export class ListAccountComponent implements OnInit {
 
     const fileResult = JSON.parse(arg);
     if (!this.isSavedAccount(fileResult)) {
-      alert('You scan wrong QRCode');
+      alert(this.textWrongQrCode);
       return;
     }
 
@@ -73,7 +113,7 @@ export class ListAccountComponent implements OnInit {
     const allAcc  = await this.accountService.allAccount('multisig');
     const idx = allAcc.findIndex(acc => acc.address === accountSave.address);
     if (idx >= 0) {
-      alert('Account with that address is already exist');
+      alert(this.textAddressExists);
       return;
     }
 
@@ -82,7 +122,7 @@ export class ListAccountComponent implements OnInit {
 
       });
     } catch {
-      alert ('Error when scanning account, please try again later!');
+      alert (this.textErrorScan);
     } finally {
     }
 
@@ -176,7 +216,7 @@ export class ListAccountComponent implements OnInit {
     pinmodal.onDidDismiss().then(returnedData => {
       console.log('=== returneddata: ', returnedData);
       if (returnedData && returnedData.data !== 0) {
-        alert('Account has been successfully imported');
+        alert(this.textAccountImported);
       }
     });
     return await pinmodal.present();
@@ -267,11 +307,11 @@ export class ListAccountComponent implements OnInit {
     const popoverOptions = [
       {
         key: 'edit',
-        label: 'edit account'
+        label: this.textEditAccount
       },
       {
         key: 'copy',
-        label: 'copy address'
+        label: this.textCopyAddress
       }
     ];
 
@@ -279,13 +319,13 @@ export class ListAccountComponent implements OnInit {
       popoverOptions.push(
         {
           key: 'view',
-          label: 'view account'
+          label: this.textViewAccount
         }
       );
       popoverOptions.push(
         {
           key: 'delete',
-          label: 'delete account'
+          label: this.textDeleteAccount
         }
       );
     }
