@@ -53,7 +53,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { ImportAccountPageModule } from './Pages/account/import-account/import-account.module';
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, './assets/language/locales/', '.json');
 }
 
 @NgModule({
