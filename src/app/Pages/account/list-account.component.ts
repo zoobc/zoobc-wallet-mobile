@@ -165,18 +165,18 @@ export class ListAccountComponent implements OnInit {
   }
 
   async importAccount() {
-    const pinmodal = await this.modalController.create({
+    const importAcc = await this.modalController.create({
       component: ImportAccountPage,
       componentProps: {}
     });
 
-    pinmodal.onDidDismiss().then(returnedData => {
+    importAcc.onDidDismiss().then(returnedData => {
       console.log('=== returneddata: ', returnedData);
       if (returnedData && returnedData.data !== 0) {
         alert('Account has been successfully imported');
       }
     });
-    return await pinmodal.present();
+    return await importAcc.present();
   }
 
   async editDataSet(acc: Account) {
