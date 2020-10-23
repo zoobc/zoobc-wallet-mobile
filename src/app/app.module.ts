@@ -49,12 +49,13 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { PopupCurrencyPageModule } from './Pages/settings/popup-currency/popup-currency.module';
 import { PopupLanguagesPageModule } from './Pages/settings/popup-languages/popup-languages.module';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { ImportAccountPageModule } from './Pages/account/import-account/import-account.module';
 import { SharedModule } from './Shared/shared.module';
 import { DateAgoPipe } from './Shared/pipe/date-ago.pipe';
 import { DatasetAccountPageModule } from './Pages/account/dataset-account/dataset-account.module';
 import { NewDatasetPageModule } from './Pages/account/dataset-account/new-dataset/new-dataset.module';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { ImportAccountPageModule } from './Pages/account/import-account/import-account.module';
+import { ImportDraftPageModule } from './Pages/multisig/import-draft/import-draft.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/zoobc-language-files/locales/', '.json');
@@ -84,6 +85,7 @@ export function createTranslateLoader(http: HttpClient) {
     SetupPinGpPageModule,
     SetupPinPageModule,
     EnterpinsendPageModule,
+    ImportDraftPageModule,
     ImportAccountPageModule,
     DatasetAccountPageModule,
     PinBackupPageModule,
