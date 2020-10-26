@@ -42,7 +42,7 @@
               </span> -->
             </p>
             <p>&nbsp;</p>
-            <p>Current Balance</p>
+            <p>{{ "spendable balance" | translate }}</p>
             <h1>{{ account.balance | number: '0.0-2' }} ZBC</h1>
             <p>
               {{ account.balance * priceInUSD * currencyRate.value | number:
@@ -174,20 +174,20 @@
           (click)="exportDraft()" expand="block">
           {{ "Export Draft Multi Signature" | translate }}
         </ion-button>
-        <ion-button color="tertiary" *ngIf="removeExport && isLoadingBalance && isLoadingTxFee" expand="block">
-          {{ "Export Draft Multi Signature" | translate }}
-        </ion-button>
-        <!-- <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()" expand="block">
-          {{ "Save Draft" | translate }}
-        </ion-button>
-        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
-          {{ "Save Draft" | translate }}
+        <!-- <ion-button color="tertiary" *ngIf="removeExport && isLoadingBalance && isLoadingTxFee" expand="block">
+          {{ "export draft multi signature" | translate }}
         </ion-button> -->
-        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="next()" expand="block">
-          {{ "Next" | translate }}
+        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()" expand="block">
+          {{ "save" | translate }}
         </ion-button>
         <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
-          {{ "Next" | translate }}
+          {{ "save" | translate }}
+        </ion-button>
+        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="next()" expand="block">
+          {{ "next" | translate }}
+        </ion-button>
+        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
+          {{ "next" | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
