@@ -27,7 +27,6 @@ export class LanguageService {
     // check if have selected language
     this.strgSrv.get(SELECTED_LANGUAGE).then(val => {
       if (val) {
-        console.log("__val", val)
         this.setLanguage(val);
       }
     });

@@ -18,19 +18,19 @@
           
     </ion-row>
     <ion-row>
-      <ion-label position="stacked" class="ion-input-label">{{ "word" | translate}} # {{placeholderOne+1}}</ion-label>
+      <ion-label position="stacked" class="ion-input-label">{{ "word #" | translate:placeholderOne}}</ion-label>
     </ion-row>  
     <ion-row>
         <ion-item class="ion-input-normal">
-          <ion-input placeholder="Enter word # {{placeholderOne+1}}" (ionChange)="comparePassphrase()"  [(ngModel)]="arrayPhrase[placeholderOne]"></ion-input>
+          <ion-input placeholder="{{ 'enter word #' | translate:placeholderOne }}" (ionChange)="comparePassphrase()" [(ngModel)]="arrayPhrase[randomPlaceholderOne]"></ion-input>
         </ion-item>   
     </ion-row>
     <ion-row>
-      <ion-label position="stacked" class="ion-input-label">{{ "word" | translate}} # {{placeholderTwo+1}}</ion-label>
+      <ion-label position="stacked" class="ion-input-label">{{ "word #" | translate:placeholderTwo }}</ion-label>
     </ion-row>
     <ion-row>
           <ion-item class="ion-input-normal">
-            <ion-input placeholder="Enter word # {{placeholderTwo+1}}" (ionChange)="comparePassphrase()"  [(ngModel)]="arrayPhrase[placeholderTwo]"></ion-input>
+            <ion-input placeholder="{{ 'enter word #' | translate:placeholderTwo }}" (ionChange)="comparePassphrase()" [(ngModel)]="arrayPhrase[randomPlaceholderTwo]"></ion-input>
           </ion-item>     
     </ion-row>
     <ion-row *ngIf="errorMsg">

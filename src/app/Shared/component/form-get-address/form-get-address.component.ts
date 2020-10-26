@@ -2,6 +2,7 @@ import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Account } from 'src/app/Interfaces/account';
 import { Contact } from 'src/app/Interfaces/contact';
 import { AddressBookService } from 'src/app/Services/address-book.service';
@@ -26,10 +27,15 @@ export class FormGetAddressComponent implements OnInit, ControlValueAccessor {
     private router: Router,
     private popoverCtrl: PopoverController,
     private qrScannerSrv: QrScannerService,
-    private addressBookSrv: AddressBookService
+    private addressBookSrv: AddressBookService,
+    private translateSrv: TranslateService
   ) {}
 
   @Input() identity: string;
+
+  private textContacts: string;
+  private textAccounts: string;
+  private textNewAddress: string;
 
   qrScannerSubscription: any;
   addressSubscription: any;
@@ -41,8 +47,7 @@ export class FormGetAddressComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
     this.isNewAddress = true;
-    this.buttonTitle = 'new address';
-
+    
     this.addressSubscription = this.addressBookSrv.addressSubject.subscribe(
       ({ identity, address }: any) => {
         if (identity === this.identity) {
@@ -59,6 +64,26 @@ export class FormGetAddressComponent implements OnInit, ControlValueAccessor {
         const results = str.split('||');
       }
     );
+
+    this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translateLang();
+    });
+
+    this.translateLang();
+  }
+
+  translateLang(){
+    this.translateSrv.get([
+      "contacts",
+      "my accounts",
+      "new address"
+  ]).subscribe((res: any)=>{
+      this.textContacts = res["contacts"];
+      this.textAccounts = res["my accounts"];
+      this.textNewAddress = res["new address"];
+
+      this.buttonTitle = this.textNewAddress;
+    })
   }
 
   ngOnDestroy() {
@@ -121,15 +146,15 @@ export class FormGetAddressComponent implements OnInit, ControlValueAccessor {
         options: [
           {
             key: 'contact',
-            label: 'contacts'
+            label: this.textContacts
           },
           {
             key: 'my-account',
-            label: 'my accounts'
+            label: this.textAccounts
           },
           {
             key: 'new-address',
-            label: 'new address'
+            label: this.textNewAddress
           }
         ]
       },
@@ -151,7 +176,7 @@ export class FormGetAddressComponent implements OnInit, ControlValueAccessor {
           this.showAccount(ev);
           break;
         case 'new-address':
-          this.buttonTitle = 'new address';
+          this.buttonTitle = this.textNewAddress;
           this.isNewAddress = true;
           this.textAddress = '';
           this.onChange({

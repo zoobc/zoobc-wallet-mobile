@@ -13,8 +13,10 @@ export class CreateWalletPage implements OnInit {
   public arrayPhrase = [];
   public disabledBox = [];
   public arrayPhraseOri = [];
-  public placeholderOne;
-  public placeholderTwo;
+  public randomPlaceholderOne: number;
+  public placeholderOne:{value:number} = {value: 0};
+  public randomPlaceholderTwo: number;
+  public placeholderTwo:{value:number} = {value: 0};
   public arrayClass = [];
   public errorMsg = '';
   public isPinSetup = false;
@@ -56,14 +58,16 @@ export class CreateWalletPage implements OnInit {
   }
 
   generateRandomBlanks() {
-      this.placeholderOne = Math.floor(Math.random() * 23);
-      this.placeholderTwo = Math.floor(Math.random() * 23);
-      this.arrayPhrase[this.placeholderOne]='';
-      this.arrayPhrase[this.placeholderTwo]='';
+    this.randomPlaceholderOne = Math.floor(Math.random() * 23);
+    this.placeholderOne.value = this.randomPlaceholderOne+1;
+    this.arrayPhrase[this.randomPlaceholderOne]='';
+
+    this.randomPlaceholderTwo = Math.floor(Math.random() * 23);
+    this.placeholderTwo.value = this.randomPlaceholderTwo+1;
+    this.arrayPhrase[this.randomPlaceholderTwo]='';
   }
 
   goback() {
     this.navCtrl.pop();
-
   }
 }
