@@ -10,7 +10,7 @@
   <ion-grid>
     <ion-row>
       <ion-col  style="background-color:#ffffff; text-align: center;">
-        <h5>{{ "your passphrase" | translate}}</h5>
+        <h5>{{ "your seed phrase" | translate}}</h5>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -137,7 +137,7 @@
     <div>
       <ion-checkbox [(ngModel)]="terms"></ion-checkbox>
     </div>
-    <span>{{ "i agree terms & conditions" | translate }} </span>
+    <span [innerHTML]="'i agree terms & conditions' | translate"></span>
   </div>
   <div class="footer-generate-passphrase" class="ion-text-center" style="margin-top:20px;margin-bottom: 50px;">
     <ion-button color="tertiary" class="ion-margin-horizontal btn-submit" expand="block"

@@ -5,10 +5,9 @@
         <div>
           <img src="../../../assets/images/expl1.png" />
           <h2>{{ "protect your funds!" | translate}}</h2>
-          <p>
-            {{ "in case you lose access to your device you can only re-gain access to the wallet with your" | translate}} <strong>{{ "seed phrase" | translate}}.</strong>
+          <p [innerHTML]="'in case you lose access to your device you can only re-gain access to the wallet with your seed phrase.' | translate">
           </p>
-          <p>{{ "no backups. no password reset" | translate}}.</p>
+          <p>{{ "no backups. no password reset." | translate}}</p>
         </div>
         <ion-button (click)="next()">{{ "i understand" | translate}}</ion-button>
       </div>
@@ -18,9 +17,9 @@
         <div>
           <img src="../../../assets/images/expl2.png" />
           <h2>{{ "what's a seed phrase?" | translate}}</h2>
-          <p>{{ "seed phrase is a private key to your wallet and its funds. it consists of 24 randomly generated words" | translate}}.</p>
-          <p>{{ "write down your seed phrase and store it safely" | translate}}.</p>
-          <p>{{ "don't share your seed phrase with anyone" | translate}}.</p>
+          <p>{{ "seed phrase is a private key to your wallet and its funds. it consists of 24 randomly generated words." | translate}}</p>
+          <p>{{ "write down your seed phrase and store it safely." | translate}}</p>
+          <p>{{ "don't share your seed phrase with anyone." | translate}}</p>
         </div>
         <ion-button (click)="finish()">{{ "reveal seed phrase" | translate}}</ion-button>
       </div>
