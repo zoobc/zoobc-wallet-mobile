@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { dateAgo } from 'src/Helpers/utils';
 import { Subscription } from 'rxjs';
 import { AccountService } from 'src/app/Services/account.service';
@@ -11,6 +11,7 @@ import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
+import { ImportDraftPage } from './import-draft/import-draft.page';
 
 @Component({
   selector: 'app-multisig',
@@ -51,6 +52,7 @@ export class MultisigPage implements OnInit {
     private alertController: AlertController,
     private multisigServ: MultisigService,
     private utilSrv: UtilService,
+    private modalController: ModalController,
     private translateSrv: TranslateService,
     private network: Network
   ) {
@@ -94,6 +96,21 @@ export class MultisigPage implements OnInit {
       //     .sort()
       //     .reverse();
     }
+  }
+
+  async importDraft() {
+    const importDraft = await this.modalController.create({
+      component: ImportDraftPage,
+      componentProps: {}
+    });
+
+    importDraft.onDidDismiss().then(returnedData => {
+      console.log('=== returneddata: ', returnedData);
+      if (returnedData && returnedData.data !== 0) {
+        alert('Draft has been successfully imported');
+      }
+    });
+    return await importDraft.present();
   }
 
   getDate(pDate: number) {
@@ -196,12 +213,6 @@ export class MultisigPage implements OnInit {
     }
   }
 
-  validationFile(file: any): file is MultiSigDraft {
-    if ((file as MultiSigDraft).generatedSender !== undefined) {
-      return isZBCAddressValid((file as MultiSigDraft).generatedSender);
-    }
-    return false;
-  }
 
   async presentAlert(title: string, msg: string) {
     const alert = await this.alertController.create({
@@ -215,42 +226,7 @@ export class MultisigPage implements OnInit {
     await alert.present();
   }
 
-  public uploadFile(files: FileList) {
-    if (files && files.length > 0) {
-      const file = files.item(0);
-      const fileReader: FileReader = new FileReader();
-      fileReader.readAsText(file, 'JSON');
-      fileReader.onload = async () => {
-        const fileResult = JSON.parse(fileReader.result.toString());
-        const validation = this.validationFile(fileResult);
-        if (!validation) {
-          const message = 'You imported the wrong file';
-          this.presentAlert('Opps...', message);
-        } else {
-          this.multisigServ.update(fileResult);
-          const listdraft = this.multisigServ.getDrafts();
-          const checkExistDraft = listdraft.some(
-            res => res.id === fileResult.id
-          );
 
-          if (checkExistDraft === true) {
-            const message = 'There is same id in your draft';
-            this.presentAlert('Opps...', message);
-          } else {
-            this.multisigServ.saveDraft();
-            this.getMultiSigDraft();
-            const subMessage = 'Your Draft has been saved';
-            this.presentAlert('Success', subMessage);
-          }
-        }
-      };
-      fileReader.onerror = async err => {
-        console.log(err);
-        const message = 'An error occurred while processing your request';
-        this.utilSrv.showConfirmation('Opps...', message, false, null);
-      };
-    }
-  }
 
   showInfo() {
     this.addInfo = !this.addInfo;
