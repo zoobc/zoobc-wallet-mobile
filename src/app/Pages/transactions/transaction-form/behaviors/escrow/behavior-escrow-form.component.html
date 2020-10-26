@@ -26,7 +26,7 @@
 
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ "timeout" | translate }}</ion-label>
-    <ion-input placeholder="Enter timeout" class="ion-text-right" type="number" (ionChange)="changeForm()"
+    <ion-input placeholder="{{ 'enter timeout' | translate }}" class="ion-text-right" type="number" (ionChange)="changeForm()"
       [(ngModel)]="escrow.timeout">
     </ion-input>
     <ion-text>{{ "block height" | translate}}: {{ blockHeight | number: '0.0-2' }}</ion-text>
