@@ -1,10 +1,13 @@
-<div class="account-item">
+<div class="account-item" [ngClass]="horizontal?'horizontal':''">
   <div class="info">
     <div class="name">
       {{ account.name }}
     </div>
-    <div class="address">
+    <div *ngIf="horizontal" class="address">
       {{ account.address | shortAddress}}
+    </div>
+    <div *ngIf="!horizontal" class="address">
+      {{ account.address}}
     </div>
   </div>
   <div class="balance">

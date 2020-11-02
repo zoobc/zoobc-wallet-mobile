@@ -12,5 +12,15 @@
       ion-icon{
         font-size: 18px;
       }
+
+      .account-item{
+        flex-direction: column;
+
+        .balance {
+          .info-amount-conversion {
+            flex-direction: row;
+          }
+        }
+      }
     }
 }
