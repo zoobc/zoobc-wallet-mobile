@@ -2,7 +2,7 @@
   <ion-radio-group value="{{ selectedIndex }}">
     <ion-item *ngFor="let account of accounts; let idx = index" (click)="selectAccount(account)">
       <ion-radio slot="start" value="{{idx}}"></ion-radio>
-      <app-account-item [account]="account"></app-account-item>
+      <app-account-item [account]="account" horizontal="true"></app-account-item>
     </ion-item>
   </ion-radio-group>
 </ion-list>

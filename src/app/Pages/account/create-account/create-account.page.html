@@ -7,121 +7,79 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
+<ion-content class="ion-padding">
+  <form [formGroup]="formAccount" (ngSubmit)="submit()">
+    <ion-list class="form-list">
+      <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "account name" | translate }}</ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-input padding="false" placeholder="{{ 'Please enter your account name' | translate }}"
-          [(ngModel)]="accountName" (ionChange)="sanitize()"></ion-input>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isNameValid === false">
-      <ion-col>
-        <ion-label color="danger">
-          {{nameErrorMessage}}
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-checkbox [(ngModel)]="isMultisig" (ionChange)="changeToMultisig()" color="primary"></ion-checkbox>
-        <ion-label>Multi-signature {{ "account" | translate}}</ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isMultisig">
-      <ion-col>
-        <ion-label>
-          <h2>{{ "participants" | translate}]</h2>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isMultisig">
-      <ion-col>
-        <ion-button (click)="addParticipant()">
-          +
-        </ion-button>
-        <ion-button (click)="reduceParticipant()">
-          -
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <div *ngIf="isMultisig">
-      <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
-        <ion-col size="10">
-          <ion-textarea rows="3" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
-          [(ngModel)]="participants[i]"></ion-textarea>
-        </ion-col>
-        <ion-col size="2" class="ion-text-center" style="padding-top: 20px">
-          <ion-icon name="arrow-dropdown" (click)="presentGetAddressOption('participant',i);"></ion-icon>
-        </ion-col>
-      </ion-row>
-    </div>
-    <ion-row *ngIf="isParticipntValid === false">
-      <ion-col>
-        <ion-label color="danger">{{ "please input all participants!" | translate}}</ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isMultisig">
-      <ion-col>
-        <ion-label>
-          <h2>{{ "nonce" | translate}}</h2>
-          <ion-input [(ngModel)]="nonce" type="number" (ionChange)="validateNonce()" placeholder="Nonce ..." ></ion-input>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isNonceValid === false">
-      <ion-col>
-        <ion-label color="danger">{{ "nonce is not valid, minimum 1 .!" | translate }}</ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isMultisig">
-      <ion-col>
-        <ion-label>
-          <h2>{{ "minimum signature" | translate }}</h2>
-          <ion-input type="number" [(ngModel)]="minimumSignature" (ionChange)="validateMinimumSig()" placeholder="Minimum signature..."></ion-input>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isMinSigValid === false">
-      <ion-col>
-        <ion-label color="danger">{{ "minimum signature is 2 and cannot more than number of participants" | translate }}.</ion-label>
-      </ion-col>
-    </ion-row>
-    <!-- <ion-row *ngIf="isMultisig">
-      <ion-col>
-        <ion-label>
-          <h2>{{ "sign by" | translate }}</h2>
-        </ion-label>
-      </ion-col>
-    </ion-row> -->
-    <!-- <ion-row *ngIf="isMultisig">
-      <ion-col size="10">
-        <ion-label>
-          <h3 *ngIf="signByAccount">{{signByAccount.name}}</h3>
-          <ion-textarea rows="3" [(ngModel)]="signBy" placeholder="Enter sign by..."></ion-textarea>
-        </ion-label>
-      </ion-col>
-      <ion-col size="2">
-        <ion-icon name="arrow-dropdown" (click)="showPopupSignBy();"></ion-icon>
-      </ion-col>
-    </ion-row> -->
-    <ion-row>
-      <ion-col>
-        <ion-button strong color="secondary" (click)="createAccount()" type="submit" expand="block">
-          <span>{{"save"|translate}}</span>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" color="secondary" routerLink="/list-account" fill="outline" expand="block">
-          {{ "cancel" | translate }}</ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        <ion-input placeholder="{{ 'please enter your account name' | translate }}" formControlName="accountName"></ion-input>
+        <ion-text class="text-error"
+          *ngIf="(submitted || accountName.dirty || accountName.touched) && accountName.invalid && accountName.errors.required">
+          {{ "account name cannot be empty" | translate}}
+        </ion-text>
+        <ion-text class="text-error"
+          *ngIf="(submitted || accountName.dirty || accountName.touched) &&  accountName.invalid && accountName.errors.accountNameExists">
+          {{accountName.errors.accountNameExists}}
+        </ion-text>
+      </ion-item>
+      <ion-item lines="none" class="form-item">
+        <ion-checkbox style="margin-right: 10px" (ionChange)="changeToMultisig($event.target.checked)" color="primary">
+        </ion-checkbox>
+        <ion-label>{{ "Multi-signature account" | translate}}</ion-label>
+      </ion-item>
+      <ng-container *ngIf="isMultisig">
+        <ng-container formGroupName="participants">
+          <ion-item lines="none" class="form-item" *ngFor="let participant of participants.controls; let i = index;" [formGroupName]="i">
+            <ion-label position="stacked">{{ "participant" | translate }} {{ i+1 }}</ion-label>
+            <app-form-get-address formControlName="address" identity="recipient-{{ i }}"></app-form-get-address>
+            <span *ngIf="(i+1)>minimumParticipants" (click)="removeParticipant(i)">{{ "remove" | translate }}</span>
+            <ng-container *ngIf="(submitted || participants.controls[i].controls['address'].dirty || participants.controls[i].controls['address'].touched) && participants.controls[i].controls['address'].invalid">
+              <ion-text class="text-error" *ngIf="participants.controls[i].controls['address'].errors.required || participants.controls[i].controls['address'].errors.addressRequired">
+                {{ "address cannot be empty" | translate}}
+              </ion-text>
+              <ion-text class="text-error" *ngIf="participants.controls[i].controls['address'].errors.addressFormat">
+                {{ "address is wrong" | translate}}
+              </ion-text>
+            </ng-container>
+          </ion-item>
+          <ion-item lines="none" class="form-item">
+            <ion-button (click)="addParticipant()">{{ "add participant" | translate }}</ion-button>
+          </ion-item>
+        </ng-container>
+
+        <ion-item lines="none" class="form-item">
+          <ion-label position="stacked">{{ "nonce" | translate }}</ion-label>
+          <ion-input formControlName="nonce" type="number"></ion-input>
+          <ng-container *ngIf="(submitted || nonce.dirty || nonce.touched) && nonce.invalid">
+            <ion-text class="text-error" *ngIf="nonce.errors.required">
+              {{ "nonce cannot be empty" | translate}}
+            </ion-text>
+            <ion-text class="text-error" *ngIf="nonce.errors.min">
+              {{ "minimum nonce is 1" | translate}}
+            </ion-text>
+          </ng-container>
+        </ion-item>
+
+        <ion-item lines="none" class="form-item">
+          <ion-label position="stacked">{{ "minimum signature" | translate }}</ion-label>
+          <ion-input formControlName="minimumSignature" type="number"></ion-input>
+          <ng-container *ngIf="(submitted || minimumSignature.dirty || minimumSignature.touched) && minimumSignature.invalid">
+            <ion-text class="text-error" *ngIf="minimumSignature.errors.required">
+              {{ "minimum signature cannot be empty" | translate}}
+            </ion-text>
+            <ion-text class="text-error" *ngIf="minimumSignature.errors.min">
+              {{ "minimum signature is 2" | translate}}
+            </ion-text>
+            <ion-text class="text-error" *ngIf="minimumSignature.errors.max">
+              {{ "minimum signature cannot more than participants" | translate}}
+            </ion-text>
+          </ng-container>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+
+    <ion-button strong color="secondary" type="submit" expand="block">
+      <span>{{"save"|translate}}</span>
+    </ion-button>
+  </form>  
 </ion-content>
