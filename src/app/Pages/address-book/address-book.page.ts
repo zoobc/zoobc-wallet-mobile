@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { Location } from '@angular/common';
+import { File } from '@ionic-native/file/ngx';
 import { UtilService } from 'src/app/Services/util.service';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, Platform } from '@ionic/angular';
 import { FOR_RECIPIENT, FOR_APPROVER, FOR_PARTICIPANT, FOR_SIGNBY } from 'src/environments/variable.const';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 @Component({
   selector: 'app-address-book',
@@ -22,7 +23,10 @@ export class AddressBookPage implements OnInit, OnDestroy {
     private utilService: UtilService,
     private addressBookSrv: AddressBookService,
     private alertCtrl: AlertController,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private androidPermissions: AndroidPermissions,
+    private file: File,
+    private platform: Platform
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
@@ -105,4 +109,61 @@ export class AddressBookPage implements OnInit, OnDestroy {
   createNewAddress() {
     this.router.navigate(['/address-book/add']);
   }
+
+  async ExportContacts() {
+
+    const theJSON = JSON.stringify(this.addresses);
+    const blob = new Blob([theJSON], { type: 'application/JSON' });
+    const pathFile = await this.getDownloadPath();
+
+    const fileName = this.getFileName();
+    await this.file.createFile(pathFile, fileName, true);
+    await this.file.writeFile(pathFile, fileName, blob, {
+      replace: true,
+      append: false
+    });
+    alert('File saved in Download folder with name: ' + fileName);
+
+  }
+
+  private getFileName() {
+    const currentDatetime = new Date();
+    const formattedDate =
+      currentDatetime.getDate() +
+      '-' +
+      (currentDatetime.getMonth() + 1) +
+      '-' +
+      currentDatetime.getFullYear() +
+      '-' +
+      currentDatetime.getHours() +
+      '-' +
+      currentDatetime.getMinutes() +
+      '-' +
+      currentDatetime.getSeconds();
+
+    return 'Contact-list-' + formattedDate + '.json';
+  }
+
+  async getDownloadPath() {
+    if (this.platform.is('ios')) {
+      return this.file.documentsDirectory;
+    }
+
+    // To be able to save files on Android, we first need to ask the user for permission.
+    // We do not let the download proceed until they grant access
+    await this.androidPermissions
+      .checkPermission(
+        this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+      )
+      .then(result => {
+        if (!result.hasPermission) {
+          return this.androidPermissions.requestPermission(
+            this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+          );
+        }
+      });
+
+    return this.file.externalRootDirectory + '/Download/';
+  }
+
 }
