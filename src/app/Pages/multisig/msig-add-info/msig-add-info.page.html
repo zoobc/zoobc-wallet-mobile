@@ -16,24 +16,29 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <h1>{{ 'add multisig info' | translate }}</h1>
-        <h5>{{ 'import my multisignature account' | translate }}</h5>
+        <p class="next ion-text-wrap"><b>{{ 'add multisig info' | translate }} </b></p>
+      </ion-col>
+      <ion-col>
+        <p  class="next ion-text-wrap">-> {{ 'create transaction' | translate }}</p>
+      </ion-col>
+      <ion-col>
+        <p  class="next ion-text-wrap">-> {{ 'add signatures' | translate }}</p>
       </ion-col>
     </ion-row>
 
     <ion-row style = "background-color: lightsteelblue; border: 1px;">
-      <ion-col size="10"  class="ion-text-center">
+      <!-- <ion-col size="10"  class="ion-text-center">
         <ion-label *ngIf="msigAccount">
           <p>{{msigAccount.name}}</p>
           <p>{{ msigAccount.address | shortAddress }}</p>
         
-          <!-- <p>{{msigAccount.address}}</p> -->
+        
         </ion-label>
 
-      </ion-col>
-      <ion-col size="2">
+      </ion-col> -->
+      <ion-col size="12">
         <ion-button (click)="showPopupMultisigAccounts()">
-          ..
+          {{ 'import my multisignature account' | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
