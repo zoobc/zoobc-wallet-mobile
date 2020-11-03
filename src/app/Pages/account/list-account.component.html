@@ -13,19 +13,26 @@
 </ion-header>
 
 <ion-content>
-  <ion-item *ngIf="!forWhat">
-    <ion-button color="tertiary" (click)="importAccount()">{{"import" | translate}} {{ "accounts" | translate }}</ion-button>
-    <ion-button color="tertiary" (click)="scanQrCode()">{{ "scan" | translate }}</ion-button>
-  </ion-item>
-  <div *ngIf="isLoadingBalance" style="margin-top:5px;">
+
+  <ion-grid *ngIf="!forWhat">
+    <ion-row>
+      <ion-col class="ion-text-end horizontalline" >
+        <ion-button color="tertiary" (click)="createNewAccount()">
+          <ion-icon name="add"></ion-icon> {{ 'add new account' | translate}}
+        </ion-button>
+        <ion-button color="tertiary" (click)="importAccount()">{{"import" | translate}}</ion-button>
+        <ion-button color="tertiary" (click)="scanQrCode()">
+          <ion-icon name="qr-scanner"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div *ngIf="isLoadingBalance" class="isloading">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
-  <ion-fab *ngIf="!forWhat" ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="tertiary" (click)="createNewAccount()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-  <div class="list-account-page" style="margin-bottom: 60px;">
+
+  <div class="list-account-page no-data">
     <ng-template #noData>
       <ion-item lines="none">
         <ion-label>{{ "you dont have any address" | translate }}</ion-label>
@@ -52,10 +59,7 @@
               </ion-button>          
               <ion-button *ngIf="!forWhat && account.type==='multisig'" (click)="viewAccount(account)" class="ion-text-right" color="meddium">
                 <ion-icon name="eye"></ion-icon>
-              </ion-button>  
-              <!-- <ion-button (click)="editDataSet(account)" class="ion-text-right" color="meddium">
-                <ion-icon name="filing"></ion-icon>
-              </ion-button>   -->
+              </ion-button>
             </div>
           </ion-label>
           <ion-button slot="end" (click)="copyAddress(account)" class="ion-text-right" color="meddium">
