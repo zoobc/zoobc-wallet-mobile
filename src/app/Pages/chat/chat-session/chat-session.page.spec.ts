@@ -5,7 +5,7 @@ import { ChatSessionPage } from './chat-session.page';
 import {TranslateModule } from '@ngx-translate/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+// import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 
 // describe('Notifications Page', () => {

@@ -3,25 +3,25 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ExportImportPage } from './export-import.page';
 
-describe('ExportImportPage', () => {
-  let component: ExportImportPage;
-  let fixture: ComponentFixture<ExportImportPage>;
+// describe('ExportImportPage', () => {
+//   let component: ExportImportPage;
+//   let fixture: ComponentFixture<ExportImportPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ExportImportPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ ExportImportPage ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ExportImportPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(ExportImportPage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

@@ -11,7 +11,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+// import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 export const firebaseConfig = {
   apiKey: 'put-firebase',

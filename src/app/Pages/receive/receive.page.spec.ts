@@ -10,45 +10,45 @@ import { ModalController} from '@ionic/angular';
 
 
 
-describe('Notofications Page', () => {
-  let component: ReceivePage;
-  let fixture: ComponentFixture<ReceivePage>;
+// describe('Notofications Page', () => {
+//   let component: ReceivePage;
+//   let fixture: ComponentFixture<ReceivePage>;
 
-  let modalSpy = jasmine.createSpyObj('Modal', ['present']);
-  let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+//   let modalSpy = jasmine.createSpyObj('Modal', ['present']);
+//   let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
 
-  modalCtrlSpy.create.and.callFake(function () {
-    return modalSpy;
-  });
+//   modalCtrlSpy.create.and.callFake(function () {
+//     return modalSpy;
+//   });
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ReceivePage ],
-      imports: [
-        TranslateModule.forRoot(),
-        IonicStorageModule.forRoot(),
-        RouterTestingModule,
-        ],
-      providers:[
-        SocialSharing,
-        Clipboard,
-        {
-          provide: ModalController,
-          useValue: modalCtrlSpy
-        },
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ ReceivePage ],
+//       imports: [
+//         TranslateModule.forRoot(),
+//         IonicStorageModule.forRoot(),
+//         RouterTestingModule,
+//         ],
+//       providers:[
+//         SocialSharing,
+//         Clipboard,
+//         {
+//           provide: ModalController,
+//           useValue: modalCtrlSpy
+//         },
+//       ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ReceivePage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(ReceivePage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

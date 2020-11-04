@@ -9,45 +9,45 @@ import { ModalController} from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 
-describe('AddressBookPage', () => {
-  let component: AddressBookPage;
-  let fixture: ComponentFixture<AddressBookPage>;
+// describe('AddressBookPage', () => {
+//   let component: AddressBookPage;
+//   let fixture: ComponentFixture<AddressBookPage>;
 
-  let modalSpy = jasmine.createSpyObj('Modal', ['present']);
-  let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-  modalCtrlSpy.create.and.callFake(function () {
-    return modalSpy;
-  });
+//   let modalSpy = jasmine.createSpyObj('Modal', ['present']);
+//   let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+//   modalCtrlSpy.create.and.callFake(function () {
+//     return modalSpy;
+//   });
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AddressBookPage ],
-      imports:[
-        TranslateModule.forRoot(),
-        RouterTestingModule,
-        IonicStorageModule.forRoot(),
-      ],
-      providers: [
-        Location,
-        Clipboard,
-        {
-          provide: ModalController,
-          useValue: modalCtrlSpy
-        },
-        { provide: AngularFirestore },
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ AddressBookPage ],
+//       imports:[
+//         TranslateModule.forRoot(),
+//         RouterTestingModule,
+//         IonicStorageModule.forRoot(),
+//       ],
+//       providers: [
+//         Location,
+//         Clipboard,
+//         {
+//           provide: ModalController,
+//           useValue: modalCtrlSpy
+//         },
+//         { provide: AngularFirestore },
+//       ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AddressBookPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(AddressBookPage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

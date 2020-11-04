@@ -7,60 +7,60 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ModalController} from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 
-let modalSpy = jasmine.createSpyObj('Modal', ['present']);
-let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(function () {
-  return modalSpy;
-});
+// let modalSpy = jasmine.createSpyObj('Modal', ['present']);
+// let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+// modalCtrlSpy.create.and.callFake(function () {
+//   return modalSpy;
+// });
 
-describe('ListAccountComponent', () => {
-  let component: ListAccountComponent;
-  let fixture: ComponentFixture<ListAccountComponent>;
+// describe('ListAccountComponent', () => {
+//   let component: ListAccountComponent;
+//   let fixture: ComponentFixture<ListAccountComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ListAccountComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports:[
-        TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
-        IonicStorageModule.forRoot()
-      ],
-      providers:[
-        Clipboard,
-        {
-          provide: ModalController,
-          useValue: modalCtrlSpy
-        },
-      ]
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ ListAccountComponent ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//       imports:[
+//         TranslateModule.forRoot(),
+//         RouterModule.forRoot([]),
+//         IonicStorageModule.forRoot()
+//       ],
+//       providers:[
+//         Clipboard,
+//         {
+//           provide: ModalController,
+//           useValue: modalCtrlSpy
+//         },
+//       ]
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ListAccountComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(ListAccountComponent);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
 
-  afterEach(() => {
-    TestBed.resetTestingModule();
-  });
+//   afterEach(() => {
+//     TestBed.resetTestingModule();
+//   });
 
-  it("should return a non empty array", () => {
-    let result = component.goToDashboard();
-    expect(Array.isArray(result)).toBeTruthy;
-  });
-  it("should return a non empty array", () => {
-    let result = component.goToSendMoney();
-    expect(Array.isArray(result)).toBeTruthy;
-  });
-  it("should return a non empty array", () => {
-    let result = component.loadData();
-    expect(Array.isArray(result)).toBeTruthy;
-  });
-});
+//   it("should return a non empty array", () => {
+//     let result = component.goToDashboard();
+//     expect(Array.isArray(result)).toBeTruthy;
+//   });
+//   it("should return a non empty array", () => {
+//     let result = component.goToSendMoney();
+//     expect(Array.isArray(result)).toBeTruthy;
+//   });
+//   it("should return a non empty array", () => {
+//     let result = component.loadData();
+//     expect(Array.isArray(result)).toBeTruthy;
+//   });
+// });
