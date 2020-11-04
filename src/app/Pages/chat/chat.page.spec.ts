@@ -8,7 +8,7 @@ import { AngularFireModule } from '@angular/fire';
 import { fbconfig } from 'src/environments/firebaseconfig';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+// import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 
 // describe('ChatPage', () => {

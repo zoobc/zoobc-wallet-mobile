@@ -3,24 +3,24 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormAddressComponent } from './form-address.component';
 
-describe('FormAddressComponent', () => {
-  let component: FormAddressComponent;
-  let fixture: ComponentFixture<FormAddressComponent>;
+// describe('FormAddressComponent', () => {
+//   let component: FormAddressComponent;
+//   let fixture: ComponentFixture<FormAddressComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [FormAddressComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    }).compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [FormAddressComponent],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA]
+//     }).compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FormAddressComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(FormAddressComponent);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

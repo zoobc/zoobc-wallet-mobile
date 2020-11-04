@@ -4,6 +4,7 @@ import { UtilService } from 'src/app/Services/util.service';
 import { ZooKeyring } from 'zoobc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { NavController, Platform } from '@ionic/angular';
+import { Languages } from 'src/app/Interfaces/language';
 
 @Component({
   selector: 'app-generate-passphrase',

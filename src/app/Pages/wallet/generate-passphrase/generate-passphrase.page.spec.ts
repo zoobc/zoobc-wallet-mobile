@@ -9,46 +9,46 @@ import { ModalController} from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { sign as naclSign } from 'tweetnacl';
 
-describe('Generate Passphrase Page', () => {
-  let component: GeneratePassphrasePage;
-  let fixture: ComponentFixture<GeneratePassphrasePage>;
+// describe('Generate Passphrase Page', () => {
+//   let component: GeneratePassphrasePage;
+//   let fixture: ComponentFixture<GeneratePassphrasePage>;
 
-  let modalSpy = jasmine.createSpyObj('Modal', ['present']);
-  let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+//   let modalSpy = jasmine.createSpyObj('Modal', ['present']);
+//   let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
 
-  modalCtrlSpy.create.and.callFake(function () {
-    return modalSpy;
-  });
+//   modalCtrlSpy.create.and.callFake(function () {
+//     return modalSpy;
+//   });
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GeneratePassphrasePage ],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule,
-        IonicStorageModule.forRoot()
-        ],
-      providers:[
-        Clipboard,
-        { provide: 'global', useFactory: () => '' },
-        { provide: 'nacl.sign', useFactory: () => naclSign },
-        {
-          provide: ModalController,
-          useValue: modalCtrlSpy
-        },
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ GeneratePassphrasePage ],
+//       imports: [
+//         TranslateModule.forRoot(),
+//         RouterTestingModule,
+//         IonicStorageModule.forRoot()
+//         ],
+//       providers:[
+//         Clipboard,
+//         { provide: 'global', useFactory: () => '' },
+//         { provide: 'nacl.sign', useFactory: () => naclSign },
+//         {
+//           provide: ModalController,
+//           useValue: modalCtrlSpy
+//         },
+//       ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GeneratePassphrasePage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(GeneratePassphrasePage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

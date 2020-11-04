@@ -5,30 +5,30 @@ import {TranslateModule } from '@ngx-translate/core';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
 
-describe('Settings Page', () => {
-  let component: SettingsPage;
-  let fixture: ComponentFixture<SettingsPage>;
+// describe('Settings Page', () => {
+//   let component: SettingsPage;
+//   let fixture: ComponentFixture<SettingsPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SettingsPage ],
-      imports: [
-        TranslateModule.forRoot(),
-        IonicStorageModule.forRoot(),
-        HttpClientModule
-        ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ SettingsPage ],
+//       imports: [
+//         TranslateModule.forRoot(),
+//         IonicStorageModule.forRoot(),
+//         HttpClientModule
+//         ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SettingsPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(SettingsPage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

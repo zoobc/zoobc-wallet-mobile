@@ -10,46 +10,46 @@ import { HttpClientModule } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 
-describe('Send Coin Page', () => {
-  let component: SendCoinPage;
-  let fixture: ComponentFixture<SendCoinPage>;
+// describe('Send Coin Page', () => {
+//   let component: SendCoinPage;
+//   let fixture: ComponentFixture<SendCoinPage>;
 
-  let modalSpy = jasmine.createSpyObj('Modal', ['present']);
-  let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+//   let modalSpy = jasmine.createSpyObj('Modal', ['present']);
+//   let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
 
-  modalCtrlSpy.create.and.callFake(function () {
-    return modalSpy;
-  });
+//   modalCtrlSpy.create.and.callFake(function () {
+//     return modalSpy;
+//   });
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SendCoinPage ],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule,
-        IonicStorageModule.forRoot(),
-        HttpClientModule,
-        ],
-        providers:[
-          Clipboard,
-          {
-            provide: ModalController,
-            useValue: modalCtrlSpy
-          },
-          { provide: AngularFirestore },
-        ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ SendCoinPage ],
+//       imports: [
+//         TranslateModule.forRoot(),
+//         RouterTestingModule,
+//         IonicStorageModule.forRoot(),
+//         HttpClientModule,
+//         ],
+//         providers:[
+//           Clipboard,
+//           {
+//             provide: ModalController,
+//             useValue: modalCtrlSpy
+//           },
+//           { provide: AngularFirestore },
+//         ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SendCoinPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(SendCoinPage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });
