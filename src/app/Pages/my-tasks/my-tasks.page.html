@@ -31,12 +31,12 @@
 
   <div style="text-align: center; border-top: 1px solid #cccccc;"
     *ngIf="segmentModel === 'escrow' && (!escrowTransactions || escrowTransactions.length < 1) ">
-    <p>{{ 'No escrow approval request available' | translate }}</p>
+    <p>{{ 'no escrow approval request available' | translate }}</p>
   </div>
 
   <div style="text-align: center; border-top: 1px solid #cccccc;"
   *ngIf="segmentModel == 'multisig' && (!multiSigPendingList || multiSigPendingList.length < 1) ">
-  <p>{{ 'No multisig approval request available' | translate }}</p>
+  <p>{{ 'no multisig approval request available' | translate }}</p>
 </div>
 
 
