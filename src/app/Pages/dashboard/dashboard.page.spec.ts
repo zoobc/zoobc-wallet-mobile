@@ -13,14 +13,14 @@ import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
 // import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
-export const firebaseConfig = {
-  apiKey: 'put-firebase',
-  authDomain: '',
-  databaseURL: '',
-  projectId: 'mydatabaseid-XXXX',
-  storageBucket: '',
-  messagingSenderId: ''
-}
+// export const firebaseConfig = {
+//   apiKey: 'put-firebase',
+//   authDomain: '',
+//   databaseURL: '',
+//   projectId: 'mydatabaseid-XXXX',
+//   storageBucket: '',
+//   messagingSenderId: ''
+// }
 
 // describe('DashboardPage', () => {
 //   let component: DashboardPage;
@@ -53,7 +53,7 @@ export const firebaseConfig = {
 //         },
 //         OneSignal,
 //         { provide: AngularFirestore },
-//         LocalNotifications
+//         // LocalNotifications
 //       ]
 //     })
 //     .compileComponents();
