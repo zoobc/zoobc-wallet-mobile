@@ -32,18 +32,24 @@
           <ion-item lines="none" class="form-item" *ngFor="let participant of participants.controls; let i = index;" [formGroupName]="i">
             <ion-label position="stacked">{{ "participant" | translate }} {{ i+1 }}</ion-label>
             <app-form-get-address formControlName="address" identity="recipient-{{ i }}"></app-form-get-address>
-            <span *ngIf="(i+1)>minimumParticipants" (click)="removeParticipant(i)">{{ "remove" | translate }}</span>
-            <ng-container *ngIf="(submitted || participants.controls[i].controls['address'].dirty || participants.controls[i].controls['address'].touched) && participants.controls[i].controls['address'].invalid">
-              <ion-text class="text-error" *ngIf="participants.controls[i].controls['address'].errors.required || participants.controls[i].controls['address'].errors.addressRequired">
-                {{ "address cannot be empty" | translate}}
-              </ion-text>
-              <ion-text class="text-error" *ngIf="participants.controls[i].controls['address'].errors.addressFormat">
-                {{ "address is wrong" | translate}}
-              </ion-text>
-            </ng-container>
+            <div class="form-feedback">
+              <div>
+                <ng-container *ngIf="(submitted || participants.controls[i].controls['address'].dirty || participants.controls[i].controls['address'].touched) && participants.controls[i].controls['address'].invalid">
+                  <ion-text class="text-error" *ngIf="participants.controls[i].controls['address'].errors.required || participants.controls[i].controls['address'].errors.addressRequired">
+                    {{ "address cannot be empty" | translate}}
+                  </ion-text>
+                  <ion-text class="text-error" *ngIf="participants.controls[i].controls['address'].errors.addressFormat">
+                    {{ "address is wrong" | translate}}
+                  </ion-text>
+                </ng-container>
+              </div>
+              <span *ngIf="(i+1)>minimumParticipants" (click)="removeParticipant(i)" class="remove-account">
+                <ion-icon name="zbc-trash"></ion-icon><span>{{ "remove" | translate }}</span>
+              </span>
+            </div>
           </ion-item>
           <ion-item lines="none" class="form-item">
-            <ion-button (click)="addParticipant()">{{ "add participant" | translate }}</ion-button>
+            <ion-button slot="end" (click)="addParticipant()">{{ "add participant" | translate }}</ion-button>
           </ion-item>
         </ng-container>
 
