@@ -9,6 +9,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // describe('Send Coin Page', () => {
 //   let component: SendCoinPage;
@@ -29,6 +30,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 //         RouterTestingModule,
 //         IonicStorageModule.forRoot(),
 //         HttpClientModule,
+//         ReactiveFormsModule,
 //         ],
 //         providers:[
 //           Clipboard,

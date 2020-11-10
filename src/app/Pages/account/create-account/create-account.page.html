@@ -12,7 +12,7 @@
     <ion-list class="form-list">
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "account name" | translate }}</ion-label>
-        <ion-input placeholder="{{ 'please enter your account name' | translate }}" formControlName="accountName"></ion-input>
+        <ion-input placeholder="{{ 'please enter your account name' | translate }}" formControlName="accountName" ngDefaultControl></ion-input>
         <ion-text class="text-error"
           *ngIf="(submitted || accountName.dirty || accountName.touched) && accountName.invalid && accountName.errors.required">
           {{ "account name cannot be empty" | translate}}

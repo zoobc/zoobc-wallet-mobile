@@ -194,6 +194,9 @@ export class ListAccountComponent implements OnInit {
   }
 
   private getBalanceByAddress(allBalances: any, address: string) {
+    if (allBalances==null) {
+      return null;
+    }
     const accInfo = allBalances.filter(acc => {
       return acc.accountaddress === address;
     });
