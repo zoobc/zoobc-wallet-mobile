@@ -32,11 +32,11 @@ describe('InitialPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it("should return a non empty array", () => {
+  it("open send feedback worked", () => {
     let result = component.openSendFeedbak();
     expect(Array.isArray(result)).toBeTruthy;
   });
-  it("should return a non empty array", () => {
+  it("select active language worked", () => {
     let result = component.selectActiveLanguage();
     expect(Array.isArray(result)).toBeTruthy;
   });
