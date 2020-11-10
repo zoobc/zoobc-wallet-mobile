@@ -27,7 +27,7 @@ describe('SellCoinPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it("should return a non empty array", () => {
+  it("init worked", () => {
     let result = component.ngOnInit();
     expect(Array.isArray(result)).toBeTruthy;
   });

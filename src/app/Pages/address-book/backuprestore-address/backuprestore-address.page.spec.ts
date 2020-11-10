@@ -1,8 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BackuprestoreAddressPage } from './backuprestore-address.page';
-import { IonicStorageModule, Storage } from '@ionic/storage';
+import { IonicStorageModule} from '@ionic/storage';
+import { TranslateModule } from "@ngx-translate/core";
+import { AngularFirestore } from '@angular/fire/firestore';
+import {Location} from '@angular/common';
+import { RouterTestingModule } from '@angular/router/testing';
 
 // describe('BackuprestoreAddressPage', () => {
 //   let component: BackuprestoreAddressPage;
@@ -10,20 +13,29 @@ import { IonicStorageModule, Storage } from '@ionic/storage';
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
-//       // declarations: [ BackuprestoreAddressPage ],
-//       // schemas: [CUSTOM_ELEMENTS_SCHEMA],
-//       // imports: [IonicStorageModule]
+//       declarations: [ BackuprestoreAddressPage ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//       imports: [
+//           IonicStorageModule,
+//           TranslateModule.forRoot(),
+//           IonicStorageModule.forRoot(),
+//           RouterTestingModule
+//         ],
+//         providers:[
+//                     Location,
+//                     { provide: AngularFirestore },
+//                 ]
 //     })
 //     .compileComponents();
 //   }));
 
 //   beforeEach(() => {
-//     // fixture = TestBed.createComponent(BackuprestoreAddressPage);
-//     // component = fixture.componentInstance;
-//     // fixture.detectChanges();
+//     fixture = TestBed.createComponent(BackuprestoreAddressPage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
 //   });
 
 //   it('should create', () => {
-//     // expect(component).toBeTruthy();
+//     expect(component).toBeTruthy();
 //   });
 // });

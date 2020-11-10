@@ -12,7 +12,7 @@
     <ion-list class="form-list">
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "name" | translate }}</ion-label>
-        <ion-input placeholder="{{ 'please type your name' | translate }}" formControlName="name"></ion-input>
+        <ion-input placeholder="{{ 'please type your name' | translate }}" formControlName="name" ngDefaultControl></ion-input>
         <ng-container *ngIf="(submitted || name.dirty || name.touched) && name.invalid">
           <ion-text class="text-error"
             *ngIf="name.errors.required">
@@ -26,7 +26,7 @@
 
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "email" | translate }}</ion-label>
-        <ion-input placeholder="{{ 'please type your email' | translate }}" formControlName="email"></ion-input>
+        <ion-input placeholder="{{ 'please type your email' | translate }}" formControlName="email" ngDefaultControl></ion-input>
         <ng-container *ngIf="(submitted || email.dirty || email.touched) && email.invalid" >
           <ion-text class="text-error" *ngIf="email.errors.required">
             {{ "email cannot be empty" | translate}}
@@ -39,7 +39,7 @@
 
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "comment" | translate }}</ion-label>
-        <ion-textarea placeholder="{{ 'please write some comment' | translate }}" formControlName="comment"></ion-textarea>
+        <ion-textarea placeholder="{{ 'please write some comment' | translate }}" formControlName="comment" ngDefaultControl></ion-textarea>
         <ng-container *ngIf="(submitted || comment.dirty || comment.touched) && comment.invalid">
           <ion-text class="text-error" *ngIf="comment.errors.required">
             {{ "comment cannot be empty" | translate}}

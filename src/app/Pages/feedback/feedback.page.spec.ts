@@ -5,44 +5,47 @@ import { TranslateModule } from "@ngx-translate/core";
 import { AngularFirestore } from '@angular/fire/firestore';
 import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-// describe('FeedbackPage', () => {
-//   let component: FeedbackPage;
-//   let fixture: ComponentFixture<FeedbackPage>;
+describe('FeedbackPage', () => {
+  let component: FeedbackPage;
+  let fixture: ComponentFixture<FeedbackPage>;
 
-//   beforeEach(async(() => {
-//     TestBed.configureTestingModule({
-//       declarations: [ FeedbackPage ],
-//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-//       imports:[
-//         TranslateModule.forRoot(),
-//         RouterTestingModule,
-//         HttpClientTestingModule
-//       ],
-//       providers: [
-//         { provide: AngularFirestore },
-//       ],
-//     })
-//     .compileComponents();
-//   }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ FeedbackPage ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports:[
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+        HttpClientTestingModule,
+        FormsModule,
+        ReactiveFormsModule
+      ],
+      providers: [
+        { provide: AngularFirestore },
+      ],
+    })
+    .compileComponents();
+  }));
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(FeedbackPage);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FeedbackPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-//   it("should return a non empty array", () => {
-//     let result = component.ngOnInit();
-//     expect(Array.isArray(result)).toBeTruthy;
-//   });
+  it("should return a non empty array", () => {
+    let result = component.ngOnInit();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
 
-//   it("should return a non empty array", () => {
-//     let result = component.showConfirmationSuccess();
-//     expect(Array.isArray(result)).toBeTruthy;
-//   });
-// });
+  it("should return a non empty array", () => {
+    let result = component.showConfirmationSuccess();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+});
