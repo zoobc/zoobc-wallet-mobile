@@ -43,7 +43,7 @@ export class TransactionDetailPage implements OnInit {
 
       this.transactionWallet = toTransactionWallet(transaction, currAccount.address);
 
-      const pubkey = Buffer.from(this.transactionWallet.id.toString(), 'base64');
+      const pubkey = Buffer.from(transaction.transactionhash.toString(), 'base64');
       this.transactionWallet.transactionhash = getZBCAddress(pubkey, 'ZTX');
 
       this.transaction = transaction;
