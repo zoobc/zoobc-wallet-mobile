@@ -7,6 +7,8 @@ ion-content{
   flex-direction: column;
   height: 100%;
   justify-content: space-between;
+  z-index: 1;
+  position: relative;
 }
 
 ion-toolbar{
@@ -19,7 +21,7 @@ ion-toolbar{
 }
 
 .welcome-container{
-  flex: 1;
+  flex: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,6 +30,16 @@ ion-toolbar{
 
 .welcome{
   font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  margin-top: 0.4rem;
+  font-family: 'Roboto-Medium';
+}
+
+.logo-container{
+  ion-icon{
+    width: 160px;
+    height: 160px;
+  }
 }
 
 .logo{
@@ -49,9 +61,35 @@ ion-toolbar{
 }
 
 .background-zoobc{
-  --background: url("src/assets/images/zoobc.png");
+  --background: url("src/assets/images/bgInitial.jpg");
   background-repeat:no-repeat;
   background-size: cover;
   background-attachment: fixed;
   background-position: center center;
+  background-color: #28456D;
+  mix-blend-mode: hard-light;
+  position: relative;
+
+  .blendBg1{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    background-color: #28456D;
+    z-index: 1;
+    mix-blend-mode: hard-light;
+  }
+  
+  .blendBg2{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    background-color: #28456D;
+    opacity: 0.2;
+    z-index: 1;
+    mix-blend-mode: screen;
+  }
 }
