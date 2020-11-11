@@ -11,6 +11,16 @@
 @import "~@ionic/angular/css/flex-utils.css";
 @import url("https://fonts.googleapis.com/css?family=Lato:100,300,400,700");
 
+@font-face {
+	font-family: 'Roboto-Medium';
+	src: url('assets/fonts/roboto-medium/Roboto-Medium.eot');
+  src: url('assets/fonts/roboto-medium/Roboto-Medium.woff') format('woff'), 
+       url('assets/fonts/roboto-medium/Roboto-Medium.ttf') format('truetype'), 
+       url('assets/fonts/roboto-medium/Roboto-Medium.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
 :root,
 :root[mode="md"],
 :root[mode="ios"] {
