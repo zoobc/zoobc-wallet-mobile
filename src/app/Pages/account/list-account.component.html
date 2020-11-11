@@ -43,8 +43,8 @@
       <ion-list-header  *ngIf="forWhat==='account'">
         <ion-label><span>{{"Tap list to switch account" | translate}}.</span></ion-label>
       </ion-list-header>
-      <ion-item-sliding *ngFor="let account of accounts; let idx = index">
-        <ion-item>
+ 
+        <ion-item *ngFor="let account of accounts; let idx = index">
           <ion-label >
             <div (click)="accountClicked(account)" class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
             <div class="address ion-text-wrap" >
@@ -54,25 +54,25 @@
               {{account.balance / 1e8 | number: '0.0-2' }} ZBC
             </div>
             <div>
-              <ion-button *ngIf="!forWhat && account.type==='multisig'" class="ion-text-right" (click)="deleteAccount(idx)" color="meddium">
-                <ion-icon name="trash"></ion-icon>
-              </ion-button>          
+              <ion-button *ngIf="!forWhat" (click)="editName(account)" class="tool" color="meddium">
+                <ion-icon name="create"></ion-icon>
+              </ion-button>
               <ion-button *ngIf="!forWhat && account.type==='multisig'" (click)="viewAccount(account)" class="ion-text-right" color="meddium">
                 <ion-icon name="eye"></ion-icon>
               </ion-button>
+              <ion-button *ngIf="!forWhat" (click)="editDataSet(account)" class="tool" color="meddium">
+                <ion-icon name="albums"></ion-icon>
+              </ion-button>
+              <ion-button *ngIf="!forWhat && account.type==='multisig'" class="ion-text-right" (click)="deleteAccount(idx)" color="meddium">
+                <ion-icon name="trash"></ion-icon>
+              </ion-button>          
             </div>
           </ion-label>
           <ion-button slot="end" (click)="copyAddress(account)" class="ion-text-right" color="meddium">
             <ion-icon name="copy"></ion-icon>
           </ion-button>
         </ion-item>
-        <ion-item-options *ngIf="!forWhat" >
-          <button color="success" (click)="editName(account)" class="tool">
-            <ion-icon name="create"></ion-icon>{{ "Edit" | translate}}
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
+      
     </ion-list>
-
   </div>
 </ion-content>
