@@ -253,8 +253,13 @@ const routes: Routes = [
   { path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
    canActivate: [AuthService]},
   { path: 'dataset-account', loadChildren: './Pages/account/dataset-account/dataset-account.module#DatasetAccountPageModule' ,
-   canActivate: [AuthService]},  { path: 'new-dataset', loadChildren: './Pages/account/dataset-account/new-dataset/new-dataset.module#NewDatasetPageModule' },
-  { path: 'import-draft', loadChildren: './Pages/multisig/import-draft/import-draft.module#ImportDraftPageModule' }
+   canActivate: [AuthService]},
+  { path: 'new-dataset', loadChildren: './Pages/account/dataset-account/new-dataset/new-dataset.module#NewDatasetPageModule',
+   canActivate: [AuthService] },
+  { path: 'import-draft', loadChildren: './Pages/multisig/import-draft/import-draft.module#ImportDraftPageModule',
+    canActivate: [AuthService] },
+  { path: 'escrow-history', loadChildren: './Pages/my-tasks/escrow-history/escrow-history.module#EscrowHistoryPageModule',
+    canActivate: [AuthService] }
 
 ];
 @NgModule({
