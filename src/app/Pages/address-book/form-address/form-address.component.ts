@@ -137,6 +137,9 @@ export class FormAddressComponent implements OnInit, OnChanges {
   }
 
   getScannerResult(jsondata: string) {
+    if (jsondata==null) {
+      console.log("json data null");
+    }
     if (jsondata && jsondata.length > 0) {
       const result = jsondata.split('||');
       this.formAddress.controls['address'].setValue(result[0]);
