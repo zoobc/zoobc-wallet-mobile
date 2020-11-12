@@ -242,4 +242,9 @@ export class ListAccountComponent implements OnInit {
     };
     this.router.navigate(['/edit-account'], navigationExtras);
   }
+
+  openListAccount() {
+    this.forWhat = null;
+    this.router.navigate(['list-account']);
+  }
 }
