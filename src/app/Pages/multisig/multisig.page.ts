@@ -12,6 +12,7 @@ import { UtilService } from 'src/app/Services/util.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
 import { ImportDraftPage } from './import-draft/import-draft.page';
+import { THEME_OPTIONS } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-multisig',
@@ -27,10 +28,11 @@ export class MultisigPage implements OnInit {
   multiSigCoPayer: any;
   isLoading: boolean;
   isError = false;
+  transactionType = 'sendMoney';
 
   isAddMultisigInfo: boolean;
   isSignature = false;
-  isTransaction = true;
+  // isTransaction = true;
   isMultisigInfo = true;
   isMultiSignature = true;
   account: Account;
@@ -45,6 +47,7 @@ export class MultisigPage implements OnInit {
   alertConnectionTitle = '';
   alertConnectionMsg = '';
   networkSubscription = null;
+  public themes = THEME_OPTIONS;
 
   constructor(
     private router: Router,
@@ -58,7 +61,8 @@ export class MultisigPage implements OnInit {
   ) {
     this.isMultisigInfo = true;
     this.isSignature = false;
-    this.isTransaction = true;
+    // this.isTransaction = true;
+    this.transactionType = 'sendMoney';
 
     this.multisigSubs = this.multisigServ.multisig.subscribe(() => {
       this.getMultiSigDraft();
@@ -128,7 +132,7 @@ export class MultisigPage implements OnInit {
     if (this.isMultisigInfo) {
       multisig.multisigInfo = null;
     }
-    if (this.isTransaction) {
+    if (this.transactionType === 'sendMoney') {
       multisig.unisgnedTransactions = null;
     }
     if (this.isSignature) {
@@ -146,7 +150,7 @@ export class MultisigPage implements OnInit {
       );
       multisig.generatedSender = address;
       this.multisigServ.update(multisig);
-      if (this.isTransaction) {
+      if (this.transactionType === 'sendMoney') {
         this.router.navigate(['/msig-create-transaction']);
       } else if (this.isSignature) {
         this.router.navigate(['/msig-add-signatures']);
@@ -155,7 +159,7 @@ export class MultisigPage implements OnInit {
       this.multisigServ.update(multisig);
       if (this.isMultisigInfo) {
         this.router.navigate(['/msig-add-info']);
-      } else if (this.isTransaction) {
+      } else if (this.transactionType === 'sendMoney') {
         this.router.navigate(['/msig-create-transaction']);
       } else if (this.isSignature) {
         this.router.navigate(['/msig-add-signatures']);
@@ -276,4 +280,9 @@ export class MultisigPage implements OnInit {
       this.networkSubscription.unsubscribe();
     }
   }
+
+  changeTrx() {
+    console.log('=== multisig ===', this.transactionType);
+  }
+
 }
