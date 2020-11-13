@@ -79,5 +79,18 @@ describe('Transactiona Page', () => {
     let result = component.getAllAddress();
     expect(Array.isArray(result)).toBeTruthy;
   });
+  it("go to transaction detail worked", () => {
+    let result = component.goToTransactionDetail(1);
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("get name worked", () => {
+    let result = component.getName("BCZ-12345");
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+
+  // it("get escrow transaction worked", () => {
+  //   let result = component.getEscrowTransaction();
+  //   expect(Array.isArray(result)).toBeTruthy;
+  // });
 
 });
