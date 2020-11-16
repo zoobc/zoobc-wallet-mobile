@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button> </ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "send" | translate }}</ion-title>
+    <ion-title>{{ "send money" | translate }}</ion-title>
     <ion-buttons color="primary" slot="end">
       <ion-button routerLink="/feedback">
         {{"feedback" | translate }}
@@ -21,7 +21,7 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12">
-        {{ "sign by Account" | translate }}
+        {{ "sender" | translate }}
       </ion-col>
     </ion-row>
     <ion-row *ngIf="participantAccounts">
@@ -57,7 +57,7 @@
     <ion-row>
       <ion-col>
         <ion-label>
-          {{ "Commition Fee" | translate }}
+          {{ "fee" | translate }}
           <ion-text color="danger">*</ion-text>
         </ion-label>
       </ion-col>

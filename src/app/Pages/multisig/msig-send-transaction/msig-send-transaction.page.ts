@@ -103,11 +103,13 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     this.accountService.accountSubject.subscribe(() => {
       this.loadAccount();
     });
-    this.loadAccount();
-    this.loadAllAccount();
+
+    // this.loadAccount();
+
   }
 
   async loadAllAccount() {
+    console.log('== loadAllAccount: ', this.participants);
     this.accounts = await this.accountService.allAccount('normal');
     const participants = this.participants.map(prc => {
       console.log('=== participatn: ', prc);
@@ -115,23 +117,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       if (account) {
         this.participantAccounts.push(account);
       }
-      console.log('== Account: ', account);
-      // this.myFunction(prc);
     });
-  }
-
-  async myFunction(prt) {
-    // find participatn on acount then add to arry;
-    // const acc = await this.accountService.getAccount(prt);
-
-    // .then(acc => {
-    //   if (acc) {
-    //     console.log('== acc fouind', acc);
-    //     // this.participantAccounts.push(acc);
-    //   }
-    // });
-    console.log('=Particitpant: ', prt);
-    return prt;
   }
 
   async getAccountBalance(addr: string) {
@@ -175,7 +161,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     await this.loadAccount();
 
     this.multisigSubs = this.multisigServ.multisig.subscribe(async multisig => {
-
+      console.log('=== multisig 1', multisig);
       const { multisigInfo } = multisig;
 
       if (multisigInfo === undefined) {
@@ -183,6 +169,9 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       }
 
       this.multisig = multisig;
+      this.participants = this.multisig.multisigInfo.participants;
+      console.log('== Participant', this.participants);
+
       const { accountAddress, fee, generatedSender } = this.multisig;
       if (this.isMultiSigAccount) {
         this.multisigAccount = this.account;
@@ -203,6 +192,8 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     });
 
     this.getMultiSigDraft();
+
+    this.loadAllAccount();
 
   }
 
