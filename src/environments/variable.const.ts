@@ -45,6 +45,7 @@ export const CONST_HEX = 'hex';
 
 // Language
 export const SELECTED_LANGUAGE = 'selected_language';
+
 export const THEME_OPTIONS  = [
   {
   name: 'ZooBC',
@@ -63,6 +64,7 @@ export const THEME_OPTIONS  = [
     value: 'night'
   }
 ];
+
 export const SELECTED_THEME = 'card';
 export const LANGUAGES = [
   {
@@ -238,6 +240,19 @@ export const NETWORK_LIST = [
     name: 'Demo',
     host: 'http://45.79.39.58:8002'
   },
+  {
+    name: 'Exp1',
+    host: 'http://23.92.27.48:7000'
+  },
+  {
+    name: 'Exp2',
+    host: 'http://172.104.62.181:7000'
+  },
+  {
+    name: 'Exp3',
+    host: 'http://45.79.35.137:7000'
+  },
+  
   // {
   //   name: 'Demo 3 (x.x.246.90)',
   //   host: 'http://85.90.246.90:8002'
