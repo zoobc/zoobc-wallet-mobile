@@ -11,6 +11,7 @@ import { CurrencyComponent } from 'src/app/Components/currency/currency.componen
 
 
 import { MsigCreateTransactionPage } from './msig-create-transaction.page';
+import { SharedModule } from 'src/app/Shared/shared.module';
 
 const routes: Routes = [
   {
@@ -27,6 +28,7 @@ const routes: Routes = [
     ComponentsModule,
     ReactiveFormsModule,
     TranslateModule,
+    SharedModule,
     RouterModule.forChild(routes),
     AddressBookComponentModule
   ],

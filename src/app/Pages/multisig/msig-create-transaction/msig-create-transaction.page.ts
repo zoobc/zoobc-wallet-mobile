@@ -190,8 +190,7 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.account = await this.accountService.getCurrAccount();
     this.senderAccount = this.account;
     this.isMultiSignature = this.account.type === 'multisig' ? true : false;
-
-    this.getAccountBalance(this.account.address);
+   // this.getAccountBalance(this.senderAccount.address);
   }
 
   async ngOnInit() {
@@ -233,9 +232,11 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       } else if (this.isMultiSignature) {
         this.multisig.generatedSender = this.account.address;
         this.senderAccount = this.account;
+        this.getAccountBalance(this.senderAccount.address);
       } else {
         const address = this.multisig.generatedSender;
         this.senderAccount = await this.accountService.getAccount(address);
+        this.getAccountBalance(this.senderAccount.address);
       }
     });
   }
