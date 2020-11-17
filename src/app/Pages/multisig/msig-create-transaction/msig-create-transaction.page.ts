@@ -151,9 +151,7 @@ export class MsigCreateTransactionPage implements OnInit {
     });
 
     this.accountService.senderSubject.subscribe((account: Account) => {
-      // this.changeAccount(account);
-      this.loadAccount();
-
+        this.loadAccount();
     });
 
     this.addressbookService.recipientSubject.subscribe({
@@ -189,29 +187,6 @@ export class MsigCreateTransactionPage implements OnInit {
       this.secondaryCurr = rate.name;
     });
 
-    this.loadAccount();
-
-    // this.accountService.accountSubject.subscribe(() => {
-    //  });
-
-    this.addressbookService.addressSubject.subscribe({
-      next: address => {
-        // this.recipientAddress = address;
-      }
-    });
-
-    this.addressbookService.recipientSubject.subscribe({
-      next: recipient => {
-        // this.recipientAddress = recipient.address;
-      }
-    });
-
-    this.accountService.recipientSubject.subscribe({
-      next: recipient => {
-        // this.recipientAddress = recipient.address;
-      }
-    });
-
     this.currencyService.currencySubject.subscribe((rate: Currency) => {
       this.currencyRate = rate;
       this.secondaryCurr = rate.name;
@@ -219,6 +194,7 @@ export class MsigCreateTransactionPage implements OnInit {
 
     this.priceInUSD = this.currencyService.getPriceInUSD();
     this.loadData();
+    this.loadAccount();
   }
 
   get recipientAddress() {

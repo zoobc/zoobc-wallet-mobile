@@ -190,6 +190,133 @@
     </ion-grid>
 
 
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-checkbox style="margin-right: 10px" (ionChange)="changeWithEscrow($event.target.checked)"
+            color="primary"></ion-checkbox>
+          <ion-label>{{ "escrow transaction" | translate}}</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <div *ngIf="withEscrow">
+      <ion-grid formGroupName="escrow">
+        <ion-row>
+          <ion-col>
+            <ion-label>{{ "approver address" | translate }} </ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-row-cont">
+          <ion-col size="10" style="padding:10px">
+            <ion-textarea rows="3" maxlength="80" placeholder="{{'approver address'|translate}}"
+              formControlName="escrowApprover">
+            </ion-textarea>
+          </ion-col>
+          <ion-col size="2" class="ion-text-center" style="padding-top: 20px">
+            <ion-icon name="arrow-dropdown" (click)="presentGetAddressOption('approver');"></ion-icon>
+          </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="(submitted || escrowApprover.dirty || escrowApprover.touched) && escrowApprover.invalid">
+          <ion-col col-12>
+            <ion-label color="danger" *ngIf="escrowApprover.errors.required">
+              {{ 'address for approver is required' | translate }}
+            </ion-label>
+            <ion-label color="danger" *ngIf="escrowApprover.errors.addressFormat">
+              {{ 'zbc address is invalid' | translate }}
+            </ion-label>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-label>{{ 'approver commission' | translate }}</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-row-cont" style="margin-bottom:10px">
+          <ion-col size="7" style="padding-left:10px">
+            <ion-input placeholder="approver commission" class="ion-text-right" value="1"
+              formControlName="escrowCommision" (ionChange)="onCommisionChange()" maxlength="12" type="number">
+            </ion-input>
+          </ion-col>
+          <ion-col size="5" style="padding-left: 10px;">
+            <div class="sufix">ZBC</div>
+          </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="(submitted || escrowCommision.dirty || escrowCommision.touched) && escrowCommision.invalid">
+          <ion-col col-12>
+            <ion-label color="danger" *ngIf="escrowCommision.errors.required">
+              {{ 'commission for approver is required' | translate }}
+            </ion-label>
+            <ion-label color="danger" *ngIf="escrowCommision.errors.min">
+              {{ 'minimum commission is' | translate: { val: '0.00000001' } }}
+            </ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col style="margin-top:15px;" class="ion-text-right" color="primary">
+            {{ "block height" | translate}}: <ion-text color="primary">{{ blockHeight | number: '0.0-2' }}</ion-text>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-label>{{ 'timeout' | translate }}</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-row-cont" style="margin-bottom:10px">
+          <ion-col style="padding-left:10px" size="7">
+            <ion-input placeholder="{{ 'timeout' | translate }}" class="ion-text-right" formControlName="escrowTimeout"
+              type="number" (ionChange)="onEscrowTimeoutChange()"></ion-input>
+          </ion-col>
+          <ion-col size="5" style="padding-left: 10px;">
+            <div class="sufix">block(s)</div>
+          </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="(submitted || escrowTimeout.dirty || escrowTimeout.touched) && escrowTimeout.invalid">
+          <ion-col col-12>
+            <ion-label color="danger" *ngIf="escrowTimeout.errors.required">
+              {{
+              'timeout is required' | translate
+            }}
+            </ion-label>
+            <ion-label color="danger" *ngIf="escrowTimeout.errors.min">
+              {{ 'minimum timeout is 1' | translate }}
+            </ion-label>
+            <ion-label color="danger" *ngIf="escrowTimeout.errors.max">
+              {{ 'maximum timeout is 720' | translate }}
+            </ion-label>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-label>{{ 'instruction' | translate }}</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-row-cont">
+          <ion-col style="padding:10px">
+            <ion-textarea rows="4" maxlength="60" placeholder="{{'instruction' | translate}}"
+              formControlName="escrowInstruction">
+            </ion-textarea>
+          </ion-col>
+        </ion-row>
+        <ion-row
+          *ngIf="(submitted || escrowInstruction.dirty || escrowInstruction.touched) && escrowInstruction.invalid">
+          <ion-col col-12>
+            <ion-label color="danger" *ngIf="escrowInstruction.errors.required">
+              {{ 'instruction is required' | translate }}
+            </ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+
     <ion-grid style="margin-top:20px;">
       <ion-row>
         <ion-col>
