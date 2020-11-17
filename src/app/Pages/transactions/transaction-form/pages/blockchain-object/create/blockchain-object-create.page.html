@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "blockchain object" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+    <ion-list class="form-list">
+      <ng-container formGroupName="objectItems">
+        <ion-item lines="none" class="form-item" *ngFor="let item of objectItems.controls; let i = index;" [formGroupName]="i">
+          <ion-label position="stacked">{{ "object item" | translate }} {{ i+1 }}</ion-label>
+          <app-form-object formControlName="objectItem" [errors]="objectItemsError[i]?objectItemsError[i]:null"></app-form-object>
+          <div class="form-feedback">
+            <span *ngIf="(i+1)>minimumObjectItems" (click)="removeObjectItem(i)" class="remove-button">
+              <ion-icon name="zbc-trash"></ion-icon><span>{{ "remove" | translate }}</span>
+            </span>
+          </div>
+        </ion-item>
+        <ion-item lines="none" class="form-item">
+          <ion-button slot="end" (click)="addObjectItem()">{{ "add more" | translate }}</ion-button>
+        </ion-item>
+      </ng-container>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
+        <app-form-fee formControlName="fee"></app-form-fee>
+        <ng-container *ngIf="(submitted || fee.dirty || fee.touched) && fee.invalid">
+          <ion-text class="text-error" *ngIf="fee.errors.required">
+            {{ "transaction fee cannot be empty" | translate}}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="fee.errors.min">
+            {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fee.errors.min.min }}
+          </ion-text>
+        </ng-container>
+      </ion-item>
+
+    </ion-list>
+
+    <ion-button type="submit" color="tertiary" expand="block">
+      {{ "next" | translate }}
+    </ion-button>
+  </form>
+</ion-content>
