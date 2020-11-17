@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "blockchain object" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ng-template #noData>
+    <ion-item>
+      <ion-button class="item-btn-add" fill="clear" (click)="createBlockchainObject()">{{ "add blockchain object" | translate }}
+      </ion-button>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>{{ "you dont have any blockchain objects" | translate }}</ion-label>
+    </ion-item>
+  </ng-template>
+  <ion-list *ngIf="blockchainObjects && blockchainObjects.length >= 1; else noData">
+    <ion-item>
+      <ion-button class="item-btn-add" fill="clear" (click)="createBlockchainObject()">{{ "add blockchain object" | translate }}
+      </ion-button>
+    </ion-item>
+    <ion-item *ngFor="let blockchainObject of blockchainObjects; let i = index">
+      <ion-label (click)="selectAddress(address)" class="ion-text-wrap">
+        <div class="">{{blockchainObject.id}}</div>
+        <div class="address">{{blockchainObject.info}}</div>
+      </ion-label>
+      <ion-icon name="zbc-option" slot="end" (click)="showOption($event, i)"></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>
