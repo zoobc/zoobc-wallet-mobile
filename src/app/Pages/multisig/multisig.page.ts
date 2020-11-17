@@ -7,7 +7,7 @@ import { dateAgo } from 'src/Helpers/utils';
 import { Subscription } from 'rxjs';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
-import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
+import zoobc, { TransactionType } from 'zoobc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
@@ -21,14 +21,13 @@ import { THEME_OPTIONS } from 'src/environments/variable.const';
 })
 export class MultisigPage implements OnInit {
   multiSigDrafts: MultiSigDraft[];
-
   addInfo = true;
   createTransaction = true;
   addSignature = true;
   multiSigCoPayer: any;
   isLoading: boolean;
   isError = false;
-  transactionType = 'sendMoney';
+  transactionType = 1;
 
   isAddMultisigInfo: boolean;
   isSignature = false;
@@ -47,14 +46,22 @@ export class MultisigPage implements OnInit {
   alertConnectionTitle = '';
   alertConnectionMsg = '';
   networkSubscription = null;
-  public themes = THEME_OPTIONS;
+  themes = THEME_OPTIONS;
+  chainType = 'onchain';
+
+
+  txType = [
+    { code: TransactionType.SENDMONEYTRANSACTION, type: 'send money' },
+    { code: TransactionType.SETUPACCOUNTDATASETTRANSACTION, type: 'setup account dataset' },
+    { code: TransactionType.REMOVEACCOUNTDATASETTRANSACTION, type: 'remove account dataset' },
+    { code: TransactionType.APPROVALESCROWTRANSACTION, type: 'escrow approval' },
+  ];
 
   constructor(
     private router: Router,
     private accountSrv: AccountService,
     private alertController: AlertController,
     private multisigServ: MultisigService,
-    private utilSrv: UtilService,
     private modalController: ModalController,
     private translateSrv: TranslateService,
     private network: Network
@@ -62,16 +69,22 @@ export class MultisigPage implements OnInit {
     this.isMultisigInfo = true;
     this.isSignature = false;
     // this.isTransaction = true;
-    this.transactionType = 'sendMoney';
+    this.transactionType = 1;
 
     this.multisigSubs = this.multisigServ.multisig.subscribe(() => {
       this.getMultiSigDraft();
     });
+
   }
 
   async ngOnInit() {
     await this.getMultiSigDraft();
     // this.goNextStep();
+    this.chainType = 'onchain';
+  }
+
+  radioGroupChange() {
+    console.log('radioGroupChange2: ',  this.chainType);
   }
 
   async getMultiSigDraft() {
@@ -81,7 +94,6 @@ export class MultisigPage implements OnInit {
     this.isMultiSignature = this.account.type !== 'multisig' ? false : true;
 
     const drafts = this.multisigServ.getDrafts();
-    console.log('=== Drfts: ', drafts);
     if (drafts) {
       this.multiSigDrafts = drafts;
 
@@ -132,7 +144,7 @@ export class MultisigPage implements OnInit {
     if (this.isMultisigInfo) {
       multisig.multisigInfo = null;
     }
-    if (this.transactionType === 'sendMoney') {
+    if (this.transactionType === 1) {
       multisig.unisgnedTransactions = null;
     }
     if (this.isSignature) {
@@ -150,7 +162,7 @@ export class MultisigPage implements OnInit {
       );
       multisig.generatedSender = address;
       this.multisigServ.update(multisig);
-      if (this.transactionType === 'sendMoney') {
+      if (this.transactionType === 1) {
         this.router.navigate(['/msig-create-transaction']);
       } else if (this.isSignature) {
         this.router.navigate(['/msig-add-signatures']);
@@ -159,7 +171,7 @@ export class MultisigPage implements OnInit {
       this.multisigServ.update(multisig);
       if (this.isMultisigInfo) {
         this.router.navigate(['/msig-add-info']);
-      } else if (this.transactionType === 'sendMoney') {
+      } else if (this.transactionType === 1) {
         this.router.navigate(['/msig-create-transaction']);
       } else if (this.isSignature) {
         this.router.navigate(['/msig-add-signatures']);
