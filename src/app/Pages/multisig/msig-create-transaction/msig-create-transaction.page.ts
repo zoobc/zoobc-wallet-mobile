@@ -43,72 +43,85 @@ import { CurrencyComponent } from 'src/app/Components/currency/currency.componen
 import { TrxstatusPage } from '../../send-coin/modals/trxstatus/trxstatus.page';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Network } from '@ionic-native/network/ngx';
+import { Approver } from 'src/app/Interfaces/approver';
+import { AuthService } from 'src/app/Services/auth-service';
+import { addressFormatValidator } from 'src/Helpers/validators';
+import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
+import { SenddetailPage } from '../../send-coin/modals/senddetail/senddetail.page';
 
 @Component({
   selector: 'app-msig-create-transaction',
   templateUrl: './msig-create-transaction.page.html',
   styleUrls: ['./msig-create-transaction.page.scss']
 })
-export class MsigCreateTransactionPage implements OnInit, OnDestroy {
-  recipientAddress = '';
-  senderAccount: Account;
-
-  amount = 0;
-  amountSecond = 0;
-  amountTemp = 0;
-  customfeeTemp: number;
-  optionFee: string;
-  customfee: number;
-  customfee2: number;
+// export class MsigCreateTransactionPage implements OnInit, OnDestroy {
+export class MsigCreateTransactionPage implements OnInit {
+  approvers = [];
+  rootPage: any;
+  status: any;
+  account: Account;
+  senderAddress: string;
   transactionFee: number;
+  withEscrow: boolean;
   allFees = this.trxService.transactionFees(TRANSACTION_MINIMUM_FEE);
-  isAmountValid = true;
-  isFeeValid = true;
-  isCustomFeeValid = true;
-  isRecipientValid = true;
-  isApproverValid = true;
-  isBalanceValid = true;
-  removeExport = false;
-  accountName = '';
-  recipientMsg = '';
-  approverMsg = '';
-  amountMsg = '';
+  accountName: string;
   allAccounts = [];
   errorMsg: string;
-  customeChecked: boolean;
-  private connectionText = '';
+  // private connectionText = '';
   public currencyRate: Currency = {
     name: CONST_DEFAULT_CURRENCY,
     value: environment.zbcPriceInUSD
   };
 
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
+  conversionValue = {
+    amount: {
+      ZBC: 0,
+      USD: 0
+    },
+    fee: {
+      ZBC: this.allFees[0].fee,
+      USD: 0
+    }
+  };
+
   public isLoadingBalance = true;
   public isLoadingRecentTx = true;
   public isLoadingTxFee = false;
-  public priceInUSD: number;
+  public balanceInUSD: number;
   public primaryCurr = COIN_CODE;
   public secondaryCurr: string;
-
-  minimumFee = TRANSACTION_MINIMUM_FEE;
+  private minimumFee = TRANSACTION_MINIMUM_FEE;
   isLoadingBlockHeight: boolean;
   blockHeight: number;
-
-  minFee = TRANSACTION_MINIMUM_FEE;
-  kindFee: string;
-  account: Account;
-
-  multisig: MultiSigDraft;
-  multisigSubs: Subscription;
-  multiSigDraft: MultiSigDraft;
-  multiSigDrafts: MultiSigDraft[];
-  accounts: any;
-  isHasTransactionHash: boolean;
-  // isMultiSignature = true;
-  txHash: string;
-  createTransactionFormEnable = true;
-  isMultiSignature = true;
-  recipientName: any;
+  recipientName: string;
+  escrowApproverName: string;
   scanForWhat: string;
+  removeExport = false;
+  createTransactionFormEnable = true;
+  multisig: MultiSigDraft;
+
+  sendForm = new FormGroup({
+    recipientAddress: new FormControl('', [Validators.required, addressFormatValidator]),
+    amount: new FormControl(0, [Validators.required, Validators.min(0.00000001)]),
+    fee: new FormControl(this.allFees[0].fee, [Validators.required, Validators.min(this.minimumFee)]),
+    escrow: new FormGroup({
+      escrowApprover: new FormControl(''),
+      escrowCommision: new FormControl(0),
+      escrowTimeout: new FormControl(0, [Validators.required, Validators.min(1), Validators.max(720)]),
+      escrowInstruction: new FormControl(''),
+    })
+  });
+
+  submitted = false;
+  priceInUSD: number;
+  accounts: any;
+  txHash: string;
+  isHasTransactionHash: any;
 
   constructor(
     private multisigServ: MultisigService,
@@ -128,31 +141,74 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     private platform: Platform,
     private androidPermissions: AndroidPermissions,
     private alertCtrl: AlertController,
-    private trxService: TransactionService) {
-
-    this.qrScannerService.qrScannerSubject.subscribe((address) => {
-        this.getScannerResult(address);
+    private trxService: TransactionService,
+    private addressBookSrv: AddressBookService,
+    private authSrv: AuthService,
+    private network: Network
+  ) {
+    this.qrScannerService.qrScannerSubject.subscribe(address => {
+      this.getScannerResult(address);
     });
 
-    this.accountService.accountSubject.subscribe(() => {
+    this.accountService.senderSubject.subscribe((account: Account) => {
+      // this.changeAccount(account);
       this.loadAccount();
-    });
 
-    this.addressbookService.addressSubject.subscribe({
-      next: address => {
-        this.recipientAddress = address;
-      }
     });
 
     this.addressbookService.recipientSubject.subscribe({
-      next: recipient => {
-        this.recipientAddress = recipient.address;
+      next: address => {
+        this.sendForm.controls.recipientAddress.setValue(address.address);
+        this.recipientName = address.name;
+      }
+    });
+
+    this.addressbookService.approverSubject.subscribe({
+      next: address => {
+        this.sendForm.get('escrow').get('escrowApprover').setValue(address.address);
+        this.escrowApproverName = address.name;
       }
     });
 
     this.accountService.recipientSubject.subscribe({
       next: recipient => {
-        this.recipientAddress = recipient.address;
+        this.sendForm.controls.recipientAddress.setValue(recipient.address);
+        this.recipientName = recipient.name;
+      }
+    });
+
+    this.accountService.approverSubject.subscribe({
+      next: approver => {
+        this.sendForm.get('escrow').get('escrowApprover').setValue(approver.address);
+        this.escrowApproverName = approver.name;
+      }
+    });
+
+    this.currencyService.currencySubject.subscribe((rate: Currency) => {
+      this.currencyRate = rate;
+      this.secondaryCurr = rate.name;
+    });
+
+    this.loadAccount();
+
+    // this.accountService.accountSubject.subscribe(() => {
+    //  });
+
+    this.addressbookService.addressSubject.subscribe({
+      next: address => {
+        // this.recipientAddress = address;
+      }
+    });
+
+    this.addressbookService.recipientSubject.subscribe({
+      next: recipient => {
+        // this.recipientAddress = recipient.address;
+      }
+    });
+
+    this.accountService.recipientSubject.subscribe({
+      next: recipient => {
+        // this.recipientAddress = recipient.address;
       }
     });
 
@@ -165,193 +221,36 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  async showPopupAccount() {
-    const modal = await this.modalController.create({
-      component: AccountPopupPage,
-      componentProps: {
-        idx: 0
-      }
-    });
-
-    modal.onDidDismiss().then(dataReturned => {
-      if (dataReturned.data) {
-        this.recipientAddress = dataReturned.data.address;
-      }
-    });
-
-    return await modal.present();
+  get recipientAddress() {
+    return this.sendForm.get('recipientAddress');
   }
 
-  ngOnDestroy() {
-    this.multisigSubs.unsubscribe();
+  get amount() {
+    return this.sendForm.get('amount');
   }
 
-  async loadAccount() {
-    this.account = await this.accountService.getCurrAccount();
-    this.senderAccount = this.account;
-    this.isMultiSignature = this.account.type === 'multisig' ? true : false;
-   // this.getAccountBalance(this.senderAccount.address);
+  get fee() {
+    return this.sendForm.get('fee');
   }
 
-  async ngOnInit() {
-    this.accounts = await this.accountService.allAccount();
-    // Multisignature Subscription
-    this.multisigSubs = this.multisigServ.multisig.subscribe(async multisig => {
-      await this.loadAccount();
-
-      const {
-        multisigInfo,
-        unisgnedTransactions,
-        signaturesInfo,
-        transaction
-      } = multisig;
-      if (unisgnedTransactions === undefined) {
-        this.router.navigate(['/multisig']);
-      }
-
-      this.multisig = multisig;
-      this.removeExport = signaturesInfo !== undefined ? true : false;
-      if (unisgnedTransactions !== null) {
-        this.isHasTransactionHash = true;
-      }
-      if (signaturesInfo) {
-        this.isHasTransactionHash =
-          signaturesInfo.txHash !== undefined ? true : false;
-      }
-
-      if (this.isHasTransactionHash) {
-        this.createTransactionFormEnable = false;
-      }
-
-      if (unisgnedTransactions) {
-        const { sender, recipient, amount, fee } = transaction;
-        this.account.address = sender;
-        this.recipientAddress = recipient;
-        this.amount = amount;
-        this.transactionFee = fee;
-      } else if (this.isMultiSignature) {
-        this.multisig.generatedSender = this.account.address;
-        this.senderAccount = this.account;
-        this.getAccountBalance(this.senderAccount.address);
-      } else {
-        const address = this.multisig.generatedSender;
-        this.senderAccount = await this.accountService.getAccount(address);
-        this.getAccountBalance(this.senderAccount.address);
-      }
-    });
+  get escrow() {
+    return this.sendForm.get('escrow');
   }
 
-  customTrackBy(index: number): any {
-    return index;
+  get escrowApprover() {
+    return this.sendForm.get('escrow').get('escrowApprover');
   }
 
-  async next() {
-    const isValid = this.isFormValid();
-    if (!isValid) {
-      return;
-    }
-    if (this.multisig.signaturesInfo !== null) {
-      this.createTransactionFormEnable = true;
-    }
-    const { signaturesInfo } = this.multisig;
-    if (!this.multisig.unisgnedTransactions) {
-      // this.showNextConfirmation();
-      this.generateHash();
-    } else if (signaturesInfo !== undefined) {
-      this.router.navigate(['/msig-add-signatures']);
-    } else {
-      this.router.navigate(['/msig-send-transaction']);
-    }
+  get escrowCommision() {
+    return this.sendForm.get('escrow').get('escrowCommision');
   }
 
-  generateHash() {
-    const { signaturesInfo } = this.multisig;
-    this.generatedTxHash();
-    // this.updateCreateTransaction();
-
-    // aditional
-    // const multisig = { ...this.multisig };
-    this.multisigServ.update(this.multisig);
-    // end of
-
-    if (signaturesInfo === undefined) {
-      this.router.navigate(['/msig-send-transaction']);
-    } else {
-      this.router.navigate(['/msig-add-signatures']);
-    }
+  get escrowTimeout() {
+    return this.sendForm.get('escrow').get('escrowTimeout');
   }
 
-  async generatedTxHash() {
-    this.updateCreateTransaction();
-    const { sender } = this.multisig.transaction;
-    const data: SendMoneyInterface = {
-      sender: this.account.address,
-      recipient: sanitizeString(this.recipientAddress),
-      fee: this.transactionFee,
-      amount: this.amount
-    };
-
-    const account = this.accounts.find(acc => acc.address === sender);
-    const participantAccount = [];
-
-    if (this.multisig.unisgnedTransactions !== undefined) {
-      this.multisig.unisgnedTransactions = sendMoneyBuilder(data);
-    }
-
-    if (this.multisig.signaturesInfo !== undefined) {
-      if (account) {
-        // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < account.participants.length; i++) {
-          const participant = {
-            address: account.participants[i],
-            signature: stringToBuffer('')
-          };
-          participantAccount.push(participant);
-        }
-      } else {
-        // tslint:disable-next-line:prefer-for-of
-        for (
-          let i = 0;
-          i < this.multisig.multisigInfo.participants.length;
-          i++
-        ) {
-          const participant = {
-            address: this.multisig.multisigInfo.participants[i],
-            signature: stringToBuffer('')
-          };
-          participantAccount.push(participant);
-        }
-      }
-      const dataBuffer = sendMoneyBuilder(data);
-      this.txHash = generateTransactionHash(dataBuffer);
-      this.multisig.signaturesInfo = {
-        txHash: this.txHash,
-        participants: participantAccount
-      };
-
-      this.isHasTransactionHash = true;
-      this.multisig.generatedSender = this.multisig.transaction.sender;
-    }
-  }
-
-  saveDraft() {
-    this.updateCreateTransaction();
-    if (this.multisig.id) {
-      this.multisigServ.editDraft();
-    } else {
-      this.multisigServ.saveDraft();
-    }
-    this.router.navigate(['/multisig']);
-  }
-
-  updateCreateTransaction() {
-    const address = this.multisig.generatedSender || this.account.address;
-    this.multisig.transaction = {
-      sender: address,
-      amount: this.amount,
-      fee: this.transactionFee,
-      recipient: sanitizeString(this.recipientAddress)
-    };
+  get escrowInstruction() {
+    return this.sendForm.get('escrow').get('escrowInstruction');
   }
 
   switchCurrency() {
@@ -364,22 +263,38 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
       this.secondaryCurr = this.currencyRate.name;
     }
 
-    this.convertAmount();
-    this.convertCustomeFee();
+    this.onAmountChange();
+    this.onFeeChange();
   }
 
-  ionViewDidEnter() {
-    this.amountMsg = '';
-    this.isAmountValid = true;
+  async ngOnInit() {
+    this.approvers = [];
+    this.loadData();
+    this.getAllAddress();
+    this.getAllAccount();
+    this.onFeeChange();
+    this.priceInUSD = this.currencyService.getPriceInUSD();
+    this.changeWithEscrow(false);
+  }
+
+  async getAllAccount() {
+    const accounts = await this.accountService.allAccount();
+
+    if (accounts && accounts.length > 0) {
+      accounts.forEach((obj: { name: any; address: string }) => {
+        const app: Approver = {
+          name: obj.name,
+          address: obj.address
+        };
+        this.approvers.push(app);
+      });
+    }
   }
 
   loadData() {
-    this.recipientAddress = '';
     this.getRecipientFromScanner();
-    this.optionFee = this.allFees[0].fee.toString();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
-    this.multiSigDraft = this.multisigServ.multisigDraft;
   }
 
   getBlockHeight() {
@@ -392,6 +307,20 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
         console.log(err);
       })
       .finally(() => (this.isLoadingBlockHeight = false));
+  }
+
+  async getAllAddress() {
+    const alladdress = await this.addressBookSrv.getAll();
+
+    if (alladdress && alladdress.length > 0) {
+      alladdress.forEach((obj: { name: any; address: string }) => {
+        const app: Approver = {
+          name: obj.name,
+          address: obj.address
+        };
+        this.approvers.push(app);
+      });
+    }
   }
 
   openMenu() {
@@ -495,6 +424,16 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     }, 5000);
   }
 
+  async loadAccount() {
+    this.account = await this.accountService.getCurrAccount();
+    this.getAccountBalance(this.account.address);
+  }
+
+  async changeAccount(acc: Account) {
+    this.account = acc;
+    this.getAccountBalance(this.account.address);
+  }
+
   async getAccountBalance(addr: string) {
     this.isLoadingBalance = true;
     await zoobc.Account.getBalance(addr)
@@ -502,6 +441,10 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
         if (data.accountbalance && data.accountbalance.spendablebalance) {
           const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
           this.account.balance = blnc;
+
+          this.balanceInUSD = this.currencyService.convertCurrency(blnc, 'ZBC', 'USD');
+          this.setAmountValidation();
+
         }
       })
       .catch(error => {
@@ -510,208 +453,296 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
           this.errorMsg = 'Fail connect to services, please try again!';
         }
         this.account.balance = 0;
+        this.setAmountValidation();
       })
       .finally(() => (this.isLoadingBalance = false));
   }
 
-  validateCustomFee() {
-    this.convertCustomeFee();
-    if (this.minimumFee > this.customfee) {
-      this.isCustomFeeValid = false;
-      return;
-    }
-
-    if (this.customfee && this.customfee > 0) {
-      this.isCustomFeeValid = true;
-    } else {
-      this.isCustomFeeValid = false;
-    }
+  onAmountChange() {
+    const amount = this.sendForm.get('amount').value;
+    const amountCurr = this.primaryCurr;
+    this.conversionValue.amount.ZBC = this.currencyService.convertCurrency(
+      amount,
+      amountCurr,
+      'ZBC'
+    );
+    this.conversionValue.amount.USD = this.currencyService.convertCurrency(
+      amount,
+      amountCurr,
+      'USD'
+    );
   }
 
-  convertCustomeFee() {
-    if (this.primaryCurr === COIN_CODE) {
-      this.customfee = this.customfeeTemp;
-      this.customfee2 =
-        this.customfeeTemp * this.priceInUSD * this.currencyRate.value;
-    } else {
-      this.customfee =
-        this.customfeeTemp / this.priceInUSD / this.currencyRate.value;
-      this.customfee2 = this.customfee;
-    }
+  onFeeChange() {
+    const fee = this.sendForm.get('fee').value;
+    const feeCurr = this.primaryCurr;
+    this.conversionValue.fee.ZBC = this.currencyService.convertCurrency(
+      fee,
+      feeCurr,
+      'ZBC'
+    );
+    this.conversionValue.fee.USD = this.currencyService.convertCurrency(
+      fee,
+      feeCurr,
+      'USD'
+    );
+
+    this.setAmountValidation();
   }
 
-  convertAmount() {
-    if (!this.amountTemp) {
-      this.amountTemp = 0;
-    }
-    if (this.primaryCurr === COIN_CODE) {
-      this.amount = this.amountTemp;
-      this.amountSecond =
-        this.amountTemp * this.priceInUSD * this.currencyRate.value;
-    } else {
-      this.amount = this.amountTemp / this.priceInUSD / this.currencyRate.value;
-      this.amountSecond = this.amount;
-    }
+  onEscrowTimeoutChange() {
+
+    this.minimumFee = calculateMinFee(this.escrowTimeout.value);
+    this.fee.setValue(this.minimumFee);
+
+    this.setFeeValidation();
+    this.setAmountValidation();
   }
 
-  validateAmount() {
-    this.convertAmount();
+  onCommisionChange() {
+    this.setAmountValidation();
+  }
 
-    this.isAmountValid = true;
-    this.amountMsg = '';
-    if (!this.amount) {
-      this.amountMsg = this.translateService.instant('Amount required!');
-      this.isAmountValid = false;
-      return;
+  setAmountValidation() {
+    let max = 0;
+    if (this.account && this.account.balance >= (this.fee.value + this.escrowCommision.value)) {
+        max = this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC ?
+        this.minimumFee : this.conversionValue.fee.ZBC)
+      - this.escrowCommision.value;
     }
 
-    if (this.isAmountValid && isNaN(this.amount)) {
-      this.isAmountValid = false;
-      return;
+    this.amount.setValidators([Validators.required, Validators.min(0.00000001),
+      Validators.max(max)]
+     );
+    this.amount.updateValueAndValidity();
+  }
+
+  setFeeValidation() {
+    this.fee.setValidators([Validators.required, Validators.min(this.minimumFee)]);
+    this.fee.updateValueAndValidity();
+  }
+
+  addEscrowValidation() {
+    this.escrow.get('escrowApprover').setValidators([Validators.required, addressFormatValidator]);
+    this.escrow.get('escrowCommision').setValidators([Validators.required, Validators.min(0.00000001)]);
+    this.escrow.get('escrowTimeout').setValidators([Validators.required, Validators.min(1), Validators.max(720)]);
+    this.escrow.get('escrowInstruction').setValidators(Validators.required);
+
+    this.escrowUpdateValueAndValidity();
+  }
+
+  removeEscrowValidation() {
+    this.escrow.get('escrowApprover').clearValidators();
+    this.escrow.get('escrowCommision').clearValidators();
+    this.escrow.get('escrowTimeout').clearValidators();
+    this.escrow.get('escrowInstruction').clearValidators();
+
+    this.escrowUpdateValueAndValidity();
+  }
+
+  escrowUpdateValueAndValidity() {
+    this.escrow.get('escrowApprover').updateValueAndValidity();
+    this.escrow.get('escrowCommision').updateValueAndValidity();
+    this.escrow.get('escrowTimeout').updateValueAndValidity();
+    this.escrow.get('escrowInstruction').updateValueAndValidity();
+  }
+
+  changeWithEscrow(value: boolean) {
+    this.withEscrow = value;
+
+    if (value) {
+      this.addEscrowValidation();
+      this.minimumFee = calculateMinFee(this.escrowTimeout.value);
+    } else {
+      this.removeEscrowValidation();
+      this.minimumFee = TRANSACTION_MINIMUM_FEE;
     }
 
-    if (this.isAmountValid && this.amount <= 0) {
-      this.isAmountValid = false;
-      return;
-    }
+    this.getBlockHeight();
 
-    if (!this.isLoadingBalance) {
-      if (
-        this.isAmountValid &&
-        this.amount + Number(this.optionFee) > this.account.balance
-      ) {
-        this.amountMsg = this.translateService.instant('Insufficient balance');
-        this.isAmountValid = false;
-        return;
+    this.setFeeValidation();
+    this.setAmountValidation();
+  }
+
+  async inputPIN() {
+    const pinmodal = await this.modalController.create({
+      component: EnterpinsendPage,
+      componentProps: {}
+    });
+
+    pinmodal.onDidDismiss().then(returnedData => {
+      if (returnedData && returnedData.data !== 0) {
+        const pin = returnedData.data;
+        this.sendMoney();
       }
-    }
-  }
-
-  validateRecipient() {
-    this.isRecipientValid = true;
-    if (
-      !this.recipientAddress ||
-      this.recipientAddress === '' ||
-      this.recipientAddress === null
-    ) {
-      this.isRecipientValid = false;
-      this.recipientMsg = this.translateService.instant(
-        'Recipient is required!'
-      );
-      return;
-    }
-
-    if (!isZBCAddressValid(this.recipientAddress)) {
-      {
-        this.isRecipientValid = false;
-        this.recipientMsg = this.translateService.instant(
-          'Address is not valid!'
-        );
-        return;
-      }
-    }
+    });
+    return await pinmodal.present();
   }
 
   getRecipientFromScanner() {
     this.activeRoute.queryParams.subscribe(params => {
-      if (params && params.jsonData) {
-        const json = JSON.parse(params.jsonData);
-        this.recipientAddress = json.address;
-        this.amountTemp = Number(json.amount);
-        this.amountSecond =
-          this.amountTemp * this.priceInUSD * this.currencyRate.value;
+      if (params && params.jsonData && params.jsonData.length > 0) {
+        const result = params.jsonData.split('||');
+        if (params.from === 'dashboard') {
+          this.sendForm.controls.recipientAddress.setValue(result[0]);
+          if (result.length > 1) {
+            this.sendForm.controls.amount.setValue(result[1] ? Number(result[1]) : 0);
+            this.onAmountChange();
+          }
+        }
       }
     });
   }
 
-  async presentNoConnectionToast() {
-    const toast = await this.toastController.create({
-      message: this.connectionText,
-      duration: 3000
+  async showConfirmation() {
+    this.submitted = true;
+    if (this.sendForm.valid) {
+      const modalDetail = await this.modalController.create({
+        component: SenddetailPage,
+        componentProps: {
+          trxFee: this.fee.value,
+          trxAmount: this.amount.value,
+          trxBalance: this.account.balance,
+          trxSenderName: this.account.name,
+          trxSender: this.account.address,
+          trxRecipient: this.recipientAddress.value,
+          trxRecipientName: this.recipientName,
+          trxCurrencyRate: this.currencyRate,
+          IsEscrow: this.withEscrow,
+          escApproverAddress: this.escrowApprover.value,
+          escApproverName: this.escrowApproverName,
+          escCommission: this.escrowCommision.value,
+          escTimeout: this.escrowTimeout.value,
+          escInstruction: this.escrowInstruction.value
+        }
+      });
+
+      modalDetail.onDidDismiss().then(dataReturned => {
+        if (dataReturned) {
+          if (dataReturned.data === 1) {
+            this.inputPIN();
+          }
+        }
+      });
+
+      await modalDetail.present();
+    }
+  }
+
+  async sendMoney() {
+    // show loading bar
+    const loading = await this.loadingController.create({
+      message: 'Please wait, submiting!',
+      duration: 50000
     });
-    toast.present();
+
+
+    await loading.present();
+
+    const data: SendMoneyInterface = {
+      sender: this.account.address,
+      recipient: sanitizeString(this.recipientAddress.value),
+      fee: Number(this.fee.value),
+      amount: this.amount.value
+    };
+
+    if (this.withEscrow) {
+      data.approverAddress = this.escrowApprover.value;
+      data.commission = this.escrowCommision.value;
+      data.timeout = this.escrowTimeout.value;
+      data.instruction = sanitizeString(this.escrowInstruction.value);
+    }
+
+    const childSeed = this.authSrv.keyring.calcDerivationPath(
+      this.account.path
+    );
+    await zoobc.Transactions.sendMoney(data, childSeed)
+      .then(
+        (resolveTx: any) => {
+          if (resolveTx) {
+            this.ngOnInit();
+            this.showSuccessMessage();
+            return;
+          }
+        },
+        error => {
+          this.showErrorMessage(error);
+        }
+      )
+      .finally(() => {
+        loading.dismiss();
+      });
   }
 
-  isFormValid(): boolean {
-    this.isAmountValid = true;
-    this.isFeeValid = true;
-    this.isRecipientValid = true;
-    this.recipientMsg = '';
-    this.amountMsg = '';
-
-    // validate recipient
-    this.validateRecipient();
-    this.validateAmount();
-    this.transactionFee = Number(this.optionFee);
-
-    if (this.customeChecked) {
-      this.transactionFee = this.customfee;
-    }
-
-    if (!this.transactionFee) {
-      this.isFeeValid = false;
-    }
-
-    if (Number(this.transactionFee) < 0) {
-      this.isFeeValid = false;
-    }
-
-    if (this.transactionFee < this.minimumFee) {
-      this.isFeeValid = false;
-      if (this.customeChecked) {
-        this.isCustomFeeValid = false;
-      }
-    }
-
-    if (
-      !this.amount ||
-      !this.recipientAddress ||
-      !this.isRecipientValid ||
-      !this.isAmountValid ||
-      !this.isFeeValid
-    ) {
-      return false;
-    }
-
-    const amount = this.amount;
-    if (amount > 0 && amount < 0.000000001) {
-      this.isAmountValid = false;
-      return false;
-    }
-
-    if (this.amount === 0) {
-      this.isAmountValid = false;
-      return false;
-    }
-
-    const total = amount + this.transactionFee;
-    if (total > Number(this.account.balance)) {
-      this.isAmountValid = false;
-      this.amountMsg = 'Insuficient balance';
-      return false;
-    }
-    return true;
-  }
-
-  async showSuccessMessage() {
+  async showErrorMessage(error: any) {
     const modal = await this.modalController.create({
       component: TrxstatusPage,
       componentProps: {
-        msg: 'transaction succes',
-        status: true
+        message: error,
+        status: false
       }
     });
 
-    modal.onDidDismiss().then(data => {});
+    modal.onDidDismiss().then(() => {});
 
     return await modal.present();
   }
 
-  changeFee() {
-    this.customeChecked = false;
-    if (Number(this.optionFee) < 0) {
-      this.customeChecked = true;
-      this.customfeeTemp = this.allFees[0].fee;
+  async showSuccessMessage() {
+    const msgSuccess = this.getTranslation('you send coins to', this.translateService, {
+      amount: this.amount.value,
+      recipient: this.recipientAddress.value,
+      currencyValue:  this.amount.value * this.priceInUSD * this.currencyRate.value,
+      currencyName: this.currencyRate.name
+    });
+
+    const modal = await this.modalController.create({
+      component: TrxstatusPage,
+      componentProps: {
+        message: msgSuccess,
+        status: true
+      }
+    });
+
+    modal.onDidDismiss().then(() => {
+      // this.resetValidation();
+    });
+
+    return await modal.present();
+  }
+
+
+  getTranslation(
+    value: string,
+    translateService: TranslateService,
+    // tslint:disable-next-line:ban-types
+    interpolateParams?: Object
+  ) {
+    let message: string;
+    translateService.get(value, interpolateParams).subscribe(res => {
+      message = res;
+    });
+    return message;
+  }
+
+
+  changeFee(value: string) {
+    this.sendForm.controls.fee.setValue(value);
+  }
+
+  getScannerResult(arg: string) {
+    const result = arg.split('||');
+    if (this.scanForWhat === FOR_APPROVER) {
+      this.sendForm.get('escrow').get('escrowApprover').setValue(result[0]);
+      this.escrowApproverName = null;
+    } else {
+      this.sendForm.controls.recipientAddress.setValue(result[0]);
+
+      this.recipientName = null;
+      if (result.length > 1) {
+        this.sendForm.controls.amount.setValue(result[1] ? Number(result[1]) : 0);
+        this.onAmountChange();
+      }
     }
   }
 
@@ -722,6 +753,10 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 
   goDashboard() {
     this.router.navigate(['/dashboard']);
+  }
+
+  confirmSend() {
+    this.router.navigate(['sendconfirm']);
   }
 
   openAddresses(arg: string) {
@@ -739,23 +774,157 @@ export class MsigCreateTransactionPage implements OnInit, OnDestroy {
     return fee;
   }
 
-  getScannerResult(jsonData: string) {
-    const result = jsonData.split('||');
-    this.recipientAddress = result[0];
-    this.recipientName = null;
-    if (result.length > 1) {
-      this.amountTemp = Number(result[1]);
-      if (result[1] !== null) {
-        this.amountSecond =
-          this.amountTemp * this.priceInUSD * this.currencyRate.value;
-      } else {
-        this.amountSecond = undefined;
-      }
+
+  ionViewWillEnter() {
+    this.networkSubscription = this.network
+      .onDisconnect()
+      .subscribe(async () => {
+        const alert = await this.alertCtrl.create({
+          header: this.alertConnectionTitle,
+          message: this.alertConnectionMsg,
+          buttons: [
+            {
+              text: 'OK'
+            }
+          ],
+          backdropDismiss: false
+        });
+
+        alert.present();
+      });
+
+    this.translateService.get('No Internet Access').subscribe((res: string) => {
+      this.alertConnectionTitle = res;
+    });
+
+    this.translateService
+      .get(
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
+      )
+      .subscribe((res: string) => {
+        this.alertConnectionMsg = res;
+      });
+  }
+
+  ionViewDidLeave() {
+    if (this.networkSubscription) {
+      this.networkSubscription.unsubscribe();
     }
   }
 
+
+
+  async next() {
+    const isValid = true; // this.isFormValid();
+    if (!isValid) {
+      return;
+    }
+    if (this.multisig.signaturesInfo !== null) {
+      this.createTransactionFormEnable = true;
+    }
+    const { signaturesInfo } = this.multisig;
+    if (!this.multisig.unisgnedTransactions) {
+      // this.showNextConfirmation();
+      this.generateHash();
+    } else if (signaturesInfo !== undefined) {
+      this.router.navigate(['/msig-add-signatures']);
+    } else {
+      this.router.navigate(['/msig-send-transaction']);
+    }
+  }
+
+  generateHash() {
+    const { signaturesInfo } = this.multisig;
+    this.generatedTxHash();
+    // this.updateCreateTransaction();
+
+    // aditional
+    // const multisig = { ...this.multisig };
+    this.multisigServ.update(this.multisig);
+    // end of
+
+    if (signaturesInfo === undefined) {
+      this.router.navigate(['/msig-send-transaction']);
+    } else {
+      this.router.navigate(['/msig-add-signatures']);
+    }
+  }
+
+  async generatedTxHash() {
+    this.updateCreateTransaction();
+    const { sender } = this.multisig.transaction;
+    const data: SendMoneyInterface = {
+      sender: this.account.address,
+      recipient: sanitizeString(this.recipientAddress),
+      fee: this.transactionFee,
+      amount: 0 // this.amount
+    };
+
+    const account = this.accounts.find(acc => acc.address === sender);
+    const participantAccount = [];
+
+    if (this.multisig.unisgnedTransactions !== undefined) {
+      this.multisig.unisgnedTransactions = sendMoneyBuilder(data);
+    }
+
+    if (this.multisig.signaturesInfo !== undefined) {
+      if (account) {
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < account.participants.length; i++) {
+          const participant = {
+            address: account.participants[i],
+            signature: stringToBuffer('')
+          };
+          participantAccount.push(participant);
+        }
+      } else {
+        // tslint:disable-next-line:prefer-for-of
+        for (
+          let i = 0;
+          i < this.multisig.multisigInfo.participants.length;
+          i++
+        ) {
+          const participant = {
+            address: this.multisig.multisigInfo.participants[i],
+            signature: stringToBuffer('')
+          };
+          participantAccount.push(participant);
+        }
+      }
+      const dataBuffer = sendMoneyBuilder(data);
+      this.txHash = generateTransactionHash(dataBuffer);
+      this.multisig.signaturesInfo = {
+        txHash: this.txHash,
+        participants: participantAccount
+      };
+
+      this.isHasTransactionHash = true;
+      this.multisig.generatedSender = this.multisig.transaction.sender;
+    }
+  }
+
+  saveDraft() {
+    this.updateCreateTransaction();
+    if (this.multisig.id) {
+      this.multisigServ.editDraft();
+    } else {
+      this.multisigServ.saveDraft();
+    }
+    this.router.navigate(['/multisig']);
+  }
+
+  updateCreateTransaction() {
+    const address = this.multisig.generatedSender || this.account.address;
+    this.multisig.transaction = {
+      sender: address,
+      amount: 0, // this.amount,
+      fee: this.transactionFee,
+      recipient: sanitizeString(this.recipientAddress)
+    };
+  }
+
   async exportDraft() {
-    const isValid = this.isFormValid();
+    const isValid = true; // this.isFormValid();
     if (!isValid) {
       return;
     }
