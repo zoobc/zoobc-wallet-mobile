@@ -118,7 +118,9 @@ export class CreateAccountPage implements OnInit {
       }
       this.accountName.setValue(`Multisig Account ${len}`);
     } else {
-      this.formAccount.removeControl("participants")
+      this.formAccount.removeControl("participants");
+      this.formAccount.removeControl("nonce");
+      this.formAccount.removeControl("minimumSignature");
       this.accounts = await this.accountService.allAccount('normal');
       const len = this.accounts.length + 1;
       this.accountName.setValue(`Account ${len}`);

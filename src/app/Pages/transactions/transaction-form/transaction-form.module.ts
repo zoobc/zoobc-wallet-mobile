@@ -15,6 +15,10 @@ const routes: Routes = [
   {
     path: 'send-money',
     loadChildren: './pages/send-money/send-money.module#SendMoneyModule'
+  },
+  {
+    path: 'blockchain-object',
+    loadChildren: './pages/blockchain-object/blockchain-object.module#BlockchainObjectModule'
   }
 ];
 

@@ -73,3 +73,32 @@ export function escrowFieldsValidator(
     return null;
   }
 }
+
+export function objectItemValidator(
+  control: AbstractControl
+): { [key: string]: boolean } | null {
+
+  const errors: any = {};
+
+  if (control.value && !control.value.key) {
+    errors.keyRequired = true;
+  } else if ( control.value && control.value.key && control.value.key.length >= 255) {
+    errors.keyMax = true;
+  } else if ( control.value && control.value.key && control.value.key.length <= 3 ) {
+    errors.keyMin = true;
+  }
+
+  if (control.value && !control.value.value) {
+    errors.valueRequired = true;
+  } else if ( control.value && control.value.value && control.value.value.length >= 255) {
+    errors.valueMax = true;
+  } else if ( control.value && control.value.value && control.value.value.length <= 3 ) {
+    errors.valueMin = true;
+  }
+
+  if (Object.keys(errors).length >= 1) {
+    return errors;
+  } else {
+    return null;
+  }
+}

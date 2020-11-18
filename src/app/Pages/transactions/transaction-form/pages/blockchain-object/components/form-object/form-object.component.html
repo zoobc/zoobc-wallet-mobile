@@ -1,0 +1,15 @@
+<div class="input-container">
+  <span>{{ "key" | translate}}</span>
+  <input [(ngModel)]="key" (keyup)="changeValue()"/>
+  <ion-text class="text-error" *ngIf="errors && errors.key">
+    {{ errors.key }}
+  </ion-text>
+</div>
+
+<div class="input-container">
+  <span>{{ "value" | translate}}</span>
+  <textarea rows="4" [(ngModel)]="value" (keyup)="changeValue()"></textarea>
+  <ion-text class="text-error" *ngIf="errors && errors.value">
+    {{ errors.value }}
+  </ion-text>
+</div>

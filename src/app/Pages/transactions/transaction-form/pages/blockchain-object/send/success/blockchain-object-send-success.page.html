@@ -1,0 +1,21 @@
+<ion-content class="ion-padding">
+  <div class="transaction-success">
+    <div>
+      <ion-icon name="zbc-transaction-success"></ion-icon>
+      <ion-text class="text-title">Processing transaction</ion-text>
+      <ion-text class="text-let-know">We’ll let you know once it’s done.</ion-text>
+      <div class="text-sent">
+        <ion-text>You sent</ion-text>
+        <div>
+          <app-info-amount-conversion value="{{ stateValue.amount }}" otherCurrency="USD"
+            otherCurrencyDecoration="BRACKET"></app-info-amount-conversion>
+        </div>
+        <ion-text>to</ion-text>
+      </div>
+      <ion-text class="text-address">{{ stateValue.recipient.address }}</ion-text>
+    </div>
+    <ion-button type="submit" color="tertiary" expand="block" (click)="done()">
+      {{ "ok" | translate }}
+    </ion-button>
+  </div>
+</ion-content>

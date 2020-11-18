@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "blockchain object" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <form [formGroup]="blockchainObjectForm" (ngSubmit)="submit()">
+    <ion-list class="form-list">
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "amount" | translate }}</ion-label>
+        <app-form-amount-conversion formControlName="amount"></app-form-amount-conversion>
+
+        <ng-container *ngIf="(submitted || amount.dirty || amount.touched) && amount.invalid">
+          <ion-text class="text-error" *ngIf="amount.errors.required">
+            {{ "amount cannot be empty" | translate}}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="amount.errors.min">
+            {{ "insufficient balance" | translate}}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="amount.errors.max">
+            {{ "insufficient balance. the maximum amount is" | translate}} {{ amount.errors.max.max }} ZBC
+          </ion-text>
+        </ng-container>
+      </ion-item>
+      <ng-container formGroupName="participants">
+        <ion-item lines="none" class="form-item" *ngFor="let participant of participants.controls; let i = index;" [formGroupName]="i">
+          <ion-label position="stacked">{{ "participant" | translate }} {{ i+1 }}</ion-label>
+          <app-form-get-address formControlName="address" identity="recipient-{{ i }}"></app-form-get-address>
+          <div class="form-feedback">
+            <div>
+              <ng-container *ngIf="(submitted || participants.controls[i].controls['address'].dirty || participants.controls[i].controls['address'].touched) && participants.controls[i].controls['address'].invalid">
+                <ion-text class="text-error" *ngIf="participants.controls[i].controls['address'].errors.required || participants.controls[i].controls['address'].errors.addressRequired">
+                  {{ "address cannot be empty" | translate}}
+                </ion-text>
+                <ion-text class="text-error" *ngIf="participants.controls[i].controls['address'].errors.addressFormat">
+                  {{ "address is wrong" | translate}}
+                </ion-text>
+              </ng-container>
+            </div>
+            <span *ngIf="(i+1)>minimumParticipants" (click)="removeParticipant(i)" class="remove-account">
+              <ion-icon name="zbc-trash"></ion-icon><span>{{ "remove" | translate }}</span>
+            </span>
+          </div>
+        </ion-item>
+        <ion-item lines="none" class="form-item">
+          <ion-button slot="end" (click)="addParticipant()">{{ "add participant" | translate }}</ion-button>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+
+    <ion-button type="submit" color="tertiary" expand="block">
+      {{ "next" | translate }}
+    </ion-button>
+  </form>
+</ion-content>
