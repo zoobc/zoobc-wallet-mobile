@@ -12,57 +12,57 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 
-// export const firebaseConfig = {
-//   apiKey: 'put-firebase',
-//   authDomain: '',
-//   databaseURL: '',
-//   projectId: 'mydatabaseid-XXXX',
-//   storageBucket: '',
-//   messagingSenderId: ''
-// }
+export const firebaseConfig = {
+  apiKey: 'put-firebase',
+  authDomain: '',
+  databaseURL: '',
+  projectId: 'mydatabaseid-XXXX',
+  storageBucket: '',
+  messagingSenderId: ''
+}
 
-// describe('AppComponent', () => {
+describe('AppComponent', () => {
 
-//   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
+  let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
 
-//   beforeEach(async(() => {
-//     statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
-//     splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
-//     platformReadySpy = Promise.resolve();
-//     platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
+  beforeEach(async(() => {
+    statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
+    splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
+    platformReadySpy = Promise.resolve();
+    platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
 
-//     TestBed.configureTestingModule({
-//       declarations: [AppComponent],
-//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-//       imports:[
-//         AngularFireModule.initializeApp(firebaseConfig),
-//         AngularFireAuthModule,
-//         AngularFirestoreModule,
-//       ],
-//       providers: [
-//         { provide: StatusBar, useValue: statusBarSpy },
-//         { provide: SplashScreen, useValue: splashScreenSpy },
-//         { provide: Platform, useValue: platformSpy },
-//         OneSignal,
-//         Network
-//       ],
-//     }).compileComponents();
-//   }));
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports:[
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireAuthModule,
+        AngularFirestoreModule,
+      ],
+      providers: [
+        { provide: StatusBar, useValue: statusBarSpy },
+        { provide: SplashScreen, useValue: splashScreenSpy },
+        { provide: Platform, useValue: platformSpy },
+        OneSignal,
+        Network
+      ],
+    }).compileComponents();
+  }));
 
-//   it('should create the app', () => {
-//     const fixture = TestBed.createComponent(AppComponent);
-//     const app = fixture.debugElement.componentInstance;
-//     expect(app).toBeTruthy();
-//   });
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    expect(app).toBeTruthy();
+  });
 
-//   it('should initialize the app', async () => {
-//     TestBed.createComponent(AppComponent);
-//     expect(platformSpy.ready).toHaveBeenCalled();
-//     await platformReadySpy;
-//     expect(statusBarSpy.styleDefault).toHaveBeenCalled();
-//     expect(splashScreenSpy.hide).toHaveBeenCalled();
-//   });
+  it('should initialize the app', async () => {
+    TestBed.createComponent(AppComponent);
+    expect(platformSpy.ready).toHaveBeenCalled();
+    await platformReadySpy;
+    expect(statusBarSpy.styleDefault).toHaveBeenCalled();
+    expect(splashScreenSpy.hide).toHaveBeenCalled();
+  });
 
-//   // TODO: add more tests!
+  // TODO: add more tests!
 
-// });
+});
