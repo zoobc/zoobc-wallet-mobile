@@ -43,6 +43,7 @@ import zoobc, {
 } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
+import { PopoverBlockchainObjectOptionComponent } from './popover-blockchain-object-option/popover-blockchain-object-option.component';
 
 @Component({
   selector: 'app-home',
@@ -346,11 +347,15 @@ export class HomePage implements OnInit, OnDestroy {
 
   goToSend() {
     if (this.account.type && this.account.type === 'multisig') {
-      this.router.navigate(['/multisig']);
+      this.goToMultisig();
     } else {
       //this.router.navigate(['/sendcoin']);
       this.router.navigate(['/transaction-form/send-money']);
     }
+  }
+
+  goToMultisig(){
+    this.router.navigate(['/multisig']);
   }
 
   goToReceive() {
@@ -359,6 +364,40 @@ export class HomePage implements OnInit, OnDestroy {
 
   goToTransactions() {
     this.router.navigate(['/transactions']);
+  }
+
+
+  async showBlockchainObjectOption(ev: any) {
+    const popover = await this.popoverCtrl.create({
+      component: PopoverBlockchainObjectOptionComponent,
+      componentProps: {
+        options: [
+          {
+            key: 'create',
+            label: "Create Blockchain Object"
+          },
+          {
+            key: 'send',
+            label: "Send Blockchain Object"
+          }
+        ]
+      },
+      event: ev,
+      translucent: true
+    });
+
+    popover.onWillDismiss().then(({ data }) => {
+      switch (data) {
+        case 'create':
+          this.router.navigate(['/transaction-form/blockchain-object']);
+          break;
+        case 'send':
+          this.router.navigate(['/transaction-form/blockchain-object/send']);
+          break;
+      }
+    });
+
+    return popover.present();
   }
 
   goToScan() {

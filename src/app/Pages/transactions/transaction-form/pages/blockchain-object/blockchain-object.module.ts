@@ -15,6 +15,9 @@ import { BlockchainObjectCreatePage } from './create/blockchain-object-create.pa
 import { BlockchainObjectSendPage } from './send/blockchain-object-send.page';
 import { FormObjectComponent } from './components/form-object/form-object.component';
 import { BlockchainObjectDetailPage } from './detail/blockchain-object-detail.page';
+import { FormGetObjectComponent } from './components/form-get-object/form-get-object.component';
+import { PopoverBlockchainObjectComponent } from './components/form-get-object/popover-blockchain-object/popover-blockchain-object.component';
+import { BlockchainObjectItemComponent } from './components/blockchain-object-item/blockchain-object-item.component';
 
 const routes: Routes = [
   {
@@ -71,7 +74,13 @@ const routes: Routes = [
     BlockchainObjectSendPage,
     BlockchainObjectSendSummaryPage,
     BlockchainObjectSendSuccessPage,
-    FormObjectComponent
+    FormObjectComponent,
+    FormGetObjectComponent,
+    PopoverBlockchainObjectComponent,
+    BlockchainObjectItemComponent
+  ],
+  entryComponents:[
+    PopoverBlockchainObjectComponent
   ]
 })
 export class BlockchainObjectModule {}

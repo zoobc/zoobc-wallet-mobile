@@ -41,18 +41,36 @@
 
   <ion-card class="card-buttons">
     <ion-card-content>
-      <ion-label (click)="goToSend()">
-        <ion-icon name="zbc-arrow-up" color="secondary"></ion-icon>
-        <ion-text>
-          <h2>{{ "send" | translate }}</h2>
-        </ion-text>
-      </ion-label>
-      <ion-label (click)="goToReceive()">
-        <ion-icon name="zbc-arrow-down" color="secondary"></ion-icon>
-        <ion-text>
-          <h2>{{ "receive" | translate }}</h2>
-        </ion-text>
-      </ion-label>
+      <div class="main-buttons">
+        <ion-label (click)="goToSend()">
+          <ion-icon name="zbc-arrow-up" color="secondary"></ion-icon>
+          <ion-text>
+            <h2>{{ "send" | translate }}</h2>
+          </ion-text>
+        </ion-label>
+        <ion-label (click)="goToReceive()">
+          <ion-icon name="zbc-arrow-down" color="secondary"></ion-icon>
+          <ion-text>
+            <h2>{{ "receive" | translate }}</h2>
+          </ion-text>
+        </ion-label>
+      </div>
+
+      <div class="other-buttons">
+        <ion-label (click)="goToMultisig()">
+          <ion-icon name="zbc-send" color="secondary"></ion-icon>
+          <ion-text>
+            <h4>{{ "multisignature" | translate }}</h4>
+          </ion-text>
+        </ion-label>
+        <ion-label (click)="showBlockchainObjectOption()">
+          <ion-icon name="zbc-boxes" color="secondary"></ion-icon>
+          <ion-text>
+            <h4>{{ "blockchain object" | translate }}</h4>
+          </ion-text>
+        </ion-label>
+      </div>
+
     </ion-card-content>
   </ion-card>
 

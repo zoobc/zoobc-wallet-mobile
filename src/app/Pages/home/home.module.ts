@@ -7,6 +7,7 @@ import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/Shared/shared.module';
 import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
+import { PopoverBlockchainObjectOptionComponent } from './popover-blockchain-object-option/popover-blockchain-object-option.component';
 
 const routes: Routes = [
   {
@@ -24,7 +25,7 @@ const routes: Routes = [
     TranslateModule,
     SharedModule
   ],
-  declarations: [HomePage],
-  entryComponents: [PopoverAccountComponent]
+  declarations: [HomePage, PopoverBlockchainObjectOptionComponent],
+  entryComponents: [PopoverAccountComponent, PopoverBlockchainObjectOptionComponent]
 })
 export class HomePageModule {}

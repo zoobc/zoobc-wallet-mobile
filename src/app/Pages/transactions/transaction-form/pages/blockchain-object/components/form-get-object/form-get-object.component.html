@@ -1,0 +1,12 @@
+<div class="form-box" (click)="switchBlockchainObject($event)">
+  <div class="info">
+    <ng-container *ngIf="blockchainObjectItem">
+      <div class="title">{{ blockchainObjectItem && blockchainObjectItem.title }}</div>
+      <div class="desc">
+        <span>{{ blockchainObjectItem && blockchainObjectItem.desc }}</span>
+      </div>
+    </ng-container>
+    <div class="none" *ngIf="!blockchainObjectItem">{{ "select a blockchain object" | translate}}</div>
+  </div>
+  <ion-icon name="zbc-chevron-right"></ion-icon>
+</div>
