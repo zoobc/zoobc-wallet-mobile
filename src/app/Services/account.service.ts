@@ -70,6 +70,9 @@ export class AccountService {
     const allAccount: Account[] = await this.strgSrv
       .get(STORAGE_ALL_ACCOUNTS)
       .then(accounts => {
+        if (accounts==null) {
+          return null;
+        }
         if (type && type === 'multisig') {
           return accounts.filter(acc => acc.type === 'multisig');
         } else if (type && type === 'normal') {

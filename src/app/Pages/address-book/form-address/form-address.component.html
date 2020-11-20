@@ -4,7 +4,7 @@
     <ion-item lines="none" class="form-item">
       <ion-label position="stacked">{{ "name" | translate }}</ion-label>
       <ion-input placeholder="{{ 'please type the name' | translate }}" formControlName="name" autocomplete="on"
-        autocorrect="on"></ion-input>
+        autocorrect="on" ngDefaultControl></ion-input>
       <ion-text class="text-error"
         *ngIf="(submitted || name.dirty || name.touched) && name.invalid && name.errors.required">
         {{ "name cannot be empty" | translate}}
@@ -25,7 +25,7 @@
       </div>
 
       <ion-textarea rows="3" placeholder="{{ 'please type the address' | translate }}" formControlName="address"
-        autocomplete="on" autocorrect="on">
+        autocomplete="on" autocorrect="on" ngDefaultControl>
       </ion-textarea>
       <ion-text class="text-error"
         *ngIf="(submitted || address.dirty || address.touched) && address.invalid && address.errors.required">

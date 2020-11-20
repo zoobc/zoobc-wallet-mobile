@@ -4,6 +4,7 @@ import { SettingsPage } from './settings.page';
 import {TranslateModule } from '@ngx-translate/core';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
 
 // describe('Settings Page', () => {
 //   let component: SettingsPage;
@@ -15,7 +16,8 @@ import { HttpClientModule } from '@angular/common/http';
 //       imports: [
 //         TranslateModule.forRoot(),
 //         IonicStorageModule.forRoot(),
-//         HttpClientModule
+//         HttpClientModule,
+//         RouterModule
 //         ],
 //       schemas: [CUSTOM_ELEMENTS_SCHEMA],
 //     })

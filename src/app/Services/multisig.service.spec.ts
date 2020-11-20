@@ -1,31 +1,31 @@
 import { TestBed } from '@angular/core/testing';
-// import { CreateAccountService } from './create-account.service';
+import { MultisigService } from './multisig.service';
 
-// describe('CreateAccountService', () => {
-//   let service: CreateAccountService;
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({})
-//     service = new CreateAccountService(null, null);
-//   });
+describe('MultisigService', () => {
+  let service: MultisigService;
+  beforeEach(() => {
+    TestBed.configureTestingModule({})
+    service = new MultisigService();
+  });
 
-//   it('should be created', () => {
-//     expect(service).toBeTruthy();
-//   });
-
-//   it("should return a non empty array", () => {
-//     let result = service.createInitialAccount();
-//     expect(Array.isArray(result)).toBeTruthy;
-//   });
-
-//   it("should return a non empty array", () => {
-//     let result = service.getPassphrase();
-//     expect(Array.isArray(result)).toBeTruthy;
-//   });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 
 
-//   // it("should return a non empty array", () => {
-//   //   let result = service.createNewAccount("BCZ", 1234);
-//   //   expect(Array.isArray(result)).toBeTruthy;
-//   // });
+  it("save draft worked", () => {
+    let result = service.saveDraft();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
 
-// });
+  it("edit draft worked", () => {
+    let result = service.editDraft();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+
+  it("delete draft worked", () => {
+    let result = service.deleteDraft(1);
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+
+});

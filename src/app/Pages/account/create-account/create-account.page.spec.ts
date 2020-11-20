@@ -8,46 +8,46 @@ import { RouterModule } from '@angular/router';
 import { ModalController} from '@ionic/angular';
 
 
-// let modalSpy = jasmine.createSpyObj('Modal', ['present']);
-// let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+let modalSpy = jasmine.createSpyObj('Modal', ['present']);
+let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
 
-// modalCtrlSpy.create.and.callFake(function () {
-//     return modalSpy;
-//   });
+modalCtrlSpy.create.and.callFake(function () {
+    return modalSpy;
+  });
 
-// describe('CreateAccountPage', () => {
-//   let component: CreateAccountPage;
-//   let fixture: ComponentFixture<CreateAccountPage>;
+describe('CreateAccountPage', () => {
+  let component: CreateAccountPage;
+  let fixture: ComponentFixture<CreateAccountPage>;
 
-//   beforeEach(async(() => {
-//     TestBed.configureTestingModule({
-//       declarations: [ CreateAccountPage ],
-//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-//       imports:[
-//         TranslateModule.forRoot(),
-//         FormsModule,
-//         ReactiveFormsModule,
-//         IonicStorageModule.forRoot(),
-//         RouterModule.forRoot([]),
-//       ],
-//       providers:[
-//         { provide: 'global', useFactory: () => window },
-//         {
-//             provide: ModalController,
-//             useValue: modalCtrlSpy
-//           },
-//       ]
-//     })
-//     .compileComponents();
-//   }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ CreateAccountPage ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports:[
+        TranslateModule.forRoot(),
+        FormsModule,
+        ReactiveFormsModule,
+        IonicStorageModule.forRoot(),
+        RouterModule.forRoot([]),
+      ],
+      providers:[
+        { provide: 'global', useFactory: () => window },
+        {
+            provide: ModalController,
+            useValue: modalCtrlSpy
+          },
+      ]
+    })
+    .compileComponents();
+  }));
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(CreateAccountPage);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CreateAccountPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
-// });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

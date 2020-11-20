@@ -11,5 +11,10 @@ import { FeedbackService } from './feedback.service';
 //   it('should be created', () => {
 //     expect(service).toBeTruthy();
 //   });
+
+//   it("read worked", () => {
+//     let result = service.create(1);
+//     expect(Array.isArray(result)).toBeTruthy;
+//   });
   
 // });
