@@ -20,11 +20,11 @@
   <form [formGroup]="sendForm" (ngSubmit)="submit()">
     <ion-list class="form-list">
       <ion-item lines="none" class="form-item">
-        <app-form-sender formControlName="sender" accountType="normal"></app-form-sender>
+        <app-form-sender formControlName="sender" accountType="normal" ngDefaultControl></app-form-sender>
       </ion-item>
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "send to" | translate }}</ion-label>
-        <app-form-get-address formControlName="recipient" identity="recipient"></app-form-get-address>
+        <app-form-get-address formControlName="recipient" identity="recipient" ngDefaultControl></app-form-get-address>
         <ng-container *ngIf="(submitted || recipient.dirty || recipient.touched) && recipient.invalid">
           <ion-text class="text-error" *ngIf="recipient.errors.addressRequired">
             {{ "address cannot be empty" | translate}}
@@ -36,7 +36,7 @@
       </ion-item>
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "amount" | translate }}</ion-label>
-        <app-form-amount-conversion formControlName="amount"></app-form-amount-conversion>
+        <app-form-amount-conversion formControlName="amount" ngDefaultControl></app-form-amount-conversion>
 
         <ng-container *ngIf="(submitted || amount.dirty || amount.touched) && amount.invalid">
           <ion-text class="text-error" *ngIf="amount.errors.required">
@@ -52,7 +52,7 @@
       </ion-item>
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
-        <app-form-fee formControlName="fee"></app-form-fee>
+        <app-form-fee formControlName="fee" ngDefaultControl></app-form-fee>
         <ng-container *ngIf="(submitted || fee.dirty || fee.touched) && fee.invalid">
           <ion-text class="text-error" *ngIf="fee.errors.required">
             {{ "transaction fee cannot be empty" | translate}}
