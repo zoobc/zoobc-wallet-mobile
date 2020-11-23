@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { sanitizeString } from 'src/Helpers/utils';
 import { Contact } from 'src/app/Interfaces/contact';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { NavController } from '@ionic/angular';
@@ -19,7 +18,7 @@ export class AddAddressPage implements OnInit {
 
     const contact: Contact = {
       name,
-      address: sanitizeString(address)
+      address: (address)
     };
 
     await this.addressBookSrv.insert(contact);

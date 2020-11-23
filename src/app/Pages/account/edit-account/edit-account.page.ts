@@ -3,7 +3,6 @@ import { EMPTY_STRING, FOR_PARTICIPANT } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { sanitizeString } from 'src/Helpers/utils';
 import { ModalController, AlertController, Platform } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
 import { AddressBookService } from 'src/app/Services/address-book.service';
@@ -187,7 +186,7 @@ export class EditAccountPage implements OnInit {
       return;
     }
 
-    this.account.name = sanitizeString(this.account.name);
+    this.account.name = this.account.name;
     this.accountService.updateAccount(this.account);
     this.accountService.broadCastNewAccount(this.account);
     this.goListAccount();

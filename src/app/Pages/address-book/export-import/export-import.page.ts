@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { sanitizeString } from 'src/Helpers/utils';
 import { Contact } from 'src/app/Interfaces/contact';
 import { UtilService } from 'src/app/Services/util.service';
 import { AlertController, NavController } from '@ionic/angular';
@@ -53,7 +52,7 @@ export class ExportImportPage implements OnInit {
             if (name && address) {
               const contact: Contact = {
                 name,
-                address: sanitizeString(address)
+                address: (address)
               };
               addresses.push(contact);
             }
@@ -82,7 +81,7 @@ export class ExportImportPage implements OnInit {
         if (name && address) {
           const contact: Contact = {
             name,
-            address: sanitizeString(address)
+            address: (address)
           };
           addresses.push(contact);
         }

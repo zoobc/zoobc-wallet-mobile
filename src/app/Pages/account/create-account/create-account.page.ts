@@ -3,7 +3,6 @@ import { EMPTY_STRING, FOR_PARTICIPANT } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, NavigationExtras } from '@angular/router';
-import { sanitizeString } from 'src/Helpers/utils';
 import { MultiSigAddress } from 'zoobc-sdk';
 import { ModalController, AlertController } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
@@ -165,7 +164,7 @@ export class CreateAccountPage implements OnInit {
   }
 
   sanitize() {
-    this.accountName = sanitizeString(this.accountName);
+    this.accountName = (this.accountName);
   }
 
   changeParticipant() {

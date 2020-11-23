@@ -7,7 +7,6 @@ import {
 } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { sanitizeString } from 'src/Helpers/utils';
 import { Contact } from '../Interfaces/contact';
 
 @Injectable({
@@ -96,7 +95,7 @@ export class AddressBookService {
     for (let i = 0; i < addresses.length; i++) {
       const dt = addresses[i];
       this.addresses.push({
-        name: sanitizeString(dt.name),
+        name: dt.name,
         address: dt.address
       });
     }

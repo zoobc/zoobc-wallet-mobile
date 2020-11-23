@@ -45,11 +45,6 @@ export function getChecksumByte(bytes): any {
   return res;
 }
 
-export function sanitizeString(str) {
-  str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim, '');
-  return str.trim();
-}
-
 export function stringToBuffer(str: string) {
   return Buffer.from(str, 'base64');
 }

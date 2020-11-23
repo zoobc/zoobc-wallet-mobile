@@ -22,7 +22,7 @@ import {
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
-import { calculateMinFee, sanitizeString } from 'src/Helpers/utils';
+import { calculateMinFee } from 'src/Helpers/utils';
 import { Approver } from 'src/app/Interfaces/approver';
 import { Currency } from 'src/app/Interfaces/currency';
 import { TransactionService } from 'src/app/Services/transaction.service';
@@ -578,7 +578,7 @@ export class SendCoinPage implements OnInit {
 
     const data: SendMoneyInterface = {
       sender: this.account.address,
-      recipient: sanitizeString(this.recipientAddress.value),
+      recipient: (this.recipientAddress.value),
       fee: Number(this.fee.value),
       amount: this.amount.value
     };
@@ -587,7 +587,7 @@ export class SendCoinPage implements OnInit {
       data.approverAddress = this.escrowApprover.value;
       data.commission = this.escrowCommision.value;
       data.timeout = this.escrowTimeout.value;
-      data.instruction = sanitizeString(this.escrowInstruction.value);
+      data.instruction = (this.escrowInstruction.value);
     }
 
     const childSeed = this.authSrv.keyring.calcDerivationPath(
