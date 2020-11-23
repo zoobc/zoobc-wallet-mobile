@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Account } from 'src/app/Interfaces/account';
 import { MultisigService } from 'src/app/Services/multisig.service';
@@ -17,7 +17,6 @@ import {
   LoadingController,
   ModalController,
   AlertController,
-  ToastController,
   MenuController,
   Platform
 } from '@ionic/angular';
@@ -29,19 +28,14 @@ import { File } from '@ionic-native/file/ngx';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import {
   calculateMinFee,
-  sanitizeString,
   stringToBuffer
 } from 'src/Helpers/utils';
-import { base64ToByteArray } from 'src/Helpers/converters';
 import zoobc, {
   SendMoneyInterface,
   generateTransactionHash,
-  sendMoneyBuilder,
-  isZBCAddressValid
-} from 'zoobc-sdk';
+  sendMoneyBuilder} from 'zoobc-sdk';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
 import { TrxstatusPage } from '../../send-coin/modals/trxstatus/trxstatus.page';
-import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Network } from '@ionic-native/network/ngx';
@@ -49,7 +43,6 @@ import { Approver } from 'src/app/Interfaces/approver';
 import { AuthService } from 'src/app/Services/auth-service';
 import { addressFormatValidator } from 'src/Helpers/validators';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
-import { SenddetailPage } from '../../send-coin/modals/senddetail/senddetail.page';
 
 @Component({
   selector: 'app-msig-create-transaction',
@@ -58,10 +51,13 @@ import { SenddetailPage } from '../../send-coin/modals/senddetail/senddetail.pag
 })
 // export class MsigCreateTransactionPage implements OnInit, OnDestroy {
 export class MsigCreateTransactionPage implements OnInit {
+
+  senderAccount: Account;
   approvers = [];
   rootPage: any;
   status: any;
   account: Account;
+  multisigSubs: Subscription;
   senderAddress: string;
   transactionFee: number;
   withEscrow: boolean;
@@ -69,7 +65,7 @@ export class MsigCreateTransactionPage implements OnInit {
   accountName: string;
   allAccounts = [];
   errorMsg: string;
-  // private connectionText = '';
+  isMultiSignature = true;
   public currencyRate: Currency = {
     name: CONST_DEFAULT_CURRENCY,
     value: environment.zbcPriceInUSD
@@ -131,7 +127,6 @@ export class MsigCreateTransactionPage implements OnInit {
     private modalController: ModalController,
     public alertController: AlertController,
     private activeRoute: ActivatedRoute,
-    private toastController: ToastController,
     private menuController: MenuController,
     private accountService: AccountService,
     private qrScannerService: QrScannerService,
@@ -146,13 +141,30 @@ export class MsigCreateTransactionPage implements OnInit {
     private authSrv: AuthService,
     private network: Network
   ) {
+
     this.qrScannerService.qrScannerSubject.subscribe(address => {
       this.getScannerResult(address);
     });
 
-    this.accountService.senderSubject.subscribe((account: Account) => {
+    this.accountService.senderSubject.subscribe(() => {
         this.loadAccount();
     });
+
+    this.accountService.recipientSubject.subscribe({
+      next: recipient => {
+        this.sendForm.controls.recipientAddress.setValue(recipient.address);
+        this.recipientName = recipient.name;
+      }
+    });
+
+
+    this.accountService.approverSubject.subscribe({
+      next: approver => {
+        this.sendForm.get('escrow').get('escrowApprover').setValue(approver.address);
+        this.escrowApproverName = approver.name;
+      }
+    });
+
 
     this.addressbookService.recipientSubject.subscribe({
       next: address => {
@@ -166,25 +178,6 @@ export class MsigCreateTransactionPage implements OnInit {
         this.sendForm.get('escrow').get('escrowApprover').setValue(address.address);
         this.escrowApproverName = address.name;
       }
-    });
-
-    this.accountService.recipientSubject.subscribe({
-      next: recipient => {
-        this.sendForm.controls.recipientAddress.setValue(recipient.address);
-        this.recipientName = recipient.name;
-      }
-    });
-
-    this.accountService.approverSubject.subscribe({
-      next: approver => {
-        this.sendForm.get('escrow').get('escrowApprover').setValue(approver.address);
-        this.escrowApproverName = approver.name;
-      }
-    });
-
-    this.currencyService.currencySubject.subscribe((rate: Currency) => {
-      this.currencyRate = rate;
-      this.secondaryCurr = rate.name;
     });
 
     this.currencyService.currencySubject.subscribe((rate: Currency) => {
@@ -251,6 +244,52 @@ export class MsigCreateTransactionPage implements OnInit {
     this.onFeeChange();
     this.priceInUSD = this.currencyService.getPriceInUSD();
     this.changeWithEscrow(false);
+
+    this.accounts = await this.accountService.allAccount();
+    this.multisigSubs = this.multisigServ.multisig.subscribe(async multisig => {
+      await this.loadAccount();
+
+      console.log('=== Oninit, multisig: ', multisig);
+
+      const {
+        unisgnedTransactions,
+        signaturesInfo,
+        transaction
+      } = multisig;
+      if (unisgnedTransactions === undefined) {
+        this.router.navigate(['/multisig']);
+      }
+
+      this.multisig = multisig;
+      this.removeExport = signaturesInfo !== undefined ? true : false;
+      if (unisgnedTransactions !== null) {
+        this.isHasTransactionHash = true;
+      }
+      if (signaturesInfo) {
+        this.isHasTransactionHash =
+          signaturesInfo.txHash !== undefined ? true : false;
+      }
+
+      if (this.isHasTransactionHash) {
+        this.createTransactionFormEnable = false;
+      }
+
+      if (unisgnedTransactions) {
+        const { sender, recipient, amount, fee } = transaction;
+        this.account.address = sender;
+        this.recipientAddress.setValue(recipient);
+        this.amount.setValue(amount);
+        this.transactionFee = fee;
+      } else if (this.isMultiSignature) {
+        this.multisig.generatedSender = this.account.address;
+        this.senderAccount = this.account;
+        this.setBalance(this.senderAccount);
+      } else {
+        const address = this.multisig.generatedSender;
+        this.senderAccount = await this.accountService.getAccount(address);
+        this.setBalance(this.senderAccount);
+      }
+    });
   }
 
   async getAllAccount() {
@@ -400,27 +439,23 @@ export class MsigCreateTransactionPage implements OnInit {
     }, 5000);
   }
 
+
   async loadAccount() {
     this.account = await this.accountService.getCurrAccount();
-    this.getAccountBalance(this.account.address);
+    this.senderAccount = this.account;
+    this.isMultiSignature = this.account.type === 'multisig' ? true : false;
+    this.setBalance(this.senderAccount);
   }
 
-  async changeAccount(acc: Account) {
-    this.account = acc;
-    this.getAccountBalance(this.account.address);
-  }
-
-  async getAccountBalance(addr: string) {
+  async setBalance(acc: Account) {
     this.isLoadingBalance = true;
-    await zoobc.Account.getBalance(addr)
+    await zoobc.Account.getBalance(acc.address)
       .then(data => {
         if (data.accountbalance && data.accountbalance.spendablebalance) {
           const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
-          this.account.balance = blnc;
-
-          this.balanceInUSD = this.currencyService.convertCurrency(blnc, 'ZBC', 'USD');
+          acc.balance = blnc;
+          this.balanceInUSD = this.currencyService.convertCurrency(this.senderAccount.balance, 'ZBC', 'USD');
           this.setAmountValidation();
-
         }
       })
       .catch(error => {
@@ -535,7 +570,6 @@ export class MsigCreateTransactionPage implements OnInit {
     }
 
     this.getBlockHeight();
-
     this.setFeeValidation();
     this.setAmountValidation();
   }
@@ -548,7 +582,6 @@ export class MsigCreateTransactionPage implements OnInit {
 
     pinmodal.onDidDismiss().then(returnedData => {
       if (returnedData && returnedData.data !== 0) {
-        const pin = returnedData.data;
         this.sendMoney();
       }
     });
@@ -570,38 +603,10 @@ export class MsigCreateTransactionPage implements OnInit {
     });
   }
 
-  async showConfirmation() {
+  async validateForm() {
     this.submitted = true;
     if (this.sendForm.valid) {
-      const modalDetail = await this.modalController.create({
-        component: SenddetailPage,
-        componentProps: {
-          trxFee: this.fee.value,
-          trxAmount: this.amount.value,
-          trxBalance: this.account.balance,
-          trxSenderName: this.account.name,
-          trxSender: this.account.address,
-          trxRecipient: this.recipientAddress.value,
-          trxRecipientName: this.recipientName,
-          trxCurrencyRate: this.currencyRate,
-          IsEscrow: this.withEscrow,
-          escApproverAddress: this.escrowApprover.value,
-          escApproverName: this.escrowApproverName,
-          escCommission: this.escrowCommision.value,
-          escTimeout: this.escrowTimeout.value,
-          escInstruction: this.escrowInstruction.value
-        }
-      });
-
-      modalDetail.onDidDismiss().then(dataReturned => {
-        if (dataReturned) {
-          if (dataReturned.data === 1) {
-            this.inputPIN();
-          }
-        }
-      });
-
-      await modalDetail.present();
+      this.next();
     }
   }
 
@@ -617,7 +622,7 @@ export class MsigCreateTransactionPage implements OnInit {
 
     const data: SendMoneyInterface = {
       sender: this.account.address,
-      recipient: sanitizeString(this.recipientAddress.value),
+      recipient: this.recipientAddress.value,
       fee: Number(this.fee.value),
       amount: this.amount.value
     };
@@ -626,7 +631,7 @@ export class MsigCreateTransactionPage implements OnInit {
       data.approverAddress = this.escrowApprover.value;
       data.commission = this.escrowCommision.value;
       data.timeout = this.escrowTimeout.value;
-      data.instruction = sanitizeString(this.escrowInstruction.value);
+      data.instruction = this.escrowInstruction.value;
     }
 
     const childSeed = this.authSrv.keyring.calcDerivationPath(
@@ -788,13 +793,7 @@ export class MsigCreateTransactionPage implements OnInit {
     }
   }
 
-
-
   async next() {
-    const isValid = true; // this.isFormValid();
-    if (!isValid) {
-      return;
-    }
     if (this.multisig.signaturesInfo !== null) {
       this.createTransactionFormEnable = true;
     }
@@ -831,9 +830,9 @@ export class MsigCreateTransactionPage implements OnInit {
     const { sender } = this.multisig.transaction;
     const data: SendMoneyInterface = {
       sender: this.account.address,
-      recipient: sanitizeString(this.recipientAddress),
+      recipient: this.recipientAddress.value,
       fee: this.transactionFee,
-      amount: 0 // this.amount
+      amount: this.amount.value
     };
 
     const account = this.accounts.find(acc => acc.address === sender);
@@ -895,7 +894,7 @@ export class MsigCreateTransactionPage implements OnInit {
       sender: address,
       amount: 0, // this.amount,
       fee: this.transactionFee,
-      recipient: sanitizeString(this.recipientAddress)
+      recipient: this.recipientAddress.value
     };
   }
 

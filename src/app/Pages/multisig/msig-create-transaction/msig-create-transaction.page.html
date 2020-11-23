@@ -46,7 +46,7 @@
     </ion-row>
   </ion-grid>
 
-  <form [formGroup]="sendForm" (ngSubmit)="showConfirmation()">
+  <form [formGroup]="sendForm" (ngSubmit)="validateForm()">
     <ion-grid>
       <ion-row>
         <ion-col size="12">
@@ -57,16 +57,13 @@
         <ion-col size="12">
           <ion-item color="primary">
             <ion-label>
-              <h2>{{ account.name }}</h2>
+              <h2>{{ senderAccount.name }}</h2>
               <p>
-                {{ account.address | shortAddress }}&nbsp;&nbsp;
-                <span>
-                  <ion-icon name="arrow-dropdown"></ion-icon>
-                </span>
+                {{ senderAccount.address | shortAddress }}
               </p>
               <p>&nbsp;</p>
               <p>{{ "spendable balance" | translate }}</p>
-              <h1>{{ account.balance | number: '0.0-2' }} ZBC</h1>
+              <h1>{{ senderAccount.balance | number: '0.0-2' }} ZBC</h1>
               <p>
                 {{ balanceInUSD | number:
               '0.0-2' }} {{ currencyRate.name }}
@@ -324,7 +321,7 @@
             (click)="exportDraft()" expand="block">
             {{ "Export Draft Multi Signature" | translate }}
           </ion-button>
-          <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="next()" expand="block">
+          <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" type="submit"  expand="block">
             {{ "next" | translate }}
           </ion-button>
           <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
@@ -342,174 +339,3 @@
 
   </form>
 </ion-content>
-
-
-<!-- 
-  
-
-<ion-content class="ion-padding">
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
-      refreshingText="{{ 'Refreshing' | translate }} ...">
-    </ion-refresher-content>
-  </ion-refresher>
-
-  <div *ngIf="isLoadingBalance || isLoadingTxFee">
-    <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12">
-        {{ "sender" | translate }}
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="account">
-      <ion-col size="12">
-        <ion-item color="primary">
-          <ion-label>
-            <h2>{{ senderAccount.name }}</h2>
-            <p>
-              {{ senderAccount.address | shortAddress}}&nbsp;&nbsp;
-            </p>
-            <p>&nbsp;</p>
-            <p>{{ "spendable balance" | translate }}</p>
-            <h1>{{ account.balance | number: '0.0-2' }} ZBC</h1>
-            <p>
-              {{ account.balance * priceInUSD * currencyRate.value | number:
-              '0.0-2' }} {{ currencyRate.name }}
-            </p>
-          </ion-label>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-label>
-          {{ "recipient address" | translate }}
-          <ion-text color="danger">*</ion-text>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row class="ion-row-cont">
-      <ion-col size="10" style="padding:10px">
-        <ion-textarea rows="3" maxlength="60" placeholder="{{'Enter recipient address'|translate}}"
-          (ionChange)="validateRecipient()" [(ngModel)]="recipientAddress">
-        </ion-textarea>
-      </ion-col>
-      <ion-col size="2" class="ion-text-center" style="padding-top: 20px">
-        <ion-icon name="arrow-dropdown" (click)="presentGetAddressOption('recipient');"></ion-icon>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="!isRecipientValid">
-      <ion-col col-12>
-        <ion-label color="danger">{{ recipientMsg }}</ion-label>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-label>
-          {{ "coin amount" | translate }}
-          <ion-text color="danger">*</ion-text>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row class="ion-row-cont">
-      <ion-col size="8" style="padding-left:10px">
-        <ion-input placeholder="{{'Enter amount'|translate}}" class="ion-text-right"
-          style="border-bottom: 1px solid #dddddd;font-size:1.2em;" (ionChange)="validateAmount()" maxlength="12"
-          type="number" [(ngModel)]="amountTemp">
-        </ion-input>
-        <ion-input value="{{ amountSecond  | number: '0.0-2'}}" style="font-size:0.8em" class="ion-text-right" readonly
-          type="text">
-        </ion-input>
-      </ion-col>
-      <ion-col size="2" style="font-size: 0.8em; padding-left: 8px;">
-        <div class="sufix" style="margin-top:16px;">{{primaryCurr}}</div>
-        <div class="sufix" style="margin-top:24px; font-size: 0.9em;">{{secondaryCurr}}</div>
-      </ion-col>
-      <ion-col size="2" class="ion-text-center" style="padding-top: 40px;">
-        <img src="../../../assets/images/switch-vertical-256.png" style="width:20px" (click)="switchCurrency()" />
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="!isAmountValid">
-      <ion-col>
-        <ion-label color="danger" class="displayerror">{{ amountMsg }}</ion-label>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-label>
-          {{ "fee" | translate }}
-          <ion-text color="danger">*</ion-text>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-
-    <ion-row class="ion-row-cont">
-      <ion-col style="padding:0px;">
-        <ion-select interface="popover" [(ngModel)]="optionFee" (ionChange)="changeFee()">
-          <ion-select-option *ngFor="let sfee of allFees" value="{{sfee.fee}}">
-            {{ sfee.name }} {{ sfee.fee | number: '0.0-4' }} ZBC
-          </ion-select-option>
-          <ion-select-option value="-1">
-            Custom Fee
-          </ion-select-option>
-        </ion-select>
-      </ion-col>
-    </ion-row>
-
-    <ion-row *ngIf="customeChecked" class="ion-row-cont" style="margin-bottom:10px; margin-top: 10px;">
-      <ion-col size="8" style="padding-left:10px">
-        <ion-input placeholder="{{'Enter fee'|translate}}" class="ion-text-right"
-          style="border-bottom: 1px solid #dddddd;font-size:1.2em; color:#0B3D65" (ionChange)="validateCustomFee()"
-          maxlength="12" type="number" [(ngModel)]="customfeeTemp">
-        </ion-input>
-        <ion-input value="{{ customfee2  | number: '0.0-6'}}" style="font-size:0.9em" class="ion-text-right" readonly
-          type="text">
-        </ion-input>
-      </ion-col>
-      <ion-col size="2" style="font-size: 0.8em; padding-left: 8px;">
-        <div style="margin-top:16px; color:#0B3D65">{{primaryCurr}}</div>
-        <div style="margin-top:24px; font-size: 0.8em;">{{secondaryCurr}}</div>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="!isCustomFeeValid">
-      <ion-col>
-        <ion-label color="danger">Transaction fee is not valid! minimum fee is {{ minimumFee }}
-        </ion-label>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <ion-grid style="margin-top:20px;">
-    <ion-row>
-      <ion-col>
-        <ion-button color="tertiary" *ngIf="removeExport && !isLoadingBalance && !isLoadingTxFee"
-          (click)="exportDraft()" expand="block">
-          {{ "Export Draft Multi Signature" | translate }}
-        </ion-button>
-        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="next()" expand="block">
-          {{ "next" | translate }}
-        </ion-button>
-        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
-          {{ "next" | translate }}
-        </ion-button>
-        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()" expand="block" fill="outline">
-          {{ "save" | translate }}
-        </ion-button>
-        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block" fill="outline">
-          {{ "save" | translate }}
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content> -->
