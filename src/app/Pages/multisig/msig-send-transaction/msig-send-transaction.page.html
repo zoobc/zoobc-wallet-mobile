@@ -108,12 +108,12 @@
   <ion-grid style="margin-top:20px;">
     <ion-row>
       <ion-col>
-        <!-- <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()" expand="block">
-          {{ "Save Draft" | translate }}
+        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()" expand="block">
+          {{ "Save" | translate }}
         </ion-button>
         <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
-          {{ "Save Draft" | translate }}
-        </ion-button> -->
+          {{ "Save" | translate }}
+        </ion-button>
         <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="sendTransaction()"
           expand="block">
           {{ "Send" | translate }}

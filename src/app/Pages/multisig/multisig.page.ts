@@ -135,11 +135,22 @@ export class MultisigPage implements OnInit {
   }
 
   goNextStep() {
+
+    const txType = this.transactionType;
     const multisig: MultiSigDraft = {
       accountAddress: '',
       fee: 0,
-      id: 0
+      id: 0,
+      multisigInfo: null,
+      unisgnedTransactions: null,
+      txType,
     };
+
+    if (this.chainType === 'offchain') {
+      multisig.signaturesInfo = null;
+    }
+
+// =======
 
     if (this.isMultisigInfo) {
       multisig.multisigInfo = null;

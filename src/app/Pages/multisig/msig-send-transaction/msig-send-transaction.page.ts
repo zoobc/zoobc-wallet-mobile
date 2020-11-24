@@ -384,18 +384,19 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     loading.present();
     // end off
 
-
+    console.log('=== this.multisig: ', this.multisig);
     this.updateSendTransaction();
     const {
       accountAddress,
       fee,
       multisigInfo,
       unisgnedTransactions,
-      signaturesInfo,
+      signaturesInfo
     } = this.multisig;
 
     let data: MultiSigInterface;
     if (signaturesInfo !== undefined) {
+
       const signatureInfoFilter: SignatureInfo = {
         txHash: signaturesInfo.txHash,
         participants: [],
@@ -404,28 +405,42 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         if (jsonBufferToString(pcp.signature).length > 0) { return pcp; }
       });
 
-      // == manuall
-      const trx = this.multisig.transaction;
+      this.account = await this.accountService.getCurrAccount();
+      const currentAccAddress = this.account.address;
 
-      const dataUnsig: SendMoneyInterface = {
-        sender: trx.sender,
-        recipient: trx.recipient,
-        fee: trx.fee,
-        amount: trx.amount,
-      };
-      const unsigTrx = this.multisig.unisgnedTransactions = sendMoneyBuilder(dataUnsig);
+      // == manual
+      // const trx = this.multisig.transaction;
+      // const dataUnsig: SendMoneyInterface = {
+      //   sender: trx.sender,
+      //   recipient: trx.recipient,
+      //   fee: trx.fee,
+      //   amount: trx.amount,
+      // };
+      // const unsigTrx = this.multisig.unisgnedTransactions = sendMoneyBuilder(dataUnsig);
       // end off
 
       data = {
-        accountAddress,
+        accountAddress: currentAccAddress,
         fee,
         multisigInfo,
-        unisgnedTransactions: unsigTrx,
+        unisgnedTransactions,
         signaturesInfo: signatureInfoFilter,
       };
+
+      // data = {
+      //   accountAddress,
+      //   fee,
+      //   multisigInfo,
+      //   unisgnedTransactions: unsigTrx,
+      //   signaturesInfo: signatureInfoFilter,
+      // };
     } else {
+
+      this.account = await this.accountService.getCurrAccount();
+      const currentAccAddress = this.account.address;
+
       data = {
-        accountAddress,
+        accountAddress: currentAccAddress,
         fee,
         multisigInfo,
         unisgnedTransactions,
@@ -434,8 +449,9 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     }
     const childSeed = this.authSrv.keyring.calcDerivationPath(this.signByAccount.path);
 
-    // loading.dismiss();
-    // return;
+    if (data.signaturesInfo === undefined) {
+      // data.unisgnedTransactions = createInnerTxBytes(this.multisig.txBody, this.multisig.txType);
+    }
 
     zoobc.MultiSignature.postTransaction(data, childSeed)
       .then(  () => {

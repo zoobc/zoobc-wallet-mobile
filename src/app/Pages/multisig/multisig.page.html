@@ -15,7 +15,6 @@
 <ion-content class="ion-padding">
   <ion-item>
     <ion-label>
-      <!-- <h2>{{ 'send money' | translate }}</h2> -->
       <p class="ion-text-wrap">
         {{ 'what kind of transaction do you want to create?' | translate }}
       </p>
@@ -26,16 +25,16 @@
     <ion-card-content>
       <ion-item>
         <ion-select interface="popover" [(ngModel)]="transactionType" (ionChange)="changeTrx()">
-          <ion-select-option [value]="type.code" *ngFor="let type of txType; let idx = index">{{ type.type | translate }}</ion-select-option>
-          <!-- <ion-select-option value="sendMoney" selected>{{ "Send Money" | translate}}</ion-select-option>
-          <ion-select-option value="escrowApproval">{{ "Escrow Approval" | translate }}</ion-select-option> -->
+          <ion-select-option [value]="type.code" *ngFor="let type of txType; let idx = index">
+            {{ type.type | translate }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
         <ion-label>
           <p>{{"how do you want multi signature to be executed?" | translate}}?</p>
-          <ion-radio-group allow-empty-selection="true" name="radio-group" [(ngModel)]="chainType" (ionChange)="radioGroupChange()">
+          <ion-radio-group allow-empty-selection="true" name="radio-group" [(ngModel)]="chainType"
+            (ionChange)="radioGroupChange()">
 
             <ion-item>
               <ion-label>{{"onchain multi signature" | translate}}</ion-label>
@@ -50,13 +49,9 @@
           </ion-radio-group>
         </ion-label>
       </ion-item>
-
-      <!-- <ion-item>
-        <ion-checkbox slot="start" [(ngModel)]="isTransaction"></ion-checkbox>
-        <ion-label>{{ 'send money' | translate }}</ion-label>
-      </ion-item> -->
       <ion-item class="ion-text-right ion-no-border">
-        <ion-button slot="end" color="tertiary" size="default" [disabled]="!transactionType && !isSignature" (click)="goNextStep()">
+        <ion-button slot="end" color="tertiary" size="default" [disabled]="!transactionType && !isSignature"
+          (click)="goNextStep()">
           {{ 'next' | translate }}
         </ion-button>
       </ion-item>
@@ -67,12 +62,6 @@
     <h5>{{ 'multisignature drafts' | translate }}</h5>
     <ion-button (click)="importDraft()" size="default" slot="end">{{'sign a transaction' | translate}}</ion-button>
   </ion-item>
-
-  <!-- <ion-item>
-    <ion-label> {{'import draft' | translate}} </ion-label>
-    <input type="file"  (change)="uploadFile($event.target.files)"/>
-  </ion-item> -->
-
   <ion-grid>
     <div *ngFor="let draft of multiSigDrafts; let i = index">
       <ion-row (click)="onEditDraft(i)">
