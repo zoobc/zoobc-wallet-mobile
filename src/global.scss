@@ -239,6 +239,10 @@ ion-item.form-item{
 
 .info-val{
   color: var(--ion-color-dark);
+
+  .none{
+    color: #ccc;
+  }
 }
 
 .skeleton-image {

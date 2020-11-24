@@ -15,13 +15,9 @@
     <app-form-amount-conversion (keyup)="changeForm()" [(ngModel)]="escrow.commission">
     </app-form-amount-conversion>
 
-    <ion-text class="text-error" *ngIf="errors && errors.commissionRequired">
-      {{ "approver commission is required" | translate}}
+    <ion-text class="text-error" *ngIf="errors && errors.commission">
+      {{ "approver commission is wrong" | translate}}
     </ion-text>
-    <ion-text class="text-error" *ngIf="errors && errors.commissionMin">
-      {{ "minimum approver commission is" | translate}} {{ errors.commissionMin }}
-    </ion-text>
-
   </ion-item>
 
   <ion-item lines="none" class="form-item">
@@ -47,8 +43,5 @@
     <ion-textarea rows="4" maxlength="60" [(ngModel)]="escrow.instruction" (ionChange)="changeForm()"
       placeholder="{{ 'enter instruction' | translate }}">
     </ion-textarea>
-    <ion-text *ngIf="errors && errors.instruction" class="text-error">
-      {{ "instruction is required" | translate }}
-    </ion-text>
   </ion-item>
 </ion-list>

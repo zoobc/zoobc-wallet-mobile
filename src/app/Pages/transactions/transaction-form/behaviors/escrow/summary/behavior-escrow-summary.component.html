@@ -30,7 +30,8 @@
     <ion-label class="ion-text-wrap">
       <p class="info-label">{{ "instruction" | translate }}</p>
       <div class="info-val">
-        {{ values.instruction }}
+        <span *ngIf="values.instruction">{{ values.instruction }}</span>
+        <span *ngIf="!values.instruction" class="none">(none)</span>
       </div>
     </ion-label>
   </ion-item>

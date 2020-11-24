@@ -250,7 +250,8 @@ export class SendMoneyFormComponent implements OnInit {
       data.approverAddress = this.behaviorEscrow.value.approver.address;
       data.commission = this.behaviorEscrow.value.commission;
       data.timeout = this.behaviorEscrow.value.timeout;
-      data.instruction = sanitizeString(this.behaviorEscrow.value.instruction);
+      data.instruction = this.behaviorEscrow.value.instruction ?
+        sanitizeString(this.behaviorEscrow.value.instruction) : '';
     }
 
     const childSeed = this.authSrv.keyring.calcDerivationPath(

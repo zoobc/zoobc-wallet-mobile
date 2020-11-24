@@ -49,10 +49,10 @@ export function escrowFieldsValidator(
     errors.approverAddressRequired = true;
   }
 
-  if (control.value && !control.value.commission) {
-    errors.commissionRequired = true;
-  } else if (control.value && control.value.commission < 0.00000001) {
-    errors.commissionMin = true;
+  if (control.value
+    && control.value.commission !== undefined
+    && control.value.commission < 0) {
+    errors.commission = true;
   }
 
   if (control.value && !control.value.timeout) {
@@ -61,10 +61,6 @@ export function escrowFieldsValidator(
     errors.timeoutMin = true;
   } else if (control.value && control.value.timeout > 750) {
     errors.timeoutMax = true;
-  }
-
-  if (control.value && !control.value.instruction) {
-    errors.instruction = true;
   }
 
   if (Object.keys(errors).length >= 1) {
