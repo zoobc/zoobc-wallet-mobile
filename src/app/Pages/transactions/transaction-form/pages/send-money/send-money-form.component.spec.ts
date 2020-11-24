@@ -63,4 +63,32 @@ describe('SendMoneyFormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it("init worked worked", () => {
+    let result = component.ngOnInit();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+
+  it("show error message worked", () => {
+    let result = component.showErrorMessage(1);
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+
+  it("submit worked", () => {
+    let result = component.submit();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("show loading worked", () => {
+    let result = component.showLoading();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("set fee validation worked", () => {
+    let result = component.setFeeValidation();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  // it("set amount validation worked", () => {
+  //   let result = component.setAmountValidation();
+  //   expect(Array.isArray(result)).toBeTruthy;
+  // });
+  
 });

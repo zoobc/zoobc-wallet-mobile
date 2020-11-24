@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BlockchainObjectSendSummaryPage } from './blockchain-object-send-summary.page';
+import {TranslateModule } from '@ngx-translate/core';
+import { RouterModule } from '@angular/router';
 
 // describe('BlockchainObjectSendSummaryPage', () => {
 //   let component: BlockchainObjectSendSummaryPage;
@@ -11,6 +13,10 @@ import { BlockchainObjectSendSummaryPage } from './blockchain-object-send-summar
 //     TestBed.configureTestingModule({
 //       declarations: [ BlockchainObjectSendSummaryPage ],
 //       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//       imports:[
+//           TranslateModule.forRoot(),
+//           RouterModule.forRoot([])
+//       ]
 //     })
 //     .compileComponents();
 //   }));

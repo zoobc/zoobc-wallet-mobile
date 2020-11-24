@@ -143,6 +143,7 @@ export class SendMoneyFormComponent implements OnInit {
           (this.minimumFee > this.fee.value
             ? this.minimumFee
             : this.fee.value) -
+        
           this.behaviorEscrow.value.commission
       )
     ]);

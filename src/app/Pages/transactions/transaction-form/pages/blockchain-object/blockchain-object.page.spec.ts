@@ -56,4 +56,20 @@ describe('BlockchainObjectPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  it("init worked", () => {
+    let result = component.ngOnInit();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("translate lang worked", () => {
+    let result = component.translateLang();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("create blockchain object worked", () => {
+    let result = component.createBlockchainObject();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("show option worked", () => {
+    let result = component.showOption(1,1);
+    expect(Array.isArray(result)).toBeTruthy;
+  });
 });
