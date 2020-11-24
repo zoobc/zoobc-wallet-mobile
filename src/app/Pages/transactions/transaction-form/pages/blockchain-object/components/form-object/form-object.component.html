@@ -1,5 +1,5 @@
 <div class="input-container">
-  <span>{{ "key" | translate}}</span>
+  <span>{{ "Key" | translate}}</span>
   <input [(ngModel)]="key" (keyup)="changeValue()"/>
   <ion-text class="text-error" *ngIf="errors && errors.key">
     {{ errors.key }}

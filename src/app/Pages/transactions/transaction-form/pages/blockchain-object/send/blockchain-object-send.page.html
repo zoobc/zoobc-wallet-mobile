@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "blockchain object" | translate }}</ion-title>
+    <ion-title>{{ "Blockchain Object" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
@@ -25,11 +25,11 @@
         </ng-container>
       </ion-item>
       <ion-item lines="none" class="form-item">
-        <ion-label position="stacked">{{ "blockchain object" | translate }}</ion-label>
+        <ion-label position="stacked">{{ "Blockchain Object" | translate }}</ion-label>
         <app-form-get-object formControlName="blockchainObject"></app-form-get-object>
         <ng-container *ngIf="(submitted || blockchainObject.dirty || blockchainObject.touched) && blockchainObject.invalid">
           <ion-text class="text-error" *ngIf="blockchainObject.errors.required">
-            {{ "blockchain object is required" | translate}}
+            {{ "Blockchain Object is required" | translate}}
           </ion-text>
         </ng-container>
       </ion-item>

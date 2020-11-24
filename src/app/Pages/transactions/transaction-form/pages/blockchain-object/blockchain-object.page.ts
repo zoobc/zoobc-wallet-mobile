@@ -57,10 +57,10 @@ export class BlockchainObjectPage implements OnInit {
 
   translateLang() {
     this.translateSrv.get([
-      'view detail',
+      'View Detail',
       'edit',
     ]).subscribe((res: any)=>{
-      this.textViewDetail = res['view detail'];
+      this.textViewDetail = res['View Detail'];
       this.textEdit = res['edit'];
     })
   }
