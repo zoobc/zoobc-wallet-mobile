@@ -27,6 +27,7 @@ export class BehaviorEscrowFormComponent
   constructor() {}
 
   @Input() errors: any;
+  @Input() submitted: boolean;
   @Output() onChange = new EventEmitter<IEscrow>();
 
   public escrow: IEscrow;

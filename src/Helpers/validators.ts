@@ -32,7 +32,10 @@ export function escrowFieldsValidator(
 ): { [key: string]: boolean } | null {
   const errors: any = {};
 
-  if (
+  console.log("_control.value.approver", control.value.approver)
+  if (control.value && ( !control.value.approver || !control.value.approver.address)) {
+    errors.approverAddressRequired = true;
+  }else if (
     control.value &&
     control.value.approver &&
     control.value.approver.address &&
@@ -41,12 +44,6 @@ export function escrowFieldsValidator(
       control.value.approver.address.length < 66)
   ) {
     errors.approverAddressFormat = true;
-  } else if (
-    control.value &&
-    control.value.approver &&
-    !control.value.approver.address
-  ) {
-    errors.approverAddressRequired = true;
   }
 
   if (control.value

@@ -70,7 +70,7 @@
       <ion-label>{{ "escrow transaction" | translate}}</ion-label>
     </ion-item>
 
-    <app-behavior-escrow-form *ngIf="withEscrow" formControlName="behaviorEscrow" [errors]="behaviorEscrow.errors"
+    <app-behavior-escrow-form *ngIf="withEscrow" [submitted]="submitted" formControlName="behaviorEscrow" [errors]="behaviorEscrow.errors"
       (onChange)="onBehaviorEscrowChange($event)"
       >
     </app-behavior-escrow-form>

@@ -209,7 +209,7 @@ export class SendMoneyFormComponent implements OnInit {
 
   async submit() {
     this.submitted = true;
-
+    
     if (this.sendForm.valid) {
       const state: any = {
         sender: this.sender.value,

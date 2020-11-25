@@ -1,7 +1,9 @@
+{{errors|json}}
 <ion-list class="form-list">
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ 'approver' | translate }}</ion-label>
     <app-form-get-address [(ngModel)]="escrow.approver" (keyup)="changeForm()"></app-form-get-address>
+    
     <ion-text class="text-error" *ngIf="errors && errors.approverAddressRequired">
       {{ "address cannot be empty" | translate}}
     </ion-text>
@@ -22,10 +24,10 @@
 
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ "timeout" | translate }}</ion-label>
-    <ion-input placeholder="{{ 'enter timeout' | translate }}" class="ion-text-right" type="number" (ionChange)="changeForm()"
+    <ion-input placeholder="{{ 'enter timeout' | translate }}" type="number" (ionChange)="changeForm()"
       [(ngModel)]="escrow.timeout">
     </ion-input>
-    <ion-text>{{ "block height" | translate}}: {{ blockHeight | number: '0.0-2' }}</ion-text>
+    <ion-text class="blockheight ion-text-right">{{ "block height" | translate}}: {{ blockHeight | number: '0.0-2' }}</ion-text>
 
     <ion-text class="text-error" *ngIf="errors && errors.timeoutRequired">
       {{ "timeout is required" | translate}}
