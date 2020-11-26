@@ -50,6 +50,10 @@ export class ImportAccountPage implements OnInit {
   }
 
   public uploadFile(files: FileList) {
+    if (files==null) {
+      return null;
+    }
+
     if (files && files.length > 0) {
       const file = files.item(0);
       const fileReader: FileReader = new FileReader();
