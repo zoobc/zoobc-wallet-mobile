@@ -1,23 +1,22 @@
-{{errors|json}}
 <ion-list class="form-list">
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ 'approver' | translate }}</ion-label>
-    <app-form-get-address [(ngModel)]="escrow.approver" (keyup)="changeForm()"></app-form-get-address>
+    <app-form-get-address [(ngModel)]="escrow.approver" (ionChange)="changeForm()"></app-form-get-address>
     
-    <ion-text class="text-error" *ngIf="errors && errors.approverAddressRequired">
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.approverAddressRequired">
       {{ "address cannot be empty" | translate}}
     </ion-text>
-    <ion-text class="text-error" *ngIf="errors && errors.approverAddressFormat">
-      {{ "address is wrong" | translate}}
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.approverAddressFormat">
+      {{ "address is not valid" | translate}}
     </ion-text>
   </ion-item>
 
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ "approver commission" | translate }} </ion-label>
-    <app-form-amount-conversion (keyup)="changeForm()" [(ngModel)]="escrow.commission">
+    <app-form-amount-conversion (ionChange)="changeForm()" [(ngModel)]="escrow.commission">
     </app-form-amount-conversion>
 
-    <ion-text class="text-error" *ngIf="errors && errors.commission">
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.commission">
       {{ "approver commission is wrong" | translate}}
     </ion-text>
   </ion-item>
@@ -29,13 +28,13 @@
     </ion-input>
     <ion-text class="blockheight ion-text-right">{{ "block height" | translate}}: {{ blockHeight | number: '0.0-2' }}</ion-text>
 
-    <ion-text class="text-error" *ngIf="errors && errors.timeoutRequired">
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutRequired">
       {{ "timeout is required" | translate}}
     </ion-text>
-    <ion-text class="text-error" *ngIf="errors && errors.timeoutMin">
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutMin">
       {{ "minimum timeout is 1" | translate}}
     </ion-text>
-    <ion-text class="text-error" *ngIf="errors && errors.timeoutMax">
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutMax">
       {{ "maximumm timeout is 750" | translate}}
     </ion-text>
   </ion-item>

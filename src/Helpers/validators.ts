@@ -31,8 +31,7 @@ export function escrowFieldsValidator(
   control: AbstractControl
 ): { [key: string]: boolean } | null {
   const errors: any = {};
-
-  console.log("_control.value.approver", control.value.approver)
+  
   if (control.value && ( !control.value.approver || !control.value.approver.address)) {
     errors.approverAddressRequired = true;
   }else if (

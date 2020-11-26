@@ -30,7 +30,7 @@
             {{ "address cannot be empty" | translate}}
           </ion-text>
           <ion-text class="text-error" *ngIf="recipient.errors.addressFormat">
-            {{ "address is wrong" | translate}}
+            {{ "address is not valid" | translate}}
           </ion-text>
         </ng-container>
       </ion-item>
