@@ -38,4 +38,5 @@ describe('BlockchainObjectCreateSuccessPage', () => {
     let result = component.ngOnInit();
     expect(Array.isArray(result)).toBeTruthy;
   });
+  
 });
