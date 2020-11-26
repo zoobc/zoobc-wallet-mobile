@@ -1,43 +1,40 @@
 <ion-list class="form-list">
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ 'approver' | translate }}</ion-label>
-    <app-form-get-address [(ngModel)]="escrow.approver" (keyup)="changeForm()"></app-form-get-address>
-    <ion-text color="danger" *ngIf="errors && errors.approverAddressRequired">
+    <app-form-get-address [(ngModel)]="escrow.approver" (ionChange)="changeForm()"></app-form-get-address>
+    
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.approverAddressRequired">
       {{ "address cannot be empty" | translate}}
     </ion-text>
-    <ion-text color="danger" *ngIf="errors && errors.approverAddressFormat">
-      {{ "address is wrong" | translate}}
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.approverAddressFormat">
+      {{ "address is not valid" | translate}}
     </ion-text>
   </ion-item>
 
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ "approver commission" | translate }} </ion-label>
-    <app-form-amount-conversion (keyup)="changeForm()" [(ngModel)]="escrow.commission">
+    <app-form-amount-conversion (ionChange)="changeForm()" [(ngModel)]="escrow.commission">
     </app-form-amount-conversion>
 
-    <ion-text color="danger" *ngIf="errors && errors.commissionRequired">
-      {{ "approver commission is required" | translate}}
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.commission">
+      {{ "approver commission is wrong" | translate}}
     </ion-text>
-    <ion-text color="danger" *ngIf="errors && errors.commissionMin">
-      {{ "minimum approver commission is" | translate}} {{ errors.commissionMin }}
-    </ion-text>
-
   </ion-item>
 
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ "timeout" | translate }}</ion-label>
-    <ion-input placeholder="{{ 'enter timeout' | translate }}" class="ion-text-right" type="number" (ionChange)="changeForm()"
+    <ion-input placeholder="{{ 'enter timeout' | translate }}" type="number" (ionChange)="changeForm()"
       [(ngModel)]="escrow.timeout">
     </ion-input>
-    <ion-text>{{ "block height" | translate}}: {{ blockHeight | number: '0.0-2' }}</ion-text>
+    <ion-text class="blockheight ion-text-right">{{ "block height" | translate}}: {{ blockHeight | number: '0.0-2' }}</ion-text>
 
-    <ion-text color="danger" *ngIf="errors && errors.timeoutRequired">
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutRequired">
       {{ "timeout is required" | translate}}
     </ion-text>
-    <ion-text color="danger" *ngIf="errors && errors.timeoutMin">
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutMin">
       {{ "minimum timeout is 1" | translate}}
     </ion-text>
-    <ion-text color="danger" *ngIf="errors && errors.timeoutMax">
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutMax">
       {{ "maximumm timeout is 750" | translate}}
     </ion-text>
   </ion-item>
@@ -47,8 +44,5 @@
     <ion-textarea rows="4" maxlength="60" [(ngModel)]="escrow.instruction" (ionChange)="changeForm()"
       placeholder="{{ 'enter instruction' | translate }}">
     </ion-textarea>
-    <ion-text *ngIf="errors && errors.instruction" color="danger">
-      {{ "instruction is required" | translate }}
-    </ion-text>
   </ion-item>
 </ion-list>

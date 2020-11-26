@@ -222,7 +222,8 @@ ion-item.form-item{
       align-items: center;
 
       ion-icon {
-        color: red;
+        color: #727588;
+        font-size: 0.5rem;
       }
     }
   }
@@ -239,6 +240,10 @@ ion-item.form-item{
 
 .info-val{
   color: var(--ion-color-dark);
+
+  .none{
+    color: #ccc;
+  }
 }
 
 .skeleton-image {

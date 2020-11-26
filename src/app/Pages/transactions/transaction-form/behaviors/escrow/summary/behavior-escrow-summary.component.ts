@@ -10,6 +10,6 @@ export class BehaviorEscrowSummaryComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.log('__values', this.values);
+   
   }
 }
