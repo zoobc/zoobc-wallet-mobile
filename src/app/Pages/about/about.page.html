@@ -4,6 +4,11 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{"about"|translate}}</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        {{"feedback" | translate}}
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -21,6 +26,76 @@
   </ion-list>
 
   <ion-list>
+    <ion-item>
+      <span>
+        <h4>Version 0.2.9-Beta</h4>
+        <h5>16 October 2020</h5>
+        <ul>
+          <li>Fixing multisig Sign By when send money</li>
+          <li>Integrating Crypto News on dashboard</li>
+          <li>Add news page, news from cryptocompare API</li>
+          <li>Modify Themes</li>
+          <li>Fixing translation on some pages</li>
+          <li>Fixing account list when do switching account hide import/scan button</li>
+        </ul>
+      </span>
+    </ion-item>
+
+    <ion-item>
+      <span>
+        <h4>Version 0.2.8-Beta</h4>
+        <h5>9 October 2020</h5>
+        <ul>
+          <li>Fixing bug Send Money</li>
+          <li>Fixing refresh indicator on dashboard</li>
+          <li>Fixing translation on some page</li>
+          <li>Fixing transaction detail</li>
+          <li>Add news part on dashboard</li>
+          <li>Update themes</li>
+          <li>Fixing bug on contact</li>
+          <li>Updae pin button color</li>
+          <li>Update SDK</li>
+        </ul>
+      </span>
+    </ion-item>
+    <ion-item>
+      <span>
+        <h4>Version 0.2.7-Beta</h4>
+        <h5>15 September 2020</h5>
+        <ul>
+          <li>Fix beta node address that end with '/'</li>
+          <li>Give better message for multisig approval</li>
+          <li>Give better message for multisig escrow</li>
+          <li>Update SDK</li>
+        </ul>
+      </span>
+    </ion-item>
+    <ion-item>
+      <span>
+        <h4>Version 0.2.6-Beta</h4>
+        <h5>14 September 2020</h5>
+        <ul>
+          <li>Add Beta Node</li>
+          <li>Fix Account error</li>
+          <li>Fix my task reload</li>
+          <li>Fix some bug that use shortAddress</li>
+        </ul>
+      </span>
+    </ion-item>
+    <ion-item>
+      <span>
+        <h4>Version 0.2.5-Beta</h4>
+        <h5>8 September 2020</h5>
+        <ul>
+          <li>Update new SDK</li>
+          <li>Fix reveal passphrase error</li>
+          <li>Add ZooBC Testnet label if not using main network</li>
+          <li>New Block ID, Transaction ID, Address format</li>
+          <li>Fix transaction history</li>
+          <li>Update sidemenu item</li>
+        </ul>
+      </span>
+    </ion-item>
     <ion-item>
       <span>
         <h4>Version 0.2.4-Beta</h4>

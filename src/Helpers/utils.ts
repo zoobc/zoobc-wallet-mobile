@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import {
   toBase64Url,
   base64ToByteArray,
@@ -21,6 +22,19 @@ export function getAddressFromPublicKey(publicKey: Uint8Array): string {
   return address;
 }
 
+export function getTranslation(
+  value: string,
+  translateService: TranslateService,
+  // tslint:disable-next-line:ban-types
+  interpolateParams?: Object
+) {
+  let message: string;
+  translateService.get(value, interpolateParams).subscribe(res => {
+    message = res;
+  });
+  return message;
+}
+
 export function getChecksumByte(bytes): any {
   const n = bytes.length;
   let a = 0;
@@ -29,11 +43,6 @@ export function getChecksumByte(bytes): any {
   }
   const res = new Uint8Array([a]);
   return res;
-}
-
-export function sanitizeString(str) {
-  str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim, '');
-  return str.trim();
 }
 
 export function stringToBuffer(str: string) {

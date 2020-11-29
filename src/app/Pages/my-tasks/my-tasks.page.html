@@ -3,16 +3,21 @@
     <ion-buttons slot="start">
       <ion-back-button (click)="goDashboard()"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "my tasks" | translate}}</ion-title>
+    <ion-title>{{ 'my tasks' | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        {{"feedback" | translate}}
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-segment value="multisig" [(ngModel)]="segmentModel"
-      (ionChange)="segmentChanged()">
-      <ion-segment-button *ngIf="account && account.type != 'normal'" value="multisig">        
-        <ion-label>{{ "multisignature" | translate}}</ion-label>
+    <ion-segment value="multisig" [(ngModel)]="segmentModel" (ionChange)="segmentChanged()">
+
+      <ion-segment-button *ngIf="account && account.type != 'normal'" value="multisig">
+        <ion-label>{{"multisignature" | translate}}</ion-label>
       </ion-segment-button>
       <ion-segment-button value="escrow">
-        <ion-label>{{ "escrow approval" | translate}}</ion-label>
+        <ion-label>{{ 'escrow approval' | translate }}</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -25,70 +30,79 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <div *ngIf="isLoading" style="margin-top:5px;">
+  <!-- <div *ngIf="isLoading" style="margin-top:5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div>
+  </div> -->
+
+  <ion-grid>
+    <ion-row *ngIf="isLoading">
+      <ion-col>
+        <ion-progress-bar type="indeterminate"></ion-progress-bar>
+      </ion-col>
+    </ion-row>
+
+    <ion-row  *ngIf="segmentModel === 'escrow'">
+      <ion-col>
+        <p [routerLink]="['/escrow-history']">
+          <ion-icon name="list"></ion-icon>
+          {{"approval history" | translate}}</p>
+      </ion-col>
+      <ion-col class="ion-text-right">
+        <p>{{ 'block height' | translate }}: {{blockHeight | number}}</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <div style="text-align: center; border-top: 1px solid #cccccc;"
     *ngIf="segmentModel === 'escrow' && (!escrowTransactions || escrowTransactions.length < 1) ">
-    <p>{{ 'no escrow approval request available' | translate }}</p>
+    <p>{{ 'no escrow approval transaction history' | translate }}</p>
   </div>
 
   <div style="text-align: center; border-top: 1px solid #cccccc;"
-  *ngIf="segmentModel == 'multisig' && (!multiSigPendingList || multiSigPendingList.length < 1) ">
-  <p>{{ 'no multisig approval request available' | translate }}</p>
-</div>
+    *ngIf="segmentModel == 'multisig' && (!multiSigPendingList || multiSigPendingList.length < 1) ">
+    <p>{{ 'no multisignature approval history' | translate }}</p>
+  </div>
 
 
-  <ion-list class="info-list" *ngIf="segmentModel === 'escrow' && escrowTransactions && escrowTransactions.length > 0" style="border-top: 1px solid #cccccc;">
-    <ion-item><ion-label>{{ "block height" | translate}}: {{blockHeight}}</ion-label></ion-item>
+  <ion-list *ngIf="segmentModel === 'escrow' && escrowTransactions && escrowTransactions.length > 0"
+    style="border-top: 1px solid #cccccc;">
     <ion-item *ngFor="let escrow of escrowTransactions; let i = index;" (click)="openDetail(escrow.id)">
       <ion-label>
-        <div class="task-main-info">
-          <div>
-            <p class="info-label">{{ "sender" | translate}}</p>
-            <div class="info-val">{{ escrow.senderaddress | shortAddress }}</div>
-            <p class="info-label task-item-margin-top">{{ "recipient" | translate}}</p>
-            <div class="info-val">{{ escrow.recipientaddress | shortAddress }}</div>
-          </div>
+        <!-- <h3>Transaction ID: {{escrow.id}}</h3> -->
+        <p>{{ 'sender' | translate }}: <br /> <b> {{ escrow.senderaddress | shortAddress}} </b></p>
+        <p>{{ 'recipient' | translate }}:<br /> <strong>{{ escrow.recipientaddress | shortAddress}}</strong></p>
+        <p *ngIf="escrow.status !== 1 && escrow.status !== 2">{{ "expired after block height" | translate}} :
+          <b>{{  escrow.timeout + escrow.blockheight | number }} </b></p>
+        <ion-badge *ngIf="escrow.status == 0" color="warning" shape="round">
+          {{ 'pending' | translate }}
+        </ion-badge>&nbsp;
 
-          <div>
-            <p class="info-label">Amount</p>
-            <div class="info-val">
-              <app-info-amount-conversion value="{{ escrow.amount / 1e8 }}"></app-info-amount-conversion>
-            </div>
-            <p class="info-label task-item-margin-top">Commission</p>
-            <div class="info-val">
-              <app-info-amount-conversion value="{{ escrow.commission / 1e8 }}"></app-info-amount-conversion>
-            </div>
-          </div>
-        </div>
+        <ion-badge *ngIf="escrow.status == 1" color="success" shape="round">
+          {{ 'approved' | translate }}
+        </ion-badge>&nbsp;
 
-        <p class="info-label task-item-margin-top" *ngIf = "escrow.status !== 1 && escrow.status !== 2">{{ "expired after block height" | translate}}</p>
-        <div class="info-val">{{  escrow.timeout + escrow.blockheight | number }}</div>
-        
-        <div class="task-item-margin-top">
-          <ion-badge *ngIf = "escrow.status == 0" color="warning"  shape="round">
-          {{ "pending" | translate}}
-          </ion-badge>&nbsp;
-    
-          <ion-badge *ngIf = "escrow.status == 1" color="success"  shape="round">
-          {{ "approved" | translate}}
-          </ion-badge>&nbsp;
-    
-          <ion-badge *ngIf = "escrow.status == 2" color="danger"  shape="round">
-          {{ "rejected" | translate}}
-          </ion-badge>&nbsp;
 
-          <ion-badge *ngIf = "escrow.status == 3" color="warning"  shape="round">
-          {{ "expired" | translate}}
-          </ion-badge>&nbsp;
+        <ion-badge *ngIf="escrow.status == 2" color="danger" shape="round">
+          {{ 'rejected' | translate }}
+        </ion-badge>&nbsp;
 
-          <ion-badge *ngIf = "escrow.status == 4" color="warning"  shape="round">
-          {{ "unknown" | translate}}
-          </ion-badge>
-        </div>
+
+        <ion-badge *ngIf="escrow.status == 3" color="warning" shape="round">
+          {{ 'expired' | translate }}
+        </ion-badge>&nbsp;
+
+        <ion-badge *ngIf="escrow.status == 4" color="warning" shape="round">
+          {{ 'unknown' | translate }}
+        </ion-badge>&nbsp;
       </ion-label>
+
+      <ion-text slot='end' class="ion-text-right">
+        <span style='font-size: 0.7em;'>{{ 'amount' | translate }}</span> <br />
+        {{ escrow.amount / 1e8 | number: '0.0-6' }} <span style="font-size:0.8em">ZBC</span>
+        <!-- <br/>
+        <span style='font-size: 0.7em;'>{{ 'commission fee' | translate }}</span> <br/>
+          {{ escrow.commission / 1e8 | number: '0.0-6' }} <span style="font-size:0.8em">ZBC</span> -->
+      </ion-text>
 
     </ion-item>
   </ion-list>
@@ -96,43 +110,43 @@
   <ion-list *ngIf="segmentModel !== 'escrow'" style="border-top: 1px solid #cccccc;">
 
     <ion-item *ngFor="let msig of multiSigPendingList; let i = index" button>
-  
+
       <ion-label color="dark" (click)="openMultisigDetail(msig.transactionhash)">
         <h3>{{ msig.senderaddress | shortAddress }}</h3>
-        <ion-text class="dateago">{{ doDateAgo(msig.timestamp * 1000)}}</ion-text>
-      
-        <ion-badge *ngIf = "msig.status == 0" color="warning"  shape="round">
-          Pending
-          </ion-badge>&nbsp;
-     
-          <ion-badge *ngIf = "msig.status == 1" color="success"  shape="round">
-          Approved
-          </ion-badge>&nbsp;
-     
-  
-          <ion-badge *ngIf = "msig.status == 2" color="danger"  shape="round">
-          Rejected
-          </ion-badge>&nbsp;
-  
-  
-          <ion-badge *ngIf = "msig.status == 3" color="warning"  shape="round">
-          Expired
-          </ion-badge>&nbsp;
-  
-          <ion-badge *ngIf = "msig.status == 4" color="warning"  shape="round">
-          Unknown
-          </ion-badge>&nbsp;
-  
-  
+        <p class="dateago">{{ doDateAgo(msig.timestamp * 1000)}}</p>
+
+        <ion-badge *ngIf="msig.status == 0" color="warning" shape="round">
+          {{ 'pending' | translate }}
+        </ion-badge>&nbsp;
+
+        <ion-badge *ngIf="msig.status == 1" color="success" shape="round">
+          {{ 'approved' | translate }}
+        </ion-badge>&nbsp;
+
+
+        <ion-badge *ngIf="msig.status == 2" color="danger" shape="round">
+          {{ 'rejected' | translate }}
+        </ion-badge>&nbsp;
+
+
+        <ion-badge *ngIf="msig.status == 3" color="warning" shape="round">
+          {{ 'expired' | translate }}
+        </ion-badge>&nbsp;
+
+        <ion-badge *ngIf="msig.status == 4" color="warning" shape="round">
+          {{ 'unknown' | translate }}
+        </ion-badge>&nbsp;
+
+
       </ion-label>
-  
+
       <ion-text color="danger" class="ion-text-right">
         - {{ msig.amount / 1e8 | number: '0.2-4' }} ZBC
-        <br/>
+        <br />
         <span>
-         - {{ msig.fee / 1e8 | number: '0.2-4'}} ZBC Fee
+          - {{ msig.fee / 1e8 | number: '0.2-4'}} ZBC Fee
         </span>
-      </ion-text>     
+      </ion-text>
     </ion-item>
 
   </ion-list>

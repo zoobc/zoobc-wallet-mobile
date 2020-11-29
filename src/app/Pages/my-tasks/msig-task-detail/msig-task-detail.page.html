@@ -25,7 +25,7 @@
       <ion-label class="ion-text-wrap">
         <h5>{{ "sender" | translate }}</h5>
         <p class="info-val">
-          {{ shortAddress(multiSigDetail.senderaddress) }}
+          {{ multiSigDetail.senderaddress | shortAddress}}
         </p>
       </ion-label>
       <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.senderaddress)">
@@ -35,7 +35,7 @@
       <ion-label class="ion-text-wrap">
         <h5>{{ "recipient" | translate }}</h5>
         <p class="info-val">
-          {{ shortAddress(multiSigDetail.recipientaddress) }}
+          {{ multiSigDetail.recipientaddress | shortAddress }}
         </p>
       </ion-label>
       <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.recipientaddress)">
@@ -133,12 +133,12 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="secondary" (click)="confirm()">{{ "accept" | translate }}</ion-button>
+        <ion-button expand="block" color="tertiary" (click)="confirm()">{{ 'Accept' | translate }}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="secondary" (click)="doIgnore()">{{ "ignore" | translate }}
+        <ion-button expand="block" color="tertiary" (click)="doIgnore()">{{ 'Ignore' | translate }}
         </ion-button>
       </ion-col>
     </ion-row>

@@ -20,8 +20,8 @@ const routes: Routes = [
     FormsModule,
     TranslateModule,
     IonicModule,
-    RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,
+    RouterModule.forChild(routes)
   ],
   declarations: [MyTasksPage]
   // entryComponents: [TaskDetailPage]

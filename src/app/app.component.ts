@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Platform, ToastController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import {
   STORAGE_ACTIVE_CURRENCY,
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit {
   // public rootPage: any = AboutPage;
   public currentAccount: Account;
   private connectionText = '';
+
 
   constructor(
     private platform: Platform,

@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AccountPopupPage } from './account-popup.page';
+import { SharedModule } from 'src/app/Shared/shared.module';
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     TranslateModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ],
   declarations: [AccountPopupPage]

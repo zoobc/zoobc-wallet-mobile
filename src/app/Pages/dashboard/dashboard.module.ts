@@ -8,7 +8,6 @@ import { IonicModule } from '@ionic/angular';
 import { DashboardPage } from './dashboard.page';
 import { ComponentsModule } from 'src/app/Components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
-
 const routes: Routes = [
   {
     path: '',

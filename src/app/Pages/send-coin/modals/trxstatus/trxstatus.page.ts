@@ -9,13 +9,11 @@ import { Router } from '@angular/router';
 })
 export class TrxstatusPage implements OnInit {
   status = true;
-  msg = '';
+  message = '';
 
   constructor(private modalController: ModalController, private navParams: NavParams, private router: Router) { }
 
   ngOnInit() {
-    this.status = this.navParams.data.status;
-    this.msg = this.navParams.data.msg;
   }
 
   async close() {

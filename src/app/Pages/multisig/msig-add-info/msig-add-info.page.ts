@@ -8,7 +8,6 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Subscription } from 'rxjs';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { ModalController } from '@ionic/angular';
-import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-msig-add-info',
@@ -29,6 +28,8 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
   isMultiSignature = false;
   indexSelected: number;
   msigAccount: any;
+  name: string;
+  address: string;
 
   constructor(
     private multisigSrv: MultisigService,
@@ -76,6 +77,8 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
 
   petchMsigAccount(acc: Account) {
     this.participants = acc.participants;
+    this.name = acc.name;
+    this.address = acc.address;
     this.nonce = acc.nonce;
     this.minSig = acc.minSig;
   }
@@ -160,10 +163,6 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
 
   back() {
     this.router.navigateByUrl('/multisig');
-  }
-
-  shortAddress(address: string) {
-    return makeShortAddress(address);
   }
 
   updateMultisig() {

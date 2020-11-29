@@ -2,13 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
-import { ActivatedRoute } from '@angular/router';
-import zoobc, { getZBCAddress, toTransactionWallet, TransactionResponse } from 'zoobc-sdk';
-import { AccountService } from 'src/app/Services/account.service';
-import { Account } from 'src/app/Interfaces/account';
-import { UtilService } from 'src/app/Services/util.service';
-import { AddressBookService } from 'src/app/Services/address-book.service';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import zoobc, { TransactionResponse, getZBCAddress } from 'zoobc-sdk';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -16,20 +10,14 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
   styleUrls: ['./transaction-detail.page.scss']
 })
 export class TransactionDetailPage implements OnInit {
+  transaction: Transaction;
+  transactionDetail: TransactionResponse;
+  account: any;
   status: string;
-  transactionId: string;
-  transaction: TransactionResponse = null;
-  transactionWallet: any;
-  loading: boolean;
-
-  private textCopyAddress: string;
-  private textAddToContact: string;
-  private textShareAddress: string;
-  
-  senderRecipentOptions = [];
-  senderRecipentAlias = '';
-
-  transHashOptions = [];
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
+  isLoading = true;
 
   constructor(
     private translateSrv: TranslateService,
@@ -45,48 +33,16 @@ export class TransactionDetailPage implements OnInit {
 
   }
 
-  async ngOnInit() {
-    this.loading = true;
-
-    this.activeRoute.params.subscribe(async params => {
-
-      const currAccount: Account = await this.accountService.getCurrAccount();
-
-      const transactionId = params.transId;
-
-      const transaction: TransactionResponse = await zoobc.Transactions.get(transactionId);
-
-      this.transactionWallet = toTransactionWallet(transaction, currAccount.address);
-
-      this.senderRecipentAlias = await this.addressBookSrv.getNameByAddress(
-        this.transactionWallet.address
-      );
-
-      this.senderRecipentOptions = [
-        {key: "copy", label: this.textCopyAddress},
-        {key: "share", label: this.textShareAddress}
-      ];
-
-      this.transHashOptions = [
-        {key: "copy", label: this.textCopyAddress},
-        {key: "share", label: this.textShareAddress}
-      ];
-
-      if(!this.senderRecipentAlias){
-        this.senderRecipentOptions.push({key: "addToContact", label: this.textAddToContact});
-      }
-
+  ngOnInit() {
+    zoobc.Transactions.get(this.transaction.id).then((transaction: TransactionResponse) => {
       const pubkey = Buffer.from(transaction.transactionhash.toString(), 'base64');
-      this.transactionWallet.transactionhash = getZBCAddress(pubkey, 'ZTX');
-
-      this.transaction = transaction;
-
-      this.loading = false;
-
+      transaction.transactionhash = getZBCAddress(pubkey, 'ZTX');
+      this.transactionDetail = transaction;
+      this.isLoading = false;
+      console.log('==transactionDetail:', this.transactionDetail);
     });
 
-
-    /*if (this.navParams && this.navParams.data) {
+    if (this.navParams && this.navParams.data) {
       this.transaction = this.navParams.data.transaction;
       this.account = this.navParams.data.account;
       this.status = this.navParams.data.status;
@@ -152,9 +108,12 @@ export class TransactionDetailPage implements OnInit {
     })
   }
 
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
+  toZbcFormat(id: string, prefix: string) {
+    const buf = new TextEncoder().encode(id);
+    console.log(buf);
+    const address = getZBCAddress(buf, prefix);
+    return address;
+  }
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
@@ -180,7 +139,7 @@ export class TransactionDetailPage implements OnInit {
 
     this.translateSrv
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;

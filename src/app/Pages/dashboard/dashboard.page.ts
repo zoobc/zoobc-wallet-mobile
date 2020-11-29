@@ -28,23 +28,26 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { DecimalPipe } from '@angular/common';
 import { NetworkService } from 'src/app/Services/network.service';
 import { dateAgo } from 'src/Helpers/utils';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
-
+import { NewsService } from 'src/app/Services/news.service';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss']
 })
 export class DashboardPage implements OnInit, OnDestroy {
-  
+
   timeLeft = 12;
   interval: any;
 
   identity: FcmIdentity;
   clickSub: any;
   public offset: number;
+  news: any;
 
   public accountBalance: any;
   public isLoadingBalance: boolean;
@@ -52,13 +55,17 @@ export class DashboardPage implements OnInit, OnDestroy {
   public priceInUSD: number;
   public isError = false;
   public navigationSubscription: any;
-
+  newsList: any;
+  error: string;
   account: Account;
   accounts: Account[];
   notifId = 1;
   theme = DEFAULT_THEME;
   lastTimeGetBalance: Date;
   lastBalanceUpdated = 'Just now';
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
 
   constructor(
     private authService: AuthService,
@@ -78,6 +85,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     private decimalPipe: DecimalPipe,
     private network: Network,
     private alertCtrl: AlertController,
+    private newsSrv: NewsService,
+    private http: HttpClient,
     private translateSrv: TranslateService  ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
@@ -113,6 +122,9 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     this.accountService.restoreAccounts();
     this.subscribeAllAccount();
+
+    this.newsList = '';
+    this.error = '';
   }
 
   ngOnDestroy() {
@@ -121,15 +133,11 @@ export class DashboardPage implements OnInit, OnDestroy {
     }
   }
 
-  shortAddress(address: string) {
-    return makeShortAddress(address);
-  }
-
   async showBalanceDetail() {
     const alert = await this.alertController.create({
       header: 'Account:',
       subHeader: this.account.address,
-      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>' 
+      message: 'Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.balance / 1e8) + ' ZBC <br/>'
       + '<br/>' + 'Spendable Balance: <br/>' + this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) + ' ZBC  <br/>',
       buttons: ['OK']
     });
@@ -146,7 +154,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   doRefresh(event: any) {
     this.showLoading();
     this.loadData();
-
+    this.loadNews();
     setTimeout(() => {
       event.target.complete();
     }, 2000);
@@ -158,12 +166,36 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (!this.theme || this.theme === undefined || this.theme === null) {
       this.theme = DEFAULT_THEME;
     }
+
     this.startTimer();
   }
 
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
+  async loadNews() {
+    console.log('=== Will load news;');
+    // Present a loading controller until the data is loaded
+    // await this.presentLoading();
+    // Load the data
+    this.newsSrv.getNews()
+        .pipe(
+            finalize(async () => {
+              console.log('==== news: ', this.newsList);
+              // Hide the loading spinner on success or error
+              // await this.loading.dismiss();
+            })
+        )
+        .subscribe(
+            data => {
+              // Set the data to display in the template
+              this.newsList = data['Data'];
+            },
+            err => {
+              // Set the error information to display in the template
+              console.log('==== news: ', err.statusText);
+              this.error = `An error occurred, the data could not be retrieved: Status: ${err.status}, Message: ${err.statusText}`;
+            }
+        );
+  }
+
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
@@ -189,11 +221,13 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     this.translateSrv
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;
       });
+
+    this.loadNews();
   }
 
   ionViewDidLeave() {
@@ -272,9 +306,16 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.menuController.open('mainMenu');
   }
 
+
   logout() {
+    // const user =  this.fcm.chatUser;
+    // if (user) {
+    //   this.fcm.delete(user);
+    // }
+
     this.authService.logout();
-    this.router.navigate(['login']);
+    this.router.navigateByUrl('/login');
+    this.menuController.close('mainMenu');
   }
 
   openSendFeedbak() {
@@ -334,6 +375,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     window.open(BLOCKCHAIN_BLOG_URL, '_system');
   }
 
+  visitSite(url) {
+    window.open(url, '_system');
+  }
+  
   async scanQrCode() {
     // this.router.navigateByUrl('/qr-scanner');
     const navigationExtras: NavigationExtras = {

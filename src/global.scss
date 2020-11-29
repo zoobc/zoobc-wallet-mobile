@@ -24,7 +24,7 @@
 :root,
 :root[mode="md"],
 :root[mode="ios"] {
-  --ion-font-family: "Lato", sans-serif;
+  --ion-font-family: "Roboto", sans-serif;
   font-family: var(--ion-font-family) !important;
 }
 
@@ -58,8 +58,8 @@ ion-title{
   background-image: url("src/assets/images/background-night.png");
   background-repeat:no-repeat;
   background-size: cover;
-  background-attachment: fixed;
-  background-position: bottom;
+  //background-attachment: fixed;
+  background-position: center center;
 }
 
 .bg-header-zoobc{
@@ -67,7 +67,7 @@ ion-title{
   background-image: url("src/assets/images/zoobc.png");
   background-repeat:no-repeat;
   background-size: cover;
-  background-attachment: fixed;
+  //background-attachment: fixed;
   background-position: center center;
 }
 
@@ -76,22 +76,23 @@ ion-title{
   background-image: url("src/assets/images/background.png");
   background-repeat:no-repeat;
   background-size: cover;
-  background-attachment: fixed;
+  //background-attachment: fixed;
   background-position: center center;
 }
 
 .bg-header-day{
-  --background: transparent;
+  // --background: transparent;
   background-image: url("src/assets/images/background-day.png");
   background-repeat:no-repeat;
   background-size: cover;
-  background-attachment: fixed;
+  //background-attachment: fixed;
   background-position: center center;
 }
 
 .alertCss{
-  --background: var(--ion-color-light);
-  --color: var(--ion-color-dark);
+  // --background: var(--ion-color-light) !important;
+  // --color: var(--ion-color-dark) !important;
+  --background: #ffffff !important;
 }
 
 .text-error {

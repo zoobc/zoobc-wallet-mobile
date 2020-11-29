@@ -44,13 +44,6 @@ export function timeConverter(unixTimestamp: number) {
   return time;
 }
 
-export function makeShortAddress(addrs: string) {
-  // if (addrs.length < 21) {
-  //     return addrs;
-  // }
-  return addrs.substring(0, 21); //.concat('...').concat(addrs.substring(addrs.length - 8, addrs.length));
-}
-
 export function byteArrayToHex(
   bytes: ArrayBuffer | ArrayBufferView | Array<number>
 ): string {

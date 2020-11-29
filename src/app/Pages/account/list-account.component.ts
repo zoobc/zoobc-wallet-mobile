@@ -211,18 +211,27 @@ export class ListAccountComponent implements OnInit {
   }
 
   async importAccount() {
-    const pinmodal = await this.modalController.create({
+    const importAcc = await this.modalController.create({
       component: ImportAccountPage,
       componentProps: {}
     });
 
-    pinmodal.onDidDismiss().then(returnedData => {
+    importAcc.onDidDismiss().then(returnedData => {
       console.log('=== returneddata: ', returnedData);
       if (returnedData && returnedData.data !== 0) {
         alert(this.textAccountImported);
       }
     });
-    return await pinmodal.present();
+    return await importAcc.present();
+  }
+
+  async editDataSet(acc: Account) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        account: JSON.stringify(acc)
+      }
+    };
+    this.router.navigate(['/dataset-account'], navigationExtras);
   }
 
   accountClicked(account: Account) {
@@ -263,10 +272,6 @@ export class ListAccountComponent implements OnInit {
       }
     };
     this.router.navigate(['/create-account'], navigationExtras);
-  }
-
-  shortAddress(address: string) {
-    return makeShortAddress(address);
   }
 
   async openEditAccount(arg: Account, mode: number) {

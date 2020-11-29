@@ -102,11 +102,11 @@ export class AuthService implements CanActivate {
     return auth().currentUser;
   }
 
-  async getBalanceByAddress(address: string) {
-    return await zoobc.Account.getBalance(address)
-      .then(data => {
-        return data.accountbalance;
-      });
-  }
+  // async getBalanceByAddress(address: string) {
+  //   return await zoobc.Account.getBalance(address)
+  //     .then(data => {
+  //       return data.accountbalance;
+  //     });
+  // }
 
 }

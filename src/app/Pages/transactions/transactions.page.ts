@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { makeShortAddress } from 'src/Helpers/converters';
 import {
   ToastController,
   LoadingController,
@@ -56,7 +55,7 @@ export class TransactionsPage implements OnInit {
   alertConnectionTitle = '';
   alertConnectionMsg = '';
   networkSubscription = null;
-  total: number;
+  // total: number;
   escrowTransactions: any;
   isLoading: boolean;
 
@@ -134,7 +133,7 @@ export class TransactionsPage implements OnInit {
     this.currencyRate = this.currencyServ.getRate();
     this.getUnconfirmTransactions(this.account.address);
     this.getTransactions(this.account.address);
-    this.getEscrowTransaction();
+    // this.getEscrowTransaction();
   }
 
   async getAllAddress() {
@@ -170,17 +169,25 @@ export class TransactionsPage implements OnInit {
    * @param event load event
    */
   async loadMoreData(event) {
+    console.log('== this.recentTxs.length: ', this.recentTxs.length);
+    console.log('-== this page: ', this.page);
+    console.log('-== this totalTx: ', this.totalTx);
     if (this.recentTxs && this.recentTxs.length < this.totalTx) {
       this.page++;
-      this.getTransactions(this.account.address);
-    }
+      await this.getTransactions(this.account.address);
+      event.target.complete();
+    } else {
+      setTimeout(async () => {
+        if (this.recentTxs && this.recentTxs.length >= this.totalTx) {
+          event.target.complete();
+          event.target.disabled = true;
+        }
+      }, 500);
+     }
 
-    setTimeout(async () => {
-      if (this.recentTxs && this.recentTxs.length >= this.totalTx) {
-        event.target.complete();
-        event.target.disabled = true;
-      }
-    }, 1000);
+    console.log('-== this page 2: ', this.page);
+
+
   }
 
   /**
@@ -203,7 +210,8 @@ export class TransactionsPage implements OnInit {
     try {
 
       const trxList = await zoobc.Transactions.getList(params);
-
+      this.totalTx = Number(trxList.total);
+      console.log('== totl: ', trxList.total);
       let lastHeight = 0;
       let firstHeight = 0;
       if (Number(trxList.total) > 0) {
@@ -217,15 +225,15 @@ export class TransactionsPage implements OnInit {
 
       const paramEscrowSend: EscrowListParams = {
         sender: address,
-        // blockHeightStart: firstHeight,
-        // blockHeightEnd: lastHeight,
+        blockHeightStart: firstHeight,
+        blockHeightEnd: lastHeight,
         statusList: [0, 1, 2, 3],
       };
 
       const paramEscrowReceive: EscrowListParams = {
         recipient: address,
-        // blockHeightStart: firstHeight,
-        // blockHeightEnd: lastHeight,
+        blockHeightStart: firstHeight,
+        blockHeightEnd: lastHeight,
         statusList: [0, 1, 2, 3],
       };
 
@@ -238,13 +246,12 @@ export class TransactionsPage implements OnInit {
         recent['alias'] = this.getName(recent.address);
         recent['escrow'] = recent['escrow'] = this.checkIdOnEscrow(recent.id, escrowList);
         if (recent['escrow']) {
-          recent['escrowStatus'] = this.getEscrowStatus(recent.id, escrowList); 
+          recent['escrowStatus'] = this.getEscrowStatus(recent.id, escrowList);
         }
         recent['multisigchild'] = multisigTx.includes(recent.id);
-        recent['shortaddress'] =  makeShortAddress(recent.address);
         return recent;
       });
-      this.total = tx.total;
+      // this.total = tx.total;
       this.recentTxs = this.recentTxs.concat(tx.transactions);
       // ---------------
 
@@ -280,53 +287,6 @@ export class TransactionsPage implements OnInit {
     return nama;
   }
 
-  getEscrowTransaction() {
-    this.isLoading = true;
-    const params: EscrowListParams = {
-      approverAddress: this.account.address,
-      // statusList: [0],
-      pagination: {
-        page: this.page,
-        limit: 1000,
-        orderBy: OrderBy.DESC,
-        orderField: 'timeout',
-      },
-    };
-
-    zoobc.Escrows.getList(params)
-      .then((res: GetEscrowTransactionsResponse.AsObject) => {
-        this.total = Number(res.total);
-
-        const trxs = res.escrowsList.filter(tx => {
-          if (tx.latest === true) { return tx; }
-        });
-
-        const txMap = trxs.map(tx => {
-          const alias = this.getName(tx.recipientaddress) || '';
-          return {
-            id: tx.id,
-            alias,
-            senderaddress: makeShortAddress(tx.senderaddress),
-            recipientaddress: makeShortAddress(tx.recipientaddress),
-            approveraddress: makeShortAddress(tx.approveraddress),
-            amount: tx.amount,
-            commission: tx.commission,
-            timeout: Number(tx.timeout),
-            status: tx.status,
-            blockheight: tx.blockheight,
-            latest: tx.latest,
-            instruction: tx.instruction
-          };
-        });
-        this.escrowTransactions = txMap.filter( s => s.status === 1);
-      })
-      .catch(err => {
-        console.log(err);
-      }).finally( () => {
-        this.isLoading = false;
-      });
-  }
-
   /**
    * Get Unconfirm transaction by address
    * @ param address
@@ -352,7 +312,7 @@ export class TransactionsPage implements OnInit {
    * @param trx is tranaction object
    */
   public async openDetailTransction(trx) {
-    this.loadDetailTransaction(trx, 'confirm');
+    this.loadDetailTransaction(trx, 'confirmed');
   }
 
   private showLoading() {

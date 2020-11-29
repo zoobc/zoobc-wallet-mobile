@@ -3,99 +3,122 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "send money" | translate}}</ion-title>
+    <ion-title>{{ 'create multisignature transaction' | translate }}</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        {{"feedback"|translate}}
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <h5>Please click back button to back!.</h5>
-  <!-- <ion-item>
-    <h2>Send Money</h2>
+  <ion-item>
+    <ion-label>
+      <p class="ion-text-wrap">
+        {{ 'what kind of transaction do you want to create?' | translate }}
+      </p>
+    </ion-label>
   </ion-item>
 
   <ion-card>
     <ion-card-content>
       <ion-item>
-        <ion-checkbox slot="start" [(ngModel)]="isTransaction"></ion-checkbox>
-        <ion-label>{{ "create transaction" | translate }}</ion-label>
+        <ion-select interface="popover" [(ngModel)]="transactionType" (ionChange)="changeTrx()">
+          <ion-select-option [value]="type.code" *ngFor="let type of txType; let idx = index">
+            {{ type.type | translate }}</ion-select-option>
+        </ion-select>
       </ion-item>
+
       <ion-item>
-        <ion-checkbox slot="start" [(ngModel)]="isSignature"></ion-checkbox>
-        <ion-label>{{ "add participants signature" | translate}}</ion-label>
+        <ion-label>
+          <p>{{"how do you want multi signature to be executed?" | translate}}?</p>
+          <ion-radio-group allow-empty-selection="true" name="radio-group" [(ngModel)]="chainType"
+            (ionChange)="radioGroupChange()">
+
+            <ion-item>
+              <ion-label>{{"onchain multi signature" | translate}}</ion-label>
+              <ion-radio slot="start" value="onchain"></ion-radio>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>{{"offchain multi signature"| translate}}</ion-label>
+              <ion-radio slot="start" value="offchain"></ion-radio>
+            </ion-item>
+
+          </ion-radio-group>
+        </ion-label>
       </ion-item>
-
-      <ion-button slot="end" color="tertiary" [disabled]="!isTransaction && !isSignature" (click)="goNextStep()">Next
-      </ion-button>
-
+      <ion-item class="ion-text-right ion-no-border">
+        <ion-button slot="end" color="tertiary" size="default" [disabled]="!transactionType && !isSignature"
+          (click)="goNextStep()">
+          {{ 'next' | translate }}
+        </ion-button>
+      </ion-item>
     </ion-card-content>
   </ion-card>
 
   <ion-item>
-    <h5>{{ "multisignature" | translate}} {{ "drafts" | translate}}</h5>
+    <h5>{{ 'multisignature drafts' | translate }}</h5>
+    <ion-button (click)="importDraft()" size="default" slot="end">{{'sign a transaction' | translate}}</ion-button>
   </ion-item>
-
-  <ion-item>
-
-    <input type="file"  (change)="uploadFile($event.target.files)">
-  </ion-item>
-
   <ion-grid>
-    <div *ngFor="let draft of multiSigDrafts; let i = index" >
-    <ion-row  (click)="onEditDraft(i)">
-      <ion-col size="9">
-        <ion-label>
-          <h2>{{ "draft" | translate}} {{ "id" | translate}}: {{ draft.id }}</h2>
-          <p><i>{{ doDateAgo(draft.id) }}</i></p>
-        </ion-label>
-      </ion-col>
+    <div *ngFor="let draft of multiSigDrafts; let i = index">
+      <ion-row (click)="onEditDraft(i)">
+        <ion-col size="9">
+          <ion-label>
+            <h2>Draft ID: {{ draft.id }}</h2>
+            <p><i>{{ doDateAgo(draft.id) }}</i></p>
+          </ion-label>
+        </ion-col>
 
-      <ion-col size="3" class="ion-text-center">
-        <ion-label color="danger" *ngIf="draft.transaction">
-          - {{ draft.transaction.amount | number: '0.0-2' }} ZBC
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row  *ngIf="draft.transaction">
-      <ion-col>
-        <ion-label>
-          <h3>{{ "sender" | translate}}</h3>
-          <p> {{ shortAddress(draft.transaction.sender)}}</p>
-        </ion-label>
-        <ion-label>
-          <h3>{{ "recipient" | translate}}</h3>
-          <p> {{ shortAddress(draft.transaction.recipient) }}</p>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row  *ngIf="draft.signaturesInfo">
-      <ion-col>
-        <ion-label>
-          <h3>{{ "transaction hash" | translate}}</h3>
-          <p> {{draft.signaturesInfo.txHash}}</p>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-
-    <ion-row style="border-bottom: 1px #cccccc solid;">
-      <ion-col size="12">
-        
-        <ion-badge color="warning"  *ngIf="draft.multisigInfo" shape="round">
-          {{ "multisig info" | translate}}
-        </ion-badge>&nbsp;
-        <ion-badge color="warning"  *ngIf="draft.unisgnedTransactions" shape="round">
-          {{ "transaction" | translate}}
-        </ion-badge>&nbsp;
-        <ion-badge color="warning"  *ngIf="draft.signaturesInfo" shape="round">
-          {{ "signatures" | translate}}
-        </ion-badge>
-
-        <ion-label (click)="onDeleteDraft(draft.id)" color="danger">
-          <ion-icon name="trash"></ion-icon>
-        </ion-label>
-
-      </ion-col>
+        <ion-col size="3" class="ion-text-center">
+          <ion-label color="danger" *ngIf="draft.transaction">
+            - {{ draft.transaction.amount | number: '0.0-2' }} ZBC
+          </ion-label>
+        </ion-col>
       </ion-row>
-  </div>
-  </ion-grid> -->
+      <ion-row *ngIf="draft.transaction">
+        <ion-col>
+          <ion-label>
+            <h3>Sender</h3>
+            <p> {{ draft.transaction.sender | shortAddress}}</p>
+          </ion-label>
+          <ion-label>
+            <h3>Recipient</h3>
+            <p> {{ draft.transaction.recipient |shortAddress }}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="draft.signaturesInfo">
+        <ion-col>
+          <ion-label>
+            <h3>Transaction Hash</h3>
+            <p> {{draft.signaturesInfo.txHash}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+
+      <ion-row style="border-bottom: 1px #cccccc solid;">
+        <ion-col size="12">
+
+          <ion-badge color="warning" *ngIf="draft.multisigInfo" shape="round">
+            Multisig info
+          </ion-badge>&nbsp;
+          <ion-badge color="warning" *ngIf="draft.unisgnedTransactions" shape="round">
+            Transaction
+          </ion-badge>&nbsp;
+          <ion-badge color="warning" *ngIf="draft.signaturesInfo" shape="round">
+            Signatures
+          </ion-badge>
+
+          <ion-label (click)="onDeleteDraft(draft.id)" color="danger">
+            <ion-icon name="trash"></ion-icon>
+          </ion-label>
+
+        </ion-col>
+      </ion-row>
+    </div>
+  </ion-grid>
 
 </ion-content>

@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ "escrow approval history" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list style="border-top: 1px solid #cccccc;">
+    <ion-item *ngFor="let escrow of escrowApprovalList; let i = index" (click)="openDetail(escrow.id)">
+      <ion-label>
+
+        <p *ngIf="escrow.alias">
+          {{ 'name' | translate }}: <br />
+          {{ escrow.alias }}
+        </p>
+        <p>{{ 'sender' | translate }}: <br /> <b> {{ escrow.sender | shortAddress}} </b></p>
+        <p>
+          {{ escrow.timestamp | dateAgo }}
+        </p>
+      </ion-label>
+
+      <ion-text slot='end' class="ion-text-right">
+        <ion-badge *ngIf="escrow.approvalStatus == 'Approved'" color="success" shape="round">
+          {{ 'approved' | translate }}
+        </ion-badge>&nbsp;
+
+        <ion-badge *ngIf="escrow.approvalStatus == 'Rejected'" color="danger" shape="round">
+          {{ 'rejected' | translate }}
+        </ion-badge>
+      </ion-text>
+
+    </ion-item>
+  </ion-list>
+
+</ion-content>

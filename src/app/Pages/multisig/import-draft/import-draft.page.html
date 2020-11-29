@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>import-draft</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label> {{'import draft' | translate}} </ion-label>
+    <input type="file"  (change)="uploadFile($event.target.files)"/>
+  </ion-item>
+
+</ion-content>
