@@ -10,6 +10,7 @@ import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { UtilService } from 'src/app/Services/util.service';
+import { sanitizeString } from 'src/Helpers/utils';
 
 @Component({
   selector: 'app-edit-account',

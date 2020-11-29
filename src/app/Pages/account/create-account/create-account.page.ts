@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EMPTY_STRING, FOR_PARTICIPANT } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
+import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router } from '@angular/router';
 import { MultiSigAddress } from 'zoobc-sdk';
@@ -71,9 +72,6 @@ export class CreateAccountPage implements OnInit {
 
   async ngOnInit() {
     this.accounts = await this.accountService.allAccount('normal');
-    if (this.account==null) {
-      return null;
-    }
     const len = this.accounts.length + 1;
     this.accountName.setValue(`Account ${len}`);
   }

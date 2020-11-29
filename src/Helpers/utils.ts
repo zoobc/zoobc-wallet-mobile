@@ -35,6 +35,11 @@ export function getTranslation(
   return message;
 }
 
+export function sanitizeString(str) {
+  str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim, '');
+  return str.trim();
+}
+
 export function getChecksumByte(bytes): any {
   const n = bytes.length;
   let a = 0;
