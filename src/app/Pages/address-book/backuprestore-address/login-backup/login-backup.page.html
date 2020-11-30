@@ -10,7 +10,7 @@
 
     <ion-item>
       <ion-label  position="floating" color="primary">{{ "email" | translate}}</ion-label>
-      <ion-input type="text" formControlName="email"></ion-input>
+      <ion-input type="text" formControlName="email" ngDefaultControl></ion-input>
     </ion-item>
     <div class="validation-errors">
       <ng-container *ngFor="let validation of validationMessages.email">
@@ -22,7 +22,7 @@
 
     <ion-item>
       <ion-label  position="floating" color="primary">{{ "password" | translate}}</ion-label>
-      <ion-input type="password" formControlName="password" class="form-controll" required></ion-input>
+      <ion-input type="password" formControlName="password" class="form-controll" required ngDefaultControl></ion-input>
     </ion-item>
     <div class="validation-errors">
       <ng-container *ngFor="let validation of validationMessages.password">

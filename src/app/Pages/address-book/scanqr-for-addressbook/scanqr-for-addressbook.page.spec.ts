@@ -1,7 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ScanqrForAddressbookPage } from './scanqr-for-addressbook.page';
+import { TranslateModule } from "@ngx-translate/core";
+import {Location} from '@angular/common';
+import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 
 // describe('ScanqrForAddressbookPage', () => {
 //   let component: ScanqrForAddressbookPage;
@@ -11,6 +13,13 @@ import { ScanqrForAddressbookPage } from './scanqr-for-addressbook.page';
 //     TestBed.configureTestingModule({
 //       declarations: [ ScanqrForAddressbookPage ],
 //       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//       imports: [
+//         TranslateModule.forRoot()
+//       ],
+//       providers:[
+//         {provide: Location},
+//         {provide: BarcodeScanner},
+//       ],
 //     })
 //     .compileComponents();
 //   }));
