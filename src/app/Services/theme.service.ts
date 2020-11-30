@@ -12,7 +12,7 @@ export class ThemeService {
   theme = DEFAULT_THEME;
   themes = {
     zoobc: {
-      primary: '#041C3F',
+      primary: '#28456D',
       secondary: '#041C3F',
       tertiary: '#2C85FB',
       dbbalance: '#cccddd',
@@ -111,7 +111,7 @@ export class ThemeService {
 }
 
 const defaults = {
-  primary: '#1d2647',
+  primary: "red",//'#1d2647',
   secondary: '#6cc3d8',
   tertiary: '#2C85FB',
   light: '#f4f5f8',
