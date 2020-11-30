@@ -107,7 +107,7 @@
     "supercop.wasm": "^5.0.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.29",
-    "zoobc-sdk": "github:zoobc/zoobc-sdk#develop"
+    "zoobc-sdk": "github:zoobc/zoobc-sdk#experimental"
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.12.3",
