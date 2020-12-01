@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "388100450930",
+    "firebase_url": "https://blockhainzoo.firebaseio.com",
+    "project_id": "blockhainzoo",
+    "storage_bucket": "xxxxx.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388100450930:android:b793e150645f9519f670eb",
+        "android_client_info": {
+          "package_name": "com.zoobc.xxxx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "388100450930-xxxx.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "xxxxxx"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "388100450930-xxx.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
