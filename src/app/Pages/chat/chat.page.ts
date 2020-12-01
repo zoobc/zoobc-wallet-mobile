@@ -13,7 +13,6 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ChatService } from 'src/app/Services/chat.service';
 import { ChatUser } from 'src/app/Interfaces/chat-user';
 import { FcmService } from 'src/app/Services/fcm.service';
-import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-chat',
@@ -116,10 +115,6 @@ export class ChatPage implements OnInit {
       (rv[x[key]] = rv[x[key]] || []).push(x);
       return rv;
     }, {});
-  }
-
-  shortAddress(address) {
-    return makeShortAddress(address);
   }
 
   async showSession(idx: number) {

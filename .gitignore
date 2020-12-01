@@ -30,7 +30,8 @@ plugins/
 #plugins/android.json
 #plugins/ios.json
 $RECYCLE.BIN/
-google-services.json
+#google-services.json
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+src/assets/languages

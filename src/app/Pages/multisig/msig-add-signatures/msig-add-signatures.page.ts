@@ -59,19 +59,20 @@ export class MsigAddSignaturesPage implements OnInit {
   }
 
   async patchValue(multisig: MultiSigDraft) {
-    const { signaturesInfo, multisigInfo, unisgnedTransactions, transaction } = multisig;
+    const { signaturesInfo, multisigInfo, unisgnedTransactions } = multisig;
 
     if (!signaturesInfo || signaturesInfo == null) {
       if (multisigInfo) {
         return this.patchParticipant(multisigInfo.participants);
       }
-      if (unisgnedTransactions) {
-        return this.patchUnsignedAddress(transaction.sender);
-      }
+      // if (unisgnedTransactions) {
+      //   return this.patchUnsignedAddress(transaction.sender);
+      // }
 
       const acc = await this.accountSrv.getCurrAccount();
       return this.pushInitParticipant(1, acc);
     }
+
     if (signaturesInfo.txHash) {
       this.transactionHash = signaturesInfo.txHash;
     }
@@ -166,7 +167,7 @@ export class MsigAddSignaturesPage implements OnInit {
     // }
 
 
-    for (let idx = 0; idx <= this.participantsSignature.length; idx++ ){
+    for (let idx = 0; idx <= this.participantsSignature.length; idx++ ) {
           const signerAddress =  this.participantsSignature[idx].address;
           const signerAccount =  await this.accountSrv.getAccount(signerAddress);
           const seed = this.authSrv.keyring.calcDerivationPath(signerAccount.path);

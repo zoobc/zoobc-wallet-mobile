@@ -1,11 +1,11 @@
 <div class="info-amount-conversion">
   <div class="main-amount">
     <span *ngIf="prefix">{{ prefix }}</span>
-    ZBC {{ value | number:'0.0-2' }}
+    ZBC {{ value?value:0 | number:'0.0-2' }}
   </div>
   <div class="other-amount" *ngIf="otherCurrency">
     <div *ngIf="otherCurrencyDecoration==='BRACKET'; else noDecoration">
-      ({{ otherCurrency }} {{ otherValue | number:'0.0-2' }})
+      ({{ otherCurrency }} {{ otherValue?otherValue:0 | number:'0.0-2' }})
     </div>
   </div>
 </div>

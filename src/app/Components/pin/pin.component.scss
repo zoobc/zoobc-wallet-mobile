@@ -20,4 +20,9 @@ ion-col {
 .btn-with-icon{
   --padding-start: 0;
   --padding-end: 0;
+
+  ion-icon{
+    color: #ffffff;
+    width: 20px;
+  }
 }

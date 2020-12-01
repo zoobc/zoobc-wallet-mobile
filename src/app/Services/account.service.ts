@@ -188,7 +188,7 @@ export class AccountService {
     const childSeed = this.keyring.calcDerivationPath(pathNumber);
     const address = getZBCAddress(childSeed.publicKey);
     const account: Account = {
-      name: sanitizeString(arg),
+      name: (arg),
       path: pathNumber,
       type: 'normal',
       nodeIP: null,
@@ -215,7 +215,7 @@ export class AccountService {
 
 
     const account: Account = {
-      name: sanitizeString(name),
+      name: (name),
       type: 'multisig',
       path: signByPath,
       nodeIP: null,

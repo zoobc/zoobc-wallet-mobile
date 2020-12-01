@@ -19,22 +19,23 @@
     <ion-item>
       <ion-label position="stacked">{{ "buyer address" | translate}}
       </ion-label>
-      <ion-textarea rows="1">dUT-Sf3QkZf3l-Eig7fNq_5FzyTyovB3l6mpivMYshO</ion-textarea>
+      <ion-textarea rows="1" placeholder="{{ 'buyer address' | translate }}..." >
+      </ion-textarea>
     </ion-item>
     <ion-item>
       <ion-label position="stacked">{{ "amount sell" | translate}}
       </ion-label>
-      <ion-input>20 ZBC</ion-input>
+      <ion-input type="number" placeholder="{{ 'amount' | translate }}..."></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="stacked">{{ "amount you will get" | translate}}
       </ion-label>
-      <ion-input>19.99 ZBC</ion-input>
+      <ion-input type="number" placeholder="{{ 'amount' | translate }}"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="stacked">{{ "fee" | translate}}
       </ion-label>
-      <ion-input>0.01 ZBC</ion-input>
+      <ion-input type="number" placeholder="{{ 'Fee' | translate }}..." ></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="stacked">{{ "timeout" | translate}}
@@ -42,4 +43,13 @@
       <ion-input>10 {{ "days" | translate}}</ion-input>
     </ion-item>
   </ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button color="tertiary">
+          <span>{{ 'send' | translate }}</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

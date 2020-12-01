@@ -19,6 +19,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
+    TranslateModule,
     IonicModule,
     TranslateModule,
     RouterModule.forChild(routes)

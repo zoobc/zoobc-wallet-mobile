@@ -18,6 +18,7 @@ import { FormFeeComponent } from './component/form-fee/form-fee.component';
 import { TransactionItemComponent } from './component/transaction-item/transaction-item.component';
 import { SkeletonTransactionComponent } from './component/skeleton-transaction/skeleton-transaction.component';
 import { AccountItemComponent } from './component/account-item/account-item.component';
+import { WithOptionsComponent } from './component/with-options/with-options.component';
 
 @NgModule({
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
@@ -36,7 +37,8 @@ import { AccountItemComponent } from './component/account-item/account-item.comp
     InfoAmountConversionComponent,
     TransactionItemComponent,
     AccountItemComponent,
-    SkeletonTransactionComponent
+    SkeletonTransactionComponent,
+    WithOptionsComponent
   ],
   exports: [
     DateAgoPipe,
@@ -52,7 +54,9 @@ import { AccountItemComponent } from './component/account-item/account-item.comp
     InfoAmountConversionComponent,
     TransactionItemComponent,
     AccountItemComponent,
-    SkeletonTransactionComponent
-  ]
+    SkeletonTransactionComponent,
+    WithOptionsComponent
+  ],
+  entryComponents:[PopoverOptionComponent]
 })
 export class SharedModule {}

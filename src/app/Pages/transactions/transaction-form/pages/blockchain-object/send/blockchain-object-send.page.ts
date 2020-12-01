@@ -37,9 +37,8 @@ export class BlockchainObjectSendPage implements OnInit {
   sendForm = new FormGroup({
     sender: new FormControl({}),
     recipient: new FormControl({}, [Validators.required, addressValidator]),
-    amount: new FormControl(0, [
+    blockchainObject: new FormControl('', [
       Validators.required,
-      Validators.min(0.00000001)
     ]),
     fee: new FormControl(this.allFees[0].fee, [
       Validators.required,
@@ -72,8 +71,8 @@ export class BlockchainObjectSendPage implements OnInit {
     return this.sendForm.get('recipient');
   }
 
-  get amount() {
-    return this.sendForm.get('amount');
+  get blockchainObject() {
+    return this.sendForm.get('blockchainObject');
   }
 
   get fee() {
@@ -88,15 +87,10 @@ export class BlockchainObjectSendPage implements OnInit {
   setBehaviorEscrowChanges() {
     this.behaviorEscrowChangesSubscription = this.behaviorEscrow.valueChanges.subscribe(
       escrowValues => {
-        if (escrowValues.commission) {
-          this.setAmountValidation();
-        }
-
         if (escrowValues.timeout) {
           this.minimumFee = calculateMinFee(escrowValues.timeout.value);
 
           this.setFeeValidation();
-          this.setAmountValidation();
         }
       }
     );
@@ -134,22 +128,6 @@ export class BlockchainObjectSendPage implements OnInit {
     }, 1000);
   }
 
-  setAmountValidation() {
-    this.amount.setValidators([
-      Validators.required,
-      Validators.min(0.00000001),
-      Validators.max(
-        this.sender.value.balance -
-          (this.minimumFee > this.fee.value
-            ? this.minimumFee
-            : this.fee.value) -
-          this.behaviorEscrow.value.commission
-      )
-    ]);
-
-    this.amount.updateValueAndValidity();
-  }
-
   setFeeValidation() {
     this.fee.setValidators([
       Validators.required,
@@ -178,7 +156,6 @@ export class BlockchainObjectSendPage implements OnInit {
     }
 
     this.setFeeValidation();
-    this.setAmountValidation();
   }
 
   async inputPIN() {
@@ -193,15 +170,15 @@ export class BlockchainObjectSendPage implements OnInit {
 
         const extras: NavigationExtras = {
           state: {
-            amount: this.amount.value,
-            recipient: this.recipient.value
+            recipient: this.recipient.value,
+            blockchainObject: this.blockchainObject.value
           },
           replaceUrl: true
         };
 
-        await this.sendMoney();
+        await this.send();
 
-        this.router.navigate(['transaction-form/send-money/success'], extras);
+        this.router.navigate(['transaction-form/blockchain-object/send/success'], extras);
       }
     });
     return await pinmodal.present();
@@ -214,7 +191,7 @@ export class BlockchainObjectSendPage implements OnInit {
       const state: any = {
         sender: this.sender.value,
         recipient: this.recipient.value,
-        amount: this.amount.value,
+        blockchainObject: this.blockchainObject.value,
         fee: this.fee.value,
         withEscrow: this.withEscrow
       };
@@ -226,11 +203,12 @@ export class BlockchainObjectSendPage implements OnInit {
       const extras: NavigationExtras = {
         state
       };
-      this.router.navigate(['transaction-form/send-money/summary'], extras);
+
+      this.router.navigate(['transaction-form/blockchain-object/send/summary'], extras);
     }
   }
 
-  async sendMoney() {
+  async send() {
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
@@ -239,43 +217,9 @@ export class BlockchainObjectSendPage implements OnInit {
 
     await loading.present();
 
-    let data: SendMoneyInterface = {
-      sender: this.sender.value.address,
-      recipient: sanitizeString(this.recipient.value.address),
-      fee: Number(this.fee.value),
-      amount: this.amount.value
-    };
-
-    if (this.withEscrow) {
-      data.approverAddress = this.behaviorEscrow.value.approver.address;
-      data.commission = this.behaviorEscrow.value.commission;
-      data.timeout = this.behaviorEscrow.value.timeout;
-      data.instruction = sanitizeString(this.behaviorEscrow.value.instruction);
-    }
-
-    const childSeed = this.authSrv.keyring.calcDerivationPath(
-      this.sender.value.path
-    );
-    await zoobc.Transactions.sendMoney(data, childSeed)
-      .then(
-        (resolveTx: any) => {
-          if (resolveTx) {
-            /*this.ngOnInit();
-            this.showSuccessMessage();*/
-            this.sendForm.reset();
-            this.submitted = false;
-            this.withEscrow = false;
-            return;
-          }
-        },
-        error => {
-          console.log("__error", error);
-          this.showErrorMessage(error);
-        }
-      )
-      .finally(() => {
-        loading.dismiss();
-      });
+    setTimeout(()=>{
+      loading.dismiss()
+    }, 1000);
   }
 
   onBehaviorEscrowChange() {
@@ -283,7 +227,6 @@ export class BlockchainObjectSendPage implements OnInit {
       calculateMinFee(this.behaviorEscrow.value.timeout) : TRANSACTION_MINIMUM_FEE;
 
     this.setFeeValidation();
-    this.setAmountValidation();
   }
 
   async showErrorMessage(error) {
@@ -314,10 +257,6 @@ export class BlockchainObjectSendPage implements OnInit {
     });
 
     return await modal.present();
-  }
-
-  confirmSend() {
-    this.router.navigate(['transaction-form/send-money/summary']);
   }
 
   async getMinimumFee(timeout: number) {

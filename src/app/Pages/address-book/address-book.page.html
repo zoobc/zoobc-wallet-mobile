@@ -30,10 +30,7 @@
       </ion-item>
       <ion-item *ngFor="let address of addresses; let i = index">
         <ion-label (click)="selectAddress(address)" class="ion-text-wrap">
-          <p class="name">{{ address.name }}</p>
-          <p class="address">
-            {{ address.address }}
-          </p>
+          <app-info-address name="{{ address.name }}" address="{{ address.address }}"></app-info-address>
         </ion-label>
         <ion-icon *ngIf="!forWhat" name="zbc-option" slot="end" (click)="showOption($event, i)"></ion-icon>
       </ion-item>

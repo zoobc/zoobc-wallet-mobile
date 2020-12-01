@@ -6,7 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ChatPage } from './chat.page';
-import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from 'src/app/Shared/shared.module';
 
 const routes: Routes = [
   {
@@ -20,7 +20,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    TranslateModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ],
   declarations: [ChatPage]

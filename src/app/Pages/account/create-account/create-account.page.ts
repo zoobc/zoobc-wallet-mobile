@@ -72,9 +72,6 @@ export class CreateAccountPage implements OnInit {
 
   async ngOnInit() {
     this.accounts = await this.accountService.allAccount('normal');
-    if (this.account==null) {
-      return null;
-    }
     const len = this.accounts.length + 1;
     this.accountName.setValue(`Account ${len}`);
   }

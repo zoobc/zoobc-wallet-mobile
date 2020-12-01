@@ -9,12 +9,12 @@
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
-      refreshingText="{{ 'Refreshing' | translate }} ...">
+      refreshingText="{{ 'refreshing' | translate }} ...">
     </ion-refresher-content>
   </ion-refresher>
 
   <ion-label *ngIf="isError" color="danger" class="ion-text-center">
-    <h2>{{ errorMsg }}</h2>
+    <h2>{{ 'an error occurred while processing your request' | translate }}</h2>
   </ion-label>
 
   <h3 *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-padding-horizontal">
@@ -33,7 +33,7 @@
             </ion-label>
             <ion-label class="date" style="font-size: 0.7em">{{
                   pendingtrx.timestamp | date: "short"
-                }} <span style="color:orange">{{ "Pending" | translate }}</span>
+                }} <span style="color:orange">{{ "pending" | translate }}</span>
               <!-- <ion-spinner name="lines-small" style="width: 15px !important; height: 15px !important;"></ion-spinner> -->
             </ion-label>
           </ion-col>
@@ -76,8 +76,11 @@
       </ion-item>
     </ng-template>
   </ion-list>
+
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 

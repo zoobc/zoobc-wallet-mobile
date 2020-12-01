@@ -3,7 +3,6 @@ import { EMPTY_STRING, FOR_PARTICIPANT } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { sanitizeString } from 'src/Helpers/utils';
 import { ModalController, AlertController, Platform } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
 import { AddressBookService } from 'src/app/Services/address-book.service';
@@ -11,6 +10,7 @@ import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { UtilService } from 'src/app/Services/util.service';
+import { sanitizeString } from 'src/Helpers/utils';
 
 @Component({
   selector: 'app-edit-account',

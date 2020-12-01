@@ -28,9 +28,9 @@
         </ng-container>
         <ng-template #transactionHash>
           <div class="info-val" *ngIf="transactionWallet">
-            <app-with-copy title="{{ transactionWallet.transactionhash }}"
-              value="{{ transactionWallet.transactionhash }}">
-            </app-with-copy>
+            <app-with-options [options]="transHashOptions" (onClose)="onTransHashOptionsClose($event, transactionWallet.transactionhash)">
+              {{ transactionWallet.transactionhash }}
+            </app-with-options>
           </div>
         </ng-template>
       </ion-label>
@@ -72,8 +72,9 @@
         </ng-container>
         <ng-template #sender>
           <div class="info-val">
-            <app-with-copy title="{{ transactionWallet.address }}" value="{{ transactionWallet.address }}">
-            </app-with-copy>
+            <app-with-options [options]="senderRecipentOptions" (onClose)="onSenderRecipentOptionsClose($event, transactionWallet.address)">
+              <app-info-address name="{{ senderRecipentAlias }}" address="{{ transactionWallet.address }}"></app-info-address>
+            </app-with-options>
           </div>
         </ng-template>
       </ion-label>

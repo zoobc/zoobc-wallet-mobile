@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { STORAGE_MULTISIG_DRAFTS } from 'src/environments/variable.const';
+import { TransactionType } from 'zoobc-sdk';
 import { MultiSigDraft } from '../Interfaces/multisig';
 
 @Injectable({
@@ -12,7 +13,9 @@ export class MultisigService {
     id: 0,
     accountAddress: '',
     fee: 0,
+    txType: TransactionType.SENDMONEYTRANSACTION,
   };
+
 
   multisigDraft: MultiSigDraft;
 

@@ -9,7 +9,6 @@ import { IonContent } from '@ionic/angular';
 import { firestore } from 'firebase/app';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { ChatUser } from 'src/app/Interfaces/chat-user';
-import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-chat-session',
@@ -72,7 +71,7 @@ export class ChatSessionPage implements OnInit {
   }
 
 
-  getPairToken(pair: string){
+  getPairToken(pair: string) {
     this.db
       .collection<ChatUser>(FIREBASE_DEVICES, res => {
         return res.where('address', '==', pair).orderBy('time').limit(10);
@@ -88,10 +87,6 @@ export class ChatSessionPage implements OnInit {
 
   ionViewDidLeave() {
     this.chatService.isChatOpen = false;
-  }
-
-  shortAddress(address) {
-    return makeShortAddress(address);
   }
 
 
@@ -124,7 +119,7 @@ export class ChatSessionPage implements OnInit {
   }
 
 
-  getFcmId(){
+  getFcmId() {
     this.oneSignal.getIds().then(identity => {
 
     });

@@ -18,7 +18,8 @@ export class BlockchainObjectSendSummaryPage implements OnInit {
 
   ngOnInit() {
     this.stateValue = this.router.getCurrentNavigation().extras.state;
-    this.total = this.stateValue.amount + this.stateValue.fee;
+    this.total = this.stateValue.fee;
+    console.log("__stateValue", this.stateValue);
   }
 
   submit() {

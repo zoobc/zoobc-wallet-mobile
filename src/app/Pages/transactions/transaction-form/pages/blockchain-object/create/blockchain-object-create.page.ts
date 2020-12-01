@@ -117,10 +117,10 @@ export class BlockchainObjectCreatePage implements OnInit, OnDestroy {
   translateLang(){
 
     this.translateSrv.get([
-      'key is required',
+      'Key is required',
       'value is required',
     ]).subscribe((res: any)=>{
-      this.textKeyRequired = res["key is required"];
+      this.textKeyRequired = res["Key is required"];
       this.textValueRequired = res["value is required"];
     })
 

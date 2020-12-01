@@ -15,7 +15,6 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { UtilService } from 'src/app/Services/util.service';
-import { makeShortAddress } from 'src/Helpers/converters';
 
 @Component({
   selector: 'app-msig-task-detail',
@@ -209,10 +208,6 @@ export class MsigTaskDetailPage implements OnInit {
     this.showPin();
   }
 
-  shortAddress(arg: string) {
-    return makeShortAddress(arg);
-  }
-
   async showPin() {
     const pinmodal = await this.modalController.create({
       component: EnterpinsendPage
@@ -246,27 +241,27 @@ export class MsigTaskDetailPage implements OnInit {
 
     this.isLoadingTx = true;
     const key = this.authSrv.tempKey;
-    // const participantsWithSignatures = [];
+    const participantsWithSignatures = [];
 
-    // for (let i = 0; i <= this.participants.length; i++) {
-    //   const signer = this.participants[i];
-    //   const signerAcc = await this.accountService.getAccount(signer);
-    //   if (signerAcc) {
-    //     const idx = this.pendingSignatures.findIndex(
-    //       sign => sign.accountaddress === signer
-    //     );
-    //     if (idx < 0) {
-    //       const sgSeed = this.authSrv.keyring.calcDerivationPath(signerAcc.path);
-    //       participantsWithSignatures.push({
-    //         address: signer,
-    //         signature: signTransactionHash(this.multiSigDetail.transactionhash, sgSeed)
-    //       });
-    //     }
-    //   }
-    // }
+    for (let i = 0; i <= this.participants.length; i++) {
+      const signer = this.participants[i];
+      const signerAcc = await this.accountService.getAccount(signer);
+      if (signerAcc) {
+        const idx = this.pendingSignatures.findIndex(
+          sign => sign.accountaddress === signer
+        );
+        if (idx < 0) {
+          const sgSeed = this.authSrv.keyring.calcDerivationPath(signerAcc.path);
+          participantsWithSignatures.push({
+            address: signer,
+            signature: signTransactionHash(this.multiSigDetail.transactionhash, sgSeed)
+          });
+        }
+      }
+    }
 
     const signerSeed = this.authSrv.keyring.calcDerivationPath(this.signerAcc.path);
-    console.log('== participantsWithSignatures: ', this.participantsWithSignatures);
+    console.log('== participantsWithSignatures: ', participantsWithSignatures);
     console.log('== signer-2:', this.signer);
     console.log('== signerAcc-2:', this.signerAcc);
     console.log('== seed-2:', signerSeed);
@@ -276,7 +271,7 @@ export class MsigTaskDetailPage implements OnInit {
       fee: this.transactionFee,
       signaturesInfo: {
         txHash: this.multiSigDetail.transactionhash,
-        participants: this.participantsWithSignatures
+        participants: participantsWithSignatures
       },
     };
 
@@ -288,7 +283,15 @@ export class MsigTaskDetailPage implements OnInit {
       })
       .catch(err => {
         console.log(err);
-        const message = 'An error occurred while processing your request';
+        let message = '';
+        const errMsg = err.message;
+        if (err.code === 13 && errMsg.includes('UserBalanceNotEnough')) {
+          message = 'Signer balance is not enough!';
+        } else if (err.code === 13 && errMsg.includes('TXSenderNotFound')) {
+          message = 'Signer account not register yet, please do transaction first!';
+        } else {
+          message = 'Unknown reason!';
+        }
         this.utilService.showConfirmation('Fail', message, false, null);
       })
       .finally(() => {

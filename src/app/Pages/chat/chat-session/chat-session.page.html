@@ -4,7 +4,7 @@
       <ion-back-button color="success"></ion-back-button>
     </ion-buttons>
     <ion-title *ngIf="!pairname"  color="light" class="ion-text-center">
-          {{shortAddress(pair)}}
+          {{ pair | shortAddress }}
     </ion-title>
 
     <ion-title *ngIf="pairname" color="light" class="ion-text-center">

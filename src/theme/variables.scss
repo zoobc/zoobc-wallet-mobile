@@ -85,6 +85,14 @@
   --ion-color-tint: var(--ion-color-dbbalance-tint);
 }
 
+.ion-color-pinbutton {
+  --ion-color-base: var(--ion-color-pinbutton);
+  --ion-color-base-rgb: var(--ion-color-pinbutton-rgb);
+  --ion-color-contrast: var(--ion-color-pinbutton-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-pinbutton-contrast-rgb);
+  --ion-color-shade: var(--ion-color-pinbutton-shade);
+  --ion-color-tint: var(--ion-color-pinbutton-tint);
+}
 
 
 // @media (prefers-color-scheme: dark) {

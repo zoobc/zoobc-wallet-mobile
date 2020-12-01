@@ -43,7 +43,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button (click)="restore()" color="secondary" expand="block">{{ "restore" | translate}}</ion-button>
+        <ion-button (click)="restore()" color="tertiary" expand="block">Restore</ion-button>
         <ion-progress-bar *ngIf="isRestore" type="indeterminate" reversed="true"></ion-progress-bar>
         <ion-label *ngIf="isRestoreFinish" color="success">{{ "restoring" | translate}} {{numBerOfRestored}} {{ "address" | translate}} {{ "finish" | translate}}</ion-label>
       </ion-col>

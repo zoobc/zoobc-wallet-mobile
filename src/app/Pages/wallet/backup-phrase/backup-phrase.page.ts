@@ -4,6 +4,7 @@ import { PinBackupPage } from './pin/pin-backup/pin-backup.page';
 import { STORAGE_ENC_PASSPHRASE_SEED } from 'src/environments/variable.const';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import zoobc from 'zoobc-sdk';
+import { UtilService } from 'src/app/Services/util.service';
 @Component({
   selector: 'app-backup-phrase',
   templateUrl: './backup-phrase.page.html',
@@ -18,7 +19,7 @@ export class BackupPhrasePage implements OnInit {
   decrypted = '';
   constructor(
     private strgSrv: StoragedevService,
-    private toastController: ToastController,
+    private utilService: UtilService,
     private modalController: ModalController
   ) { }
 
@@ -55,50 +56,16 @@ export class BackupPhrasePage implements OnInit {
       const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
       const passphrase = zoobc.Wallet.decryptPassphrase(passEncryptSaved, pin);
       if (passphrase) {
+        this.decrypted = passphrase;
         this.passDecrypted = passphrase.split(' ');
       }
   }
 
   copyToClipboard() {
     const val = this.decrypted.slice();
-    const arrayPass = val.split(' ');
-    let strCopy = 'This is your ZooBC passphrase:\n\n With order number\n-------------------------\n';
-    for (let i = 0; i < arrayPass.length; i++) {
-      strCopy += (i + 1) + '.' + arrayPass[i];
-      if (i < 23) {
-        strCopy += ',   ';
-      }
-      if ((i + 1) % 3 === 0) {
-        strCopy += '\n';
-      }
-    }
-    strCopy += '\n\nWithout order number\n-------------------------\n' + val;
-    strCopy += '\n\n----------- End ----------\n\n';
-
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = strCopy;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-
-    this.copySuccess();
+    console.log('Value: ', val);
+    this.utilService.copyToClipboard(val);
   }
-
-  async copySuccess() {
-    const toast = await this.toastController.create({
-      message: 'Your address copied to clipboard.',
-      duration: 2000
-    });
-
-    toast.present();
-  }
-
 
   pinMatch() {
     this.step = 3;

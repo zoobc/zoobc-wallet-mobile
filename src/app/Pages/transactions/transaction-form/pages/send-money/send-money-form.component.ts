@@ -210,7 +210,7 @@ export class SendMoneyFormComponent implements OnInit {
 
   async submit() {
     this.submitted = true;
-
+    
     if (this.sendForm.valid) {
       const state: any = {
         sender: this.sender.value,
@@ -249,9 +249,10 @@ export class SendMoneyFormComponent implements OnInit {
 
     if (this.withEscrow) {
       data.approverAddress = this.behaviorEscrow.value.approver.address;
-      data.commission = this.behaviorEscrow.value.commission;
+      data.commission = this.behaviorEscrow.value.commission?this.behaviorEscrow.value.commission:0;
       data.timeout = this.behaviorEscrow.value.timeout;
-      data.instruction = sanitizeString(this.behaviorEscrow.value.instruction);
+      data.instruction = this.behaviorEscrow.value.instruction ?
+        sanitizeString(this.behaviorEscrow.value.instruction) : '';
     }
 
     const childSeed = this.authSrv.keyring.calcDerivationPath(
@@ -263,6 +264,11 @@ export class SendMoneyFormComponent implements OnInit {
           if (resolveTx) {
             /*this.ngOnInit();
             this.showSuccessMessage();*/
+
+            if (this.behaviorEscrowChangesSubscription) {
+              this.behaviorEscrowChangesSubscription.unsubscribe();
+            }
+
             this.sendForm.reset();
             this.submitted = false;
             this.withEscrow = false;

@@ -2,7 +2,7 @@ import { Currency } from 'src/app/Interfaces/currency';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = '';
 export const STORAGE_ACTIVE_CURRENCY = 'active_currency';
-export const STORAGE_ACTIVE_NETWORK_IDX = 'current_node_selected1';
+export const STORAGE_ACTIVE_NETWORK_IDX = 'current_node_selected2';
 export const STORAGE_CURRENCY_RATES = 'currency_rates';
 export const STORAGE_CURRENCY_RATE = 'rate';
 export const STORAGE_ADDRESS_BOOK = 'address_book';
@@ -13,8 +13,8 @@ export const STORAGE_MAIN_ACCOUNT = 'main_account';
 export const STORAGE_ENC_PASSPHRASE_SEED = 'encrypted_passphrase_seed';
 export const STORAGE_ESCROW_WAITING_LIST = 'escrow_waiting_list';
 export const STORAGE_MULTISIG_DRAFTS = 'multisig_drafts';
-export const STORAGE_ACTIVE_THEME = 'storage_active_theme';
-export const DEFAULT_THEME = 'bcz';
+export const STORAGE_ACTIVE_THEME = 'storage_active_theme6';
+export const DEFAULT_THEME = 'zoobc';
 export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
 export const FIREBASE_DEVICES = 'devices';
 export const FIREBASE_CHAT = 'chats';
@@ -45,6 +45,7 @@ export const CONST_HEX = 'hex';
 
 // Language
 export const SELECTED_LANGUAGE = 'selected_language';
+
 export const THEME_OPTIONS  = [
   {
   name: 'ZooBC',
@@ -63,6 +64,7 @@ export const THEME_OPTIONS  = [
     value: 'night'
   }
 ];
+
 export const SELECTED_THEME = 'card';
 export const LANGUAGES = [
   {
@@ -214,31 +216,43 @@ export const LANGUAGES = [
 ];
 
 export const NETWORK_LIST = [
-
+  {
+    name: 'Beta 1',
+    host: 'http://n1.beta.proofofparticipation.network:7001'
+  },
+  {
+    name: 'Beta 2',
+    host: 'http://n2.beta.proofofparticipation.network:7001'
+  },
+  {
+    name: 'Beta 3',
+    host: 'http://n3.beta.proofofparticipation.network:7001'
+  },
   {
     name: 'Alpha',
     host: 'http://n1.alpha.proofofparticipation.network:7003'
   },
   {
-    name: 'Beta',
-    host: 'http://n0.beta.proofofparticipation.network:7001'
-  },
-  {
     name: 'Dev',
     host: 'http://85.90.246.90:7001'
   },
-  // {
-  //   name: 'Staging (n0.demo.)',
-  //   host: 'https://n0.demo.proofofparticipation.network'
-  // },
-  // {
-  //   name: 'Demo 1 (x.x.34.10): ',
-  //   host: 'http://172.104.34.10:8002'
-  // },
   {
-    name: 'Demo 2 (x.x.39.58)',
+    name: 'Demo',
     host: 'http://45.79.39.58:8002'
   },
+  {
+    name: 'Exp1',
+    host: 'http://23.92.27.48:7000'
+  },
+  {
+    name: 'Exp2',
+    host: 'http://172.104.62.181:7000'
+  },
+  {
+    name: 'Exp3',
+    host: 'http://45.79.35.137:7000'
+  },
+  
   // {
   //   name: 'Demo 3 (x.x.246.90)',
   //   host: 'http://85.90.246.90:8002'
