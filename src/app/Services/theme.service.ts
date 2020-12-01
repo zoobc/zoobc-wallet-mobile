@@ -14,7 +14,7 @@ export class ThemeService {
     zoobc: {
       primary: '#28456D',
       secondary: '#041C3F',
-      tertiary: '#2C85FB',
+      tertiary: '#4576BA',
       dbbalance: '#cccddd',
       dbspbalance: '#6E6E6E',
       pinbutton: '#ffffff'
@@ -111,7 +111,7 @@ export class ThemeService {
 }
 
 const defaults = {
-  primary: "red",//'#1d2647',
+  primary: '#1d2647',
   secondary: '#6cc3d8',
   tertiary: '#2C85FB',
   light: '#f4f5f8',

@@ -283,6 +283,13 @@ ion-button.item-btn-add{
   --padding-end: 0;
 }
 
+.item-checkbox{
+  ion-checkbox{
+      margin-right: 10px;
+      margin-left: 5px;
+  }
+}
+
 @keyframes shine-lines {
   0% {
     background-position: -100px;

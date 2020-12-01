@@ -22,8 +22,8 @@
           {{accountName.errors.accountNameExists}}
         </ion-text>
       </ion-item>
-      <ion-item lines="none" class="form-item">
-        <ion-checkbox style="margin-right: 10px" (ionChange)="changeToMultisig($event.target.checked)" color="primary">
+      <ion-item lines="none" class="form-item item-checkbox">
+        <ion-checkbox (ionChange)="changeToMultisig($event.target.checked)" color="primary">
         </ion-checkbox>
         <ion-label>{{ "Multi-signature account" | translate}}</ion-label>
       </ion-item>
@@ -84,7 +84,7 @@
       </ng-container>
     </ion-list>
 
-    <ion-button strong color="secondary" type="submit" expand="block">
+    <ion-button strong color="tertiary" type="submit" expand="block">
       <span>{{"save"|translate}}</span>
     </ion-button>
   </form>  
