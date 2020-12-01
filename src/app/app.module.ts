@@ -14,7 +14,6 @@ import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { NgxsModule } from '@ngxs/store';
 import { Network } from '@ionic-native/network/ngx';
-import { sign as naclSign } from 'tweetnacl';
 import { ObservableService } from 'src/app/Services/observable.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -122,7 +121,6 @@ export function createTranslateLoader(http: HttpClient) {
     SocialSharing,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: 'global', useFactory: () => window },
-    { provide: 'nacl.sign', useFactory: () => naclSign },
     OneSignal,
     Clipboard,
     LanguageService,
