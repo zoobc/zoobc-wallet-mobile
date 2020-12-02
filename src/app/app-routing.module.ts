@@ -6,7 +6,7 @@ import { QrScannerComponent } from './Pages/qr-scanner/qr-scanner.component';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule',
+    loadChildren: './Pages/home/home.module#HomePageModule',
     canActivate: [AuthService]
   },
   { path: 'qr-scanner', component: QrScannerComponent },
@@ -177,11 +177,6 @@ const routes: Routes = [
     path: 'chat-profile',
     loadChildren:
       './Pages/chat/chat-profile/chat-profile.module#ChatProfilePageModule',
-    canActivate: [AuthService]
-  },
-  {
-    path: 'dashboard',
-    loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule',
     canActivate: [AuthService]
   },
   {
