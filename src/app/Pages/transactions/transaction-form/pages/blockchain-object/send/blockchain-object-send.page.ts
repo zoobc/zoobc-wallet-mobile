@@ -16,12 +16,11 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { calculateMinFee, sanitizeString } from 'src/Helpers/utils';
+import { calculateMinFee } from 'src/Helpers/utils';
 import {
   addressValidator,
   escrowFieldsValidator
 } from 'src/Helpers/validators';
-import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
 
 @Component({
   selector: 'app-blockchain-object-send',
@@ -31,6 +30,10 @@ import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
 export class BlockchainObjectSendPage implements OnInit {
   withEscrow: boolean;
   allFees = this.transactionSrv.transactionFees(TRANSACTION_MINIMUM_FEE);
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
+  sendMoneySummarySubscription = null;
 
   private minimumFee = TRANSACTION_MINIMUM_FEE;
 
@@ -217,8 +220,8 @@ export class BlockchainObjectSendPage implements OnInit {
 
     await loading.present();
 
-    setTimeout(()=>{
-      loading.dismiss()
+    setTimeout(() => {
+      loading.dismiss();
     }, 1000);
   }
 
@@ -264,10 +267,6 @@ export class BlockchainObjectSendPage implements OnInit {
     return fee;
   }
 
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
-  sendMoneySummarySubscription = null;
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
@@ -293,7 +292,7 @@ export class BlockchainObjectSendPage implements OnInit {
 
     this.translateService
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;
@@ -306,6 +305,7 @@ export class BlockchainObjectSendPage implements OnInit {
     }
   }
 
+  // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy() {
     if (this.sendMoneySummarySubscription) {
       this.sendMoneySummarySubscription.unsubscribe();

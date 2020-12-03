@@ -57,6 +57,6 @@ import { WithOptionsComponent } from './component/with-options/with-options.comp
     SkeletonTransactionComponent,
     WithOptionsComponent
   ],
-  entryComponents:[PopoverOptionComponent]
+  entryComponents: [PopoverOptionComponent]
 })
 export class SharedModule {}

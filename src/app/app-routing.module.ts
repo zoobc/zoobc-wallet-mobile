@@ -153,11 +153,6 @@ const routes: Routes = [
     canActivate: [AuthService]
   },
   {
-    path: 'dashboard',
-    loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule',
-    canActivate: [AuthService]
-  },
-  {
     path: 'receive',
     loadChildren: './Pages/receive/receive.module#ReceivePageModule',
     canActivate: [AuthService]
