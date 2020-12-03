@@ -10,7 +10,9 @@ import { Network } from '@ionic-native/network/ngx';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-
+import {TranslateModule } from '@ngx-translate/core';
+import { IonicStorageModule } from '@ionic/storage';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 // export const firebaseConfig = {
 //   apiKey: 'put-firebase',
@@ -38,6 +40,9 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 //         AngularFireModule.initializeApp(firebaseConfig),
 //         AngularFireAuthModule,
 //         AngularFirestoreModule,
+//         TranslateModule.forRoot(),
+//         IonicStorageModule.forRoot(),
+//         HttpClientTestingModule,
 //       ],
 //       providers: [
 //         { provide: StatusBar, useValue: statusBarSpy },

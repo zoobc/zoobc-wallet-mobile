@@ -26,7 +26,7 @@
 
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
-        <app-form-fee formControlName="fee"></app-form-fee>
+        <app-form-fee formControlName="fee" ngDefaultControl></app-form-fee>
         <ng-container *ngIf="(submitted || fee.dirty || fee.touched) && fee.invalid">
           <ion-text class="text-error" *ngIf="fee.errors.required">
             {{ "transaction fee cannot be empty" | translate}}

@@ -11,19 +11,16 @@ import { ThemeService } from './theme.service';
 //     expect(service).toBeTruthy();
 //   });
 
-//   it("should return a non empty array", () => {
-//     let result = service.loadData();
-//     expect(Array.isArray(result)).toBeTruthy;
-//   });
 
-//   it("should return a non empty array", () => {
+
+//   it("set theme worked", () => {
 //     let result = service.setTheme("test");
 //     expect(Array.isArray(result)).toBeTruthy;
 //   });
 
-//   // it("should return a non empty array", () => {
-//   //   let result = service.setVariable("test","qwerty");
-//   //   expect(Array.isArray(result)).toBeTruthy;
-//   // });
+//   it("sset variable worked", () => {
+//     let result = service.setVariable("test","qwerty");
+//     expect(Array.isArray(result)).toBeTruthy;
+//   });
 
 // });

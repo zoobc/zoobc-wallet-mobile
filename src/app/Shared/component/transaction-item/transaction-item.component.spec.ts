@@ -9,7 +9,7 @@ import { TransactionItemComponent } from './transaction-item.component';
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
 //       declarations: [TransactionItemComponent],
-//       schemas: [CUSTOM_ELEMENTS_SCHEMA]
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
 //     }).compileComponents();
 //   }));
 
