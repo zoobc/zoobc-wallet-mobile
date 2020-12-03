@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FeedbackService } from '../../Services/feedback.service';
 import { HttpHeaders, HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { Location } from '@angular/common';
@@ -50,7 +49,6 @@ export class FeedbackPage implements OnInit {
   toast: any;
 
   constructor(
-    private feedbackService: FeedbackService,
     private router: Router,
     private http: HttpClient,
     public alertController: AlertController,
@@ -151,7 +149,6 @@ export class FeedbackPage implements OnInit {
   }
 
   RemoveRecord(rowID) {
-    this.feedbackService.delete(rowID);
   }
 
   EditRecord(record) {
@@ -169,7 +166,6 @@ export class FeedbackPage implements OnInit {
     record['AccAddress'] = recordRow.EditAccAddress;
     // tslint:disable-next-line:no-string-literal
     record['Comment'] = recordRow.EditComment;
-    this.feedbackService.update(recordRow.id, record);
     recordRow.isEdit = false;
   }
 

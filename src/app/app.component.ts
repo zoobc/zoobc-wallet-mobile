@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Platform, ToastController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { Network } from '@ionic-native/network/ngx';
 import {
   STORAGE_ACTIVE_CURRENCY,
   CONST_DEFAULT_CURRENCY,
@@ -12,25 +10,18 @@ import {
   DEFAULT_THEME
 } from 'src/environments/variable.const';
 
-import { OneSignal } from '@ionic-native/onesignal/ngx';
-import { environment } from 'src/environments/environment';
 import { Account } from 'src/app/Interfaces/account';
-import * as firebase from 'firebase/app';
-import { fbconfig } from 'src/environments/firebaseconfig';
 import { NetworkService } from './Services/network.service';
 import { StoragedevService } from './Services/storagedev.service';
 import { LanguageService } from 'src/app/Services/language.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { ThemeService } from './Services/theme.service';
-import { FcmService } from './Services/fcm.service';
-firebase.initializeApp(fbconfig);
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit {
-  // public rootPage: any = AboutPage;
   public currentAccount: Account;
   private connectionText = '';
 
@@ -39,9 +30,6 @@ export class AppComponent implements OnInit {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private oneSignal: OneSignal,
-    private network: Network,
-    private fcmService: FcmService,
     private languageService: LanguageService,
     private networkService: NetworkService,
     private toastController: ToastController,
@@ -54,31 +42,13 @@ export class AppComponent implements OnInit {
     // this.darkMode();
   }
 
-  darkMode() {
-    // Use matchMedia to check the user preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    toggleDarkTheme(prefersDark.matches);
-
-    // Listen for changes to the prefers-color-scheme media query
-    prefersDark.addListener(mediaQuery => toggleDarkTheme(mediaQuery.matches));
-
-    // Add or remove the "dark" class based on if the media query matches
-    function toggleDarkTheme(shouldAdd: boolean) {
-      document.body.classList.toggle('dark', shouldAdd);
-    }
-  }
-
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      this.fcmService.initialize();
       this.languageService.setInitialAppLanguage();
       this.networkService.setInitialNetwork();
       this.currencyService.setCurrencyRateList(CURRENCY_RATE_LIST);
       this.setDefaultCurrency();
-      if (this.platform.is('cordova')) {
-        this.setupPush();
-      }
       this.splashScreen.hide();
       this.setTheme();
     });
@@ -125,44 +95,4 @@ export class AppComponent implements OnInit {
         this.connectionText = res;
       });
   }
-
-  setupPush() {
-    this.oneSignal.startInit(environment.signalID, environment.appID);
-    // this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
-    this.oneSignal.inFocusDisplaying(
-      this.oneSignal.OSInFocusDisplayOption.Notification
-    );
-    this.oneSignal.handleNotificationReceived().subscribe(data => {
-      const msg = data.payload.body;
-      this.presentNotificationToast(msg);
-      // this.showAlert(title, msg, additionalData.task);
-    });
-
-    // Notification was really clicked/opened
-    this.oneSignal.handleNotificationOpened().subscribe(() => {
-      this.presentNotificationToast('You already read this');
-      // this.showAlert('Notification opened', 'You already read this before', additionalData.task);
-    });
-
-    this.oneSignal.endInit();
-  }
-
-  // async showAlert(title, msg, task) {
-  //   const alert = await this.alertCtrl.create({
-  //     header: title,
-  //     subHeader: msg,
-  //     buttons: [
-  //       {
-  //         text: `Action: ${task}`,
-  //         handler: () => {
-
-  //           this.navCtrl.navigateForward('/');
-  //           // E.g: Navigate to a specific screen
-  //         }
-  //       }
-  //     ]
-  //   });
-
-  //   alert.present();
-  // }
 }

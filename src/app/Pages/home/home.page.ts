@@ -9,21 +9,16 @@ import {
 } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
-import { Router, NavigationExtras, NavigationEnd } from '@angular/router';
-import { TransactionService } from 'src/app/Services/transaction.service';
+import { Router, NavigationEnd } from '@angular/router';
 import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import {
-  BLOCKCHAIN_BLOG_URL,
   CONST_DEFAULT_RATE,
-  NETWORK_LIST,
   DEFAULT_THEME
 } from 'src/environments/variable.const';
-import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
-import { ChatService } from 'src/app/Services/chat.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { DecimalPipe } from '@angular/common';
 import { NetworkService } from 'src/app/Services/network.service';
@@ -34,10 +29,8 @@ import { TranslateService } from '@ngx-translate/core';
 import zoobc, {
   TransactionListParams,
   toTransactionListWallet,
-  getZBCAddress,
   MempoolListParams,
   toUnconfirmedSendMoneyWallet,
-  AccountBalanceResponse,
   TransactionsResponse,
   TransactionType
 } from 'zoobc-sdk';
@@ -51,26 +44,6 @@ import { PopoverBlockchainObjectOptionComponent } from './popover-blockchain-obj
   styleUrls: ['./home.page.scss']
 })
 export class HomePage implements OnInit, OnDestroy {
-  timeLeft = 12;
-  interval: any;
-
-  identity: FcmIdentity;
-  clickSub: any;
-  public offset: number;
-
-  public accountBalance: any;
-  public isLoadingBalance: boolean;
-  public currencyRate = CONST_DEFAULT_RATE;
-  public priceInUSD: number;
-  public isError = false;
-  public navigationSubscription: any;
-
-  account: Account;
-  accounts: Account[];
-  notifId = 1;
-  theme = DEFAULT_THEME;
-  lastTimeGetBalance: Date;
-  lastBalanceUpdated = 'Just now';
 
   constructor(
     private authService: AuthService,
@@ -82,9 +55,7 @@ export class HomePage implements OnInit, OnDestroy {
     private networkSrv: NetworkService,
     private currencySrv: CurrencyService,
     public toastController: ToastController,
-    private fcmService: FcmService,
     private themeSrv: ThemeService,
-    private chatService: ChatService,
     private alertController: AlertController,
     private decimalPipe: DecimalPipe,
     private network: Network,
@@ -128,6 +99,37 @@ export class HomePage implements OnInit, OnDestroy {
     this.accountService.restoreAccounts();
     this.subscribeAllAccount();
   }
+  timeLeft = 12;
+  interval: any;
+
+  identity: FcmIdentity;
+  clickSub: any;
+  public offset: number;
+
+  public accountBalance: any;
+  public isLoadingBalance: boolean;
+  public currencyRate = CONST_DEFAULT_RATE;
+  public priceInUSD: number;
+  public isError = false;
+  public navigationSubscription: any;
+
+  account: Account;
+  accounts: Account[];
+  notifId = 1;
+  theme = DEFAULT_THEME;
+  lastTimeGetBalance: Date;
+  lastBalanceUpdated = 'Just now';
+
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
+
+  isLoadingRecentTx = false;
+  recentTx: any;
+  unconfirmTx: any;
+  isErrorRecentTx = false;
+  totalTx: number;
+  lastRefresh: number;
 
   ngOnDestroy() {
     if (this.navigationSubscription) {
@@ -159,12 +161,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   async subscribeAllAccount() {
     const allAcc = await this.accountService.allAccount();
-    const addresses = allAcc.map(acc => acc.address);
-    this.chatService.subscribeNotif(addresses);
   }
 
   async doRefresh(event: any) {
-    await this.loadData()
+    await this.loadData();
     event.target.complete();
   }
 
@@ -178,10 +178,6 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.getTransactions();
   }
-
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
@@ -207,7 +203,7 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.translateSrv
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;
@@ -240,8 +236,6 @@ export class HomePage implements OnInit, OnDestroy {
     this.currencyRate = this.currencySrv.getRate();
 
     this.getBalanceByAddress(this.account.address);
-    await this.fcmService.getToken(this.account);
-    this.identity = this.fcmService.identity;
     this.subscribeAllAccount();
     this.getTransactions();
   }
@@ -349,12 +343,12 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.account.type && this.account.type === 'multisig') {
       this.goToMultisig();
     } else {
-      //this.router.navigate(['/sendcoin']);
+      // this.router.navigate(['/sendcoin']);
       this.router.navigate(['/transaction-form/send-money']);
     }
   }
 
-  goToMultisig(){
+  goToMultisig() {
     this.router.navigate(['/multisig']);
   }
 
@@ -374,11 +368,11 @@ export class HomePage implements OnInit, OnDestroy {
         options: [
           {
             key: 'create',
-            label: "Create Blockchain Object"
+            label: 'Create Blockchain Object'
           },
           {
             key: 'send',
-            label: "Send Blockchain Object"
+            label: 'Send Blockchain Object'
           }
         ]
       },
@@ -408,13 +402,6 @@ export class HomePage implements OnInit, OnDestroy {
     this.router.navigate(['/transaction/' + transactionId]);
   }
 
-  isLoadingRecentTx: boolean = false;
-  recentTx: any;
-  unconfirmTx: any;
-  isErrorRecentTx: boolean = false;
-  totalTx: number;
-  lastRefresh: number;
-
   getTransactions() {
     if (!this.isLoadingRecentTx) {
       this.recentTx = null;
@@ -437,17 +424,17 @@ export class HomePage implements OnInit, OnDestroy {
           const tx = toTransactionListWallet(res, this.account.address);
           this.recentTx = tx.transactions;
           this.recentTx.map(async recent => {
-            recent['alias'] = await this.addressBookSrv.getNameByAddress(
+            recent.alias = await this.addressBookSrv.getNameByAddress(
               recent.address
             );
           });
           this.totalTx = tx.total;
 
-          const params: MempoolListParams = {
+          const params2: MempoolListParams = {
             address: this.account.address
           };
 
-          return zoobc.Mempool.getList(params);
+          return zoobc.Mempool.getList(params2);
         })
         .then(
           unconfirmTx =>
@@ -456,7 +443,7 @@ export class HomePage implements OnInit, OnDestroy {
               this.account.address
             ))
         )
-        .catch(e => {
+        .catch(() => {
           this.isErrorRecentTx = true;
         })
         .finally(

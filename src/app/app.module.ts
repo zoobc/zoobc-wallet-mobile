@@ -32,13 +32,6 @@ import { SetupPinGpPageModule } from './Pages/wallet/generate-passphrase/setup-p
 import { File } from '@ionic-native/file/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { OneSignal } from '@ionic-native/onesignal/ngx';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AngularFireDatabaseModule } from '@angular/fire/database';
-import { AngularFireStorageModule } from '@angular/fire/storage';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { ChatProfilePageModule } from './Pages/chat/chat-profile/chat-profile.module';
 import { ConfirmationPageModule } from './Components/confirmation/confirmation.module';
 import { DecimalPipe } from '@angular/common';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
@@ -88,15 +81,9 @@ export function createTranslateLoader(http: HttpClient) {
     ImportAccountPageModule,
     DatasetAccountPageModule,
     PinBackupPageModule,
-    ChatProfilePageModule,
     AccountPopupPageModule,
     PopupCurrencyPageModule,
     PopupLanguagesPageModule,
-    AngularFireModule.initializeApp(fbconfig),
-    AngularFirestoreModule,
-    AngularFireAuthModule,
-    AngularFireDatabaseModule,
-    AngularFireStorageModule,
     SharedModule,
     TranslateModule.forRoot({
       loader: {
@@ -121,7 +108,6 @@ export function createTranslateLoader(http: HttpClient) {
     SocialSharing,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: 'global', useFactory: () => window },
-    OneSignal,
     Clipboard,
     LanguageService,
     DecimalPipe,
