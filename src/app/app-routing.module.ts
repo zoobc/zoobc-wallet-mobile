@@ -153,30 +153,8 @@ const routes: Routes = [
     canActivate: [AuthService]
   },
   {
-    path: 'reg-backup',
-    loadChildren:
-      './Pages/address-book/backuprestore-address/reg-backup/reg-backup.module#RegBackupPageModule'
-  },
-  {
-    path: 'login-backup',
-    loadChildren:
-      './Pages/address-book/backuprestore-address/login-backup/login-backup.module#LoginBackupPageModule'
-  },
-  {
-    path: 'chat',
-    loadChildren: './Pages/chat/chat.module#ChatPageModule',
-    canActivate: [AuthService]
-  },
-  {
-    path: 'chat-session',
-    loadChildren:
-      './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule',
-    canActivate: [AuthService]
-  },
-  {
-    path: 'chat-profile',
-    loadChildren:
-      './Pages/chat/chat-profile/chat-profile.module#ChatProfilePageModule',
+    path: 'dashboard',
+    loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule',
     canActivate: [AuthService]
   },
   {
@@ -260,9 +238,10 @@ const routes: Routes = [
   { path: 'theme', loadChildren: './Pages/theme/theme.module#ThemePageModule' },
   { path: 'network', loadChildren: './Pages/network/network.module#NetworkPageModule' },
   { path: 'explanation-screen', loadChildren: './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule' },
-  { path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
-    canActivate: [AuthService]}
-    
+  {
+    path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
+    canActivate: [AuthService]
+  }
 ];
 @NgModule({
   imports: [
@@ -270,4 +249,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

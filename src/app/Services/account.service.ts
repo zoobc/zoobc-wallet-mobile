@@ -8,7 +8,6 @@ import {
 import { Subject } from 'rxjs';
 import { StoragedevService } from './storagedev.service';
 import { Account } from '../Interfaces/account';
-import { sanitizeString } from 'src/Helpers/utils';
 import zoobc, { MultiSigAddress, ZooKeyring, getZBCAddress } from 'zoobc-sdk';
 
 @Injectable({
@@ -70,7 +69,7 @@ export class AccountService {
     const allAccount: Account[] = await this.strgSrv
       .get(STORAGE_ALL_ACCOUNTS)
       .then(accounts => {
-        if (accounts==null) {
+        if (accounts == null) {
           return null;
         }
         if (type && type === 'multisig') {

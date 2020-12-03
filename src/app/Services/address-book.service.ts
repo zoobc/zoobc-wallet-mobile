@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import {
   STORAGE_ADDRESS_BOOK,
-  FIREBASE_ADDRESS_BOOK,
   CONST_UNKNOWN_NAME
 } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { Contact } from '../Interfaces/contact';
 
 @Injectable({
@@ -50,8 +48,7 @@ export class AddressBookService {
 
 
   constructor(
-    private strgSrv: StoragedevService,
-    private afs: AngularFirestore
+    private strgSrv: StoragedevService
   ) {
     this.selectedAddress = '';
     this.addresses = this.getAll();
@@ -126,22 +123,4 @@ export class AddressBookService {
     await this.strgSrv.set(STORAGE_ADDRESS_BOOK, addresses);
   }
 
-  createBackup(mainAcc: string, obj: any) {
-    return this.afs
-      .collection(FIREBASE_ADDRESS_BOOK)
-      .doc(mainAcc)
-      .set(obj, { merge: true });
-  }
-
-  read_backup() {
-    return this.afs.collection(FIREBASE_ADDRESS_BOOK).snapshotChanges();
-  }
-
-  restoreBackup(mainAcc: string) {
-    return this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).ref.get();
-  }
-
-  delete_backup(mainAcc: string) {
-    this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).delete();
-  }
 }

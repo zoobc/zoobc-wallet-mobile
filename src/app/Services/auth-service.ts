@@ -5,7 +5,6 @@ import {
   STORAGE_ENC_PASSPHRASE_SEED,
   SALT_PASSPHRASE
 } from 'src/environments/variable.const';
-import { auth } from 'firebase/app';
 import { AccountService } from './account.service';
 import { StoragedevService } from './storagedev.service';
 import zoobc, { ZooKeyring } from 'zoobc-sdk';
@@ -66,47 +65,4 @@ export class AuthService implements CanActivate {
     this.isUserLoggenIn = false;
     this.tempKey = null;
   }
-
-  registerUser(value) {
-    return new Promise<any>((resolve, reject) => {
-      auth().createUserWithEmailAndPassword(value.email, value.password)
-        .then(
-          res => resolve(res),
-          err => reject(err));
-    });
-  }
-
-  loginUser(value) {
-    return new Promise<any>((resolve, reject) => {
-      auth().signInWithEmailAndPassword(value.email, value.password)
-        .then(
-          res => resolve(res),
-          err => reject(err));
-    });
-  }
-
-  logoutUser() {
-    return new Promise((resolve, reject) => {
-      if (auth().currentUser) {
-        auth().signOut()
-          .then(() => {
-            resolve();
-          }).catch(() => {
-            reject();
-          });
-      }
-    });
-  }
-
-  userDetails() {
-    return auth().currentUser;
-  }
-
-  // async getBalanceByAddress(address: string) {
-  //   return await zoobc.Account.getBalance(address)
-  //     .then(data => {
-  //       return data.accountbalance;
-  //     });
-  // }
-
 }

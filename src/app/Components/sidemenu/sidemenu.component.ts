@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth-service';
-import { FcmService } from 'src/app/Services/fcm.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { DEFAULT_THEME } from 'src/environments/variable.const';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -20,7 +19,6 @@ export class SidemenuComponent implements OnInit {
   constructor(
     private menuController: MenuController,
     private authService: AuthService,
-    private fcm: FcmService,
     private router: Router,
     private themeSrv: ThemeService,
     private statusBar: StatusBar
@@ -102,11 +100,6 @@ export class SidemenuComponent implements OnInit {
   }
 
   logout() {
-    const user =  this.fcm.chatUser;
-    if (user) {
-      this.fcm.delete(user);
-    }
-
     this.authService.logout();
     this.router.navigateByUrl('/login');
     this.menuController.close('mainMenu');
