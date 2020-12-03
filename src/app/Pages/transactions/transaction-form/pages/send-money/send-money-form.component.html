@@ -64,8 +64,8 @@
       </ion-item>
     </ion-list>
 
-    <ion-item>
-      <ion-checkbox style="margin-right: 10px" (ionChange)="changeWithEscrow($event.target.checked)" color="primary">
+    <ion-item class="item-checkbox ion-no-padding" lines="none">
+      <ion-checkbox (ionChange)="changeWithEscrow($event.target.checked)" color="primary">
       </ion-checkbox>
       <ion-label>{{ "escrow transaction" | translate}}</ion-label>
     </ion-item>
