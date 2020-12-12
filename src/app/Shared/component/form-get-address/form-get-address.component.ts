@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
@@ -22,7 +22,7 @@ import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/
     }
   ]
 })
-export class FormGetAddressComponent implements OnInit, ControlValueAccessor {
+export class FormGetAddressComponent implements OnInit, OnDestroy, ControlValueAccessor {
   constructor(
     private router: Router,
     private popoverCtrl: PopoverController,
@@ -47,7 +47,7 @@ export class FormGetAddressComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
     this.isNewAddress = true;
-    
+
     this.addressSubscription = this.addressBookSrv.addressSubject.subscribe(
       ({ identity, address }: any) => {
         if (identity === this.identity) {
@@ -72,25 +72,23 @@ export class FormGetAddressComponent implements OnInit, ControlValueAccessor {
     this.translateLang();
   }
 
-  translateLang(){
+  translateLang() {
     this.translateSrv.get([
-      "contacts",
-      "my accounts",
-      "new address"
-  ]).subscribe((res: any)=>{
-      this.textContacts = res["contacts"];
-      this.textAccounts = res["my accounts"];
-      this.textNewAddress = res["new address"];
-
+      'contacts',
+      'my accounts',
+      'new address'
+  ]).subscribe((res: any) => {
+      this.textContacts = res.contacts;
+      this.textAccounts = res['my accounts'];
+      this.textNewAddress = res['new address'];
       this.buttonTitle = this.textNewAddress;
-    })
+    });
   }
 
   ngOnDestroy() {
     if (this.addressSubscription) {
       this.addressSubscription.unsubscribe();
     }
-
     if (this.qrScannerSubscription) {
       this.qrScannerSubscription.unsubscribe();
     }
@@ -106,7 +104,7 @@ export class FormGetAddressComponent implements OnInit, ControlValueAccessor {
   }
 
   goToScan(arg: string) {
-    //this.scanForWhat = arg;
+    // this.scanForWhat = arg;
     this.router.navigateByUrl('/qr-scanner');
   }
 
