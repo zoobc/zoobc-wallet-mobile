@@ -12,6 +12,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { getTxType } from 'src/Helpers/multisig-utils';
 import { getTranslation } from 'src/Helpers/utils';
 import { TranslateService } from '@ngx-translate/core';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-multisig',
@@ -41,6 +42,7 @@ export class MultisigPage implements OnInit {
 
   constructor(
     private router: Router,
+    private utilService: UtilService,
     private accountService: AccountService,
     private alertController: AlertController,
     private multisigServ: MultisigService,
@@ -80,7 +82,7 @@ export class MultisigPage implements OnInit {
       multisig.signaturesInfo = null;
     }
 
-    if (this.isMultiSignature) {
+    if (this.isMultiSignature) { // if account is multisig
       multisig.multisigInfo = {
         minSigs: this.account.minSig,
         nonce: this.account.nonce,
@@ -89,6 +91,8 @@ export class MultisigPage implements OnInit {
       const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
       multisig.generatedSender = address;
       this.multisigServ.update(multisig);
+
+      // checking, one of participant must from account list
       let isOneParticipant = false;
       const idx = (await this.accountService
         .allAccount())
@@ -101,17 +105,16 @@ export class MultisigPage implements OnInit {
       }
       if (!isOneParticipant) {
         const message = getTranslation('you dont have any account that in participant list', this.translate);
+        this.utilService.showConfirmation('Opps...', message, false, null);
       } else {
         this.router.navigate(['/msig-create-transaction']);
       }
 
-    } else {
+    } else { // current account not multisig
       this.multisigServ.update(multisig);
       this.router.navigate(['/msig-add-info']);
     }
   }
-
-
 
   radioGroupChange() {
     console.log('radioGroupChange2: ', this.fChainType);
@@ -124,8 +127,8 @@ export class MultisigPage implements OnInit {
       return;
     }
 
-    this.multiSigDrafts = this.multisigServ
-      .getDrafts()
+    this.multiSigDrafts = (await this.multisigServ
+      .getDrafts())
       .filter(draft => {
         const { multisigInfo, txBody, generatedSender } = draft;
         if (generatedSender === this.account.address) { return draft; }

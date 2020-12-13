@@ -19,6 +19,7 @@ import { TransactionItemComponent } from './component/transaction-item/transacti
 import { SkeletonTransactionComponent } from './component/skeleton-transaction/skeleton-transaction.component';
 import { AccountItemComponent } from './component/account-item/account-item.component';
 import { WithOptionsComponent } from './component/with-options/with-options.component';
+import { InputAmountComponent } from '../Components/input-amount/input-amount.component';
 
 @NgModule({
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
@@ -38,7 +39,8 @@ import { WithOptionsComponent } from './component/with-options/with-options.comp
     TransactionItemComponent,
     AccountItemComponent,
     SkeletonTransactionComponent,
-    WithOptionsComponent
+    WithOptionsComponent,
+    InputAmountComponent
   ],
   exports: [
     DateAgoPipe,
@@ -55,7 +57,8 @@ import { WithOptionsComponent } from './component/with-options/with-options.comp
     TransactionItemComponent,
     AccountItemComponent,
     SkeletonTransactionComponent,
-    WithOptionsComponent
+    WithOptionsComponent,
+    InputAmountComponent
   ],
   entryComponents: [PopoverOptionComponent]
 })

@@ -7,56 +7,54 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <form [formGroup]="multisigForm" (ngSubmit)="doNext()" novalidate>
-    <ion-item>
-      <ion-label>
-        <p class="ion-text-wrap">
-          {{ 'what kind of transaction do you want to create?' | translate }}
-        </p>
-      </ion-label>
-    </ion-item>
-
-    <ion-card>
+<ion-content class="no-padding">
+  <ion-card style="padding: 0;">
+    <form [formGroup]="multisigForm" (ngSubmit)="doNext()" novalidate>
+    
+      <ion-item lines="none" class="form-item">
+        <ion-label>
+          <p class="ion-text-wrap">
+            {{ 'what kind of transaction do you want to create?' | translate }}
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" class="form-item">
+        <ion-select style="max-width: 100% !important; border: #cccccc 1px solid " interface="popover" formControlName="trxType" (ionChange)="changeTrx()">
+          <ion-select-option [value]="type.code" *ngFor="let type of txType; let idx = index">
+            {{ type.type | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+  
+      <ion-item lines="none" class="form-item">
+        <ion-label>
+          <p class="ion-text-wrap">{{"how do you want multi signature to be executed?" | translate}}?</p>
+          <ion-radio-group allow-empty-selection="true" name="radio-group" formControlName="chainType"
+            (ionChange)="radioGroupChange()">
+  
+            <ion-item lines="none">
+              <ion-radio value="onchain"></ion-radio>
+              <ion-text>&nbsp;&nbsp;{{"onchain multi signature" | translate}}</ion-text>
+            </ion-item>
+  
+            <ion-item lines="none">
+              <ion-radio value="offchain"></ion-radio>
+              <ion-text>&nbsp;&nbsp;{{"offchain multi signature"| translate}}</ion-text>
+            </ion-item>
+  
+          </ion-radio-group>
+        </ion-label>
+      </ion-item>
       <ion-card-content>
-        <ion-item>
-          <ion-select interface="popover" formControlName="trxType" (ionChange)="changeTrx()">
-            <ion-select-option [value]="type.code" *ngFor="let type of txType; let idx = index">
-              {{ type.type | translate }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item>
-          <ion-label>
-            <p>{{"how do you want multi signature to be executed?" | translate}}?</p>
-            <ion-radio-group allow-empty-selection="true" name="radio-group" formControlName="chainType"
-              (ionChange)="radioGroupChange()">
-
-              <ion-item>
-                <ion-label>{{"onchain multi signature" | translate}}</ion-label>
-                <ion-radio slot="start" value="onchain"></ion-radio>
-              </ion-item>
-
-              <ion-item>
-                <ion-label>{{"offchain multi signature"| translate}}</ion-label>
-                <ion-radio slot="start" value="offchain"></ion-radio>
-              </ion-item>
-
-            </ion-radio-group>
-          </ion-label>
-        </ion-item>
-        <ion-item class="ion-text-right ion-no-border">
-          <ion-button slot="end" color="tertiary" type="submit" 
-          size="default" [disabled]="multisigForm.invalid">
-            {{ 'next' | translate }}
-          </ion-button>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
-  </form>
-
+      <ion-button expand="block" color="tertiary" type="submit" [disabled]="multisigForm.invalid">
+        {{ 'next' | translate }}
+      </ion-button>
+    </ion-card-content>
+    </form>
+  </ion-card>
+  <ion-item>
+    <ion-button (click)="importDraft()" color="tertiary" size="default" expand="block">{{'sign a transaction' | translate}}</ion-button>
+  </ion-item>
   <ion-item>
     <h5>{{ 'multisignature drafts' | translate }}</h5>
-    <ion-button (click)="importDraft()" size="default" slot="end">{{'sign a transaction' | translate}}</ion-button>
   </ion-item>
 </ion-content>
