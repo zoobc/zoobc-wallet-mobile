@@ -12,16 +12,16 @@ export class LanguageService {
 
   constructor(
     private translate: TranslateService,
-    private strgSrv: StoragedevService  ) {    
+    private strgSrv: StoragedevService  ) {
   }
 
   private languages = LANGUAGES;
 
   setInitialAppLanguage() {
-    this.translate.setDefaultLang("en");
+    this.translate.setDefaultLang('en');
 
     const language = this.translate.getBrowserLang();
-    
+
     this.setLanguage(language);
 
     // check if have selected language
@@ -32,7 +32,7 @@ export class LanguageService {
     });
   }
 
-  getOne(languageCode: string){
+  getOne(languageCode: string) {
     return this.languages.find(e => e.code === languageCode);
   }
 
@@ -41,7 +41,7 @@ export class LanguageService {
     this.strgSrv.set(SELECTED_LANGUAGE, lng);
   }
 
-  broadcastSelectLanguage(language:any) {
-    this.selectLanguageSubject.next(language)
+  broadcastSelectLanguage(language: any) {
+    this.selectLanguageSubject.next(language);
   }
 }

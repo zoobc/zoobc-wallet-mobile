@@ -3,12 +3,14 @@ import {
   STORAGE_ALL_ACCOUNTS,
   STORAGE_CURRENT_ACCOUNT,
   STORAGE_ENC_PASSPHRASE_SEED,
-  SALT_PASSPHRASE
+  SALT_PASSPHRASE,
+  ACC_TYPE_MULTISIG,
+  STORAGE_CURRENT_ACCOUNT_MULTISIG
 } from 'src/environments/variable.const';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { StoragedevService } from './storagedev.service';
 import { Account } from '../Interfaces/account';
-import zoobc, { MultiSigAddress, ZooKeyring, getZBCAddress } from 'zoobc-sdk';
+import zoobc, { MultiSigAddress, ZooKeyring, getZBCAddress, BIP32Interface } from 'zoobc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -20,16 +22,16 @@ export class AccountService {
   private arrayPhrase = [];
   private plainPin: string;
   keyring: ZooKeyring;
+  private seed: BIP32Interface;
   willRestoreAccounts: boolean;
   private totalAccountLoaded = 20;
-
-  constructor(
-    private strgSrv: StoragedevService) { }
-
   public accountSubject: Subject<Account> = new Subject<Account>();
   public recipientSubject: Subject<Account> = new Subject<Account>();
   public approverSubject: Subject<Account> = new Subject<Account>();
   public senderSubject: Subject<Account> = new Subject<Account>();
+
+  constructor(private strgSrv: StoragedevService) { }
+
 
   setForWhat(arg: string) {
     this.forWhat = arg;
@@ -67,7 +69,7 @@ export class AccountService {
 
   async allAccount(type?: 'normal' | 'multisig') {
     const allAccount: Account[] = await this.strgSrv
-      .get(STORAGE_ALL_ACCOUNTS)
+      .getObject(STORAGE_ALL_ACCOUNTS)
       .then(accounts => {
         if (accounts == null) {
           return null;
@@ -84,9 +86,10 @@ export class AccountService {
   }
 
   async removeAllAccounts() {
-    await this.strgSrv.remove(STORAGE_CURRENT_ACCOUNT);
-    await this.strgSrv.remove(STORAGE_ENC_PASSPHRASE_SEED);
-    await this.strgSrv.remove(STORAGE_ALL_ACCOUNTS);
+    this.strgSrv.remove(STORAGE_CURRENT_ACCOUNT);
+    this.strgSrv.remove(STORAGE_CURRENT_ACCOUNT_MULTISIG);
+    this.strgSrv.remove(STORAGE_ENC_PASSPHRASE_SEED);
+    this.strgSrv.remove(STORAGE_ALL_ACCOUNTS);
   }
 
   async generateDerivationPath(): Promise<number> {
@@ -98,7 +101,7 @@ export class AccountService {
   }
 
   async setActiveAccount(account: Account) {
-    await this.strgSrv.set(STORAGE_CURRENT_ACCOUNT, account);
+    await this.strgSrv.setObject(STORAGE_CURRENT_ACCOUNT, account);
     this.broadCastNewAccount(account);
   }
 
@@ -123,7 +126,7 @@ export class AccountService {
 
     if (!isDuplicate) {
       accounts.push(account);
-      this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
+      this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, accounts);
       await this.setActiveAccount(account);
     }
   }
@@ -134,7 +137,7 @@ export class AccountService {
   }
 
   getCurrAccount(): Promise<Account> {
-    return this.strgSrv.get(STORAGE_CURRENT_ACCOUNT);
+    return this.strgSrv.getObject(STORAGE_CURRENT_ACCOUNT);
   }
 
   async updateAccount(account: Account) {
@@ -144,7 +147,7 @@ export class AccountService {
       const acc = accounts[i];
       if (acc.address === account.address) {
         accounts[i] = account;
-        this.strgSrv.set(STORAGE_ALL_ACCOUNTS, accounts);
+        this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, accounts);
         this.broadCastNewAccount(account);
         break;
       }
@@ -180,6 +183,7 @@ export class AccountService {
     await this.removeAllAccounts();
     const account = this.createNewAccount('Account 1', 0);
     await this.addAccount(account);
+    console.log('this.plainPassphrase: ', this.plainPassphrase);
     this.savePassphraseSeed(this.plainPassphrase, this.plainPin);
   }
 
@@ -274,6 +278,25 @@ export class AccountService {
     }
     this.willRestoreAccounts = false;
     /// add additional accounts end
+  }
+
+  switchAccount(account: Account) {
+    if (account) {
+      this.strgSrv.setObject(STORAGE_CURRENT_ACCOUNT, account);
+      if (account.type === ACC_TYPE_MULTISIG) {
+        this.strgSrv.setObject(STORAGE_CURRENT_ACCOUNT_MULTISIG, account);
+      }
+
+      if (account.path != null) {
+        this.seed = this.keyring.calcDerivationPath(account.path);
+      }
+      this.broadCastNewAccount(account);
+    }
+  }
+
+  async switchMultisigAccount() {
+    const account = await this.strgSrv.getObject(STORAGE_CURRENT_ACCOUNT_MULTISIG);
+    this.switchAccount(account);
   }
 
 }

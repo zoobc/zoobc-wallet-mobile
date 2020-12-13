@@ -54,14 +54,16 @@ export class AddressBookService {
     this.addresses = this.getAll();
   }
 
-  getAll() {
-    return this.strgSrv.get(STORAGE_ADDRESS_BOOK).catch(error => {
+  async getAll() {
+    try {
+      return this.strgSrv.getObject(STORAGE_ADDRESS_BOOK);
+    } catch (error) {
       console.log(error);
-    });
+    }
   }
 
   async getOneByIndex(index: number) {
-    const addressBooks = await this.strgSrv.get(STORAGE_ADDRESS_BOOK);
+    const addressBooks = await this.strgSrv.getObject(STORAGE_ADDRESS_BOOK);
     return addressBooks[index];
   }
 
@@ -120,7 +122,7 @@ export class AddressBookService {
 
   async update(addresses: any) {
     this.addresses = addresses;
-    await this.strgSrv.set(STORAGE_ADDRESS_BOOK, addresses);
+    await this.strgSrv.setObject(STORAGE_ADDRESS_BOOK, addresses);
   }
 
 }

@@ -32,7 +32,7 @@ export class NetworkService {
     await this.strgSrv.set(STORAGE_ACTIVE_NETWORK_IDX, idx);
   }
 
-  broadcastSelectNetwork(network: any){
+  broadcastSelectNetwork(network: any) {
     this.changeNodeSubject.next(network);
   }
 
