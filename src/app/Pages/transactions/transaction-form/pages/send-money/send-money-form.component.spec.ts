@@ -3,31 +3,22 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SendMoneyFormComponent } from './send-money-form.component';
 import {TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterTestingModule } from '@angular/router/testing';
 import { ModalController} from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireModule } from '@angular/fire';
 import { Network } from '@ionic-native/network/ngx';
 
-export const firebaseConfig = {
-  apiKey: 'put-firebase',
-  authDomain: '',
-  databaseURL: '',
-  projectId: 'mydatabaseid-XXXX',
-  storageBucket: '',
-  messagingSenderId: ''
-}
 
 describe('SendMoneyFormComponent', () => {
   let component: SendMoneyFormComponent;
   let fixture: ComponentFixture<SendMoneyFormComponent>;
 
 
-  let modalSpy = jasmine.createSpyObj('Modal', ['present']);
-  let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+  const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+  const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
 
-  modalCtrlSpy.create.and.callFake(function () {
+  // tslint:disable-next-line:only-arrow-functions
+  modalCtrlSpy.create.and.callFake(function() {
     return modalSpy;
   });
 
@@ -36,13 +27,11 @@ describe('SendMoneyFormComponent', () => {
       declarations: [SendMoneyFormComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
           TranslateModule.forRoot(),
           FormsModule,
           ReactiveFormsModule,
           RouterTestingModule,
-          IonicStorageModule.forRoot(),
-          AngularFirestoreModule
+          IonicStorageModule.forRoot()
       ],
       providers: [
         {
@@ -64,31 +53,35 @@ describe('SendMoneyFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it("init worked worked", () => {
-    let result = component.ngOnInit();
+  it('init worked worked', () => {
+    const result = component.ngOnInit();
+    // tslint:disable-next-line:no-unused-expression
     expect(Array.isArray(result)).toBeTruthy;
   });
 
-  it("show error message worked", () => {
-    let result = component.showErrorMessage(1);
+  it('show error message worked', () => {
+    const result = component.showErrorMessage(1);
+    // tslint:disable-next-line:no-unused-expression
     expect(Array.isArray(result)).toBeTruthy;
   });
 
-  it("submit worked", () => {
-    let result = component.submit();
+  it('submit worked', () => {
+    const result = component.submit();
+    // tslint:disable-next-line:no-unused-expression
     expect(Array.isArray(result)).toBeTruthy;
   });
-  it("show loading worked", () => {
-    let result = component.showLoading();
+  it('show loading worked', () => {
+    const result = component.showLoading();
+    // tslint:disable-next-line:no-unused-expression
     expect(Array.isArray(result)).toBeTruthy;
   });
-  it("set fee validation worked", () => {
-    let result = component.setFeeValidation();
+  it('set fee validation worked', () => {
+    const result = component.setFeeValidation();
+    // tslint:disable-next-line:no-unused-expression
     expect(Array.isArray(result)).toBeTruthy;
   });
   // it("set amount validation worked", () => {
   //   let result = component.setAmountValidation();
   //   expect(Array.isArray(result)).toBeTruthy;
   // });
-  
 });

@@ -25,7 +25,6 @@ import { TrxstatusPageModule } from './Pages/send-coin/modals/trxstatus/trxstatu
 import { EnterpinsendPageModule } from './Pages/send-coin/modals/enterpinsend/enterpinsend.module';
 import { TransactionDetailPageModule } from './Pages/transactions/transaction-detail/transaction-detail.module';
 import { SetupPinPageModule } from 'src/app/Pages/wallet/existing-wallet/setup-pin/setup-pin.module';
-import { fbconfig } from 'src/environments/firebaseconfig';
 import { PinBackupPageModule } from './Pages/wallet/backup-phrase/pin/pin-backup/pin-backup.module';
 import { TaskDetailPageModule } from './Pages/my-tasks/task-detail/task-detail.module';
 import { SetupPinGpPageModule } from './Pages/wallet/generate-passphrase/setup-pin-gp/setup-pin-gp.module';

@@ -1,24 +1,21 @@
 import { Currency } from 'src/app/Interfaces/currency';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = '';
-export const STORAGE_ACTIVE_CURRENCY = 'active_currency';
-export const STORAGE_ACTIVE_NETWORK_IDX = 'current_node_selected2';
-export const STORAGE_CURRENCY_RATES = 'currency_rates';
-export const STORAGE_CURRENCY_RATE = 'rate';
-export const STORAGE_ADDRESS_BOOK = 'address_book';
-export const STORAGE_ALL_ACCOUNTS = 'all_accounts';
-export const STORAGE_ALL_MULTISIG_ACCOUNTS = 'all_multisig_accounts';
-export const STORAGE_CURRENT_ACCOUNT = 'curr_account';
-export const STORAGE_MAIN_ACCOUNT = 'main_account';
-export const STORAGE_ENC_PASSPHRASE_SEED = 'encrypted_passphrase_seed';
-export const STORAGE_ESCROW_WAITING_LIST = 'escrow_waiting_list';
-export const STORAGE_MULTISIG_DRAFTS = 'multisig_drafts';
-export const STORAGE_ACTIVE_THEME = 'storage_active_theme6';
+export const STORAGE_ACTIVE_CURRENCY = 'strg_active_currency';
+export const STORAGE_ACTIVE_NETWORK_IDX = 'strg_current_node_selected';
+export const STORAGE_CURRENCY_RATES = 'strg_currency_rates';
+export const STORAGE_CURRENCY_RATE = 'strg_rate';
+export const STORAGE_ADDRESS_BOOK = 'strg_address_book';
+export const STORAGE_ALL_ACCOUNTS = 'strg_all_accounts';
+export const STORAGE_ALL_MULTISIG_ACCOUNTS = 'strg_all_multisig_accounts';
+export const STORAGE_CURRENT_ACCOUNT = 'strg_curr_account';
+export const STORAGE_CURRENT_ACCOUNT_MULTISIG = 'strg_curr_account_multisig';
+export const STORAGE_MAIN_ACCOUNT = 'strg_main_account';
+export const STORAGE_ENC_PASSPHRASE_SEED = 'strg_encrypted_passphrase_seed';
+export const STORAGE_ESCROW_WAITING_LIST = 'strg_escrow_waiting_list';
+export const STORAGE_MULTISIG_DRAFTS = 'strg_multisig_drafts';
+export const STORAGE_ACTIVE_THEME = 'strg_storage_active_theme6';
 export const DEFAULT_THEME = 'zoobc';
-export const FIREBASE_ADDRESS_BOOK = 'address_book_backup';
-export const FIREBASE_DEVICES = 'devices';
-export const FIREBASE_CHAT = 'chats';
-export const FIREBASE_CHAT_USER = 'chatusers';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
 export const TRANSACTION_MINIMUM_FEE = 0.01;
@@ -35,7 +32,8 @@ export const EMPTY_STRING = '';
 export const CONST_DEFAULT_CURRENCY = 'USD';
 export const CONST_UNKNOWN_NAME = 'Unknown';
 export const BLOCKCHAIN_BLOG_URL = 'https://blogchainzoo.com';
-
+export const ACC_TYPE_MULTISIG = 'multisig';
+export const ACC_TYPE_NORMAL = 'normal';
 export const CONST_DEFAULT_RATE: Currency = {
   name: CONST_DEFAULT_CURRENCY,
   value: 1,
@@ -252,7 +250,7 @@ export const NETWORK_LIST = [
     name: 'Exp3',
     host: 'http://45.79.35.137:7000'
   },
-  
+
   // {
   //   name: 'Demo 3 (x.x.246.90)',
   //   host: 'http://85.90.246.90:8002'
