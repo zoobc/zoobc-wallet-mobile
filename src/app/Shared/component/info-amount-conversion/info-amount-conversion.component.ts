@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CurrencyService } from 'src/app/Services/currency.service';
+import { COIN_CODE, CONST_DEFAULT_CURRENCY } from 'src/environments/variable.const';
 
 enum OtherCurrencyDecoration {
   BRACKET,
@@ -23,8 +24,8 @@ export class InfoAmountConversionComponent implements OnInit, OnChanges {
   setOtherValue() {
     this.otherValue = this.currencySrv.convertCurrency(
       this.value,
-      'ZBC',
-      'USD'
+      COIN_CODE,
+      CONST_DEFAULT_CURRENCY
     );
   }
 

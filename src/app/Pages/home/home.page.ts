@@ -18,7 +18,6 @@ import {
   DEFAULT_THEME
 } from 'src/environments/variable.const';
 import { ThemeService } from 'src/app/Services/theme.service';
-import { FcmIdentity } from 'src/app/Interfaces/fcm-identity';
 import { Currency } from 'src/app/Interfaces/currency';
 import { DecimalPipe } from '@angular/common';
 import { NetworkService } from 'src/app/Services/network.service';
@@ -101,8 +100,6 @@ export class HomePage implements OnInit, OnDestroy {
   }
   timeLeft = 12;
   interval: any;
-
-  identity: FcmIdentity;
   clickSub: any;
   public offset: number;
 

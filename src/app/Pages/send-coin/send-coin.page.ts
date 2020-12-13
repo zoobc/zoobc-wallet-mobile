@@ -381,7 +381,7 @@ export class SendCoinPage implements OnInit {
           const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
           this.account.balance = blnc;
 
-          this.balanceInUSD = this.currencyService.convertCurrency(blnc, 'ZBC', 'USD');
+          this.balanceInUSD = this.currencyService.convertCurrency(blnc, COIN_CODE, CONST_DEFAULT_CURRENCY);
           this.setAmountValidation();
 
         }
@@ -403,12 +403,12 @@ export class SendCoinPage implements OnInit {
     this.conversionValue.amount.ZBC = this.currencyService.convertCurrency(
       amount,
       amountCurr,
-      'ZBC'
+      COIN_CODE
     );
     this.conversionValue.amount.USD = this.currencyService.convertCurrency(
       amount,
       amountCurr,
-      'USD'
+      CONST_DEFAULT_CURRENCY
     );
   }
 
@@ -418,20 +418,20 @@ export class SendCoinPage implements OnInit {
     this.conversionValue.fee.ZBC = this.currencyService.convertCurrency(
       fee,
       feeCurr,
-      'ZBC'
+      COIN_CODE
     );
     this.conversionValue.fee.USD = this.currencyService.convertCurrency(
       fee,
       feeCurr,
-      'USD'
+      CONST_DEFAULT_CURRENCY
     );
 
     this.setAmountValidation();
   }
 
-  onEscrowTimeoutChange(){
+  onEscrowTimeoutChange() {
 
-    this.minimumFee = calculateMinFee(this.escrowTimeout.value)
+    this.minimumFee = calculateMinFee(this.escrowTimeout.value);
 
     this.setFeeValidation();
     this.setAmountValidation();
@@ -441,11 +441,12 @@ export class SendCoinPage implements OnInit {
     this.setAmountValidation();
   }
 
-  setAmountValidation(){
+  setAmountValidation() {
     this.amount.setValidators([Validators.required, Validators.min(0.00000001),
-      Validators.max(this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC?this.minimumFee:this.conversionValue.fee.ZBC) 
+      Validators.max(this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC ?
+        this.minimumFee : this.conversionValue.fee.ZBC)
         - this.escrowCommision.value)]
-        )
+        );
     this.amount.updateValueAndValidity();
   }
 

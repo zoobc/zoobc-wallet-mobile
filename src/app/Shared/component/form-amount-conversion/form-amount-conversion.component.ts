@@ -1,6 +1,7 @@
 import { Component, forwardRef, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CurrencyService } from 'src/app/Services/currency.service';
+import { COIN_CODE, CONST_DEFAULT_CURRENCY } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-form-amount-conversion',
@@ -16,6 +17,9 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 })
 export class FormAmountConversionComponent
   implements OnInit, ControlValueAccessor {
+
+  coinCode = COIN_CODE;
+  currencyCode =  CONST_DEFAULT_CURRENCY;
   constructor(private currencySrv: CurrencyService) {}
 
   conversionAmount = {
@@ -25,47 +29,31 @@ export class FormAmountConversionComponent
 
   ngOnInit() {}
 
-  /*switchCurrency() {
-    const first = this.primaryCurr.slice();
-    if (first === COIN_CODE) {
-      this.primaryCurr = this.currencyRate.name;
-      this.secondaryCurr = COIN_CODE;
-    } else {
-      this.primaryCurr = COIN_CODE;
-      this.secondaryCurr = this.currencyRate.name;
-    }
-
-    this.onAmountChange();
-    this.onFeeChange();
-  }*/
-
   changeAmount = (currency: string) => {
-    const _amount = this.conversionAmount[currency];
-    console.log('__currency', currency);
-
-    if (currency === 'ZBC') {
+    const amount = this.conversionAmount[currency];
+    if (currency === COIN_CODE) {
       this.conversionAmount.USD = this.currencySrv.convertCurrency(
-        _amount,
+        amount,
         currency,
-        'USD'
+        CONST_DEFAULT_CURRENCY
       );
-    } else if (currency === 'USD') {
+    } else if (currency === CONST_DEFAULT_CURRENCY) {
       this.conversionAmount.ZBC = this.currencySrv.convertCurrency(
-        _amount,
+        amount,
         currency,
-        'ZBC'
+        COIN_CODE
       );
     }
 
     this.onChange(this.conversionAmount.ZBC);
-  };
+  }
 
   onChange = (value: number) => {};
 
   onTouched = () => {};
 
   writeValue(value: number) {
-    //this.amount = value;
+    // this.amount = value;
   }
 
   registerOnChange(fn: (value: number) => void) {

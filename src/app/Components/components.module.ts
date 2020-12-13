@@ -1,12 +1,12 @@
 
 import { NgModule } from '@angular/core';
-import { PinComponent } from './pin/pin.component'; 
+import { PinComponent } from './pin/pin.component';
 import { IonicModule } from '@ionic/angular';
-import { SidemenuComponent } from './sidemenu/sidemenu.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { CurrencyComponent } from './currency/currency.component';
+import { InputAmountComponent } from './input-amount/input-amount.component';
 
 @NgModule({
     imports: [
@@ -17,13 +17,11 @@ import { CurrencyComponent } from './currency/currency.component';
     ],
     declarations: [
         PinComponent,
-        CurrencyComponent,
-        SidemenuComponent
+        CurrencyComponent
     ],
     exports: [
         PinComponent,
-        CurrencyComponent,
-        SidemenuComponent
+        CurrencyComponent
     ]
 })
 export class ComponentsModule {

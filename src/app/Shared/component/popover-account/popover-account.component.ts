@@ -25,7 +25,7 @@ export class PopoverAccountComponent implements OnInit {
     const accounts: Account[] = await this.accountSrv.allAccount();
     if (this.accountType) {
       this.accounts = accounts.filter((account: Account) => {
-        return account.type && account.type == this.accountType;
+        return account.type && account.type === this.accountType;
       });
     } else {
       this.accounts = accounts;

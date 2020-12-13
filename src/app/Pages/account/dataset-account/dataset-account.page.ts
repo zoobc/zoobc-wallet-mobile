@@ -8,7 +8,7 @@ import { Account } from 'src/app/Interfaces/account';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AccountService } from 'src/app/Services/account.service';
 import { CurrencyService } from 'src/app/Services/currency.service';
-import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
+import { COIN_CODE, TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { truncate } from 'src/Helpers/utils';
 import zoobc, { AccountDatasetListParams, AccountDatasetsResponse, BIP32Interface, RemoveDatasetInterface } from 'zoobc-sdk';
 import { NewDatasetPage } from './new-dataset/new-dataset.page';
@@ -33,7 +33,7 @@ export class DatasetAccountPage implements OnInit {
   formDataset: FormGroup;
   feeForm = new FormControl(this.minFee, [Validators.required, Validators.min(this.minFee)]);
   feeFormCurr = new FormControl('', Validators.required);
-  typeFeeField = new FormControl('ZBC');
+  typeFeeField = new FormControl(COIN_CODE);
 
   constructor(
     private activeRoute: ActivatedRoute,

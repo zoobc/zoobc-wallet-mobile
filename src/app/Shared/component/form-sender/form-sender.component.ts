@@ -40,6 +40,9 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
   }
 
   async switchAccount(ev: any) {
+    if (this.accountType !== 'normal') {
+      return;
+    }
     const popover = await this.popoverCtrl.create({
       component: PopoverAccountComponent,
       event: ev,

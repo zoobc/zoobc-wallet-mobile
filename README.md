@@ -6,7 +6,6 @@ ZooBC wallet is a mobile application that is able to connect with the ZooBC bloc
 ## Frameworks
   - Ionic Framework v4
   - Angluar 7
-  - Firebase
   - Android SDK (for Android)
   - XCode (for iOs)
 
