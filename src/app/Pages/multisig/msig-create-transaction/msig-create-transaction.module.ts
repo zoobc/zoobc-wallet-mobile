@@ -8,10 +8,17 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AddressBookComponentModule } from 'src/app/Components/address-book/address-book-list/address-book.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CurrencyComponent } from 'src/app/Components/currency/currency.component';
-
-
 import { MsigCreateTransactionPage } from './msig-create-transaction.page';
 import { SharedModule } from 'src/app/Shared/shared.module';
+import { FormEscrowComponent } from 'src/app/Components/transactions/form-escrow/form-escrow.component';
+import { FormSendMoneyComponent } from 'src/app/Components/transactions/form-send-money/form-send-money.component';
+// tslint:disable-next-line:max-line-length
+import { FormSetupAccountDatasetComponent } from 'src/app/Components/transactions/form-setup-account-dataset/form-setup-account-dataset.component';
+import { FormEscrowApprovalComponent } from 'src/app/Components/transactions/form-escrow-approval/form-escrow-approval.component';
+// tslint:disable-next-line:max-line-length
+import { FormRemoveAccountDatasetComponent } from 'src/app/Components/transactions/form-remove-account-dataset/form-remove-account-dataset.component';
+import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
+import { InputAmountComponent } from 'src/app/Components/input-amount/input-amount.component';
 
 const routes: Routes = [
   {
@@ -32,7 +39,21 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     AddressBookComponentModule
   ],
-  entryComponents: [CurrencyComponent],
-  declarations: [MsigCreateTransactionPage]
+  entryComponents: [
+    CurrencyComponent,
+    FormEscrowComponent,
+    FormSendMoneyComponent,
+    FormSetupAccountDatasetComponent,
+    FormRemoveAccountDatasetComponent,
+    FormEscrowApprovalComponent,
+    PopoverAccountComponent
+  ],
+  declarations: [
+    MsigCreateTransactionPage,
+    FormEscrowComponent,
+    FormSendMoneyComponent,
+    FormSetupAccountDatasetComponent,
+    FormRemoveAccountDatasetComponent,
+    FormEscrowApprovalComponent]
 })
 export class MsigCreateTransactionPageModule {}
