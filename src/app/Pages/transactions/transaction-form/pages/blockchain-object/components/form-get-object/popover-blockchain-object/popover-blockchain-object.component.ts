@@ -1,7 +1,7 @@
 import { Component,  OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
-import { IBlockchainObjectItem } from '../../../helpers/interface';
+import { IBlockchainObjectItem } from 'src/app/Interfaces/bc-object-item';
 
 @Component({
   selector: 'app-popover-blockchain-object',
@@ -12,20 +12,20 @@ export class PopoverBlockchainObjectComponent implements OnInit {
   selectedIndex: number;
 
   blockchainObjectItems: IBlockchainObjectItem[]= [{
-    title: "ZBO_F6CR...WD3R",
-    desc: "2 minutes ago"
+    title: 'ZBO_F6CR...WD3R',
+    desc: '2 minutes ago'
   },
   {
-    title: "ZBO_F6CR...WFJ7",
-    desc: "10 minutes ago"
+    title: 'ZBO_F6CR...WFJ7',
+    desc: '10 minutes ago'
   },
   {
-    title: "ZBO_F6CR...OP6Y",
-    desc: "2 days ago"
+    title: 'ZBO_F6CR...OP6Y',
+    desc: '2 days ago'
   },
   {
-    title: "ZBO_F6CR...JK7Y",
-    desc: "1 week ago"
+    title: 'ZBO_F6CR...JK7Y',
+    desc: '1 week ago'
   }];
 
   constructor(

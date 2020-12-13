@@ -1,17 +1,18 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class ConverterService {
-  constructor() {}
+  constructor() { }
 
   stringToArrayByte(str) {
-    str = unescape(encodeURIComponent(str)); //temporary
+    str = unescape(encodeURIComponent(str)); // temporary
 
-    var bytes = new Array(str.length);
-    for (var i = 0; i < str.length; ++i)
-        bytes[i] = str.charCodeAt(i);
+    const bytes = new Array(str.length);
+    for (let i = 0; i < str.length; ++i) {
+      bytes[i] = str.charCodeAt(i);
+    }
 
     return Uint8Array.from(bytes);
   }

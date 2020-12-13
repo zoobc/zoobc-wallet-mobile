@@ -10,7 +10,6 @@ import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { UtilService } from 'src/app/Services/util.service';
-import { sanitizeString } from 'src/Helpers/utils';
 
 @Component({
   selector: 'app-edit-account',
@@ -187,7 +186,7 @@ export class EditAccountPage implements OnInit {
       return;
     }
 
-    this.account.name = sanitizeString(this.account.name);
+    this.account.name = (this.account.name);
     this.accountService.updateAccount(this.account);
     this.accountService.broadCastNewAccount(this.account);
     this.goListAccount();

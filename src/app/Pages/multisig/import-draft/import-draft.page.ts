@@ -34,7 +34,7 @@ export class ImportDraftPage implements OnInit {
     return false;
   }
 
-  public uploadFile(files: FileList) {
+  public async uploadFile(files: FileList) {
     if (files && files.length > 0) {
       const file = files.item(0);
       const fileReader: FileReader = new FileReader();
@@ -47,7 +47,7 @@ export class ImportDraftPage implements OnInit {
           this.presentAlert('Opps...', message);
         } else {
           this.multisigServ.update(fileResult);
-          const listdraft = this.multisigServ.getDrafts();
+          const listdraft = await this.multisigServ.getDrafts();
           const checkExistDraft = listdraft.some(
             res => res.id === fileResult.id
           );
@@ -90,7 +90,7 @@ export class ImportDraftPage implements OnInit {
 
     this.isMultiSignature = this.account.type !== 'multisig' ? false : true;
 
-    const drafts = this.multisigServ.getDrafts();
+    const drafts = await this.multisigServ.getDrafts();
     console.log('=== Drfts: ', drafts);
     if (drafts) {
       this.multiSigDrafts = drafts;

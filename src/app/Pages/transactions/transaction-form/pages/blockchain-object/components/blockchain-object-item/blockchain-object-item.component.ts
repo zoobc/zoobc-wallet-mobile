@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IBlockchainObjectItem } from '../../helpers/interface';
+import { IBlockchainObjectItem } from 'src/app/Interfaces/bc-object-item';
 
 @Component({
   selector: 'app-blockchain-object-item',

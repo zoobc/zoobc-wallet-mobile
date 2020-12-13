@@ -1,10 +1,12 @@
 import { AbstractControl } from '@angular/forms';
+import { COIN_CODE } from 'src/environments/variable.const';
 import { base64ToByteArray } from './converters';
 
 export function addressFormatValidator(
   control: AbstractControl
 ): { [key: string]: boolean } | null {
-  return (control.value && (base64ToByteArray(control.value).length !== 49 || !control.value.startsWith("ZBC") || control.value.length < 66))
+  return (control.value && (base64ToByteArray(control.value).length !== 49
+  || !control.value.startsWith(COIN_CODE) || control.value.length < 66))
     ? { addressFormat: true }
     : null;
 }
@@ -16,7 +18,7 @@ export function addressValidator(
     control.value &&
     control.value.address &&
     (base64ToByteArray(control.value.address).length !== 49 ||
-      !control.value.address.startsWith('ZBC') ||
+      !control.value.address.startsWith(COIN_CODE) ||
       control.value.address.length < 66)
   ) {
     return { addressFormat: true };
@@ -31,15 +33,14 @@ export function escrowFieldsValidator(
   control: AbstractControl
 ): { [key: string]: boolean } | null {
   const errors: any = {};
-  
   if (control.value && ( !control.value.approver || !control.value.approver.address)) {
     errors.approverAddressRequired = true;
-  }else if (
+  } else if (
     control.value &&
     control.value.approver &&
     control.value.approver.address &&
     (base64ToByteArray(control.value.approver.address).length !== 49 ||
-      !control.value.approver.address.startsWith('ZBC') ||
+      !control.value.approver.address.startsWith(COIN_CODE) ||
       control.value.approver.address.length < 66)
   ) {
     errors.approverAddressFormat = true;

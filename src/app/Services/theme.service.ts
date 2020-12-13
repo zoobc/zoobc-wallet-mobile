@@ -69,7 +69,7 @@ export class ThemeService {
       dbspbalance: '#6E6E6E'
     }
   };
-  
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private strgSrv: StoragedevService
@@ -96,8 +96,8 @@ export class ThemeService {
     this.themeSubject.next(this.theme);
   }
 
-  broadcastSelectTheme(value: string){
-    this.selectThemeSubject.next(value)
+  broadcastSelectTheme(value: string) {
+    this.selectThemeSubject.next(value);
   }
   // Define a single CSS variable
   setVariable(name: string, value: string) {

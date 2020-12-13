@@ -7,7 +7,7 @@ import { AccountService } from 'src/app/Services/account.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { environment } from 'src/environments/environment';
-import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
+import { COIN_CODE, TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-new-dataset',
@@ -30,7 +30,7 @@ export class NewDatasetPage implements OnInit {
   feeForm = new FormControl(this.minFee, [Validators.required, Validators.min(this.minFee)]);
   feeFormCurr = new FormControl('', Validators.required);
   timeoutField = new FormControl('', [Validators.required, Validators.min(1), Validators.max(720)]);
-  typeFeeField = new FormControl('ZBC');
+  typeFeeField = new FormControl(COIN_CODE);
 
   constructor(
     private currencyServ: CurrencyService,

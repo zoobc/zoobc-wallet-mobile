@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { STORAGE_MULTISIG_DRAFTS } from 'src/environments/variable.const';
 import { TransactionType } from 'zoobc-sdk';
 import { MultiSigDraft } from '../Interfaces/multisig';
+import { StoragedevService } from './storagedev.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,25 +17,23 @@ export class MultisigService {
     txType: TransactionType.SENDMONEYTRANSACTION,
   };
 
-
   multisigDraft: MultiSigDraft;
-
   private sourceMultisig = new BehaviorSubject<MultiSigDraft>({ ...this.multisigTemplate });
   multisig = this.sourceMultisig.asObservable();
 
-  constructor() {}
+  constructor(private strgSrv: StoragedevService) { }
 
   update(multisig: MultiSigDraft) {
     this.multisigDraft = multisig;
     this.sourceMultisig.next(multisig);
   }
 
-  getDrafts(): MultiSigDraft[] {
-    return JSON.parse(localStorage.getItem(STORAGE_MULTISIG_DRAFTS));
+  getDrafts() {
+    return this.strgSrv.getObject(STORAGE_MULTISIG_DRAFTS);
   }
 
-  saveDraft() {
-    let multisigDrafts = this.getDrafts();
+  async saveDraft() {
+    let multisigDrafts = await this.getDrafts();
     let len = 0;
     if (multisigDrafts) {
       len = multisigDrafts.length;
@@ -43,25 +42,25 @@ export class MultisigService {
     }
     this.sourceMultisig.value.id = new Date().getTime();
     multisigDrafts[len] = this.sourceMultisig.value;
-    localStorage.setItem(STORAGE_MULTISIG_DRAFTS, JSON.stringify(multisigDrafts));
+    await this.strgSrv.setObject(STORAGE_MULTISIG_DRAFTS, multisigDrafts);
   }
 
-  editDraft() {
-    const multisigDrafts = this.getDrafts();
+  async editDraft() {
+    const multisigDrafts = await this.getDrafts();
     for (let i = 0; i < multisigDrafts.length; i++) {
       const multisig = multisigDrafts[i];
       if (multisig.id === this.sourceMultisig.value.id) {
         multisigDrafts[i] = this.sourceMultisig.value;
-        localStorage.setItem(STORAGE_MULTISIG_DRAFTS, JSON.stringify(multisigDrafts));
+        await this.strgSrv.setObject(STORAGE_MULTISIG_DRAFTS, multisigDrafts);
         break;
       }
     }
   }
 
-  deleteDraft(idx: number) {
-    let multisigDrafts = this.getDrafts();
+  async deleteDraft(idx: number) {
+    let multisigDrafts = await this.getDrafts();
     multisigDrafts = multisigDrafts.filter(draft => draft.id !== idx);
-    localStorage.setItem(STORAGE_MULTISIG_DRAFTS, JSON.stringify(multisigDrafts));
+    await this.strgSrv.setObject(STORAGE_MULTISIG_DRAFTS, multisigDrafts);
   }
 
 }

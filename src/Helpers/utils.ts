@@ -1,26 +1,9 @@
 import { TranslateService } from '@ngx-translate/core';
 import {
-  toBase64Url,
   base64ToByteArray,
   fromBase64Url,
 } from './converters';
 
-// getAddressFromPublicKey Get the formatted address from a raw public key
-export function getAddressFromPublicKey(publicKey: Uint8Array): string {
-  const checksum = getChecksumByte(publicKey);
-  let binary = '';
-  const bytes = new Uint8Array(33);
-  bytes.set(publicKey, 0);
-  bytes.set([checksum[0]], 32);
-
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  const address = toBase64Url(window.btoa(binary));
-
-  return address;
-}
 
 export function getTranslation(
   value: string,
@@ -33,21 +16,6 @@ export function getTranslation(
     message = res;
   });
   return message;
-}
-
-export function sanitizeString(str) {
-  str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim, '');
-  return str.trim();
-}
-
-export function getChecksumByte(bytes): any {
-  const n = bytes.length;
-  let a = 0;
-  for (let i = 0; i < n; i++) {
-    a += bytes[i];
-  }
-  const res = new Uint8Array([a]);
-  return res;
 }
 
 export function stringToBuffer(str: string) {
@@ -145,4 +113,12 @@ export function jsonBufferToString(buf: any) {
   }
 }
 
+export function calcMinFee(data: any) {
+  const blockPeriod = 10 * 1e8;
+  const feePerBlockPeriod = 0.01 * 1e8;
+
+  if (data.timeout) {
+    return (Math.ceil((data.timeout * 1e8) / blockPeriod) * feePerBlockPeriod) / 1e8;
+  } else { return feePerBlockPeriod / 1e8; }
+}
 
