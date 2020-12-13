@@ -113,4 +113,12 @@ export function jsonBufferToString(buf: any) {
   }
 }
 
+export function calcMinFee(data: any) {
+  const blockPeriod = 10 * 1e8;
+  const feePerBlockPeriod = 0.01 * 1e8;
+
+  if (data.timeout) {
+    return (Math.ceil((data.timeout * 1e8) / blockPeriod) * feePerBlockPeriod) / 1e8;
+  } else { return feePerBlockPeriod / 1e8; }
+}
 

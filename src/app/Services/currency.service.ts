@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
-import { STORAGE_CURRENCY_RATE, STORAGE_ACTIVE_CURRENCY, CURRENCY_LIST, CONST_DEFAULT_RATE } from 'src/environments/variable.const';
+import { STORAGE_CURRENCY_RATE, STORAGE_ACTIVE_CURRENCY,
+  CURRENCY_LIST, CONST_DEFAULT_RATE, CONST_DEFAULT_CURRENCY } from 'src/environments/variable.const';
 import { StoragedevService } from './storagedev.service';
 import { Currency } from '../Interfaces/currency';
 
@@ -14,7 +15,7 @@ export interface ICurrency {
 const currencies: ICurrency[] = [
   {
     name: 'United States Dollars',
-    code: 'USD'
+    code: CONST_DEFAULT_CURRENCY
   },
 ];
 
