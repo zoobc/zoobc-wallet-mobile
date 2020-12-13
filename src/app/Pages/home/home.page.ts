@@ -34,7 +34,7 @@ import zoobc, {
   TransactionType
 } from 'zoobc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
+import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 import { PopoverBlockchainObjectOptionComponent } from './popover-blockchain-object-option/popover-blockchain-object-option.component';
 
 @Component({

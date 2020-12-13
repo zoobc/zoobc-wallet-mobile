@@ -5,9 +5,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { CreateAccountPage } from './create-account.page';
-import { SharedModule } from 'src/app/Shared/shared.module';
-import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
-import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
+import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
 const routes: Routes = [
   {
@@ -24,9 +24,9 @@ const routes: Routes = [
     IonicModule,
     TranslateModule,
     RouterModule.forChild(routes),
-    SharedModule
+    ComponentsModule
   ],
   declarations: [CreateAccountPage],
-  entryComponents:[PopoverOptionComponent, PopoverAccountComponent]
+  entryComponents: [PopoverOptionComponent, PopoverAccountComponent]
 })
 export class CreateAccountPageModule {}

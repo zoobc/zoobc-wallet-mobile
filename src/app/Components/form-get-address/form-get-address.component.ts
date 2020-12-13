@@ -7,8 +7,8 @@ import { Account } from 'src/app/Interfaces/account';
 import { Contact } from 'src/app/Interfaces/contact';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
-import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
-import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
+import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
 
 @Component({
   selector: 'app-form-get-address',

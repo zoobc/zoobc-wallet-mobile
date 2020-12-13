@@ -10,7 +10,7 @@ import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { ImportAccountPage } from './import-account/import-account.page';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { UtilService } from 'src/app/Services/util.service';
-import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
 import { PopoverActionComponent } from './popover-action/popover-action.component';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 

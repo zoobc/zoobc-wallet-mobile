@@ -9,7 +9,6 @@ import { MsigSendTransactionPage } from './msig-send-transaction.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddressBookComponentModule } from 'src/app/Components/address-book/address-book-list/address-book.module';
 import { ComponentsModule } from 'src/app/Components/components.module';
-import { SharedModule } from 'src/app/Shared/shared.module';
 
 const routes: Routes = [
   {
@@ -26,7 +25,7 @@ const routes: Routes = [
     ComponentsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SharedModule,
+    ComponentsModule,
     RouterModule.forChild(routes),
     AddressBookComponentModule
 
