@@ -6,8 +6,8 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { PopoverController } from '@ionic/angular';
+import { IBlockchainObjectItem } from 'src/app/Interfaces/bc-object-item';
 import { PopoverBlockchainObjectComponent } from './popover-blockchain-object/popover-blockchain-object.component';
-import { IBlockchainObjectItem } from '../../helpers/interface';
 
 @Component({
   selector: 'app-form-get-object',
@@ -24,8 +24,8 @@ import { IBlockchainObjectItem } from '../../helpers/interface';
 })
 export class FormGetObjectComponent implements OnInit, ControlValueAccessor {
   public blockchainObjectItem: IBlockchainObjectItem = {
-    title: "ZBO_F6CRZPOG_C42A7M37_WRL2EVBV_KA5PKBGI_SBGVZHMH_VIFZ7CMQ_VMOFWD3P",
-    desc: "2 minutes ago"
+    title: 'ZBO_F6CRZPOG_C42A7M37_WRL2EVBV_KA5PKBGI_SBGVZHMH_VIFZ7CMQ_VMOFWD3P',
+    desc: '2 minutes ago'
   };
 
   constructor(
