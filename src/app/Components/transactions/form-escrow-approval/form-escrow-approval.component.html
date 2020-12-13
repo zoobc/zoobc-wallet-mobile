@@ -1,0 +1,54 @@
+<ng-container [formGroup]="group">
+  <label>{{ 'approver' | translate }}</label>
+  <div style="margin-bottom: 16px;">
+    <ion-input [value]="group.get(inputMap.sender).value"></ion-input>
+  </div>
+  <ng-container *ngIf="multisig">
+
+    <ion-label>{{ 'transaction id' | translate }}</ion-label>
+    <ion-input placeholder="{{ 'transaction id' | translate }}" formControlName="{{ inputMap.transactionId }}">
+    </ion-input>
+
+
+    <ng-container *ngIf="group.get(inputMap.transactionId).touched">
+      <ion-text class="subtitle" *ngIf="group.get(inputMap.transactionId).hasError('required')">
+        {{ 'transaction id is required' | translate }}
+      </ion-text>
+    </ng-container>
+
+    <div style="margin: 16px 0 8px 0;">
+      <label>{{ 'do you confirm this escrow?' }}</label>
+    </div>
+    <ion-radio-group [formControlName]="inputMap.approvalCode">
+      <ion-item>
+        <ion-label>{{ 'confirm' | translate }}</ion-label>
+        <ion-radio [value]="0">
+
+        </ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>{{ 'reject' | translate }}</ion-label>
+        <ion-radio [value]="1"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ng-container>
+
+  <ng-container>
+    <ion-label>
+      {{ 'fee' | translate }}
+    </ion-label>
+    <ion-input formControlName="{{ inputMap.fee }}"></ion-input>
+  </ng-container>
+
+  <div *ngIf="group.get(inputMap.fee).touched && group.get(inputMap.fee).invalid">
+    <ng-container *ngIf="group.get(inputMap.fee).touched">
+      <ion-text *ngIf="group.get(inputMap.fee).hasError('required')">
+        {{ 'fee is required' | translate }}
+      </ion-text>
+      <ion-text *ngIf="group.get(inputMap.fee).hasError('min')">
+        {{ 'minimum fee is' | translate: { val: minFee } }}
+      </ion-text>
+    </ng-container>
+  </div>
+</ng-container>
