@@ -40,7 +40,7 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { PopupCurrencyPageModule } from './Pages/settings/popup-currency/popup-currency.module';
 import { PopupLanguagesPageModule } from './Pages/settings/popup-languages/popup-languages.module';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { DateAgoPipe } from './Shared/pipe/date-ago.pipe';
+import { DateAgoPipe } from './Pipes/date-ago.pipe';
 import { DatasetAccountPageModule } from './Pages/account/dataset-account/dataset-account.module';
 import { NewDatasetPageModule } from './Pages/account/dataset-account/new-dataset/new-dataset.module';
 import { AppVersion } from '@ionic-native/app-version/ngx';
