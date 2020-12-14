@@ -48,11 +48,6 @@ const routes: Routes = [
   },
   { path: 'help', loadChildren: './Pages/help/help.module#HelpPageModule' },
   {
-    path: 'notifications',
-    loadChildren:
-      './Pages/notifications/notifications.module#NotificationsPageModule'
-  },
-  {
     path: 'list-account',
     loadChildren: './Pages/account/list-account.module#ListAccountModule',
     canActivate: [AuthService]

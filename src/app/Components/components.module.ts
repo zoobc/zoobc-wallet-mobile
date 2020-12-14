@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { CurrencyComponent } from './currency/currency.component';
-import { InputAmountComponent } from './input-amount/input-amount.component';
 import { DateAgoPipe } from '../Pipes/date-ago.pipe';
 import { ExchangePipe } from '../Pipes/exchange.pipe';
 import { ShortAddressPipe } from '../Pipes/short-address.pipe';
@@ -25,7 +24,7 @@ import { WithCopyComponent } from './with-copy/with-copy.component';
 import { WithOptionsComponent } from './with-options/with-options.component';
 
 @NgModule({
-    imports: [  
+    imports: [
         CommonModule,
         FormsModule,
         IonicModule.forRoot(),
@@ -49,8 +48,7 @@ import { WithOptionsComponent } from './with-options/with-options.component';
         TransactionItemComponent,
         AccountItemComponent,
         SkeletonTransactionComponent,
-        WithOptionsComponent,
-        InputAmountComponent    
+        WithOptionsComponent
     ],
     exports: [
         PinComponent,
@@ -70,8 +68,7 @@ import { WithOptionsComponent } from './with-options/with-options.component';
         TransactionItemComponent,
         AccountItemComponent,
         SkeletonTransactionComponent,
-        WithOptionsComponent,
-        InputAmountComponent
+        WithOptionsComponent
     ],
     entryComponents: [PopoverOptionComponent]
 })
