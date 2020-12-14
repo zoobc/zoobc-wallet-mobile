@@ -17,7 +17,6 @@ import { FormEscrowApprovalComponent } from 'src/app/Components/transactions/for
 // tslint:disable-next-line:max-line-length
 import { FormRemoveAccountDatasetComponent } from 'src/app/Components/transactions/form-remove-account-dataset/form-remove-account-dataset.component';
 import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
-import { InputAmountComponent } from 'src/app/Components/input-amount/input-amount.component';
 
 const routes: Routes = [
   {
