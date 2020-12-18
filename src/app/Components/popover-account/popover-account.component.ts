@@ -13,6 +13,7 @@ import zoobc from 'zoobc-sdk';
 export class PopoverAccountComponent implements OnInit {
   accounts: Account[];
   selectedIndex: number;
+  predefList: any;
   @Input() accountType: AccountType;
 
   constructor(
@@ -22,6 +23,7 @@ export class PopoverAccountComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    console.log('Popup predefList : ', this.predefList);
     const accounts: Account[] = await this.accountSrv.allAccount();
     if (this.accountType) {
       this.accounts = accounts.filter((account: Account) => {
@@ -29,6 +31,14 @@ export class PopoverAccountComponent implements OnInit {
       });
     } else {
       this.accounts = accounts;
+    }
+
+    if (this.predefList) {
+      const list  = JSON.parse(this.predefList);
+      this.accounts = accounts.filter( acc => {// for every object in heroes
+          return list.includes(acc.address);
+      });
+      return;
     }
 
     if (this.accounts && this.accounts.length > 0) {
