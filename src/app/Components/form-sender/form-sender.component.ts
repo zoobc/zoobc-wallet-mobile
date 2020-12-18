@@ -28,33 +28,56 @@ import zoobc from 'zoobc-sdk';
 export class FormSenderComponent implements OnInit, ControlValueAccessor {
   public account: Account;
   @Input() accountType: AccountType;
+  @Input() canSwitch = 'yes';
+  @Input() switchToActive = 'yes';
+  @Input() predefList: any;
+  private disabled = false;
+
+  onChange = (value: Account) => { };
+  onTouched = () => { };
+
 
   constructor(
     private popoverCtrl: PopoverController,
     private accountSrv: AccountService
-  ) {}
+  ) { }
 
   async ngOnInit() {
-    this.account = await this.accountSrv.getCurrAccount();
+
+    if (this.predefList) {
+      const participants = JSON.parse(this.predefList);
+      this.account = await this.accountSrv.getAccount(participants[0]);
+    } else {
+      this.account = await this.accountSrv.getCurrAccount();
+    }
+
     this.getBalanceByAddress(this.account.address);
   }
 
   async switchAccount(ev: any) {
-    if (this.accountType !== 'normal') {
+    if (this.canSwitch === 'no') {
       return;
     }
+
     const popover = await this.popoverCtrl.create({
       component: PopoverAccountComponent,
       event: ev,
       cssClass: 'popover-account',
-      componentProps: { accountType: this.accountType },
+      componentProps: {
+        accountType: this.accountType,
+        predefList: this.predefList
+      },
       translucent: true
     });
 
     popover.onWillDismiss().then(async ({ data }: { data: Account }) => {
       if (data) {
         this.account = data;
-        this.accountSrv.setActiveAccount(data);
+
+        if (this.switchToActive === 'yes') {
+          this.accountSrv.setActiveAccount(data);
+        }
+
         this.getBalanceByAddress(data.address);
         this.onChange(data);
       }
@@ -68,13 +91,11 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
       .then(data => {
         this.account.balance = Number(data.accountbalance.balance);
       })
-      .catch(error => {})
-      .finally(() => {});
+      .catch(error => { })
+      .finally(() => { });
   }
 
-  onChange = (value: Account) => {};
 
-  onTouched = () => {};
 
   writeValue(value: Account) {
     this.account = value;
@@ -86,5 +107,10 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
 
   registerOnTouched(fn: () => void) {
     this.onTouched = fn;
+  }
+
+  // Allow the Angular form control to disable this input
+  setDisabledState(disabled: boolean): void {
+    this.disabled = disabled;
   }
 }
