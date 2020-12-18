@@ -4,27 +4,51 @@
       <ion-back-button> </ion-back-button>
     </ion-buttons>
     <ion-title>{{ "send money" | translate }}</ion-title>
-    <ion-buttons color="primary" slot="end">
-      <ion-button routerLink="/feedback">
-        {{"feedback" | translate }}
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
+ 
 <ion-content class="ion-padding">
+  <form [formGroup]="formSend" (submit)="onOpenConfirmDialog()">
+    
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{"sender" | translate}}</ion-label>
+      <app-form-sender formControlName="sender" accountType="normal" canSwitch="yes" switchToActive="no" *ngIf="participants" predefList="{{participants}}" ngDefaultControl></app-form-sender>
+    </ion-item>
 
-  <div *ngIf="isLoadingBalance || isLoadingTxFee">
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
+      <app-form-amount-conversion formControlName="fee" ngDefaultControl></app-form-amount-conversion>
+      <ng-container *ngIf="( fieldFee.dirty || fieldFee.touched) && fieldFee.invalid">
+        <ion-text class="text-error" *ngIf="fieldFee.errors.required">
+          {{ "transaction fee cannot be empty" | translate}}
+        </ion-text>
+        <ion-text class="text-error" *ngIf="fieldFee.errors.min">
+          {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fieldFee.errors.min.min }}
+        </ion-text>
+      </ng-container>
+    </ion-item>
+
+    
+    <ion-button color="tertiary" expand="block" (click)="saveDraft()">
+      {{ 'save' | translate }}
+    </ion-button>
+    <ion-button type="submit" expand="block" [disabled]="!formSend.valid || isLoading" color="tertiary">
+      {{ 'send' | translate }}
+    </ion-button>
+
+  </form>
+</ion-content>
+<!-- <div *ngIf="isLoadingBalance || isLoadingTxFee">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div>
-
+  </div> -->
+<!-- 
   <ion-grid>
     <ion-row>
       <ion-col size="12">
         {{ "sender" | translate }}
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="participantAccounts">
+    <ion-row *ngIf="participants">
       <ion-col size="12" style="border: 1px solid #cccccc">
         <ion-select interface="popover" [(ngModel)]="signBy" (ionChange)="changeSigner()">
           <ion-select-option *ngFor="let account of participantAccounts; let idx = index;" value="{{account.address}}">
@@ -123,5 +147,4 @@
         </ion-button>
       </ion-col>
     </ion-row>
-  </ion-grid>
-</ion-content>
+  </ion-grid> -->

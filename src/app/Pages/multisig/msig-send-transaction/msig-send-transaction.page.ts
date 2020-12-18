@@ -3,12 +3,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ACC_TYPE_MULTISIG, COIN_CODE, TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import zoobc, { AccountBalanceResponse, isZBCAddressValid,
-  MultiSigInterface } from 'zoobc-sdk';
+  MultiSigInterface, 
+  MultisigPostTransactionResponse} from 'zoobc-sdk';
 import { AuthService } from 'src/app/Services/auth-service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { getTranslation, jsonBufferToString } from 'src/Helpers/utils';
@@ -25,19 +25,19 @@ import Swal from 'sweetalert2';
 export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
   account: Account;
-  accounts: Account[];
-  formSend: FormGroup;
+  currentAccount: Account;
   minFee =  TRANSACTION_MINIMUM_FEE;
-  feeForm = new FormControl(this.minFee, [Validators.required, Validators.min(this.minFee)]);
+  formSend: FormGroup;
+  fieldFee = new FormControl(this.minFee, [Validators.required, Validators.min(this.minFee)]);
+  fieldSender =  new FormControl('', Validators.required);
 
-  advancedMenu = false;
 
   multisig: MultiSigDraft;
   multisigSubs: Subscription;
   multiSigDrafts: MultiSigDraft[];
 
-  isMultiSigAccount = false;
-  participants = [];
+  // isMultiSigAccount = false;
+  participants: any;
   accountBalance: any;
 
   txType = '';
@@ -50,38 +50,41 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     private authSrv: AuthService,
     private translate: TranslateService,
     private router: Router,
-    private multisigServ: MultisigService,
-    private location: Location
-  ) {
+    private multisigServ: MultisigService  ) {
     this.formSend = new FormGroup({
-      fee: this.feeForm,
+      sender: this.fieldSender,
+      fee: this.fieldFee,
     });
   }
 
   async ngOnInit() {
-    this.account = await this.accountServ.getCurrAccount();
-    if (this.account.type === ACC_TYPE_MULTISIG) {
-      this.isMultiSigAccount = true;
+    this.currentAccount = await this.accountServ.getCurrAccount();
+    if (this.currentAccount.type === ACC_TYPE_MULTISIG) {
+        // this.isMultiSigAccount = true;
     }
-    this.accounts = await this.accountServ.allAccount();
 
+    this.fieldFee.setValue(this.minFee);
     this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
       this.multisig = multisig;
       const { fee } = this.multisig;
       if (fee >= this.minFee) {
-        this.feeForm.setValue(fee);
-        this.feeForm.markAsTouched();
+        this.fieldFee.setValue(fee);
       }
     });
-    if (this.multisig.multisigInfo === undefined) {
-      return this.router.navigate(['/multisig']);
-    }
-    this.participants = this.multisig.multisigInfo.participants;
-    this.getMultiSigDraft();
-  }
+    this.fieldFee.markAsTouched();
 
-  async getMultiSigDraft() {
-    this.multiSigDrafts = await this.multisigServ.getDrafts();
+    const { multisigInfo} = this.multisig;
+    const { participants } = multisigInfo;
+    console.log('=== Participants: ', participants);
+
+    this.participants = JSON.stringify(participants);
+    if (participants) {
+      this.account = await this.accountServ.getAccount(participants[0]);
+      this.fieldSender.setValue(this.account.address);
+    }
+
+    // Get multisig draft
+    // this.multiSigDrafts = await this.multisigServ.getDrafts();
   }
 
   saveDraft() {
@@ -102,25 +105,18 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
     this.multisigServ.update(multisig);
   }
 
-  back() {
-    this.location.back();
-  }
-
   ngOnDestroy() {
     this.multisigSubs.unsubscribe();
     this.accountServ.switchMultisigAccount();
   }
 
-  onSwitchAccount(account: Account) {
-    this.account = account;
-    this.accountServ.switchAccount(account);
-  }
-
   async onOpenConfirmDialog() {
+    console.log('==  onOpenConfirmDialog: ', this.formSend);
     await this.getBalance();
     const balance = parseInt(this.accountBalance.spendablebalance, 10) / 1e8;
     if (balance >= this.minFee) {
       this.fillDialog();
+      this.onSendMultiSignatureTransaction();
       // this.confirmRefDialog = this.dialog.open(this.confirmDialog, {
       //   width: '500px',
       //   maxHeight: '90vh',
@@ -133,7 +129,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
   async getBalance() {
     this.isLoading = true;
-    await zoobc.Account.getBalance(this.account.address).then((data: AccountBalanceResponse) => {
+    await zoobc.Account.getBalance(this.currentAccount.address).then((data: AccountBalanceResponse) => {
       this.accountBalance = data.accountbalance;
       this.isLoading = false;
     });
@@ -155,10 +151,10 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
   async onSendMultiSignatureTransaction() {
     this.updateSendTransaction();
-    // tslint:disable-next-line:prefer-const
-    let { accountAddress, fee, multisigInfo,
-      // tslint:disable-next-line:prefer-const
-      unisgnedTransactions, signaturesInfo, txBody } = this.multisig;
+
+    let { accountAddress} = this.multisig;
+    const { fee, multisigInfo, unisgnedTransactions, signaturesInfo, txBody } = this.multisig;
+
     let data: MultiSigInterface;
     if (signaturesInfo !== undefined) {
       const signatureInfoFilter: SignatureInfo = {
@@ -168,8 +164,8 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
       signatureInfoFilter.participants = signaturesInfo.participants.filter(pcp => {
         if (jsonBufferToString(pcp.signature).length > 0) { return pcp; }
       });
-      this.account = await this.accountServ.getCurrAccount();
-      accountAddress = this.account.address;
+      this.currentAccount = await this.accountServ.getCurrAccount();
+      accountAddress = this.currentAccount.address;
       data = {
         accountAddress,
         fee,
@@ -178,8 +174,8 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         signaturesInfo: signatureInfoFilter,
       };
     } else {
-      this.account = await this.accountServ.getCurrAccount();
-      accountAddress = this.account.address;
+      this.currentAccount = await this.accountServ.getCurrAccount();
+      accountAddress = this.currentAccount.address;
       data = {
         accountAddress,
         fee,
@@ -188,33 +184,39 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
         signaturesInfo,
       };
     }
+
+    console.log('==== data: ', data);
+
     // const childSeed = this.authServ.seed;
     const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
+    console.log('==== childSeed: ', childSeed);
+
 
     if (data.signaturesInfo === undefined) {
       data.unisgnedTransactions = createInnerTxBytes(this.multisig.txBody, this.multisig.txType);
+      console.log('==== childSeed: ', data.unisgnedTransactions);
     }
+    console.log('==== data2: ', data);
+
     zoobc.MultiSignature.postTransaction(data, childSeed)
-      .then(async () => {
-        const message = getTranslation('your transaction is processing', this.translate);
-        const subMessage = getTranslation('you send coins to', this.translate, {
-          amount: txBody.amount,
-          recipient: txBody.recipient,
-        });
-        this.multisigServ.deleteDraft(this.multisig.id);
-        Swal.fire(message, subMessage, 'success');
-        this.router.navigateByUrl('/dashboard');
-      })
-      .catch(async err => {
-        console.log(err.message);
-        const message = getTranslation(err.message, this.translate);
-        Swal.fire('Opps...', message, 'error');
+    .then(async (res: MultisigPostTransactionResponse) => {
+      const message = getTranslation('your transaction is processing', this.translate);
+      const subMessage = getTranslation('you send coins to', this.translate, {
+        amount: txBody.amount,
+        recipient: txBody.recipient,
       });
+      this.multisigServ.deleteDraft(this.multisig.id);
+      Swal.fire(message, subMessage, 'success');
+      this.router.navigateByUrl('/dashboard');
+    })
+    .catch(async err => {
+      console.log(err.message);
+      const message = getTranslation(err.message, this.translate);
+      Swal.fire('Opps...', message, 'error');
+    });
+
   }
 
-  closeDialog() {
-    // this.dialog.closeAll();
-  }
 
   counter(i: number) {
     return new Array(i);
