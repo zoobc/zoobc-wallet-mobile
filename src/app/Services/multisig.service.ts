@@ -10,12 +10,14 @@ import { StoragedevService } from './storagedev.service';
 })
 export class MultisigService {
 
+
   private multisigTemplate: MultiSigDraft = {
     id: 0,
-    accountAddress: '',
+    accountAddress: null,
     fee: 0,
     txType: TransactionType.SENDMONEYTRANSACTION,
   };
+
 
   multisigDraft: MultiSigDraft;
   private sourceMultisig = new BehaviorSubject<MultiSigDraft>({ ...this.multisigTemplate });
