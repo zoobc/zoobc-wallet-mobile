@@ -1,18 +1,15 @@
-export enum AccountType {
-  NORMAL = 'normal',
-  MULTISIG = 'multisig'
-}
+import { Address } from 'zbc-sdk';
 
+export type AccountType = 'normal' | 'multisig' | 'one time login' | 'imported' | 'hardware' | 'address';
 export interface Account {
-  path: number;
   name: string;
-  nodeIP: string;
-  address: string;
-  balance?: number;
-  lastTx?: number;
-  type?: 'normal' | 'multisig';
-  participants?: string[];
+  path?: number;
+  type: AccountType;
+  nodeIP?: string;
+  address: Address;
+  participants?: Address[];
   nonce?: number;
   minSig?: number;
-  signByAddress?: string;
+  balance?: number;
 }
+
