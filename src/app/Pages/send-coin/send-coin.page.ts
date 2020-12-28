@@ -38,6 +38,7 @@ import { addressFormatValidator } from 'src/Helpers/validators';
   styleUrls: ['send-coin.page.scss']
 })
 export class SendCoinPage implements OnInit {
+  optionFee = '';
   approvers = [];
   rootPage: any;
   status: any;
