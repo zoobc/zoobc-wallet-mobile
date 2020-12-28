@@ -22,6 +22,7 @@ import { SkeletonTransactionComponent } from './skeleton-transaction/skeleton-tr
 import { TransactionItemComponent } from './transaction-item/transaction-item.component';
 import { WithCopyComponent } from './with-copy/with-copy.component';
 import { WithOptionsComponent } from './with-options/with-options.component';
+import { EscrowApprovalFormComponent } from '../Pages/multisig/escrow-approval-form/escrow-approval-form.component';
 
 @NgModule({
     imports: [
@@ -48,7 +49,8 @@ import { WithOptionsComponent } from './with-options/with-options.component';
         TransactionItemComponent,
         AccountItemComponent,
         SkeletonTransactionComponent,
-        WithOptionsComponent
+        WithOptionsComponent,
+        EscrowApprovalFormComponent
     ],
     exports: [
         PinComponent,
@@ -68,7 +70,8 @@ import { WithOptionsComponent } from './with-options/with-options.component';
         TransactionItemComponent,
         AccountItemComponent,
         SkeletonTransactionComponent,
-        WithOptionsComponent
+        WithOptionsComponent,
+        EscrowApprovalFormComponent
     ],
     entryComponents: [PopoverOptionComponent]
 })
