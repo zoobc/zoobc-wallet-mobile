@@ -21,7 +21,7 @@ import {
   addressValidator,
   escrowFieldsValidator
 } from 'src/Helpers/validators';
-import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
+import zoobc, { SendMoneyInterface } from 'zbc-sdk';
 
 @Component({
   selector: 'app-send-money-form',

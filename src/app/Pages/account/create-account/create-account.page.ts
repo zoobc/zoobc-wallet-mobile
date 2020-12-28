@@ -4,7 +4,7 @@ import { Account } from 'src/app/Interfaces/account';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router } from '@angular/router';
-import { MultiSigAddress } from 'zoobc-sdk';
+import { MultiSigAddress } from 'zbc-sdk';
 import { ModalController } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';

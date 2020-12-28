@@ -7,7 +7,7 @@ import {
 } from 'src/environments/variable.const';
 import { AccountService } from './account.service';
 import { StoragedevService } from './storagedev.service';
-import zoobc, { ZooKeyring } from 'zoobc-sdk';
+import zoobc, { ZooKeyring } from 'zbc-sdk';
 
 @Injectable({
   providedIn: 'root'

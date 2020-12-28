@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { Account, AccountType } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
-import zoobc from 'zoobc-sdk';
+import zoobc from 'zbc-sdk';
 
 @Component({
   selector: 'app-popover-account',

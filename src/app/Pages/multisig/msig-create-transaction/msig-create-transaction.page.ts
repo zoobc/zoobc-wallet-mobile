@@ -8,7 +8,7 @@ import { MultisigService } from 'src/app/Services/multisig.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { createInnerTxBytes, createInnerTxForm, getInputMap } from 'src/Helpers/multisig-utils';
 import { getTranslation, stringToBuffer } from 'src/Helpers/utils';
-import { generateTransactionHash } from 'zoobc-sdk';
+import { generateTransactionHash } from 'zbc-sdk';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';

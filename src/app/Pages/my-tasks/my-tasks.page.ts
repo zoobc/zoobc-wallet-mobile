@@ -7,7 +7,7 @@ import zoobc, {
   MultisigPendingTxResponse,
   MultisigPendingListParams,
   EscrowListParams,
-} from 'zoobc-sdk';
+} from 'zbc-sdk';
 
 import { EscrowStatus, GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
 import { OrderBy } from 'zoobc-sdk/grpc/model/pagination_pb';

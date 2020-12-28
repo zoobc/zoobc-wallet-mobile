@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/Services/util.service';
-import { ZooKeyring } from 'zoobc-sdk';
+import { ZooKeyring } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { NavController, Platform } from '@ionic/angular';
 import { Languages } from 'src/app/Interfaces/language';

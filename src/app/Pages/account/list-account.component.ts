@@ -3,7 +3,7 @@ import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, FOR_APPROVER, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
-import zoobc from 'zoobc-sdk';
+import zoobc from 'zbc-sdk';
 import { NavController, ModalController, AlertController, PopoverController } from '@ionic/angular';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { StoragedevService } from 'src/app/Services/storagedev.service';

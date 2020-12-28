@@ -32,7 +32,7 @@ import zoobc, {
   toUnconfirmedSendMoneyWallet,
   TransactionsResponse,
   TransactionType
-} from 'zoobc-sdk';
+} from 'zbc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 import { PopoverBlockchainObjectOptionComponent } from './popover-blockchain-object-option/popover-blockchain-object-option.component';

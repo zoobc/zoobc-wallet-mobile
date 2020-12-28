@@ -3,7 +3,7 @@ import { AlertController, Platform } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
 import { ActivatedRoute } from '@angular/router';
-import zoobc, { getZBCAddress, toTransactionWallet, TransactionResponse } from 'zoobc-sdk';
+import zoobc, { getZBCAddress, toTransactionWallet, TransactionResponse } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import { UtilService } from 'src/app/Services/util.service';

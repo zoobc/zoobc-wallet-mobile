@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/wallet/existing-wallet/setup-pin/setup-pin.page';
 import { Location } from '@angular/common';
-import { ZooKeyring } from 'zoobc-sdk';
+import { ZooKeyring } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
 import { STORAGE_ADDRESS_BOOK } from 'src/environments/variable.const';

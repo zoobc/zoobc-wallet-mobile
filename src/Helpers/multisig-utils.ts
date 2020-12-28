@@ -5,7 +5,7 @@ import { createRemoveDatasetForm, createRemoveSetupDatasetBytes, removeDatasetMa
 import { createSendMoneyForm, sendMoneyMap } from 'src/app/Components/transactions/form-send-money/form-send-money.component';
 // tslint:disable-next-line:max-line-length
 import { createSetupDatasetBytes, createSetupDatasetForm, setupDatasetMap } from 'src/app/Components/transactions/form-setup-account-dataset/form-setup-account-dataset.component';
-import { EscrowApprovalInterface, escrowBuilder, sendMoneyBuilder, SendMoneyInterface, TransactionType } from 'zoobc-sdk';
+import { EscrowApprovalInterface, escrowBuilder, sendMoneyBuilder, SendMoneyInterface, TransactionType } from 'zbc-sdk';
 
 export function createInnerTxBytes(form: any, txType: number): Buffer {
   switch (txType) {

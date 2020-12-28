@@ -5,7 +5,7 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
-import zoobc, { TransactionType } from 'zoobc-sdk';
+import zoobc, { TransactionType } from 'zbc-sdk';
 import { ImportDraftPage } from './import-draft/import-draft.page';
 import { THEME_OPTIONS } from 'src/environments/variable.const';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';

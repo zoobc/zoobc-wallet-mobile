@@ -5,7 +5,7 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { UtilService } from 'src/app/Services/util.service';
-import { isZBCAddressValid } from 'zoobc-sdk';
+import { isZBCAddressValid } from 'zbc-sdk';
 
 @Component({
   selector: 'app-import-draft',

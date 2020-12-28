@@ -3,7 +3,7 @@ import { ModalController, ToastController } from '@ionic/angular';
 import { PinBackupPage } from './pin/pin-backup/pin-backup.page';
 import { STORAGE_ENC_PASSPHRASE_SEED } from 'src/environments/variable.const';
 import { StoragedevService } from 'src/app/Services/storagedev.service';
-import zoobc from 'zoobc-sdk';
+import zoobc from 'zbc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
 @Component({
   selector: 'app-backup-phrase',

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { ModalController } from '@ionic/angular';
-import zoobc from 'zoobc-sdk';
+import zoobc from 'zbc-sdk';
 @Component({
   selector: 'app-account-popup',
   templateUrl: './account-popup.page.html',

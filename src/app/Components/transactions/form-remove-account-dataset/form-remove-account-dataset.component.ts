@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { RemoveDatasetInterface, removeDatasetBuilder } from 'zoobc-sdk';
+import { RemoveDatasetInterface, removeDatasetBuilder } from 'zbc-sdk';
 import { escrowMap, escrowForm } from '../form-escrow/form-escrow.component';
 
 @Component({

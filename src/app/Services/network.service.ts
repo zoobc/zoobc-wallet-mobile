@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StoragedevService } from './storagedev.service';
-import zoobc from 'zoobc-sdk';
+import zoobc from 'zbc-sdk';
 import { STORAGE_ACTIVE_NETWORK_IDX, NETWORK_LIST } from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
 @Injectable({

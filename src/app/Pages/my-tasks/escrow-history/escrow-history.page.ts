@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import zoobc, { EscrowTransactionResponse, TransactionListParams, TransactionType } from 'zoobc-sdk';
+import zoobc, { EscrowTransactionResponse, TransactionListParams, TransactionType } from 'zbc-sdk';
 
 @Component({
   selector: 'app-escrow-history',

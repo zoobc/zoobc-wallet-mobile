@@ -22,7 +22,7 @@ import {
 } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
-import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
+import zoobc, { SendMoneyInterface } from 'zbc-sdk';
 import { calculateMinFee } from 'src/Helpers/utils';
 import { Approver } from 'src/app/Interfaces/approver';
 import { Currency } from 'src/app/Interfaces/currency';

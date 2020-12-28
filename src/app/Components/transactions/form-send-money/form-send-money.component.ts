@@ -5,7 +5,7 @@ import { Contact } from 'src/app/Interfaces/contact';
 import { AccountService } from 'src/app/Services/account.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { SendMoneyInterface, sendMoneyBuilder } from 'zoobc-sdk';
+import { SendMoneyInterface, sendMoneyBuilder } from 'zbc-sdk';
 import { escrowMap, escrowForm } from '../form-escrow/form-escrow.component';
 import { Account } from 'src/app/Interfaces/account';
 import { map, startWith } from 'rxjs/operators';

@@ -10,7 +10,7 @@ import {
 import { BehaviorSubject, Subject } from 'rxjs';
 import { StoragedevService } from './storagedev.service';
 import { Account } from '../Interfaces/account';
-import zoobc, { MultiSigAddress, ZooKeyring, getZBCAddress, BIP32Interface } from 'zoobc-sdk';
+import zoobc, { MultiSigAddress, ZooKeyring, getZBCAddress, BIP32Interface } from 'zbc-sdk';
 
 @Injectable({
   providedIn: 'root'

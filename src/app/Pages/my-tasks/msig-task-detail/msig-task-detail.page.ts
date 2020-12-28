@@ -5,7 +5,7 @@ import { TRANSACTION_MINIMUM_FEE, COIN_CODE } from 'src/environments/variable.co
 import zoobc, {
   MultisigPendingTxDetailResponse,
   MultisigPendingTxResponse, toGetPendingList, MultiSigInterface, signTransactionHash
-} from 'zoobc-sdk';
+} from 'zbc-sdk';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 import { Account } from 'src/app/Interfaces/account';
 import { base64ToHex } from 'src/Helpers/utils';

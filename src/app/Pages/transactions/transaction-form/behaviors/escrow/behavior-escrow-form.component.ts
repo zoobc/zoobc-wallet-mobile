@@ -1,7 +1,7 @@
 import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Contact } from 'src/app/Interfaces/contact';
-import zoobc from 'zoobc-sdk';
+import zoobc from 'zbc-sdk';
 
 interface IEscrow {
   approver: Contact;

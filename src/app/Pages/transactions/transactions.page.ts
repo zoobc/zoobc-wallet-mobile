@@ -21,7 +21,7 @@ import zoobc, {
   EscrowListParams,
   OrderBy,
   TransactionType,
-} from 'zoobc-sdk';
+} from 'zbc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Router } from '@angular/router';
 import { Transaction } from 'src/app/Interfaces/transaction';

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { STORAGE_MULTISIG_DRAFTS } from 'src/environments/variable.const';
-import { TransactionType } from 'zoobc-sdk';
+import { TransactionType } from 'zbc-sdk';
 import { MultiSigDraft } from '../Interfaces/multisig';
 import { StoragedevService } from './storagedev.service';
 

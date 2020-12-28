@@ -8,7 +8,7 @@ import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router } from '@angular/router';
 import zoobc, { AccountBalanceResponse, isZBCAddressValid,
   MultiSigInterface, 
-  MultisigPostTransactionResponse} from 'zoobc-sdk';
+  MultisigPostTransactionResponse} from 'zbc-sdk';
 import { AuthService } from 'src/app/Services/auth-service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { getTranslation, jsonBufferToString } from 'src/Helpers/utils';

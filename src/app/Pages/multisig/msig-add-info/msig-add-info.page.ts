@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
-import zoobc from 'zoobc-sdk';
+import zoobc from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Subscription } from 'rxjs';

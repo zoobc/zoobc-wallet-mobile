@@ -10,7 +10,7 @@ import { AccountService } from 'src/app/Services/account.service';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { COIN_CODE, TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { truncate } from 'src/Helpers/utils';
-import zoobc, { AccountDatasetListParams, AccountDatasetsResponse, BIP32Interface, RemoveDatasetInterface } from 'zoobc-sdk';
+import zoobc, { AccountDatasetListParams, AccountDatasetsResponse, BIP32Interface, RemoveDatasetInterface } from 'zbc-sdk';
 import { NewDatasetPage } from './new-dataset/new-dataset.page';
 
 @Component({
