@@ -49,18 +49,18 @@ export const THEME_OPTIONS  = [
   name: 'ZooBC',
   value: 'zoobc'
   },
-  {
-    name: 'BCZoo',
-    value: 'bcz'
-  },
-  {
-    name: 'Day',
-    value: 'day'
-  },
-  {
-    name: 'Night',
-    value: 'night'
-  }
+  // {
+  //   name: 'BCZoo',
+  //   value: 'bcz'
+  // },
+  // {
+  //   name: 'Day',
+  //   value: 'day'
+  // },
+  // {
+  //   name: 'Night',
+  //   value: 'night'
+  // }
 ];
 
 export const SELECTED_THEME = 'card';
@@ -215,51 +215,42 @@ export const LANGUAGES = [
 
 export const NETWORK_LIST = [
   {
-    name: 'Beta 1',
-    host: 'http://n1.beta.proofofparticipation.network:7001'
+    default: true,
+    name: 'Public TestNet Node 01',
+    host: 'http://n0.beta.proofofparticipation.network:7001'
   },
   {
-    name: 'Beta 2',
-    host: 'http://n2.beta.proofofparticipation.network:7001'
+    name: 'Public TestNet Node 02',
+    host: '//n2.beta.proofofparticipation.network:7001'
   },
   {
-    name: 'Beta 3',
-    host: 'http://n3.beta.proofofparticipation.network:7001'
+    name: 'Public TestNet Node 03',
+    host: '//n3.beta.proofofparticipation.network:7001'
   },
   {
-    name: 'Alpha',
-    host: 'http://n1.alpha.proofofparticipation.network:7003'
-  },
-  {
-    name: 'Dev',
+    name: 'Developers TestNet Node 01',
     host: 'http://85.90.246.90:7001'
   },
   {
-    name: 'Demo',
-    host: 'http://45.79.39.58:8002'
+    name: 'Developers TestNet Node 02',
+    host: 'http://45.79.39.58:8002',
   },
   {
-    name: 'Exp1',
-    host: 'http://23.92.27.48:7000'
+    name: 'Developers TestNet Node 03',
+    host: 'http://172.104.34.10:8002',
   },
   {
-    name: 'Exp2',
-    host: 'http://172.104.62.181:7000'
+    name: 'Private Alpha TestNet Node 01',
+    host: '//n0.alpha.proofofparticipation.network:7001',
   },
   {
-    name: 'Exp3',
-    host: 'http://45.79.35.137:7000'
+    name: 'Private Alpha TestNet Node 02',
+    host: '//n1.alpha.proofofparticipation.network:7001',
   },
-
-  // {
-  //   name: 'Demo 3 (x.x.246.90)',
-  //   host: 'http://85.90.246.90:8002'
-  // },
-  // {
-  //   host: '//n1.alpha.proofofparticipation.network:8080',
-  //   default: true,
-  //   name: 'Alpha Testnet (n1.alpha.)'
-  // }
+  {
+    name: 'Private Alpha TestNet Node 03',
+    host: '//n2.alpha.proofofparticipation.network:7001',
+  }
 ];
 
 // export const TRX_FEE_LIST = [{
