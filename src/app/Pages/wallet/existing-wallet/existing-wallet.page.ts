@@ -105,7 +105,7 @@ export class ExistingWalletPage implements OnInit {
 
   async createAccount() {
     await this.accountSrv.createInitialAccount();
-    await this.storageSrv.remove(STORAGE_ADDRESS_BOOK);
+    this.storageSrv.remove(STORAGE_ADDRESS_BOOK);
     const loginStatus = this.authSrv.login(this.plainPin);
     if (loginStatus) {
       this.presentLoading();

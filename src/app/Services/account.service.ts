@@ -10,7 +10,7 @@ import {
 import { Subject } from 'rxjs';
 import { StorageService } from './storage.service';
 import { Account, AccountType } from '../Interfaces/account';
-import zoobc, { ZooKeyring, getZBCAddress, BIP32Interface, AccountBalance, MultiSigInfo } from 'zbc-sdk';
+import zoobc, { ZooKeyring, getZBCAddress, BIP32Interface, AccountBalance, MultiSigInfo, Address } from 'zbc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -67,25 +67,22 @@ export class AccountService {
     return account;
   }
 
-
   async allAccount(type?: AccountType) {
-    const allAccount: Account[] = await this.strgSrv
-      .getObject(STORAGE_ALL_ACCOUNTS)
-      .then(accounts => {
-        if (accounts == null) {
-          return null;
-        }
-        if (type === 'normal') {
-          return accounts.filter(acc => acc.type === 'normal');
-        } else if (type === 'multisig') {
-          return accounts.filter(acc => acc.type === 'multisig');
-        } else if (type === 'imported') {
-          return accounts.filter(acc => acc.type === 'imported');
-        } else if (type === 'one time login') {
-          return [this.getCurrAccount()];
-        }
-      });
-    return allAccount;
+    const accounts = await this.strgSrv.getObject(STORAGE_ALL_ACCOUNTS);
+    console.log('=== accs:', accounts);
+    if (accounts == null) {
+      return null;
+    }
+    if (type === 'normal') {
+      return accounts.filter(acc => acc.type === 'normal');
+    } else if (type === 'multisig') {
+      return accounts.filter(acc => acc.type === 'multisig');
+    } else if (type === 'imported') {
+      return accounts.filter(acc => acc.type === 'imported');
+    } else if (type === 'one time login') {
+      return [this.getCurrAccount()];
+    }
+    return accounts;
   }
 
   async removeAllAccounts() {
@@ -96,12 +93,14 @@ export class AccountService {
   }
 
   async generateDerivationPath(): Promise<number> {
-    const accounts: Account[] = await this.allAccount();
+    const accounts = await this.strgSrv.getObject(STORAGE_ALL_ACCOUNTS);
     if (accounts && accounts.length) {
       return accounts.length;
     }
     return 0;
   }
+
+
 
   broadCastNewAccount(account: Account) {
     this.accountSubject.next(account);
@@ -143,10 +142,9 @@ export class AccountService {
 
     for (let i = 0; i < accounts.length; i++) {
       const acc = accounts[i];
-      if (acc.address === account.address) {
+      if (acc.address.value === account.address.value) {
         accounts[i] = account;
         this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, accounts);
-        this.broadCastNewAccount(account);
         break;
       }
     }
@@ -185,15 +183,16 @@ export class AccountService {
     this.savePassphraseSeed(this.plainPassphrase, this.plainPin);
   }
 
-  createNewAccount(arg: string, pathNumber: number) {
+  createNewAccount(accountName: string, pathNumber: number) {
     const childSeed = this.keyring.calcDerivationPath(pathNumber);
-    const address = getZBCAddress(childSeed.publicKey);
+    const address: Address = { value: getZBCAddress(childSeed.publicKey), type: 0 };
+
     const account: Account = {
-      name: (arg),
+      name: (accountName),
       path: pathNumber,
       type: 'normal',
       nodeIP: null,
-      address:  { value: address, type: 0 }
+      address
     };
     return account;
   }

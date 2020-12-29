@@ -9,7 +9,7 @@ import { Account } from 'src/app/Interfaces/account';
 import { UtilService } from 'src/app/Services/util.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import zoobc, { getZBCAddress } from 'zbc-sdk';
+import zoobc, { getZBCAddress, ZBCTransaction } from 'zbc-sdk';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -19,8 +19,7 @@ import zoobc, { getZBCAddress } from 'zbc-sdk';
 export class TransactionDetailPage implements OnInit {
   status: string;
   transactionId: string;
-  // transaction: TransactionResponse = null;
-  transactionWallet: any;
+  trx: ZBCTransaction;
   loading: boolean;
 
   private textCopyAddress: string;
@@ -35,6 +34,7 @@ export class TransactionDetailPage implements OnInit {
   senderRecipentAlias = '';
 
   transHashOptions = [];
+  currAccount: Account;
 
   constructor(
     private translateSrv: TranslateService,
@@ -55,17 +55,17 @@ export class TransactionDetailPage implements OnInit {
 
     this.activeRoute.params.subscribe(async params => {
 
-      const currAccount: Account = await this.accountService.getCurrAccount();
-
+      this.currAccount = await this.accountService.getCurrAccount();
+      console.log('==== currAccount: ', this.currAccount);
       const transactionId = params.transId;
 
-      // const transaction: TransactionResponse = await zoobc.Transactions.get(transactionId);
-
+      this.trx = await zoobc.Transactions.get(transactionId);
+      console.log('==== transaction: ', this.trx);
       // this.transactionWallet = toTransactionWallet(transaction, currAccount.address);
 
-      this.senderRecipentAlias = await this.addressBookSrv.getNameByAddress(
-        this.transactionWallet.address
-      );
+      // this.senderRecipentAlias = await this.addressBookSrv.getNameByAddress(
+      //   this.transactionWallet.address
+      // );
 
       this.senderRecipentOptions = [
         {key: 'copy', label: this.textCopyAddress},

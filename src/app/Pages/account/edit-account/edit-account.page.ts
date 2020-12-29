@@ -167,6 +167,9 @@ export class EditAccountPage implements OnInit {
 
   async UpdateAccount() {
 
+    console.log('== Name: ', this.account.name);
+    console.log('== old name: ', this.oldName );
+
     this.isNameValid = true;
     if (this.oldName === this.account.name) {
       this.accountService.broadCastNewAccount(this.account);
@@ -185,6 +188,8 @@ export class EditAccountPage implements OnInit {
       this.isNameValid = false;
       return;
     }
+
+    console.log(' will upadte account name: ', this.account.name);
 
     this.account.name = (this.account.name);
     this.accountService.updateAccount(this.account);

@@ -19,6 +19,7 @@ export class SendMoneySummaryComponent implements OnInit {
 
   ngOnInit() {
     this.stateValue = this.router.getCurrentNavigation().extras.state;
+    console.log('===34   this.stateValue',   this.stateValue);
     this.total = this.stateValue.amount + this.stateValue.fee;
   }
 

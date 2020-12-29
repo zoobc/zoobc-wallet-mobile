@@ -355,7 +355,7 @@ export class ListAccountComponent implements OnInit {
           this.editName(account);
           break;
         case 'copy':
-          this.utilSrv.copyToClipboard(account.address);
+          this.utilSrv.copyToClipboard(account.address.value);
           break;
         case 'view':
           this.viewAccount(account);

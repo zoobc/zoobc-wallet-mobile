@@ -51,7 +51,7 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
       this.account = await this.accountSrv.getCurrAccount();
     }
 
-    this.getBalanceByAddress(this.account.address.value);
+    this.getBalanceByAddress(this.account.address);
   }
 
   async switchAccount(ev: any) {
@@ -78,7 +78,7 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
           this.accountSrv.switchAccount(data);
         }
 
-        this.getBalanceByAddress(data.address.value);
+        this.getBalanceByAddress(data.address);
         this.onChange(data);
       }
     });
@@ -86,11 +86,12 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
     return popover.present();
   }
 
-  private async getBalanceByAddress(address: string) {
-    const adrs: Address = {value: address, type: 0};
-    zoobc.Account.getBalance(adrs)
+  private async getBalanceByAddress(address: Address) {
+
+    zoobc.Account.getBalance(address)
       .then((data: AccountBalance) => {
-        this.account.balance = Number(data);
+        console.log('=== Account Balance: ', data);
+        this.account.balance = Number(data.spendableBalance);
       })
       .catch(error => { })
       .finally(() => { });
