@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import zoobc, { EscrowTransactionResponse, TransactionListParams, TransactionType } from 'zbc-sdk';
+import { TransactionListParams, TransactionType } from 'zbc-sdk';
+// import zoobc, { EscrowTransactionResponse, TransactionListParams, TransactionType } from 'zbc-sdk';
 
 @Component({
   selector: 'app-escrow-history',
@@ -18,7 +19,7 @@ export class EscrowHistoryPage implements OnInit {
   finished = false;
   isLoading = false;
   isError = false;
-  escrowDetail: EscrowTransactionResponse;
+  escrowDetail: any;
   isLoadingDetail: boolean;
   lastRefresh: number;
   PerPage = 100;
@@ -30,7 +31,7 @@ export class EscrowHistoryPage implements OnInit {
 
   ngOnInit() {
     this.accService.getCurrAccount().then((acc) => {
-      this.address = acc.address;
+      this.address = acc.address.value;
     });
     this.getApprovalList(true);
   }
@@ -46,7 +47,7 @@ export class EscrowHistoryPage implements OnInit {
       this.isLoading = true;
       this.isError = false;
       const param: TransactionListParams = {
-        address: this.address,
+        address: {value: this.address, type: 0},
         transactionType: TransactionType.APPROVALESCROWTRANSACTION,
         pagination: {
           page: this.page,
@@ -54,27 +55,27 @@ export class EscrowHistoryPage implements OnInit {
         },
       };
 
-      zoobc.Transactions.getList(param)
-        .then(res => {
-          this.total = parseInt(res.total, 10);
-          const txMap = res.transactionsList.map(tx => {
-            const approvalStatus = tx.approvalescrowtransactionbody.approval === 0 ? 'Approved' : 'Rejected';
-            const alias = ''; // this.addresBookService.getNameByAddress(tx.senderaccountaddress) || '';
-            return {
-              id: tx.approvalescrowtransactionbody.transactionid,
-              alias,
-              sender: tx.senderaccountaddress,
-              approvalStatus,
-              timestamp: parseInt(tx.timestamp, 10) * 1000,
-            };
-          });
-          this.escrowApprovalList = reload ? txMap : this.escrowApprovalList.concat(txMap);
-        })
-        .catch(err => {
-          this.isError = true;
-          console.log(err);
-        })
-        .finally(() => ((this.isLoading = false), (this.lastRefresh = Date.now())));
+      // zoobc.Transactions.getList(param)
+      //   .then(res => {
+      //     this.total = parseInt(res.total, 10);
+      //     const txMap = res.transactionsList.map(tx => {
+      //       const approvalStatus = tx.approvalescrowtransactionbody.approval === 0 ? 'Approved' : 'Rejected';
+      //       const alias = ''; // this.addresBookService.getNameByAddress(tx.senderaccountaddress) || '';
+      //       return {
+      //         id: tx.approvalescrowtransactionbody.transactionid,
+      //         alias,
+      //         sender: tx.senderaccountaddress,
+      //         approvalStatus,
+      //         timestamp: parseInt(tx.timestamp, 10) * 1000,
+      //       };
+      //     });
+      //     this.escrowApprovalList = reload ? txMap : this.escrowApprovalList.concat(txMap);
+      //   })
+      //   .catch(err => {
+      //     this.isError = true;
+      //     console.log(err);
+      //   })
+      //   .finally(() => ((this.isLoading = false), (this.lastRefresh = Date.now())));
     }
   }
 

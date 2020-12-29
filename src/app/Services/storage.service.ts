@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 @Injectable({
   providedIn: 'root'
 })
-export class StoragedevService {
+export class StorageService {
 
   constructor(public storage: Storage) {}
 

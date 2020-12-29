@@ -124,12 +124,12 @@ export class FormGetAddressComponent implements OnInit, OnDestroy, ControlValueA
 
     popover.onWillDismiss().then(async ({ data }: { data: Account }) => {
       if (data) {
-        this.textAddress = data.address;
+        this.textAddress = data.address.value;
         this.buttonTitle = data.name;
         this.isNewAddress = false;
         this.onChange({
           name: data.name,
-          address: data.address
+          address: data.address.value
         });
       }
     });

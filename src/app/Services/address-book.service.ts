@@ -4,7 +4,7 @@ import {
   STORAGE_ADDRESS_BOOK,
   CONST_UNKNOWN_NAME
 } from 'src/environments/variable.const';
-import { StoragedevService } from './storagedev.service';
+import { StorageService } from './storage.service';
 import { Contact } from '../Interfaces/contact';
 
 @Injectable({
@@ -48,7 +48,7 @@ export class AddressBookService {
 
 
   constructor(
-    private strgSrv: StoragedevService
+    private strgSrv: StorageService
   ) {
     this.selectedAddress = '';
     this.addresses = this.getAll();

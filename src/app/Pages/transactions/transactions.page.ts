@@ -11,16 +11,14 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService} from 'src/app/Services/currency.service';
 import { NUMBER_OF_RECORD_IN_TRANSACTIONS,
-  CONST_DEFAULT_RATE,
-  NETWORK_LIST} from 'src/environments/variable.const';
+  CONST_DEFAULT_RATE} from 'src/environments/variable.const';
 import zoobc, {
   TransactionListParams,
-  toTransactionListWallet,
   MempoolListParams,
-  toUnconfirmedSendMoneyWallet,
   EscrowListParams,
-  OrderBy,
   TransactionType,
+  Address,
+  OrderBy,
 } from 'zbc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { Router } from '@angular/router';
@@ -29,7 +27,6 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { NetworkService } from 'src/app/Services/network.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
-import { GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
 
 @Component({
   selector: 'app-transactions',
@@ -131,8 +128,8 @@ export class TransactionsPage implements OnInit {
     this.priceInUSD = this.currencyServ.getPriceInUSD();
     this.account = await this.accountService.getCurrAccount();
     this.currencyRate = this.currencyServ.getRate();
-    this.getUnconfirmTransactions(this.account.address);
-    this.getTransactions(this.account.address);
+    this.getUnconfirmTransactions(this.account.address.value);
+    this.getTransactions(this.account.address.value);
     // this.getEscrowTransaction();
   }
 
@@ -152,12 +149,11 @@ export class TransactionsPage implements OnInit {
 
   async getAllAccount() {
     const accounts = await this.accountService.allAccount();
-
     if (accounts && accounts.length > 0) {
-      accounts.forEach((obj: { name: any; address: string }) => {
+      accounts.forEach((obj) => {
         const app = {
           name: obj.name,
-          address: obj.address
+          address: obj.address.value
         };
         this.addresses.push(app);
       });
@@ -174,7 +170,7 @@ export class TransactionsPage implements OnInit {
     console.log('-== this totalTx: ', this.totalTx);
     if (this.recentTxs && this.recentTxs.length < this.totalTx) {
       this.page++;
-      await this.getTransactions(this.account.address);
+      await this.getTransactions(this.account.address.value);
       event.target.complete();
     } else {
       setTimeout(async () => {
@@ -195,10 +191,12 @@ export class TransactionsPage implements OnInit {
    * @ param address
    */
   private async getTransactions(address: string) {
+    const addrs: Address = {value: address, type: 0};
+
     this.isLoadingRecentTx = true;
     this.isErrorRecentTx = false;
     const params: TransactionListParams = {
-      address,
+      address: addrs,
       transactionType: TransactionType.SENDMONEYTRANSACTION,
       pagination: {
         page: this.page,
@@ -211,49 +209,47 @@ export class TransactionsPage implements OnInit {
 
       const trxList = await zoobc.Transactions.getList(params);
       this.totalTx = Number(trxList.total);
-      console.log('== totl: ', trxList.total);
+
       let lastHeight = 0;
       let firstHeight = 0;
       if (Number(trxList.total) > 0) {
-        lastHeight = trxList.transactionsList[0].height;
-        firstHeight = trxList.transactionsList[trxList.transactionsList.length - 1].height;
+        lastHeight = trxList.transactions[0].height;
+        firstHeight = trxList.transactions[trxList.transactions.length - 1].height;
       }
 
-      const multisigTx = trxList.transactionsList
-      .filter(trx => trx.multisigchild === true)
+      const multisigTx = trxList.transactions
+      .filter(trx => trx.multisig === true)
       .map(trx => trx.id);
 
-      const paramEscrowSend: EscrowListParams = {
-        sender: address,
+      const paramEscrow: EscrowListParams = {
         blockHeightStart: firstHeight,
         blockHeightEnd: lastHeight,
+        recipient: addrs,
         statusList: [0, 1, 2, 3],
+        latest: false,
+        pagination: {
+          orderBy: OrderBy.DESC,
+          orderField: 'block_height',
+        },
       };
 
-      const paramEscrowReceive: EscrowListParams = {
-        recipient: address,
-        blockHeightStart: firstHeight,
-        blockHeightEnd: lastHeight,
-        statusList: [0, 1, 2, 3],
-      };
+     // this.startMatch = 0;
+      const escrowTx = await zoobc.Escrows.getList(paramEscrow);
+      const escrowList = escrowTx.escrowList;
+      const tx = trxList.transactions;
 
-      const escrowSend = await zoobc.Escrows.getList(paramEscrowSend);
-      const escrowReceive = await zoobc.Escrows.getList(paramEscrowReceive);
 
-      const escrowList = escrowSend.escrowsList.concat(escrowReceive.escrowsList);
-      const tx = toTransactionListWallet(trxList, address);
-      tx.transactions.map(recent => {
-        recent['alias'] = this.getName(recent.address);
-        recent['escrow'] = recent['escrow'] = this.checkIdOnEscrow(recent.id, escrowList);
-        if (recent['escrow']) {
-          recent['escrowStatus'] = this.getEscrowStatus(recent.id, escrowList);
+
+      tx.map(recent => {
+        recent.senderAlias = this.getName(recent.sender.value) || '';
+
+        recent.escrow = recent.escrow = this.checkIdOnEscrow(recent.id, escrowList);
+        if (recent.escrow) {
+          recent.escrowStatus = this.getEscrowStatus(recent.id, escrowList);
         }
-        recent['multisigchild'] = multisigTx.includes(recent.id);
+
         return recent;
       });
-      // this.total = tx.total;
-      this.recentTxs = this.recentTxs.concat(tx.transactions);
-      // ---------------
 
     } catch {
       this.isError = true;
@@ -292,10 +288,7 @@ export class TransactionsPage implements OnInit {
    * @ param address
    */
   private async getUnconfirmTransactions(address: string) {
-    const mempoolParams: MempoolListParams = { address };
-    this.unconfirmTxs = await zoobc.Mempool.getList(mempoolParams).then(res =>
-      toUnconfirmedSendMoneyWallet(res, address)
-    );
+    this.unconfirmTxs = [];
     console.log('==this.unconfirmTxs: ', this.unconfirmTxs);
   }
 

@@ -12,7 +12,7 @@ import {
 
 import { Account } from 'src/app/Interfaces/account';
 import { NetworkService } from './Services/network.service';
-import { StoragedevService } from './Services/storagedev.service';
+import { StorageService } from './Services/storage.service';
 import { LanguageService } from 'src/app/Services/language.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CurrencyService } from 'src/app/Services/currency.service';
@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
     private languageService: LanguageService,
     private networkService: NetworkService,
     private toastController: ToastController,
-    private strgSrv: StoragedevService,
+    private strgSrv: StorageService,
     private translateService: TranslateService,
     private currencyService: CurrencyService,
     private themeService: ThemeService

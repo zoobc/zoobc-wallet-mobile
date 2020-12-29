@@ -13,7 +13,7 @@ import {
 } from 'src/environments/variable.const';
 import { NetworkService } from 'src/app/Services/network.service';
 import { getFormatedDate } from 'src/Helpers/converters';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { StorageService } from 'src/app/Services/storage.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AuthService } from 'src/app/Services/auth-service';
@@ -42,7 +42,7 @@ export class SettingsPage implements OnInit {
   public themes = THEME_OPTIONS;
 
   constructor(
-    private strgSrv: StoragedevService,
+    private strgSrv: StorageService,
     private languageService: LanguageService,
     private networkService: NetworkService,
     private themeSrv: ThemeService,

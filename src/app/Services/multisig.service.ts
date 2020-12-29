@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { STORAGE_MULTISIG_DRAFTS } from 'src/environments/variable.const';
 import { TransactionType } from 'zbc-sdk';
 import { MultiSigDraft } from '../Interfaces/multisig';
-import { StoragedevService } from './storagedev.service';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class MultisigService {
   private sourceMultisig = new BehaviorSubject<MultiSigDraft>({ ...this.multisigTemplate });
   multisig = this.sourceMultisig.asObservable();
 
-  constructor(private strgSrv: StoragedevService) { }
+  constructor(private strgSrv: StorageService) { }
 
   update(multisig: MultiSigDraft) {
     this.multisigDraft = multisig;

@@ -3,12 +3,13 @@ import { AlertController, Platform } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
 import { ActivatedRoute } from '@angular/router';
-import zoobc, { getZBCAddress, toTransactionWallet, TransactionResponse } from 'zbc-sdk';
+// import zoobc, { getZBCAddress, toTransactionWallet, TransactionResponse } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import { UtilService } from 'src/app/Services/util.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import zoobc, { getZBCAddress } from 'zbc-sdk';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -18,14 +19,18 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 export class TransactionDetailPage implements OnInit {
   status: string;
   transactionId: string;
-  transaction: TransactionResponse = null;
+  // transaction: TransactionResponse = null;
   transactionWallet: any;
   loading: boolean;
 
   private textCopyAddress: string;
   private textAddToContact: string;
   private textShareAddress: string;
-  
+
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
+
   senderRecipentOptions = [];
   senderRecipentAlias = '';
 
@@ -54,32 +59,32 @@ export class TransactionDetailPage implements OnInit {
 
       const transactionId = params.transId;
 
-      const transaction: TransactionResponse = await zoobc.Transactions.get(transactionId);
+      // const transaction: TransactionResponse = await zoobc.Transactions.get(transactionId);
 
-      this.transactionWallet = toTransactionWallet(transaction, currAccount.address);
+      // this.transactionWallet = toTransactionWallet(transaction, currAccount.address);
 
       this.senderRecipentAlias = await this.addressBookSrv.getNameByAddress(
         this.transactionWallet.address
       );
 
       this.senderRecipentOptions = [
-        {key: "copy", label: this.textCopyAddress},
-        {key: "share", label: this.textShareAddress}
+        {key: 'copy', label: this.textCopyAddress},
+        {key: 'share', label: this.textShareAddress}
       ];
 
       this.transHashOptions = [
-        {key: "copy", label: this.textCopyAddress},
-        {key: "share", label: this.textShareAddress}
+        {key: 'copy', label: this.textCopyAddress},
+        {key: 'share', label: this.textShareAddress}
       ];
 
-      if(!this.senderRecipentAlias){
-        this.senderRecipentOptions.push({key: "addToContact", label: this.textAddToContact});
+      if (!this.senderRecipentAlias) {
+        this.senderRecipentOptions.push({key: 'addToContact', label: this.textAddToContact});
       }
 
-      const pubkey = Buffer.from(transaction.transactionhash.toString(), 'base64');
-      this.transactionWallet.transactionhash = getZBCAddress(pubkey, 'ZTX');
+      // const pubkey = Buffer.from(transaction.transactionhash.toString(), 'base64');
+      // this.transactionWallet.transactionhash = getZBCAddress(pubkey, 'ZTX');
 
-      this.transaction = transaction;
+      // this.transaction = transaction;
 
       this.loading = false;
 
@@ -108,7 +113,7 @@ export class TransactionDetailPage implements OnInit {
     this.translateLang();
   }
 
-  onTransHashOptionsClose(event, address){
+  onTransHashOptionsClose(event, address) {
     switch (event) {
       case 'copy':
         this.utilService.copyToClipboard(address);
@@ -124,7 +129,7 @@ export class TransactionDetailPage implements OnInit {
     }
   }
 
-  onSenderRecipentOptionsClose(event, address){
+  onSenderRecipentOptionsClose(event, address) {
     switch (event) {
       case 'copy':
         this.utilService.copyToClipboard(address);
@@ -140,21 +145,19 @@ export class TransactionDetailPage implements OnInit {
     }
   }
 
-  translateLang(){
+  translateLang() {
     this.translateSrv.get([
-      'copy address', 
-      'share address', 
-      'add to contact', 
-    ]).subscribe((res: any)=>{
-      this.textCopyAddress = res["copy address"];
-      this.textShareAddress = res["share address"];
-      this.textAddToContact = res["add to contact"];
-    })
+      'copy address',
+      'share address',
+      'add to contact',
+    ]).subscribe((res: any) => {
+      this.textCopyAddress = res['copy address'];
+      this.textShareAddress = res['share address'];
+      this.textAddToContact = res['add to contact'];
+    });
   }
 
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
+
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
@@ -180,7 +183,7 @@ export class TransactionDetailPage implements OnInit {
 
     this.translateSrv
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;

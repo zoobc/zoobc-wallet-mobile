@@ -54,7 +54,7 @@ export class BackuprestoreAddressPage implements OnInit {
     this.isBackup = true;
     setTimeout(async () => {
       const mainAcc = this.accounts[0].address;
-      this.createBackup(mainAcc, this.addresses);
+      // this.createBackup(mainAcc, this.addresses);
       this.isBackup = false;
       this.isBackupFinish = true;
     }, 5000);

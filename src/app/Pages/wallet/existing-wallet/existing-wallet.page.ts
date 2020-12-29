@@ -10,7 +10,7 @@ import { SetupPinPage } from 'src/app/Pages/wallet/existing-wallet/setup-pin/set
 import { Location } from '@angular/common';
 import { ZooKeyring } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { StorageService } from 'src/app/Services/storage.service';
 import { STORAGE_ADDRESS_BOOK } from 'src/environments/variable.const';
 
 @Component({
@@ -35,7 +35,7 @@ export class ExistingWalletPage implements OnInit {
     private authSrv: AuthService,
     private modalController: ModalController,
     private accountSrv: AccountService,
-    private storageSrv: StoragedevService
+    private storageSrv: StorageService
   ) {
     this.lang = 'english';
   }

@@ -10,7 +10,7 @@ import { PopoverController } from '@ionic/angular';
 import { Account, AccountType } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
-import zoobc from 'zbc-sdk';
+import zoobc, { AccountBalance, Address } from 'zbc-sdk';
 
 @Component({
   selector: 'app-form-sender',
@@ -51,7 +51,7 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
       this.account = await this.accountSrv.getCurrAccount();
     }
 
-    this.getBalanceByAddress(this.account.address);
+    this.getBalanceByAddress(this.account.address.value);
   }
 
   async switchAccount(ev: any) {
@@ -75,10 +75,10 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
         this.account = data;
 
         if (this.switchToActive === 'yes') {
-          this.accountSrv.setActiveAccount(data);
+          this.accountSrv.switchAccount(data);
         }
 
-        this.getBalanceByAddress(data.address);
+        this.getBalanceByAddress(data.address.value);
         this.onChange(data);
       }
     });
@@ -87,9 +87,10 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
   }
 
   private async getBalanceByAddress(address: string) {
-    await zoobc.Account.getBalance(address)
-      .then(data => {
-        this.account.balance = Number(data.accountbalance.balance);
+    const adrs: Address = {value: address, type: 0};
+    zoobc.Account.getBalance(adrs)
+      .then((data: AccountBalance) => {
+        this.account.balance = Number(data);
       })
       .catch(error => { })
       .finally(() => { });

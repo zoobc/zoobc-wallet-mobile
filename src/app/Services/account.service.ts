@@ -8,7 +8,7 @@ import {
   STORAGE_CURRENT_ACCOUNT_MULTISIG
 } from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
-import { StoragedevService } from './storagedev.service';
+import { StorageService } from './storage.service';
 import { Account, AccountType } from '../Interfaces/account';
 import zoobc, { ZooKeyring, getZBCAddress, BIP32Interface, AccountBalance, MultiSigInfo } from 'zbc-sdk';
 
@@ -30,7 +30,7 @@ export class AccountService {
   public approverSubject: Subject<Account> = new Subject<Account>();
   public senderSubject: Subject<Account> = new Subject<Account>();
 
-  constructor(private strgSrv: StoragedevService) { }
+  constructor(private strgSrv: StorageService) { }
 
 
   setForWhat(arg: string) {

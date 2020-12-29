@@ -35,7 +35,7 @@ export class ReceivePage implements OnInit {
 
   async loadData() {
     this.account = await this.accountService.getCurrAccount();
-    this.createQR(this.account.address, this.amount);
+    this.createQR(this.account.address.value, this.amount);
   }
 
   ngOnInit(): void {
@@ -44,7 +44,7 @@ export class ReceivePage implements OnInit {
 
   changeBarcode() {
     if (this.account) {
-      this.createQR(this.account.address, this.amount);
+      this.createQR(this.account.address.value, this.amount);
     }
   }
 
@@ -55,7 +55,7 @@ export class ReceivePage implements OnInit {
   // Share Options
   async openSharing() {
     this.platform.ready().then(async () => {
-      await this.socialSharing.share(this.account.address).then(() => {
+      await this.socialSharing.share(this.account.address.value).then(() => {
       }).catch((err) => {
         console.log(err);
       });

@@ -23,8 +23,8 @@ export class EditAccountPage implements OnInit {
   accountName = EMPTY_STRING;
   isNameValid = true;
   accounts: Account[];
-  signBy: string;
-  signByAccount: Account;
+  // signBy: string;
+  // signByAccount: Account;
   oldName: string;
   participants = ['', ''];
   indexSelected: number;
@@ -96,8 +96,8 @@ export class EditAccountPage implements OnInit {
   async loadMultisigAccount() {
     this.accounts = await this.accountService.allAccount('multisig');
     this.accountJSON = JSON.stringify(this.account);
-    this.participants = this.account.participants; // .sort();
-    this.signByAccount = await this.accountService.getAccount(this.account.signByAddress);
+    // this.participants = this.account.participants; // .sort();
+    // this.signByAccount = await this.accountService.getAccount(this.account.signByAddress);
   }
 
   async loadNormalAccount() {
@@ -211,7 +211,7 @@ export class EditAccountPage implements OnInit {
 
 
   addParticipant() {
-    this.account.participants.push('');
+    // this.account.participants.push('');
   }
 
   reduceParticipant() {
@@ -334,9 +334,9 @@ export class EditAccountPage implements OnInit {
 
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned.data) {
-        this.signByAccount =  dataReturned.data;
-        this.signBy = this.signByAccount.address;
-        this.account.signByAddress = this.signByAccount.address;
+        // this.signByAccount =  dataReturned.data;
+        // this.signBy = this.signByAccount.address;
+        // this.account.signByAddress = this.signByAccount.address;
       }
     });
 

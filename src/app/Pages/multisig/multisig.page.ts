@@ -69,14 +69,18 @@ export class MultisigPage implements OnInit {
   async doNext() {
     const ftrxType = this.multisigForm.controls.trxType;
     const fchainType = this.multisigForm.controls.chainType;
-    const multisig: MultiSigDraft = {
-      accountAddress: '',
-      fee: 0,
-      id: 0,
-      multisigInfo: null,
-      unisgnedTransactions: null,
-      txType: ftrxType.value,
-    };
+
+    const multisig: MultiSigDraft = null;
+
+    // const multisig: MultiSigDraft = {
+    //   accountAddress: '',
+    //   fee: 0,
+    //   id: 0,
+    //   multisigInfo: null,
+    //   unisgnedTransactions: null,
+    //   txType: ftrxType.value,
+    // };
+
 
     if (fchainType.value === 'offchain') {
       multisig.signaturesInfo = null;
