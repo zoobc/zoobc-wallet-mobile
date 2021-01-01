@@ -13,7 +13,7 @@ import { AppVersion } from '@ionic-native/app-version/ngx';
 })
 export class InitialPage implements OnInit {
 
-  activeLanguage:string;
+  activeLanguage: string;
   languages = [];
   appVersion: string;
   constructor(
@@ -34,6 +34,12 @@ export class InitialPage implements OnInit {
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       this.activeLanguage = event.lang;
     });
+    try {
+      this.appVersionService.getVersionNumber().then(verNum => {
+        this.appVersion = verNum;
+      });
+    } catch { }
+    console.log('-- App Version: ', this.appVersionService.getVersionNumber());
   }
 
   openSendFeedbak() {
@@ -41,7 +47,7 @@ export class InitialPage implements OnInit {
   }
 
   selectActiveLanguage() {
-    this.languageService.setLanguage(this.activeLanguage)
+    this.languageService.setLanguage(this.activeLanguage);
   }
 
   goToFeedback() {

@@ -1,20 +1,21 @@
 import { Currency } from 'src/app/Interfaces/currency';
+export const UNIQUE_DB_ID = '1';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = '';
-export const STORAGE_ACTIVE_CURRENCY = 'strg_active_currency';
-export const STORAGE_ACTIVE_NETWORK_IDX = 'strg_current_node_selected';
-export const STORAGE_CURRENCY_RATES = 'strg_currency_rates';
-export const STORAGE_CURRENCY_RATE = 'strg_rate';
-export const STORAGE_ADDRESS_BOOK = 'strg_address_book';
-export const STORAGE_ALL_ACCOUNTS = 'strg_all_accounts';
-export const STORAGE_ALL_MULTISIG_ACCOUNTS = 'strg_all_multisig_accounts';
-export const STORAGE_CURRENT_ACCOUNT = 'strg_curr_account';
-export const STORAGE_CURRENT_ACCOUNT_MULTISIG = 'strg_curr_account_multisig';
-export const STORAGE_MAIN_ACCOUNT = 'strg_main_account';
-export const STORAGE_ENC_PASSPHRASE_SEED = 'strg_encrypted_passphrase_seed';
-export const STORAGE_ESCROW_WAITING_LIST = 'strg_escrow_waiting_list';
-export const STORAGE_MULTISIG_DRAFTS = 'strg_multisig_drafts';
-export const STORAGE_ACTIVE_THEME = 'strg_storage_active_theme6';
+export const STORAGE_ACTIVE_CURRENCY = 'strg_active_currency' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ACTIVE_NETWORK_IDX = 'strg_current_node_selected' + '_' + UNIQUE_DB_ID;
+export const STORAGE_CURRENCY_RATES = 'strg_currency_rates' + '_' + UNIQUE_DB_ID;
+export const STORAGE_CURRENCY_RATE = 'strg_rate' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ADDRESS_BOOK = 'strg_address_book' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ALL_ACCOUNTS = 'strg_all_accounts' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ALL_MULTISIG_ACCOUNTS = 'strg_all_multisig_accounts' + '_' + UNIQUE_DB_ID;
+export const STORAGE_CURRENT_ACCOUNT = 'strg_curr_account2' + '_' + UNIQUE_DB_ID;
+export const STORAGE_CURRENT_ACCOUNT_MULTISIG = 'strg_curr_account_multisig' + '_' + UNIQUE_DB_ID;
+export const STORAGE_MAIN_ACCOUNT = 'strg_main_account' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ENC_PASSPHRASE_SEED = 'strg_encrypted_passphrase_seed' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ESCROW_WAITING_LIST = 'strg_escrow_waiting_list' + '_' + UNIQUE_DB_ID;
+export const STORAGE_MULTISIG_DRAFTS = 'strg_multisig_drafts' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ACTIVE_THEME = 'strg_storage_active_theme6' + '_' + UNIQUE_DB_ID;
 export const DEFAULT_THEME = 'zoobc';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
@@ -226,31 +227,32 @@ export const NETWORK_LIST = [
   {
     name: 'Public TestNet Node 03',
     host: '//n3.beta.proofofparticipation.network:7001'
-  },
-  {
-    name: 'Developers TestNet Node 01',
-    host: 'http://85.90.246.90:7001'
-  },
-  {
-    name: 'Developers TestNet Node 02',
-    host: 'http://45.79.39.58:8002',
-  },
-  {
-    name: 'Developers TestNet Node 03',
-    host: 'http://172.104.34.10:8002',
-  },
-  {
-    name: 'Private Alpha TestNet Node 01',
-    host: '//n0.alpha.proofofparticipation.network:7001',
-  },
-  {
-    name: 'Private Alpha TestNet Node 02',
-    host: '//n1.alpha.proofofparticipation.network:7001',
-  },
-  {
-    name: 'Private Alpha TestNet Node 03',
-    host: '//n2.alpha.proofofparticipation.network:7001',
   }
+  // ,
+  // {
+  //   name: 'Developers TestNet Node 01',
+  //   host: 'http://85.90.246.90:7001'
+  // },
+  // {
+  //   name: 'Developers TestNet Node 02',
+  //   host: 'http://45.79.39.58:8002',
+  // },
+  // {
+  //   name: 'Developers TestNet Node 03',
+  //   host: 'http://172.104.34.10:8002',
+  // },
+  // {
+  //   name: 'Private Alpha TestNet Node 01',
+  //   host: '//n0.alpha.proofofparticipation.network:7001',
+  // },
+  // {
+  //   name: 'Private Alpha TestNet Node 02',
+  //   host: '//n1.alpha.proofofparticipation.network:7001',
+  // },
+  // {
+  //   name: 'Private Alpha TestNet Node 03',
+  //   host: '//n2.alpha.proofofparticipation.network:7001',
+  // }
 ];
 
 // export const TRX_FEE_LIST = [{

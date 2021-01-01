@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CURRENCY_LIST, SELECTED_LANGUAGE, STORAGE_ACTIVE_CURRENCY } from 'src/environments/variable.const';
 import { LoadingController, NavController } from '@ionic/angular';
 import { CurrencyService, ICurrency } from 'src/app/Services/currency.service';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { StorageService } from 'src/app/Services/storage.service';
 
 @Component({
   selector: 'app-popup-currency',
@@ -18,7 +18,7 @@ export class PopupCurrencyPage implements OnInit {
     private navCtrl: NavController,
     private loadingController: LoadingController,
     private currencySrv: CurrencyService,
-    private strgSrv: StoragedevService
+    private strgSrv: StorageService
   ) { }
 
   async ngOnInit() {

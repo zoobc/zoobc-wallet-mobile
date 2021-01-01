@@ -111,7 +111,7 @@ export class MsigAddSignaturesPage implements OnInit {
 
   async patchUnsignedAddress(addres: string) {
     const accounts = await this.accountSrv.allAccount();
-    const account = accounts.find(acc => acc.address === addres);
+    const account = accounts.find(acc => acc.address.value === addres);
     this.patchParticipant(account.participants);
   }
 
@@ -217,7 +217,7 @@ export class MsigAddSignaturesPage implements OnInit {
       return null;
     }
     curAccount.participants.forEach(pcp => {
-      this.participantsSignature.push(this.createParticipant(pcp, ''));
+      // this.participantsSignature.push(this.createParticipant(pcp, ''));
     });
   }
 

@@ -6,13 +6,14 @@ import { Account } from 'src/app/Interfaces/account';
 import { Observable, Subscription } from 'rxjs';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router } from '@angular/router';
-import zoobc, { AccountBalanceResponse, isZBCAddressValid,
-  MultiSigInterface, 
-  MultisigPostTransactionResponse} from 'zbc-sdk';
+import zoobc, { isZBCAddressValid,
+  MultiSigInterface,
+  MultisigPostTransactionResponse,
+  SignatureInfo} from 'zbc-sdk';
 import { AuthService } from 'src/app/Services/auth-service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { getTranslation, jsonBufferToString } from 'src/Helpers/utils';
-import { SignatureInfo } from 'zoobc-sdk/types/helper/transaction-builder/multisignature';
+// import { SignatureInfo } from 'zoobc-sdk/types/helper/transaction-builder/multisignature';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { createInnerTxBytes, getTxType } from 'src/Helpers/multisig-utils';
@@ -79,7 +80,7 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
     this.participants = JSON.stringify(participants);
     if (participants) {
-      this.account = await this.accountServ.getAccount(participants[0]);
+      // this.account = await this.accountServ.getAccount(participants[0]);
       this.fieldSender.setValue(this.account.address);
     }
 
@@ -129,10 +130,10 @@ export class MsigSendTransactionPage implements OnInit, OnDestroy {
 
   async getBalance() {
     this.isLoading = true;
-    await zoobc.Account.getBalance(this.currentAccount.address).then((data: AccountBalanceResponse) => {
-      this.accountBalance = data.accountbalance;
-      this.isLoading = false;
-    });
+    // await zoobc.Account.getBalance(this.currentAccount.address).then((data: AccountBalanceResponse) => {
+    //   this.accountBalance = data.accountbalance;
+    //   this.isLoading = false;
+    // });
   }
 
   async onConfirm() {

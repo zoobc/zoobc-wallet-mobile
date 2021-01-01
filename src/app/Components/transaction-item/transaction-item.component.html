@@ -1,20 +1,35 @@
-<div class="transaction-item">
+<div class="transaction-item" *ngIf="transaction && address">
   <div class="info">
-    <span class="sender">
-      <div class="name" *ngIf="transaction.alias">
-        {{ transaction.alias }}
+
+    <span class="sender" *ngIf="transaction.recipient && transaction.recipient.value == address.value">
+      <div class="name" *ngIf="transaction.senderAlias">
+        {{ transaction.senderAlias }}
       </div>
-      <div class="address" *ngIf="!transaction.alias">
-        <span>{{ transaction.address | shortAddress }}</span>
+      <div class="address" *ngIf="!transaction.senderAlias">
+        <span>{{ transaction.sender.value | shortAddress }}</span>
       </div>
     </span>
+
+    <span class="sender" *ngIf="transaction.sender && transaction.sender.value == address.value">
+      <div class="name" *ngIf="transaction.recipientAlias">
+        {{ transaction.recipientAlias }}
+      </div>
+      <div class="address" *ngIf="!transaction.recipientAlias">
+        <span>{{ transaction.recipient.value | shortAddress }}</span>
+      </div>
+    </span>
+
+
     <span class="time">{{ transaction.timestamp | dateAgo }}</span>
   </div>
-  <div class="amount" [ngClass]="transaction.type">
-    <app-info-amount-conversion value="{{ transaction.amount / 1e8 }}" otherCurrency="USD"
-      [prefix]="transaction.type==='send'?'-':'+'"></app-info-amount-conversion>
+  
+  
+  <div class="amount" [ngClass]="transaction.sender.value == address.value?'send':'receive'">
+    <app-info-amount-conversion value="{{ transaction.txBody.amount / 1e8 }}" otherCurrency="USD"
+      [prefix]="transaction.sender.value == address.value?'-':'+'"></app-info-amount-conversion>
 
-    <ion-badge *ngIf="transaction.escrow" color="tertiary">Escrow</ion-badge>
-    <ion-badge *ngIf="transaction.multisigchild" color="tertiary">Multisig</ion-badge>
+    <ion-badge *ngIf="transaction.escrow" color="tertiary">{{ 'escrow transaction' | translate }}</ion-badge>
+    <ion-badge *ngIf="transaction.escrow" color="warning">{{ status | translate }}</ion-badge>
+    <ion-badge *ngIf="transaction.multisig" color="tertiary">{{ 'multisignature' | translate }}</ion-badge>
   </div>
 </div>

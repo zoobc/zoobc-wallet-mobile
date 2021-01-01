@@ -1,7 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 import { SELECTED_LANGUAGE, LANGUAGES } from 'src/environments/variable.const';
-import { StoragedevService } from './storagedev.service';
+import { StorageService } from './storage.service';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -12,7 +12,7 @@ export class LanguageService {
 
   constructor(
     private translate: TranslateService,
-    private strgSrv: StoragedevService  ) {
+    private strgSrv: StorageService  ) {
   }
 
   private languages = LANGUAGES;

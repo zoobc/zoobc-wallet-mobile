@@ -4,7 +4,7 @@
       refreshingText="{{ 'Refreshing' | translate }} ...">
     </ion-refresher-content>
   </ion-refresher>
-  
+
   <div class="home-header">
     <div class="scan-container">
       <ion-icon name="zbc-scan" (click)="goToScan()"></ion-icon>
@@ -14,15 +14,15 @@
         <h1 class="account-name">{{ account.name }}</h1>
         <ion-icon name="zbc-chevron-down" color="secondary"></ion-icon>
       </div>
-      <p>{{ account.address | shortAddress }}</p>
+      <p>{{ account.address.value | shortAddress }}</p>
     </ion-label>
 
     <ion-label class="main-balance">
       <ion-text class="amount">
         <span class="sufix">ZBC</span>
-        <span *ngIf="isLoadingBalance; else boxAccountBalance" class="skeleton-text" style="width: 80px"></span>
+        <span *ngIf="isLoading; else boxAccountBalance" class="skeleton-text" style="width: 80px"></span>
         <ng-template #boxAccountBalance>
-          <span>{{ accountBalance.balance/1e8 | number: '0.0-2' }}</span>
+          <span *ngIf="accountBalance">{{ accountBalance.balance/1e8 | number: '0.0-2' }}</span>
         </ng-template>
       </ion-text>
     </ion-label>
@@ -31,9 +31,9 @@
       <ion-text class="amount">
         <span>{{ "spendable" | translate }}</span>
         <span class="sufix">ZBC</span>
-        <span *ngIf="isLoadingBalance; else boxSpendableBalance" class="skeleton-text" style="width: 80px"></span>
+        <span *ngIf="isLoading; else boxSpendableBalance" class="skeleton-text" style="width: 80px"></span>
         <ng-template #boxSpendableBalance>
-          <span>{{ accountBalance.spendablebalance/1e8 | number: '0.0-2' }}</span>
+          <span *ngIf="accountBalance">{{ accountBalance.spendableBalance/1e8 | number: '0.0-2' }}</span>
         </ng-template>
       </ion-text>
     </ion-label>
@@ -83,7 +83,8 @@
               <ion-icon name="zbc-clock" color="secondary"></ion-icon>
               <span>{{ "transactions" | translate }}</span>
             </div>
-            <span *ngIf="recentTx && recentTx.length>=1" class="all" (click)="goToTransactions()">{{ "see all" | translate }}</span>
+            <span *ngIf="recentTx && recentTx.length>=1" class="all" (click)="goToTransactions()">{{ "see all" |
+              translate }}</span>
           </div>
         </ion-item>
         <ng-container *ngIf="isLoadingRecentTx; else transactionList">
@@ -92,7 +93,46 @@
           </ion-item>
         </ng-container>
         <ng-template #transactionList>
-          <ng-container *ngIf="recentTx && recentTx.length>=1; else noTransaction">
+
+          <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button
+            (click)="openDetailUnconfirm(pendingtrx)">
+            <ion-label>
+              <ion-row class="ion-justify-content-between">
+                <ion-col size="7">
+                  <div *ngIf="pendingtrx.recipient.value == account.address.value">
+                    <ion-label class="title">
+                      {{ pendingtrx.senderAlias }}
+                    </ion-label>
+                    <ion-label class="title">
+                      {{ pendingtrx.sender.value | shortAddress }}
+                    </ion-label>
+                  </div>
+
+                  <div *ngIf="pendingtrx.sender.value == account.address.value">
+                    <ion-label class="title">
+                      {{ pendingtrx.recipientAlias }}
+                    </ion-label>
+                    <ion-label class="title">
+                      {{ pendingtrx.recipient.value | shortAddress }}
+                    </ion-label>
+                  </div>
+
+                  <ion-label class="date" style="font-size: 0.7em">{{
+                    pendingtrx.timestamp | date: "short"
+                    }} <span style="color:orange">{{ "pending" | translate }}</span>
+                    <!-- <ion-spinner name="lines-small" style="width: 15px !important; height: 15px !important;"></ion-spinner> -->
+                  </ion-label>
+                </ion-col>
+                <ion-col size="5" class="ion-text-end">
+                  <ion-label class="amount pending">
+                    {{ pendingtrx.txBody.amount / 1e8 | number: '0.0-6' }} <span style="color:grey">ZBC</span>
+                  </ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-label>
+          </ion-item>
+
+          <ng-container *ngIf="recentTx && recentTx.length >= 1; else noTransaction">
             <ion-item *ngFor="let transaction of recentTx; let i = index"
               (click)="goToTransactionDetail(transaction.id)">
               <app-transaction-item [transaction]="transaction"></app-transaction-item>

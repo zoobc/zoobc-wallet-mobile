@@ -42,7 +42,8 @@ export class PopoverAccountComponent implements OnInit {
     }
 
     if (this.accounts && this.accounts.length > 0) {
-      this.getAllAccountBalance(this.accounts);
+      this.accounts = await this.accountSrv.getAccountsWithBalance();
+      // this.getAllAccountBalance(this.accounts);
     }
 
     const selectedAccount = await this.accountSrv.getCurrAccount();
@@ -51,25 +52,25 @@ export class PopoverAccountComponent implements OnInit {
     });
   }
 
-  async getAllAccountBalance(accounts: any) {
-    const accountAddresses = [];
-    let allBalances = null;
-    accounts.forEach((acc) => {
-      accountAddresses.push(acc.address);
-    });
+  // async getAllAccountBalance(accounts: any) {
+  //   const accountAddresses = [];
+  //   let allBalances = null;
+  //   accounts.forEach((acc) => {
+  //     accountAddresses.push(acc.address);
+  //   });
 
-    try {
-      const data = await zoobc.Account.getBalances(accountAddresses);
-      allBalances = data.accountbalancesList;
-    } catch (error) {
-      console.log('__error', error);
-    }
+  //   try {
+  //     const data = await zoobc.Account.getBalances(accountAddresses);
+  //     allBalances = data.accountbalancesList;
+  //   } catch (error) {
+  //     console.log('__error', error);
+  //   }
 
-    accounts.forEach(obj => {
-      const adres = obj.address;
-      obj.balance =  this.getBalanceByAddress(allBalances, adres);
-    });
-  }
+  //   accounts.forEach(obj => {
+  //     const adres = obj.address;
+  //     obj.balance =  this.getBalanceByAddress(allBalances, adres);
+  //   });
+  // }
 
   private getBalanceByAddress(allBalances: any, address: string) {
     const accInfo = allBalances.filter(acc => {

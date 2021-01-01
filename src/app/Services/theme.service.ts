@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import * as Color from 'color';
 import { STORAGE_ACTIVE_THEME, DEFAULT_THEME } from 'src/environments/variable.const';
-import { StoragedevService } from './storagedev.service';
+import { StorageService } from './storage.service';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -72,7 +72,7 @@ export class ThemeService {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private strgSrv: StoragedevService
+    private strgSrv: StorageService
   ) {
     strgSrv.get(STORAGE_ACTIVE_THEME).then(themeName => {  // <--- GET SAVED THEME
       let thm = themeName;

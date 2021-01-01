@@ -5,8 +5,7 @@ import { Account } from 'src/app/Interfaces/account';
 import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, FOR_APPROVER, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
 import zoobc from 'zbc-sdk';
 import { NavController, ModalController, AlertController, PopoverController } from '@ionic/angular';
-import { makeShortAddress } from 'src/Helpers/converters';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { StorageService } from 'src/app/Services/storage.service';
 import { ImportAccountPage } from './import-account/import-account.page';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { UtilService } from 'src/app/Services/util.service';
@@ -32,7 +31,7 @@ export class ListAccountComponent implements OnInit {
     private alertCtrl: AlertController,
     private route: ActivatedRoute,
     private navCtrl: NavController,
-    private strgSrv: StoragedevService,
+    private strgSrv: StorageService,
     private modalController: ModalController,
     private router: Router,
     private qrScannerService: QrScannerService,
@@ -42,11 +41,11 @@ export class ListAccountComponent implements OnInit {
     private translateSrv: TranslateService
   ) {
 
-      this.qrScannerService.qrScannerSubject.subscribe(address => {
-        this.getScannerResult(address);
-      });
+    this.qrScannerService.qrScannerSubject.subscribe(address => {
+      this.getScannerResult(address);
+    });
 
-      this.accountService.accountSubject.subscribe(() => {
+    this.accountService.accountSubject.subscribe(() => {
       setTimeout(() => {
         this.loadData();
       }, 500);
@@ -65,33 +64,33 @@ export class ListAccountComponent implements OnInit {
   ngOnInit() {
     this.loadData();
 
-    this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
+    this.translateSrv.onLangChange.subscribe(() => {
       this.translateLang();
     });
 
     this.translateLang();
   }
 
-  translateLang(){
+  translateLang() {
     this.translateSrv.get([
-      'copy address', 
-      'edit account', 
-      'view account', 
-      'delete account', 
-      'you scan wrong qrcode', 
+      'copy address',
+      'edit account',
+      'view account',
+      'delete account',
+      'you scan wrong qrcode',
       'account with that address is already exist',
       'error when scanning account, please try again later!',
       'account has been successfully imported'
-  ]).subscribe((res: any)=>{
-      this.textCopyAddress = res["copy address"];
-      this.textEditAccount = res["edit account"];
-      this.textViewAccount = res["view account"];
-      this.textDeleteAccount = res["delete account"];
-      this.textWrongQrCode = res["you scan wrong qrcode"];
-      this.textAddressExists = res["account with that address is already exist"];
-      this.textErrorScan = res["error when scanning account, please try again later!"];
+    ]).subscribe((res: any) => {
+      this.textCopyAddress = res['copy address'];
+      this.textEditAccount = res['edit account'];
+      this.textViewAccount = res['view account'];
+      this.textDeleteAccount = res['delete account'];
+      this.textWrongQrCode = res['you scan wrong qrcode'];
+      this.textAddressExists = res['account with that address is already exist'];
+      this.textErrorScan = res['error when scanning account, please try again later!'];
       this.textAccountImported = res['account has been successfully imported'];
-    })
+    });
   }
 
   isSavedAccount(obj: any): obj is Account {
@@ -110,7 +109,7 @@ export class ListAccountComponent implements OnInit {
     const accountSave: Account = fileResult;
     console.log('== accountSave: ', accountSave);
 
-    const allAcc  = await this.accountService.allAccount('multisig');
+    const allAcc = await this.accountService.allAccount('multisig');
     const idx = allAcc.findIndex(acc => acc.address === accountSave.address);
     if (idx >= 0) {
       alert(this.textAddressExists);
@@ -122,7 +121,7 @@ export class ListAccountComponent implements OnInit {
 
       });
     } catch {
-      alert (this.textErrorScan);
+      alert(this.textErrorScan);
     } finally {
     }
 
@@ -137,16 +136,17 @@ export class ListAccountComponent implements OnInit {
       }
     });
     this.accounts = await this.accountService.allAccount();
+    console.log('=== this.accounts: ', this.accounts);
     if (this.accounts && this.accounts.length > 0) {
-      this.getAllAccountBalance(this.accounts);
+    //  this.getAllAccountBalance(this.accounts);
     }
   }
 
   async deleteAccount(index: number) {
     const currAccount = await this.accountService.getCurrAccount();
     if (this.accounts[index].address === currAccount.address) {
-        alert('Cannot delete active account, please switch account, and try again!');
-        return;
+      alert('Cannot delete active account, please switch account, and try again!');
+      return;
     }
 
     const confirmation = await this.alertCtrl.create({
@@ -173,14 +173,14 @@ export class ListAccountComponent implements OnInit {
   async getAllAccountBalance(accounts: any) {
     this.isLoadingBalance = true;
     const accountAddresses = [];
-    let allBalances = null;
+    // let allBalances = null;
     accounts.forEach((acc) => {
       accountAddresses.push(acc.address);
     });
 
     try {
       const data = await zoobc.Account.getBalances(accountAddresses);
-      allBalances = data.accountbalancesList;
+      // allBalances = data.accountbalancesList;
     } catch (error) {
       console.log('__error', error);
       this.isLoadingBalance = false;
@@ -188,13 +188,13 @@ export class ListAccountComponent implements OnInit {
 
     accounts.forEach(obj => {
       const adres = obj.address;
-      obj.balance =  this.getBalanceByAddress(allBalances, adres);
+      // obj.balance =  this.getBalanceByAddress(allBalances, adres);
     });
     this.isLoadingBalance = false;
   }
 
   private getBalanceByAddress(allBalances: any, address: string) {
-    if (allBalances==null) {
+    if (allBalances == null) {
       return null;
     }
     const accInfo = allBalances.filter(acc => {
@@ -241,7 +241,7 @@ export class ListAccountComponent implements OnInit {
 
     this.accountService.setForWhat(this.forWhat);
     if (this.forWhat === FOR_ACCOUNT) {
-      this.accountService.setActiveAccount(account);
+      this.accountService.switchAccount(account);
     } else if (this.forWhat === FOR_SENDER) {
       this.accountService.setSender(account);
     } else if (this.forWhat === FOR_RECIPIENT) {
@@ -263,6 +263,8 @@ export class ListAccountComponent implements OnInit {
   viewAccount(account: Account) {
     this.openEditAccount(account, 0);
   }
+
+  openListAccount() { }
 
   async openAddAccount(arg: Account, trxMode: string) {
     const navigationExtras: NavigationExtras = {
@@ -350,17 +352,17 @@ export class ListAccountComponent implements OnInit {
     popover.onWillDismiss().then(({ data: action }) => {
       switch (action) {
         case 'edit':
-        this.editName(account);
-        break;
+          this.editName(account);
+          break;
         case 'copy':
-        this.utilSrv.copyToClipboard(account.address);
-        break;
+          this.utilSrv.copyToClipboard(account.address.value);
+          break;
         case 'view':
-        this.viewAccount(account);
-        break;
+          this.viewAccount(account);
+          break;
         case 'delete':
-        this.deleteAccount(index);
-        break;
+          this.deleteAccount(index);
+          break;
       }
     });
 

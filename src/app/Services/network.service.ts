@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StoragedevService } from './storagedev.service';
+import { StorageService } from './storage.service';
 import zoobc from 'zbc-sdk';
 import { STORAGE_ACTIVE_NETWORK_IDX, NETWORK_LIST } from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
@@ -10,7 +10,7 @@ export class NetworkService {
 
   public nodeIndex = 0;
   constructor(
-    private strgSrv: StoragedevService,
+    private strgSrv: StorageService,
   ) { }
   public changeNodeSubject: Subject<any> = new Subject<any>();
 

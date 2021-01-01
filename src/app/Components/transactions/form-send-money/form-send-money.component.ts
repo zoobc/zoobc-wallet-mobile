@@ -152,7 +152,7 @@ export class FormSendMoneyComponent implements OnInit {
     this.accounts = await this.accountServ.allAccount();
     this.accounts.forEach(account => {
       const contact: Contact = {
-        address: account.address,
+        address: account.address.value,
         name: account.name,
       };
       this.contacts.push(contact);

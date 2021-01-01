@@ -27,11 +27,14 @@ import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import zoobc, {
   TransactionListParams,
-  toTransactionListWallet,
   MempoolListParams,
-  toUnconfirmedSendMoneyWallet,
-  TransactionsResponse,
-  TransactionType
+  TransactionType,
+  AccountBalance,
+  Address,
+  EscrowListParams,
+  OrderBy,
+  getZBCAddress,
+  ZBCTransaction
 } from 'zbc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
@@ -102,14 +105,14 @@ export class HomePage implements OnInit, OnDestroy {
   interval: any;
   clickSub: any;
   public offset: number;
-
-  public accountBalance: any;
-  public isLoadingBalance: boolean;
+  startMatch = 0;
+  accountBalance: AccountBalance;
+  public isLoading = false;
   public currencyRate = CONST_DEFAULT_RATE;
   public priceInUSD: number;
   public isError = false;
   public navigationSubscription: any;
-
+  txType: number = TransactionType.SENDMONEYTRANSACTION;
   account: Account;
   accounts: Account[];
   notifId = 1;
@@ -122,8 +125,8 @@ export class HomePage implements OnInit, OnDestroy {
   networkSubscription = null;
 
   isLoadingRecentTx = false;
-  recentTx: any;
-  unconfirmTx: any;
+  recentTx: ZBCTransaction[];
+  unconfirmTx: ZBCTransaction[];
   isErrorRecentTx = false;
   totalTx: number;
   lastRefresh: number;
@@ -141,14 +144,14 @@ export class HomePage implements OnInit, OnDestroy {
   async showBalanceDetail() {
     const alert = await this.alertController.create({
       header: 'Account:',
-      subHeader: this.account.address,
+      subHeader: this.account.address.value,
       message:
         'Balance: <br/>' +
         this.decimalPipe.transform(this.accountBalance.balance / 1e8) +
         ' ZBC <br/>' +
         '<br/>' +
         'Spendable Balance: <br/>' +
-        this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) +
+        // this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) +
         ' ZBC  <br/>',
       buttons: ['OK']
     });
@@ -171,9 +174,7 @@ export class HomePage implements OnInit, OnDestroy {
     if (!this.theme || this.theme === undefined || this.theme === null) {
       this.theme = DEFAULT_THEME;
     }
-    this.startTimer();
-
-    this.getTransactions();
+    // this.startTimer();
   }
 
   ionViewWillEnter() {
@@ -215,60 +216,62 @@ export class HomePage implements OnInit, OnDestroy {
 
   async loadData() {
     this.priceInUSD = this.currencySrv.getPriceInUSD();
-    this.accountBalance = {
-      accountaddress: '',
-      blockheight: 0,
-      spendablebalance: 0,
-      balance: 0,
-      poprevenue: '',
-      latest: false
-    };
-
     this.offset = 1;
-    this.accountBalance = 0;
-    this.isLoadingBalance = true;
-    this.isError = false;
 
     this.account = await this.accountService.getCurrAccount();
     this.currencyRate = this.currencySrv.getRate();
 
-    this.getBalanceByAddress(this.account.address);
+    this.getBalance();
     this.subscribeAllAccount();
-    this.getTransactions();
+
   }
+
+
 
   /**
    * Get balance of current active address
    * @ param address
    */
-  private async getBalanceByAddress(address: string) {
+  private async getBalance() {
+    this.isLoading = true;
     this.isError = false;
-    this.isLoadingBalance = true;
 
-    await zoobc.Account.getBalance(address)
-      .then(data => {
-        this.accountBalance = data.accountbalance;
-        this.lastTimeGetBalance = new Date();
+    zoobc.Account.getBalance(this.account.address)
+      .then((data: AccountBalance) => {
+        this.accountBalance = data;
+        return this.accountService.getAccountsWithBalance();
       })
-      .catch(error => {
-        console.error(error);
-        this.accountBalance = {
-          accountaddress: '',
-          blockheight: 0,
-          spendablebalance: 0,
-          balance: 0,
-          poprevenue: '',
-          latest: false
-        };
-        this.isError = true;
-        console.log(
-          'dashboard balance',
-          'An error occurred while processing your request'
-        );
-      })
+      .then((res: Account[]) => (this.accounts = res))
+      .catch(e => (this.isError = true))
       .finally(() => {
-        this.isLoadingBalance = false;
+        this.isLoading = false;
+        this.getTransactions();
       });
+
+    // await zoobc.Account.getBalance(address)
+    //   .then(data => {
+    //     this.accountBalance = data.accountbalance;
+    //     this.lastTimeGetBalance = new Date();
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //     this.accountBalance = {
+    //       accountaddress: '',
+    //       blockheight: 0,
+    //       spendablebalance: 0,
+    //       balance: 0,
+    //       poprevenue: '',
+    //       latest: false
+    //     };
+    //     this.isError = true;
+    //     console.log(
+    //       'dashboard balance',
+    //       'An error occurred while processing your request'
+    //     );
+    //   })
+    //   .finally(() => {
+    //     this.isLoadingBalance = false;
+    //   });
   }
 
   startTimer() {
@@ -297,9 +300,8 @@ export class HomePage implements OnInit, OnDestroy {
     popover.onWillDismiss().then(async ({ data }: { data: Account }) => {
       if (data) {
         this.account = data;
-        this.accountService.setActiveAccount(data);
-        this.getBalanceByAddress(data.address);
-        this.getTransactions();
+        this.accountService.switchAccount(data);
+        this.getBalance();
       }
     });
 
@@ -399,55 +401,170 @@ export class HomePage implements OnInit, OnDestroy {
     this.router.navigate(['/transaction/' + transactionId]);
   }
 
-  getTransactions() {
-    if (!this.isLoadingRecentTx) {
+  groupEscrowList(escrowList: any[]) {
+    const escrowCopy = escrowList.map(x => Object.assign({}, x));
+    const escrowGroup = [];
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < escrowCopy.length; i++) {
+      const idx = escrowGroup.findIndex(eg => eg.id === escrowCopy[i].id);
+      if (idx < 0) { escrowGroup.push(escrowCopy[i]); } else {
+        if (escrowGroup[idx].blockheight > escrowCopy[i].blockheight) {
+          escrowGroup[idx].blockheight = escrowCopy[i].blockheight;
+        }
+      }
+    }
+    escrowGroup.sort((a, b) => {
+      return b.blockheight - a.blockheight;
+    });
+    return escrowGroup;
+  }
+
+  matchEscrowGroup(blockheight, escrowList: any[]) {
+    let escrowObj: any;
+    for (let i = this.startMatch; i < escrowList.length; i++) {
+      if (escrowList[i].blockheight === blockheight) {
+        escrowObj = Object.assign({}, escrowList[i]);
+        this.startMatch = i;
+      }
+    }
+    return escrowObj;
+  }
+
+  async getTransactions() {
+    if (!this.isLoading) {
       this.recentTx = null;
       this.unconfirmTx = null;
 
-      this.isLoadingRecentTx = true;
-      this.isErrorRecentTx = false;
+      this.isLoading = true;
+      this.isError = false;
 
       const params: TransactionListParams = {
         address: this.account.address,
-        transactionType: TransactionType.SENDMONEYTRANSACTION,
+        transactionType: this.txType,
         pagination: {
           page: 1,
-          limit: 5
-        }
+          limit: 10,
+        },
       };
 
-      zoobc.Transactions.getList(params)
-        .then((res: TransactionsResponse) => {
-          const tx = toTransactionListWallet(res, this.account.address);
-          this.recentTx = tx.transactions;
-          this.recentTx.map(async recent => {
-            recent.alias = await this.addressBookSrv.getNameByAddress(
-              recent.address
-            );
-          });
-          this.totalTx = tx.total;
+      try {
+        const trxList = await zoobc.Transactions.getList(params);
 
-          const params2: MempoolListParams = {
-            address: this.account.address
-          };
+        let lastHeight = 0;
+        let firstHeight = 0;
+        if (trxList.total > 0) {
+          lastHeight = trxList.transactions[0].height;
+          firstHeight = trxList.transactions[trxList.transactions.length - 1].height;
+        }
 
-          return zoobc.Mempool.getList(params2);
-        })
-        .then(
-          unconfirmTx =>
-            (this.unconfirmTx = toUnconfirmedSendMoneyWallet(
-              unconfirmTx,
-              this.account.address
-            ))
-        )
-        .catch(() => {
-          this.isErrorRecentTx = true;
-        })
-        .finally(
-          () => (
-            (this.isLoadingRecentTx = false), (this.lastRefresh = Date.now())
-          )
-        );
+        const multisigTx = trxList.transactions.filter(trx => trx.multisig === true).map(trx => trx.id);
+
+        const paramEscrow: EscrowListParams = {
+          blockHeightStart: firstHeight,
+          blockHeightEnd: lastHeight,
+          recipient: this.account.address,
+          statusList: [0, 1, 2, 3],
+          latest: false,
+          pagination: {
+            orderBy: OrderBy.DESC,
+            orderField: 'block_height',
+          },
+        };
+        this.startMatch = 0;
+        const escrowTx = await zoobc.Escrows.getList(paramEscrow);
+        const escrowList = escrowTx.escrowList;
+        const escrowGroup = this.groupEscrowList(escrowList);
+        const tx = trxList.transactions;
+
+        tx.map(recent => {
+          const escStatus = this.matchEscrowGroup(recent.height, escrowGroup);
+          recent.senderAlias = ''; // this.contactServ.get(recent.sender.value).name || '';
+          recent.recipientAlias = ''; // this.contactServ.get(recent.recipient.value).name || '';
+          if (this.txType === 2 || this.txType === 258 || this.txType === 514 || this.txType === 770) {
+            if (recent.txBody.nodepublickey) {
+              const buffer = Buffer.from(recent.txBody.nodepublickey.toString(), 'base64');
+              const pubkey = getZBCAddress(buffer, 'ZNK');
+              recent.txBody.nodepublickey = pubkey;
+            }
+          }
+          if (escStatus) {
+            recent.escrow = true;
+            recent.txBody.approval = escStatus.status;
+            recent.escrowStatus = escStatus.status;
+          } else { recent.escrow = false; }
+          recent.multisig = multisigTx.includes(recent.id);
+          return recent;
+        });
+        this.recentTx = tx;
+        console.log('== ntx: ', tx);
+        this.totalTx = trxList.total;
+        const paramPool: MempoolListParams = {
+          address: this.account.address,
+        };
+        const unconfirmTx = await zoobc.Mempool.getList(paramPool);
+        this.unconfirmTx = unconfirmTx.transactions.map(uc => {
+          if (uc.escrow) { uc.txBody.approval = 0; }
+          return uc;
+        });
+      } catch (error) {
+        console.log(error);
+        this.isError = true;
+      } finally {
+        this.isLoading = false;
+        this.lastRefresh = Date.now();
+      }
     }
   }
+
+  // getTransactions() {
+  //   if (!this.isLoadingRecentTx) {
+  //     this.recentTx = null;
+  //     this.unconfirmTx = null;
+
+  //     this.isLoadingRecentTx = true;
+  //     this.isErrorRecentTx = false;
+
+  //     const params: TransactionListParams = {
+  //       address: this.account.address,
+  //       transactionType: TransactionType.SENDMONEYTRANSACTION,
+  //       pagination: {
+  //         page: 1,
+  //         limit: 5
+  //       }
+  //     };
+
+  // zoobc.Transactions.getList(params)
+  //   .then((res: TransactionsResponse) => {
+  //     const tx = toTransactionListWallet(res, this.account.address);
+  //     this.recentTx = tx.transactions;
+  //     this.recentTx.map(async recent => {
+  //       recent.alias = await this.addressBookSrv.getNameByAddress(
+  //         recent.address
+  //       );
+  //     });
+  //     this.totalTx = tx.total;
+
+  //     const params2: MempoolListParams = {
+  //       address: this.account.address
+  //     };
+
+  //     return zoobc.Mempool.getList(params2);
+  //   })
+  //   .then(
+  //     unconfirmTx =>
+  //       (this.unconfirmTx = toUnconfirmedSendMoneyWallet(
+  //         unconfirmTx,
+  //         this.account.address
+  //       ))
+  //   )
+  //   .catch(() => {
+  //     this.isErrorRecentTx = true;
+  //   })
+  //   .finally(
+  //     () => (
+  //       (this.isLoadingRecentTx = false), (this.lastRefresh = Date.now())
+  //     )
+  //   );
+  //   }
+  // }
 }
