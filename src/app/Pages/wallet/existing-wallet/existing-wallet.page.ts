@@ -130,7 +130,9 @@ export class ExistingWalletPage implements OnInit {
   async showPinDialog() {
     const pinmodal = await this.modalController.create({
       component: SetupPinPage,
-      cssClass: 'modal-zbc'
+      cssClass: 'modal-zbc',
+      componentProps: {
+      }
     });
 
     pinmodal.onDidDismiss().then(returnedData => {

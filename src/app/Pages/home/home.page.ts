@@ -68,7 +68,7 @@ export class HomePage implements OnInit, OnDestroy {
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
-        this.loadData();
+        // this.loadData();
       }
     });
 
@@ -141,6 +141,11 @@ export class HomePage implements OnInit, OnDestroy {
     return makeShortAddress(address);
   }
 
+
+  showAlert() {
+    alert('Comng soon!');
+  }
+
   async showBalanceDetail() {
     const alert = await this.alertController.create({
       header: 'Account:',
@@ -151,7 +156,7 @@ export class HomePage implements OnInit, OnDestroy {
         ' ZBC <br/>' +
         '<br/>' +
         'Spendable Balance: <br/>' +
-        // this.decimalPipe.transform(this.accountBalance.spendablebalance / 1e8) +
+        this.decimalPipe.transform(this.accountBalance.spendableBalance / 1e8) +
         ' ZBC  <br/>',
       buttons: ['OK']
     });

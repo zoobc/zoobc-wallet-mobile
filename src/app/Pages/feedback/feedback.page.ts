@@ -170,6 +170,6 @@ export class FeedbackPage implements OnInit {
   }
 
   goDashboard() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/tabs/home']);
   }
 }

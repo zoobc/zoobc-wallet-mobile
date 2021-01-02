@@ -47,6 +47,7 @@ import { AppVersion } from '@ionic-native/app-version/ngx';
 import { ImportAccountPageModule } from './Pages/account/import-account/import-account.module';
 import { ImportDraftPageModule } from './Pages/multisig/import-draft/import-draft.module';
 import { ComponentsModule } from './Components/components.module';
+import { MyTasksPageModule } from './Pages/my-tasks/my-tasks.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/language/locales/', '.json');
@@ -79,7 +80,7 @@ export function createTranslateLoader(http: HttpClient) {
     ImportDraftPageModule,
     ImportAccountPageModule,
     DatasetAccountPageModule,
-    PinBackupPageModule,
+    MyTasksPageModule,
     AccountPopupPageModule,
     PopupCurrencyPageModule,
     PopupLanguagesPageModule,

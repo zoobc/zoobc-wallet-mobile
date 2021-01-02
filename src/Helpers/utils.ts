@@ -1,3 +1,4 @@
+import { FormArray, ValidationErrors } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import {
   base64ToByteArray,
@@ -20,6 +21,19 @@ export function getTranslation(
 
 export function stringToBuffer(str: string) {
   return Buffer.from(str, 'base64');
+}
+
+export function uniqueParticipant(formArray: FormArray): ValidationErrors {
+  const values = formArray.value.filter(val => val.length > 0);
+  const controls = formArray.controls;
+  const result = values.some((element, index) => {
+    return values.indexOf(element) !== index;
+  });
+  const invalidControls = controls.filter(ctrl => ctrl.valid === false);
+  if (result && invalidControls.length === 0) {
+    return { duplicate: true };
+  }
+  return null;
 }
 
 export function base64ToHex(str) {
