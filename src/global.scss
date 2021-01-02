@@ -299,3 +299,49 @@ ion-button.item-btn-add{
     background-position: 200px;
   }
 }
+
+.stepper {
+  display: flex;
+  padding: 16px 0;
+  .step,
+  .stepper-line {
+    width: 100%;
+    text-align: center;
+  }
+  .step-circle {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    margin: 0 auto 6px;
+    font-size: 24px;
+    line-height: 24px;
+  }
+  .step-label {
+    display: block;
+    font-size: 12px;
+    color: #212121 !important;
+  }
+  .stepper-line {
+    border-top: 1px solid #414141;
+    margin: 12px -5% 0;
+  }
+  .step.active {
+    .step-circle {
+      color: #246828;
+    }
+    .step-label {
+      color: #131313;
+    }
+  }
+}
+
+.icoactive {
+  color:#16A085;
+  font-size: 2em;
+}
+
+.icodisabled {
+  color: #cccccc;
+  font-size: 2em;
+}

@@ -6,7 +6,7 @@
 
 <ion-content>
   <ion-list style="border-top: 1px solid #cccccc;">
-    <ion-item *ngFor="let escrow of escrowApprovalList; let i = index" (click)="openDetail(escrow.id)">
+    <ion-item *ngFor="let escrow of escrowApprovalList; let i = index">
       <ion-label>
 
         <p *ngIf="escrow.alias">

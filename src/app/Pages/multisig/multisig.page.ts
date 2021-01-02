@@ -5,7 +5,7 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
-import zoobc, { TransactionType } from 'zbc-sdk';
+import { TransactionType } from 'zbc-sdk';
 import { ImportDraftPage } from './import-draft/import-draft.page';
 import { THEME_OPTIONS } from 'src/environments/variable.const';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -13,6 +13,7 @@ import { getTxType } from 'src/Helpers/multisig-utils';
 import { getTranslation } from 'src/Helpers/utils';
 import { TranslateService } from '@ngx-translate/core';
 import { UtilService } from 'src/app/Services/util.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-multisig',
@@ -34,11 +35,12 @@ export class MultisigPage implements OnInit {
   fTrxType = new FormControl(TransactionType.SENDMONEYTRANSACTION, Validators.required);
   fChainType = new FormControl('onchain', Validators.required);
   themes = THEME_OPTIONS;
-  isMultiSignature = false;
+  isAccMultisig = false;
   innerTransaction = false;
   draftTxType: string[] = [];
   signatures = false;
   draftSignedBy: number[] = [];
+  isShowForm = false;
 
   constructor(
     private router: Router,
@@ -54,70 +56,120 @@ export class MultisigPage implements OnInit {
       trxType: this.fTrxType,
       chainType: this.fChainType
     });
-    this.getAccountType();
+
+  }
+
+  showForm() {
+    if (this.isShowForm) {
+      this.isShowForm = false;
+    } else {
+      this.isShowForm = true;
+    }
   }
 
   async ngOnInit() {
-    await this.getMultiSigDraft();
+    this.getAccountType();
+    // await this.getMultiSigDraft();
   }
 
   async getAccountType() {
     this.account = await this.accountService.getCurrAccount();
-    this.isMultiSignature = this.account.type === 'multisig' ? true : false;
+    this.isAccMultisig = this.account.type === 'multisig' ? true : false;
   }
 
   async doNext() {
-    const ftrxType = this.multisigForm.controls.trxType;
-    const fchainType = this.multisigForm.controls.chainType;
 
-    const multisig: MultiSigDraft = null;
+    const txType = this.fTrxType.value;
+    const multisig: MultiSigDraft = {
+      accountAddress: null,
+      fee: 0,
+      id: 0,
+      multisigInfo: null,
+      unisgnedTransactions: null,
+      signaturesInfo: null,
+      txType,
+      txBody: {},
+    };
 
-    // const multisig: MultiSigDraft = {
-    //   accountAddress: '',
-    //   fee: 0,
-    //   id: 0,
-    //   multisigInfo: null,
-    //   unisgnedTransactions: null,
-    //   txType: ftrxType.value,
-    // };
+    if (this.isAccMultisig) {
+      const accounts = (await this.accountService
+        .allAccount())
+        .filter(acc => this.account.participants.some(address => address.value === acc.address.value));
 
+      // if no address on the participants
+      if (accounts.length < 1) {
+        const message = getTranslation('you dont have any account that in participant list', this.translate);
+        Swal.fire({ type: 'error', title: 'Oops...', text: message });
+        return false;
+      }
 
-    if (fchainType.value === 'offchain') {
-      multisig.signaturesInfo = null;
-    }
-
-    if (this.isMultiSignature) { // if account is multisig
       multisig.multisigInfo = {
         minSigs: this.account.minSig,
         nonce: this.account.nonce,
         participants: this.account.participants,
       };
-      const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
-      multisig.generatedSender = address;
+
+      // const generatedSender = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
+      // multisig.txBody.sender = addrss;
+      // multisig.generatedSender = generatedSender;
+      multisig.txBody.sender = this.account.address;
+      // multisig.accountAddress = this.account.address;
+      console.log('... this.multisig:', multisig);
+
       this.multisigServ.update(multisig);
-
-      // checking, one of participant must from account list
-      let isOneParticipant = false;
-      const idx = (await this.accountService
-        .allAccount())
-        .filter(res => multisig.multisigInfo.participants.includes(res.address));
-
-      if (idx.length > 0) {
-        isOneParticipant = true;
-      } else {
-        isOneParticipant = false;
-      }
-      if (!isOneParticipant) {
-        const message = getTranslation('you dont have any account that in participant list', this.translate);
-        this.utilService.showConfirmation('Opps...', message, false, null);
-      } else {
-        this.router.navigate(['/msig-create-transaction']);
-      }
-
-    } else { // current account not multisig
+      this.router.navigate(['/msig-create-transaction']);
+    } else {
       this.multisigServ.update(multisig);
       this.router.navigate(['/msig-add-info']);
     }
+    // const multisig: MultiSigDraft = null;
+
+    // // const multisig: MultiSigDraft = {
+    // //   accountAddress: '',
+    // //   fee: 0,
+    // //   id: 0,
+    // //   multisigInfo: null,
+    // //   unisgnedTransactions: null,
+    // //   txType: ftrxType.value,
+    // // };
+
+
+    // if (fchainType.value === 'offchain') {
+    //   multisig.signaturesInfo = null;
+    // }
+
+    // if (this.isMultiSignature) { // if account is multisig
+    //   multisig.multisigInfo = {
+    //     minSigs: this.account.minSig,
+    //     nonce: this.account.nonce,
+    //     participants: this.account.participants,
+    //   };
+    //   const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
+    //   multisig.generatedSender = address;
+    //   this.multisigServ.update(multisig);
+
+    //   // checking, one of participant must from account list
+    //   let isOneParticipant = false;
+    //   const idx = (await this.accountService
+    //     .allAccount())
+    //     .filter(res => multisig.multisigInfo.participants.includes(res.address));
+
+    //   if (idx.length > 0) {
+    //     isOneParticipant = true;
+    //   } else {
+    //     isOneParticipant = false;
+    //   }
+    //   if (!isOneParticipant) {
+    //     const message = getTranslation('you dont have any account that in participant list', this.translate);
+    //     this.utilService.showConfirmation('Opps...', message, false, null);
+    //   } else {
+    //     this.router.navigate(['/msig-create-transaction']);
+    //   }
+
+    // } else { // current account not multisig
+    //   this.multisigServ.update(multisig);
+    //   this.router.navigate(['/msig-add-info']);
+    // }
   }
 
   radioGroupChange() {

@@ -689,7 +689,7 @@ export class SendCoinPage implements OnInit {
   }
 
   goDashboard() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/tabs/home']);
   }
 
   confirmSend() {

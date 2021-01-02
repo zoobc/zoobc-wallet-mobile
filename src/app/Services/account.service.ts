@@ -55,15 +55,19 @@ export class AccountService {
 
   async getAccount(address: string) {
     const accounts = await this.allAccount();
-    let account = null;
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < accounts.length; i++) {
-      const acc = accounts[i];
-      if (acc.address.value === address) {
-        account = acc;
-        break;
-      }
-    }
+    const account: Account = accounts.filter((acc: Account) => {
+      return acc.address && acc.address.value === address;
+    });
+
+    // let account = null;
+    // // tslint:disable-next-line:prefer-for-of
+    // for (let i = 0; i < accounts.length; i++) {
+    //   const acc = accounts[i];
+    //   if (acc.address.value === address) {
+    //     account = acc;
+    //     break;
+    //   }
+    // }
     return account;
   }
 

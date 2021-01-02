@@ -2,7 +2,8 @@
   <ion-list class="form-list">
     <ion-item lines="none" class="form-item">
       <ion-label position="stacked">{{ 'sender' | translate }}</ion-label>
-      <app-form-sender formControlName="sender" accountType="multisig" ngDefaultControl></app-form-sender>
+      <ion-textarea rows="3" readonly [value]="group.get(inputMap.sender).value" formControlName="sender"></ion-textarea>
+      <!-- <app-form-sender formControlName="sender" accountType="multisig" ngDefaultControl></app-form-sender> -->
     </ion-item>
 
     <ion-item lines="none" class="form-item">

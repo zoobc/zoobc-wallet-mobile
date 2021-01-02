@@ -1,32 +1,109 @@
-<ion-content class="ion-padding background-pin" fullscreen>
-  <ion-grid style="height: 100%; display: flex; flex-flow: column;">
-
-    <ion-row  style="flex-shrink: 0;">
-      <ion-col>
-          <ion-title color="light">{{ "enter your pin" | translate }}</ion-title>
+<ion-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-title color="light">{{ "enter your pin" | translate }}</ion-title>
       </ion-col>
     </ion-row>
 
-    <ion-row  style="flex-shrink: 0;">
-      <ion-col>
+    <ion-row>
+      <ion-col class="ion-text-center">
         <ion-label *ngIf="isLoginValid">&nbsp;</ion-label>
-        <ion-label *ngIf="!isLoginValid" class="ion-text-center invalidPin">{{ "invalid pin" | translate }}</ion-label>
+        <ion-label *ngIf="!isLoginValid" class="invalidPin">{{ "invalid pin" | translate }}
+        </ion-label>
       </ion-col>
     </ion-row>
 
-    <ion-row style="flex-grow: 1;">
+  </ion-grid>
+
+</ion-header>
+<ion-content class="ion-padding background-pin" fullscreen>
+  <ion-grid class="iongrid">
+    <ion-row class="ionrow">
       <ion-col>
-        <app-pin (ionChange)="login($event)"></app-pin>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+
+              <ion-grid style="margin-bottom: 20px;">
+                <ion-row>
+                  <ion-col>
+                    <ion-text class="pinText">{{pin2[0]}}&nbsp;&nbsp;</ion-text>
+                    <ion-text class="pinText">{{pin2[1]}}&nbsp;&nbsp;</ion-text>
+                    <ion-text class="pinText">{{pin2[2]}}&nbsp;&nbsp;</ion-text>
+                    <ion-text class="pinText">{{pin2[3]}}&nbsp;&nbsp;</ion-text>
+                    <ion-text class="pinText">{{pin2[4]}}&nbsp;&nbsp;</ion-text>
+                    <ion-text class="pinText">{{pin2[5]}}</ion-text>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+              <ion-grid>
+                <ion-row>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('1')">1</ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('2')">2</ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('3')">3</ion-button>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('4')">4</ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('5')">5</ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('6')">6</ion-button>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('7')">7</ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('8')">8</ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('9')">9</ion-button>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="clear()">
+                      <ion-icon name="trash"></ion-icon>
+                    </ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="handleInput('0')">0</ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button size="large" color="light" fill="outline" (click)="clearOne()">
+                      <ion-icon name="backspace"></ion-icon>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-col>
     </ion-row>
+  </ion-grid>
 
-    <ion-row  style="flex-shrink: 0;">
-      <ion-col>
+</ion-content>
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
         <ion-label color="light" routerLink="/initial">
           {{ "change wallet" | translate }}
         </ion-label>
-       </ion-col>
+      </ion-col>
     </ion-row>
-    
   </ion-grid>
-</ion-content>
+</ion-footer>

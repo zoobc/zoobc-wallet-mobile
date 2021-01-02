@@ -62,5 +62,8 @@ export function createRemoveSetupDatasetBytes(form: any): Buffer {
     recipientAccountAddress: recipientAddress,
     fee,
   };
+
+  console.log('=== data createRemoveSetupDatasetBytes: ', data);
+
   return removeDatasetBuilder(data);
 }

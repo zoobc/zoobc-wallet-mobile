@@ -30,8 +30,8 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
   @Input() accountType: AccountType;
   @Input() canSwitch = 'yes';
   @Input() switchToActive = 'yes';
-  @Input() predefList: any;
-  private disabled = false;
+  @Input() predefList = [];
+  disabled = false;
 
   onChange = (value: Account) => { };
   onTouched = () => { };
@@ -44,14 +44,11 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
 
   async ngOnInit() {
 
-    if (this.predefList) {
-      const participants = JSON.parse(this.predefList);
-      this.account = await this.accountSrv.getAccount(participants[0]);
-    } else {
+    if (this.predefList.length < 1) {
       this.account = await this.accountSrv.getCurrAccount();
+      this.getBalanceByAddress(this.account.address);
     }
 
-    this.getBalanceByAddress(this.account.address);
   }
 
   async switchAccount(ev: any) {
@@ -86,7 +83,7 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
     return popover.present();
   }
 
-  private async getBalanceByAddress(address: Address) {
+  private getBalanceByAddress(address: Address) {
 
     zoobc.Account.getBalance(address)
       .then((data: AccountBalance) => {
