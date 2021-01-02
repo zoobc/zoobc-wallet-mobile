@@ -10,6 +10,7 @@ import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { UtilService } from 'src/app/Services/util.service';
+import { Address } from 'zbc-sdk';
 
 @Component({
   selector: 'app-edit-account',
@@ -26,7 +27,7 @@ export class EditAccountPage implements OnInit {
   // signBy: string;
   // signByAccount: Account;
   oldName: string;
-  participants = ['', ''];
+  participants: Address[];
   indexSelected: number;
   fieldSource: string;
   isMinSigValid = true;
@@ -68,7 +69,7 @@ export class EditAccountPage implements OnInit {
   async getScannerResult(arg: string) {
     const result = arg.split('||');
     if (this.scanForWhat === FOR_PARTICIPANT) {
-      this.participants[this.indexSelected] = result[0];
+      this.participants[this.indexSelected] = {value: result[0], type: 0};
     }
   }
 
@@ -96,7 +97,7 @@ export class EditAccountPage implements OnInit {
   async loadMultisigAccount() {
     this.accounts = await this.accountService.allAccount('multisig');
     this.accountJSON = JSON.stringify(this.account);
-    // this.participants = this.account.participants; // .sort();
+    this.participants = this.account.participants; // .sort();
     // this.signByAccount = await this.accountService.getAccount(this.account.signByAddress);
   }
 

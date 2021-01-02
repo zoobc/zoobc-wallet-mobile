@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { TransactionService } from 'src/app/Services/transaction.service';
 
 @Component({
@@ -11,6 +12,7 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 export class SendMoneySummaryComponent implements OnInit {
   constructor(
     private transactionSrv: TransactionService,
+    private navCtrl: NavController,
     private router: Router
   ) {}
 
@@ -19,11 +21,11 @@ export class SendMoneySummaryComponent implements OnInit {
 
   ngOnInit() {
     this.stateValue = this.router.getCurrentNavigation().extras.state;
-    console.log('===34   this.stateValue',   this.stateValue);
     this.total = this.stateValue.amount + this.stateValue.fee;
   }
 
   submit() {
     this.transactionSrv.setTransactionSuccess();
+    this.navCtrl.pop();
   }
 }

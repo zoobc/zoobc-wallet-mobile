@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { EscrowHistoryPage } from './escrow-history.page';
 import { ComponentsModule } from 'src/app/Components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { MyTasksPageModule } from '../my-tasks.module';
 const routes: Routes = [
   {
     path: '',
@@ -19,6 +20,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     ComponentsModule,
+    MyTasksPageModule,
     TranslateModule,
     RouterModule.forChild(routes)
   ],

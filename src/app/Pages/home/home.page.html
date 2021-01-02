@@ -58,7 +58,7 @@
 
       <div class="other-buttons">
         <ion-label (click)="goToMultisig()">
-          <ion-icon name="zbc-send" color="secondary"></ion-icon>
+          <ion-icon ios="ios-create" md="md-create"></ion-icon>
           <ion-text>
             <h4>{{ "multisignature" | translate }}</h4>
           </ion-text>
@@ -67,6 +67,12 @@
           <ion-icon name="zbc-boxes" color="secondary"></ion-icon>
           <ion-text>
             <h4>{{ "Blockchain Object" | translate }}</h4>
+          </ion-text>
+        </ion-label>
+        <ion-label (click)="showAlert();">
+          <ion-icon name="zbc-send" color="secondary"></ion-icon>
+          <ion-text>
+            <h4>{{ "Liquid Payment" | translate }}</h4>
           </ion-text>
         </ion-label>
       </div>

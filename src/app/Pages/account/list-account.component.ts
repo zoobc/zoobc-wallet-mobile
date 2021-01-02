@@ -135,7 +135,8 @@ export class ListAccountComponent implements OnInit {
         this.forWhat = null;
       }
     });
-    this.accounts = await this.accountService.allAccount();
+    this.accounts = await this.accountService.getAccountsWithBalance();
+    // this.accounts = await this.accountService.allAccount();
     console.log('=== this.accounts: ', this.accounts);
     if (this.accounts && this.accounts.length > 0) {
     //  this.getAllAccountBalance(this.accounts);
@@ -143,8 +144,9 @@ export class ListAccountComponent implements OnInit {
   }
 
   async deleteAccount(index: number) {
+    console.log('Account: ', this.accounts[index]);
     const currAccount = await this.accountService.getCurrAccount();
-    if (this.accounts[index].address === currAccount.address) {
+    if (this.accounts[index].address.value === currAccount.address.value) {
       alert('Cannot delete active account, please switch account, and try again!');
       return;
     }
@@ -161,7 +163,8 @@ export class ListAccountComponent implements OnInit {
           text: 'Yes',
           handler: () => {
             this.accounts.splice(index, 1);
-            this.strgSrv.set(STORAGE_ALL_ACCOUNTS, this.accounts);
+            console.log('=== newAccounts: ', this.accounts);
+            this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, this.accounts);
           }
         }
       ]

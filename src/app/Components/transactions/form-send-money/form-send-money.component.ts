@@ -43,6 +43,10 @@ export class FormSendMoneyComponent implements OnInit {
   }
 
   async ngOnInit() {
+    console.log('=== group: ', this.group);
+    console.log('=== inputMap: ', this.inputMap);
+    console.log('=== multisig: ', this.multisig);
+
     this.group.get('alias').disable();
     const recipientForm = this.group.get('recipient');
     this.contacts = await this.addressBookServ.getAll() || [];
