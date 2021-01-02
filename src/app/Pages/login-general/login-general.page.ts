@@ -1,35 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { AuthService } from 'src/app/Services/auth-service';
-import { Router } from '@angular/router';
-import { ThemeService } from 'src/app/Services/theme.service';
-import { DEFAULT_THEME } from 'src/environments/variable.const';
-import { AccountService } from 'src/app/Services/account.service';
-import { NavController, LoadingController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss']
+  selector: 'app-login-general',
+  templateUrl: './login-general.page.html',
+  styleUrls: ['./login-general.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginGeneralPage implements OnInit {
+
   private start = 0;
   public pin = '';
   public pin2 = [];
 
   public isLoginValid = true;
-  theme = DEFAULT_THEME;
   constructor(
     private authService: AuthService,
-    private accountService: AccountService,
-    private router: Router,
-    private loadingController: LoadingController,
-    private themeSrv: ThemeService,
-    private navCtrl: NavController
-  ) {
-    // if theme changed
-    this.themeSrv.themeSubject.subscribe(() => {
-      this.theme = this.themeSrv.theme;
-    });
+    private modalController: ModalController,
+    private loadingController: LoadingController  ) {
   }
 
 
@@ -62,29 +50,20 @@ export class LoginPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    this.theme = this.themeSrv.theme;
-    if (!this.theme || this.theme === '' || this.theme === undefined) {
-      this.theme = DEFAULT_THEME;
-    }
   }
 
   async ngOnInit() {
-
     this.initialPin();
-    this.theme = this.themeSrv.theme;
-    if (!this.theme || this.theme === '' || this.theme === undefined) {
-      this.theme = DEFAULT_THEME;
-    }
-    const acc = await this.accountService.getCurrAccount();
-    if (acc === null) {
-      this.router.navigate(['initial']);
-      return;
-    }
+    // const acc = await this.accountService.getCurrAccount();
+    // if (acc === null) {
+    //   this.router.navigate(['initial']);
+    //   return;
+    // }
 
-    const isLoggedIn = this.authService.isLoggedIn();
-    if (isLoggedIn) {
-      this.navCtrl.navigateRoot('/tabs/home');
-    }
+    // const isLoggedIn = this.authService.isLoggedIn();
+    // if (isLoggedIn) {
+    //   this.navCtrl.navigateRoot('/tabs/home');
+    // }
   }
 
   handleInput(bar: any) {
@@ -96,10 +75,7 @@ export class LoginPage implements OnInit {
     this.pin2[this.start] = '*';
 
     if (this.pin.length === 6) {
-     // setTimeout(() => {
       this.login(this.pin);
-      // }, 200);
-
       setTimeout(() => {
         this.initialPin();
       }, 1800);
@@ -107,7 +83,6 @@ export class LoginPage implements OnInit {
 
     }
     this.start++;
-
   }
 
   async login(pin: string) {
@@ -116,12 +91,10 @@ export class LoginPage implements OnInit {
       duration: 3000
     });
     await loading.present();
-
-    // const { pin } = e;
     this.isLoginValid = true;
     const isUserLoggedIn = await this.authService.login(pin);
     if (isUserLoggedIn) {
-      this.navCtrl.navigateRoot('/tabs/home');
+      this.modalController.dismiss(pin);
     } else {
       this.isLoginValid = false;
       setTimeout(() => {
@@ -131,4 +104,9 @@ export class LoginPage implements OnInit {
 
     await loading.dismiss();
   }
+
+  async cancel() {
+    await this.modalController.dismiss('-');
+  }
+
 }

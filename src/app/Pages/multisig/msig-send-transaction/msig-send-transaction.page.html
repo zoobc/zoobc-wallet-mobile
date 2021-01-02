@@ -4,38 +4,79 @@
       <ion-back-button> </ion-back-button>
     </ion-buttons>
     <ion-title>{{ "send money" | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  (click)="goHome()"> 
+        <ion-icon name="home"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
- 
+
 <ion-content class="ion-padding">
-  <form [formGroup]="formSend" (submit)="onOpenConfirmDialog()">
-    
-    <ion-item lines="none" class="form-item">
-      <ion-label position="stacked">{{"sender" | translate}}</ion-label>
-      <app-form-sender formControlName="sender" accountType="normal" canSwitch="yes" switchToActive="no" *ngIf="participants" predefList="{{participants}}" ngDefaultControl></app-form-sender>
-    </ion-item>
 
-    <ion-item lines="none" class="form-item">
-      <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
-      <app-form-amount-conversion formControlName="fee" ngDefaultControl></app-form-amount-conversion>
-      <ng-container *ngIf="( fieldFee.dirty || fieldFee.touched) && fieldFee.invalid">
-        <ion-text class="text-error" *ngIf="fieldFee.errors.required">
-          {{ "transaction fee cannot be empty" | translate}}
-        </ion-text>
-        <ion-text class="text-error" *ngIf="fieldFee.errors.min">
-          {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fieldFee.errors.min.min }}
-        </ion-text>
-      </ng-container>
-    </ion-item>
+  <div class="stepper">
+    <ng-container>
+      <div class="step">
+        <span class="step-circle">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </span>
+        <span class="step-label">{{ 'add multisig info' | translate }}</span>
+      </div>
+      <div class="stepper-line"></div>
+    </ng-container>
+    <ng-container>
+      <div class="step">
+        <span class="step-circle">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </span>
+        <span class="step-label">{{ 'create transaction' | translate }}</span>
+      </div>
+      <div class="stepper-line"></div>
+    </ng-container>
+    <ng-container>
+      <div class="step active">
+        <span class="step-circle">
+          <ion-icon name="radio-button-on"></ion-icon>
+        </span>
+        <span class="step-label">{{ 'send multisignature' | translate }}</span>
+      </div>
+    </ng-container>
+  </div>
 
-    
-    <ion-button color="tertiary" expand="block" (click)="saveDraft()">
+  <form [formGroup]="formSend" (ngSubmit)="submit()" novalidate>
+    <ion-list>
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{"sender" | translate}}</ion-label>
+        <app-form-sender formControlName="sender" accountType="normal" canSwitch="yes" switchToActive="no"
+          *ngIf="participants" predefList="{{participants}}" ngDefaultControl></app-form-sender>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
+        <ion-input formControlName="fee" type="number" required></ion-input>
+        <ng-container *ngIf="( fieldFee.dirty || fieldFee.touched) && fieldFee.invalid">
+          <ion-text class="text-error" *ngIf="fieldFee.errors.required">
+            {{ "transaction fee cannot be empty" | translate}}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="fieldFee.errors.min">
+            {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fieldFee.errors.min.min }}
+          </ion-text>
+        </ng-container>
+      </ion-item>
+    </ion-list>
+
+    <!-- <ion-button color="tertiary" expand="block" (click)="saveDraft()">
       {{ 'save' | translate }}
-    </ion-button>
-    <ion-button type="submit" expand="block" [disabled]="!formSend.valid || isLoading" color="tertiary">
-      {{ 'send' | translate }}
-    </ion-button>
-
+    </ion-button> -->
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button type="submit" expand="full" color="tertiary">
+            {{ 'send' | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </form>
 </ion-content>
 <!-- <div *ngIf="isLoadingBalance || isLoadingTxFee">

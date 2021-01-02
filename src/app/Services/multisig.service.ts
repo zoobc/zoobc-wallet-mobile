@@ -27,7 +27,7 @@ export class MultisigService {
 
   update(multisig: MultiSigDraft) {
     this.multisigDraft = multisig;
-    this.sourceMultisig.next(multisig);
+    // this.sourceMultisig.next(multisig);
   }
 
   getDrafts() {
@@ -61,8 +61,10 @@ export class MultisigService {
 
   async deleteDraft(idx: number) {
     let multisigDrafts = await this.getDrafts();
-    multisigDrafts = multisigDrafts.filter(draft => draft.id !== idx);
-    await this.strgSrv.setObject(STORAGE_MULTISIG_DRAFTS, multisigDrafts);
+    if (multisigDrafts){
+      multisigDrafts = multisigDrafts.filter(draft => draft.id !== idx);
+      await this.strgSrv.setObject(STORAGE_MULTISIG_DRAFTS, multisigDrafts);
+    }
   }
 
 }

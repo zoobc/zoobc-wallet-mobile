@@ -10,7 +10,10 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   addressValidator,
 } from 'src/Helpers/validators';
-import { Address, getZBCAddress, MultiSigInfo } from 'zbc-sdk';
+import zoobc, { Address, getZBCAddress, MultiSigInfo } from 'zbc-sdk';
+import { getTranslation } from 'src/Helpers/utils';
+import { TranslateService } from '@ngx-translate/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-account',
@@ -29,6 +32,7 @@ export class CreateAccountPage implements OnInit {
 
   constructor(
     private accountService: AccountService,
+    private translate: TranslateService,
     private router: Router,
     private modalController: ModalController,
   ) {}
@@ -60,7 +64,7 @@ export class CreateAccountPage implements OnInit {
     const accountNameExists = this.isNameExists(this.accountName.value);
 
     if (accountNameExists) {
-      this.formAccount.controls['accountName'].setErrors({ accountNameExists });
+      this.formAccount.controls.accountName.setErrors({ accountNameExists });
     }
 
     if (this.formAccount.valid) {
@@ -152,27 +156,86 @@ export class CreateAccountPage implements OnInit {
         this.accountName.value.trim(),
         pathNumber
       );
-    } else if (this.isMultisig) {
+      await this.accountService.addAccount(account);
+      this.accountService.broadCastNewAccount(account);
+      this.goListAccount();
+      return;
 
-      let addresses: [string] = this.participants.value.filter(value => value.length > 0);
-      addresses = addresses.sort();
-      const participants: Address[] = addresses.map(address => ({ value: address, type: 0 }));
-      const multiParam: MultiSigInfo = {
-        participants,
-        nonce: this.nonce.value,
-        minSigs: this.minimumSignature.value,
-      };
-
-
-      account = this.accountService.createNewMultisigAccount(
-        this.accountName.value.trim(),
-        multiParam,
-      );
     }
 
-    await this.accountService.addAccount(account);
-    this.accountService.broadCastNewAccount(account);
-    this.goListAccount();
+    const title = getTranslation('are you sure?', this.translate);
+    const message = getTranslation(
+        'once you create multisignature address, you will not be able to edit it anymore. but you can still delete it',
+        this.translate
+      );
+    const buttonText = getTranslation('yes, continue it!', this.translate);
+    Swal.fire({
+        title,
+        text: message,
+        showCancelButton: true,
+        confirmButtonText: buttonText,
+        type: 'warning',
+      }).then(res => {
+        if (!res.value) { return null; }
+
+        const participants = this.participants.value.filter(value => value.address && (value.address.address.length > 0));
+        // participants = participants.sort();
+        // console.log('=== participants: ', participants);
+        // participants.forEach(this.filterPrticipant);
+
+        const addresses: Address[] = participants.map(x => ({ value: x.address.address, type: 0 }));
+        console.log('=== addresses: ', addresses);
+        const multiParam: MultiSigInfo = {
+          participants: addresses,
+          nonce: this.nonce.value,
+          minSigs: this.minimumSignature.value,
+        };
+
+        const multiSignAddress = zoobc.MultiSignature.createMultiSigAddress(multiParam);
+
+        account = {
+          name: this.accountName.value,
+          type: 'multisig',
+          path: null,
+          nodeIP: null,
+          address: { value: multiSignAddress, type: 0 },
+          participants: addresses,
+          nonce: this.nonce.value,
+          minSig: this.minimumSignature.value,
+        };
+        console.log('==== CREATE account: ', account);
+        this.accountService.addAccount(account);
+        this.accountService.broadCastNewAccount(account);
+        this.goListAccount();
+        return;
+      });
+
+      // let addresses: [string] = this.participants.value.filter(value => value.length > 0);
+      // addresses = addresses.sort();
+      // const participants: Address[] = addresses.map(address => ({ value: address, type: 0 }));
+      // const multiParam: MultiSigInfo = {
+      //   participants,
+      //   nonce: this.nonce.value,
+      //   minSigs: this.minimumSignature.value,
+      // };
+
+
+      // account = this.accountService.createNewMultisigAccount(
+      //   this.accountName.value.trim(),
+      //   multiParam,
+      // );
+
+
+
+  }
+
+  filterPrticipant(item) {
+    const addrs  = item.address;
+    if (addrs) {
+      console.log('=== addrs: ', addrs.address);
+      const ad: Address = { value: addrs.address, type: 0 };
+
+    }
   }
 
   goListAccount() {

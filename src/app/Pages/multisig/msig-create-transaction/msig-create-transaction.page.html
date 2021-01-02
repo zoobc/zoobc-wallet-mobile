@@ -4,6 +4,11 @@
       <ion-back-button> </ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'multisignature' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  (click)="goHome()">
+        <ion-icon name="home"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -20,61 +25,63 @@
   </div>
 
   <div class="stepper">
-    <ng-container *ngIf="stepper.multisigInfo">
+    <ng-container>
       <div class="step">
         <span class="step-circle">
-          <ion-icon name="radio-button-on"></ion-icon>
+          <ion-icon name="checkmark-circle"></ion-icon>
         </span>
         <span class="step-label">{{ 'add multisig info' | translate }}</span>
       </div>
       <div class="stepper-line"></div>
     </ng-container>
-    <div class="step active">
-      <span class="step-circle">
-        <ion-icon name="checkmark-circle"></ion-icon>
-      </span>
-      <span class="step-label">{{ 'create transaction' | translate }}</span>
-    </div>
-    <ng-container *ngIf="stepper.signatures">
+    <ng-container>
+      <div class="step active">
+        <span class="step-circle">
+          <ion-icon name="radio-button-on"></ion-icon>
+        </span>
+        <span class="step-label">{{ 'create transaction' | translate }}</span>
+      </div>
       <div class="stepper-line"></div>
+    </ng-container>
+    <ng-container>
       <div class="step">
         <span class="step-circle">
-          <ion-icon name="checkmark-circle"></ion-icon>
+          <ion-icon name="radio-button-off"></ion-icon>
         </span>
-        <span class="step-label">{{ 'add signatures' | translate }}</span>
+        <span class="step-label">{{ 'send multisignature' | translate }}</span>
       </div>
     </ng-container>
   </div>
 
-  <form [formGroup]="createTransactionForm" (submit)="next()">
+  <form [formGroup]="formTrx" (submit)="next()">
 
-    <app-form-send-money [group]="createTransactionForm" [inputMap]="fieldList" [multisig]="true"
-      *ngIf="multisig.txType == 1">
+    <app-form-send-money [group]="formTrx" [inputMap]="fieldList" [multisig]="true"
+      *ngIf="draft.txType == 1">
     </app-form-send-money>
 
-    <app-form-setup-account-dataset [group]="createTransactionForm" [inputMap]="fieldList" [multisig]="true"
-      *ngIf="multisig.txType == 3">
+    <app-form-setup-account-dataset [group]="formTrx" [inputMap]="fieldList" [multisig]="true"
+      *ngIf="draft.txType == 3">
     </app-form-setup-account-dataset>
 
-    <app-form-remove-account-dataset [group]="createTransactionForm" [inputMap]="fieldList" [multisig]="true"
-      *ngIf="multisig.txType == 259"></app-form-remove-account-dataset>
+    <app-form-remove-account-dataset [group]="formTrx" [inputMap]="fieldList" [multisig]="true"
+      *ngIf="draft.txType == 259"></app-form-remove-account-dataset>
 
-    <app-form-escrow-approval [group]="createTransactionForm" [inputMap]="fieldList" [multisig]="true"
-      *ngIf="multisig.txType == 4"></app-form-escrow-approval>
+    <app-form-escrow-approval [group]="formTrx" [inputMap]="fieldList" [multisig]="true"
+      *ngIf="draft.txType == 4"></app-form-escrow-approval>
 
     <span class="form-advanced-option">{{ 'advanced option' | translate }}</span>
-    <app-form-escrow [group]="createTransactionForm" [inputMap]="fieldList"></app-form-escrow>
+    <app-form-escrow [group]="formTrx" [inputMap]="fieldList"></app-form-escrow>
 
 
-    <ion-button expand="full" *ngIf="multisig.signaturesInfo !== undefined" color="primary"
-      (click)="generateDownloadJsonUri()" [disabled]="createTransactionForm.invalid">
+    <!-- <ion-button expand="full" *ngIf="multisig.signaturesInfo !== undefined" color="primary"
+      (click)="generateDownloadJsonUri()" [disabled]="formTrx.invalid">
       {{ 'export draft multi signature' | translate }}
     </ion-button>
 
     <ion-button color="tertiary" expand="block" (click)="saveDraft()">
       {{ 'save' | translate }}
-    </ion-button>
-    <ion-button type="submit" color="tertiary" expand="block" [disabled]="createTransactionForm.invalid">
+    </ion-button> -->
+    <ion-button type="submit" color="tertiary" expand="block" [disabled]="formTrx.invalid">
       {{ 'next' | translate }}
     </ion-button>
 

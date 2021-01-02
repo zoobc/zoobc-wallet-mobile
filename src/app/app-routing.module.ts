@@ -231,7 +231,8 @@ const routes: Routes = [
   {
     path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
     canActivate: [AuthService]
-  }
+  },  { path: 'login-general', loadChildren: './Pages/login-general/login-general.module#LoginGeneralPageModule' }
+
 ];
 @NgModule({
   imports: [

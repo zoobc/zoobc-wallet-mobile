@@ -297,7 +297,7 @@ export class MsigTaskDetailPage implements OnInit {
       .finally(() => {
         this.isLoadingTx = false;
         loading.dismiss();
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/tabs/home']);
       });
   }
 

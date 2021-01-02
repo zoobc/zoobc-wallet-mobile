@@ -15,25 +15,25 @@
         <div class="skeleton-text" style="width: 30%;" *ngIf="isLoading; else status"></div>
         <ng-template #status>
           <div class="info-val">
-            <ion-badge *ngIf = "escrowDetail.status == 0" color="warning"  shape="round">
+            <ion-badge *ngIf="escrowDetail.status == 0" color="warning" shape="round">
               {{ "pending" | translate}}
             </ion-badge>
-            <ion-badge *ngIf = "escrowDetail.status == 1" color="success"  shape="round">
+            <ion-badge *ngIf="escrowDetail.status == 1" color="success" shape="round">
               {{ "approved" | translate}}
             </ion-badge>
-            <ion-badge *ngIf = "escrowDetail.status == 2" color="danger"  shape="round">
+            <ion-badge *ngIf="escrowDetail.status == 2" color="danger" shape="round">
               {{ "rejected" | translate}}
             </ion-badge>
-            <ion-badge *ngIf = "escrowDetail.status == 3" color="warning"  shape="round">
+            <ion-badge *ngIf="escrowDetail.status == 3" color="warning" shape="round">
               {{ "expired" | translate}}
             </ion-badge>
-            <ion-badge *ngIf = "escrowDetail.status == 4" color="warning"  shape="round">
+            <ion-badge *ngIf="escrowDetail.status == 4" color="warning" shape="round">
               {{ "unknown" | translate}}
             </ion-badge>
           </div>
         </ng-template>
       </ion-label>
-    </ion-item>    
+    </ion-item>
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "id" | translate }}</p>
@@ -53,7 +53,7 @@
         </ng-container>
         <ng-template #sender>
           <div class="info-val">
-            <app-with-copy title="{{ escrowDetail.senderaddress }}" value="{{ escrowDetail.senderaddress }}">
+            <app-with-copy title="{{ escrowDetail.sender.value }}" value="{{ escrowDetail.sender.value }}">
             </app-with-copy>
           </div>
         </ng-template>
@@ -69,7 +69,7 @@
         </ng-container>
         <ng-template #recipient>
           <div class="info-val">
-            <app-with-copy title="{{ escrowDetail.recipientaddress }}" value="{{ escrowDetail.recipientaddress }}">
+            <app-with-copy title="{{ escrowDetail.recipient.value }}" value="{{ escrowDetail.recipient.value }}">
             </app-with-copy>
           </div>
         </ng-template>
@@ -81,7 +81,8 @@
         <div *ngIf="isLoading; else amount" class="skeleton-text" style="width: 30%;"></div>
         <ng-template #amount>
           <div class="info-val">
-            <app-info-amount-conversion value="{{ escrowDetail.amount / 1e8 }}" otherCurrency="USD" otherCurrencyDecoration="BRACKET"></app-info-amount-conversion>
+            <app-info-amount-conversion value="{{ escrowDetail.amount / 1e8 }}" otherCurrency="USD"
+              otherCurrencyDecoration="BRACKET"></app-info-amount-conversion>
           </div>
         </ng-template>
       </ion-label>
@@ -92,22 +93,23 @@
         <div *ngIf="isLoading; else commission" class="skeleton-text" style="width: 30%;"></div>
         <ng-template #commission>
           <div class="info-val">
-            <app-info-amount-conversion value="{{ escrowDetail.commission / 1e8 }}" otherCurrency="USD" otherCurrencyDecoration="BRACKET"></app-info-amount-conversion>
+            <app-info-amount-conversion value="{{ escrowDetail.commission / 1e8 }}" otherCurrency="USD"
+              otherCurrencyDecoration="BRACKET"></app-info-amount-conversion>
           </div>
         </ng-template>
       </ion-label>
     </ion-item>
-    <ion-item  *ngIf="escrowDetail && (escrowDetail.status !== 1 && escrowDetail.status !== 2)">
+    <ion-item *ngIf="escrowDetail && (escrowDetail.status !== 1 && escrowDetail.status !== 2)">
       <ion-label>
         <p class="info-label">{{ "expired after block height" | translate }}</p>
         <div class="skeleton-text" style="width: 20%;" *ngIf="isLoading; else expired"></div>
         <ng-template #expired>
           <div class="info-val">
-            {{ toNumber(escrowDetail.blockheight) + toNumber(escrowDetail.timeout) | number}}
+            {{ toNumber(escrowDetail.blockHeight) + toNumber(escrowDetail.timeout) | number}}
           </div>
         </ng-template>
       </ion-label>
-    </ion-item>   
+    </ion-item>
     <ion-item>
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "instruction" | translate }}</p>
@@ -125,16 +127,50 @@
     </ion-item>
   </ion-list>
 
-  <ion-grid *ngIf="escrowDetail && escrowDetail.status == 0">
-    <ion-row>
-      <ion-col>
-        <ion-button  expand="block" color="primary" (click)="confirm()">{{ "confirm" | translate }}</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" color="primary" fill="outline" (click)="reject()">{{ "reject" | translate }}</ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-item *ngIf="escrowDetail && escrowDetail.status == 0">
+    <ion-checkbox [(ngModel)]="showForm"></ion-checkbox>
+    <ion-label>&nbsp;{{"process this transaction" | translate}} </ion-label>
+  </ion-item>
+
+  <form [formGroup]="escrowForm" *ngIf="escrowDetail && showForm" (ngSubmit)="submitForm()" novalidate  #myForm="ngForm">
+    <ion-item>
+      <ion-label position="stacked">{{ "approver" | translate }}</ion-label>
+      <ion-textarea formControlName="fApprover" rows="3" type="text"  required></ion-textarea>
+    </ion-item>
+    <ion-item style="margin-bottom: 0px;">
+      <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <label position="floating">ZBC &nbsp;</label>
+      <ion-input formControlName="feesZbc" type="number" required></ion-input>
+    </ion-item>
+    <!-- <ion-item>
+      <label position="floating">USD &nbsp;</label>
+      <ion-input formControlName="feesFiat" type="number" required></ion-input>
+    </ion-item> -->
+
+    <!-- Error messages -->
+    <ion-item *ngIf="errorControl.feesZbc.errors">
+      <ion-text color="danger" *ngIf="isSubmitted && errorControl.feesZbc.errors">
+        Fees is required!
+      </ion-text>
+      <!-- <ion-text color="danger" *ngIf="isSubmitted && errorControl.feesFiat.errors">
+        Fees in USD is required!
+      </ion-text> -->
+    </ion-item>
+
+
+
+
+  </form>
+  <ion-item *ngIf="escrowDetail && showForm">
+    <ion-button size="big" type="button" expand="block" color="primary" fill="outline" (click)="reject()">{{
+      "reject" | translate }}</ion-button>
+    <ion-button size="medium" type="button" expand="block" color="primary" (click)="confirm()">{{ "confirm" |
+      translate }}</ion-button>
+  </ion-item>
+
+  <ion-item>
+    <p>&nbsp;</p>
+  </ion-item>
 </ion-content>

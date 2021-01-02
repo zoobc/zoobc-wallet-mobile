@@ -1,17 +1,15 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { saveAs } from 'file-saver';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { createInnerTxBytes, createInnerTxForm, getInputMap } from 'src/Helpers/multisig-utils';
 import { getTranslation, stringToBuffer } from 'src/Helpers/utils';
-import { generateTransactionHash } from 'zbc-sdk';
-import { Location } from '@angular/common';
+import { Address, generateTransactionHash } from 'zbc-sdk';
 import { TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
+import { NavController } from '@ionic/angular';
 
 
 @Component({
@@ -20,109 +18,74 @@ import Swal from 'sweetalert2';
   styleUrls: ['./msig-create-transaction.page.scss']
 })
 
-export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestroy {
+export class MsigCreateTransactionPage implements OnInit {
   isProcessing = false;
   minFee = TRANSACTION_MINIMUM_FEE;
-  createTransactionForm: FormGroup;
-  multisig: MultiSigDraft;
-  multisigSubs: Subscription;
-
-  stepper = {
-    multisigInfo: false,
-    signatures: false,
-  };
+  formTrx: FormGroup;
+  draft: MultiSigDraft;
 
   fieldList: object;
-  readonlyInput = false;
-
   constructor(
     private multisigServ: MultisigService,
     private router: Router,
-    private location: Location,
-    private translate: TranslateService,
-    private cdr: ChangeDetectorRef) {
-    const subs = this.multisigServ.multisig.subscribe(multisig => {
-      this.createTransactionForm = createInnerTxForm(multisig.txType);
-      this.fieldList = getInputMap(multisig.txType);
-    });
-    subs.unsubscribe();
+    private navCtrl: NavController,
+    private translate: TranslateService) {
+    // const subs = this.multisigServ.multisig.subscribe(multisig => {
+    //   this.formTrx = createInnerTxForm(multisig.txType);
+    //   this.fieldList = getInputMap(multisig.txType);
+    // });
+    // subs.unsubscribe();
   }
 
   ngOnInit() {
-    this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
-      const { multisigInfo, unisgnedTransactions, signaturesInfo, txBody } = multisig;
+    this.draft  = this.multisigServ.multisigDraft;
+    if (this.draft) {
+      console.log('== Multisig: ', this.draft);
+      this.formTrx = createInnerTxForm(this.draft.txType);
+      this.fieldList = getInputMap(this.draft.txType);
 
-      if (unisgnedTransactions === undefined) {
-        this.router.navigate(['/multisig']);
-      }
+      const { txBody } = this.draft;
+      const senderForm = this.formTrx.get('sender');
+      senderForm.setValue(txBody.sender.value);
 
-      this.multisig = multisig;
-      if (signaturesInfo && signaturesInfo.txHash) {
-        this.readonlyInput = true;
-      }
-
-      const senderForm = this.createTransactionForm.get('sender');
-      senderForm.setValue(multisig.generatedSender);
-
-      if (txBody) {
-        this.createTransactionForm.patchValue(txBody);
-      }
-
-      this.stepper.multisigInfo = multisigInfo !== undefined ? true : false;
-      this.stepper.signatures = signaturesInfo !== undefined ? true : false;
-    });
-  }
-
-  ngAfterViewInit() {
-    this.cdr.detectChanges();
+    }
   }
 
   async generateDownloadJsonUri() {
     alert('Coming soon!');
   }
 
-  ngOnDestroy() {
-    if (this.multisigSubs) { this.multisigSubs.unsubscribe(); }
-  }
-
   async next() {
+
     try {
-      if (this.multisig.signaturesInfo !== null) {
-        this.readonlyInput = false;
-      }
+      if (this.formTrx.valid) {
+        this.updateDraft();
+        console.log('----: this.createTransactionForm: ', this.formTrx.value);
+        console.log('=== this.multisig: ', this.draft);
+        this.multisigServ.update(this.draft);
+        // if (signaturesInfo === null) {
+        //   const title = getTranslation('are you sure?', this.translate);
+        //   const message = getTranslation('you will not be able to update the form anymore!', this.translate);
+        //   const buttonText = getTranslation('yes, continue it!', this.translate);
 
-      if (this.createTransactionForm.valid) {
-        this.updateCreateTransaction();
-        const { signaturesInfo } = this.multisig;
+        //   const isConfirm = await Swal.fire({
+        //     title,
+        //     text: message,
+        //     showCancelButton: true,
+        //     confirmButtonText: buttonText,
+        //     type: 'warning',
+        //   }).then(result => {
+        //     if (result.value) {
+        //       this.generatedTxHash();
+        //       this.multisigServ.update(this.multisig);
+        //       return true;
+        //     } else { return false; }
+        //   });
+        //   if (!isConfirm) { return false; }
+        // }
 
-        console.log('=== this.multisig: ', this.multisig);
 
-        if (signaturesInfo === null) {
-          const title = getTranslation('are you sure?', this.translate);
-          const message = getTranslation('you will not be able to update the form anymore!', this.translate);
-          const buttonText = getTranslation('yes, continue it!', this.translate);
-
-          const isConfirm = await Swal.fire({
-            title,
-            text: message,
-            showCancelButton: true,
-            confirmButtonText: buttonText,
-            type: 'warning',
-          }).then(result => {
-            if (result.value) {
-              this.generatedTxHash();
-              this.multisigServ.update(this.multisig);
-              return true;
-            } else { return false; }
-          });
-          if (!isConfirm) { return false; }
-        }
-
-        if (signaturesInfo === undefined) {
-          this.router.navigate(['/msig-send-transaction']);
-        } else {
-          this.router.navigate(['/msig-add-info']);
-        }
+        this.router.navigate(['/msig-send-transaction']);
       }
     } catch (err) {
       console.log(err);
@@ -131,33 +94,54 @@ export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestr
     }
   }
 
-  updateCreateTransaction() {
-    const multisig = { ...this.multisig };
-    multisig.txBody = this.createTransactionForm.value;
-    this.multisigServ.update(multisig);
+  updateDraft() {
+
+    // extract value form
+    const form = this.formTrx.value;
+    if (form.recipient) {
+      const recipient: Address = { value: form.recipient.address, type: 0 };
+      form.recipient = recipient;
+    }
+
+    if (form.sender) {
+      const sender: Address = { value: form.sender, type: 0 };
+      form.sender = sender;
+    }
+
+    if (form.addressApprover) {
+      const approver: Address = { value: form.addressApprover.address, type: 0 };
+      form.addressApprover = approver;
+    }
+
+    if (form.recipientAddress) {
+      const recipientAddress: Address = { value: form.recipientAddress, type: 0 };
+      form.recipientAddress = recipientAddress;
+    }
+
+    // end
+
+    this.draft.txBody = form;
+
   }
 
-  back() {
-    this.location.back();
-  }
-
-  generatedTxHash() {
-    const { unisgnedTransactions, multisigInfo, signaturesInfo, txType } = this.multisig;
-    const form = this.createTransactionForm.value;
+  makeHash() {
+    const { unisgnedTransactions, multisigInfo, signaturesInfo, txType } = this.draft;
+    const form = this.formTrx.value;
     const signature = stringToBuffer('');
     if (unisgnedTransactions === null) {
-      this.multisig.unisgnedTransactions = createInnerTxBytes(form, txType);
+      this.draft.unisgnedTransactions = createInnerTxBytes(form, txType);
     }
     if (signaturesInfo !== undefined) {
-      const txHash = generateTransactionHash(this.multisig.unisgnedTransactions);
+      const txHash = generateTransactionHash(this.draft.unisgnedTransactions);
       const participants = multisigInfo.participants.map(address => ({ address, signature }));
-      this.multisig.signaturesInfo = { txHash, participants };
+      this.draft.signaturesInfo = { txHash, participants };
     }
   }
 
   saveDraft() {
-    this.updateCreateTransaction();
-    if (this.multisig.id) {
+    this.updateDraft();
+    this.multisigServ.update(this.draft);
+    if (this.draft.id) {
       this.multisigServ.editDraft();
     } else {
       this.multisigServ.saveDraft();
@@ -165,5 +149,8 @@ export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestr
     this.router.navigate(['/multisig']);
   }
 
+  goHome() {
+    this.navCtrl.navigateRoot('/tabs/home');
+  }
 
 }
