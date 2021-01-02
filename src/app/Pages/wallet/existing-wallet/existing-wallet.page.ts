@@ -12,7 +12,6 @@ import { ZooKeyring } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { StorageService } from 'src/app/Services/storage.service';
 import { STORAGE_ADDRESS_BOOK } from 'src/environments/variable.const';
-import { LoginGeneralPage } from '../../login-general/login-general.page';
 
 @Component({
   selector: 'app-existing-wallet',
@@ -130,7 +129,7 @@ export class ExistingWalletPage implements OnInit {
 
   async showPinDialog() {
     const pinmodal = await this.modalController.create({
-      component: LoginGeneralPage,
+      component: SetupPinPage,
       cssClass: 'modal-zbc',
       componentProps: {
       }
