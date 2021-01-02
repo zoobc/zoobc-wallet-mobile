@@ -16,12 +16,13 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { calculateMinFee } from 'src/Helpers/utils';
+import { calculateMinFee, getTranslation } from 'src/Helpers/utils';
 import {
   addressValidator,
   escrowFieldsValidator
 } from 'src/Helpers/validators';
-import zoobc, { SendMoneyInterface } from 'zbc-sdk';
+import Swal from 'sweetalert2';
+import zoobc, { PostTransactionResponses, SendMoneyInterface, Subscription } from 'zbc-sdk';
 
 @Component({
   selector: 'app-send-money-form',
@@ -37,6 +38,7 @@ export class SendMoneyFormComponent implements OnInit {
   alertConnectionMsg = '';
   networkSubscription = null;
   sendMoneySummarySubscription = null;
+  behaviorEscrowChangesSubscription: Subscription;
 
   sendForm = new FormGroup({
     sender: new FormControl({}),
@@ -52,6 +54,7 @@ export class SendMoneyFormComponent implements OnInit {
   });
 
   submitted = false;
+  alreadyPin = true;
 
   constructor(
     private router: Router,
@@ -65,8 +68,9 @@ export class SendMoneyFormComponent implements OnInit {
     private network: Network,
     private alertCtrl: AlertController,
     private navCtrl: NavController,
+    private translate: TranslateService,
     private accountSrv: AccountService
-  ) {}
+  ) { }
 
   get sender() {
     return this.sendForm.get('sender');
@@ -88,7 +92,7 @@ export class SendMoneyFormComponent implements OnInit {
     return this.sendForm.get('behaviorEscrow');
   }
 
-  behaviorEscrowChangesSubscription;
+
   setBehaviorEscrowChanges() {
     this.behaviorEscrowChangesSubscription = this.behaviorEscrow.valueChanges.subscribe(
       escrowValues => {
@@ -112,7 +116,12 @@ export class SendMoneyFormComponent implements OnInit {
         if (result) {
           console.log('== result: ', result);
           console.log('=== setelah submit form...');
-          await this.inputPIN();
+
+          if (!this.alreadyPin) {
+            await this.inputPIN();
+            this.alreadyPin = true;
+          }
+
         }
       }
     );
@@ -146,11 +155,11 @@ export class SendMoneyFormComponent implements OnInit {
       Validators.min(0.00000001),
       Validators.max(
         this.sender.value.balance -
-          (this.minimumFee > this.fee.value
-            ? this.minimumFee
-            : this.fee.value) -
+        (this.minimumFee > this.fee.value
+          ? this.minimumFee
+          : this.fee.value) -
 
-          this.behaviorEscrow.value.commission
+        this.behaviorEscrow.value.commission
       )
     ]);
 
@@ -232,7 +241,7 @@ export class SendMoneyFormComponent implements OnInit {
       const extras: NavigationExtras = {
         state
       };
-
+      this.alreadyPin = false;
       this.router.navigate(['transaction-form/send-money/summary'], extras);
     }
   }
@@ -241,23 +250,23 @@ export class SendMoneyFormComponent implements OnInit {
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
-      duration: 50000
+      duration: 100000
     });
 
     await loading.present();
 
     const data: SendMoneyInterface = {
-      sender:  this.sender.value.address,
+      sender: this.sender.value.address,
       recipient: { value: this.recipient.value.address, type: 0 },
       fee: Number(this.fee.value),
       amount: Number(this.amount.value)
     };
 
     if (this.withEscrow) {
-    data.approverAddress = { value: this.behaviorEscrow.value.approver.address, type: 0 };
-    data.commission = this.behaviorEscrow.value.commission ? this.behaviorEscrow.value.commission : 0;
-    data.timeout = this.behaviorEscrow.value.timeout;
-    data.instruction = this.behaviorEscrow.value.instruction ?
+      data.approverAddress = { value: this.behaviorEscrow.value.approver.address, type: 0 };
+      data.commission = this.behaviorEscrow.value.commission ? this.behaviorEscrow.value.commission : 0;
+      data.timeout = this.behaviorEscrow.value.timeout;
+      data.instruction = this.behaviorEscrow.value.instruction ?
         (this.behaviorEscrow.value.instruction) : '';
     }
 
@@ -269,27 +278,45 @@ export class SendMoneyFormComponent implements OnInit {
     );
     await zoobc.Transactions.sendMoney(data, childSeed)
       .then(
-        (resolveTx: any) => {
-          if (resolveTx) {
-            this.ngOnInit();
-            this.showSuccessMessage();
+        async (res: PostTransactionResponses) => {
 
-            if (this.behaviorEscrowChangesSubscription) {
-              this.behaviorEscrowChangesSubscription.unsubscribe();
-            }
-
-            this.sendForm.reset();
-            this.submitted = false;
-            this.withEscrow = false;
-            return;
-          }
+          const message = getTranslation('your transaction is processing', this.translate);
+          const subMessage = getTranslation('you send coins to', this.translate, {
+            amount: data.amount,
+            recipient: data.recipient.value,
+          });
+          Swal.fire(message, subMessage, 'success');
+          this.router.navigateByUrl('/tabs/home');
         },
-        error => {
-          console.log('__error', error);
-          this.showErrorMessage(error);
+        async err => {
+          console.log(err);
+
+          const message = getTranslation(err.message, this.translate);
+          Swal.fire('Opps...', message, 'error');
         }
+
+        // (resolveTx: any) => {
+        //   if (resolveTx) {
+        //     this.ngOnInit();
+        //     this.showSuccessMessage();
+
+        //     if (this.behaviorEscrowChangesSubscription) {
+        //       this.behaviorEscrowChangesSubscription.unsubscribe();
+        //     }
+
+        //     this.sendForm.reset();
+        //     this.submitted = false;
+        //     this.withEscrow = false;
+        //     return;
+        //   }
+        // },
+        // error => {
+        //   console.log('__error', error);
+        //   this.showErrorMessage(error);
+        // }
       )
       .finally(() => {
+        this.ngOnInit();
         loading.dismiss();
       });
   }
@@ -338,15 +365,11 @@ export class SendMoneyFormComponent implements OnInit {
     });
 
     modal.onDidDismiss().then(() => {
-      // this.navCtrl.pop();
+      this.navCtrl.pop();
       this.router.navigate(['tabs/home']);
     });
 
     return await modal.present();
-  }
-
-  confirmSend() {
-    this.router.navigate(['transaction-form/send-money/summary']);
   }
 
   async getMinimumFee(timeout: number) {

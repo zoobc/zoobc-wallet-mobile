@@ -3,8 +3,7 @@ import { ModalController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TRANSACTION_MINIMUM_FEE, COIN_CODE } from 'src/environments/variable.const';
 import zoobc, {
-  MultisigPendingTxDetailResponse,
-  MultisigPendingTxResponse, toGetPendingList, MultiSigInterface, signTransactionHash
+  MultiSigInterface, signTransactionHash, multisigPendingDetail
 } from 'zbc-sdk';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 import { Account } from 'src/app/Interfaces/account';
@@ -15,6 +14,7 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { UtilService } from 'src/app/Services/util.service';
+import { MultisigService } from 'src/app/Services/multisig.service';
 
 @Component({
   selector: 'app-msig-task-detail',
@@ -24,7 +24,6 @@ import { UtilService } from 'src/app/Services/util.service';
 export class MsigTaskDetailPage implements OnInit {
 
   currencyRate: Currency;
-  private account: Account;
   private msigHash: any;
   public isLoading = false;
   priceInUSD: number;
@@ -54,10 +53,11 @@ export class MsigTaskDetailPage implements OnInit {
   signer: any;
   signerAcc: any;
   participantsWithSignatures = [];
+  detailMultisig: any;
+  totalParticpants: number;
 
   constructor(
     private modalCtrl: ModalController,
-    private activeRoute: ActivatedRoute,
     private modalController: ModalController,
     private currencyService: CurrencyService,
     private router: Router,
@@ -65,18 +65,16 @@ export class MsigTaskDetailPage implements OnInit {
     private authSrv: AuthService,
     private loadingController: LoadingController,
     private utilService: UtilService,
+    private msigService: MultisigService,
     private trxService: TransactionService) {
     this.priceInUSD = this.currencyService.getPriceInUSD();
   }
 
   ngOnInit() {
-    this.activeRoute.queryParams.subscribe(params => {
-      this.msigHash = params.msigHash;
-    });
-
-    this.loadFeeAndCurrency();
-    this.loadDetail();
-
+      this.msigHash = this.msigService.getHash();
+      console.log('this.msigHash: ', this.msigHash);
+      this.loadFeeAndCurrency();
+      this.loadDetail();
   }
 
   reload(event: any) {
@@ -104,57 +102,42 @@ export class MsigTaskDetailPage implements OnInit {
     }
   }
 
+  openDetailMultiSignature(txHash) {
+
+    this.isLoadingTx = true;
+    zoobc.MultiSignature.getPendingByTxHash(txHash).then(async (res: multisigPendingDetail) => {
+      this.multiSigDetail = res.pendingtransaction;
+      console.log('== this.multiSigDetail:', this.multiSigDetail);
+      this.detailMultisig.emit(this.multiSigDetail);
+      this.pendingSignatures = res.pendingsignaturesList;
+      this.participants = res.multisignatureinfo.addressesList;
+      this.participants = this.participants.map(res2 => res2.value);
+      this.totalParticpants = res.multisignatureinfo.addressesList.length;
+      if (this.pendingSignatures.length > 0) {
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < this.pendingSignatures.length; i++) {
+          this.participants = this.participants.filter(
+            res3 => res3 !== this.pendingSignatures[i].accountaddress.value
+          );
+        }
+        const idx = (await this.accountService
+          .allAccount())
+          .filter(res5 => this.participants.includes(res5.address.value));
+        if (idx.length > 0) { this.enabledSign = true; } else { this.enabledSign = false; }
+      } else {
+        const idx = (await this.accountService
+          .allAccount())
+          .filter(res4 => this.participants.includes(res4.address.value));
+        if (idx.length > 0) { this.enabledSign = true; } else { this.enabledSign = false; }
+      }
+      this.isLoadingTx = false;
+    });
+  }
+
   async loadDetail() {
     this.participantsWithSignatures = [];
-    this.account = await this.accountService.getCurrAccount();
-    const hashHex = base64ToHex(this.msigHash);
-    this.isLoading = true;
-    // await zoobc.MultiSignature.getPendingByTxHash(hashHex).then(async (res: MultisigPendingTxDetailResponse) => {
-    //   const list = [];
-    //   list.push(res.pendingtransaction);
-    //   const tx: MultisigPendingTxResponse = {
-    //     count: 1,
-    //     page: 1,
-    //     pendingtransactionsList: list,
-    //   };
+    this.openDetailMultiSignature(this.msigHash);
 
-    //   const txFilter = toGetPendingList(tx);
-    //   // this.multiSigDetail = txFilter.pendingtransactionsList[0];
-    //   this.pendingSignatures = res.pendingsignaturesList;
-    //   this.participants = res.multisignatureinfo.addressesList;
-
-    //   console.log('=== this participatns: ', this.participants);
-    //   console.log('== this.pendingSignatures: ', this.pendingSignatures);
-
-    //   this.enabledSign = false;
-    //   for (let i = 0; i <= this.participants.length; i++) {
-    //     const partAddress = this.participants[i];
-    //     const partAcc = await this.accountService.getAccount(partAddress);
-    //     if (partAcc) {
-    //       // this.enabledSign = true;
-    //       const idx = this.pendingSignatures.findIndex(
-    //         sign => sign.accountaddress === partAddress
-    //       );
-    //       if (idx < 0) {
-    //         console.log('== Signer-' + i + ': ', this.signer);
-    //         this.signer = partAddress;
-    //         this.signerAcc = partAcc;
-    //         const sgSeed = this.authSrv.keyring.calcDerivationPath(partAcc.path);
-    //         this.participantsWithSignatures.push({
-    //           address: partAddress,
-    //           signature: signTransactionHash(this.multiSigDetail.transactionhash, sgSeed)
-    //         });
-    //         this.enabledSign = true;
-    //         // break;
-    //       }
-
-    //     }
-    //   }
-
-    // }).finally(() => {
-    //   this.isLoading = false;
-    // }
-    // );
     console.log('== participantsWithSignatures: ', this.participantsWithSignatures);
     console.log('== Signer Acc: ', this.signerAcc);
   }
@@ -240,7 +223,6 @@ export class MsigTaskDetailPage implements OnInit {
     loading.present();
 
     this.isLoadingTx = true;
-    const key = this.authSrv.tempKey;
     const participantsWithSignatures = [];
 
     for (let i = 0; i <= this.participants.length; i++) {
@@ -297,7 +279,7 @@ export class MsigTaskDetailPage implements OnInit {
       .finally(() => {
         this.isLoadingTx = false;
         loading.dismiss();
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/tabs/home']);
       });
   }
 

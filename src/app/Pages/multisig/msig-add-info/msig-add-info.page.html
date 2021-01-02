@@ -4,6 +4,11 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'send money' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goHome()">
+        <ion-icon name="home"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -13,85 +18,141 @@
     <ng-container>
       <div class="step active">
         <span class="step-circle">
-          <ion-icon name="checkmark-circle"></ion-icon>
+          <ion-icon name="radio-button-on"></ion-icon>
         </span>
         <span class="step-label">{{ 'add multisig info' | translate }}</span>
       </div>
       <div class="stepper-line"></div>
     </ng-container>
-    <div class="step">
-      <span class="step-circle">
-        <ion-icon name="radio-button-on"></ion-icon>
-      </span>
-      <span class="step-label">{{ 'create transaction' | translate }}</span>
-    </div>
+
+    <ng-container>
+      <div class="step">
+        <span class="step-circle">
+          <ion-icon name="radio-button-off"></ion-icon>
+        </span>
+        <span class="step-label">{{ 'create transaction' | translate }}</span>
+      </div>
+      <div class="stepper-line"></div>
+    </ng-container>
+
+    <ng-container>
+      <div class="step">
+        <span class="step-circle">
+          <ion-icon name="radio-button-off"></ion-icon>
+        </span>
+        <span class="step-label">{{ 'send multisignature' | translate }}</span>
+      </div>
+    </ng-container>
   </div>
-  
+
+
   <ion-grid>
-    <ion-row style = "background-color: lightsteelblue; border: 1px;">
-
-      <ion-col size="12" class="ion-text-center">
-        <ion-button size="small" (click)="showPopupMultisigAccounts()">
-          {{ 'import my multisignature account' | translate }}
-        </ion-button>
-      </ion-col>
-    </ion-row>
-
-
-    <ion-row style="margin-top:10px">
-      <ion-col>
-        <ion-label>
-          <h2>{{"account name" | translate}}:</h2>
-          <p>{{name}}</p>
-          <br/>
-          <h2>{{"address" | translate}}:</h2>
-          <p>{{address}}</p>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-
     <ion-row>
-      <ion-col>
-        <ion-label>
-          <h2>{{"participants" | translate}}</h2>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <div *ngIf="participants">
-      <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
-        <ion-col>
-          <ion-input type="text" [name]="'input-'+i" readonly="true" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
-            [(ngModel)]="participants[i]">
-          </ion-input>
-        </ion-col>
-      </ion-row>
-    </div>
-
-    <ion-row>
-      <ion-col>
-        <ion-label>
-          <h2>{{ 'nonce' | translate}}</h2>
-          <ion-input [(ngModel)]="nonce" type="number" readonly="true" placeholder="Nonce ..."></ion-input>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-label>
-          <h2>{{ 'minimum signature' | translate }}</h2>
-          <ion-input type="number" [(ngModel)]="minSig" readonly="true" placeholder="Minimum signature..."></ion-input>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button (click)="next()" color="tertiary" expand="block">
-          {{ 'next' | translate }}
-        </ion-button>
-        <ion-button (click)="saveDraft()" expand="block" color="tertiary" fill="outline">
-          {{ 'save' | translate }}
+      <ion-col class="ion-text-center">
+        <ion-button size="small" expand="block" (click)="showPopupMultisigAccounts()">
+          {{ 'select multisignature account' | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ng-container *ngIf="addressField.value">
+    <form [formGroup]="form" (ngSubmit)="next()" novalidate>
+    <ion-grid *ngIf="draft">
+      <ion-row>
+        <ion-col>
+          <ion-label position="stacked">
+            {{ 'name' | translate }}:
+          </ion-label>
+          <ion-textarea rows="2" type="text" formControlName="name" readonly="true" placeholder="name ...">
+          </ion-textarea>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            {{ 'address' | translate }}: </ion-label>
+          <ion-textarea rows="3" type="text" formControlName="address" readonly="true"
+            placeholder="multisignature address..."></ion-textarea>
+
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-label position="stacked">
+            {{"participants" | translate}}:
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <div formArrayName="participants" style="margin-bottom: 8px;">
+        <ng-container *ngFor="let participant of participantsField.controls; let i = index">
+          <ion-row>
+            <ion-col>
+              <ion-textarea rows="2" type="text" [formControlName]="i" readonly="true"
+                placeholder="participant address ..."></ion-textarea>
+            </ion-col>
+          </ion-row>
+        </ng-container>
+      </div>
+
+      <ion-row>
+        <ion-col>
+          <ion-label position="stacked">
+            {{ 'nonce' | translate}} </ion-label>
+          <ion-input formControlName="nonce" type="number" readonly="true" placeholder="{{ 'nonce' | translate }} ...">
+          </ion-input>
+          <ng-container *ngIf="nonceField.touched">
+            <ion-text *ngIf="nonceField.hasError('required')">
+              {{ 'nonce is required' | translate }}
+            </ion-text>
+            <ion-text *ngIf="nonceField.hasError('min')">
+              {{ 'minimum nonce is 1' | translate }}
+            </ion-text>
+          </ng-container>
+
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label position="stacked">
+            {{ 'minimum signature' | translate }}: </ion-label>
+          <ion-input type="number" formControlName="minSigs" readonly="true" placeholder="Minimum signature...">
+          </ion-input>
+
+          <ng-container *ngIf="minSignatureField.touched">
+            <ion-text *ngIf="minSignatureField.hasError('required')">
+              {{ 'minimum signature is required' | translate }}
+            </ion-text>
+            <ion-text *ngIf="minSignatureField.hasError('min')">
+              {{ 'minimum signature is 2' | translate }}
+            </ion-text>
+          </ng-container>
+
+
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-button type="submit" color="tertiary" expand="block" [disabled]="form.invalid">
+            {{ 'next' | translate }}
+          </ion-button>
+          <!-- <ion-button (click)="saveDraft()" expand="block" color="tertiary" fill="outline">
+          {{ 'save' | translate }}
+        </ion-button>  -->
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    </form>
+  </ng-container>
+  <ng-container *ngIf="!addressField.value">
+    <ion-row class="btn-next-disabled">
+      <ion-col>
+        <ion-button type="submit" color="tertiary" expand="block" disabled>
+          {{ 'next' | translate }}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ng-container>
 </ion-content>

@@ -48,7 +48,7 @@
         <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
           <ion-col size="12">
             <ion-label> 
-            <h5>{{ participants[i] }}</h5>
+            <h5>{{ participants[i].value }}</h5>
           </ion-label>
           </ion-col>
         </ion-row>

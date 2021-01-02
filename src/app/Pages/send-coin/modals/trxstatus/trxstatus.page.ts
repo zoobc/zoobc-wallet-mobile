@@ -19,7 +19,7 @@ export class TrxstatusPage implements OnInit {
   async close() {
     this.modalController.dismiss();
     if (this.status) {
-      this.router.navigateByUrl('/dashboard');
+      this.router.navigateByUrl('/tabs/home');
     }
    }
 

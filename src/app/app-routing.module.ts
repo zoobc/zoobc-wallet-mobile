@@ -233,6 +233,7 @@ const routes: Routes = [
     path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
     canActivate: [AuthService]
   }
+
 ];
 @NgModule({
   imports: [

@@ -48,8 +48,8 @@ export class ReceivePage implements OnInit {
     }
   }
 
-  copy() {
-    this.utilSrv.copyToClipboard(this.account.address);
+  copyToClipboard() {
+    this.utilSrv.copyToClipboard(this.account.address.value);
   }
 
   // Share Options

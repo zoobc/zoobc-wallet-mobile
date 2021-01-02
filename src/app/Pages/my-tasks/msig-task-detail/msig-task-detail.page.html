@@ -23,29 +23,37 @@
   <ion-list *ngIf="multiSigDetail && !isLoading">
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "sender" | translate }}</h5>
+        <h5>{{ "hash" | translate }}</h5>
         <p class="info-val">
-          {{ multiSigDetail.senderaddress | shortAddress}}
+          {{ multiSigDetail.transactionHash}}
         </p>
       </ion-label>
-      <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.senderaddress)">
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h5>{{ "sender" | translate }}</h5>
+        <p class="info-val">
+          {{ multiSigDetail.sender.value | shortAddress}}
+        </p>
+      </ion-label>
+      <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.sender.value)">
       </ion-icon>
     </ion-item>
     <ion-item>
       <ion-label class="ion-text-wrap">
         <h5>{{ "recipient" | translate }}</h5>
         <p class="info-val">
-          {{ multiSigDetail.recipientaddress | shortAddress }}
+          {{ multiSigDetail.recipient.value | shortAddress }}
         </p>
       </ion-label>
-      <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.recipientaddress)">
+      <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.recipient.value)">
       </ion-icon>
     </ion-item>
     <ion-item>
       <ion-label>
         <h5>{{ "amount" | translate }}</h5>
         <p class="info-val">
-          {{multiSigDetail.amount / 1e8 | number: '0.0-8' }} ZBC
+          {{multiSigDetail.txBody.amount / 1e8 | number: '0.0-4' }} ZBC
         </p>
       </ion-label>
     </ion-item>
@@ -61,7 +69,7 @@
       <ion-label class="ion-text-wrap">
         <h5>{{ "blockheight" | translate }}</h5>
         <p class="info-val">
-          {{multiSigDetail.blockheight}}
+          {{multiSigDetail.height}}
         </p>
       </ion-label>
     </ion-item>

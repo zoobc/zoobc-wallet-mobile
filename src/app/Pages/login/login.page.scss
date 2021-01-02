@@ -1,13 +1,42 @@
+
+
+// ion-toolbar {
+//   --color: #fff;
+//   --background: transparent;
+//   --ion-color-base: transparent !important;
+// }
+
 ion-col {
   text-align: center;
-}
-
-ion-toolbar {
-  --color: #fff;
-  --background: transparent;
-  --ion-color-base: transparent !important;
 }
 
 ion-footer{
   padding-bottom:40px;
 }
+
+ion-header{
+  padding-top:40px;
+}
+
+.iongrid{
+  height: 100%;
+}
+.ionrow{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+ion-button {
+  width: 100%;
+}
+
+.pinText {
+  padding: 6px;
+  font-size: 1.5em;
+  margin-left: 4px;
+  margin-right: 4px;
+  color: #ffffff;
+}
+

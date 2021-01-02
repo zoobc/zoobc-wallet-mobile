@@ -3,22 +3,22 @@ import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 
 import zoobc, {
-  toGetPendingList,
-  MultisigPendingTxResponse,
-  MultisigPendingListParams,
   EscrowListParams,
   OrderBy,
+  Escrows,
+  HostInfoResponse,
+  MempoolListParams,
+  TransactionType,
   EscrowStatus,
+  MultisigPendingListParams,
+  PendingTransactionStatus,
+  ZBCTransactions,
 } from 'zbc-sdk';
 
-// import { EscrowStatus, GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
-// import { OrderBy } from 'zoobc-sdk/grpc/model/pagination_pb';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { Router, NavigationExtras } from '@angular/router';
-import { AddressBookService } from 'src/app/Services/address-book.service';
-// import { PendingTransactionStatus } from 'zoobc-sdk/grpc/model/multiSignature_pb';
 import { dateAgo } from 'src/Helpers/utils';
 import { Currency } from 'src/app/Interfaces/currency';
+import { MultisigService } from 'src/app/Services/multisig.service';
 
 @Component({
   selector: 'app-my-tasks',
@@ -28,7 +28,7 @@ import { Currency } from 'src/app/Interfaces/currency';
 export class MyTasksPage implements OnInit {
   segmentModel = 'escrow';
   account: Account;
-  escrowTransactions: any;
+  listTrxPendingEsc: any;
   page = 1;
   total = 0;
   blockHeight = 0;
@@ -49,11 +49,13 @@ export class MyTasksPage implements OnInit {
   pendingSignatures = [];
   participants = [];
   PerPage = 1000;
+  totalPendingTrxEsc: number;
+  isError: boolean;
 
   constructor(
     private router: Router,
-    private accountService: AccountService,
-    private addresBookSrv: AddressBookService) { }
+    private msigService: MultisigService,
+    private accountService: AccountService) { }
 
   ngOnInit() {
     this.loadTask();
@@ -66,72 +68,125 @@ export class MyTasksPage implements OnInit {
     }, 1000);
   }
 
+  toNumber(arg: any) {
+    return Number(arg);
+  }
+
   segmentChanged() {
   }
 
   async loadTask() {
     this.account = await this.accountService.getCurrAccount();
-    if (this.account.type !== 'normal') {
-      this.segmentModel = 'multisig';
-    }
-    this.getBlockHeight();
-    this.getEscrowTransaction();
-    this.getMultiSigPendingList(true);
-    this.startTimer();
-  }
-
-  getMultiSigPendingList(reload: boolean = false) {
-    // if (!this.isLoadingMultisig) {
-    //   this.isLoadingMultisig = true;
-    //   if (reload) {
-    //     this.multiSigPendingList = null;
-    //     this.pageMultiSig = 1;
-    //   }
-    //   const params: MultisigPendingListParams = {
-    //     address: this.account.address,
-    //     // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
-    //     pagination: {
-    //       page: this.pageMultiSig,
-    //       limit: this.PerPage,
-    //       orderBy: OrderBy.DESC
-    //     },
-    //   };
-    //   zoobc.MultiSignature.getPendingList(params)
-    //     .then((res: MultisigPendingTxResponse) => {
-    //       const tx = toGetPendingList(res);
-    //       this.totalMultiSig = tx.count;
-    //       const pendingList = tx.pendingtransactionsList;
-    //       if (reload) {
-    //         this.multiSigPendingList = pendingList;
-    //       } else {
-    //         this.multiSigPendingList = this.multiSigPendingList.concat(pendingList);
-    //       }
-    //     })
-    //     .catch(err => {
-    //       this.isErrorMultiSig = true;
-    //       console.log(err);
-    //     })
-    //     .finally(() => (this.isLoadingMultisig = false));
+    // if (this.account.type !== 'normal') {
+    //   this.segmentModel = 'multisig';
     // }
+
+    this.getPengingTrxEsc();
+    this.getMultiSigPendingList();
+    this.getBlockHeight();
+
   }
 
-  startTimer() {
-    setInterval(() => {
-      this.loadTask();
-    }, 20000);
+  async getPendingMultisigApproval() {
+    const paramPool: MempoolListParams = {
+      address: this.account.address,
+    };
+    const list = await zoobc.Mempool.getList(paramPool).then(res => {
+      return res;
+    });
+    return list;
+  }
+
+  async checkVisibleMultisig(pendingList) {
+    const list = [];
+    const pendingApprovalList = await this.getPendingMultisigApproval();
+    if (pendingApprovalList.total > 0) {
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < pendingList.length; i++) {
+        const onPending = pendingApprovalList.transactions.includes(pendingList[i].transactionHash);
+        if (!onPending) {
+          list.push(pendingList[i]);
+        }
+      }
+      return list;
+    } else {
+      return pendingList;
+    }
+  }
+
+  getMultiSigPendingList() {
+    if (!this.isLoadingMultisig) {
+      this.isLoadingMultisig = true;
+
+      const params: MultisigPendingListParams = {
+        address: this.account.address,
+        // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
+        pagination: {
+          page: this.pageMultiSig,
+          limit: this.PerPage,
+        },
+      };
+      zoobc.MultiSignature.getPendingList(params)
+        .then(async (tx: ZBCTransactions) => {
+          this.totalMultiSig = tx.total;
+          const pendingList = tx.transactions;
+          this.multiSigPendingList = pendingList;
+          console.log('=== multiSigPendingList: ', this.multiSigPendingList);
+        })
+        .catch(err => {
+          this.isErrorMultiSig = true;
+          console.log(err);
+        })
+        .finally(() => (this.isLoadingMultisig = false));
+    }
   }
 
 
-  doDateAgo(pDate: any) {
-    return dateAgo(pDate);
+  async getPendingEscrowApproval() {
+    const params: MempoolListParams = {
+      address: this.account.address,
+    };
+    const list = await zoobc.Mempool.getList(params).then(res => {
+      let id = res.transactions.filter(tx => {
+        if (tx.transactionType === TransactionType.APPROVALESCROWTRANSACTION) {
+          return tx;
+        }
+      });
+      id = id.map(idx => {
+        return idx.txBody.transactionid;
+      });
+      return {
+        total: id.length,
+        transactions: id,
+      };
+    });
+    return list;
   }
 
-  getEscrowTransaction() {
+  async checkVisibleEscrow(escrowsList) {
+    const list = [];
+    const pendingApprovalList = await this.getPendingEscrowApproval();
+    if (pendingApprovalList.total > 0) {
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < escrowsList.length; i++) {
+        const onPending = pendingApprovalList.transactions.includes(escrowsList[i].id);
+        if (!onPending) {
+          list.push(escrowsList[i]);
+        }
+      }
+      return list;
+    } else {
+      return escrowsList;
+    }
+  }
+
+  private getPengingTrxEsc() {
     this.isLoading = true;
+    this.isError = false;
+
     const params: EscrowListParams = {
       approverAddress: this.account.address,
-      // statusList: [0],
-      statusList: [EscrowStatus.PENDING],
+      statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED],
       pagination: {
         page: this.page,
         limit: this.PerPage,
@@ -141,39 +196,23 @@ export class MyTasksPage implements OnInit {
       latest: true,
     };
 
-    // zoobc.Escrows.getList(params)
-    //   .then((res: GetEscrowTransactionsResponse.AsObject) => {
-    //     this.total = Number(res.total);
+    zoobc.Escrows.getList(params)
+        .then(async (res: Escrows) => {
+          this.totalPendingTrxEsc = res.total;
+          const trxList = res.escrowList;
 
-    //     const trxs = res.escrowsList.filter(tx => {
-    //       if (tx.latest === true) { return tx; }
-    //     });
+          // if (trxList.length > 0) {
+          //   trxList = await this.checkVisibleEscrow(trxList);
+          // }
 
-    //     const txMap = trxs.map(tx => {
-    //       const alias = this.addresBookSrv.getNameByAddress(tx.recipientaddress) || '';
-
-    //       return {
-    //         id: tx.id,
-    //         alias,
-    //         senderaddress: makeShortAddress(tx.senderaddress),
-    //         recipientaddress: makeShortAddress(tx.recipientaddress),
-    //         approveraddress: makeShortAddress(tx.approveraddress),
-    //         amount: tx.amount,
-    //         commission: tx.commission,
-    //         timeout: Number(tx.timeout),
-    //         status: tx.status,
-    //         blockheight: tx.blockheight,
-    //         latest: tx.latest,
-    //         instruction: tx.instruction,
-    //       };
-    //     });
-    //     this.escrowTransactions = txMap;
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   }).finally( () => {
-    //     this.isLoading = false;
-    //   });
+          this.listTrxPendingEsc = trxList;
+          console.log('== listTrxPendingEsc: ', this.listTrxPendingEsc);
+        })
+        .catch(err => {
+          this.isError = true;
+          console.log(err);
+        })
+        .finally(() => (this.isLoading = false));
   }
 
   getStatusName(status: number): any {
@@ -196,13 +235,13 @@ export class MyTasksPage implements OnInit {
     }
   }
 
-
-
   getBlockHeight() {
     this.isLoadingBlockHeight = true;
     zoobc.Host.getInfo()
-      .then(res => {
-        this.blockHeight = res.chainstatusesList[1].height;
+      .then((res: HostInfoResponse) => {
+        res.chainstatusesList.filter(chain => {
+          if (chain.chaintype === 0) { this.blockHeight = chain.height; }
+        });
       })
       .catch(err => {
         console.log(err);
@@ -219,17 +258,14 @@ export class MyTasksPage implements OnInit {
     this.router.navigate(['/task-detail'], navigationExtras);
   }
 
-  openMultisigDetail(msigHash: string) {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        msigHash
-      }
-    };
-    this.router.navigate(['/msig-task-detail'], navigationExtras);
+  openMultisigDetail(msigHash: any) {
+    console.log(msigHash);
+    this.msigService.setHash(msigHash);
+    this.router.navigate(['/msig-task-detail']);
   }
 
   public goDashboard() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/tabs/home']);
   }
 
 }

@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { Account, AccountType } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
-import zoobc from 'zbc-sdk';
 
 @Component({
   selector: 'app-popover-account',
@@ -13,7 +12,7 @@ import zoobc from 'zbc-sdk';
 export class PopoverAccountComponent implements OnInit {
   accounts: Account[];
   selectedIndex: number;
-  predefList: any;
+  predefList = [];
   @Input() accountType: AccountType;
 
   constructor(
@@ -24,22 +23,23 @@ export class PopoverAccountComponent implements OnInit {
 
   async ngOnInit() {
     console.log('Popup predefList : ', this.predefList);
-    const accounts: Account[] = await this.accountSrv.allAccount();
-    if (this.accountType) {
-      this.accounts = accounts.filter((account: Account) => {
-        return account.type && account.type === this.accountType;
-      });
-    } else {
-      this.accounts = accounts;
-    }
+    const accs: Account[] = await this.accountSrv.allAccount();
 
-    if (this.predefList) {
-      const list  = JSON.parse(this.predefList);
-      this.accounts = accounts.filter( acc => {// for every object in heroes
-          return list.includes(acc.address);
+    if (this.predefList && this.predefList.length > 0) {
+      this.accounts = accs.filter( acc => {// for every object in heroes
+          return this.predefList.includes(acc.address.value);
       });
       return;
     }
+
+    if (this.accountType) {
+      this.accounts = accs.filter((account: Account) => {
+        return account.type && account.type === this.accountType;
+      });
+    } else {
+      this.accounts = accs;
+    }
+
 
     if (this.accounts && this.accounts.length > 0) {
       this.accounts = await this.accountSrv.getAccountsWithBalance();
@@ -52,35 +52,6 @@ export class PopoverAccountComponent implements OnInit {
     });
   }
 
-  // async getAllAccountBalance(accounts: any) {
-  //   const accountAddresses = [];
-  //   let allBalances = null;
-  //   accounts.forEach((acc) => {
-  //     accountAddresses.push(acc.address);
-  //   });
-
-  //   try {
-  //     const data = await zoobc.Account.getBalances(accountAddresses);
-  //     allBalances = data.accountbalancesList;
-  //   } catch (error) {
-  //     console.log('__error', error);
-  //   }
-
-  //   accounts.forEach(obj => {
-  //     const adres = obj.address;
-  //     obj.balance =  this.getBalanceByAddress(allBalances, adres);
-  //   });
-  // }
-
-  private getBalanceByAddress(allBalances: any, address: string) {
-    const accInfo = allBalances.filter(acc => {
-      return acc.accountaddress === address;
-    });
-    if (accInfo && accInfo.length > 0) {
-      return accInfo[0].balance;
-    }
-    return 0;
-  }
 
   async selectAccount(account: any) {
     this.popoverCtrl.dismiss(account);
