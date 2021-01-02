@@ -2,11 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
-import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, MODE_EDIT, FOR_APPROVER } from 'src/environments/variable.const';
+import { FOR_SENDER, FOR_RECIPIENT, FOR_ACCOUNT, MODE_NEW, FOR_APPROVER, STORAGE_ALL_ACCOUNTS } from 'src/environments/variable.const';
+import zoobc from 'zbc-sdk';
+import { NavController, ModalController, AlertController, PopoverController } from '@ionic/angular';
+import { StorageService } from 'src/app/Services/storage.service';
+import { ImportAccountPage } from './import-account/import-account.page';
+import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { UtilService } from 'src/app/Services/util.service';
-import zoobc from 'zoobc-sdk';
-import { NavController } from '@ionic/angular';
-import { makeShortAddress } from 'src/Helpers/converters';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
+import { PopoverActionComponent } from './popover-action/popover-action.component';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-list-account',
   templateUrl: './list-account.component.html',
@@ -22,11 +28,23 @@ export class ListAccountComponent implements OnInit {
   errorMsg: string;
 
   constructor(
+    private alertCtrl: AlertController,
     private route: ActivatedRoute,
     private navCtrl: NavController,
+    private strgSrv: StorageService,
+    private modalController: ModalController,
     private router: Router,
-    private utilService: UtilService,
-    private accountService: AccountService) {
+    private qrScannerService: QrScannerService,
+    private accountService: AccountService,
+    private popoverCtrl: PopoverController,
+    private utilSrv: UtilService,
+    private translateSrv: TranslateService
+  ) {
+
+    this.qrScannerService.qrScannerSubject.subscribe(address => {
+      this.getScannerResult(address);
+    });
+
     this.accountService.accountSubject.subscribe(() => {
       setTimeout(() => {
         this.loadData();
@@ -34,8 +52,79 @@ export class ListAccountComponent implements OnInit {
     });
   }
 
+  private textCopyAddress: string;
+  private textEditAccount: string;
+  private textViewAccount: string;
+  private textDeleteAccount: string;
+  private textWrongQrCode: string;
+  private textAddressExists: string;
+  private textErrorScan: string;
+  private textAccountImported: string;
+
   ngOnInit() {
     this.loadData();
+
+    this.translateSrv.onLangChange.subscribe(() => {
+      this.translateLang();
+    });
+
+    this.translateLang();
+  }
+
+  translateLang() {
+    this.translateSrv.get([
+      'copy address',
+      'edit account',
+      'view account',
+      'delete account',
+      'you scan wrong qrcode',
+      'account with that address is already exist',
+      'error when scanning account, please try again later!',
+      'account has been successfully imported'
+    ]).subscribe((res: any) => {
+      this.textCopyAddress = res['copy address'];
+      this.textEditAccount = res['edit account'];
+      this.textViewAccount = res['view account'];
+      this.textDeleteAccount = res['delete account'];
+      this.textWrongQrCode = res['you scan wrong qrcode'];
+      this.textAddressExists = res['account with that address is already exist'];
+      this.textErrorScan = res['error when scanning account, please try again later!'];
+      this.textAccountImported = res['account has been successfully imported'];
+    });
+  }
+
+  isSavedAccount(obj: any): obj is Account {
+    if ((obj as Account).type) { return true; }
+    return false;
+  }
+
+  async getScannerResult(arg: string) {
+
+    const fileResult = JSON.parse(arg);
+    if (!this.isSavedAccount(fileResult)) {
+      alert(this.textWrongQrCode);
+      return;
+    }
+
+    const accountSave: Account = fileResult;
+    console.log('== accountSave: ', accountSave);
+
+    const allAcc = await this.accountService.allAccount('multisig');
+    const idx = allAcc.findIndex(acc => acc.address === accountSave.address);
+    if (idx >= 0) {
+      alert(this.textAddressExists);
+      return;
+    }
+
+    try {
+      await this.accountService.addAccount(accountSave).then(() => {
+
+      });
+    } catch {
+      alert(this.textErrorScan);
+    } finally {
+    }
+
   }
 
   async loadData() {
@@ -47,35 +136,67 @@ export class ListAccountComponent implements OnInit {
       }
     });
     this.accounts = await this.accountService.allAccount();
+    console.log('=== this.accounts: ', this.accounts);
     if (this.accounts && this.accounts.length > 0) {
-      this.getAllAccountBalance(this.accounts);
+    //  this.getAllAccountBalance(this.accounts);
     }
   }
 
+  async deleteAccount(index: number) {
+    const currAccount = await this.accountService.getCurrAccount();
+    if (this.accounts[index].address === currAccount.address) {
+      alert('Cannot delete active account, please switch account, and try again!');
+      return;
+    }
+
+    const confirmation = await this.alertCtrl.create({
+      message: 'Are you sure want to delete this account?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.accounts.splice(index, 1);
+            this.strgSrv.set(STORAGE_ALL_ACCOUNTS, this.accounts);
+          }
+        }
+      ]
+    });
+
+    await confirmation.present();
+  }
 
   async getAllAccountBalance(accounts: any) {
     this.isLoadingBalance = true;
     const accountAddresses = [];
-    let allBalances = null;
+    // let allBalances = null;
     accounts.forEach((acc) => {
       accountAddresses.push(acc.address);
     });
 
     try {
       const data = await zoobc.Account.getBalances(accountAddresses);
-      allBalances = data.accountbalancesList;
+      // allBalances = data.accountbalancesList;
     } catch (error) {
       console.log('__error', error);
+      this.isLoadingBalance = false;
     }
 
     accounts.forEach(obj => {
       const adres = obj.address;
-      obj.balance =  this.getBalanceByAddress(allBalances, adres);
+      // obj.balance =  this.getBalanceByAddress(allBalances, adres);
     });
     this.isLoadingBalance = false;
   }
 
   private getBalanceByAddress(allBalances: any, address: string) {
+    if (allBalances == null) {
+      return null;
+    }
     const accInfo = allBalances.filter(acc => {
       return acc.accountaddress === address;
     });
@@ -85,6 +206,34 @@ export class ListAccountComponent implements OnInit {
     return 0;
   }
 
+  scanQrCode() {
+    this.router.navigateByUrl('/qr-scanner');
+  }
+
+  async importAccount() {
+    const importAcc = await this.modalController.create({
+      component: ImportAccountPage,
+      componentProps: {}
+    });
+
+    importAcc.onDidDismiss().then(returnedData => {
+      console.log('=== returneddata: ', returnedData);
+      if (returnedData && returnedData.data !== 0) {
+        alert(this.textAccountImported);
+      }
+    });
+    return await importAcc.present();
+  }
+
+  async editDataSet(acc: Account) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        account: JSON.stringify(acc)
+      }
+    };
+    this.router.navigate(['/dataset-account'], navigationExtras);
+  }
+
   accountClicked(account: Account) {
     if (!this.forWhat) {
       return;
@@ -92,7 +241,7 @@ export class ListAccountComponent implements OnInit {
 
     this.accountService.setForWhat(this.forWhat);
     if (this.forWhat === FOR_ACCOUNT) {
-      this.accountService.setActiveAccount(account);
+      this.accountService.switchAccount(account);
     } else if (this.forWhat === FOR_SENDER) {
       this.accountService.setSender(account);
     } else if (this.forWhat === FOR_RECIPIENT) {
@@ -103,18 +252,19 @@ export class ListAccountComponent implements OnInit {
     this.navCtrl.pop();
   }
 
-  copyAddress(account: Account) {
-    const val = account.address;
-    this.utilService.copyToClipboard(val);
-  }
-
   createNewAccount() {
     this.openAddAccount(null, MODE_NEW);
   }
 
   editName(account: Account) {
-    this.openEditAccount(account);
+    this.openEditAccount(account, 1);
   }
+
+  viewAccount(account: Account) {
+    this.openEditAccount(account, 0);
+  }
+
+  openListAccount() { }
 
   async openAddAccount(arg: Account, trxMode: string) {
     const navigationExtras: NavigationExtras = {
@@ -126,16 +276,96 @@ export class ListAccountComponent implements OnInit {
     this.router.navigate(['/create-account'], navigationExtras);
   }
 
-  shortAddress(address: string) {
-    return makeShortAddress(address);
-  }
-
-  async openEditAccount(arg: Account) {
+  async openEditAccount(arg: Account, mode: number) {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         account: JSON.stringify(arg),
+        mode
       }
     };
     this.router.navigate(['/edit-account'], navigationExtras);
+  }
+
+  async showAction(ev: any) {
+    const popover = await this.popoverCtrl.create({
+      component: PopoverActionComponent,
+      event: ev,
+      translucent: true
+    });
+
+    popover.onWillDismiss().then(({ data: action }) => {
+      switch (action) {
+        case 'add':
+          this.createNewAccount();
+          break;
+        case 'import':
+          this.importAccount();
+          break;
+        case 'scan':
+          this.scanQrCode();
+          break;
+      }
+    });
+
+    return popover.present();
+  }
+
+  async showOption(ev: any, index: number) {
+
+    const account = this.accounts[index];
+
+    const popoverOptions = [
+      {
+        key: 'edit',
+        label: this.textEditAccount
+      },
+      {
+        key: 'copy',
+        label: this.textCopyAddress
+      }
+    ];
+
+    if (account.type && account.type === 'multisig') {
+      popoverOptions.push(
+        {
+          key: 'view',
+          label: this.textViewAccount
+        }
+      );
+      popoverOptions.push(
+        {
+          key: 'delete',
+          label: this.textDeleteAccount
+        }
+      );
+    }
+
+    const popover = await this.popoverCtrl.create({
+      component: PopoverOptionComponent,
+      componentProps: {
+        options: popoverOptions
+      },
+      event: ev,
+      translucent: true
+    });
+
+    popover.onWillDismiss().then(({ data: action }) => {
+      switch (action) {
+        case 'edit':
+          this.editName(account);
+          break;
+        case 'copy':
+          this.utilSrv.copyToClipboard(account.address.value);
+          break;
+        case 'view':
+          this.viewAccount(account);
+          break;
+        case 'delete':
+          this.deleteAccount(index);
+          break;
+      }
+    });
+
+    return popover.present();
   }
 }

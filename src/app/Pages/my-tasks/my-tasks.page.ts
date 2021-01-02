@@ -7,14 +7,16 @@ import zoobc, {
   MultisigPendingTxResponse,
   MultisigPendingListParams,
   EscrowListParams,
-} from 'zoobc-sdk';
+  OrderBy,
+  EscrowStatus,
+} from 'zbc-sdk';
 
-import { GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
-import { OrderBy } from 'zoobc-sdk/grpc/model/pagination_pb';
+// import { EscrowStatus, GetEscrowTransactionsResponse } from 'zoobc-sdk/grpc/model/escrow_pb';
+// import { OrderBy } from 'zoobc-sdk/grpc/model/pagination_pb';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { Router, NavigationExtras } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { PendingTransactionStatus } from 'zoobc-sdk/grpc/model/multiSignature_pb';
+// import { PendingTransactionStatus } from 'zoobc-sdk/grpc/model/multiSignature_pb';
 import { dateAgo } from 'src/Helpers/utils';
 import { Currency } from 'src/app/Interfaces/currency';
 
@@ -46,6 +48,7 @@ export class MyTasksPage implements OnInit {
   enabledSign = true;
   pendingSignatures = [];
   participants = [];
+  PerPage = 1000;
 
   constructor(
     private router: Router,
@@ -66,10 +69,6 @@ export class MyTasksPage implements OnInit {
   segmentChanged() {
   }
 
-  shortAddress(arg: string) {
-    return makeShortAddress(arg);
-  }
-
   async loadTask() {
     this.account = await this.accountService.getCurrAccount();
     if (this.account.type !== 'normal') {
@@ -78,43 +77,50 @@ export class MyTasksPage implements OnInit {
     this.getBlockHeight();
     this.getEscrowTransaction();
     this.getMultiSigPendingList(true);
+    this.startTimer();
   }
 
   getMultiSigPendingList(reload: boolean = false) {
-    if (!this.isLoadingMultisig) {
-      this.isLoadingMultisig = true;
-      const perPage = Math.ceil(window.outerHeight / 72);
-
-      if (reload) {
-        this.multiSigPendingList = null;
-        this.pageMultiSig = 1;
-      }
-      const params: MultisigPendingListParams = {
-        address: this.account.address,
-        status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
-        pagination: {
-          page: this.pageMultiSig,
-          limit: perPage,
-        },
-      };
-      zoobc.MultiSignature.getPendingList(params)
-        .then((res: MultisigPendingTxResponse) => {
-          const tx = toGetPendingList(res);
-          this.totalMultiSig = tx.count;
-          const pendingList = tx.pendingtransactionsList;
-          if (reload) {
-            this.multiSigPendingList = pendingList;
-          } else {
-            this.multiSigPendingList = this.multiSigPendingList.concat(pendingList);
-          }
-        })
-        .catch(err => {
-          this.isErrorMultiSig = true;
-          console.log(err);
-        })
-        .finally(() => (this.isLoadingMultisig = false));
-    }
+    // if (!this.isLoadingMultisig) {
+    //   this.isLoadingMultisig = true;
+    //   if (reload) {
+    //     this.multiSigPendingList = null;
+    //     this.pageMultiSig = 1;
+    //   }
+    //   const params: MultisigPendingListParams = {
+    //     address: this.account.address,
+    //     // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
+    //     pagination: {
+    //       page: this.pageMultiSig,
+    //       limit: this.PerPage,
+    //       orderBy: OrderBy.DESC
+    //     },
+    //   };
+    //   zoobc.MultiSignature.getPendingList(params)
+    //     .then((res: MultisigPendingTxResponse) => {
+    //       const tx = toGetPendingList(res);
+    //       this.totalMultiSig = tx.count;
+    //       const pendingList = tx.pendingtransactionsList;
+    //       if (reload) {
+    //         this.multiSigPendingList = pendingList;
+    //       } else {
+    //         this.multiSigPendingList = this.multiSigPendingList.concat(pendingList);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       this.isErrorMultiSig = true;
+    //       console.log(err);
+    //     })
+    //     .finally(() => (this.isLoadingMultisig = false));
+    // }
   }
+
+  startTimer() {
+    setInterval(() => {
+      this.loadTask();
+    }, 20000);
+  }
+
 
   doDateAgo(pDate: any) {
     return dateAgo(pDate);
@@ -125,46 +131,49 @@ export class MyTasksPage implements OnInit {
     const params: EscrowListParams = {
       approverAddress: this.account.address,
       // statusList: [0],
+      statusList: [EscrowStatus.PENDING],
       pagination: {
         page: this.page,
-        limit: 1000,
+        limit: this.PerPage,
         orderBy: OrderBy.DESC,
         orderField: 'timeout',
       },
+      latest: true,
     };
 
-    zoobc.Escrows.getList(params)
-      .then((res: GetEscrowTransactionsResponse.AsObject) => {
-        this.total = Number(res.total);
+    // zoobc.Escrows.getList(params)
+    //   .then((res: GetEscrowTransactionsResponse.AsObject) => {
+    //     this.total = Number(res.total);
 
-        const trxs = res.escrowsList.filter(tx => {
-          if (tx.latest === true) { return tx; }
-        });
+    //     const trxs = res.escrowsList.filter(tx => {
+    //       if (tx.latest === true) { return tx; }
+    //     });
 
-        const txMap = trxs.map(tx => {
-          const alias = this.addresBookSrv.getNameByAddress(tx.recipientaddress) || '';
-          return {
-            id: tx.id,
-            alias,
-            senderaddress: makeShortAddress(tx.senderaddress),
-            recipientaddress: makeShortAddress(tx.recipientaddress),
-            approveraddress: makeShortAddress(tx.approveraddress),
-            amount: tx.amount,
-            commission: tx.commission,
-            timeout: Number(tx.timeout),
-            status: tx.status,
-            blockheight: tx.blockheight,
-            latest: tx.latest,
-            instruction: tx.instruction,
-          };
-        });
-        this.escrowTransactions = txMap;
-      })
-      .catch(err => {
-        console.log(err);
-      }).finally( () => {
-        this.isLoading = false;
-      });
+    //     const txMap = trxs.map(tx => {
+    //       const alias = this.addresBookSrv.getNameByAddress(tx.recipientaddress) || '';
+
+    //       return {
+    //         id: tx.id,
+    //         alias,
+    //         senderaddress: makeShortAddress(tx.senderaddress),
+    //         recipientaddress: makeShortAddress(tx.recipientaddress),
+    //         approveraddress: makeShortAddress(tx.approveraddress),
+    //         amount: tx.amount,
+    //         commission: tx.commission,
+    //         timeout: Number(tx.timeout),
+    //         status: tx.status,
+    //         blockheight: tx.blockheight,
+    //         latest: tx.latest,
+    //         instruction: tx.instruction,
+    //       };
+    //     });
+    //     this.escrowTransactions = txMap;
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   }).finally( () => {
+    //     this.isLoading = false;
+    //   });
   }
 
   getStatusName(status: number): any {

@@ -1,0 +1,20 @@
+.list-account{
+  ion-item{
+    app-account-item{
+      width: 100%;
+    }
+
+    ion-radio{
+      margin-right: 20px;
+    }
+  }
+
+  .actions{
+    display: flex;
+    justify-content: space-between;
+    ion-button {
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+  }
+}

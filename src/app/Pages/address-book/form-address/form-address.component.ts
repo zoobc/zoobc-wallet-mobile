@@ -21,9 +21,8 @@ export class FormAddressComponent implements OnInit, OnChanges {
   @Input() addressId: number | null = null;
   @Input() value: { name: string; address: string } | null = null;
   @Output() onSubmit = new EventEmitter();
-  @Output() onCancel = new EventEmitter();
+
   addresses = [];
-  validationMessage = '';
   submitted = false;
   constructor(
     private addressBookSrv: AddressBookService,
@@ -138,14 +137,13 @@ export class FormAddressComponent implements OnInit, OnChanges {
   }
 
   getScannerResult(jsondata: string) {
+    if (jsondata==null) {
+      console.log("json data null");
+    }
     if (jsondata && jsondata.length > 0) {
       const result = jsondata.split('||');
       this.formAddress.controls['address'].setValue(result[0]);
     }
-  }
-
-  cancel() {
-    this.onCancel.emit();
   }
 }
 

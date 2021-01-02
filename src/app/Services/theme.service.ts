@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import * as Color from 'color';
 import { STORAGE_ACTIVE_THEME, DEFAULT_THEME } from 'src/environments/variable.const';
-import { StoragedevService } from './storagedev.service';
+import { StorageService } from './storage.service';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -12,35 +12,39 @@ export class ThemeService {
   theme = DEFAULT_THEME;
   themes = {
     zoobc: {
-      primary: '#373854',
-      secondary: '#493267',
-      tertiary: '#9e379f',
-      dbbalance: '#9e379f',
-      dbspbalance: '#7bb3ff'
+      primary: '#28456D',
+      secondary: '#041C3F',
+      tertiary: '#4576BA',
+      dbbalance: '#cccddd',
+      dbspbalance: '#6E6E6E',
+      pinbutton: '#ffffff'
     },
     bcz: {
       primary: '#005b96',
       secondary: '#6497b1',
       tertiary: '#03396c',
-      dbbalance: '#ffdf7b',
-      dbspbalance: '#6cc3d8'
+      dbbalance: '#cccddd',
+      pinbutton: '#ffffff',
+      dbspbalance: '#6E6E6E'
     },
     day: {
       primary: '#317873',
       secondary: '#5f9ea0',
       tertiary: '#49796b',
-      dbbalance: '#ffe8df',
-      dbspbalance: '#ffdf7b'
+      dbbalance: '#dddddd',
+      pinbutton: '#ffffff',
+      dbspbalance: '#6E6E6E'
     },
     night: {
-      primary: '#8CBA80',
-      secondary: '#c1a57b',
+      primary: '#737373',
+      secondary: '#737373',
       tertiary: '#FE5F55',
       medium: '#BCC2C7',
       dark: '#dedede',
-      light: '#495867',
-      dbbalance: '#c1a57b',
-      dbspbalance: '#8CBA80'
+      light: '#000000',
+      pinbutton: '#ffffff',
+      dbbalance: '#dddddd',
+      dbspbalance: '#6E6E6E'
     },
     neon: {
       primary: '#39BFBD',
@@ -49,8 +53,9 @@ export class ThemeService {
       light: '#F4EDF2',
       medium: '#B682A5',
       dark: '#34162A',
+      pinbutton: '#ffffff',
       dbbalance: '#ececec',
-      dbspbalance: '#c1a57b'
+      dbspbalance: '#6E6E6E'
     },
     autumn: {
       primary: '#F78154',
@@ -59,13 +64,15 @@ export class ThemeService {
       light: '#FDE8DF',
       medium: '#FCD0A2',
       dark: '#B89876',
+      pinbutton: '#ffffff',
       dbbalance: '#ececec',
-      dbspbalance: '#c1a57b'
+      dbspbalance: '#6E6E6E'
     }
   };
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private strgSrv: StoragedevService
+    private strgSrv: StorageService
   ) {
     strgSrv.get(STORAGE_ACTIVE_THEME).then(themeName => {  // <--- GET SAVED THEME
       let thm = themeName;
@@ -78,6 +85,7 @@ export class ThemeService {
   }
 
   public themeSubject: Subject<string> = new Subject<string>();
+  public selectThemeSubject: Subject<string> = new Subject<string>();
   // Override all global variables with a new theme
   async setTheme(themename: string) {
     this.theme = themename;
@@ -88,6 +96,9 @@ export class ThemeService {
     this.themeSubject.next(this.theme);
   }
 
+  broadcastSelectTheme(value: string) {
+    this.selectThemeSubject.next(value);
+  }
   // Define a single CSS variable
   setVariable(name: string, value: string) {
     this.document.documentElement.style.setProperty(name, value);
@@ -102,12 +113,13 @@ export class ThemeService {
 const defaults = {
   primary: '#1d2647',
   secondary: '#6cc3d8',
-  tertiary: '#8f4791',
+  tertiary: '#2C85FB',
   light: '#f4f5f8',
   medium: '#92949c',
   dark: '#222428',
   dbbalance: '#eae3d0',
-  dbspbalance: '#6cc3d8',
+  dbspbalance: '#2C85FB',
+  pinbutton: '#ffffff',
   danger: '#eb445a',
   success: '#2dd36f',
   warning: '#ffc409'
@@ -201,21 +213,28 @@ function CSSTextGenerator(colors) {
 
     --ion-color-light: ${light};
     --ion-color-light-rgb: 244,244,244;
-    --ion-color-light-contrast: $${contrast(light)};
+    --ion-color-light-contrast: ${contrast(light)};
     --ion-color-light-contrast-rgb: 0,0,0;
     --ion-color-light-shade: ${Color(light).darken(shadeRatio)};
     --ion-color-light-tint: ${Color(light).lighten(tintRatio)};
 
     --ion-color-dbbalance: ${dbbalance};
-    --ion-color-dbbalance-rgb: 244,244,244;
-    --ion-color-dbbalance-contrast: $${contrast(dbbalance)};
+    --ion-color-secondary-rgb: 112,68,255;
+    --ion-color-dbbalance-contrast: #ffffff;
     --ion-color-dbbalance-contrast-rgb: 0,0,0;
     --ion-color-dbbalance-shade: ${Color(dbbalance).darken(shadeRatio)};
     --ion-color-dbbalance-tint: ${Color(dbbalance).lighten(tintRatio)};
 
+    --ion-color-pinbutton: ${dbspbalance};
+    --ion-color-pinbutton-rgb: 112,68,255;
+    --ion-color-pinbutton-contrast: #ffffff;
+    --ion-color-pinbutton-contrast-rgb: 0,0,0;
+    --ion-color-pinbutton-shade: ${Color(dbspbalance).darken(shadeRatio)};
+    --ion-color-pinbutton-tint: ${Color(dbspbalance).lighten(tintRatio)};
+
     --ion-color-dbspbalance: ${dbspbalance};
-    --ion-color-dbspbalance-rgb: 244,244,244;
-    --ion-color-dbspbalance-contrast: $${contrast(dbspbalance)};
+    --ion-color-dbspbalance-rgb: 112,68,255;
+    --ion-color-dbspbalance-contrast: #ffffff;
     --ion-color-dbspbalance-contrast-rgb: 0,0,0;
     --ion-color-dbspbalance-shade: ${Color(dbspbalance).darken(shadeRatio)};
     --ion-color-dbspbalance-tint: ${Color(dbspbalance).lighten(tintRatio)};`;

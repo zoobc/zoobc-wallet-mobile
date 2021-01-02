@@ -11,6 +11,10 @@ export function int32ToBytes(nmbr: number): Buffer {
   return byte;
 }
 
+export function makeShortAddress(addrs: string) {
+  return addrs.concat('...').concat(addrs.substring(addrs.length - 8, addrs.length));
+}
+
 export function getFormatedDate(unixTimestamp: number) {
   const a = new Date(unixTimestamp * 1000);
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -42,13 +46,6 @@ export function timeConverter(unixTimestamp: number) {
   const sec = a.getSeconds();
   const time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
   return time;
-}
-
-export function makeShortAddress(addrs: string) {
-  // if (addrs.length < 21) {
-  //     return addrs;
-  // }
-  return addrs.substring(0, 21); //.concat('...').concat(addrs.substring(addrs.length - 8, addrs.length));
 }
 
 export function byteArrayToHex(

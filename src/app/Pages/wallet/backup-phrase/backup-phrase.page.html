@@ -3,12 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Backup Phrase" | translate }}</ion-title>
-    <ion-buttons slot="end" color="primary">
-        <ion-button routerLink="/feedback">
-          {{ "Feedback"  | translate }}
-        </ion-button>
-    </ion-buttons>
+    <ion-title>{{ "backup phrase" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -19,129 +14,129 @@
     <div *ngSwitchCase=1>
 
       <ion-text>
-        <h2>{{ "Backup Phrase" | translate }}</h2>
+        <h2>{{ "backup phrase" | translate}}</h2>
       </ion-text>
       <p>
-        {{ "For your security, Blockchain does not keep any passwords on file. The following 24 word Backup Phrase will
-        give you access to your funds in case you lose your password. Be sure to write it on a piece of paper and to
+        {{ "for your security, blockchain does not keep any passwords on file. the following 24 word backup phrase will
+        give you access to your funds in case you lose your password. be sure to write it on a piece of paper and to
         keep
-        it somewhere safe and secure." | translate }}
+        it somewhere safe and secure" | translate}}.
       </p>
-      <ion-button expand="block" color="secondary" (click)="backupClick();">{{ "Reveal seed words" | translate }}</ion-button>
+      <ion-button expand="block" color="secondary" (click)="backupClick();">{{ "reveal seed words" | translate }}</ion-button>
 
     </div>
 
     <div *ngSwitchCase=2>
       <p>
-        {{ "If you ever change device, you will need this seed phrase to access your accounts. Save them
-        somewhere safe and secret."| translate}]
+        {{ "if you ever change device, you will need this seed phrase to access your accounts. save them
+        somewhere safe and secret" | translate}}.
       </p>
 
       <div class="box-warning">
-        {{ "DO NOT share this phrase with anyone! These words can be used to steal all your accounts." | translate}}
+        {{ "do not share this phrase with anyone! these words can be used to steal all your accounts" | translate}}.
       </div>
 
-      <h4>{{ "Your private seed phrase" | translate}}</h4>
+      <h4>{{ "your private seed phrase" | translate}}</h4>
       <div class="box-pass">
         
         <ion-grid>
-            <ion-row>
-              <ion-col>
-               1. {{ passDecrypted[0] }}
-              </ion-col>
-              <ion-col>
-               2. {{ passDecrypted[1] }}
-              </ion-col>
-              <ion-col>
-               3. {{ passDecrypted[2] }}
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-               4. {{ passDecrypted[3] }}
-              </ion-col>
-              <ion-col>
-               5. {{ passDecrypted[4] }}
-              </ion-col>
-              <ion-col>
-               6. {{ passDecrypted[5] }}
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-               7. {{ passDecrypted[6] }}
-              </ion-col>
-              <ion-col>
-               8. {{ passDecrypted[7] }}
-              </ion-col>
-              <ion-col>
-               9. {{ passDecrypted[8] }}
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                10. {{ passDecrypted[9] }}
-              </ion-col>
-              <ion-col>
-                11. {{ passDecrypted[10] }}
-              </ion-col>
-              <ion-col>
-                12. {{ passDecrypted[11] }}
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                13. {{ passDecrypted[12] }}
-              </ion-col>
-              <ion-col>
-                14. {{ passDecrypted[13] }}
-              </ion-col>
-              <ion-col>
-                15. {{ passDecrypted[14] }}
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                16. {{ passDecrypted[15] }}
-              </ion-col>
-              <ion-col>
-                17. {{ passDecrypted[16] }}
-              </ion-col>
-              <ion-col>
-                18. {{ passDecrypted[17] }}
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                19. {{ passDecrypted[18] }}
-              </ion-col>
-              <ion-col>
-                20. {{ passDecrypted[19] }}
-              </ion-col>
-              <ion-col>
-                21. {{ passDecrypted[20] }}
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                22. {{ passDecrypted[21] }}
-              </ion-col>
-              <ion-col>
-                23. {{ passDecrypted[22] }}
-              </ion-col>
-              <ion-col>
-                24. {{ passDecrypted[23] }}
-              </ion-col>
-            </ion-row>
+          <ion-row>
+            <ion-col>
+              1. {{ passDecrypted[0] }}
+            </ion-col>
+            <ion-col>
+              2. {{ passDecrypted[1] }}
+            </ion-col>
+            <ion-col>
+              3. {{ passDecrypted[2] }}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              4. {{ passDecrypted[3] }}
+            </ion-col>
+            <ion-col>
+              5. {{ passDecrypted[4] }}
+            </ion-col>
+            <ion-col>
+              6. {{ passDecrypted[5] }}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              7. {{ passDecrypted[6] }}
+            </ion-col>
+            <ion-col>
+              8. {{ passDecrypted[7] }}
+            </ion-col>
+            <ion-col>
+              9. {{ passDecrypted[8] }}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              10. {{ passDecrypted[9] }}
+            </ion-col>
+            <ion-col>
+              11. {{ passDecrypted[10] }}
+            </ion-col>
+            <ion-col>
+              12. {{ passDecrypted[11] }}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              13. {{ passDecrypted[12] }}
+            </ion-col>
+            <ion-col>
+              14. {{ passDecrypted[13] }}
+            </ion-col>
+            <ion-col>
+              15. {{ passDecrypted[14] }}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              16. {{ passDecrypted[15] }}
+            </ion-col>
+            <ion-col>
+              17. {{ passDecrypted[16] }}
+            </ion-col>
+            <ion-col>
+              18. {{ passDecrypted[17] }}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              19. {{ passDecrypted[18] }}
+            </ion-col>
+            <ion-col>
+              20. {{ passDecrypted[19] }}
+            </ion-col>
+            <ion-col>
+              21. {{ passDecrypted[20] }}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              22. {{ passDecrypted[21] }}
+            </ion-col>
+            <ion-col>
+              23. {{ passDecrypted[22] }}
+            </ion-col>
+            <ion-col>
+              24. {{ passDecrypted[23] }}
+            </ion-col>
+          </ion-row>
         </ion-grid>
       </div>
 
       <div style="text-align: center;margin-top: 10px;">
           <ion-button (click)="copyToClipboard()" color="secondary">
-              <ion-icon name="copy"></ion-icon> {{ "Copy to clipboard" | translate }}
+              <ion-icon name="copy"></ion-icon> {{ "copy to clipboard" | translate }}
           </ion-button>
       </div>
-      
+
     </div>
   </div>
 </ion-content>

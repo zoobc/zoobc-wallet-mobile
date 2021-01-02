@@ -30,16 +30,18 @@ describe('ApplistPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return a non empty array', () => {
+  it('init worked', () => {
     let result = component.ngOnInit();
     expect(Array.isArray(result)).toBeTruthy;
   });
-  it('should return a non empty array', () => {
+  it('show sell app worked', () => {
     let result = component.showSellApp();
     expect(Array.isArray(result)).toBeTruthy;
   });
-  it('should return a non empty array', () => {
+  it('show list other app worked', () => {
     let result = component.showListOtherApp();
     expect(Array.isArray(result)).toBeTruthy;
   });
+
+  
 });

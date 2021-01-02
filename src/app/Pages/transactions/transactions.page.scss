@@ -1,7 +1,16 @@
-.amount{
-    font-size: 0.8em;
+ion-content {
+  --background: #fff;
 }
-.dateago{
-    color: var(--ion-color-medium);
-    font-size: 0.8em;
+
+.transaction-list {
+  background-color: transparent;
+
+  ion-item {
+    --background: transparent;
+
+    app-transaction-item,
+    app-skeleton-transaction {
+      width: 100%;
+    }
+  }
 }

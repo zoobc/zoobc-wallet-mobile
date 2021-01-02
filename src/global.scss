@@ -9,23 +9,33 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
-@import url("https://fonts.googleapis.com/css?family=Lato:100,300,400,700");
+
+@font-face {
+	font-family: 'Roboto-Medium';
+	src: url('assets/fonts/roboto-medium/Roboto-Medium.eot');
+  src: url('assets/fonts/roboto-medium/Roboto-Medium.woff') format('woff'), 
+       url('assets/fonts/roboto-medium/Roboto-Medium.ttf') format('truetype'), 
+       url('assets/fonts/roboto-medium/Roboto-Medium.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
 :root,
 :root[mode="md"],
 :root[mode="ios"] {
-  --ion-font-family: "Lato", sans-serif;
+  --ion-font-family: "Roboto-Medium", sans-serif;
   font-family: var(--ion-font-family) !important;
 }
 
 .modal-zbc {
   .modal-wrapper {
-      top: 0;
-      left: 0;
-      display: block;
-      width: 100%;
-      height: 100%;
-      max-height: 100%;
-      max-width: 100%;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    max-width: 100%;
   }
 }
 
@@ -47,8 +57,8 @@ ion-title{
   background-image: url("src/assets/images/background-night.png");
   background-repeat:no-repeat;
   background-size: cover;
-  background-attachment: fixed;
-  background-position: bottom;
+  //background-attachment: fixed;
+  background-position: center center;
 }
 
 .bg-header-zoobc{
@@ -56,7 +66,7 @@ ion-title{
   background-image: url("src/assets/images/zoobc.png");
   background-repeat:no-repeat;
   background-size: cover;
-  background-attachment: fixed;
+  //background-attachment: fixed;
   background-position: center center;
 }
 
@@ -65,20 +75,227 @@ ion-title{
   background-image: url("src/assets/images/background.png");
   background-repeat:no-repeat;
   background-size: cover;
-  background-attachment: fixed;
+  //background-attachment: fixed;
   background-position: center center;
 }
 
 .bg-header-day{
-  --background: transparent;
+  // --background: transparent;
   background-image: url("src/assets/images/background-day.png");
   background-repeat:no-repeat;
   background-size: cover;
-  background-attachment: fixed;
+  //background-attachment: fixed;
   background-position: center center;
 }
 
 .alertCss{
-  --background: var(--ion-color-light);
-  --color: var(--ion-color-dark);
+  // --background: var(--ion-color-light) !important;
+  // --color: var(--ion-color-dark) !important;
+  --background: #ffffff !important;
+}
+
+.text-error {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+ion-list.form-list{
+  ion-item.form-item{
+    --padding-start: 0;
+    --inner-padding-end: 0;
+
+    margin-bottom: 1rem;
+
+    &:last-child{
+      margin-bottom: 0;
+    }
+  }
+}
+
+ion-item.form-item{
+
+  ion-input, ion-textarea,
+  .input-container {
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    padding-bottom: 2px !important;
+    padding-top: 2px !important;
+  }
+
+  &.item-label-stacked{
+    display: flex;
+    flex-direction: row;
+
+    >* {
+      width: 100%;
+    }
+
+    .label-stacked.sc-ion-label-md-h {
+      transform: translate3d(0, 0, 0) scale(.75);
+    }
+
+    .sc-ion-textarea-md-h {
+      margin-top: 0;
+    }
+
+    input,
+    textarea,
+    ion-select {
+      -webkit-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+      -moz-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+      box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+
+      -webkit-border-radius: 2px !important;
+      -moz-border-radius: 2px !important;
+      border-radius: 2px !important;
+
+      &:read-only {
+        color: #777;
+
+        -webkit-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4) !important;
+        -moz-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4) !important;
+        box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4) !important;
+      }
+    }
+
+    ion-select {
+      margin: 2px;
+      max-width: none;
+    }
+
+    &.item-has-focus {
+
+      input,
+      textarea {
+        -webkit-box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+        -moz-box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+        box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+      }
+    }
+  }
+
+  .input-container {
+
+    input,
+    textarea,
+    button {
+      height: 36px;
+      width: 100%;
+      border: none;
+      background: transparent;
+
+      -webkit-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+      -moz-box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+      box-shadow: 0px 0px 0px 1px rgba(114, 117, 136, 0.4);
+
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+
+      -webkit-border-radius: 2px !important;
+      -moz-border-radius: 2px !important;
+      border-radius: 2px !important;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    textarea{
+      height: 80px;
+      resize: none;
+    }
+
+    input:focus,
+    textarea:focus {
+      -webkit-box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+      -moz-box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+      box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
+    }
+
+    .button-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      ion-icon {
+        color: #727588;
+        font-size: 0.5rem;
+      }
+    }
+  }
+
+}
+
+.popover-account .popover-content {
+  --width: 320px;
+}
+
+.info-label{
+  color: var(--ion-color-medium);
+}
+
+.info-val{
+  color: var(--ion-color-dark);
+
+  .none{
+    color: #ccc;
+  }
+}
+
+.skeleton-image {
+  background-color: #eeeeee !important;
+  background-image: none;
+  margin-bottom: 16px;
+  border-radius: 6px;
+
+  &.rounded {
+    border-radius: 100%;
+  }
+}
+
+.skeleton-text {
+  height: 16px;
+  background-image: linear-gradient(90deg, #f4f4f4 0px, rgba(229, 229, 229, 0.8) 40px, #f4f4f4 80px);
+  background-size: 1000px;
+  border-radius: 4px;
+  animation: shine-lines 2s infinite ease-out;
+
+  &.big {
+    height: 24px;
+  }
+
+  &.small {
+    height: 12px;
+  }
+}
+
+ion-button.item-btn-add{
+  font-weight: 700;
+  margin-left: 0;
+  margin-right: 0;
+
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.item-checkbox{
+  ion-checkbox{
+      margin-right: 10px;
+      margin-left: 5px;
+  }
+}
+
+@keyframes shine-lines {
+  0% {
+    background-position: -100px;
+  }
+
+  40%,
+  100% {
+    background-position: 200px;
+  }
 }

@@ -1,0 +1,47 @@
+<ng-container [formGroup]="group">
+  <ion-list class="form-list">
+
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ 'setter' | translate }}</ion-label>
+      <app-form-sender formControlName="{{ inputMap.sender }}" accountType="multisig" ngDefaultControl>
+      </app-form-sender>
+    </ion-item>
+
+    <ng-container *ngIf="multisig">
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ 'transaction id' | translate }}</ion-label>
+        <ion-input placeholder="{{ 'transaction id' | translate }}" formControlName="{{ inputMap.transactionId }}">
+        </ion-input>
+        <ion-text  color="danger" class="subtitle"
+          *ngIf="group.get(inputMap.transactionId).touched && group.get(inputMap.transactionId).hasError('required')">
+          {{ 'transaction id is required' | translate }}
+        </ion-text>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position='stacked'>{{ 'do you confirm this escrow?' }}</ion-label>
+        <ion-radio-group [formControlName]="inputMap.approvalCode">
+          <ion-item lines="none">
+            <ion-radio [value]="0"></ion-radio>
+            <ion-text>&nbsp;&nbsp;{{ 'confirm' | translate }}</ion-text>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-radio [value]="1"></ion-radio>
+            <ion-text>&nbsp;&nbsp;{{ 'reject' | translate }}</ion-text>
+          </ion-item>
+        </ion-radio-group>
+      </ion-item>
+    </ng-container>
+
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ 'fee' | translate }}</ion-label>
+      <ion-input formControlName="{{ inputMap.fee }}"></ion-input>
+      <ion-text color="danger" *ngIf="group.get(inputMap.fee).touched && group.get(inputMap.fee).hasError('required')">
+        {{ 'fee is required' | translate }}
+      </ion-text>
+      <ion-text color="danger" *ngIf="group.get(inputMap.fee).touched && group.get(inputMap.fee).hasError('min')">
+        {{ 'minimum fee is' | translate: { val: minFee } }}
+      </ion-text>
+    </ion-item>
+  </ion-list>
+</ng-container>

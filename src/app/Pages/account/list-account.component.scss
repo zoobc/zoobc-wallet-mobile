@@ -1,18 +1,26 @@
- 
-  ion-item {
-    .title {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-      color: var(--ion-color-dark);
+ .list-account{
+    ion-item {
+      app-account-item{
+        width: 100%;
+      }
+
+      > ion-label{
+        display: flex;
+        justify-content: space-between;
+      }
+
+      ion-icon{
+        font-size: 18px;
+      }
+
+      .account-item{
+        flex-direction: column;
+
+        .balance {
+          .info-amount-conversion {
+            flex-direction: row;
+          }
+        }
+      }
     }
-    .address {
-      font-size: 0.9rem;
-      color: var(--ion-color-medium);
-      margin-bottom: 0.5rem;
-      white-space: normal;
-      font-weight: bold;
-    }
-    .created {
-      font-size: 0.7rem;
-    }
-  }
+}

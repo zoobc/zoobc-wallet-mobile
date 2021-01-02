@@ -2,16 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
-import { AlertController } from '@ionic/angular';
-import { dateAgo } from 'src/Helpers/utils';
-import { Subscription } from 'rxjs';
+import { AlertController, ModalController } from '@ionic/angular';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
-import zoobc, { isZBCAddressValid } from 'zoobc-sdk';
-import { UtilService } from 'src/app/Services/util.service';
-import { makeShortAddress } from 'src/Helpers/converters';
+import zoobc, { TransactionType } from 'zbc-sdk';
+import { ImportDraftPage } from './import-draft/import-draft.page';
+import { THEME_OPTIONS } from 'src/environments/variable.const';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { getTxType } from 'src/Helpers/multisig-utils';
+import { getTranslation } from 'src/Helpers/utils';
 import { TranslateService } from '@ngx-translate/core';
-import { Network } from '@ionic-native/network/ngx';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-multisig',
@@ -19,133 +20,154 @@ import { Network } from '@ionic-native/network/ngx';
   styleUrls: ['./multisig.page.scss']
 })
 export class MultisigPage implements OnInit {
-  multiSigDrafts: MultiSigDraft[];
 
-  addInfo = true;
-  createTransaction = true;
-  addSignature = true;
-  multiSigCoPayer: any;
-  isLoading: boolean;
-  isError = false;
+  txType = [
+    { code: TransactionType.SENDMONEYTRANSACTION, type: 'send money' },
+    { code: TransactionType.SETUPACCOUNTDATASETTRANSACTION, type: 'setup account dataset' },
+    { code: TransactionType.REMOVEACCOUNTDATASETTRANSACTION, type: 'remove account dataset' },
+    { code: TransactionType.APPROVALESCROWTRANSACTION, type: 'escrow approval' },
+  ];
 
-  isAddMultisigInfo: boolean;
-  isSignature = false;
-  isTransaction = false;
-  isMultisigInfo = true;
-  isMultiSignature = true;
   account: Account;
-
-  participants: string[];
-  nonce: number;
-  minSig: number;
-  multisigSubs: Subscription;
-  multisig: MultiSigDraft;
-  jsonFilePath = '';
-  draftConent = '';
+  multisigForm: FormGroup;
+  multiSigDrafts: MultiSigDraft[];
+  fTrxType = new FormControl(TransactionType.SENDMONEYTRANSACTION, Validators.required);
+  fChainType = new FormControl('onchain', Validators.required);
+  themes = THEME_OPTIONS;
+  isMultiSignature = false;
+  innerTransaction = false;
+  draftTxType: string[] = [];
+  signatures = false;
+  draftSignedBy: number[] = [];
 
   constructor(
     private router: Router,
-    private accountSrv: AccountService,
+    private utilService: UtilService,
+    private accountService: AccountService,
     private alertController: AlertController,
     private multisigServ: MultisigService,
-    private utilSrv: UtilService,
-    private translateSrv: TranslateService,
-    private network: Network
-  ) {
-    this.isMultisigInfo = true;
-    this.isSignature = false;
-    this.isTransaction = false;
+    private modalController: ModalController,
+    private translate: TranslateService,
+    private formBuilder: FormBuilder) {
 
-    this.multisigSubs = this.multisigServ.multisig.subscribe(() => {
-      this.getMultiSigDraft();
+    this.multisigForm = this.formBuilder.group({
+      trxType: this.fTrxType,
+      chainType: this.fChainType
     });
+    this.getAccountType();
   }
 
-  ngOnInit() {
-    this.getMultiSigDraft();
+  async ngOnInit() {
+    await this.getMultiSigDraft();
   }
 
-  shortAddress(arg: string) {
-    return makeShortAddress(arg);
+  async getAccountType() {
+    this.account = await this.accountService.getCurrAccount();
+    this.isMultiSignature = this.account.type === 'multisig' ? true : false;
   }
 
-  async getMultiSigDraft() {
-    const currAccount = await this.accountSrv.getCurrAccount();
-    this.account = currAccount;
+  async doNext() {
+    const ftrxType = this.multisigForm.controls.trxType;
+    const fchainType = this.multisigForm.controls.chainType;
 
-    this.isMultiSignature = this.account.type !== 'multisig' ? false : true;
+    const multisig: MultiSigDraft = null;
 
-    const drafts = this.multisigServ.getDrafts();
+    // const multisig: MultiSigDraft = {
+    //   accountAddress: '',
+    //   fee: 0,
+    //   id: 0,
+    //   multisigInfo: null,
+    //   unisgnedTransactions: null,
+    //   txType: ftrxType.value,
+    // };
 
-    if (drafts) {
-      this.multiSigDrafts = drafts;
 
-      //   this.multiSigDrafts = drafts.filter(draft => {
-      //     const { multisigInfo, transaction, generatedSender } = draft;
-      //     if (generatedSender === currAccount.address) {
-      //       return draft;
-      //     }
-      //     if (multisigInfo.participants.includes(currAccount.address)) {
-      //       return draft;
-      //     }
-      //     if (transaction && transaction.sender === currAccount.address) {
-      //       return draft;
-      //     }
-      //   })
-      //     .sort()
-      //     .reverse();
-    }
-  }
-
-  getDate(pDate: number) {
-    const newDate = new Date(pDate);
-    return newDate;
-  }
-
-  goNextStep() {
-    const multisig: MultiSigDraft = {
-      accountAddress: '',
-      fee: 0,
-      id: 0
-    };
-
-    if (this.isMultisigInfo) {
-      multisig.multisigInfo = null;
-    }
-    if (this.isTransaction) {
-      multisig.unisgnedTransactions = null;
-    }
-    if (this.isSignature) {
+    if (fchainType.value === 'offchain') {
       multisig.signaturesInfo = null;
     }
 
-    if (this.isMultiSignature) {
+    if (this.isMultiSignature) { // if account is multisig
       multisig.multisigInfo = {
         minSigs: this.account.minSig,
         nonce: this.account.nonce,
         participants: this.account.participants,
-        multisigAddress: ''
       };
-      const address = zoobc.MultiSignature.createMultiSigAddress(
-        multisig.multisigInfo
-      );
+      const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
       multisig.generatedSender = address;
       this.multisigServ.update(multisig);
-      if (this.isTransaction) {
-        this.router.navigate(['/msig-create-transaction']);
-      } else if (this.isSignature) {
-        this.router.navigate(['/msig-add-signatures']);
+
+      // checking, one of participant must from account list
+      let isOneParticipant = false;
+      const idx = (await this.accountService
+        .allAccount())
+        .filter(res => multisig.multisigInfo.participants.includes(res.address));
+
+      if (idx.length > 0) {
+        isOneParticipant = true;
+      } else {
+        isOneParticipant = false;
       }
-    } else {
+      if (!isOneParticipant) {
+        const message = getTranslation('you dont have any account that in participant list', this.translate);
+        this.utilService.showConfirmation('Opps...', message, false, null);
+      } else {
+        this.router.navigate(['/msig-create-transaction']);
+      }
+
+    } else { // current account not multisig
       this.multisigServ.update(multisig);
-      if (this.isMultisigInfo) {
-        this.router.navigate(['/msig-add-info']);
-      } else if (this.isTransaction) {
-        this.router.navigate(['/msig-create-transaction']);
-      } else if (this.isSignature) {
-        this.router.navigate(['/msig-add-signatures']);
-      }
+      this.router.navigate(['/msig-add-info']);
     }
+  }
+
+  radioGroupChange() {
+    console.log('radioGroupChange2: ', this.fChainType);
+  }
+
+  async getMultiSigDraft() {
+
+    const msigDraft = this.multisigServ.getDrafts();
+    if (!msigDraft) {
+      return;
+    }
+
+    this.multiSigDrafts = (await this.multisigServ
+      .getDrafts())
+      .filter(draft => {
+        const { multisigInfo, txBody, generatedSender } = draft;
+        if (generatedSender === this.account.address) { return draft; }
+        if (multisigInfo.participants.includes(this.account.address)) { return draft; }
+        if (txBody && txBody.sender === this.account.address) { return draft; }
+      })
+      .sort()
+      .reverse();
+
+    this.multiSigDrafts.forEach((draft, i) => {
+      let total = 0;
+      if (draft.signaturesInfo) {
+        draft.signaturesInfo.participants.forEach(p => {
+          total += Buffer.from(p.signature).length > 0 ? 1 : 0;
+        });
+      }
+      this.draftSignedBy[i] = total;
+      this.draftTxType[i] = getTxType(draft.txType);
+    });
+  }
+
+
+  async importDraft() {
+    const importDraft = await this.modalController.create({
+      component: ImportDraftPage,
+      componentProps: {}
+    });
+
+    importDraft.onDidDismiss().then(returnedData => {
+      console.log('=== returneddata: ', returnedData);
+      if (returnedData && returnedData.data !== 0) {
+        alert('Draft has been successfully imported');
+      }
+    });
+    return await importDraft.present();
   }
 
   async onDeleteDraft(id: number) {
@@ -180,10 +202,6 @@ export class MultisigPage implements OnInit {
     await alert.present();
   }
 
-  doDateAgo(pDate: any) {
-    return dateAgo(pDate);
-  }
-
   onEditDraft(idx: number) {
     const multisig: MultiSigDraft = this.multiSigDrafts[idx];
     const { multisigInfo, unisgnedTransactions, signaturesInfo } = multisig;
@@ -198,112 +216,9 @@ export class MultisigPage implements OnInit {
     }
   }
 
-  validationFile(file: any): file is MultiSigDraft {
-    if ((file as MultiSigDraft).generatedSender !== undefined) {
-      return isZBCAddressValid((file as MultiSigDraft).generatedSender);
-    }
-    return false;
+  changeTrx() {
+    console.log('=== multisig ===', this.fTrxType);
   }
 
-  async presentAlert(title: string, msg: string) {
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Confirmation',
-      subHeader: title,
-      message: msg,
-      buttons: ['OK']
-    });
 
-    await alert.present();
-  }
-
-  public uploadFile(files: FileList) {
-    if (files && files.length > 0) {
-      const file = files.item(0);
-      const fileReader: FileReader = new FileReader();
-      fileReader.readAsText(file, 'JSON');
-      fileReader.onload = async () => {
-        const fileResult = JSON.parse(fileReader.result.toString());
-        const validation = this.validationFile(fileResult);
-        if (!validation) {
-          const message = 'You imported the wrong file';
-          this.presentAlert('Opps...', message);
-        } else {
-          this.multisigServ.update(fileResult);
-          const listdraft = this.multisigServ.getDrafts();
-          const checkExistDraft = listdraft.some(
-            res => res.id === fileResult.id
-          );
-
-          if (checkExistDraft === true) {
-            const message = 'There is same id in your draft';
-            this.presentAlert('Opps...', message);
-          } else {
-            this.multisigServ.saveDraft();
-            this.getMultiSigDraft();
-            const subMessage = 'Your Draft has been saved';
-            this.presentAlert('Success', subMessage);
-          }
-        }
-      };
-      fileReader.onerror = async err => {
-        console.log(err);
-        const message = 'An error occurred while processing your request';
-        this.utilSrv.showConfirmation('Opps...', message, false, null);
-      };
-    }
-  }
-
-  showInfo() {
-    this.addInfo = !this.addInfo;
-  }
-
-  doCreateTransaction() {
-    this.createTransaction = !this.createTransaction;
-  }
-
-  doAddSignature() {
-    this.addSignature = !this.createTransaction;
-  }
-
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
-
-  ionViewWillEnter() {
-    this.networkSubscription = this.network
-      .onDisconnect()
-      .subscribe(async () => {
-        const alert = await this.alertController.create({
-          header: this.alertConnectionTitle,
-          message: this.alertConnectionMsg,
-          buttons: [
-            {
-              text: 'OK'
-            }
-          ],
-          backdropDismiss: false
-        });
-
-        alert.present();
-      });
-
-    this.translateSrv.get('No Internet Access').subscribe((res: string) => {
-      this.alertConnectionTitle = res;
-    });
-
-    this.translateSrv
-      .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
-      )
-      .subscribe((res: string) => {
-        this.alertConnectionMsg = res;
-      });
-  }
-
-  ionViewDidLeave() {
-    if (this.networkSubscription) {
-      this.networkSubscription.unsubscribe();
-    }
-  }
 }

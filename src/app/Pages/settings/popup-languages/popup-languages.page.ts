@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { LANGUAGES } from 'src/environments/variable.const';
-import { ModalController } from '@ionic/angular';
+import { LANGUAGES, SELECTED_LANGUAGE } from 'src/environments/variable.const';
+import { NavController } from '@ionic/angular';
+import { LanguageService } from 'src/app/Services/language.service';
+import { StorageService } from 'src/app/Services/storage.service';
 
 @Component({
   selector: 'app-popup-languages',
@@ -11,17 +13,22 @@ export class PopupLanguagesPage implements OnInit {
 
   public languages = LANGUAGES;
 
-  constructor(private modalController: ModalController) { }
+  public activeLanguage = null;
 
-  ngOnInit() {
+  constructor(
+    private navCtrl: NavController, 
+    private languageSrv: LanguageService,  
+    private strgSrv: StorageService
+  ) { }
+
+  async ngOnInit() {
+    const activeLanguageCode = await this.strgSrv.get(SELECTED_LANGUAGE);
+    this.activeLanguage = this.languageSrv.getOne(activeLanguageCode)
   }
 
-  async languageClicked(code: string) {
-    await this.modalController.dismiss(code);
+  async languageClicked(language: any) {
+    this.languageSrv.setLanguage(language.code)
+    this.languageSrv.broadcastSelectLanguage(language)
+    this.navCtrl.pop();
   }
-
-  async close() {
-    await this.modalController.dismiss();
-  }
-
 }

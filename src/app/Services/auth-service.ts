@@ -5,10 +5,9 @@ import {
   STORAGE_ENC_PASSPHRASE_SEED,
   SALT_PASSPHRASE
 } from 'src/environments/variable.const';
-import { auth } from 'firebase/app';
 import { AccountService } from './account.service';
-import { StoragedevService } from './storagedev.service';
-import zoobc, { ZooKeyring } from 'zoobc-sdk';
+import { StorageService } from './storage.service';
+import zoobc, { ZooKeyring } from 'zbc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -23,13 +22,14 @@ export class AuthService implements CanActivate {
 
   constructor(
     private router: Router,
-    private strgSrv: StoragedevService,
+    private strgSrv: StorageService,
     private accountService: AccountService) {
       this.isUserLoggenIn = false;
     }
 
   async canActivate(route: ActivatedRouteSnapshot) {
     const acc = await this.accountService.getCurrAccount();
+    console.log('--- acc: ', acc);
     if (acc === null || acc === undefined) {
       this.router.navigate(['initial']);
       return false;
@@ -66,47 +66,4 @@ export class AuthService implements CanActivate {
     this.isUserLoggenIn = false;
     this.tempKey = null;
   }
-
-  registerUser(value) {
-    return new Promise<any>((resolve, reject) => {
-      auth().createUserWithEmailAndPassword(value.email, value.password)
-        .then(
-          res => resolve(res),
-          err => reject(err));
-    });
-  }
-
-  loginUser(value) {
-    return new Promise<any>((resolve, reject) => {
-      auth().signInWithEmailAndPassword(value.email, value.password)
-        .then(
-          res => resolve(res),
-          err => reject(err));
-    });
-  }
-
-  logoutUser() {
-    return new Promise((resolve, reject) => {
-      if (auth().currentUser) {
-        auth().signOut()
-          .then(() => {
-            resolve();
-          }).catch(() => {
-            reject();
-          });
-      }
-    });
-  }
-
-  userDetails() {
-    return auth().currentUser;
-  }
-
-  async getBalanceByAddress(address: string) {
-    return await zoobc.Account.getBalance(address)
-      .then(data => {
-        return data.accountbalance;
-      });
-  }
-
 }

@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { makeShortAddress } from 'src/Helpers/converters';
-import { sanitizeString } from 'src/Helpers/utils';
 import { Contact } from 'src/app/Interfaces/contact';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { NavController } from '@ionic/angular';
@@ -19,18 +17,13 @@ export class AddAddressPage implements OnInit {
     const { name, address } = value;
 
     const contact: Contact = {
-      name: name,
-      address: sanitizeString(address),
-      shortAddress: makeShortAddress(sanitizeString(address))
+      name,
+      address: (address)
     };
 
     await this.addressBookSrv.insert(contact);
-    this.goBack();
+    this.navCtrl.pop();
   }
 
   ngOnInit() {}
-
-  goBack() {
-    this.navCtrl.navigateBack('/address-book');
-  }
 }

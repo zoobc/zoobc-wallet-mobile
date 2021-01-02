@@ -38,4 +38,19 @@ import { HttpClientModule } from '@angular/common/http';
 //   it('should create', () => {
 //     expect(component).toBeTruthy();
 //   });
+
+//   it("login worked", () => {
+//     let result = component.login(1);
+//     expect(Array.isArray(result)).toBeTruthy;
+//   });
+
+//   it("ion view worked", () => {
+//     let result = component.ionViewDidEnter();
+//     expect(Array.isArray(result)).toBeTruthy;
+//   });
+
+//   it("init worked", () => {
+//     let result = component.ngOnInit();
+//     expect(Array.isArray(result)).toBeTruthy;
+//   });
 // });

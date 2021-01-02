@@ -4,6 +4,8 @@ import { SettingsPage } from './settings.page';
 import {TranslateModule } from '@ngx-translate/core';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe('Settings Page', () => {
   let component: SettingsPage;
@@ -15,7 +17,9 @@ describe('Settings Page', () => {
       imports: [
         TranslateModule.forRoot(),
         IonicStorageModule.forRoot(),
-        HttpClientModule
+        HttpClientModule,
+        RouterModule,
+        RouterTestingModule,
         ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
@@ -30,5 +34,33 @@ describe('Settings Page', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+  it("init worked", () => {
+    let result = component.ngOnInit();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("translate lang worked", () => {
+    let result = component.translateLang();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("go to network worked", () => {
+    let result = component.goToNetwork();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("go to language worked", () => {
+    let result = component.goToLanguage();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("go to seed phrase worked", () => {
+    let result = component.goToSeedPhrase();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("go to help and support worked", () => {
+    let result = component.goToHelpAndSupport();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("get currency rates worked", () => {
+    let result = component.getCurrencyRates();
+    expect(Array.isArray(result)).toBeTruthy;
   });
 });

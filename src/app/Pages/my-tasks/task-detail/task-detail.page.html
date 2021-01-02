@@ -3,97 +3,124 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Task Detail" | translate}}</ion-title>
-    <ion-buttons slot="end" color="primary">
-      <ion-button routerLink="/feedback">
-        {{ "Feedback" | translate}}
-      </ion-button>
-    </ion-buttons>
+    <ion-title>{{ "task details" | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div *ngIf="isLoading" style="margin-top:5px;">
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div>
-
-  <div style="text-align: center;">
-    <h5> Escrow {{ "Transaction Detail" | translate}} </h5>
-  </div>
-  <ion-list *ngIf="escrowDetail">
+  <ion-list class="info-list">
     <ion-item>
-      {{ "Status" | translate}} &nbsp;
-      <ion-badge *ngIf = "escrowDetail.status == 0" color="warning"  shape="round">
-        Pending
-        </ion-badge>
-   
-        <ion-badge *ngIf = "escrowDetail.status == 1" color="success"  shape="round">
-        Approved
-        </ion-badge>
-   
-
-        <ion-badge *ngIf = "escrowDetail.status == 2" color="danger"  shape="round">
-        Rejected
-        </ion-badge>
-
-
-        <ion-badge *ngIf = "escrowDetail.status == 3" color="warning"  shape="round">
-        Expired
-        </ion-badge>
-
-        <ion-badge *ngIf = "escrowDetail.status == 4" color="warning"  shape="round">
-        Unknown
-        </ion-badge>
+      <ion-label>
+        <p class="info-label">{{ "status" | translate }}</p>
+        <div class="skeleton-text" style="width: 30%;" *ngIf="isLoading; else status"></div>
+        <ng-template #status>
+          <div class="info-val">
+            <ion-badge *ngIf = "escrowDetail.status == 0" color="warning"  shape="round">
+              {{ "pending" | translate}}
+            </ion-badge>
+            <ion-badge *ngIf = "escrowDetail.status == 1" color="success"  shape="round">
+              {{ "approved" | translate}}
+            </ion-badge>
+            <ion-badge *ngIf = "escrowDetail.status == 2" color="danger"  shape="round">
+              {{ "rejected" | translate}}
+            </ion-badge>
+            <ion-badge *ngIf = "escrowDetail.status == 3" color="warning"  shape="round">
+              {{ "expired" | translate}}
+            </ion-badge>
+            <ion-badge *ngIf = "escrowDetail.status == 4" color="warning"  shape="round">
+              {{ "unknown" | translate}}
+            </ion-badge>
+          </div>
+        </ng-template>
+      </ion-label>
     </ion-item>    
     <ion-item>
       <ion-label>
-        <h5>{{ "ID" | translate }} : {{escrowDetail.id}}
-        </h5>
+        <p class="info-label">{{ "id" | translate }}</p>
+        <div class="skeleton-text" style="width: 60%;" *ngIf="isLoading; else id"></div>
+        <ng-template #id>
+          <div class="info-val">{{escrowDetail.id}}</div>
+        </ng-template>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "Sender" | translate }}</h5>
-        <p>
-          {{ escrowDetail.senderaddress }}
-        </p>
+        <p class="info-label">{{ "sender" | translate }}</p>
+        <ng-container *ngIf="isLoading; else sender">
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 20%;"></div>
+        </ng-container>
+        <ng-template #sender>
+          <div class="info-val">
+            <app-with-copy title="{{ escrowDetail.senderaddress }}" value="{{ escrowDetail.senderaddress }}">
+            </app-with-copy>
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "Recipient" | translate }}</h5>
-        <p>
-          {{ escrowDetail.recipientaddress }}
-        </p>
+        <p class="info-label">{{ "recipient" | translate }}</p>
+        <ng-container *ngIf="isLoading; else recipient">
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 20%;"></div>
+        </ng-container>
+        <ng-template #recipient>
+          <div class="info-val">
+            <app-with-copy title="{{ escrowDetail.recipientaddress }}" value="{{ escrowDetail.recipientaddress }}">
+            </app-with-copy>
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <p>
-          {{ "Amount" | translate }}: {{escrowDetail.amount / 1e8 | number: '0.0-8' }} ZBC
-        </p>
+        <p class="info-label">{{ "amount" | translate }}</p>
+        <div *ngIf="isLoading; else amount" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #amount>
+          <div class="info-val">
+            <app-info-amount-conversion value="{{ escrowDetail.amount / 1e8 }}" otherCurrency="USD" otherCurrencyDecoration="BRACKET"></app-info-amount-conversion>
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <p>{{ "Commission Fee" | translate }}: 
-          {{ escrowDetail.commission / 1e8 | number: '0.0-8' }} ZBC
-        </p>
+        <p class="info-label">{{ "commission" | translate }}</p>
+        <div *ngIf="isLoading; else commission" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #commission>
+          <div class="info-val">
+            <app-info-amount-conversion value="{{ escrowDetail.commission / 1e8 }}" otherCurrency="USD" otherCurrencyDecoration="BRACKET"></app-info-amount-conversion>
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>
     <ion-item  *ngIf="escrowDetail && (escrowDetail.status !== 1 && escrowDetail.status !== 2)">
       <ion-label>
-        <p>{{ "Expired after block height" | translate }}: 
-          {{ toNumber(escrowDetail.blockheight) + toNumber(escrowDetail.timeout) | number}}
-        </p>
+        <p class="info-label">{{ "expired after block height" | translate }}</p>
+        <div class="skeleton-text" style="width: 20%;" *ngIf="isLoading; else expired"></div>
+        <ng-template #expired>
+          <div class="info-val">
+            {{ toNumber(escrowDetail.blockheight) + toNumber(escrowDetail.timeout) | number}}
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>   
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "Instruction" | translate }}</h5>
-        <p>
-          {{escrowDetail.instruction}}
-        </p>
+        <p class="info-label">{{ "instruction" | translate }}</p>
+        <ng-container *ngIf="isLoading; else instruction">
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 20%;"></div>
+        </ng-container>
+        <ng-template #instruction>
+          <div class="info-val">
+            {{escrowDetail.instruction}}
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>
   </ion-list>
@@ -101,12 +128,12 @@
   <ion-grid *ngIf="escrowDetail && escrowDetail.status == 0">
     <ion-row>
       <ion-col>
-        <ion-button  expand="block" color="primary" (click)="confirm()">{{ 'Confirm' | translate }}</ion-button>
+        <ion-button  expand="block" color="primary" (click)="confirm()">{{ "confirm" | translate }}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="primary" fill="outline" (click)="reject()">{{ "Reject" | translate }}</ion-button>
+        <ion-button expand="block" color="primary" fill="outline" (click)="reject()">{{ "reject" | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

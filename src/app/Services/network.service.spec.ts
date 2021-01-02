@@ -13,13 +13,18 @@ describe('NetworkService', () => {
     expect(service).toBeTruthy();
   });
 
-  it("should return a non empty array", () => {
+  it("get network worked", () => {
     let result = service.getNetwork();
     expect(Array.isArray(result)).toBeTruthy;
   });
 
-  it("should return a non empty array", () => {
-    let result = service.setNetwork("192.168.1.1");
+  it("set network worked", () => {
+    let result = service.setNetwork(1);
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+
+  it("broadcast network worked", () => {
+    let result = service.broadcastSelectNetwork(1);
     expect(Array.isArray(result)).toBeTruthy;
   });
 

@@ -1,10 +1,13 @@
-.info-label{
-    color: var(--ion-color-medium);
-}
+ion-content{
+  --background: #fff;
 
-.info-val{
-    font-weight: bold;
-    color: var(--ion-color-dark);
+  ion-list{
+    background-color: transparent;
+
+    ion-item{
+      --background: transparent;
+    }
+  }
 }
 
 .info-val-pending{
@@ -25,4 +28,9 @@
 .info-val-receive{
     font-weight: bold;
     color: var(--ion-color-success);
+}
+
+.iconCopy{
+    margin-left: 10px;
+    font-size: 1.4em;
 }

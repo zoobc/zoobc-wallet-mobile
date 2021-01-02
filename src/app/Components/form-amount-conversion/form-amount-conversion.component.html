@@ -1,0 +1,8 @@
+<div class="input-container">
+  <span class="currency">ZBC</span>
+  <input [(ngModel)]="conversionAmount.ZBC" (keyup)="changeAmount(coinCode)" type="number" />
+</div>
+<div class="input-container">
+  <span class="currency">USD</span>
+  <input [(ngModel)]="conversionAmount.USD" (keyup)="changeAmount(currencyCode)" type="number" />
+</div>

@@ -1,0 +1,59 @@
+<ng-container [formGroup]="group">
+  <ion-list class="form-list">
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ 'sender' | translate }}</ion-label>
+      <app-form-sender formControlName="sender" accountType="multisig" ngDefaultControl></app-form-sender>
+    </ion-item>
+
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ "send to" | translate }}</ion-label>
+      <app-form-get-address formControlName="recipient"  (change)="isAddressInContacts()" identity="recipient" ngDefaultControl></app-form-get-address>
+    </ion-item>
+
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ "amount" | translate }}</ion-label>
+      <app-form-amount-conversion formControlName="amount" ngDefaultControl></app-form-amount-conversion>
+
+      <ng-container *ngIf="(submitted || amount.dirty || amount.touched) && amount.invalid">
+        <ion-text class="text-error" *ngIf="amount.errors.required">
+          {{ "amount cannot be empty" | translate}}
+        </ion-text>
+        <ion-text class="text-error" *ngIf="amount.errors.min">
+          {{ "insufficient balance" | translate}}
+        </ion-text>
+        <ion-text class="text-error" *ngIf="amount.errors.max">
+          {{ "insufficient balance. the maximum amount is" | translate}} {{ amount.errors.max.max }} ZBC
+        </ion-text>
+      </ng-container>
+    </ion-item>
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
+      <app-form-amount-conversion formControlName="fee" ngDefaultControl></app-form-amount-conversion>
+      <ng-container *ngIf="(submitted || fee.dirty || fee.touched) && fee.invalid">
+        <ion-text class="text-error" *ngIf="fee.errors.required">
+          {{ "transaction fee cannot be empty" | translate}}
+        </ion-text>
+        <ion-text class="text-error" *ngIf="fee.errors.min">
+          {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fee.errors.min.min }}
+        </ion-text>
+      </ng-container>
+    </ion-item>
+
+  </ion-list>
+
+<!--  
+  <ion-item class="item-checkbox ion-no-padding" lines="none">
+    <ion-checkbox (ionChange)="changeWithEscrow($event.target.checked)" color="primary">
+    </ion-checkbox>
+    <ion-label>{{ "escrow transaction" | translate}}</ion-label>
+  </ion-item>
+
+  <app-behavior-escrow-form *ngIf="withEscrow" [submitted]="submitted" formControlName="behaviorEscrow" [errors]="behaviorEscrow.errors"
+    (onChange)="onBehaviorEscrowChange($event)">
+  </app-behavior-escrow-form>
+
+  <ion-button type="submit" color="tertiary" expand="block">
+    {{ "next" | translate }}
+  </ion-button> -->
+
+</ng-container>

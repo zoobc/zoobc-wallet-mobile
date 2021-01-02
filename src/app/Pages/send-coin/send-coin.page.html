@@ -3,19 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button> </ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Send" | translate }}</ion-title>
-    <ion-buttons color="primary" slot="end">
-      <ion-button routerLink="/feedback">
-        {{ "Feedback" | translate}}
-      </ion-button>
-    </ion-buttons>
+    <ion-title>{{ "send" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
-      refreshingText="{{ 'Refreshing' | translate }} ...">
+      refreshingText="{{ 'refreshing' | translate }} ...">
     </ion-refresher-content>
   </ion-refresher>
 
@@ -27,7 +22,7 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12">
-        {{ "From" | translate }}
+        {{ "from" | translate }}
       </ion-col>
     </ion-row>
     <ion-row *ngIf="account" (click)="openListAccount('sender')">
@@ -36,13 +31,13 @@
           <ion-label>
             <h2>{{ account.name }}</h2>
             <p>
-              {{ shortAddress(account.address) }}&nbsp;&nbsp;
+              {{ account.address | shortAddress }}&nbsp;&nbsp;
               <span>
                 <ion-icon name="arrow-dropdown"></ion-icon>
               </span>
             </p>
             <p>&nbsp;</p>
-            <p>{{ "Current Balance"  | translate }}</p>
+            <p>{{ "current balance" | translate}}</p>
             <h1>{{ account.balance | number: '0.0-2' }} ZBC</h1>
             <p>
               {{ balanceInUSD | number:
@@ -57,7 +52,7 @@
     <ion-row>
       <ion-col>
         <ion-label>
-          {{ "Recipient Address" | translate }}
+          {{ "recipient address" | translate }}
           <ion-text color="danger">*</ion-text>
         </ion-label>
       </ion-col>
@@ -76,10 +71,10 @@
     <ion-row *ngIf="(submitted || recipientAddress.dirty || recipientAddress.touched) && recipientAddress.invalid">
       <ion-col col-12>
         <ion-label color="danger" *ngIf="recipientAddress.errors.required">
-          Address cannot be empty.
+          {{ "address cannot be empty" | translate}}
         </ion-label>
         <ion-label color="danger" *ngIf="recipientAddress.errors.addressFormat">
-          Address is wrong
+          {{ "address is wrong" | translate}}
         </ion-label>
       </ion-col>
     </ion-row>
@@ -90,7 +85,7 @@
     <ion-row>
       <ion-col>
         <ion-label>
-          {{ "Coin Amount" | translate }}<ion-text color="danger">*</ion-text>
+          {{ "coin amount" | translate }}<ion-text color="danger">*</ion-text>
         </ion-label>
       </ion-col>
     </ion-row>
@@ -119,13 +114,13 @@
     <ion-row *ngIf="(submitted || amount.dirty || amount.touched) && amount.invalid">
       <ion-col col-12>
         <ion-label color="danger" *ngIf="amount.errors.required">
-          Amount cannot be empty.
+          {{ "amount cannot be empty" | translate}}
         </ion-label>
         <ion-label color="danger" *ngIf="amount.errors.min">
-          Insufficient balance.
+          {{ "insufficient balance" | translate}}
         </ion-label>
         <ion-label color="danger" *ngIf="amount.errors.max">
-          Insufficient balance. The maximum amount is {{ amount.errors.max.max }} ZBC
+          {{ "insufficient balance. the maximum amount is" | translate}} {{ amount.errors.max.max }} ZBC
         </ion-label>
       </ion-col>
     </ion-row>
@@ -135,7 +130,7 @@
     <ion-row>
       <ion-col>
         <ion-label>
-          {{ "Fee" | translate }}
+          {{ "fee" | translate }}
           <ion-text color="danger">*</ion-text>
         </ion-label>
       </ion-col>
@@ -147,8 +142,8 @@
           <ion-select-option *ngFor="let sfee of allFees" value="{{sfee.fee}}">
             {{ sfee.name }} {{ sfee.fee | number: '0.0-4' }} ZBC
           </ion-select-option>
-          <ion-select-option value="-1">
-            Custom {{ "Fee" | translate}}
+          <ion-select-option value="custom">
+            {{ "custom fee" | translate}}
           </ion-select-option>
         </ion-select>
       </ion-col>
@@ -186,31 +181,19 @@
     <ion-row *ngIf="(submitted || fee.dirty || fee.touched) && fee.invalid">
       <ion-col col-12>
         <ion-label color="danger" *ngIf="fee.errors.required">
-          Transaction fee cannot be empty.
+          {{ "transaction fee cannot be empty" | translate}}
         </ion-label>
         <ion-label color="danger" *ngIf="fee.errors.min">
-          Transaction fee is not valid! minimum fee is {{ fee.errors.min.min }}
+          {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fee.errors.min.min }}
         </ion-label>
       </ion-col>
     </ion-row>
   </ion-grid>
-
-
-
   <ion-grid>
     <ion-row>
       <ion-col>
-        <!-- <ion-label *ngIf="!isAdvance">
-          <span class="textcustom">Escrow Transaction</span>
-          &nbsp;&nbsp; <ion-icon name="arrow-dropdown"></ion-icon>
-        </ion-label>
-        <ion-label *ngIf="isAdvance">
-          <span class="textcustom">Hide Escrow Transaction
-          </span>
-          &nbsp;&nbsp;<ion-icon name="arrow-dropup"></ion-icon>
-        </ion-label> -->
         <ion-checkbox style="margin-right: 10px" (ionChange)="changeWithEscrow($event.target.checked)" color="primary"></ion-checkbox>
-        <ion-label>Escrow Transaction</ion-label>
+        <ion-label>{{ "escrow transaction" | translate}}</ion-label>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -219,105 +202,106 @@
     <ion-grid formGroupName="escrow">
       <ion-row>
         <ion-col>
-          <ion-label>{{ "Approver Address" | translate }} </ion-label>
+          <ion-label>{{ "approver address" | translate }} </ion-label>
         </ion-col>
       </ion-row>
       <ion-row class="ion-row-cont">
         <ion-col size="10" style="padding:10px">
-          <ion-textarea rows="3" maxlength="80" placeholder="{{'Enter approver address'|translate}}" formControlName="escrowApprover">
+          <ion-textarea rows="3" maxlength="80" placeholder="{{ 'enter recipient address' | translate }}"
+            formControlName="recipientAddress">
           </ion-textarea>
         </ion-col>
         <ion-col size="2" class="ion-text-center" style="padding-top: 20px">
-          <ion-icon name="arrow-dropdown" (click)="presentGetAddressOption('approver');"></ion-icon>
+          <ion-icon name="arrow-dropdown" (click)="presentGetAddressOption('recipient');"></ion-icon>
         </ion-col>
       </ion-row>
-  
-      <!-- <ion-row class="ion-row-cont" style="margin-bottom:10px">
-        <ion-col>
-          <ion-select interface="popover" [(ngModel)]="escrowApprover" (ionChange)="selectApprover()">
-            <ion-select-option value="">
-              - Select one -
-             </ion-select-option>
-            <ion-select-option *ngFor="let account of approvers; let i = index" value="{{ account.address }}">
-              {{ account.name }} | {{ account.shortAddress }}
-            </ion-select-option>
-          </ion-select>
-        </ion-col>
-      </ion-row> -->
 
-      <ion-row *ngIf="(submitted || escrowApprover.dirty || escrowApprover.touched) && escrowApprover.invalid">
+      <ion-row *ngIf="(submitted || recipientAddress.dirty || recipientAddress.touched) && recipientAddress.invalid">
         <ion-col col-12>
           <ion-label color="danger" *ngIf="escrowApprover.errors.required">
-            Address cannot be empty.
+            {{ "address cannot be empty" | translate}}
           </ion-label>
           <ion-label color="danger" *ngIf="escrowApprover.errors.addressFormat">
-            Address is wrong
+            {{ "address is wrong" | translate}}
           </ion-label>
-        </ion-col>
-      </ion-row>
-      
-      <ion-row>
-        <ion-col>
-          <ion-label>{{ "Approver Commision" | translate }} </ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row class="ion-row-cont" style="margin-bottom:10px">
-        <ion-col size="7" style="padding-left:10px">
-          <ion-input placeholder="Enter approver commision" class="ion-text-right" value="1" formControlName="escrowCommision" (ionChange)="onCommisionChange()"
-            maxlength="12" type="number">
-          </ion-input>
-        </ion-col>
-        <ion-col size="5" style="padding-left: 10px;">
-          <div class="sufix">ZBC</div>
         </ion-col>
       </ion-row>
 
-      <ion-row *ngIf="(submitted || escrowCommision.dirty || escrowCommision.touched) && escrowCommision.invalid">
+    </ion-grid>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-label>{{ "approver commision" | translate }} </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-row-cont">
+        <ion-col size="8" style="padding-left:10px">
+          <ion-input placeholder="{{'enter amount'|translate}}" class="ion-text-right"
+            style="border-bottom: 1px solid #dddddd;font-size:1.2em;" maxlength="12" type="number"
+            formControlName="amount" (ionChange)="onAmountChange()">
+          </ion-input>
+          <ion-input value="{{ conversionValue.amount[secondaryCurr]  | number: '0.0-2'}}" style="font-size:0.8em"
+            class="ion-text-right" readonly type="text">
+          </ion-input>
+        </ion-col>
+        <ion-col size="2" style="font-size: 0.8em; padding-left: 8px;">
+          <div class="sufix" style="margin-top:16px;">{{primaryCurr}}</div>
+          <div class="sufix" style="margin-top:24px; font-size: 0.9em;">{{secondaryCurr}}</div>
+        </ion-col>
+        <ion-col size="2" class="ion-text-center" style="padding-top: 40px;">
+          <img src="../../../assets/images/switch-vertical-256.png" style="width:20px" (click)="switchCurrency()" />
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="(submitted || amount.dirty || amount.touched) && amount.invalid">
         <ion-col col-12>
           <ion-label color="danger" *ngIf="escrowCommision.errors.required">
-            Minimum Commission is required
+            {{ "minimum commission is required" | translate}}
           </ion-label>
           <ion-label color="danger" *ngIf="escrowCommision.errors.min">
-            Minimum Commission is {{escrowCommision.errors.min.min}}
+            {{ "minimum commission is" | translate}} {{escrowCommision.errors.min.min}}
           </ion-label>
         </ion-col>
       </ion-row>
       
       <ion-row>
         <ion-col style="margin-top:15px;" class="ion-text-right" color="primary">
-          Block height: <ion-text color="primary">{{ blockHeight | number: '0.0-2' }}</ion-text>
+          {{ "block height" | translate}}: <ion-text color="primary">{{ blockHeight | number: '0.0-2' }}</ion-text>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-label>{{ "timeout" | translate }}</ion-label>
         </ion-col>
       </ion-row>
 
-      <ion-row>
-        <ion-col>
-          <ion-label>{{ "Timeout" | translate }}</ion-label>
-        </ion-col>
-      </ion-row>
       <ion-row class="ion-row-cont" style="margin-bottom:10px">
         <ion-col style="padding-left:10px" size="7">
-          <ion-input placeholder="Enter timeout" class="ion-text-right" formControlName="escrowTimeout"
+          <ion-input placeholder="{{ 'enter timeout' | translate }}" class="ion-text-right" formControlName="escrowTimeout"
             type="number" (ionChange)="onEscrowTimeoutChange()"></ion-input>
         </ion-col>
         <ion-col size="5" style="padding-left: 10px;">
-          <div class="sufix">block(s)</div>
+          <div class="sufix">{{ "blocks" | translate}}</div>
         </ion-col>
       </ion-row>
 
-      <ion-row *ngIf="(submitted || escrowTimeout.dirty || escrowTimeout.touched) && escrowTimeout.invalid">
+      <ion-row *ngIf="(submitted || fee.dirty || fee.touched) && fee.invalid">
         <ion-col col-12>
           <ion-label color="danger" *ngIf="escrowTimeout.errors.required">
-            Timeout is required
+            {{ "timeout is required" | translate}}
           </ion-label>
           <ion-label color="danger" *ngIf="escrowTimeout.errors.min">
-            Minimum Timeout is 1
+            {{ "minimum timeout is 1" | translate}}
           </ion-label>
         </ion-col>
       </ion-row>
-    
+    </ion-grid>
+    <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-label>{{ "Instruction" | translate }}</ion-label>
+          <ion-label>{{ "instruction" | translate }}</ion-label>
         </ion-col>
       </ion-row>
       <ion-row class="ion-row-cont">
@@ -330,7 +314,7 @@
       <ion-row *ngIf="(submitted || escrowInstruction.dirty || escrowInstruction.touched) && escrowInstruction.invalid">
         <ion-col col-12>
           <ion-label color="danger" *ngIf="escrowInstruction.errors.required">
-            Instruction is required
+            {{ "instruction is required" | translate}}
           </ion-label>
         </ion-col>
       </ion-row>
@@ -342,14 +326,14 @@
       <ion-col>
         <ion-button type="submit" color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee"
           expand="block">
-          {{ "Next" | translate }}
+          {{ "next" | translate }}
         </ion-button>
         <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
-          {{ "Next" | translate }}
+          {{ "next" | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
 
- </form>
+  </form>
 </ion-content>

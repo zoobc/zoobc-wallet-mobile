@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LanguageService } from 'src/app/Services/language.service';
-import { CurrencyService} from 'src/app/Services/currency.service';
+import { CurrencyService, ICurrency} from 'src/app/Services/currency.service';
 import {
   LANGUAGES,
   SELECTED_LANGUAGE,
@@ -13,12 +13,13 @@ import {
 } from 'src/environments/variable.const';
 import { NetworkService } from 'src/app/Services/network.service';
 import { getFormatedDate } from 'src/Helpers/converters';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { StorageService } from 'src/app/Services/storage.service';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { Currency } from 'src/app/Interfaces/currency';
-import { ModalController } from '@ionic/angular';
-import { PopupCurrencyPage } from './popup-currency/popup-currency.page';
-import { PopupLanguagesPage } from './popup-languages/popup-languages.page';
+import { AuthService } from 'src/app/Services/auth-service';
+import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
@@ -29,9 +30,9 @@ export class SettingsPage implements OnInit {
 
   public Object = Object;
   public languages = LANGUAGES;
-  public activeLanguage = 'en';
+  public activeLanguage: any | null;
   public activeTheme: string;
-  public activeCurrency: string;
+  public activeCurrency: any;
   public activeNetwork: any;
   public currencyRateList: any;
   public currencyList = CURRENCY_LIST;
@@ -39,41 +40,100 @@ export class SettingsPage implements OnInit {
   public currencyRate: Currency;
   public timestamp: string;
   public themes = THEME_OPTIONS;
-  indexSelected: any;
-  activeCureencyWithname: string;
-  activeLanguageWithname: string;
 
   constructor(
-    private strgSrv: StoragedevService,
+    private strgSrv: StorageService,
     private languageService: LanguageService,
     private networkService: NetworkService,
-    private theme: ThemeService,
-    private modalController: ModalController,
-    private currencyService: CurrencyService) {
+    private themeSrv: ThemeService,
+    private currencyService: CurrencyService,
+    private authService: AuthService,
+    private router: Router,
+    private alertCtrl: AlertController,
+    private translateSrv: TranslateService
+  ) {
+    this.currencyService.currencySubject.subscribe((rate: Currency) => {
+      this.currencyRate = rate;
+    });
 
-      this.currencyService.currencySubject.subscribe((rate: Currency) => {
-        this.currencyRate = rate;
-      });
+  }
 
-    }
+  private textConfirmLogout: string;
+  private textYes: string;
+  private textCancel: string;
 
   async ngOnInit() {
     this.getCurrencyRates();
     this.currencyRate = this.currencyService.getRate();
 
-    this.activeLanguage = await this.strgSrv.get(SELECTED_LANGUAGE);
-    const lang = this.getLanguages(this.activeLanguage);
-    this.activeLanguageWithname = lang.code + ' - ' + lang.country;
+    const activeLanguageCode = await this.strgSrv.get(SELECTED_LANGUAGE);
+    this.activeLanguage = this.languageService.getOne(activeLanguageCode?activeLanguageCode:"en");
 
-    this.activeCurrency = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
-    this.activeCureencyWithname = this.activeCurrency + ' - ' + this.currencyList[this.activeCurrency];
+    const activeCurrencyCode = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
+    this.activeCurrency = this.currencyService.getOne(activeCurrencyCode)
 
-    this.activeNetwork = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX);
+    this.activeNetwork = this.networks[await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX)].name;
+
     this.activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
+
+    this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translateLang();
+    });
+
+    this.translateLang();
   }
 
-  getLanguages(code: string) {
-    return this.languages.find(e => e.code === code);
+  translateLang(){
+    this.translateSrv.get([
+      'are you sure want to logout?', 
+      'logout', 
+      'cancel', 
+    ]).subscribe((res: any)=>{
+      this.textConfirmLogout = res["are you sure want to logout?"];
+      this.textYes = res["logout"];
+      this.textCancel = res["cancel"];
+    })
+  }
+
+  private selectThemeSubscription = null;
+  private selectNetworkSubscription = null;
+  private selectLanguageSubscription = null;
+  private selectCurrencySubscription = null;
+
+  ionViewWillEnter() {
+    this.selectThemeSubscription = this.themeSrv.themeSubject.subscribe((value: string)=>{
+        this.activeTheme = value
+      })
+
+    this.selectNetworkSubscription = this.networkService.changeNodeSubject.subscribe((network: any)=>{
+        this.activeNetwork = network.name
+      })
+
+    this.selectLanguageSubscription = this.languageService.selectLanguageSubject.subscribe((language: any)=>{
+        this.activeLanguage = language
+      })
+
+    this.selectCurrencySubscription = this.currencyService.selectCurrencySubject.subscribe((currency: ICurrency)=>{
+        this.activeCurrency = currency
+      })
+  }
+
+  ionViewWillLeave() {
+    if (this.selectThemeSubscription) {
+      this.selectThemeSubscription.unsubscribe();
+    }
+
+    if (this.selectNetworkSubscription) {
+      this.selectNetworkSubscription.unsubscribe();
+    }
+
+    if (this.selectLanguageSubscription) {
+      this.selectLanguageSubscription.unsubscribe();
+    }
+
+    if (this.selectCurrencySubscription) {
+      this.selectCurrencySubscription.unsubscribe();
+    }
   }
 
   async getCurrencyRates() {
@@ -83,60 +143,62 @@ export class SettingsPage implements OnInit {
     }
   }
 
-  async changeRate() {
-    await this.currencyService.setActiveCurrency(this.activeCurrency);
+
+  goToTheme(){
+    this.router.navigateByUrl('/theme');
   }
 
-  selectActiveLanguage() {
-    this.languageService.setLanguage(this.activeLanguage);
+  goToNetwork(){
+    this.router.navigateByUrl('/network');
   }
 
-  selectActiveNetwork() {
-    this.networkService.setNetwork(this.activeNetwork);
+  goToCurrency(){
+    this.router.navigateByUrl('/popup-currency');
   }
 
-  async changeTheme() {
-    await this.theme.setTheme(this.activeTheme);
+  goToLanguage(){
+    this.router.navigateByUrl('/popup-languages');
   }
 
-  async showPopupCurrency() {
-    const modal = await this.modalController.create({
-      component: PopupCurrencyPage,
-      componentProps: {
-      }
+  goToSeedPhrase(){
+    this.router.navigateByUrl('/backup-phrase');
+  }
+
+  goToBackupRestoreAddress(){
+    this.router.navigateByUrl('/backuprestore-address');
+  }
+
+  goToHelpAndSupport(){
+    this.router.navigateByUrl('/help');
+  }
+
+  goToFeedback(){
+    this.router.navigateByUrl('/feedback');
+  }
+
+  goToAbout(){
+    this.router.navigateByUrl('/about');
+  }
+
+  async logout() {
+    const alert = await this.alertCtrl.create({
+      message: this.textConfirmLogout,
+      buttons: [
+        {
+          text: this.textCancel,
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: this.textYes,
+          handler: () => {
+            this.authService.logout();
+            this.router.navigateByUrl('/login');
+          }
+        }
+      ]
     });
 
-    modal.onDidDismiss().then((dataReturned) => {
-      if (dataReturned.data) {
-        const curr = dataReturned.data;
-        this.activeCurrency = curr.code;
-        this.activeCureencyWithname = curr.code + ' - ' + curr.name;
-        this.changeRate();
-      }
-    });
-
-    return await modal.present();
+    await alert.present();
   }
-
-  async showPopupLanguage() {
-    const modal = await this.modalController.create({
-      component: PopupLanguagesPage,
-      componentProps: {
-      }
-    });
-
-    modal.onDidDismiss().then((dataReturned) => {
-      if (dataReturned.data) {
-        const lang = dataReturned.data;
-        this.activeLanguage = lang.code;
-        this.activeLanguageWithname = lang.code + ' - ' + lang.country;
-        this.selectActiveLanguage();
-      }
-    });
-
-    return await modal.present();
-  }
-
-
-
 }

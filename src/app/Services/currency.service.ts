@@ -2,19 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
-import { STORAGE_CURRENCY_RATE, STORAGE_ACTIVE_CURRENCY, CURRENCY_LIST, CONST_DEFAULT_RATE } from 'src/environments/variable.const';
-import { StoragedevService } from './storagedev.service';
+import { STORAGE_CURRENCY_RATE, STORAGE_ACTIVE_CURRENCY,
+  CURRENCY_LIST, CONST_DEFAULT_RATE, CONST_DEFAULT_CURRENCY } from 'src/environments/variable.const';
+import { StorageService } from './storage.service';
 import { Currency } from '../Interfaces/currency';
 
-interface ICurrency {
+export interface ICurrency {
   name: string;
   code: string;
 }
 
 const currencies: ICurrency[] = [
   {
-    name: "United States Dollars",
-    code: "USD"
+    name: 'United States Dollars',
+    code: CONST_DEFAULT_CURRENCY
   },
 ];
 
@@ -29,14 +30,25 @@ export const currencyRates = {
 })
 export class CurrencyService {
   public currencySubject: Subject<any> = new Subject<any>();
+  public selectCurrencySubject: Subject<ICurrency> = new Subject<ICurrency>();
   public currentRate: Currency;
   public activeCurrency: string;
   public currencyRateList: any;
   public priceInUSD = environment.zbcPriceInUSD;
   // private openexchangerates = '7104c503e36947abba35d66d1ee66d35';
 
-  constructor(private http: HttpClient, private strgSrv: StoragedevService) {
+  constructor(private http: HttpClient, private strgSrv: StorageService) {
    this.loadRate();
+  }
+
+  public currencies = CURRENCY_LIST;
+
+  getOne(currencyCode: string) {
+    const currencyName = this.currencies[currencyCode.toLocaleUpperCase()];
+    return {
+      code: currencyCode,
+      name: currencyName
+    };
   }
 
   async loadRate() {
@@ -89,6 +101,10 @@ export class CurrencyService {
     this.currencySubject.next(this.getRate());
      // set to local storage
     await this.strgSrv.set(STORAGE_CURRENCY_RATE, this.getRate());
+  }
+
+  broadcastSelectCurrency(currency: ICurrency) {
+    this.selectCurrencySubject.next(currency);
   }
 
   convertCurrency(price: number, currFrom: string, currTo: string) {

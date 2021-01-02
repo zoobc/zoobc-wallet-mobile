@@ -1,118 +1,154 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="end">
-      <ion-button (click)="close()">
-        <ion-icon name="close-circle"></ion-icon>
-      </ion-button>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Transaction Detail" | translate }}</ion-title>
+    <ion-title>{{ "transaction detail" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+
   <ion-list class="info-list">
-    <ion-item>
+    <!--<ion-item>
       <ion-label>
-        <p class="info-label">{{ "Status" | translate }}</p>
+        <p class="info-label">{{ "status" | translate }}</p>
         <p *ngIf="status==='confirm'" class="info-val-confirm">{{ status | uppercase}}</p>
         <p *ngIf="status!=='confirm'" class="info-val-pending">{{ status | uppercase}}</p>
       </ion-label>
-    </ion-item>
+    </ion-item>-->
 
-    <ion-item *ngIf="transaction.id">
-      <ion-label>
-        <p class="info-label">{{ "Transaction ID" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.id }}
-        </p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item *ngIf="transaction.blockId">
-      <ion-label>
-        <p class="info-label">{{ "Block ID" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.blockId }}
-        </p>
-      </ion-label>
-    </ion-item>
-
-    <ion-item *ngIf="transaction.height || transaction.height === 0">
-      <ion-label>
-        <p class="info-label">{{ "Height" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.height }}
-        </p>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">{{ "transaction hash" | translate }}</p>
+        <ng-container *ngIf="loading; else transactionHash">
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 20%;"></div>
+        </ng-container>
+        <ng-template #transactionHash>
+          <div class="info-val" *ngIf="trx">
+            <app-with-options [options]="transHashOptions" (onClose)="onTransHashOptionsClose($event, trx.transactionHash)">
+              {{ trx.transactionHash }}
+            </app-with-options>
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label>
-        <p class="info-label">{{ "Transaction Date" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.timestamp | date: "medium" }}
-        </p>
-      </ion-label>
-    </ion-item>
-    <!-- <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Transaction Type" | translate }}</p>
-        <p class="info-val">
-          {{ transaction.type }}
-        </p>
-      </ion-label>
-    </ion-item> -->
-
-    <ion-item *ngIf="transaction.type !== 'send'">
-      <ion-label>
-        <p class="info-label">{{ "Sender Address" | translate }}</p>
-        <p class="info-val">{{ transaction.sender }}</p>
-      </ion-label>
-      <ion-icon
-        slot="end"
-        name="copy"
-        (click)="copyAddress(transaction.sender)"
-      ></ion-icon>
-    </ion-item>
-    <ion-item *ngIf="transaction.type === 'send'">
-      <ion-label>
-        <p class="info-label">{{ "Recipient Address" | translate }}</p>
-        <p class="info-val">{{ transaction.recipient }}</p>
-      </ion-label>
-      <ion-icon
-        slot="end"
-        name="copy"
-        (click)="copyAddress(transaction.recipient)"
-      ></ion-icon>
-    </ion-item>
-
-    <ion-item *ngIf="transaction.type === 'send'">
-      <ion-label>
-        <p class="info-label">{{ "Amount" | translate }}</p>
-        <p class="info-val-send">- {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC</p>
+        <p class="info-label">{{ "block id" | translate }}</p>
+        <div *ngIf="loading; else transactionBlockId" class="skeleton-text" style="width: 60%;"></div>
+        <ng-template #transactionBlockId>
+          <div class="info-val" *ngIf="trx">
+            {{ trx.blockId }}
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>
 
-    <ion-item  *ngIf="transaction.type !== 'send'">
-        <ion-label>
-          <p class="info-label">{{ "Amount" | translate }}</p>
-          <p class="info-val-receive">+ {{ transaction.amount / 1e8 | number: '0.2-4'}} ZBC</p>
-        </ion-label>
-    </ion-item>
-
-    <ion-item *ngIf="transaction.type === 'send'">
+    <ion-item>
       <ion-label>
-        <p class="info-label">{{ "Fee" | translate }}</p>
-        <p class="info-val-send">- {{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC</p>
+        <p class="info-label">{{ "transaction type" | translate }}</p>
+        <div *ngIf="loading; else transactionType" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #transactionType>
+          <div class="info-val" *ngIf="trx.sender.value == currAccount.address.value">
+            {{ "Send" }}
+          </div>
+          <div class="info-val" *ngIf="trx.recipient.value == currAccount.address.value">
+            {{ "Receive" }}
+          </div>
+        </ng-template>
       </ion-label>
     </ion-item>
 
-    <!-- <ion-item *ngIf="transaction.type !== 'send'">
-      <ion-label>
-        <p class="info-label">{{ "Fee" | translate }}</p>
-        <p class="info-val-receive">{{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC</p>
+    <ion-item *ngIf="trx">
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">
+          <span *ngIf="trx.recipient.value == currAccount.address.value">{{ "sender address" | translate }}</span>
+          <span *ngIf="trx.sender.value == currAccount.address.value">{{ "recipient address" | translate }}</span></p>
+        <ng-container *ngIf="loading; else sender">
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
+          <div class="skeleton-text" style="width: 20%;"></div>
+        </ng-container>
+        <ng-template #sender>
+          <div class="info-val" *ngIf="trx.recipient.value == currAccount.address.value">
+            <app-with-options [options]="senderRecipentOptions" (onClose)="onSenderRecipentOptionsClose($event, trx.sender.value)">
+              <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.sender.value }}"></app-info-address>
+            </app-with-options>
+          </div>
+
+          <div class="info-val" *ngIf="trx.sender.value == currAccount.address.value">
+            <app-with-options [options]="senderRecipentOptions" (onClose)="onSenderRecipentOptionsClose($event, trx.recipient.value)">
+              <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.recipient.value }}"></app-info-address>
+            </app-with-options>
+          </div>
+
+        </ng-template>
       </ion-label>
-    </ion-item> -->
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "amount" | translate }}</p>
+        <div *ngIf="loading; else amount" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #amount>
+          <ng-container *ngIf="trx">
+            <div class="info-val" [ngClass]="trx.recipient.value == currAccount.address.value ? 'info-val-receive':'info-val-send'">
+              <span *ngIf="trx.sender.value == currAccount.address.value">-</span> 
+              <span
+                *ngIf="trx.recipient.value == currAccount.address.value">+</span>
+              {{ trx.txBody.amount / 1e8 | number: '0.2-4' }}
+              ZBC
+            </div>
+          </ng-container>
+        </ng-template>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "fee" | translate }}</p>
+        <div *ngIf="loading; else fee" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #fee>
+          <ng-container *ngIf="trx">
+            <div class="info-val" [ngClass]="trx.sender.value == currAccount.address.value ? 'info-val-send':''">
+              <span *ngIf="trx.sender.value == currAccount.address.value">-
+              </span>{{ trx.fee / 1e8 | number: '0.2-4'}}
+              ZBC
+            </div>
+          </ng-container>
+        </ng-template>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "height" | translate }}</p>
+        <div *ngIf="loading; else height" class="skeleton-text" style="width: 30%;"></div>
+        <ng-template #height>
+          <div class="info-val" *ngIf="trx || (trx && trx.height===0)">
+            {{ trx.height }}
+          </div>
+        </ng-template>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "transaction date" | translate }}</p>
+        <div *ngIf="loading; else date" class="skeleton-text" style="width: 50%;"></div>
+        <ng-template #date>
+          <div class="info-val" *ngIf="trx">
+            {{ trx.timestamp | date: "medium" }}
+          </div>
+        </ng-template>
+      </ion-label>
+    </ion-item>
+
+
 
     <!-- <ion-item>
       <ion-label>
@@ -121,22 +157,5 @@
       </ion-label>
     </ion-item> -->
 
-    <!-- 
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Fee" | translate }} USD</p>
-        <p class="info-val">{{ transaction.fee / 1e8 }} ZBC</p>
-      </ion-label>
-    </ion-item> -->
   </ion-list>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-button (click)="close()" color="secondary"
-          >{{ "Close" | translate }}</ion-button
-        >
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 </ion-content>

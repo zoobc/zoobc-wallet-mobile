@@ -3,55 +3,42 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "List of Account" | translate }}</ion-title>
-    <ion-buttons slot="end" color="primary">
-      <ion-button routerLink="/feedback">
-        {{ "Feedback" | translate }}
-      </ion-button>
-    </ion-buttons>
+    <ion-title>{{ "list of account" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-item>
+    <ion-button class="item-btn-add" fill="clear" (click)="showAction($event)">{{ "add account" | translate }}
+    </ion-button>
+  </ion-item>
   <div *ngIf="isLoadingBalance" style="margin-top:5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
-  <ion-fab *ngIf="!forWhat" ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="tertiary" (click)="createNewAccount()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
   <div class="list-account-page" style="margin-bottom: 60px;">
     <ng-template #noData>
       <ion-item lines="none">
-        <ion-label>{{ "You dont have any address" | translate }}</ion-label>
+        <ion-label>{{ "you dont have any address" | translate }}</ion-label>
       </ion-item>
     </ng-template>
 
-    <ion-list *ngIf="accounts && accounts.length >= 1; else noData">
-      <ion-list-header  *ngIf="forWhat==='account'">
-        <ion-label><span>{{"Tap list to switch account" | translate}}.</span></ion-label>
+    <ion-list class="list-account" *ngIf="accounts && accounts.length >= 1; else noData">
+      <ion-list-header *ngIf="forWhat==='account'">
+        <ion-label><span>{{"tap list to switch account" | translate}}.</span></ion-label>
       </ion-list-header>
-      <ion-item-sliding *ngFor="let account of accounts; let i = index">
-        <ion-item>
-          <ion-label (click)="accountClicked(account)">
-            <div class="title" *ngIf="account.name">{{ account.name }} <span *ngIf="account.type==='multisig'"><i>(multisig)</i></span></div>
-            <div class="address">{{ shortAddress(account.address) }}</div>
-            <div class="title" *ngIf="!isLoadingBalance">
-              {{account.balance / 1e8 | number: '0.0-2' }} ZBC
-            </div>
-          </ion-label>
-          <ion-button slot="end" (click)="copyAddress(account)" color="meddium">
-            <ion-icon name="copy" ></ion-icon>
-          </ion-button>
-        </ion-item>
-        <ion-item-options *ngIf="!forWhat" >
-          <button color="success" (click)="editName(account)" class="tool">
-            <ion-icon name="create"></ion-icon>{{ "Edit" | translate}}
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
+      <ion-item class="ion-text-wrap" *ngFor="let account of accounts; let idx = index" (click)="accountClicked(account)">
+        <app-account-item [account]="account"></app-account-item>
+        <ion-icon *ngIf="!forWhat" name="zbc-option" slot="end" (click)="showOption($event, idx)"></ion-icon>
+      </ion-item>
     </ion-list>
-
   </div>
 </ion-content>
+<ion-footer class="ion-no-border" *ngIf="forWhat">
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-label (click)="openListAccount()">{{"manage account" | translate}}</ion-label>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

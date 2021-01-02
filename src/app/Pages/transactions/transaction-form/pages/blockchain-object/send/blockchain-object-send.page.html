@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "Blockchain Object" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <form [formGroup]="sendForm" (ngSubmit)="submit()">
+    <ion-list class="form-list">
+      <ion-item lines="none" class="form-item">
+        <app-form-sender formControlName="sender" accountType="normal"></app-form-sender>
+      </ion-item>
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "send to" | translate }}</ion-label>
+        <app-form-get-address formControlName="recipient" identity="recipient"></app-form-get-address>
+        <ng-container *ngIf="(submitted || recipient.dirty || recipient.touched) && recipient.invalid">
+          <ion-text class="text-error" *ngIf="recipient.errors.addressRequired">
+            {{ "address cannot be empty" | translate}}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="recipient.errors.addressFormat">
+            {{ "address is not valid" | translate}}
+          </ion-text>
+        </ng-container>
+      </ion-item>
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "Blockchain Object" | translate }}</ion-label>
+        <app-form-get-object formControlName="blockchainObject"></app-form-get-object>
+        <ng-container *ngIf="(submitted || blockchainObject.dirty || blockchainObject.touched) && blockchainObject.invalid">
+          <ion-text class="text-error" *ngIf="blockchainObject.errors.required">
+            {{ "Blockchain Object is required" | translate}}
+          </ion-text>
+        </ng-container>
+      </ion-item>
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
+        <app-form-fee formControlName="fee"></app-form-fee>
+        <ng-container *ngIf="(submitted || fee.dirty || fee.touched) && fee.invalid">
+          <ion-text class="text-error" *ngIf="fee.errors.required">
+            {{ "transaction fee cannot be empty" | translate}}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="fee.errors.min">
+            {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fee.errors.min.min }}
+          </ion-text>
+        </ng-container>
+      </ion-item>
+    </ion-list>
+
+    <ion-item>
+      <ion-checkbox style="margin-right: 10px" (ionChange)="changeWithEscrow($event.target.checked)" color="primary">
+      </ion-checkbox>
+      <ion-label>{{ "escrow transaction" | translate}}</ion-label>
+    </ion-item>
+
+    <app-behavior-escrow-form *ngIf="withEscrow" formControlName="behaviorEscrow" [errors]="behaviorEscrow.errors"
+      (onChange)="onBehaviorEscrowChange($event)"
+      >
+    </app-behavior-escrow-form>
+
+    <ion-button type="submit" color="tertiary" expand="block">
+      {{ "next" | translate }}
+    </ion-button>
+  </form>
+</ion-content>

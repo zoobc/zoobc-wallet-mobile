@@ -12,12 +12,12 @@ describe('ConverterService', () => {
       expect(service).toBeTruthy();
     });
 
-    it("should return a non empty array", () => {
+    it("string to byte worked", () => {
         let result = service.stringToArrayByte("qwerty");
         expect(Array.isArray(result)).toBeTruthy;
       });
 
-      it("should return a non empty array", () => {
+      it("hex to array worked", () => {
         let result = service.hexToArrayByte("#00ff00");
         expect(Array.isArray(result)).toBeTruthy;
       });

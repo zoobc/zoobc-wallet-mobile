@@ -12,27 +12,27 @@ describe('CurrencyService', () => {
     expect(service).toBeTruthy();
   });
 
-  it("should return a non empty array", () => {
+  it("set active currency worked", () => {
     let result = service.setActiveCurrency("IDR");
     expect(Array.isArray(result)).toBeTruthy;
   });
 
-  it("should return a non empty array", () => {
+  it("set currency rate list worked", () => {
     let result = service.setCurrencyRateList(1);
     expect(Array.isArray(result)).toBeTruthy;
   });
 
-  it("should return a non empty array", () => {
+  it("set price in USD worked", () => {
     let result = service.setPriceInUSD(1);
     expect(Array.isArray(result)).toBeTruthy;
   });
 
-  it("should return a non empty array", () => {
+  it("set rate worked", () => {
     let result = service.setRate(1);
     expect(Array.isArray(result)).toBeTruthy;
   });
 
-  it("should return a non empty array", () => {
+  it("load rate worked", () => {
     let result = service.loadRate();
     expect(Array.isArray(result)).toBeTruthy;
   });

@@ -3,59 +3,64 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Send Money</ion-title>
-    <ion-buttons slot="end" color="primary">
-      <ion-button routerLink="/feedback">
-        {{ "Feedback" | translate }}
-      </ion-button>
-    </ion-buttons>
+    <ion-title>{{ 'send money' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
+
+  <div class="stepper">
+    <ng-container>
+      <div class="step active">
+        <span class="step-circle">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </span>
+        <span class="step-label">{{ 'add multisig info' | translate }}</span>
+      </div>
+      <div class="stepper-line"></div>
+    </ng-container>
+    <div class="step">
+      <span class="step-circle">
+        <ion-icon name="radio-button-on"></ion-icon>
+      </span>
+      <span class="step-label">{{ 'create transaction' | translate }}</span>
+    </div>
+  </div>
+  
   <ion-grid>
-    <ion-row>
-      <ion-col>
-        <h5>Multi Signature Info</h5>
-      </ion-col>
-    </ion-row>
-
     <ion-row style = "background-color: lightsteelblue; border: 1px;">
-      <ion-col size="10"  class="ion-text-center">
-        <ion-label *ngIf="msigAccount">
-          <h2>{{msigAccount.name}}</h2>
-          <p>{{msigAccount.shortAddress}}</p>
-        </ion-label>
 
-      </ion-col>
-      <ion-col size="2">
-        <ion-button (click)="showPopupMultisigAccounts()">
-          ..
+      <ion-col size="12" class="ion-text-center">
+        <ion-button size="small" (click)="showPopupMultisigAccounts()">
+          {{ 'import my multisignature account' | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
+
 
     <ion-row style="margin-top:10px">
       <ion-col>
         <ion-label>
-          <h2>{{ "Participants " | translate }}</h2>
+          <h2>{{"account name" | translate}}:</h2>
+          <p>{{name}}</p>
+          <br/>
+          <h2>{{"address" | translate}}:</h2>
+          <p>{{address}}</p>
         </ion-label>
       </ion-col>
     </ion-row>
-    <!-- <ion-row>
+
+    <ion-row>
       <ion-col>
-        <ion-button (click)="addParticipant()">
-          +
-        </ion-button>
-        <ion-button (click)="reduceParticipant()">
-          -
-        </ion-button>
+        <ion-label>
+          <h2>{{"participants" | translate}}</h2>
+        </ion-label>
       </ion-col>
-    </ion-row> -->
+    </ion-row>
     <div *ngIf="participants">
       <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
         <ion-col>
-          <ion-input type="text" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
+          <ion-input type="text" [name]="'input-'+i" readonly="true" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
             [(ngModel)]="participants[i]">
           </ion-input>
         </ion-col>
@@ -65,24 +70,27 @@
     <ion-row>
       <ion-col>
         <ion-label>
-          <h2>Nonce</h2>
-          <ion-input [(ngModel)]="nonce" type="number" placeholder="Nonce ..."></ion-input>
+          <h2>{{ 'nonce' | translate}}</h2>
+          <ion-input [(ngModel)]="nonce" type="number" readonly="true" placeholder="Nonce ..."></ion-input>
         </ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-label>
-          <h2>Minimum signature</h2>
-          <ion-input type="number" [(ngModel)]="minSig" placeholder="Minimum signature..."></ion-input>
+          <h2>{{ 'minimum signature' | translate }}</h2>
+          <ion-input type="number" [(ngModel)]="minSig" readonly="true" placeholder="Minimum signature..."></ion-input>
         </ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button (click)="next()" color="secondary" expand="block">Next</ion-button>
-        <!-- <ion-button (click)="saveDraft()" expand="block" color="secondary" fill="outline" expand="block" expand="block">
-          Save to draft</ion-button> -->
+        <ion-button (click)="next()" color="tertiary" expand="block">
+          {{ 'next' | translate }}
+        </ion-button>
+        <ion-button (click)="saveDraft()" expand="block" color="tertiary" fill="outline">
+          {{ 'save' | translate }}
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

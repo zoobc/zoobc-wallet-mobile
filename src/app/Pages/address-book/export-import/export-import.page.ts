@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { sanitizeString } from 'src/Helpers/utils';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { Contact } from 'src/app/Interfaces/contact';
 import { UtilService } from 'src/app/Services/util.service';
 import { AlertController, NavController } from '@ionic/angular';
@@ -12,6 +10,9 @@ import { AlertController, NavController } from '@ionic/angular';
   styleUrls: ['./export-import.page.scss']
 })
 export class ExportImportPage implements OnInit {
+
+  addresses = '';
+
   constructor(
     private addressBookSrv: AddressBookService,
     private utilService: UtilService,
@@ -19,24 +20,57 @@ export class ExportImportPage implements OnInit {
     private navCtrl: NavController
   ) {}
 
-  addresses: string = '';
   async ngOnInit() {
-    const alladdress = await this.addressBookSrv.getAll();
-    if (alladdress) {
-      this.addresses = JSON.stringify(
-        alladdress.map((addrs: any) => {
-          return {
-            name: addrs.name,
-            address: addrs.address
-          };
-        })
-      );
-    }
+    // const alladdress = await this.addressBookSrv.getAll();
+    // if (alladdress) {
+    //   this.addresses = JSON.stringify(
+    //     alladdress.map((addrs: any) => {
+    //       return {
+    //         name: addrs.name,
+    //         address: addrs.address
+    //       };
+    //     })
+    //   );
+    // }
   }
 
   copy() {
     this.utilService.copyToClipboard(this.addresses);
   }
+
+  public uploadFile(files: FileList) {
+    if (files && files.length > 0) {
+      const file = files.item(0);
+      const fileReader: FileReader = new FileReader();
+      fileReader.readAsText(file, 'JSON');
+      fileReader.onload = async () => {
+        try {
+          const arrAddresses: any[] = JSON.parse(fileReader.result.toString());
+          const addresses: Contact[] = [];
+          for (let i = 0; i < arrAddresses.length; i++) {
+            const { name, address } = arrAddresses[i];
+            if (name && address) {
+              const contact: Contact = {
+                name,
+                address: (address)
+              };
+              addresses.push(contact);
+            }
+          }
+          await this.addressBookSrv.update(addresses);
+
+        } catch (error) {
+          const alert = await this.alertCtrl.create({
+            header: 'Error',
+            message: 'You have entered wrong json format',
+            buttons: ['OK']
+          });
+          await alert.present();
+        }
+      };
+    }
+  }
+
 
   async save() {
     try {
@@ -46,9 +80,8 @@ export class ExportImportPage implements OnInit {
         const { name, address } = arrAddresses[i];
         if (name && address) {
           const contact: Contact = {
-            name: name,
-            address: sanitizeString(address),
-            shortAddress: makeShortAddress(sanitizeString(address))
+            name,
+            address: (address)
           };
           addresses.push(contact);
         }

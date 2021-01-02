@@ -1,3 +1,4 @@
+This branch for backup old design. This branch used to build android/ios version on 28 August 2020 in telegram mobile app group.
 
 # ZooBC Mobile Wallet   
 ZooBC wallet is a mobile application that is able to connect with the ZooBC blockchain network, so it can carry out activities such as creating accounts, viewing balances, sending coins, displaying QRcode addresses.  
@@ -5,7 +6,6 @@ ZooBC wallet is a mobile application that is able to connect with the ZooBC bloc
 ## Frameworks
   - Ionic Framework v4
   - Angluar 7
-  - Firebase
   - Android SDK (for Android)
   - XCode (for iOs)
 

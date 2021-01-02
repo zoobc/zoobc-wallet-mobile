@@ -1,0 +1,21 @@
+.input-container {
+
+  &:first-child {
+    margin-bottom: 5px;
+  }
+
+  position: relative;
+
+  .currency {
+    position: absolute;
+    width: 50px;
+    text-align: center;
+    display: inline-block;
+    top: 10px;
+    text-align: center;
+  }
+
+  input {
+    padding-left: 60px !important;
+  }
+}

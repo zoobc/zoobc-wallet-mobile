@@ -1,54 +1,57 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button  (click)="goDashboard()"> </ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Transactions" | translate }}</ion-title>
-    <ion-buttons slot="end" color="primary">
-      <ion-button routerLink="/feedback">
-        {{ "Feedback" | translate}}
-      </ion-button>
-    </ion-buttons>
+    <ion-title>{{ "transactions" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
-      refreshingText="{{ 'Refreshing' | translate }} ...">
+      refreshingText="{{ 'refreshing' | translate }} ...">
     </ion-refresher-content>
   </ion-refresher>
 
-  <div *ngIf="isLoadingRecentTx">
-    <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div>
-
   <ion-label *ngIf="isError" color="danger" class="ion-text-center">
-    <h2>{{ errorMsg }}</h2>
+    <h2>{{ 'an error occurred while processing your request' | translate }}</h2>
   </ion-label>
 
-  <p *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-padding-horizontal">
-    {{ "Queue" | translate }} ({{unconfirmTxs.length}})
-  </p>
-  <ion-list *ngIf="unconfirmTxs && unconfirmTxs.length > 0" class="ion-margin-top">
-    <ion-item *ngFor="let pendingtrx of unconfirmTxs; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
+  <h3 *ngIf="unconfirmTx && unconfirmTx.length > 0" class="ion-padding-horizontal">
+    {{ "Pending Transactions" | translate }}
+  </h3>
+  <ion-list *ngIf="unconfirmTx && unconfirmTx.length > 0" class="ion-margin-top">
+    <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
       <ion-label>
         <ion-row class="ion-justify-content-between">
           <ion-col size="7">
-            <ion-label *ngIf="pendingtrx.name" class="title">
-              {{ pendingtrx.name }}
-            </ion-label>
-            <ion-label *ngIf="!pendingtrx.name" class="title">
-              {{ pendingtrx.shortaddress }}
-            </ion-label>
+            <div *ngIf="pendingtrx.recipient.value == currentAddress.value">
+              <ion-label  class="title">
+                {{ pendingtrx.senderAlias }}
+              </ion-label>
+              <ion-label class="title">
+                {{ pendingtrx.sender.value | shortAddress }}
+              </ion-label>
+           </div>
+
+           <div *ngIf="pendingtrx.sender.value == currentAddress.value">
+              <ion-label  class="title">
+                {{ pendingtrx.recipientAlias }}
+              </ion-label>
+              <ion-label class="title">
+                {{ pendingtrx.recipient.value | shortAddress }}
+              </ion-label>
+          </div>
+
             <ion-label class="date" style="font-size: 0.7em">{{
                   pendingtrx.timestamp | date: "short"
-                }} <span style="color:orange">{{ "Pending" | translate }}</span>
+                }} <span style="color:orange">{{ "pending" | translate }}</span>
               <!-- <ion-spinner name="lines-small" style="width: 15px !important; height: 15px !important;"></ion-spinner> -->
             </ion-label>
           </ion-col>
           <ion-col size="5" class="ion-text-end">
             <ion-label class="amount pending">
-              {{ pendingtrx.amount / 1e8 | number: '0.0-6' }} <span style="color:grey">ZBC</span>
+              {{ pendingtrx.txBody.amount / 1e8 | number: '0.0-6' }} <span style="color:grey">ZBC</span>
             </ion-label>
           </ion-col>
         </ion-row>
@@ -56,52 +59,40 @@
     </ion-item>
   </ion-list>
 
-  <h4 class="ion-padding-horizontal ion-text-center">
-    {{ "Transaction(s) History" | translate }}
-  </h4>
-  <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length === 0" class="ion-margin-top">
+  <ion-list *ngIf="!isLoading && accountHistory && accountHistory.length < 1 " class="ion-margin-top">
     <ion-item class="ion-text-center">
       <ion-label>
-        <br/> <br/>
-          {{ "You don't have any transaction. "  | translate }}"
+        <br /> <br />
+        {{ "you don't have any transaction." | translate}}
       </ion-label>
     </ion-item>
   </ion-list>
 
-  <ion-list *ngIf="!isLoadingRecentTx && recentTxs && recentTxs.length > 0" class="ion-margin-top">
-    <ion-item *ngFor="let transaction of recentTxs; let i = index" button (click)="openDetailTransction(transaction)">
-      <ion-label *ngIf="transaction.name" color="dark">
-        <h3>{{ transaction.name }}
-          <br/>
-          {{transaction.shortaddress}}
-        </h3>
-        <ion-text class="dateago">{{
-          transaction.timestamp | dateAgo
-          }}</ion-text>
-      </ion-label>
-      <ion-label *ngIf="!transaction.name" color="dark">
-        <h3>{{ transaction.shortaddress }}</h3>
-        <ion-text class="dateago">{{
-          transaction.timestamp | dateAgo
-          }}</ion-text>
-      </ion-label>
-
-      <ion-text *ngIf="transaction.type==='send'" color="danger" class="amount ion-text-end">
-        - {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC
-        <br/>
-        <span>
-         - {{ transaction.fee / 1e8 | number: '0.2-4'}} ZBC
-        </span>
-      </ion-text>
-     
-      <ion-text *ngIf="transaction.type!=='send'" color="success" class="amount ion-text-end">
-       + {{ transaction.amount / 1e8 | number: '0.2-4' }} ZBC
-      </ion-text>
-
-    </ion-item>
+  <ion-list class="ion-margin-top transaction-list">
+    <ng-container *ngIf="isLoading; else transactionList">
+      <ion-item *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
+        <app-skeleton-transaction></app-skeleton-transaction>
+      </ion-item>
+    </ng-container>
+    <ng-template #transactionList>
+      <ng-container *ngIf="accountHistory && accountHistory.length>=1; else noTransaction">
+        <ion-item *ngFor="let transaction of accountHistory; let i = index" button
+          (click)="goToTransactionDetail(transaction.id)">
+          <app-transaction-item [transaction]="transaction"></app-transaction-item>
+        </ion-item>
+      </ng-container>
+    </ng-template>
+    <ng-template #noTransaction>
+      <ion-item>
+        <ion-label>You don't have any transctions</ion-label>
+      </ion-item>
+    </ng-template>
   </ion-list>
+
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 

@@ -7,6 +7,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { RouterTestingModule } from "@angular/router/testing";
 import { ModalController, NavParams} from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
+import { Network } from '@ionic-native/network/ngx';
 
 describe('Transaction Detail Page', () => {
   let component: TransactionDetailPage;
@@ -36,7 +37,8 @@ describe('Transaction Detail Page', () => {
         { 
           provide: NavParams, 
           useClass: class { NavParams = jasmine.createSpy("NavParams"); }
-        } 
+        },
+        { provide: Network }, 
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
@@ -51,5 +53,13 @@ describe('Transaction Detail Page', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+  it("init worked", () => {
+    let result = component.ngOnInit();
+    expect(Array.isArray(result)).toBeTruthy;
+  });
+  it("ion view did leave worked", () => {
+    let result = component.ionViewDidLeave();
+    expect(Array.isArray(result)).toBeTruthy;
   });
 });

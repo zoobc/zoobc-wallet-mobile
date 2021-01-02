@@ -1,0 +1,12 @@
+<ion-list class="list-account" lines="none">
+  <ion-radio-group value="{{ selectedIndex }}">
+    <ion-item *ngFor="let account of accounts; let idx = index" (click)="selectAccount(account)">
+      <ion-radio slot="start" value="{{idx}}"></ion-radio>
+      <app-account-item [account]="account" horizontal="true"></app-account-item>
+    </ion-item>
+  </ion-radio-group>
+</ion-list>
+<div class="actions">
+  <ion-button fill="clear" (click)="goToAccount()">{{ "manage accounts" | translate }}</ion-button>
+  <ion-button fill="clear" (click)="cancel()">{{ "cancel" | translate }}</ion-button>
+</div>
