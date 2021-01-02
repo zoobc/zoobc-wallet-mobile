@@ -21,7 +21,7 @@ import {
   addressValidator,
   escrowFieldsValidator
 } from 'src/Helpers/validators';
-import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
+import zoobc, { SendMoneyInterface } from 'zbc-sdk';
 
 @Component({
   selector: 'app-send-money-form',
@@ -110,6 +110,8 @@ export class SendMoneyFormComponent implements OnInit {
     this.sendMoneySummarySubscription = this.transactionSrv.transactionSuccessSubject.subscribe(
       async (result: boolean) => {
         if (result) {
+          console.log('== result: ', result);
+          console.log('=== setelah submit form...');
           await this.inputPIN();
         }
       }
@@ -194,19 +196,18 @@ export class SendMoneyFormComponent implements OnInit {
 
     pinmodal.onDidDismiss().then(async returnedData => {
       if (returnedData && returnedData.data && returnedData.data !== 0) {
-        const pin = returnedData.data;
-
-        const extras: NavigationExtras = {
-          state: {
-            amount: this.amount.value,
-            recipient: this.recipient.value
-          },
-          replaceUrl: true
-        };
-
+        // const pin = returnedData.data;
         await this.sendMoney();
 
-        this.router.navigate(['transaction-form/send-money/success'], extras);
+        // const extras: NavigationExtras = {
+        //   state: {
+        //     amount: this.amount.value,
+        //     recipient: this.recipient.value
+        //   },
+        //   replaceUrl: true
+        // };
+        // this.router.navigate(['transaction-form/send-money/success'], extras);
+
       }
     });
     return await pinmodal.present();
@@ -231,6 +232,7 @@ export class SendMoneyFormComponent implements OnInit {
       const extras: NavigationExtras = {
         state
       };
+
       this.router.navigate(['transaction-form/send-money/summary'], extras);
     }
   }
@@ -245,19 +247,22 @@ export class SendMoneyFormComponent implements OnInit {
     await loading.present();
 
     const data: SendMoneyInterface = {
-      sender: this.sender.value.address,
-      recipient: (this.recipient.value.address),
+      sender:  this.sender.value.address,
+      recipient: { value: this.recipient.value.address, type: 0 },
       fee: Number(this.fee.value),
-      amount: this.amount.value
+      amount: Number(this.amount.value)
     };
 
     if (this.withEscrow) {
-      data.approverAddress = this.behaviorEscrow.value.approver.address;
-      data.commission = this.behaviorEscrow.value.commission ? this.behaviorEscrow.value.commission : 0;
-      data.timeout = this.behaviorEscrow.value.timeout;
-      data.instruction = this.behaviorEscrow.value.instruction ?
+    data.approverAddress = { value: this.behaviorEscrow.value.approver.address, type: 0 };
+    data.commission = this.behaviorEscrow.value.commission ? this.behaviorEscrow.value.commission : 0;
+    data.timeout = this.behaviorEscrow.value.timeout;
+    data.instruction = this.behaviorEscrow.value.instruction ?
         (this.behaviorEscrow.value.instruction) : '';
     }
+
+    console.log('=== data: ', data);
+    console.log('=== this.sender.value:', this.sender.value);
 
     const childSeed = this.authSrv.keyring.calcDerivationPath(
       this.sender.value.path
@@ -266,8 +271,8 @@ export class SendMoneyFormComponent implements OnInit {
       .then(
         (resolveTx: any) => {
           if (resolveTx) {
-            /*this.ngOnInit();
-            this.showSuccessMessage();*/
+            this.ngOnInit();
+            this.showSuccessMessage();
 
             if (this.behaviorEscrowChangesSubscription) {
               this.behaviorEscrowChangesSubscription.unsubscribe();
@@ -298,15 +303,27 @@ export class SendMoneyFormComponent implements OnInit {
   }
 
   async showErrorMessage(error) {
+
+    let errMsg = await error.message;
+    console.log('==== error: ', errMsg);
+
+    if (errMsg.includes('UserBalanceNotEnough')) {
+      errMsg = 'Balance not enought!';
+    } else {
+      errMsg = 'Oops fail, please try again later!';
+    }
+
     const modal = await this.modalController.create({
       component: TrxstatusPage,
       componentProps: {
-        msg: error,
+        msg: errMsg,
         status: false
       }
     });
 
-    modal.onDidDismiss().then(() => {});
+    modal.onDidDismiss().then(() => {
+      this.router.navigate(['tabs/home']);
+    });
 
     return await modal.present();
   }
@@ -321,7 +338,8 @@ export class SendMoneyFormComponent implements OnInit {
     });
 
     modal.onDidDismiss().then(() => {
-      this.navCtrl.pop();
+      // this.navCtrl.pop();
+      this.router.navigate(['tabs/home']);
     });
 
     return await modal.present();

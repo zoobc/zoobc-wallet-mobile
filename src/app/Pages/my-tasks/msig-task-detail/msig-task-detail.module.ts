@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { MsigTaskDetailPage } from './msig-task-detail.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from 'src/app/Shared/shared.module';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
 const routes: Routes = [
   {
@@ -20,7 +20,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     TranslateModule,
-    SharedModule,
+    ComponentsModule,
     RouterModule.forChild(routes)
   ],
   declarations: [MsigTaskDetailPage]

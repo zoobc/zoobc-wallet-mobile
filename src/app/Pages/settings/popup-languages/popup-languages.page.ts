@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LANGUAGES, SELECTED_LANGUAGE } from 'src/environments/variable.const';
 import { NavController } from '@ionic/angular';
 import { LanguageService } from 'src/app/Services/language.service';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { StorageService } from 'src/app/Services/storage.service';
 
 @Component({
   selector: 'app-popup-languages',
@@ -18,7 +18,7 @@ export class PopupLanguagesPage implements OnInit {
   constructor(
     private navCtrl: NavController, 
     private languageSrv: LanguageService,  
-    private strgSrv: StoragedevService
+    private strgSrv: StorageService
   ) { }
 
   async ngOnInit() {

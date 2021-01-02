@@ -5,9 +5,9 @@ import { IonicModule } from '@ionic/angular';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from 'src/app/Shared/shared.module';
 import { PopoverActionComponent } from './popover-action/popover-action.component';
-import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
 const routes: Routes = [
   {
@@ -24,7 +24,7 @@ const routes: Routes = [
     TranslateModule,
     IonicModule,
     RouterModule.forChild(routes),
-    SharedModule
+    ComponentsModule
   ],
   entryComponents: [PopoverActionComponent, PopoverOptionComponent]
 })

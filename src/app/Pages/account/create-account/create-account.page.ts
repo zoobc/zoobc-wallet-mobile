@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { EMPTY_STRING, FOR_PARTICIPANT } from 'src/environments/variable.const';
+import { EMPTY_STRING } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
 import { Router } from '@angular/router';
-import { MultiSigAddress } from 'zoobc-sdk';
 import { ModalController } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   addressValidator,
 } from 'src/Helpers/validators';
+import { Address, getZBCAddress, MultiSigInfo } from 'zbc-sdk';
 
 @Component({
   selector: 'app-create-account',
@@ -25,8 +25,6 @@ export class CreateAccountPage implements OnInit {
   isNameValid = true;
   accounts: Account[];
   isMultisig: boolean;
-  signBy: string;
-  signByAccount: Account;
   minimumParticipants = 2;
 
   constructor(
@@ -36,7 +34,7 @@ export class CreateAccountPage implements OnInit {
   ) {}
 
   submitted = false;
-  
+
   formAccount = new FormGroup({
     accountName: new FormControl('', [Validators.required]),
   });
@@ -61,7 +59,7 @@ export class CreateAccountPage implements OnInit {
     this.submitted = true;
     const accountNameExists = this.isNameExists(this.accountName.value);
 
-    if (accountNameExists){
+    if (accountNameExists) {
       this.formAccount.controls['accountName'].setErrors({ accountNameExists });
     }
 
@@ -76,7 +74,7 @@ export class CreateAccountPage implements OnInit {
     this.accountName.setValue(`Account ${len}`);
   }
 
-  setMinimumSignatureValidation(){
+  setMinimumSignatureValidation() {
     this.minimumSignature.setValidators([
       Validators.required,
       Validators.min(2),
@@ -89,9 +87,9 @@ export class CreateAccountPage implements OnInit {
   async changeToMultisig(value: boolean) {
     this.isMultisig = value;
 
-    if(value){
+    if (value) {
       const formArray = new FormArray([]);
-    
+
       formArray.push(
         new FormGroup({
           address: new FormControl('', [Validators.required, addressValidator]),
@@ -103,11 +101,11 @@ export class CreateAccountPage implements OnInit {
         })
       );
 
-      this.formAccount.addControl("participants", formArray);
-      this.formAccount.addControl("nonce", new FormControl('', [Validators.required, Validators.min(1)]));
-      this.formAccount.addControl("minimumSignature", new FormControl(''));
+      this.formAccount.addControl('participants', formArray);
+      this.formAccount.addControl('nonce', new FormControl('', [Validators.required, Validators.min(1)]));
+      this.formAccount.addControl('minimumSignature', new FormControl(''));
       this.setMinimumSignatureValidation();
-      
+
       this.accounts = await this.accountService.allAccount('multisig');
       let len = 1;
       if (this.accounts && this.accounts.length > 0) {
@@ -115,9 +113,9 @@ export class CreateAccountPage implements OnInit {
       }
       this.accountName.setValue(`Multisig Account ${len}`);
     } else {
-      this.formAccount.removeControl("participants");
-      this.formAccount.removeControl("nonce");
-      this.formAccount.removeControl("minimumSignature");
+      this.formAccount.removeControl('participants');
+      this.formAccount.removeControl('nonce');
+      this.formAccount.removeControl('minimumSignature');
       this.accounts = await this.accountService.allAccount('normal');
       const len = this.accounts.length + 1;
       this.accountName.setValue(`Account ${len}`);
@@ -128,7 +126,7 @@ export class CreateAccountPage implements OnInit {
     let address = '';
     if (
       this.accounts.findIndex(acc => {
-        address = acc.address;
+        address = acc.address.value;
         return acc.name.trim().toLowerCase() === accountName.trim().toLowerCase();
       }) >= 0
     ) {
@@ -139,25 +137,36 @@ export class CreateAccountPage implements OnInit {
   }
 
   async createAccount() {
-   
+
+    const keyring = this.accountService.keyring;
+    const path = await this.accountService.generateDerivationPath();
+    const childSeed = keyring.calcDerivationPath(path);
+    const accountAddress = getZBCAddress(childSeed.publicKey);
+
     const pathNumber = await this.accountService.generateDerivationPath();
-    let account: Account = this.accountService.createNewAccount(
-      this.accountName.value.trim(),
-      pathNumber
-    );
 
-    if (this.isMultisig) {
+    let account: Account;
 
-      const multiParam: MultiSigAddress = {
-        participants: this.participants.value.map((participant)=>participant.address.address),
+    if (!this.isMultisig) {
+      account = this.accountService.createNewAccount(
+        this.accountName.value.trim(),
+        pathNumber
+      );
+    } else if (this.isMultisig) {
+
+      let addresses: [string] = this.participants.value.filter(value => value.length > 0);
+      addresses = addresses.sort();
+      const participants: Address[] = addresses.map(address => ({ value: address, type: 0 }));
+      const multiParam: MultiSigInfo = {
+        participants,
         nonce: this.nonce.value,
-        minSigs: this.minimumSignature.value
+        minSigs: this.minimumSignature.value,
       };
+
 
       account = this.accountService.createNewMultisigAccount(
         this.accountName.value.trim(),
         multiParam,
-        this.signByAccount
       );
     }
 
@@ -189,8 +198,7 @@ export class CreateAccountPage implements OnInit {
 
     modal.onDidDismiss().then(dataReturned => {
       if (dataReturned.data) {
-        this.signByAccount = dataReturned.data;
-        this.signBy = this.signByAccount.address;
+        // this.signByAccount = dataReturned.data;
       }
     });
 

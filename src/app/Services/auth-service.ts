@@ -6,8 +6,8 @@ import {
   SALT_PASSPHRASE
 } from 'src/environments/variable.const';
 import { AccountService } from './account.service';
-import { StoragedevService } from './storagedev.service';
-import zoobc, { ZooKeyring } from 'zoobc-sdk';
+import { StorageService } from './storage.service';
+import zoobc, { ZooKeyring } from 'zbc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -22,13 +22,14 @@ export class AuthService implements CanActivate {
 
   constructor(
     private router: Router,
-    private strgSrv: StoragedevService,
+    private strgSrv: StorageService,
     private accountService: AccountService) {
       this.isUserLoggenIn = false;
     }
 
   async canActivate(route: ActivatedRouteSnapshot) {
     const acc = await this.accountService.getCurrAccount();
+    console.log('--- acc: ', acc);
     if (acc === null || acc === undefined) {
       this.router.navigate(['initial']);
       return false;

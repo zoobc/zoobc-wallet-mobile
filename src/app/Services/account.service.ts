@@ -7,10 +7,10 @@ import {
   ACC_TYPE_MULTISIG,
   STORAGE_CURRENT_ACCOUNT_MULTISIG
 } from 'src/environments/variable.const';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { StoragedevService } from './storagedev.service';
-import { Account } from '../Interfaces/account';
-import zoobc, { MultiSigAddress, ZooKeyring, getZBCAddress, BIP32Interface } from 'zoobc-sdk';
+import { Subject } from 'rxjs';
+import { StorageService } from './storage.service';
+import { Account, AccountType } from '../Interfaces/account';
+import zoobc, { ZooKeyring, getZBCAddress, BIP32Interface, AccountBalance, MultiSigInfo, Address } from 'zbc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,7 @@ export class AccountService {
   public approverSubject: Subject<Account> = new Subject<Account>();
   public senderSubject: Subject<Account> = new Subject<Account>();
 
-  constructor(private strgSrv: StoragedevService) { }
+  constructor(private strgSrv: StorageService) { }
 
 
   setForWhat(arg: string) {
@@ -59,7 +59,7 @@ export class AccountService {
     // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < accounts.length; i++) {
       const acc = accounts[i];
-      if (acc.address === address) {
+      if (acc.address.value === address) {
         account = acc;
         break;
       }
@@ -67,22 +67,22 @@ export class AccountService {
     return account;
   }
 
-  async allAccount(type?: 'normal' | 'multisig') {
-    const allAccount: Account[] = await this.strgSrv
-      .getObject(STORAGE_ALL_ACCOUNTS)
-      .then(accounts => {
-        if (accounts == null) {
-          return null;
-        }
-        if (type && type === 'multisig') {
-          return accounts.filter(acc => acc.type === 'multisig');
-        } else if (type && type === 'normal') {
-          return accounts.filter(acc => acc.type !== 'multisig');
-        } else {
-          return accounts;
-        }
-      });
-    return allAccount;
+  async allAccount(type?: AccountType) {
+    const accounts = await this.strgSrv.getObject(STORAGE_ALL_ACCOUNTS);
+    console.log('=== accs:', accounts);
+    if (accounts == null) {
+      return null;
+    }
+    if (type === 'normal') {
+      return accounts.filter(acc => acc.type === 'normal');
+    } else if (type === 'multisig') {
+      return accounts.filter(acc => acc.type === 'multisig');
+    } else if (type === 'imported') {
+      return accounts.filter(acc => acc.type === 'imported');
+    } else if (type === 'one time login') {
+      return [this.getCurrAccount()];
+    }
+    return accounts;
   }
 
   async removeAllAccounts() {
@@ -93,17 +93,14 @@ export class AccountService {
   }
 
   async generateDerivationPath(): Promise<number> {
-    const accounts: Account[] = await this.allAccount();
+    const accounts = await this.strgSrv.getObject(STORAGE_ALL_ACCOUNTS);
     if (accounts && accounts.length) {
       return accounts.length;
     }
     return 0;
   }
 
-  async setActiveAccount(account: Account) {
-    await this.strgSrv.setObject(STORAGE_CURRENT_ACCOUNT, account);
-    this.broadCastNewAccount(account);
-  }
+
 
   broadCastNewAccount(account: Account) {
     this.accountSubject.next(account);
@@ -127,7 +124,7 @@ export class AccountService {
     if (!isDuplicate) {
       accounts.push(account);
       this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, accounts);
-      await this.setActiveAccount(account);
+      this.switchAccount(account);
     }
   }
 
@@ -145,10 +142,9 @@ export class AccountService {
 
     for (let i = 0; i < accounts.length; i++) {
       const acc = accounts[i];
-      if (acc.address === account.address) {
+      if (acc.address.value === account.address.value) {
         accounts[i] = account;
         this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, accounts);
-        this.broadCastNewAccount(account);
         break;
       }
     }
@@ -187,11 +183,12 @@ export class AccountService {
     this.savePassphraseSeed(this.plainPassphrase, this.plainPin);
   }
 
-  createNewAccount(arg: string, pathNumber: number) {
+  createNewAccount(accountName: string, pathNumber: number) {
     const childSeed = this.keyring.calcDerivationPath(pathNumber);
-    const address = getZBCAddress(childSeed.publicKey);
+    const address: Address = { value: getZBCAddress(childSeed.publicKey), type: 0 };
+
     const account: Account = {
-      name: (arg),
+      name: (accountName),
       path: pathNumber,
       type: 'normal',
       nodeIP: null,
@@ -202,85 +199,46 @@ export class AccountService {
 
   createNewMultisigAccount(
     name: string,
-    multiParam: MultiSigAddress,
-    signByAccount: Account
+    multiParam: MultiSigInfo,
   ) {
+
     const multiSignAddress: string = zoobc.MultiSignature.createMultiSigAddress(
       multiParam
     );
 
-    let signByPath = null;
-    let sgnByAddrss = null;
-    if (signByAccount && signByAccount.path) {
-      signByPath = signByAccount.path;
-      sgnByAddrss = signByAccount.address;
-    }
-
-
     const account: Account = {
       name: (name),
       type: 'multisig',
-      path: signByPath,
+      path: null,
       nodeIP: null,
-      address: multiSignAddress,
+      address: { value: multiSignAddress, type: 0 },
       participants: multiParam.participants,
       nonce: multiParam.nonce,
-      minSig: multiParam.minSigs,
-      signByAddress: sgnByAddrss
+      minSig: multiParam.minSigs
     };
     return account;
   }
 
   async restoreAccounts() {
     if (!this.willRestoreAccounts) {
-        console.log('=== will return ');
-        return;
+      console.log('=== will return ');
+      return;
     }
-    /// add additional accounts begin
-    const tempAccounts = [];
+
 
     for (let i = 1; i < this.totalAccountLoaded + 1; i++) {
-      const account: Account = this.createNewAccount(
+      this.createNewAccount(
         `Account ${i + 1}`,
         i
       );
-      tempAccounts.push(account.address);
     }
 
-    try {
-      const data = await zoobc.Account.getBalances(tempAccounts);
-      const { accountbalancesList } = data;
-
-      let exists = 0;
-      for (let i = 0; i < tempAccounts.length; i++) {
-        const account: Account = this.createNewAccount(
-          `Account ${i + 1}`,
-          i
-        );
-
-        await this.addAccount(account);
-
-
-        if (
-          accountbalancesList.findIndex(
-            (acc: any) => acc.accountaddress === account.address
-          ) >= 0
-        ) {
-          exists++;
-        }
-
-        if (exists >= accountbalancesList.length) {
-          break;
-        }
-      }
-    } catch (error) {
-      console.log('__error', error);
-    }
     this.willRestoreAccounts = false;
     /// add additional accounts end
   }
 
   switchAccount(account: Account) {
+
     if (account) {
       this.strgSrv.setObject(STORAGE_CURRENT_ACCOUNT, account);
       if (account.type === ACC_TYPE_MULTISIG) {
@@ -294,9 +252,30 @@ export class AccountService {
     }
   }
 
+
   async switchMultisigAccount() {
     const account = await this.strgSrv.getObject(STORAGE_CURRENT_ACCOUNT_MULTISIG);
     this.switchAccount(account);
+  }
+
+
+  async getAccountsWithBalance(type?: AccountType): Promise<Account[]> {
+    return new Promise(async (resolve, reject) => {
+      const accounts = await this.allAccount(type);
+      const addresses = accounts.map(acc => acc.address);
+      zoobc.Account.getBalances(addresses)
+        .then((accountBalances: AccountBalance[]) => {
+          accounts.map((acc, i) => {
+            acc.balance = accountBalances[i].balance;
+            return acc;
+          });
+          resolve(accounts);
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
   }
 
 }

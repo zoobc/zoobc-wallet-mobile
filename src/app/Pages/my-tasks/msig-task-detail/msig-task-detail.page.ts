@@ -5,7 +5,7 @@ import { TRANSACTION_MINIMUM_FEE, COIN_CODE } from 'src/environments/variable.co
 import zoobc, {
   MultisigPendingTxDetailResponse,
   MultisigPendingTxResponse, toGetPendingList, MultiSigInterface, signTransactionHash
-} from 'zoobc-sdk';
+} from 'zbc-sdk';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 import { Account } from 'src/app/Interfaces/account';
 import { base64ToHex } from 'src/Helpers/utils';
@@ -109,52 +109,52 @@ export class MsigTaskDetailPage implements OnInit {
     this.account = await this.accountService.getCurrAccount();
     const hashHex = base64ToHex(this.msigHash);
     this.isLoading = true;
-    await zoobc.MultiSignature.getPendingByTxHash(hashHex).then(async (res: MultisigPendingTxDetailResponse) => {
-      const list = [];
-      list.push(res.pendingtransaction);
-      const tx: MultisigPendingTxResponse = {
-        count: 1,
-        page: 1,
-        pendingtransactionsList: list,
-      };
+    // await zoobc.MultiSignature.getPendingByTxHash(hashHex).then(async (res: MultisigPendingTxDetailResponse) => {
+    //   const list = [];
+    //   list.push(res.pendingtransaction);
+    //   const tx: MultisigPendingTxResponse = {
+    //     count: 1,
+    //     page: 1,
+    //     pendingtransactionsList: list,
+    //   };
 
-      const txFilter = toGetPendingList(tx);
-      this.multiSigDetail = txFilter.pendingtransactionsList[0];
-      this.pendingSignatures = res.pendingsignaturesList;
-      this.participants = res.multisignatureinfo.addressesList;
+    //   const txFilter = toGetPendingList(tx);
+    //   // this.multiSigDetail = txFilter.pendingtransactionsList[0];
+    //   this.pendingSignatures = res.pendingsignaturesList;
+    //   this.participants = res.multisignatureinfo.addressesList;
 
-      console.log('=== this participatns: ', this.participants);
-      console.log('== this.pendingSignatures: ', this.pendingSignatures);
+    //   console.log('=== this participatns: ', this.participants);
+    //   console.log('== this.pendingSignatures: ', this.pendingSignatures);
 
-      this.enabledSign = false;
-      for (let i = 0; i <= this.participants.length; i++) {
-        const partAddress = this.participants[i];
-        const partAcc = await this.accountService.getAccount(partAddress);
-        if (partAcc) {
-          // this.enabledSign = true;
-          const idx = this.pendingSignatures.findIndex(
-            sign => sign.accountaddress === partAddress
-          );
-          if (idx < 0) {
-            console.log('== Signer-' + i + ': ', this.signer);
-            this.signer = partAddress;
-            this.signerAcc = partAcc;
-            const sgSeed = this.authSrv.keyring.calcDerivationPath(partAcc.path);
-            this.participantsWithSignatures.push({
-              address: partAddress,
-              signature: signTransactionHash(this.multiSigDetail.transactionhash, sgSeed)
-            });
-            this.enabledSign = true;
-            // break;
-          }
+    //   this.enabledSign = false;
+    //   for (let i = 0; i <= this.participants.length; i++) {
+    //     const partAddress = this.participants[i];
+    //     const partAcc = await this.accountService.getAccount(partAddress);
+    //     if (partAcc) {
+    //       // this.enabledSign = true;
+    //       const idx = this.pendingSignatures.findIndex(
+    //         sign => sign.accountaddress === partAddress
+    //       );
+    //       if (idx < 0) {
+    //         console.log('== Signer-' + i + ': ', this.signer);
+    //         this.signer = partAddress;
+    //         this.signerAcc = partAcc;
+    //         const sgSeed = this.authSrv.keyring.calcDerivationPath(partAcc.path);
+    //         this.participantsWithSignatures.push({
+    //           address: partAddress,
+    //           signature: signTransactionHash(this.multiSigDetail.transactionhash, sgSeed)
+    //         });
+    //         this.enabledSign = true;
+    //         // break;
+    //       }
 
-        }
-      }
+    //     }
+    //   }
 
-    }).finally(() => {
-      this.isLoading = false;
-    }
-    );
+    // }).finally(() => {
+    //   this.isLoading = false;
+    // }
+    // );
     console.log('== participantsWithSignatures: ', this.participantsWithSignatures);
     console.log('== Signer Acc: ', this.signerAcc);
   }

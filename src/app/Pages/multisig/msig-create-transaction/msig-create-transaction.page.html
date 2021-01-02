@@ -9,11 +9,11 @@
 
 <ion-content class="ion-padding">
 
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
       refreshingText="{{ 'refreshing' | translate }} ...">
     </ion-refresher-content>
-  </ion-refresher>
+  </ion-refresher> -->
 
   <div *ngIf="isProcessing">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>

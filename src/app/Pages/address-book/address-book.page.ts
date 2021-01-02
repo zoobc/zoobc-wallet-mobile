@@ -13,7 +13,7 @@ import {
   FOR_SIGNBY
 } from 'src/environments/variable.const';
 import { UtilService } from 'src/app/Services/util.service';
-import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({

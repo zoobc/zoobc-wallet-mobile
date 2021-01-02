@@ -22,7 +22,7 @@ import {
 } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
-import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
+import zoobc, { SendMoneyInterface } from 'zbc-sdk';
 import { calculateMinFee } from 'src/Helpers/utils';
 import { Approver } from 'src/app/Interfaces/approver';
 import { Currency } from 'src/app/Interfaces/currency';
@@ -38,6 +38,7 @@ import { addressFormatValidator } from 'src/Helpers/validators';
   styleUrls: ['send-coin.page.scss']
 })
 export class SendCoinPage implements OnInit {
+  optionFee = '';
   approvers = [];
   rootPage: any;
   status: any;
@@ -219,15 +220,15 @@ export class SendCoinPage implements OnInit {
   async getAllAccount() {
     const accounts = await this.accountService.allAccount();
 
-    if (accounts && accounts.length > 0) {
-      accounts.forEach((obj: { name: any; address: string }) => {
-        const app: Approver = {
-          name: obj.name,
-          address: obj.address
-        };
-        this.approvers.push(app);
-      });
-    }
+    // if (accounts && accounts.length > 0) {
+    //   accounts.forEach((obj: { name: any; address: string }) => {
+    //     const app: Approver = {
+    //       name: obj.name,
+    //       address: obj.address
+    //     };
+    //     this.approvers.push(app);
+    //   });
+    // }
   }
 
   loadData() {
@@ -365,36 +366,36 @@ export class SendCoinPage implements OnInit {
 
   async loadAccount() {
     this.account = await this.accountService.getCurrAccount();
-    this.getAccountBalance(this.account.address);
+    this.getAccountBalance(this.account.address.value);
   }
 
   async changeAccount(acc: Account) {
     this.account = acc;
-    this.getAccountBalance(this.account.address);
+    this.getAccountBalance(this.account.address.value);
   }
 
   async getAccountBalance(addr: string) {
     this.isLoadingBalance = true;
-    await zoobc.Account.getBalance(addr)
-      .then(data => {
-        if (data.accountbalance && data.accountbalance.spendablebalance) {
-          const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
-          this.account.balance = blnc;
+    // await zoobc.Account.getBalance(addr)
+    //   .then(data => {
+    //     if (data.accountbalance && data.accountbalance.spendablebalance) {
+    //       const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
+    //       this.account.balance = blnc;
 
-          this.balanceInUSD = this.currencyService.convertCurrency(blnc, COIN_CODE, CONST_DEFAULT_CURRENCY);
-          this.setAmountValidation();
+    //       this.balanceInUSD = this.currencyService.convertCurrency(blnc, COIN_CODE, CONST_DEFAULT_CURRENCY);
+    //       this.setAmountValidation();
 
-        }
-      })
-      .catch(error => {
-        this.errorMsg = '';
-        if (error === 'Response closed without headers') {
-          this.errorMsg = 'Fail connect to services, please try again!';
-        }
-        this.account.balance = 0;
-        this.setAmountValidation();
-      })
-      .finally(() => (this.isLoadingBalance = false));
+    //     }
+    //   })
+    //   .catch(error => {
+    //     this.errorMsg = '';
+    //     if (error === 'Response closed without headers') {
+    //       this.errorMsg = 'Fail connect to services, please try again!';
+    //     }
+    //     this.account.balance = 0;
+    //     this.setAmountValidation();
+    //   })
+    //   .finally(() => (this.isLoadingBalance = false));
   }
 
   onAmountChange() {

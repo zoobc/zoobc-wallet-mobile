@@ -7,7 +7,7 @@ import {
 } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
 
 @Component({
   selector: 'app-blockchain-object',

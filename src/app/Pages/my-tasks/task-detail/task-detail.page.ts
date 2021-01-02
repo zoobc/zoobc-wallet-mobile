@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { STORAGE_ESCROW_WAITING_LIST } from 'src/environments/variable.const';
-import zoobc from 'zoobc-sdk';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import zoobc from 'zbc-sdk';
+import { StorageService } from 'src/app/Services/storage.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import { ActivatedRoute } from '@angular/router';
@@ -31,7 +31,7 @@ export class TaskDetailPage implements OnInit {
     private authSrv: AuthService,
     private utilService: UtilService,
     private accountService: AccountService,
-    private storageService: StoragedevService
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {

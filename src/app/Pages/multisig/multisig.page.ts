@@ -5,7 +5,7 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
-import zoobc, { TransactionType } from 'zoobc-sdk';
+import zoobc, { TransactionType } from 'zbc-sdk';
 import { ImportDraftPage } from './import-draft/import-draft.page';
 import { THEME_OPTIONS } from 'src/environments/variable.const';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -69,14 +69,18 @@ export class MultisigPage implements OnInit {
   async doNext() {
     const ftrxType = this.multisigForm.controls.trxType;
     const fchainType = this.multisigForm.controls.chainType;
-    const multisig: MultiSigDraft = {
-      accountAddress: '',
-      fee: 0,
-      id: 0,
-      multisigInfo: null,
-      unisgnedTransactions: null,
-      txType: ftrxType.value,
-    };
+
+    const multisig: MultiSigDraft = null;
+
+    // const multisig: MultiSigDraft = {
+    //   accountAddress: '',
+    //   fee: 0,
+    //   id: 0,
+    //   multisigInfo: null,
+    //   unisgnedTransactions: null,
+    //   txType: ftrxType.value,
+    // };
+
 
     if (fchainType.value === 'offchain') {
       multisig.signaturesInfo = null;

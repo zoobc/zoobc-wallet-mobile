@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { ReceivePage } from './receive.page';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from 'src/app/Shared/shared.module';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
 const routes: Routes = [
   {
@@ -23,7 +23,7 @@ const routes: Routes = [
     NgxQRCodeModule,
     TranslateModule,
     RouterModule.forChild(routes),
-    SharedModule
+    ComponentsModule
   ],
   declarations: [ReceivePage]
 })

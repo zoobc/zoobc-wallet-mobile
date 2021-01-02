@@ -2,17 +2,16 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { saveAs } from 'file-saver';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { createInnerTxBytes, createInnerTxForm, getInputMap } from 'src/Helpers/multisig-utils';
 import { getTranslation, stringToBuffer } from 'src/Helpers/utils';
-import { generateTransactionHash } from 'zoobc-sdk';
+import { generateTransactionHash } from 'zbc-sdk';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { ConfirmationPage } from 'src/app/Components/confirmation/confirmation.page';
-import { UtilService } from 'src/app/Services/util.service';
-import { AlertController, ModalController } from '@ionic/angular';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -23,7 +22,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 
 export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestroy {
   isProcessing = false;
-  minFee =  TRANSACTION_MINIMUM_FEE;
+  minFee = TRANSACTION_MINIMUM_FEE;
   createTransactionForm: FormGroup;
   multisig: MultiSigDraft;
   multisigSubs: Subscription;
@@ -41,10 +40,7 @@ export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestr
     private router: Router,
     private location: Location,
     private translate: TranslateService,
-    private alertController: AlertController,
-    private utilService: UtilService,
-    public modalController: ModalController,
-    private cdr: ChangeDetectorRef  ) {
+    private cdr: ChangeDetectorRef) {
     const subs = this.multisigServ.multisig.subscribe(multisig => {
       this.createTransactionForm = createInnerTxForm(multisig.txType);
       this.fieldList = getInputMap(multisig.txType);
@@ -55,27 +51,34 @@ export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestr
   ngOnInit() {
     this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
       const { multisigInfo, unisgnedTransactions, signaturesInfo, txBody } = multisig;
-      if (unisgnedTransactions === undefined) { this.router.navigate(['/multisig']); }
+
+      if (unisgnedTransactions === undefined) {
+        this.router.navigate(['/multisig']);
+      }
 
       this.multisig = multisig;
-      if (signaturesInfo && signaturesInfo.txHash) { this.readonlyInput = true; }
+      if (signaturesInfo && signaturesInfo.txHash) {
+        this.readonlyInput = true;
+      }
 
       const senderForm = this.createTransactionForm.get('sender');
       senderForm.setValue(multisig.generatedSender);
 
-      if (txBody) { this.createTransactionForm.patchValue(txBody); }
+      if (txBody) {
+        this.createTransactionForm.patchValue(txBody);
+      }
+
       this.stepper.multisigInfo = multisigInfo !== undefined ? true : false;
       this.stepper.signatures = signaturesInfo !== undefined ? true : false;
     });
   }
-
 
   ngAfterViewInit() {
     this.cdr.detectChanges();
   }
 
   async generateDownloadJsonUri() {
-      alert(' not implement yet');
+    alert('Coming soon!');
   }
 
   ngOnDestroy() {
@@ -84,19 +87,35 @@ export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestr
 
   async next() {
     try {
-      if (this.multisig.signaturesInfo !== null) { this.readonlyInput = false; }
+      if (this.multisig.signaturesInfo !== null) {
+        this.readonlyInput = false;
+      }
 
       if (this.createTransactionForm.valid) {
         this.updateCreateTransaction();
         const { signaturesInfo } = this.multisig;
+
+        console.log('=== this.multisig: ', this.multisig);
+
         if (signaturesInfo === null) {
           const title = getTranslation('are you sure?', this.translate);
           const message = getTranslation('you will not be able to update the form anymore!', this.translate);
           const buttonText = getTranslation('yes, continue it!', this.translate);
-          this.presentConfirm(title, message, buttonText).then((ok) => {
 
+          const isConfirm = await Swal.fire({
+            title,
+            text: message,
+            showCancelButton: true,
+            confirmButtonText: buttonText,
+            type: 'warning',
+          }).then(result => {
+            if (result.value) {
+              this.generatedTxHash();
+              this.multisigServ.update(this.multisig);
+              return true;
+            } else { return false; }
           });
-          return true;
+          if (!isConfirm) { return false; }
         }
 
         if (signaturesInfo === undefined) {
@@ -108,36 +127,8 @@ export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestr
     } catch (err) {
       console.log(err);
       const message = getTranslation(err.message, this.translate);
-      this.utilService.showConfirmation('Oops...', message, false, null);
-      return false;
+      return Swal.fire({ type: 'error', title: 'Oops...', text: message });
     }
-  }
-
-
-  async presentConfirm(title: string, msg: string, buttonText: string) {
-    const alert = await this.alertController.create({
-      header: title,
-      message: msg,
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
-          }
-        }, {
-          text: buttonText,
-          handler: () => {
-            console.log('Confirm Okay');
-            this.generatedTxHash();
-            this.multisigServ.update(this.multisig);
-          }
-        }
-      ]
-    });
-
-    await alert.present();
   }
 
   updateCreateTransaction() {
@@ -164,10 +155,6 @@ export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestr
     }
   }
 
-  doRefresh(event: any) {
-      alert('not implement yet');
-  }
-
   saveDraft() {
     this.updateCreateTransaction();
     if (this.multisig.id) {
@@ -177,5 +164,6 @@ export class MsigCreateTransactionPage implements OnInit, AfterViewInit, OnDestr
     }
     this.router.navigate(['/multisig']);
   }
+
 
 }

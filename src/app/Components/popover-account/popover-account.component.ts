@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { Account, AccountType } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
-import zoobc from 'zoobc-sdk';
+import zoobc from 'zbc-sdk';
 
 @Component({
   selector: 'app-popover-account',
@@ -13,6 +13,7 @@ import zoobc from 'zoobc-sdk';
 export class PopoverAccountComponent implements OnInit {
   accounts: Account[];
   selectedIndex: number;
+  predefList: any;
   @Input() accountType: AccountType;
 
   constructor(
@@ -22,6 +23,7 @@ export class PopoverAccountComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    console.log('Popup predefList : ', this.predefList);
     const accounts: Account[] = await this.accountSrv.allAccount();
     if (this.accountType) {
       this.accounts = accounts.filter((account: Account) => {
@@ -31,8 +33,17 @@ export class PopoverAccountComponent implements OnInit {
       this.accounts = accounts;
     }
 
+    if (this.predefList) {
+      const list  = JSON.parse(this.predefList);
+      this.accounts = accounts.filter( acc => {// for every object in heroes
+          return list.includes(acc.address);
+      });
+      return;
+    }
+
     if (this.accounts && this.accounts.length > 0) {
-      this.getAllAccountBalance(this.accounts);
+      this.accounts = await this.accountSrv.getAccountsWithBalance();
+      // this.getAllAccountBalance(this.accounts);
     }
 
     const selectedAccount = await this.accountSrv.getCurrAccount();
@@ -41,25 +52,25 @@ export class PopoverAccountComponent implements OnInit {
     });
   }
 
-  async getAllAccountBalance(accounts: any) {
-    const accountAddresses = [];
-    let allBalances = null;
-    accounts.forEach((acc) => {
-      accountAddresses.push(acc.address);
-    });
+  // async getAllAccountBalance(accounts: any) {
+  //   const accountAddresses = [];
+  //   let allBalances = null;
+  //   accounts.forEach((acc) => {
+  //     accountAddresses.push(acc.address);
+  //   });
 
-    try {
-      const data = await zoobc.Account.getBalances(accountAddresses);
-      allBalances = data.accountbalancesList;
-    } catch (error) {
-      console.log('__error', error);
-    }
+  //   try {
+  //     const data = await zoobc.Account.getBalances(accountAddresses);
+  //     allBalances = data.accountbalancesList;
+  //   } catch (error) {
+  //     console.log('__error', error);
+  //   }
 
-    accounts.forEach(obj => {
-      const adres = obj.address;
-      obj.balance =  this.getBalanceByAddress(allBalances, adres);
-    });
-  }
+  //   accounts.forEach(obj => {
+  //     const adres = obj.address;
+  //     obj.balance =  this.getBalanceByAddress(allBalances, adres);
+  //   });
+  // }
 
   private getBalanceByAddress(allBalances: any, address: string) {
     const accInfo = allBalances.filter(acc => {

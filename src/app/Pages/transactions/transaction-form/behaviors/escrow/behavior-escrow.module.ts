@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { BehaviorEscrowFormComponent } from './behavior-escrow-form.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from 'src/app/Shared/shared.module';
-import { PopoverOptionComponent } from 'src/app/Shared/component/popover-option/popover-option.component';
-import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
+import { ComponentsModule } from 'src/app/Components/components.module';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
+import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 import { BehaviorEscrowSummaryComponent } from './summary/behavior-escrow-summary.component';
 
 @NgModule({
@@ -15,7 +15,7 @@ import { BehaviorEscrowSummaryComponent } from './summary/behavior-escrow-summar
     FormsModule,
     TranslateModule,
     IonicModule,
-    SharedModule
+    ComponentsModule
   ],
   declarations: [BehaviorEscrowFormComponent, BehaviorEscrowSummaryComponent],
   exports: [BehaviorEscrowFormComponent, BehaviorEscrowSummaryComponent],

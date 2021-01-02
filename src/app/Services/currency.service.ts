@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
 import { STORAGE_CURRENCY_RATE, STORAGE_ACTIVE_CURRENCY,
   CURRENCY_LIST, CONST_DEFAULT_RATE, CONST_DEFAULT_CURRENCY } from 'src/environments/variable.const';
-import { StoragedevService } from './storagedev.service';
+import { StorageService } from './storage.service';
 import { Currency } from '../Interfaces/currency';
 
 export interface ICurrency {
@@ -37,7 +37,7 @@ export class CurrencyService {
   public priceInUSD = environment.zbcPriceInUSD;
   // private openexchangerates = '7104c503e36947abba35d66d1ee66d35';
 
-  constructor(private http: HttpClient, private strgSrv: StoragedevService) {
+  constructor(private http: HttpClient, private strgSrv: StorageService) {
    this.loadRate();
   }
 

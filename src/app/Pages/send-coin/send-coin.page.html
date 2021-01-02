@@ -189,21 +189,9 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
-
-
   <ion-grid>
     <ion-row>
       <ion-col>
-        <!-- <ion-label *ngIf="!isAdvance">
-          <span class="textcustom">Escrow Transaction</span>
-          &nbsp;&nbsp; <ion-icon name="arrow-dropdown"></ion-icon>
-        </ion-label>
-        <ion-label *ngIf="isAdvance">
-          <span class="textcustom">Hide Escrow Transaction
-          </span>
-          &nbsp;&nbsp;<ion-icon name="arrow-dropup"></ion-icon>
-        </ion-label> -->
         <ion-checkbox style="margin-right: 10px" (ionChange)="changeWithEscrow($event.target.checked)" color="primary"></ion-checkbox>
         <ion-label>{{ "escrow transaction" | translate}}</ion-label>
       </ion-col>
@@ -240,7 +228,6 @@
       </ion-row>
 
     </ion-grid>
-
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -282,7 +269,7 @@
           {{ "block height" | translate}}: <ion-text color="primary">{{ blockHeight | number: '0.0-2' }}</ion-text>
         </ion-col>
       </ion-row>
-
+    </ion-grid>
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -311,9 +298,6 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-
-
-
     <ion-grid>
       <ion-row>
         <ion-col>

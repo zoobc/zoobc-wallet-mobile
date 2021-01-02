@@ -7,7 +7,7 @@ import { IonicModule } from "@ionic/angular";
 
 import { TransactionDetailPage } from "./transaction-detail.page";
 import { TranslateModule } from "@ngx-translate/core";
-import { SharedModule } from 'src/app/Shared/shared.module';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
 const routes: Routes = [
   {
@@ -23,7 +23,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     TranslateModule,
-    SharedModule
+    ComponentsModule
   ],
   declarations: [TransactionDetailPage]
 })

@@ -4,10 +4,10 @@
       {{ account.name }}
     </div>
     <div *ngIf="horizontal" class="address">
-      {{ account.address | shortAddress}}
+      {{ account.address.value | shortAddress}}
     </div>
     <div *ngIf="!horizontal" class="address">
-      {{ account.address}}
+      {{ account.address.value}}
     </div>
   </div>
   <div class="balance">

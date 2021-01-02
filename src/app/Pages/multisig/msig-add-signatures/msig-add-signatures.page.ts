@@ -6,7 +6,7 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
 import { Participant } from 'src/app/Interfaces/participant';
-import { signTransactionHash } from 'zoobc-sdk';
+import { signTransactionHash } from 'zbc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { stringToBuffer } from 'src/Helpers/utils';
@@ -111,7 +111,7 @@ export class MsigAddSignaturesPage implements OnInit {
 
   async patchUnsignedAddress(addres: string) {
     const accounts = await this.accountSrv.allAccount();
-    const account = accounts.find(acc => acc.address === addres);
+    const account = accounts.find(acc => acc.address.value === addres);
     this.patchParticipant(account.participants);
   }
 
@@ -217,7 +217,7 @@ export class MsigAddSignaturesPage implements OnInit {
       return null;
     }
     curAccount.participants.forEach(pcp => {
-      this.participantsSignature.push(this.createParticipant(pcp, ''));
+      // this.participantsSignature.push(this.createParticipant(pcp, ''));
     });
   }
 

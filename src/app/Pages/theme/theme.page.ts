@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { THEME_OPTIONS, STORAGE_ACTIVE_THEME } from 'src/environments/variable.const';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { NavController } from '@ionic/angular';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { StorageService } from 'src/app/Services/storage.service';
 
 @Component({
   selector: 'app-theme',
@@ -14,7 +14,7 @@ export class ThemePage implements OnInit {
   constructor(
     private navCtrl: NavController,
     private themeSrv: ThemeService,
-    private strgSrv: StoragedevService
+    private strgSrv: StorageService
   ) { }
 
   public themes = THEME_OPTIONS;

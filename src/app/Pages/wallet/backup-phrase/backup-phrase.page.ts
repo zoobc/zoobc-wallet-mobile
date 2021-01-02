@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 import { PinBackupPage } from './pin/pin-backup/pin-backup.page';
 import { STORAGE_ENC_PASSPHRASE_SEED } from 'src/environments/variable.const';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
-import zoobc from 'zoobc-sdk';
+import { StorageService } from 'src/app/Services/storage.service';
+import zoobc from 'zbc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
 @Component({
   selector: 'app-backup-phrase',
@@ -18,7 +18,7 @@ export class BackupPhrasePage implements OnInit {
   passDecrypted = [];
   decrypted = '';
   constructor(
-    private strgSrv: StoragedevService,
+    private strgSrv: StorageService,
     private utilService: UtilService,
     private modalController: ModalController
   ) { }

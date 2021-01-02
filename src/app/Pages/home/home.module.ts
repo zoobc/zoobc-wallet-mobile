@@ -5,9 +5,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from 'src/app/Shared/shared.module';
-import { PopoverAccountComponent } from 'src/app/Shared/component/popover-account/popover-account.component';
+import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 import { PopoverBlockchainObjectOptionComponent } from './popover-blockchain-object-option/popover-blockchain-object-option.component';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
 const routes: Routes = [
   {
@@ -23,7 +23,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     TranslateModule,
-    SharedModule
+    ComponentsModule
   ],
   declarations: [HomePage, PopoverBlockchainObjectOptionComponent],
   entryComponents: [PopoverAccountComponent, PopoverBlockchainObjectOptionComponent]

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from 'src/app/Services/account.service';
 import { ModalController } from '@ionic/angular';
-import zoobc from 'zoobc-sdk';
+
 @Component({
   selector: 'app-account-popup',
   templateUrl: './account-popup.page.html',
@@ -19,12 +19,11 @@ export class AccountPopupPage implements OnInit {
   async ngOnInit() {
     if (this.accType === 'multisig') {
       this.accounts = await this.accountService.allAccount('multisig');
+      // this.accounts = await this.accountService.getAccountsWithBalance('multisig');
+
     } else {
       this.accounts = await this.accountService.allAccount('normal');
-    }
-
-    if (this.accounts && this.accounts.length > 0) {
-      this.getAllAccountBalance(this.accounts);
+      // this.accounts = await this.accountService.getAccountsWithBalance('normal');
     }
 
   }
@@ -42,36 +41,36 @@ export class AccountPopupPage implements OnInit {
     await this.modalController.dismiss();
   }
 
-  async getAllAccountBalance(accounts: any) {
-    this.isLoadingBalance = true;
-    const accountAddresses = [];
-    let allBalances = null;
-    accounts.forEach((acc) => {
-      accountAddresses.push(acc.address);
-    });
+  // async getAllAccountBalance(accounts: any) {
+  //   this.isLoadingBalance = true;
+  //   const accountAddresses = [];
+  //   let allBalances = null;
+  //   accounts.forEach((acc) => {
+  //     accountAddresses.push(acc.address);
+  //   });
 
-    try {
-      const data = await zoobc.Account.getBalances(accountAddresses);
-      allBalances = data.accountbalancesList;
-    } catch (error) {
-      console.log('__error', error);
-    }
+  //   try {
+  //     const data = await zoobc.Account.getBalances(accountAddresses);
+  //     allBalances = data.accountbalancesList;
+  //   } catch (error) {
+  //     console.log('__error', error);
+  //   }
 
-    accounts.forEach(obj => {
-      const adres = obj.address;
-      obj.balance =  this.getBalanceByAddress(allBalances, adres);
-    });
-    this.isLoadingBalance = false;
-  }
+  //   accounts.forEach(obj => {
+  //     const adres = obj.address;
+  //     obj.balance =  this.getBalanceByAddress(allBalances, adres);
+  //   });
+  //   this.isLoadingBalance = false;
+  // }
 
-  private getBalanceByAddress(allBalances: any, address: string) {
-    const accInfo = allBalances.filter(acc => {
-      return acc.accountaddress === address;
-    });
-    if (accInfo && accInfo.length > 0) {
-      return accInfo[0].balance;
-    }
-    return 0;
-  }
+  // private getBalanceByAddress(allBalances: any, address: string) {
+  //   const accInfo = allBalances.filter(acc => {
+  //     return acc.accountaddress === address;
+  //   });
+  //   if (accInfo && accInfo.length > 0) {
+  //     return accInfo[0].balance;
+  //   }
+  //   return 0;
+  // }
 
 }

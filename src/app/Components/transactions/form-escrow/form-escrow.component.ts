@@ -3,7 +3,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { IonCheckbox } from '@ionic/angular';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { calcMinFee } from 'src/Helpers/utils';
-import zoobc, { HostInfoResponse } from 'zoobc-sdk';
+import zoobc, { HostInfoResponse } from 'zbc-sdk';
 
 @Component({
   selector: 'app-form-escrow',

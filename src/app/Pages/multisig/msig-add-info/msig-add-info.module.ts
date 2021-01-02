@@ -6,7 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { MsigAddInfoPage } from './msig-add-info.page';
-import { SharedModule } from 'src/app/Shared/shared.module';
+import { ComponentsModule } from 'src/app/Components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
@@ -21,7 +21,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    SharedModule,
+    ComponentsModule,
     TranslateModule,
     RouterModule.forChild(routes)
   ],

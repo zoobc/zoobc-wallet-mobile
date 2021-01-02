@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { EscrowApprovalInterface, escrowBuilder } from 'zoobc-sdk';
+import { EscrowApprovalInterface, escrowBuilder } from 'zbc-sdk';
 import { escrowMap, escrowForm } from '../form-escrow/form-escrow.component';
 
 @Component({

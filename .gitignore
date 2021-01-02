@@ -24,7 +24,6 @@ node_modules*
 tmp/
 temp/ 
 #externals/
-#src/environments/firebaseconfig.ts
 platforms/
 plugins/
 #plugins/android.json

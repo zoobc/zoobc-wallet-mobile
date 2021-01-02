@@ -13,9 +13,9 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <div *ngIf="isLoadingBalance || isLoadingTxFee">
+  <!-- <div *ngIf="isLoadingBalance || isLoadingTxFee">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div>
+  </div> -->
 
   <form [formGroup]="sendForm" (ngSubmit)="submit()">
     <ion-list class="form-list">
