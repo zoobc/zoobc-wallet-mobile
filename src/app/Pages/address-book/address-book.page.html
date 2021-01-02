@@ -3,54 +3,37 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Contacts" | translate }}</ion-title>
+    <ion-title>{{ "contacts" | translate }}</ion-title>
     <ion-buttons slot="end" color="primary">
       <ion-button routerLink="/address-book/export-import">
-        Export/Import
-      </ion-button>
-      <ion-button routerLink="/feedback">
-        {{ "Feedback" | translate }}
+        {{ "export/import" | translate}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
-  <ion-fab *ngIf="!forWhat" ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="tertiary" (click)="createNewAddress()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
   <div class="address-book-list" style="margin-bottom: 60px;">
     <ng-template #noData>
+      <ion-item>
+        <ion-button class="item-btn-add" fill="clear" (click)="createNewAddress()">{{ "add contact" | translate }}
+        </ion-button>
+      </ion-item>
       <ion-item lines="none">
-        <ion-label>{{ "You dont have any address" | translate }}</ion-label>
+        <ion-label>{{ "you dont have any address" | translate }}</ion-label>
       </ion-item>
     </ng-template>
-
     <ion-list *ngIf="addresses && addresses.length >= 1; else noData">
-      <ion-item-sliding *ngFor="let address of addresses; let i = index">
-        <ion-item>
-          <ion-label (click)="selectAddress(address)">
-            <p class="name">{{ address.name }}</p>
-            <p class="address">{{ address.shortAddress }}</p>
-          </ion-label>
-          <ion-button slot="end" (click)="copyAddress(i)" color="meddium">
-            <ion-icon name="copy"></ion-icon>
-          </ion-button>
-        </ion-item>
-        <ion-item-options *ngIf="!forWhat" >
-          <button color="success" (click)="editAddress(i)" class="tool">
-            <ion-icon name="create"></ion-icon>{{ "Edit" | translate }}
-          </button>
-          <button color="danger" (click)="deleteAddress(i)" class="tool">
-            <ion-icon name="trash"></ion-icon>{{ "Delete" | translate }}
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
+      <ion-item>
+        <ion-button class="item-btn-add" fill="clear" (click)="createNewAddress()">{{ "add contact" | translate }}
+        </ion-button>
+      </ion-item>
+      <ion-item *ngFor="let address of addresses; let i = index">
+        <ion-label (click)="selectAddress(address)" class="ion-text-wrap">
+          <app-info-address name="{{ address.name }}" address="{{ address.address }}"></app-info-address>
+        </ion-label>
+        <ion-icon *ngIf="!forWhat" name="zbc-option" slot="end" (click)="showOption($event, i)"></ion-icon>
+      </ion-item>
     </ion-list>
   </div>
-
 </ion-content>

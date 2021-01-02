@@ -9,6 +9,8 @@ import { AddressBookComponentModule } from 'src/app/Components/address-book/addr
 import { AddAddressPage } from './add-address/add-address.page';
 import { FormAddressComponent } from './form-address/form-address.component';
 import { EditAddressPage } from './edit-address/edit-address.page';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
 const routes: Routes = [
   {
@@ -37,13 +39,15 @@ const routes: Routes = [
     TranslateModule,
     RouterModule.forChild(routes),
     AddressBookComponentModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ComponentsModule
   ],
   declarations: [
     AddressBookPage,
     AddAddressPage,
     EditAddressPage,
     FormAddressComponent
-  ]
+  ],
+  entryComponents: [PopoverOptionComponent]
 })
 export class AddressBookPageModule {}

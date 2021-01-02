@@ -14,7 +14,7 @@ import { UtilService } from 'src/app/Services/util.service';
 export class ReceivePage implements OnInit {
 
   createdCode: any;
-  amount = 0;
+  amount: number;
   account: Account;
 
   constructor(
@@ -22,7 +22,7 @@ export class ReceivePage implements OnInit {
     private socialSharing: SocialSharing,
     public platform: Platform,
     private accountService: AccountService,
-    private utilService: UtilService
+    private utilSrv: UtilService
   ) {
     this.accountService.accountSubject.subscribe(() => {
       this.loadData();
@@ -35,7 +35,7 @@ export class ReceivePage implements OnInit {
 
   async loadData() {
     this.account = await this.accountService.getCurrAccount();
-    this.createQR(this.account.address, this.amount);
+    this.createQR(this.account.address.value, this.amount);
   }
 
   ngOnInit(): void {
@@ -44,18 +44,18 @@ export class ReceivePage implements OnInit {
 
   changeBarcode() {
     if (this.account) {
-      this.createQR(this.account.address, this.amount);
+      this.createQR(this.account.address.value, this.amount);
     }
   }
 
-  copyToClipboard() {
-    this.utilService.copyToClipboard(this.account.address);
+  copy() {
+    this.utilSrv.copyToClipboard(this.account.address);
   }
 
   // Share Options
   async openSharing() {
     this.platform.ready().then(async () => {
-      await this.socialSharing.share(this.account.address).then(() => {
+      await this.socialSharing.share(this.account.address.value).then(() => {
       }).catch((err) => {
         console.log(err);
       });

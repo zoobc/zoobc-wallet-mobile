@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { STORAGE_ESCROW_WAITING_LIST } from 'src/environments/variable.const';
-import zoobc from 'zoobc-sdk';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import zoobc from 'zbc-sdk';
+import { StorageService } from 'src/app/Services/storage.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import { ActivatedRoute } from '@angular/router';
@@ -31,7 +31,7 @@ export class TaskDetailPage implements OnInit {
     private authSrv: AuthService,
     private utilService: UtilService,
     private accountService: AccountService,
-    private storageService: StoragedevService
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
@@ -53,7 +53,7 @@ export class TaskDetailPage implements OnInit {
     await zoobc.Escrows.get(this.escrowId).then(res => {
       this.escrowDetail = res;
     }).finally(() =>
-    this.isLoading = false);
+      this.isLoading = false);
   }
 
   toNumber(arg: any) {
@@ -117,8 +117,15 @@ export class TaskDetailPage implements OnInit {
             this.utilService.showConfirmation('Success', 'Transaction has approved successfully!', true, '/my-tasks');
           },
           async err => {
-            console.log('err', err);
-            const message = 'An error occurred while processing your request';
+            const errMsg = err.message;
+            let message = 'An error occurred while processing your request';
+            if (err.code === 13 && errMsg.includes('UserBalanceNotEnough')) {
+              message = 'Signer balance is not enough!';
+            } else if (err.code === 13 && errMsg.includes('TXSenderNotFound')) {
+              message = 'Signer account not register yet, please do transaction first!';
+            } else {
+              message = 'Unknown reason!';
+            }
             this.utilService.showConfirmation('Fail', message, false, '/my-tasks');
           }
         )

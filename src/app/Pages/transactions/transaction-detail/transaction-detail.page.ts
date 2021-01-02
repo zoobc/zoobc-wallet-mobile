@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Transaction } from 'src/app/Interfaces/transaction';
-import { NavParams, ModalController, AlertController } from '@ionic/angular';
-import { UtilService } from 'src/app/Services/util.service';
-import { TranslateService } from '@ngx-translate/core';
+import { AlertController, Platform } from '@ionic/angular';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
+import { ActivatedRoute } from '@angular/router';
+// import zoobc, { getZBCAddress, toTransactionWallet, TransactionResponse } from 'zbc-sdk';
+import { AccountService } from 'src/app/Services/account.service';
+import { Account } from 'src/app/Interfaces/account';
+import { UtilService } from 'src/app/Services/util.service';
+import { AddressBookService } from 'src/app/Services/address-book.service';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import zoobc, { getZBCAddress, ZBCTransaction } from 'zbc-sdk';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -11,50 +17,147 @@ import { Network } from '@ionic-native/network/ngx';
   styleUrls: ['./transaction-detail.page.scss']
 })
 export class TransactionDetailPage implements OnInit {
-  transaction: Transaction;
-  account: any;
   status: string;
+  transactionId: string;
+  trx: ZBCTransaction;
+  loading: boolean;
+
+  private textCopyAddress: string;
+  private textAddToContact: string;
+  private textShareAddress: string;
+
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
+
+  senderRecipentOptions = [];
+  senderRecipentAlias = '';
+
+  transHashOptions = [];
+  currAccount: Account;
 
   constructor(
-    private utilService: UtilService,
-    private navParams: NavParams,
-    public modalCtrl: ModalController,
     private translateSrv: TranslateService,
     private network: Network,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private activeRoute: ActivatedRoute,
+    private accountService: AccountService,
+    private utilService: UtilService,
+    private addressBookSrv: AddressBookService,
+    private socialSharing: SocialSharing,
+    public platform: Platform,
   ) {
 
   }
 
-  ngOnInit() {
-    
-    if (this.navParams && this.navParams.data) {
+  async ngOnInit() {
+    this.loading = true;
+
+    this.activeRoute.params.subscribe(async params => {
+
+      this.currAccount = await this.accountService.getCurrAccount();
+      console.log('==== currAccount: ', this.currAccount);
+      const transactionId = params.transId;
+
+      this.trx = await zoobc.Transactions.get(transactionId);
+      console.log('==== transaction: ', this.trx);
+      // this.transactionWallet = toTransactionWallet(transaction, currAccount.address);
+
+      // this.senderRecipentAlias = await this.addressBookSrv.getNameByAddress(
+      //   this.transactionWallet.address
+      // );
+
+      this.senderRecipentOptions = [
+        {key: 'copy', label: this.textCopyAddress},
+        {key: 'share', label: this.textShareAddress}
+      ];
+
+      this.transHashOptions = [
+        {key: 'copy', label: this.textCopyAddress},
+        {key: 'share', label: this.textShareAddress}
+      ];
+
+      if (!this.senderRecipentAlias) {
+        this.senderRecipentOptions.push({key: 'addToContact', label: this.textAddToContact});
+      }
+
+      // const pubkey = Buffer.from(transaction.transactionhash.toString(), 'base64');
+      // this.transactionWallet.transactionhash = getZBCAddress(pubkey, 'ZTX');
+
+      // this.transaction = transaction;
+
+      this.loading = false;
+
+    });
+
+
+    /*if (this.navParams && this.navParams.data) {
       this.transaction = this.navParams.data.transaction;
       this.account = this.navParams.data.account;
       this.status = this.navParams.data.status;
-    }
+    }*/
 
-    if (this.transaction.type === 'send') {
+    /*if (this.transaction.type === 'send') {
       this.transaction.sender = this.account.address;
       this.transaction.recipient = this.transaction.address;
     } else if (this.transaction.type === 'receive') {
       this.transaction.sender = this.transaction.address;
       this.transaction.recipient = this.account.address;
     }
-    this.transaction.total = this.transaction.amount + this.transaction.fee;
+    this.transaction.total = this.transaction.amount + this.transaction.fee;*/
+
+    this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translateLang();
+    });
+
+    this.translateLang();
   }
 
-  async copyAddress(address: string) {
-    this.utilService.copyToClipboard(address);
+  onTransHashOptionsClose(event, address) {
+    switch (event) {
+      case 'copy':
+        this.utilService.copyToClipboard(address);
+        break;
+      case 'share':
+        this.platform.ready().then(async () => {
+          await this.socialSharing.share(address).then(() => {
+          }).catch((err) => {
+            console.log(err);
+          });
+        });
+        break;
+    }
   }
 
-  async close() {
-    await this.modalCtrl.dismiss();
+  onSenderRecipentOptionsClose(event, address) {
+    switch (event) {
+      case 'copy':
+        this.utilService.copyToClipboard(address);
+        break;
+      case 'share':
+        this.platform.ready().then(async () => {
+          await this.socialSharing.share(address).then(() => {
+          }).catch((err) => {
+            console.log(err);
+          });
+        });
+        break;
+    }
   }
 
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
+  translateLang() {
+    this.translateSrv.get([
+      'copy address',
+      'share address',
+      'add to contact',
+    ]).subscribe((res: any) => {
+      this.textCopyAddress = res['copy address'];
+      this.textShareAddress = res['share address'];
+      this.textAddToContact = res['add to contact'];
+    });
+  }
+
+
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
@@ -80,7 +183,7 @@ export class TransactionDetailPage implements OnInit {
 
     this.translateSrv
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;

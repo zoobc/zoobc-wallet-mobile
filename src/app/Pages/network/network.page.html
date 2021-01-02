@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "network" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-radio-group value="{{ activeNetwork }}">
+      <ion-item *ngFor="let network of networks; let i = index" (click)="selectNetwork(i)">
+        <ion-radio slot="start" value="{{ i }}"></ion-radio>
+        <ion-label>
+          {{ network.name }}
+        </ion-label>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+
+</ion-content>

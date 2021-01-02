@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { 
-  LoadingController, 
-  AlertController} from '@ionic/angular';
+import {
+  LoadingController,
+  AlertController,
+  NavController} from '@ionic/angular';
 import { MenuController, ModalController } from '@ionic/angular';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
@@ -21,9 +22,8 @@ import {
 } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
-import zoobc, { SendMoneyInterface } from 'zoobc-sdk';
-import { calculateMinFee, sanitizeString } from 'src/Helpers/utils';
-import { makeShortAddress } from 'src/Helpers/converters';
+import zoobc, { SendMoneyInterface } from 'zbc-sdk';
+import { calculateMinFee } from 'src/Helpers/utils';
 import { Approver } from 'src/app/Interfaces/approver';
 import { Currency } from 'src/app/Interfaces/currency';
 import { TransactionService } from 'src/app/Services/transaction.service';
@@ -38,12 +38,12 @@ import { addressFormatValidator } from 'src/Helpers/validators';
   styleUrls: ['send-coin.page.scss']
 })
 export class SendCoinPage implements OnInit {
+  optionFee = '';
   approvers = [];
   rootPage: any;
   status: any;
   account: Account;
   senderAddress: string;
-  optionFee: string;
   transactionFee: number;
   withEscrow: boolean;
   allFees = this.trxService.transactionFees(TRANSACTION_MINIMUM_FEE);
@@ -54,6 +54,20 @@ export class SendCoinPage implements OnInit {
   public currencyRate: Currency = {
     name: CONST_DEFAULT_CURRENCY,
     value: environment.zbcPriceInUSD
+  };
+
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
+  conversionValue = {
+    amount: {
+      ZBC: 0,
+      USD: 0
+    },
+    fee: {
+      ZBC: this.allFees[0].fee,
+      USD: 0
+    }
   };
 
   public isLoadingBalance = true;
@@ -70,18 +84,19 @@ export class SendCoinPage implements OnInit {
   scanForWhat: string;
 
   sendForm = new FormGroup({
-    recipientAddress: new FormControl('',[Validators.required, addressFormatValidator]),
-    amount: new FormControl(0,[Validators.required, Validators.min(0.00000001)]),
-    fee: new FormControl(this.allFees[0].fee,[Validators.required, Validators.min(this.minimumFee)]),
+    recipientAddress: new FormControl('', [Validators.required, addressFormatValidator]),
+    amount: new FormControl(0, [Validators.required, Validators.min(0.00000001)]),
+    fee: new FormControl(this.allFees[0].fee, [Validators.required, Validators.min(this.minimumFee)]),
     escrow: new FormGroup({
       escrowApprover: new FormControl(''),
       escrowCommision: new FormControl(0),
-      escrowTimeout: new FormControl(0),
+      escrowTimeout: new FormControl(0, [Validators.required, Validators.min(1), Validators.max(720)]),
       escrowInstruction: new FormControl(''),
     })
   });
 
-  submitted = false
+  submitted = false;
+  priceInUSD: number;
 
   constructor(
     private router: Router,
@@ -99,7 +114,8 @@ export class SendCoinPage implements OnInit {
     private authSrv: AuthService,
     private trxService: TransactionService,
     private network: Network,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private navCtrl: NavController
   ) {
     this.qrScannerService.qrScannerSubject.subscribe(address => {
       this.getScannerResult(address);
@@ -111,28 +127,28 @@ export class SendCoinPage implements OnInit {
 
     this.addressbookService.recipientSubject.subscribe({
       next: address => {
-        this.sendForm.controls['recipientAddress'].setValue(address.address);
+        this.sendForm.controls.recipientAddress.setValue(address.address);
         this.recipientName = address.name;
       }
     });
 
     this.addressbookService.approverSubject.subscribe({
       next: address => {
-        this.sendForm.get("escrow").get('escrowApprover').setValue(address.address);
+        this.sendForm.get('escrow').get('escrowApprover').setValue(address.address);
         this.escrowApproverName = address.name;
       }
     });
 
     this.accountService.recipientSubject.subscribe({
       next: recipient => {
-        this.sendForm.controls['recipientAddress'].setValue(recipient.address);
+        this.sendForm.controls.recipientAddress.setValue(recipient.address);
         this.recipientName = recipient.name;
       }
     });
 
     this.accountService.approverSubject.subscribe({
       next: approver => {
-        this.sendForm.get("escrow").get('escrowApprover').setValue(approver.address);
+        this.sendForm.get('escrow').get('escrowApprover').setValue(approver.address);
         this.escrowApproverName = approver.name;
       }
     });
@@ -157,24 +173,24 @@ export class SendCoinPage implements OnInit {
     return this.sendForm.get('fee');
   }
 
-  get escrow(){
-    return this.sendForm.get("escrow")
+  get escrow() {
+    return this.sendForm.get('escrow');
   }
 
-  get escrowApprover(){
-    return this.sendForm.get("escrow").get("escrowApprover")
+  get escrowApprover() {
+    return this.sendForm.get('escrow').get('escrowApprover');
   }
 
-  get escrowCommision(){
-    return this.sendForm.get("escrow").get("escrowCommision")
+  get escrowCommision() {
+    return this.sendForm.get('escrow').get('escrowCommision');
   }
 
-  get escrowTimeout(){
-    return this.sendForm.get("escrow").get("escrowTimeout")
+  get escrowTimeout() {
+    return this.sendForm.get('escrow').get('escrowTimeout');
   }
 
-  get escrowInstruction(){
-    return this.sendForm.get("escrow").get("escrowInstruction")
+  get escrowInstruction() {
+    return this.sendForm.get('escrow').get('escrowInstruction');
   }
 
   switchCurrency() {
@@ -187,8 +203,8 @@ export class SendCoinPage implements OnInit {
       this.secondaryCurr = this.currencyRate.name;
     }
 
-    this.onAmountChange()
-    this.onFeeChange()
+    this.onAmountChange();
+    this.onFeeChange();
   }
 
   async ngOnInit() {
@@ -196,26 +212,27 @@ export class SendCoinPage implements OnInit {
     this.loadData();
     this.getAllAddress();
     this.getAllAccount();
+    this.onFeeChange();
+    this.priceInUSD = this.currencyService.getPriceInUSD();
+    this.changeWithEscrow(false);
   }
 
   async getAllAccount() {
     const accounts = await this.accountService.allAccount();
 
-    if (accounts && accounts.length > 0) {
-      accounts.forEach((obj: { name: any; address: string }) => {
-        const app: Approver = {
-          name: obj.name,
-          address: obj.address,
-          shortAddress: makeShortAddress(obj.address)
-        };
-        this.approvers.push(app);
-      });
-    }
+    // if (accounts && accounts.length > 0) {
+    //   accounts.forEach((obj: { name: any; address: string }) => {
+    //     const app: Approver = {
+    //       name: obj.name,
+    //       address: obj.address
+    //     };
+    //     this.approvers.push(app);
+    //   });
+    // }
   }
 
   loadData() {
     this.getRecipientFromScanner();
-    this.optionFee = this.allFees[0].fee.toString();
     this.currencyRate = this.currencyService.getRate();
     this.secondaryCurr = this.currencyRate.name;
   }
@@ -239,8 +256,7 @@ export class SendCoinPage implements OnInit {
       alladdress.forEach((obj: { name: any; address: string }) => {
         const app: Approver = {
           name: obj.name,
-          address: obj.address,
-          shortAddress: makeShortAddress(obj.address)
+          address: obj.address
         };
         this.approvers.push(app);
       });
@@ -350,148 +366,134 @@ export class SendCoinPage implements OnInit {
 
   async loadAccount() {
     this.account = await this.accountService.getCurrAccount();
-    this.getAccountBalance(this.account.address);
+    this.getAccountBalance(this.account.address.value);
   }
 
   async changeAccount(acc: Account) {
     this.account = acc;
-    this.getAccountBalance(this.account.address);
+    this.getAccountBalance(this.account.address.value);
   }
 
   async getAccountBalance(addr: string) {
     this.isLoadingBalance = true;
-    await zoobc.Account.getBalance(addr)
-      .then(data => {
-        if (data.accountbalance && data.accountbalance.spendablebalance) {
-          const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
-          this.account.balance = blnc;
+    // await zoobc.Account.getBalance(addr)
+    //   .then(data => {
+    //     if (data.accountbalance && data.accountbalance.spendablebalance) {
+    //       const blnc = Number(data.accountbalance.spendablebalance) / 1e8;
+    //       this.account.balance = blnc;
 
-          this.balanceInUSD = this.currencyService.convertCurrency(blnc,"ZBC","USD");
-          this.setAmountValidation();
+    //       this.balanceInUSD = this.currencyService.convertCurrency(blnc, COIN_CODE, CONST_DEFAULT_CURRENCY);
+    //       this.setAmountValidation();
 
-        }
-      })
-      .catch(error => {
-        this.errorMsg = '';
-        if (error === 'Response closed without headers') {
-          this.errorMsg = 'Fail connect to services, please try again!';
-        }
-        this.account.balance = 0;
-        this.setAmountValidation();
-      })
-      .finally(() => (this.isLoadingBalance = false));
+    //     }
+    //   })
+    //   .catch(error => {
+    //     this.errorMsg = '';
+    //     if (error === 'Response closed without headers') {
+    //       this.errorMsg = 'Fail connect to services, please try again!';
+    //     }
+    //     this.account.balance = 0;
+    //     this.setAmountValidation();
+    //   })
+    //   .finally(() => (this.isLoadingBalance = false));
   }
 
-  conversionValue = {
-    amount: {
-      ZBC: 0,
-      USD: 0
-    },
-    fee: {
-      ZBC: this.allFees[0].fee,
-      USD: 0
-    }
-  };
-
   onAmountChange() {
-    const amount = this.sendForm.get("amount").value;
-    const amountCurr = this.primaryCurr
+    const amount = this.sendForm.get('amount').value;
+    const amountCurr = this.primaryCurr;
     this.conversionValue.amount.ZBC = this.currencyService.convertCurrency(
       amount,
       amountCurr,
-      "ZBC"
+      COIN_CODE
     );
     this.conversionValue.amount.USD = this.currencyService.convertCurrency(
       amount,
       amountCurr,
-      "USD"
+      CONST_DEFAULT_CURRENCY
     );
   }
 
   onFeeChange() {
-    const fee = this.sendForm.get("fee").value;
-    const feeCurr = this.primaryCurr
+    const fee = this.sendForm.get('fee').value;
+    const feeCurr = this.primaryCurr;
     this.conversionValue.fee.ZBC = this.currencyService.convertCurrency(
       fee,
       feeCurr,
-      "ZBC"
+      COIN_CODE
     );
     this.conversionValue.fee.USD = this.currencyService.convertCurrency(
       fee,
       feeCurr,
-      "USD"
+      CONST_DEFAULT_CURRENCY
     );
 
     this.setAmountValidation();
   }
 
-  onEscrowTimeoutChange(){
-  
-    this.minimumFee = calculateMinFee(this.escrowTimeout.value)
+  onEscrowTimeoutChange() {
+
+    this.minimumFee = calculateMinFee(this.escrowTimeout.value);
 
     this.setFeeValidation();
     this.setAmountValidation();
   }
 
-  onCommisionChange(){
+  onCommisionChange() {
     this.setAmountValidation();
   }
 
-  shortAddress(address: string) {
-    return makeShortAddress(address);
-  }
-
-  setAmountValidation(){
-    this.amount.setValidators([Validators.required, Validators.min(0.00000001), 
-      Validators.max(this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC?this.minimumFee:this.conversionValue.fee.ZBC) 
-      - this.escrowCommision.value)]
-     )
+  setAmountValidation() {
+    this.amount.setValidators([Validators.required, Validators.min(0.00000001),
+      Validators.max(this.account.balance - (this.minimumFee > this.conversionValue.fee.ZBC ?
+        this.minimumFee : this.conversionValue.fee.ZBC)
+        - this.escrowCommision.value)]
+        );
     this.amount.updateValueAndValidity();
   }
 
-  setFeeValidation(){
-    this.fee.setValidators([Validators.required, Validators.min(this.minimumFee)])
+  setFeeValidation() {
+    this.fee.setValidators([Validators.required, Validators.min(this.minimumFee)]);
     this.fee.updateValueAndValidity();
   }
 
-  addEscrowValidation(){
-    this.escrow.get("escrowApprover").setValidators([Validators.required, addressFormatValidator])
-    this.escrow.get("escrowCommision").setValidators([Validators.required, Validators.min(0.00000001)])
-    this.escrow.get("escrowTimeout").setValidators([Validators.required, Validators.min(1)])
-    this.escrow.get("escrowInstruction").setValidators(Validators.required)
+  addEscrowValidation() {
+    this.escrow.get('escrowApprover').setValidators([Validators.required, addressFormatValidator]);
+    this.escrow.get('escrowCommision').setValidators([Validators.required, Validators.min(0.00000001)]);
+    this.escrow.get('escrowTimeout').setValidators([Validators.required, Validators.min(1), Validators.max(720)]);
+    this.escrow.get('escrowInstruction').setValidators(Validators.required);
 
-    this.escrowUpdateValueAndValidity()
+    this.escrowUpdateValueAndValidity();
   }
 
-  removeEscrowValidation(){
-    this.escrow.get("escrowApprover").clearValidators()
-    this.escrow.get("escrowCommision").clearValidators()
-    this.escrow.get("escrowTimeout").clearValidators()
-    this.escrow.get("escrowInstruction").clearValidators()
+  removeEscrowValidation() {
+    this.escrow.get('escrowApprover').clearValidators();
+    this.escrow.get('escrowCommision').clearValidators();
+    this.escrow.get('escrowTimeout').clearValidators();
+    this.escrow.get('escrowInstruction').clearValidators();
 
-    this.escrowUpdateValueAndValidity()
+    this.escrowUpdateValueAndValidity();
   }
 
-  escrowUpdateValueAndValidity(){
-    this.escrow.get("escrowApprover").updateValueAndValidity()
-    this.escrow.get("escrowCommision").updateValueAndValidity()
-    this.escrow.get("escrowTimeout").updateValueAndValidity()
-    this.escrow.get("escrowInstruction").updateValueAndValidity()
+  escrowUpdateValueAndValidity() {
+    this.escrow.get('escrowApprover').updateValueAndValidity();
+    this.escrow.get('escrowCommision').updateValueAndValidity();
+    this.escrow.get('escrowTimeout').updateValueAndValidity();
+    this.escrow.get('escrowInstruction').updateValueAndValidity();
   }
 
   changeWithEscrow(value: boolean) {
-    this.withEscrow = value
+    this.withEscrow = value;
 
-    if(value){
+    if (value) {
       this.addEscrowValidation();
-      this.minimumFee = calculateMinFee(this.escrowTimeout.value)
-    }else{
+      this.minimumFee = calculateMinFee(this.escrowTimeout.value);
+    } else {
       this.removeEscrowValidation();
       this.minimumFee = TRANSACTION_MINIMUM_FEE;
     }
-    
+
     this.getBlockHeight();
-    
+
     this.setFeeValidation();
     this.setAmountValidation();
   }
@@ -503,7 +505,7 @@ export class SendCoinPage implements OnInit {
     });
 
     pinmodal.onDidDismiss().then(returnedData => {
-      if (returnedData && returnedData.data !== 0) {
+      if (returnedData && returnedData.data && returnedData.data !== 0) {
         const pin = returnedData.data;
         this.sendMoney();
       }
@@ -516,9 +518,9 @@ export class SendCoinPage implements OnInit {
       if (params && params.jsonData && params.jsonData.length > 0) {
         const result = params.jsonData.split('||');
         if (params.from === 'dashboard') {
-          this.sendForm.controls["recipientAddress"].setValue(result[0])
+          this.sendForm.controls.recipientAddress.setValue(result[0]);
           if (result.length > 1) {
-            this.sendForm.controls["amount"].setValue(result[1]?Number(result[1]):0);
+            this.sendForm.controls.amount.setValue(result[1] ? Number(result[1]) : 0);
             this.onAmountChange();
           }
         }
@@ -527,9 +529,8 @@ export class SendCoinPage implements OnInit {
   }
 
   async showConfirmation() {
-    this.submitted = true
-
-    if(this.sendForm.valid){
+    this.submitted = true;
+    if (this.sendForm.valid) {
       const modalDetail = await this.modalController.create({
         component: SenddetailPage,
         componentProps: {
@@ -562,7 +563,7 @@ export class SendCoinPage implements OnInit {
     }
   }
 
-  async sendMoney() { 
+  async sendMoney() {
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
@@ -572,9 +573,9 @@ export class SendCoinPage implements OnInit {
 
     await loading.present();
 
-    let data: SendMoneyInterface = {
+    const data: SendMoneyInterface = {
       sender: this.account.address,
-      recipient: sanitizeString(this.recipientAddress.value),
+      recipient: (this.recipientAddress.value),
       fee: Number(this.fee.value),
       amount: this.amount.value
     };
@@ -583,7 +584,7 @@ export class SendCoinPage implements OnInit {
       data.approverAddress = this.escrowApprover.value;
       data.commission = this.escrowCommision.value;
       data.timeout = this.escrowTimeout.value;
-      data.instruction = sanitizeString(this.escrowInstruction.value)
+      data.instruction = (this.escrowInstruction.value);
     }
 
     const childSeed = this.authSrv.keyring.calcDerivationPath(
@@ -595,6 +596,9 @@ export class SendCoinPage implements OnInit {
           if (resolveTx) {
             this.ngOnInit();
             this.showSuccessMessage();
+            this.sendForm.reset();
+            this.submitted = false;
+            this.withEscrow = false;
             return;
           }
         },
@@ -607,11 +611,11 @@ export class SendCoinPage implements OnInit {
       });
   }
 
-  async showErrorMessage(error) {
+  async showErrorMessage(error: any) {
     const modal = await this.modalController.create({
       component: TrxstatusPage,
       componentProps: {
-        msg: error,
+        message: error,
         status: false
       }
     });
@@ -622,42 +626,58 @@ export class SendCoinPage implements OnInit {
   }
 
   async showSuccessMessage() {
+    const msgSuccess = this.getTranslation('you send coins to', this.translateService, {
+      amount: this.amount.value,
+      recipient: this.recipientAddress.value,
+      currencyValue:  this.amount.value * this.priceInUSD * this.currencyRate.value,
+      currencyName: this.currencyRate.name
+    });
+
     const modal = await this.modalController.create({
       component: TrxstatusPage,
       componentProps: {
-        msg: 'transaction succes',
+        message: msgSuccess,
         status: true
       }
     });
 
     modal.onDidDismiss().then(() => {
-      //this.resetValidation();
+      this.navCtrl.pop();
     });
 
     return await modal.present();
   }
 
-  changeFee(value:string) {
-    this.optionFee = value
 
-    if(value==="custom"){
-      this.sendForm.controls['fee'].setValue(0);
-    }else{
-      this.sendForm.controls['fee'].setValue(value);
-    }
+  getTranslation(
+    value: string,
+    translateService: TranslateService,
+    // tslint:disable-next-line:ban-types
+    interpolateParams?: Object
+  ) {
+    let message: string;
+    translateService.get(value, interpolateParams).subscribe(res => {
+      message = res;
+    });
+    return message;
+  }
+
+
+  changeFee(value: string) {
+    this.sendForm.controls.fee.setValue(value);
   }
 
   getScannerResult(arg: string) {
     const result = arg.split('||');
     if (this.scanForWhat === FOR_APPROVER) {
-      this.sendForm.get("escrow").get('escrowApprover').setValue(result[0]);
+      this.sendForm.get('escrow').get('escrowApprover').setValue(result[0]);
       this.escrowApproverName = null;
     } else {
-      this.sendForm.controls["recipientAddress"].setValue(result[0])
+      this.sendForm.controls.recipientAddress.setValue(result[0]);
 
       this.recipientName = null;
       if (result.length > 1) {
-        this.sendForm.controls["amount"].setValue(result[1]?Number(result[1]):0);
+        this.sendForm.controls.amount.setValue(result[1] ? Number(result[1]) : 0);
         this.onAmountChange();
       }
     }
@@ -691,9 +711,6 @@ export class SendCoinPage implements OnInit {
     return fee;
   }
 
-  alertConnectionTitle: string = '';
-  alertConnectionMsg: string = '';
-  networkSubscription = null;
 
   ionViewWillEnter() {
     this.networkSubscription = this.network
@@ -719,7 +736,7 @@ export class SendCoinPage implements OnInit {
 
     this.translateService
       .get(
-        "Oops, it seems that you don't have internet connection. Please check your internet connection"
+        'Oops, it seems that you don\'t have internet connection. Please check your internet connection'
       )
       .subscribe((res: string) => {
         this.alertConnectionMsg = res;

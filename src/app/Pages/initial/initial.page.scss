@@ -1,14 +1,45 @@
-.cMiddle{
-  padding-top: 20px;
-  height: 50%;
+ion-content{
+  --background: #333;
 }
 
-.cBottom{
-  margin-bottom: 20px;
+.content{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  z-index: 1;
+  position: relative;
 }
 
-.scroll-content {
-  margin-bottom: 0!important;
+ion-toolbar{
+  --background: transparent;
+  --ion-color-base: transparent !important;
+
+  ion-select{
+    color: #ffffff;
+  }
+}
+
+.welcome-container{
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome{
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  margin-top: 0.4rem;
+  font-family: 'Roboto-Medium';
+}
+
+.logo-container{
+  ion-icon{
+    width: 160px;
+    height: 160px;
+  }
 }
 
 .logo{
@@ -18,19 +49,47 @@
 }
 
 .btnNew{
-  margin-bottom:10px;
+  margin-bottom:20px;
+  --background: white;
+  color:#28456D;
 }
 
-
-ion-footer {
-  --ion-color-base: transparent !important;
+.opnExisting{
+  color: white;
+  background-color: transparent;
+  --border-color: white;
 }
 
 .background-zoobc{
-  --background: transparent;
-  background-image: url("src/assets/images/zoobc.png");
+  --background: url(../../../assets/images/bgInitial.jpg);
   background-repeat:no-repeat;
   background-size: cover;
   background-attachment: fixed;
   background-position: center center;
+  background-color: #28456D;
+  mix-blend-mode: hard-light;
+  position: relative;
+
+  .blendBg1{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    background-color: #28456D;
+    z-index: 1;
+    mix-blend-mode: hard-light;
+  }
+  
+  .blendBg2{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    background-color: #28456D;
+    opacity: 0.2;
+    z-index: 1;
+    mix-blend-mode: screen;
+  }
 }

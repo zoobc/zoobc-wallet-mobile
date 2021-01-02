@@ -3,15 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Add Contact" | translate }}</ion-title>
-    <ion-buttons slot="end" color="primary">
-      <ion-button routerLink="/feedback">
-        {{ "Feedback" | translate }}
-      </ion-button>
-    </ion-buttons>
+    <ion-title>{{ "add contact" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <app-form-address (onSubmit)="onSubmit($event)" (onCancel)="goBack()"></app-form-address>
+<ion-content class="ion-padding">
+  <app-form-address (onSubmit)="onSubmit($event)"></app-form-address>
 </ion-content>

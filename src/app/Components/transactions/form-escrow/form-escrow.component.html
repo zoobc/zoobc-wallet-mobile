@@ -1,0 +1,74 @@
+<ng-container [formGroup]="group">
+  <ion-list class="form-list">
+
+    <ion-item class="item-checkbox ion-no-padding" lines="none">
+      <ion-checkbox (ionChange)="toggleAdvancedMenu()" color="primary">
+      </ion-checkbox>
+      <ion-label>{{ "escrow transaction" | translate}}</ion-label>
+    </ion-item>
+
+    <ng-container *ngIf="showEscrow">
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ 'approver address' | translate }}</ion-label>
+        <app-form-get-address formControlName="{{ inputMap.addressApprover }}"></app-form-get-address>
+        <ng-container *ngIf="group.get(inputMap.addressApprover).touched">
+          <ion-text class="text-error" *ngIf="group.get(inputMap.addressApprover).hasError('required')">
+            {{ 'address for approver is required' | translate }}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="group.get(inputMap.addressApprover).hasError('invalidAddress')">
+            {{ 'zbc address is invalid' | translate }}
+          </ion-text>
+        </ng-container>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "approver commission" | translate }} </ion-label>
+        <app-form-amount-conversion (ionChange)="changeForm()" formControlName="{{ inputMap.approverCommission }}">
+        </app-form-amount-conversion>
+        <ng-container *ngIf="group.get(inputMap.approverCommission).touched">
+          <ion-text class="text-error" *ngIf="group.get(inputMap.approverCommission).hasError('required')">
+            {{ 'commission for approver is required' | translate }}
+          </ion-text>
+          <ion-text *ngIf="group.get(inputMap.approverCommission).hasError('min')">
+            {{ 'minimum commission is' | translate: { val: '0.00000001' } }}
+          </ion-text>
+        </ng-container>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "timeout" | translate }}</ion-label>
+        <ion-input type="number" (change)="onChangeTimeOut()" formControlName="{{ inputMap.timeout }}"
+          placeholder="{{ 'timeout' | translate }}">
+        </ion-input>
+        <ion-text class="blockheight ion-text-right">{{ "block height" | translate}}:
+          {{ blockHeight | number: '0.0-2' }}
+        </ion-text>
+        <ng-container *ngIf="group.get(inputMap.timeout).touched">
+
+          <ion-text class="text-error" *ngIf="group.get(inputMap.timeout).hasError('required')">{{
+          'timeout is required' | translate
+        }}</ion-text>
+          <ion-text class="text-error" *ngIf="group.get(inputMap.timeout).hasError('min')">
+            {{ 'minimum timeout is 1' | translate }}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="group.get(inputMap.timeout).hasError('max')">
+            {{ 'maximum timeout is 720' | translate }}
+          </ion-text>
+        </ng-container>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ "instruction" | translate }}</ion-label>
+        <ion-textarea rows="5" formControlName="{{ inputMap.instruction }}"
+          placeholder="{{ 'enter instruction' | translate }}">
+        </ion-textarea>
+        <ng-container *ngIf="group.get(inputMap.instruction).touched">
+          <ion-text *ngIf="group.get(inputMap.instruction).hasError('required')">
+            {{ 'instruction is required' | translate }}
+          </ion-text>
+        </ng-container>
+      </ion-item>
+    </ng-container>
+  </ion-list>
+</ng-container>

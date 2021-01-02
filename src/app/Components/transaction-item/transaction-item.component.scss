@@ -1,0 +1,57 @@
+.transaction-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  .info-amount-conversion{
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  >div {
+    display: flex;
+    flex-direction: column;
+
+    &:last-child {
+      align-items: flex-end;
+    }
+
+    &.info {
+      .sender {
+        color: #222428;
+        font-size: 16px;
+      }
+
+      .time {
+        color: #727588;
+        font-size: 12px;
+      }
+    }
+
+    &.amount {
+      .main-amount {
+        font-size: 16px;
+      }
+
+      .other-amount {
+        color: #727588;
+        font-size: 12px;
+        margin-left: 0;
+      }
+
+      &.send{
+        .main-amount{
+          color: var(--ion-color-danger);
+        }
+      }
+
+      &.receive{
+        .main-amount{
+          color: var(--ion-color-success);
+        }
+      }
+    }
+  }
+}

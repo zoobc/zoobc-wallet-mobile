@@ -8,9 +8,9 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/Services/auth-service';
 import { SetupPinPage } from 'src/app/Pages/wallet/existing-wallet/setup-pin/setup-pin.page';
 import { Location } from '@angular/common';
-import { ZooKeyring } from 'zoobc-sdk';
+import { ZooKeyring } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
-import { StoragedevService } from 'src/app/Services/storagedev.service';
+import { StorageService } from 'src/app/Services/storage.service';
 import { STORAGE_ADDRESS_BOOK } from 'src/environments/variable.const';
 
 @Component({
@@ -35,7 +35,7 @@ export class ExistingWalletPage implements OnInit {
     private authSrv: AuthService,
     private modalController: ModalController,
     private accountSrv: AccountService,
-    private storageSrv: StoragedevService
+    private storageSrv: StorageService
   ) {
     this.lang = 'english';
   }
@@ -105,7 +105,7 @@ export class ExistingWalletPage implements OnInit {
 
   async createAccount() {
     await this.accountSrv.createInitialAccount();
-    await this.storageSrv.remove(STORAGE_ADDRESS_BOOK);
+    this.storageSrv.remove(STORAGE_ADDRESS_BOOK);
     const loginStatus = this.authSrv.login(this.plainPin);
     if (loginStatus) {
       this.presentLoading();
@@ -121,7 +121,7 @@ export class ExistingWalletPage implements OnInit {
     });
 
     loading.onDidDismiss().then(() => {
-      this.navCtrl.navigateRoot('/');
+      this.navCtrl.navigateRoot('/tabs/home');
     });
 
     return await loading.present();

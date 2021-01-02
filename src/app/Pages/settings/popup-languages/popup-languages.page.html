@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="end">
-      <ion-button (click)="close()">Close</ion-button>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "List of Languages"| translate }}</ion-title>
+    <ion-title>{{ "list of languages" | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,16 +11,19 @@
   <div class="list-account-page">
     <ng-template #noData>
       <ion-item lines="none">
-        <ion-label>{{ "You dont have any languages" | translate}}</ion-label>
+        <ion-label>{{ "you dont have any languages" | translate</ion-label>
       </ion-item>
     </ng-template>
 
     <ion-list *ngIf="languages; else noData">
-      <ion-item *ngFor="let language of languages; let idx = index">
-        <ion-label (click)="languageClicked(language)">
-          {{language.code}} - {{ language.country }}
-        </ion-label>
-      </ion-item>
+      <ion-radio-group value="{{ activeLanguage ? activeLanguage.code: '' }}">
+        <ion-item *ngFor="let language of languages; let idx = index" (click)="languageClicked(language)">
+          <ion-radio slot="start" value="{{ language.code }}"></ion-radio>
+          <ion-label>
+            {{language.code}} - {{ language.country }}
+          </ion-label>
+        </ion-item>
+      </ion-radio-group>
     </ion-list>
   </div>
 </ion-content>

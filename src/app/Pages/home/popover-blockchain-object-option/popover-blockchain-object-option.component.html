@@ -1,0 +1,7 @@
+<ion-list lines="none">
+  <ion-item *ngFor="let option of options; let i = index;" (click)="dismiss(option.key)">
+    <ion-label>
+      {{ option.label }}
+    </ion-label>
+  </ion-item>
+</ion-list>

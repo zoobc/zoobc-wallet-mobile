@@ -1,0 +1,12 @@
+<ion-list class="blockchain-object-list" lines="none">
+  <ion-radio-group value="{{ selectedIndex }}">
+    <ion-item *ngFor="let blockchainObjectItem of blockchainObjectItems; let idx = index" (click)="select(blockchainObjectItem)">
+      <ion-radio slot="start" value="{{idx}}"></ion-radio>
+      <app-blockchain-object-item [blockchainObjectItem]="blockchainObjectItem"></app-blockchain-object-item>
+    </ion-item>
+  </ion-radio-group>
+</ion-list>
+<div class="actions">
+  <ion-button fill="clear" (click)="goToBlockchainObject()">{{ "manage" | translate }}</ion-button>
+  <ion-button fill="clear" (click)="cancel()">{{ "cancel" | translate }}</ion-button>
+</div>

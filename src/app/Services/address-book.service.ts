@@ -2,12 +2,9 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import {
   STORAGE_ADDRESS_BOOK,
-  FIREBASE_ADDRESS_BOOK,
   CONST_UNKNOWN_NAME
 } from 'src/environments/variable.const';
-import { StoragedevService } from './storagedev.service';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { sanitizeString } from 'src/Helpers/utils';
+import { StorageService } from './storage.service';
 import { Contact } from '../Interfaces/contact';
 
 @Injectable({
@@ -51,21 +48,22 @@ export class AddressBookService {
 
 
   constructor(
-    private strgSrv: StoragedevService,
-    private afs: AngularFirestore
+    private strgSrv: StorageService
   ) {
     this.selectedAddress = '';
     this.addresses = this.getAll();
   }
 
-  getAll() {
-    return this.strgSrv.get(STORAGE_ADDRESS_BOOK).catch(error => {
+  async getAll() {
+    try {
+      return this.strgSrv.getObject(STORAGE_ADDRESS_BOOK);
+    } catch (error) {
       console.log(error);
-    });
+    }
   }
 
   async getOneByIndex(index: number) {
-    const addressBooks = await this.strgSrv.get(STORAGE_ADDRESS_BOOK);
+    const addressBooks = await this.strgSrv.getObject(STORAGE_ADDRESS_BOOK);
     return addressBooks[index];
   }
 
@@ -96,7 +94,7 @@ export class AddressBookService {
     for (let i = 0; i < addresses.length; i++) {
       const dt = addresses[i];
       this.addresses.push({
-        name: sanitizeString(dt.name),
+        name: dt.name,
         address: dt.address
       });
     }
@@ -124,25 +122,7 @@ export class AddressBookService {
 
   async update(addresses: any) {
     this.addresses = addresses;
-    await this.strgSrv.set(STORAGE_ADDRESS_BOOK, addresses);
+    await this.strgSrv.setObject(STORAGE_ADDRESS_BOOK, addresses);
   }
 
-  createBackup(mainAcc: string, obj: any) {
-    return this.afs
-      .collection(FIREBASE_ADDRESS_BOOK)
-      .doc(mainAcc)
-      .set(obj, { merge: true });
-  }
-
-  read_backup() {
-    return this.afs.collection(FIREBASE_ADDRESS_BOOK).snapshotChanges();
-  }
-
-  restoreBackup(mainAcc: string) {
-    return this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).ref.get();
-  }
-
-  delete_backup(mainAcc: string) {
-    this.afs.collection(FIREBASE_ADDRESS_BOOK).doc(mainAcc).delete();
-  }
 }

@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="end">
-      <ion-button (click)="close()">{{ "Close" | translate}}</ion-button>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "List of Currency" | translate }}</ion-title>
+    <ion-title>{{ "currency list" | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,16 +11,19 @@
   <div class="list-account-page">
     <ng-template #noData>
       <ion-item lines="none">
-        <ion-label>{{ "You dont have any currency" | translate }}</ion-label>
+        <ion-label>{{ "you dont have any currency" | translate}}</ion-label>
       </ion-item>
     </ng-template>
 
     <ion-list *ngIf="currencyList; else noData">
-      <ion-item *ngFor="let curr of currencyList; let i = index">
-        <ion-label (click)="currencyClicked(curr)">
-          {{curr.code}} - {{ curr.name }}
-        </ion-label>
-      </ion-item>
+      <ion-radio-group value="{{ activeCurrency ? activeCurrency.code : '' }}">
+        <ion-item *ngFor="let curr of currencyList; let i = index" (click)="currencyClicked(curr)">
+          <ion-radio slot="start" value="{{ curr.code }}"></ion-radio>
+          <ion-label>
+            {{curr.code}} - {{ curr.name }}
+          </ion-label>
+        </ion-item>
+      </ion-radio-group>
     </ion-list>
   </div>
 </ion-content>

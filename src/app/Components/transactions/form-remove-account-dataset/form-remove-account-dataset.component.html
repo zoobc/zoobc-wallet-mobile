@@ -1,0 +1,85 @@
+<ng-container [formGroup]="group">
+  <ion-list class="form-list">
+
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ 'setter' | translate }}</ion-label>
+      <app-form-sender formControlName="{{ inputMap.sender }}" accountType="multisig" ngDefaultControl>
+      </app-form-sender>
+    </ion-item>
+
+    <ng-container *ngIf="!multisig">
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ 'property' | translate }}:</ion-label>
+        <ion-text>
+          {{ group.get(inputMap.property).value }}
+        </ion-text>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ 'value' | translate }}:</ion-label>
+        <ion-text>
+          {{ group.get(inputMap.value).value }}
+        </ion-text>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ 'target address' | translate }}:</ion-label>
+        <ion-input [value]="group.get(inputMap.recipientAddress).value"></ion-input>
+      </ion-item>
+    </ng-container>
+
+    <ng-container *ngIf="multisig">
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ 'property' | translate }}</ion-label>
+        <ion-input formControlName="{{ inputMap.property }}"></ion-input>
+        <ion-text color="danger"
+          *ngIf="group.get(inputMap.property).touched && group.get(inputMap.property).hasError('required')">
+          {{ 'property is required' | translate }}
+        </ion-text>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">{{ 'value' | translate }}</ion-label>
+        <ion-input formControlName="{{ inputMap.value }}"></ion-input>
+        <ion-text color="danger"
+          *ngIf="group.get(inputMap.value).touched && group.get(inputMap.value).hasError('required')">
+          {{ 'value is required' | translate }}
+        </ion-text>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-checkbox (click)="onToggleEnableSetupOther()" [value]="!isSetupOther">
+        </ion-checkbox>
+        <ion-text>&nbsp;&nbsp;{{ 'remove dataset to other address' | translate }}</ion-text>
+      </ion-item>
+
+      <ng-container *ngIf="isSetupOther">
+        <ion-item lines="none" class="form-item">
+          <ion-label position="stacked">{{ 'target address' | translate }}</ion-label>
+          <ion-textarea rows="3" formControlName="{{ inputMap.recipientAddress }}"
+            placeholder="{{ 'recipient address' | translate }}">
+          </ion-textarea>
+          <ion-text color="danger"
+            *ngIf="group.get(inputMap.recipientAddress).touched && group.get(inputMap.recipientAddress).hasError('required')">
+            {{ 'recipient address is required' | translate }}
+          </ion-text>
+          <ion-text color="danger"
+            *ngIf="group.get(inputMap.recipientAddress).touched && group.get(inputMap.recipientAddress).hasError('invalidAddress')">
+            {{ 'recipient address is invalid' | translate }}
+          </ion-text>
+        </ion-item>
+      </ng-container>
+    </ng-container>
+
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ 'fee' | translate }}</ion-label>
+      <ion-input formControlName="{{ inputMap.fee }}"></ion-input>
+      <ion-text color="danger" *ngIf="group.get(inputMap.fee).touched && group.get(inputMap.fee).hasError('required')">
+        {{ 'fee is required' | translate }}
+      </ion-text>
+      <ion-text color="danger" *ngIf="group.get(inputMap.fee).touched && group.get(inputMap.fee).hasError('min')">
+        {{ 'minimum fee is' | translate: { val: minFee } }}
+      </ion-text>
+    </ion-item>
+  </ion-list>
+</ng-container>

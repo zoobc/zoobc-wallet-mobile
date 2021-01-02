@@ -27,30 +27,13 @@ export class BackuprestoreAddressPage implements OnInit {
 
   constructor(
     private addressBookSrv: AddressBookService,
-    private navCtrl: NavController,
     private accountService: AccountService,
-    private authService: AuthService,
     private alertController: AlertController) { }
 
   ngOnInit() {
     this.getAllAddress();
     this.getAllAccounts();
-    if (this.authService.userDetails() && this.authService.userDetails().uid) {
-      this.uid =  this.authService.userDetails().uid;
-    } else {
-      this.navCtrl.navigateBack('/login-backup');
-    }
 
-  }
-
-  logout() {
-    this.authService.logoutUser()
-    .then(res => {
-      this.navCtrl.navigateBack('/login-backup');
-    })
-    .catch(error => {
-      console.log(error);
-    });
   }
 
   async getAllAccounts() {
@@ -71,7 +54,7 @@ export class BackuprestoreAddressPage implements OnInit {
     this.isBackup = true;
     setTimeout(async () => {
       const mainAcc = this.accounts[0].address;
-      this.createBackup(mainAcc, this.addresses);
+      // this.createBackup(mainAcc, this.addresses);
       this.isBackup = false;
       this.isBackupFinish = true;
     }, 5000);
@@ -88,26 +71,12 @@ export class BackuprestoreAddressPage implements OnInit {
   }
 
   async createBackup(mainAcc: string, all: any) {
-    const obj = { id: mainAcc, addresses: all };
-    await this.addressBookSrv.createBackup(mainAcc, obj).then(resp => {
-    }).catch(error => {
-        console.log(error);
-      });
   }
 
   restore() {
     this.counter = 1;
     this.isRestore = true;
     this.isRestoreFinish = false;
-    const mainAcc = this.accounts[0].address;
-    this.addressBookSrv.restoreBackup(mainAcc).then( doc => {
-        if (doc.exists && doc.data().addresses) {
-            const addresses = doc.data().addresses;
-            this.addressBookSrv.insertBatch(addresses);
-        }
-      }).catch(error => {
-        console.log(error);
-      });
     this.isRestore = false;
     this.isRestoreFinish = true;
   }

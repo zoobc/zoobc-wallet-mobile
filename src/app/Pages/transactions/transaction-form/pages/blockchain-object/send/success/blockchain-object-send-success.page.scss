@@ -1,0 +1,43 @@
+.transaction-success {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+
+  >div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+
+    ion-icon {
+      width: 128px;
+      height: 128px;
+      margin-bottom: 17px;
+    }
+
+    .text-address {
+      word-break: break-word;
+    }
+
+    .text-title {
+      color: #222428;
+      font-size: 24px;
+      margin-bottom: 17px;
+    }
+
+    .text-let-know {
+      margin-bottom: 17px;
+    }
+
+    .text-sent {
+      display: flex;
+
+      div {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}

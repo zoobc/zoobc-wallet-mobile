@@ -5,6 +5,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { AngularFirestore } from '@angular/fire/firestore';
 import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('FeedbackPage', () => {
   let component: FeedbackPage;
@@ -17,7 +18,9 @@ describe('FeedbackPage', () => {
       imports:[
         TranslateModule.forRoot(),
         RouterTestingModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        FormsModule,
+        ReactiveFormsModule
       ],
       providers: [
         { provide: AngularFirestore },

@@ -20,8 +20,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "assets": [
-              {
+            "assets": [{
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
@@ -30,10 +29,14 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "**/*.svg",
+                "input": "src/assets/icons",
+                "output": "./svg"
               }
             ],
-            "styles": [
-              {
+            "styles": [{
                 "input": "src/theme/variables.scss"
               },
               {
@@ -41,29 +44,15 @@
               }
             ],
             "scripts": [
-              "libs/bip39/src/js/bitcoinjs-3.3.2.js",
-              "libs/bip39/src/js/bitcoinjs-extensions.js",
-              "libs/bip39/src/js/wordlist_english.js",
-              "libs/bip39/src/js/wordlist_japanese.js",
-              "libs/bip39/src/js/wordlist_spanish.js",
-              "libs/bip39/src/js/wordlist_chinese_simplified.js",
-              "libs/bip39/src/js/wordlist_chinese_traditional.js",
-              "libs/bip39/src/js/wordlist_french.js",
-              "libs/bip39/src/js/wordlist_italian.js",
-              "libs/bip39/src/js/wordlist_korean.js",
-              "libs/bip39/src/js/jsbip39.js",
-              "libs/bip39/src/js/sjcl-bip39.js"
             ],
             "es5BrowserSupport": true
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -73,13 +62,11 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                }
-              ]
+              "budgets": [{
+                "type": "initial",
+                "maximumWarning": "2mb",
+                "maximumError": "5mb"
+              }]
             },
             "ci": {
               "progress": false
@@ -116,8 +103,7 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": [],
             "scripts": [],
-            "assets": [
-              {
+            "assets": [{
                 "glob": "favicon.ico",
                 "input": "src/",
                 "output": "/"

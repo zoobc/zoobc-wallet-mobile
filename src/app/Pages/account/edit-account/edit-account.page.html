@@ -3,12 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Edit Account" | translate }}</ion-title>
-    <ion-buttons slot="end" color="primary">
-      <ion-button routerLink="/feedback">
-        {{ "Feedback" | translate }}
-      </ion-button>
-    </ion-buttons>
+    <ion-title *ngIf="isMultisig &&  mode && mode == 1">{{ "Edit Account" | translate }}</ion-title>
+    <ion-title *ngIf="isMultisig &&  mode && mode == 0">{{ "View Account" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,12 +12,19 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-label position="stacked">{{ "Account Name" | translate }}</ion-label>
+        <ion-label>
+          <b>{{ "account name" | translate }}</b>
+        </ion-label>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="isMultisig &&  mode && mode == 0">
+      <ion-col>       
+          {{account.name}}        
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="mode && mode == 1">
       <ion-col>
-        <ion-input padding="false" placeholder="{{ 'Please enter your account name' | translate }}"
+        <ion-input padding="false" placeholder="{{ 'please enter your account name' | translate }}"
           [(ngModel)]="account.name"></ion-input>
       </ion-col>
     </ion-row>
@@ -33,90 +36,31 @@
       </ion-col>
     </ion-row>
 
-    <div *ngIf="account && account.type==='multisig'">
+    <div *ngIf="account && isMultisig &&  mode == 0">
       <ion-row>
         <ion-col>
           <ion-label>
-            <h2>Participants</h2>
+            <b>{{ "participants" | translate }}</b>
           </ion-label>
         </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-button (click)="addParticipant()">
-            +
-          </ion-button>
-          <ion-button (click)="reduceParticipant()">
-            -
-          </ion-button>
-        </ion-col>
-      </ion-row>
-      <div>
-        <ion-row *ngFor="let participant of account.participants; let i = index; trackBy: customTrackBy">
-          <ion-col size="10">
-            <ion-input type="text" [name]="'input-'+i" placeholder="{{ 'Participant ' }} {{ i + 1 }} ..."
-              [(ngModel)]="account.participants[i]">
-            </ion-input>
-          </ion-col>
-          <ion-col size="2">
-            <ion-button (click)="showPopupAccount(i)">
-              ..
-            </ion-button>
+      <div *ngIf="isMultisig">
+        <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
+          <ion-col size="12">
+            <ion-label> 
+            <h5>{{ participants[i] }}</h5>
+          </ion-label>
           </ion-col>
         </ion-row>
       </div>
-
-      <ion-row>
-        <ion-col>
-          <ion-label>
-            <h2>Nonce</h2>
-            <ion-input [(ngModel)]="account.nonce" type="number" placeholder="Nonce ..."></ion-input>
-          </ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-label>
-            <h2>{{ "Minimum signature" | translate }}</h2>
-            <ion-input type="number" [(ngModel)]="account.minSig" placeholder="Minimum signature..."></ion-input>
-          </ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-label>
-            <h2>{{ "Sign by" | translate }}</h2>
-          </ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="10">
-          <ion-label>
-            <h3 *ngIf="signByAccount">{{signByAccount.name}}</h3>
-            <ion-textarea rows="2" cols="20" [(ngModel)]="account.signByAddress" placeholder="Enter sign by...">
-            </ion-textarea>
-          </ion-label>
-        </ion-col>
-        <ion-col size="2">
-          <br/><br/>
-          <ion-button (click)="showPopupSignBy()">
-            ..
-          </ion-button>
-        </ion-col>
-      </ion-row>
-
     </div>
-    <ion-row>
+
+ 
+    <ion-row *ngIf="account &&  mode == 1">
       <ion-col>
-        <ion-button strong color="secondary" (click)="UpdateAccount()" type="submit" expand="block">
-          <span>{{"Update"|translate}}</span>
+        <ion-button strong color="tertiary" (click)="UpdateAccount()" type="submit" expand="block">
+          <span>{{"update"|translate}}</span>
         </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" color="secondary" routerLink="/list-account" fill="outline" expand="block">
-          {{ "Cancel" | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

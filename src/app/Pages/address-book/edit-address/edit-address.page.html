@@ -3,17 +3,11 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "Edit Contact" | translate }}</ion-title>
-    <ion-buttons slot="end" color="primary">
-      <ion-button routerLink="/feedback">
-        Feedback
-      </ion-button>
-    </ion-buttons>
+    <ion-title>{{ "edit contact" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <app-form-address (onSubmit)="onSubmit($event)" (onCancel)="goBack()" [value]="value" mode="edit"
-    [addressId]="addressId">
+<ion-content class="ion-padding">
+  <app-form-address (onSubmit)="onSubmit($event)" [value]="value" mode="edit" [addressId]="addressId">
   </app-form-address>
 </ion-content>

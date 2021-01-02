@@ -1,0 +1,44 @@
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label>
+          <h5>Import Account</h5>
+          <p>Please select file</p>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <input type="file" (change)="uploadFile($event.target.files)">
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        &nbsp;
+      </ion-col>
+    </ion-row>
+    <ion-col>
+      <ion-label>
+        <h2>Import from Text</h2>
+      </ion-label>
+      <ion-textarea rows="10" style="border: 1px #cccccc solid" placeholder="Enter multisig info here"
+        [(ngModel)]="multisifInfo">
+      </ion-textarea>
+    </ion-col>
+    <ion-row>
+      <ion-col>
+        <ion-button color="tertiary" (click)="importText()">
+          Save
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row>
+      <ion-col style="margin-top:20px">
+        <ion-button expand="block" (click)="close(0)">Cancel</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

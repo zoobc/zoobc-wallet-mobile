@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/Services/util.service';
-import { ZooKeyring } from 'zoobc-sdk';
+import { ZooKeyring } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { NavController, Platform } from '@ionic/angular';
+import { Languages } from 'src/app/Interfaces/language';
 
 @Component({
   selector: 'app-generate-passphrase',
@@ -11,6 +12,16 @@ import { NavController, Platform } from '@ionic/angular';
   styleUrls: ['./generate-passphrase.page.scss']
 })
 export class GeneratePassphrasePage implements OnInit {
+
+
+  constructor(
+    private router: Router,
+    private utilService: UtilService,
+    private accountSrv: AccountService,
+    private navCtrl: NavController,
+    private platform: Platform
+  ) {
+  }
   writtenDown = false;
   terms = false;
   plainPassphrase: string;
@@ -19,8 +30,9 @@ export class GeneratePassphrasePage implements OnInit {
   pagePosition = 1;
   pageStep = 1;
   tempPin = '';
-  public loginFail = false;
+  loginFail = false;
   lang: string;
+  backButtonSubscription: any;
 
   languages: Languages[] = [
     { value: 'chinese_simplified', viewValue: 'Chinese Simplified' },
@@ -33,34 +45,22 @@ export class GeneratePassphrasePage implements OnInit {
     { value: 'chinese_traditional', viewValue: 'Chinese Traditional' },
   ];
 
-
-  constructor(
-    private router: Router,
-    private utilService: UtilService,
-    private accountSrv: AccountService,
-    private navCtrl: NavController,
-    private platform: Platform
-  ) {
-  }
-
   ngOnInit() {
     this.lang = 'english';
-    this.generatePassphrase(); 
+    this.generatePassphrase();
   }
-
-  backButtonSubscription;
-  ionViewDidEnter(){
+  ionViewDidEnter() {
     this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
       this.backToInitial();
-    })
+    });
   }
 
-  ionViewWillLeave(){
-    this.backButtonSubscription.unsubscribe()
+  ionViewWillLeave() {
+    this.backButtonSubscription.unsubscribe();
   }
 
-  backToInitial(){
-    this.navCtrl.navigateBack("/initial")
+  backToInitial() {
+    this.navCtrl.navigateBack('/initial');
   }
 
   onLanguageChanged(language: string) {
@@ -97,20 +97,21 @@ export class GeneratePassphrasePage implements OnInit {
 
   private getPassphraseText() {
     const val = this.plainPassphrase.slice();
-    const arrayPass = val.split(' ');
-    let strCopy = 'This is your ZooBC passphrase:\n\n With order number\n-------------------------\n';
-    for (let i = 0; i < arrayPass.length; i++) {
-      strCopy += (i + 1) + '.' + arrayPass[i];
-      if (i < 23) {
-        strCopy += ',   ';
-      }
-      if ((i + 1) % 3 === 0) {
-        strCopy += '\n';
-      }
-    }
-    strCopy += '\n\nWithout order number\n-------------------------\n' + val;
-    strCopy += '\n\n----------- End ----------\n\n';
-    return strCopy;
+    // const arrayPass = val.split(' ');
+    // let strCopy = 'This is your ZooBC passphrase:\n\n With order number\n-------------------------\n';
+    // for (let i = 0; i < arrayPass.length; i++) {
+    //   strCopy += (i + 1) + '.' + arrayPass[i];
+    //   if (i < 23) {
+    //     strCopy += ',   ';
+    //   }
+    //   if ((i + 1) % 3 === 0) {
+    //     strCopy += '\n';
+    //   }
+    // }
+    // strCopy += '\n\nWithout order number\n-------------------------\n' + val;
+    // strCopy += '\n\n----------- End ----------\n\n';
+    // return strCopy;
+    return val;
   }
 
   copyToClipboard() {

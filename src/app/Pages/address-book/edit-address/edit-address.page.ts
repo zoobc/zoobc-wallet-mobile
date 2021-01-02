@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Contact } from 'src/app/Interfaces/contact';
-import { sanitizeString } from 'src/Helpers/utils';
-import { makeShortAddress } from 'src/Helpers/converters';
 import { NavController } from '@ionic/angular';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ActivatedRoute } from '@angular/router';
@@ -35,16 +33,11 @@ export class EditAddressPage implements OnInit {
     const { name, address } = value;
     const contact: Contact = {
       name,
-      address: sanitizeString(address),
-      shortAddress: makeShortAddress(sanitizeString(address))
+      address: (address)
     };
 
     await this.addressBookSrv.updateByIndex(contact, this.addressId);
 
-    this.goBack();
-  }
-
-  goBack() {
-    this.navCtrl.navigateBack('/address-book');
+    this.navCtrl.pop();
   }
 }

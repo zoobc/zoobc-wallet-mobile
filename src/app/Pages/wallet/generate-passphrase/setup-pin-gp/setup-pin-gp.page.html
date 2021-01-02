@@ -3,12 +3,7 @@
       <ion-buttons slot="start">
           <ion-back-button></ion-back-button>
       </ion-buttons>      
-      <ion-title>{{ "Setup PIN" | translate }}</ion-title>
-      <ion-buttons slot="end" color="primary">
-          <ion-button routerLink="/feedback">
-            {{ "Feedback"  | translate }}
-          </ion-button>
-      </ion-buttons>
+      <ion-title>{{ "setup pin" | translate }}</ion-title>
     </ion-toolbar>
   </ion-header>
    
@@ -17,16 +12,16 @@
 
     <ng-template [ngIf]="pagePosition === 0">
       <ion-label color="light">
-        <p class="ion-text-center">{{ "Input your PIN" | translate }}</p>
+        <p class="ion-text-center">{{ "set your pin" | translate }}</p>
       </ion-label>
         <app-pin (ionChange)="setupPin($event)"></app-pin>
     </ng-template>
 
     <ng-template [ngIf]="pagePosition === 1">
       <ion-label color="light">
-        <p class="ion-text-center">{{ "Confirm your PIN" | translate }}</p>
+        <p class="ion-text-center">{{ "confirm your pin" | translate }}</p>
       </ion-label>
-        <p *ngIf="loginFail" class="ion-text-center invalidPin">{{ "Invalid PIN" | translate }}</p>
+        <p *ngIf="loginFail" class="ion-text-center invalidPin">{{ "invalid pin" | translate }}</p>
         <app-pin (ionChange)="confirmPin($event)"></app-pin>
     </ng-template>
   </ion-content>

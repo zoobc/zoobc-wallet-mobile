@@ -1,0 +1,11 @@
+ion-content{
+    --background: #fff;
+
+    ion-list{
+        background-color: transparent;
+    
+        ion-item{
+          --background: transparent;
+        }
+      }
+}

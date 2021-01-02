@@ -2,12 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
-
 import { TransactionsPage } from './transactions.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
 const routes: Routes = [
   {
@@ -22,8 +20,9 @@ const routes: Routes = [
     FormsModule,
     TranslateModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ComponentsModule
   ],
-  declarations: [TransactionsPage, DateAgoPipe]
+  declarations: [TransactionsPage]
 })
 export class TransactionsPageModule {}

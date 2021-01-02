@@ -5,7 +5,7 @@ import { TranslateModule } from "@ngx-translate/core";
 
 describe('AboutPage', () => {
 
-  let translate: TranslateService;
+  let translate: TranslateModule;
 
   let component: AboutPage;
   let fixture: ComponentFixture<AboutPage>;
@@ -13,23 +13,12 @@ describe('AboutPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AboutPage ],
-      imports: [
-        TranslateModule.forRoot(),
-        ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: (createTranslateLoader),
-            deps: [HttpClient]
-          }
-        })
+        TranslateModule.forRoot()
       ],
-      providers: [TranslateService, HttpClient, HttpHandler]
     })
     .compileComponents();
-    translate = TestBed.get(TranslateService);
 
   }));
 
@@ -39,7 +28,7 @@ describe('AboutPage', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('init page worked', () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,0 +1,28 @@
+.form-box {
+  background: #FFFFFF;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  word-break: break-all;
+  
+  .info{
+    margin-right: 15px;
+
+    .none{
+      font-size: 0.8rem;
+    }
+
+    .title{
+      font-size: 0.8rem;
+    }
+
+    .desc{
+      margin-top: 8px;
+      font-size: 0.7rem;
+      color: #727588;
+    }
+  }
+}

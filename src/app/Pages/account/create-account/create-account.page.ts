@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { EMPTY_STRING, FOR_PARTICIPANT, FOR_SIGNBY } from 'src/environments/variable.const';
+import { EMPTY_STRING } from 'src/environments/variable.const';
 import { Account } from 'src/app/Interfaces/account';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { AccountService } from 'src/app/Services/account.service';
-import { Router, NavigationExtras } from '@angular/router';
-import { sanitizeString } from 'src/Helpers/utils';
-import { MultiSigAddress } from 'zoobc-sdk';
-import { ModalController, AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { AccountPopupPage } from '../account-popup/account-popup.page';
-import { AddressBookService } from 'src/app/Services/address-book.service';
-import { QrScannerService } from 'src/app/Services/qr-scanner.service';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  addressValidator,
+} from 'src/Helpers/validators';
+import { Address, getZBCAddress, MultiSigInfo } from 'zbc-sdk';
+
 @Component({
   selector: 'app-create-account',
   templateUrl: './create-account.page.html',
@@ -18,189 +20,156 @@ import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 export class CreateAccountPage implements OnInit {
   scanForWhat: string;
   account: Account;
-  accountName = EMPTY_STRING;
   validationMessage = EMPTY_STRING;
+  nameErrorMessage = EMPTY_STRING;
   isNameValid = true;
   accounts: Account[];
   isMultisig: boolean;
-  participants = ['', ''];
-  signBy: string;
-  signByAccount: Account;
-  nonce: number;
-  minimumSignature: number;
-  numOfParticipant = 2;
-  indexSelected: number;
-  fieldSource: string;
-  isMinSigValid = true;
-  isNonceValid = true;
-  isParticipntValid = true;
+  minimumParticipants = 2;
 
   constructor(
     private accountService: AccountService,
-    private addressbookService: AddressBookService,
     private router: Router,
     private modalController: ModalController,
-    private qrScannerService: QrScannerService,
-    private alertController: AlertController
-  ) {
+  ) {}
 
-    this.addressbookService.participantSubject.subscribe({
-      next: address => {
-        this.participants[this.indexSelected] = address.address;
-      }
-    });
+  submitted = false;
 
-    this.qrScannerService.qrScannerSubject.subscribe(address => {
-      this.getScannerResult(address);
-    });
+  formAccount = new FormGroup({
+    accountName: new FormControl('', [Validators.required]),
+  });
+
+  get accountName() {
+    return this.formAccount.get('accountName');
+  }
+
+  get participants() {
+    return this.formAccount.get('participants') as FormArray;
+  }
+
+  get nonce() {
+    return this.formAccount.get('nonce');
+  }
+
+  get minimumSignature() {
+    return this.formAccount.get('minimumSignature');
+  }
+
+  async submit() {
+    this.submitted = true;
+    const accountNameExists = this.isNameExists(this.accountName.value);
+
+    if (accountNameExists) {
+      this.formAccount.controls['accountName'].setErrors({ accountNameExists });
+    }
+
+    if (this.formAccount.valid) {
+      this.createAccount();
+    }
   }
 
   async ngOnInit() {
     this.accounts = await this.accountService.allAccount('normal');
     const len = this.accounts.length + 1;
-    this.accountName = `Account ${len}`;
+    this.accountName.setValue(`Account ${len}`);
   }
 
-  async getScannerResult(arg: string) {
-    const result = arg.split('||');
-    if (this.scanForWhat === FOR_PARTICIPANT) {
-      this.participants[this.indexSelected] = result[0];
-    }
+  setMinimumSignatureValidation() {
+    this.minimumSignature.setValidators([
+      Validators.required,
+      Validators.min(2),
+      Validators.max(this.participants.controls.length)
+    ]);
 
-    // else if (this.scanForWhat === FOR_SIGNBY) {
-    //   this.signBy = result[0];
-    //   this.signByAccount = await this.accountService.getAccount(this.signBy);
-    // }
+    this.minimumSignature.updateValueAndValidity();
   }
 
-  validateNonce() {
-      if (this.nonce <= 0) {
-          this.isNonceValid = false;
-      } else {
-          this.isNonceValid = true;
-      }
-  }
-  validateMinimumSig() {
-    if (this.minimumSignature < 2 || this.minimumSignature > this.participants.length) {
-        this.isMinSigValid = false;
-    } else {
-        this.isMinSigValid = true;
-  }
-  }
+  async changeToMultisig(value: boolean) {
+    this.isMultisig = value;
 
-  async changeToMultisig() {
-    if (this.isMultisig) {
+    if (value) {
+      const formArray = new FormArray([]);
+
+      formArray.push(
+        new FormGroup({
+          address: new FormControl('', [Validators.required, addressValidator]),
+        })
+      );
+      formArray.push(
+        new FormGroup({
+          address: new FormControl('', [Validators.required, addressValidator]),
+        })
+      );
+
+      this.formAccount.addControl('participants', formArray);
+      this.formAccount.addControl('nonce', new FormControl('', [Validators.required, Validators.min(1)]));
+      this.formAccount.addControl('minimumSignature', new FormControl(''));
+      this.setMinimumSignatureValidation();
+
       this.accounts = await this.accountService.allAccount('multisig');
       let len = 1;
       if (this.accounts && this.accounts.length > 0) {
         len = this.accounts.length + 1;
       }
-      this.accountName = `Multisig Account ${len}`;
+      this.accountName.setValue(`Multisig Account ${len}`);
     } else {
+      this.formAccount.removeControl('participants');
+      this.formAccount.removeControl('nonce');
+      this.formAccount.removeControl('minimumSignature');
       this.accounts = await this.accountService.allAccount('normal');
       const len = this.accounts.length + 1;
-      this.accountName = `Account ${len}`;
+      this.accountName.setValue(`Account ${len}`);
     }
   }
 
-  async createOrUpdateAccount() {
-    this.isNameValid = true;
-    this.isMinSigValid = true;
-    this.isNonceValid = true;
-    this.isParticipntValid = true;
-
-    this.participants.forEach((prc) => {
-          if (prc === undefined || prc.trim() === '') {
-              this.isParticipntValid = false;
-          }
-    });
-
-    if (this.accountName === undefined || !this.accountName) {
-      this.validationMessage = 'Name is required';
-      this.isNameValid = false;
-    }
-
-    if (this.isNameExists(this.accountName)) {
-      this.isNameValid = false;
-    }
-
-    if (this.minimumSignature === undefined || this.minimumSignature > this.participants.length) {
-      this.isMinSigValid = false;
-    }
-
-    if (this.nonce === undefined || this.nonce <= 0) {
-      this.isNonceValid = false;
-    }
-
+  isNameExists(accountName: string) {
+    let address = '';
     if (
-      !this.isNonceValid
-      || !this.isMinSigValid
-      || !this.isNameValid
-      || !this.isParticipntValid) {
-        return;
-    }
-    await this.createAccount();
-
-  }
-
-  isNameExists(name: string) {
-    this.validationMessage = '';
-    const isExists = this.accounts.find(acc => {
-      if (name && acc.name.trim().toLowerCase() === name.trim().toLowerCase()) {
-        this.validationMessage =
-          'Name exists with address: ' + makeShortAddress(acc.address);
-        return true;
-      }
-      return false;
-    });
-    return isExists;
-  }
-
-  sanitize() {
-    this.accountName = sanitizeString(this.accountName);
-  }
-
-  changeParticipant() {
-    const len = this.participants.length;
-    if (this.numOfParticipant < 2) {
-      this.numOfParticipant = 2;
-      return;
+      this.accounts.findIndex(acc => {
+        address = acc.address.value;
+        return acc.name.trim().toLowerCase() === accountName.trim().toLowerCase();
+      }) >= 0
+    ) {
+      return 'Name exists with address: ' + makeShortAddress(address);
     }
 
-    for (let i = 2; i < this.numOfParticipant; i++) {
-      this.participants.push('');
-    }
+    return null;
   }
 
   async createAccount() {
 
-    if (!this.isNameValid) {
-      return;
-    }
-
-    if ( this.isMultisig &&  (this.isMinSigValid === false || this.isNonceValid === false)) {
-      return;
-    }
+    const keyring = this.accountService.keyring;
+    const path = await this.accountService.generateDerivationPath();
+    const childSeed = keyring.calcDerivationPath(path);
+    const accountAddress = getZBCAddress(childSeed.publicKey);
 
     const pathNumber = await this.accountService.generateDerivationPath();
-    let account: Account = this.accountService.createNewAccount(
-      this.accountName.trim(),
-      pathNumber
-    );
 
-    if (this.isMultisig) {
-      // this.participants = this.participants.sort();
-      const multiParam: MultiSigAddress = {
-        participants: this.participants,
-        nonce: this.nonce,
-        minSigs: this.minimumSignature
+    let account: Account;
+
+    if (!this.isMultisig) {
+      account = this.accountService.createNewAccount(
+        this.accountName.value.trim(),
+        pathNumber
+      );
+    } else if (this.isMultisig) {
+
+      let addresses: [string] = this.participants.value.filter(value => value.length > 0);
+      addresses = addresses.sort();
+      const participants: Address[] = addresses.map(address => ({ value: address, type: 0 }));
+      const multiParam: MultiSigInfo = {
+        participants,
+        nonce: this.nonce.value,
+        minSigs: this.minimumSignature.value,
       };
+
+
       account = this.accountService.createNewMultisigAccount(
-        this.accountName.trim(),
+        this.accountName.value.trim(),
         multiParam,
-        this.signByAccount
       );
     }
+
     await this.accountService.addAccount(account);
     this.accountService.broadCastNewAccount(account);
     this.goListAccount();
@@ -211,38 +180,15 @@ export class CreateAccountPage implements OnInit {
   }
 
   addParticipant() {
-    this.participants.push('');
+    this.participants.push( new FormGroup({
+      address: new FormControl('', [Validators.required, addressValidator]),
+    }));
+    this.setMinimumSignatureValidation();
   }
 
-  reduceParticipant() {
-    const len = this.participants.length;
-    if (len > 2) {
-      this.participants.splice(len - 1, 1);
-    }
-  }
-
-  customTrackBy(index: number): any {
-    return index;
-  }
-
-  async openListAccount() {
-    const modal = await this.modalController.create({
-      cssClass: 'zbc-modal',
-      component: AccountPopupPage,
-      componentProps: {
-        idx: this.indexSelected
-      }
-    });
-
-    modal.onDidDismiss().then(dataReturned => {
-      if (dataReturned.data) {
-        if (this.fieldSource === 'participant') {
-          this.participants[this.indexSelected] = dataReturned.data.address;
-        }
-      }
-    });
-
-    return await modal.present();
+  removeParticipant(index: number) {
+    this.participants.controls.splice(index, 1);
+    this.setMinimumSignatureValidation();
   }
 
   async showPopupSignBy() {
@@ -252,81 +198,10 @@ export class CreateAccountPage implements OnInit {
 
     modal.onDidDismiss().then(dataReturned => {
       if (dataReturned.data) {
-        this.signByAccount = dataReturned.data;
-        this.signBy = this.signByAccount.address;
+        // this.signByAccount = dataReturned.data;
       }
     });
 
     return await modal.present();
   }
-
-  async presentGetAddressOption(source: string, index: number) {
-    this.indexSelected = index;
-    this.fieldSource = source;
-    const alert = await this.alertController.create({
-      header: 'Select Option',
-      cssClass: 'alertCss',
-      inputs: [
-        {
-          name: 'opsi1',
-          type: 'radio',
-          label: 'Scan QR Code',
-          value: 'scan',
-          checked: true
-        },
-        {
-          name: 'opsi2',
-          type: 'radio',
-          label: 'Contacts',
-          value: 'address'
-        },
-        {
-          name: 'opsi3',
-          type: 'radio',
-          label: 'My Accounts',
-          value: 'account'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            // console.log('Confirm Cancel', val);
-          }
-        },
-        {
-          text: 'Ok',
-          handler: val => {
-            if (val === 'address') {
-              this.openAddresses();
-            } else if (val === 'account') {
-              this.openListAccount();
-            } else {
-              this.scanQrCode();
-            }
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-  openAddresses() {
-    const navigationExtras: NavigationExtras = {
-      state: {
-        forWhat: this.fieldSource
-      }
-    };
-
-    this.router.navigate(['/address-book'], navigationExtras);
-  }
-
-  scanQrCode() {
-    this.scanForWhat = this.fieldSource;
-    this.router.navigateByUrl('/qr-scanner');
-  }
-
 }

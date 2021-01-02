@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "summary" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list class="info-list">
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">{{ "from" | translate }}</p>
+        <div class="info-val">
+          <app-info-address name="{{ stateValue.sender.name }}" address="{{ stateValue.sender.address.value }}">
+          </app-info-address>
+        </div>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">{{ "to" | translate }}</p>
+        <div class="info-val">
+          <app-info-address name="{{ stateValue.recipient.name }}" address="{{ stateValue.recipient.address }}">
+          </app-info-address>
+        </div>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">{{ "amount" | translate }}</p>
+        <app-info-amount-conversion value="{{ stateValue.amount }}" otherCurrency="USD"
+          otherCurrencyDecoration="BRACKET">
+        </app-info-amount-conversion>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">{{ "transaction fee" | translate }}</p>
+        <div class="info-val">
+          <app-info-amount-conversion value="{{ stateValue.fee }}" otherCurrency="USD"
+            otherCurrencyDecoration="BRACKET">
+          </app-info-amount-conversion>
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <app-behavior-escrow-summary *ngIf="stateValue.withEscrow" [values]="stateValue.behaviorEscrow">
+  </app-behavior-escrow-summary>
+
+</ion-content>
+
+<ion-footer class="ion-no-border" class="footer-transaction">
+  <div class="total-container">
+    <ion-text>Total</ion-text>
+    <div class="total">
+      <app-info-amount-conversion value="{{ total }}" otherCurrency="USD">
+      </app-info-amount-conversion>
+    </div>
+  </div>
+  <ion-button type="button" color="tertiary" expand="block" (click)="submit()">Confirm Transaction</ion-button>
+</ion-footer>

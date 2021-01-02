@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule',
+    loadChildren: './Pages/home/home.module#HomePageModule',
     canActivate: [AuthService]
   },
   { path: 'qr-scanner', component: QrScannerComponent },
@@ -48,11 +48,6 @@ const routes: Routes = [
     loadChildren: './Pages/feedback/feedback.module#FeedbackPageModule'
   },
   { path: 'help', loadChildren: './Pages/help/help.module#HelpPageModule' },
-  {
-    path: 'notifications',
-    loadChildren:
-      './Pages/notifications/notifications.module#NotificationsPageModule'
-  },
   {
     path: 'list-account',
     loadChildren: './Pages/account/list-account.module#ListAccountModule',
@@ -140,43 +135,17 @@ const routes: Routes = [
       './Pages/transactions/transactions.module#TransactionsPageModule',
     canActivate: [AuthService]
   },
+  {
+    path: 'transaction-form',
+    loadChildren:
+      './Pages/transactions/transaction-form/transaction-form.module#TransactionFormPageModule',
+    canActivate: [AuthService]
+  },
   { path: 'news', loadChildren: './Pages/news/news.module#NewsPageModule' },
   {
     path: 'backuprestore-address',
     loadChildren:
       './Pages/address-book/backuprestore-address/backuprestore-address.module#BackuprestoreAddressPageModule',
-    canActivate: [AuthService]
-  },
-  {
-    path: 'reg-backup',
-    loadChildren:
-      './Pages/address-book/backuprestore-address/reg-backup/reg-backup.module#RegBackupPageModule'
-  },
-  {
-    path: 'login-backup',
-    loadChildren:
-      './Pages/address-book/backuprestore-address/login-backup/login-backup.module#LoginBackupPageModule'
-  },
-  {
-    path: 'chat',
-    loadChildren: './Pages/chat/chat.module#ChatPageModule',
-    canActivate: [AuthService]
-  },
-  {
-    path: 'chat-session',
-    loadChildren:
-      './Pages/chat/chat-session/chat-session.module#ChatSessionPageModule',
-    canActivate: [AuthService]
-  },
-  {
-    path: 'chat-profile',
-    loadChildren:
-      './Pages/chat/chat-profile/chat-profile.module#ChatProfilePageModule',
-    canActivate: [AuthService]
-  },
-  {
-    path: 'dashboard',
-    loadChildren: './Pages/dashboard/dashboard.module#DashboardPageModule',
     canActivate: [AuthService]
   },
   {
@@ -249,8 +218,21 @@ const routes: Routes = [
     loadChildren:
       './Pages/my-tasks/msig-task-detail/msig-task-detail.module#MsigTaskDetailPageModule',
     canActivate: [AuthService]
-  },  { path: 'explanation-screen', loadChildren: './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule' }
-
+  },
+  {
+    path: 'explanation-screen',
+    loadChildren:
+      './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule'
+  },
+  { path: 'tabs', loadChildren: './Pages/tabs/tabs.module#TabsPageModule', canActivate: [AuthService] },
+  { path: 'home', loadChildren: './Pages/home/home.module#HomePageModule', canActivate: [AuthService] },
+  { path: 'theme', loadChildren: './Pages/theme/theme.module#ThemePageModule' },
+  { path: 'network', loadChildren: './Pages/network/network.module#NetworkPageModule' },
+  { path: 'explanation-screen', loadChildren: './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule' },
+  {
+    path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
+    canActivate: [AuthService]
+  }
 ];
 @NgModule({
   imports: [
@@ -261,4 +243,4 @@ const routes: Routes = [
     TranslateModule
   ]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

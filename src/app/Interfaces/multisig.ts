@@ -1,7 +1,7 @@
-import { MultiSigInterface, SendMoneyInterface } from 'zoobc-sdk';
-
+import { MultiSigInterface } from 'zbc-sdk';
 export interface MultiSigDraft extends MultiSigInterface {
     id: number;
     generatedSender?: string;
-    transaction?: SendMoneyInterface;
+    txType: number;
+    txBody?: any;
 }

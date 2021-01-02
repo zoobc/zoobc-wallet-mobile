@@ -25,7 +25,7 @@ describe('AddAddressPage', () => {
     })
     .compileComponents();
 
-    component = new AddAddressPage(null, null, null, null);
+    component = new AddAddressPage(null, null);
   }));
 
   beforeEach(() => {
@@ -38,34 +38,9 @@ describe('AddAddressPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it("should return a non empty array", () => {
-    let result = component.getAllAddress();
+  it("submit worked", () => {
+    let result = component.onSubmit(1111);
     expect(Array.isArray(result)).toBeTruthy;
   });
 
-  it("should return a non empty array", () => {
-    let result = component.ngOnInit();
-    expect(Array.isArray(result)).toBeTruthy;
-  });
-
-  it("should return a non empty array", () => {
-    let result = component.goListAddress();
-    expect(Array.isArray(result)).toBeTruthy;
-  });
-  it("should return a non empty array", () => {
-    let result = component.isAddressExists("127.0.0.1","test");
-    expect(Array.isArray(result)).toBeTruthy;
-  });
-  it("should return a non empty array", () => {
-    let result = component.isNameExists("zbc","202.130.122.1");
-    expect(Array.isArray(result)).toBeTruthy;
-  });
-  it("should return a non empty array", () => {
-    let result = component.saveAddress();
-    expect(Array.isArray(result)).toBeTruthy;
-  });
-  it("should return a non empty array", () => {
-    let result = component.scanQRCode();
-    expect(Array.isArray(result)).toBeTruthy;
-  });
 });

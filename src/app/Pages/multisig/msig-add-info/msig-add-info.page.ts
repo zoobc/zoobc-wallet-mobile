@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { Router } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
-import zoobc from 'zoobc-sdk';
+import zoobc from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Subscription } from 'rxjs';
@@ -28,6 +28,8 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
   isMultiSignature = false;
   indexSelected: number;
   msigAccount: any;
+  name: string;
+  address: string;
 
   constructor(
     private multisigSrv: MultisigService,
@@ -74,7 +76,9 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
   }
 
   petchMsigAccount(acc: Account) {
-    this.participants = acc.participants;
+    // this.participants = acc.participants;
+    this.name = acc.name;
+    // this.address = acc.address;
     this.nonce = acc.nonce;
     this.minSig = acc.minSig;
   }
@@ -107,7 +111,7 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
       this.multisig = multisig;
       if (multisigInfo) {
         const { participants, minSigs, nonce } = multisigInfo;
-        this.participants = participants;
+        // this.participants = participants;
         this.nonce = nonce;
         this.minSig = minSigs;
       } else if (this.isMultiSignature) {
@@ -127,7 +131,7 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
   async loadMultisigData() {
     const account = await this.accountSrv.getCurrAccount();
     const { participants, minSig, nonce } = account;
-    this.participants = participants;
+    // this.participants = participants;
     this.nonce = nonce;
     this.minSig = minSig;
   }
@@ -167,12 +171,11 @@ export class MsigAddInfoPage implements OnInit, OnDestroy {
     this.participants.sort();
     this.participants = this.participants.filter(addrs => addrs !== '');
 
-    multisig.multisigInfo = {
-      minSigs: this.minSig,
-      nonce: this.nonce,
-      participants: this.participants,
-      multisigAddress: '',
-    };
+    // multisig.multisigInfo = {
+    //   minSigs: this.minSig,
+    //   nonce: this.nonce,
+    //   // participants: this.participants
+    // };
     const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
     multisig.generatedSender = address;
     this.multisigSrv.update(multisig);

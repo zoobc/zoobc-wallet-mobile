@@ -6,7 +6,7 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
 import { Participant } from 'src/app/Interfaces/participant';
-import { signTransactionHash } from 'zoobc-sdk';
+import { signTransactionHash } from 'zbc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { stringToBuffer } from 'src/Helpers/utils';
@@ -59,19 +59,20 @@ export class MsigAddSignaturesPage implements OnInit {
   }
 
   async patchValue(multisig: MultiSigDraft) {
-    const { signaturesInfo, multisigInfo, unisgnedTransactions, transaction } = multisig;
+    const { signaturesInfo, multisigInfo, unisgnedTransactions } = multisig;
 
     if (!signaturesInfo || signaturesInfo == null) {
       if (multisigInfo) {
         return this.patchParticipant(multisigInfo.participants);
       }
-      if (unisgnedTransactions) {
-        return this.patchUnsignedAddress(transaction.sender);
-      }
+      // if (unisgnedTransactions) {
+      //   return this.patchUnsignedAddress(transaction.sender);
+      // }
 
       const acc = await this.accountSrv.getCurrAccount();
       return this.pushInitParticipant(1, acc);
     }
+
     if (signaturesInfo.txHash) {
       this.transactionHash = signaturesInfo.txHash;
     }
@@ -85,12 +86,16 @@ export class MsigAddSignaturesPage implements OnInit {
 
   patchParticipant(participant: any[]) {
     participant.forEach(pcp => {
+      console.log('===Pcp: ', pcp);
+
       let address = '';
       let signature = '';
       if (typeof pcp === 'object') {
         address = pcp.address;
         signature = Buffer.from(pcp.signature).toString('base64');
-      } else { address = pcp; }
+      } else {
+        address = pcp;
+      }
       this.participantsSignature.push(this.createParticipant(address, signature));
     });
   }
@@ -106,7 +111,7 @@ export class MsigAddSignaturesPage implements OnInit {
 
   async patchUnsignedAddress(addres: string) {
     const accounts = await this.accountSrv.allAccount();
-    const account = accounts.find(acc => acc.address === addres);
+    const account = accounts.find(acc => acc.address.value === addres);
     this.patchParticipant(account.participants);
   }
 
@@ -150,22 +155,27 @@ export class MsigAddSignaturesPage implements OnInit {
   }
 
   async addSignature() {
-    const curAcc = await this.accountSrv.getCurrAccount();
-    let idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.address);
-    if (curAcc.type === 'multisig' && idx === -1) {
-      idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.signByAddress);
+    // const curAcc = await this.accountSrv.getCurrAccount();
+    // let idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.address);
+    // if (curAcc.type === 'multisig' && idx === -1) {
+    //   idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.signByAddress);
+    // }
+
+    // if (idx === -1) {
+    //   this.utilSrv.showConfirmation('Error', 'This account is not in Participant List', false, null);
+    //   return;
+    // }
+
+
+    for (let idx = 0; idx <= this.participantsSignature.length; idx++ ) {
+          const signerAddress =  this.participantsSignature[idx].address;
+          const signerAccount =  await this.accountSrv.getAccount(signerAddress);
+          const seed = this.authSrv.keyring.calcDerivationPath(signerAccount.path);
+          const signature = signTransactionHash(this.transactionHash, seed);
+          const base64Sig = signature.toString('base64');
+          this.participantsSignature[idx].signature = base64Sig;
     }
 
-    if (idx === -1) {
-      this.utilSrv.showConfirmation('Error', 'This account is not in Participant List', false, null);
-      return;
-    }
-    const signerAddress =  this.participantsSignature[idx].address;
-    const signerAccount =  await this.accountSrv.getAccount(signerAddress);
-    const seed = this.authSrv.keyring.calcDerivationPath(signerAccount.path);
-    const signature = signTransactionHash(this.transactionHash, seed);
-    const base64Sig = signature.toString('base64');
-    this.participantsSignature[idx].signature = base64Sig;
   }
 
   async next() {
@@ -207,7 +217,7 @@ export class MsigAddSignaturesPage implements OnInit {
       return null;
     }
     curAccount.participants.forEach(pcp => {
-      this.participantsSignature.push(this.createParticipant(pcp, ''));
+      // this.participantsSignature.push(this.createParticipant(pcp, ''));
     });
   }
 

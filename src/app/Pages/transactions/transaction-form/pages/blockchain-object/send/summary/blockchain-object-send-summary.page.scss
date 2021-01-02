@@ -1,0 +1,22 @@
+.footer-transaction {
+  padding: 16px;
+
+  .total-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    .total {
+      .info-amount-conversion {
+        flex-direction: column;
+        align-items: flex-end;
+
+        .other-amount {
+          margin-left: 0;
+          color: #727588;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+}

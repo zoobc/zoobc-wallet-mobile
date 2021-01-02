@@ -19,7 +19,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     TranslateModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    TranslateModule
   ],
   declarations: [BackuprestoreAddressPage]
 })

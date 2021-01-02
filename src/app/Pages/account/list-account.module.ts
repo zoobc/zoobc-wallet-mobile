@@ -5,6 +5,9 @@ import { IonicModule } from '@ionic/angular';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { PopoverActionComponent } from './popover-action/popover-action.component';
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
 const routes: Routes = [
   {
@@ -14,13 +17,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [ListAccountComponent],
+  declarations: [ListAccountComponent, PopoverActionComponent],
   imports: [
     CommonModule,
     FormsModule,
     TranslateModule,
     IonicModule,
-    RouterModule.forChild(routes)
-  ]
+    RouterModule.forChild(routes),
+    ComponentsModule
+  ],
+  entryComponents: [PopoverActionComponent, PopoverOptionComponent]
 })
 export class ListAccountModule {}

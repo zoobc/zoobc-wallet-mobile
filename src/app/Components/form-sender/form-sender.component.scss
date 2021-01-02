@@ -1,0 +1,37 @@
+.sender-block {
+  background: #FFFFFF;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  padding: 12px;
+
+  .account-address {
+    display: flex;
+    align-items: center;
+
+    span {
+      color: #727588;
+      font-size: 0.8rem;
+      word-break: break-word;
+    }
+
+    ion-icon {
+      margin-left: 0.8rem;
+    }
+  }
+
+  .account-balance {
+    margin-top: 0.2rem;
+
+
+    .main-amount {
+      font-size: 16px;
+      color: #222428
+    }
+
+    .other-amount {
+      margin-left: 0.5rem;
+      font-size: 12px;
+      color: #727588;
+    }
+  }
+}
