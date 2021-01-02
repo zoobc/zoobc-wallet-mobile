@@ -92,9 +92,9 @@
 
     <ion-item *ngFor="let msig of multiSigPendingList; let i = index" button>
 
-      <ion-label color="dark" (click)="openMultisigDetail(msig.transactionhash)">
-        <h3>{{ msig.senderaddress | shortAddress }}</h3>
-        <ion-text class="dateago">{{ doDateAgo(msig.timestamp * 1000)}}</ion-text>
+      <ion-label color="dark" (click)="openMultisigDetail(msig.transactionHash)">
+        <h3>{{ msig.sender.value | shortAddress }}</h3>
+        <ion-text class="dateago">{{ (msig.timestamp * 1000) | dateAgo}}</ion-text>
 
         <ion-badge *ngIf="msig.status == 0" color="warning" shape="round">
           Pending
@@ -122,7 +122,7 @@
       </ion-label>
 
       <ion-text color="danger" class="ion-text-right">
-        - {{ msig.amount / 1e8 | number: '0.2-4' }} ZBC
+        - {{ msig.txBody.amount / 1e8 | number: '0.2-4' }} ZBC
         <br />
         <span>
           - {{ msig.fee / 1e8 | number: '0.2-4'}} ZBC Fee

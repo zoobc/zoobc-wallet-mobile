@@ -10,11 +10,15 @@ import zoobc, {
   MempoolListParams,
   TransactionType,
   EscrowStatus,
+  MultisigPendingListParams,
+  PendingTransactionStatus,
+  ZBCTransactions,
 } from 'zbc-sdk';
 
 import { Router, NavigationExtras } from '@angular/router';
 import { dateAgo } from 'src/Helpers/utils';
 import { Currency } from 'src/app/Interfaces/currency';
+import { MultisigService } from 'src/app/Services/multisig.service';
 
 @Component({
   selector: 'app-my-tasks',
@@ -50,6 +54,7 @@ export class MyTasksPage implements OnInit {
 
   constructor(
     private router: Router,
+    private msigService: MultisigService,
     private accountService: AccountService) { }
 
   ngOnInit() {
@@ -77,55 +82,63 @@ export class MyTasksPage implements OnInit {
     // }
 
     this.getPengingTrxEsc();
+    this.getMultiSigPendingList();
     this.getBlockHeight();
-    // this.getMultiSigPendingList(true);
-    // this.startTimer();
+
   }
 
-  // getMultiSigPendingList(reload: boolean = false) {
-  //   if (!this.isLoadingMultisig) {
-  //     this.isLoadingMultisig = true;
-  //     if (reload) {
-  //       this.multiSigPendingList = null;
-  //       this.pageMultiSig = 1;
-  //     }
-  //     const params: MultisigPendingListParams = {
-  //       address: this.account.address,
-  //       // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
-  //       pagination: {
-  //         page: this.pageMultiSig,
-  //         limit: this.PerPage,
-  //         orderBy: OrderBy.DESC
-  //       },
-  //     };
-  //     zoobc.MultiSignature.getPendingList(params)
-  //     .then(async (res: ZBCTransactions) => {
-  //         const tx = toGetPendingList(res);
-  //         this.totalMultiSig = tx.count;
-  //         const pendingList = tx.pendingtransactionsList;
-  //         if (reload) {
-  //           this.multiSigPendingList = pendingList;
-  //         } else {
-  //           this.multiSigPendingList = this.multiSigPendingList.concat(pendingList);
-  //         }
-  //       })
-  //       .catch(err => {
-  //         this.isErrorMultiSig = true;
-  //         console.log(err);
-  //       })
-  //       .finally(() => (this.isLoadingMultisig = false));
-  //   }
-  // }
-
-  startTimer() {
-    setInterval(() => {
-      this.loadTask();
-    }, 100000);
+  async getPendingMultisigApproval() {
+    const paramPool: MempoolListParams = {
+      address: this.account.address,
+    };
+    const list = await zoobc.Mempool.getList(paramPool).then(res => {
+      return res;
+    });
+    return list;
   }
 
+  async checkVisibleMultisig(pendingList) {
+    const list = [];
+    const pendingApprovalList = await this.getPendingMultisigApproval();
+    if (pendingApprovalList.total > 0) {
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < pendingList.length; i++) {
+        const onPending = pendingApprovalList.transactions.includes(pendingList[i].transactionHash);
+        if (!onPending) {
+          list.push(pendingList[i]);
+        }
+      }
+      return list;
+    } else {
+      return pendingList;
+    }
+  }
 
-  doDateAgo(pDate: any) {
-    return dateAgo(pDate);
+  getMultiSigPendingList() {
+    if (!this.isLoadingMultisig) {
+      this.isLoadingMultisig = true;
+
+      const params: MultisigPendingListParams = {
+        address: this.account.address,
+        // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
+        pagination: {
+          page: this.pageMultiSig,
+          limit: this.PerPage,
+        },
+      };
+      zoobc.MultiSignature.getPendingList(params)
+        .then(async (tx: ZBCTransactions) => {
+          this.totalMultiSig = tx.total;
+          const pendingList = tx.transactions;
+          this.multiSigPendingList = pendingList;
+          console.log('=== multiSigPendingList: ', this.multiSigPendingList);
+        })
+        .catch(err => {
+          this.isErrorMultiSig = true;
+          console.log(err);
+        })
+        .finally(() => (this.isLoadingMultisig = false));
+    }
   }
 
 
@@ -245,13 +258,10 @@ export class MyTasksPage implements OnInit {
     this.router.navigate(['/task-detail'], navigationExtras);
   }
 
-  openMultisigDetail(msigHash: string) {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        msigHash
-      }
-    };
-    this.router.navigate(['/msig-task-detail'], navigationExtras);
+  openMultisigDetail(msigHash: any) {
+    console.log(msigHash);
+    this.msigService.setHash(msigHash);
+    this.router.navigate(['/msig-task-detail']);
   }
 
   public goDashboard() {

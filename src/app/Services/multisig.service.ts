@@ -18,7 +18,7 @@ export class MultisigService {
     txType: TransactionType.SENDMONEYTRANSACTION,
   };
 
-
+  msigHash: any;
   multisigDraft: MultiSigDraft;
   private sourceMultisig = new BehaviorSubject<MultiSigDraft>({ ...this.multisigTemplate });
   multisig = this.sourceMultisig.asObservable();
@@ -28,6 +28,14 @@ export class MultisigService {
   update(multisig: MultiSigDraft) {
     this.multisigDraft = multisig;
     // this.sourceMultisig.next(multisig);
+  }
+
+  setHash(trxHash){
+    this.msigHash = trxHash;
+  }
+
+  getHash(){
+    return this.msigHash;
   }
 
   getDrafts() {
