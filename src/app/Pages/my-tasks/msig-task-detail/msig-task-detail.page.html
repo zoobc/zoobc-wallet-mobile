@@ -86,8 +86,9 @@
         <p> {{ "no participants have signed yet" | translate }}</p>
       </ion-label>
       <ion-label color="danger" *ngIf="pendingSignatures.length > 0">
-        <p>{{ "signed by" | translate }} {{ pendingSignatures.length }} of {{ participants.length }}
-          {{ "participants" | translate }}</p>
+        <p>Signed by {{ pendingSignatures.length }} of {{ totalParticpants }}
+          participants 
+        </p>
       </ion-label>
     </ion-item>
 
@@ -141,13 +142,9 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" color="tertiary" (click)="confirm()">{{ 'Accept' | translate }}</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" color="tertiary" (click)="doIgnore()">{{ 'Ignore' | translate }}
+        <ion-button fill="outline" color="tertiary" (click)="doIgnore()">{{ 'ignore' | translate }}
         </ion-button>
+        <ion-button  color="tertiary" (click)="confirm()">{{ 'accept' | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
