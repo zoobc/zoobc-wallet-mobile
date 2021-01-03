@@ -30,15 +30,10 @@ export class MsigCreateTransactionPage implements OnInit {
     private router: Router,
     private navCtrl: NavController,
     private translate: TranslateService) {
-    // const subs = this.multisigServ.multisig.subscribe(multisig => {
-    //   this.formTrx = createInnerTxForm(multisig.txType);
-    //   this.fieldList = getInputMap(multisig.txType);
-    // });
-    // subs.unsubscribe();
   }
 
   ngOnInit() {
-    this.draft  = this.multisigServ.multisigDraft;
+    this.draft = this.multisigServ.multisigDraft;
     if (this.draft) {
       console.log('== Multisig: ', this.draft);
       this.formTrx = createInnerTxForm(this.draft.txType);
@@ -51,7 +46,7 @@ export class MsigCreateTransactionPage implements OnInit {
     }
   }
 
-  async generateDownloadJsonUri() {
+  async generateUri() {
     alert('Coming soon!');
   }
 
@@ -59,32 +54,8 @@ export class MsigCreateTransactionPage implements OnInit {
 
     try {
       if (this.formTrx.valid) {
-        this.updateDraft();
-        console.log('----: this.createTransactionForm: ', this.formTrx.value);
-        console.log('=== this.multisig: ', this.draft);
+        this.update();
         this.multisigServ.update(this.draft);
-        // if (signaturesInfo === null) {
-        //   const title = getTranslation('are you sure?', this.translate);
-        //   const message = getTranslation('you will not be able to update the form anymore!', this.translate);
-        //   const buttonText = getTranslation('yes, continue it!', this.translate);
-
-        //   const isConfirm = await Swal.fire({
-        //     title,
-        //     text: message,
-        //     showCancelButton: true,
-        //     confirmButtonText: buttonText,
-        //     type: 'warning',
-        //   }).then(result => {
-        //     if (result.value) {
-        //       this.generatedTxHash();
-        //       this.multisigServ.update(this.multisig);
-        //       return true;
-        //     } else { return false; }
-        //   });
-        //   if (!isConfirm) { return false; }
-        // }
-
-
         this.router.navigate(['/msig-send-transaction']);
       }
     } catch (err) {
@@ -94,8 +65,7 @@ export class MsigCreateTransactionPage implements OnInit {
     }
   }
 
-  updateDraft() {
-
+  update() {
     // extract value form
     const form = this.formTrx.value;
     if (form.recipient) {
@@ -138,8 +108,8 @@ export class MsigCreateTransactionPage implements OnInit {
     }
   }
 
-  saveDraft() {
-    this.updateDraft();
+  save() {
+    this.update();
     this.multisigServ.update(this.draft);
     if (this.draft.id) {
       this.multisigServ.editDraft();

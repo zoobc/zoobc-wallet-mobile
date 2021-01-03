@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>{{ 'multisignature' | translate }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button  (click)="goHome()">
+      <ion-button (click)="goHome()">
         <ion-icon name="home"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -13,12 +13,6 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
-  <!-- <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
-      refreshingText="{{ 'refreshing' | translate }} ...">
-    </ion-refresher-content>
-  </ion-refresher> -->
 
   <div *ngIf="isProcessing">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -55,8 +49,7 @@
 
   <form [formGroup]="formTrx" (submit)="next()">
 
-    <app-form-send-money [group]="formTrx" [inputMap]="fieldList" [multisig]="true"
-      *ngIf="draft.txType == 1">
+    <app-form-send-money [group]="formTrx" [inputMap]="fieldList" [multisig]="true" *ngIf="draft.txType == 1">
     </app-form-send-money>
 
     <app-form-setup-account-dataset [group]="formTrx" [inputMap]="fieldList" [multisig]="true"
@@ -66,19 +59,19 @@
     <app-form-remove-account-dataset [group]="formTrx" [inputMap]="fieldList" [multisig]="true"
       *ngIf="draft.txType == 259"></app-form-remove-account-dataset>
 
-    <app-form-escrow-approval [group]="formTrx" [inputMap]="fieldList" [multisig]="true"
-      *ngIf="draft.txType == 4"></app-form-escrow-approval>
+    <app-form-escrow-approval [group]="formTrx" [inputMap]="fieldList" [multisig]="true" *ngIf="draft.txType == 4">
+    </app-form-escrow-approval>
 
     <span class="form-advanced-option">{{ 'advanced option' | translate }}</span>
     <app-form-escrow [group]="formTrx" [inputMap]="fieldList"></app-form-escrow>
 
 
     <!-- <ion-button expand="full" *ngIf="multisig.signaturesInfo !== undefined" color="primary"
-      (click)="generateDownloadJsonUri()" [disabled]="formTrx.invalid">
+      (click)="generateUri()" [disabled]="formTrx.invalid">
       {{ 'export draft multi signature' | translate }}
     </ion-button>
 
-    <ion-button color="tertiary" expand="block" (click)="saveDraft()">
+    <ion-button color="tertiary" expand="block" (click)="save()">
       {{ 'save' | translate }}
     </ion-button> -->
     <ion-button type="submit" color="tertiary" expand="block" [disabled]="formTrx.invalid">
