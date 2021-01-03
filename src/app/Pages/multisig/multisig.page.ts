@@ -12,7 +12,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { getTxType } from 'src/Helpers/multisig-utils';
 import { getTranslation } from 'src/Helpers/utils';
 import { TranslateService } from '@ngx-translate/core';
-import { UtilService } from 'src/app/Services/util.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -44,7 +43,6 @@ export class MultisigPage implements OnInit {
 
   constructor(
     private router: Router,
-    private utilService: UtilService,
     private accountService: AccountService,
     private alertController: AlertController,
     private multisigServ: MultisigService,
@@ -60,16 +58,11 @@ export class MultisigPage implements OnInit {
   }
 
   showForm() {
-    if (this.isShowForm) {
-      this.isShowForm = false;
-    } else {
-      this.isShowForm = true;
-    }
+    this.isShowForm = true;
   }
 
   async ngOnInit() {
     this.getAccountType();
-    // await this.getMultiSigDraft();
   }
 
   async getAccountType() {
@@ -77,7 +70,7 @@ export class MultisigPage implements OnInit {
     this.isAccMultisig = this.account.type === 'multisig' ? true : false;
   }
 
-  async doNext() {
+  async next() {
 
     const txType = this.fTrxType.value;
     const multisig: MultiSigDraft = {
@@ -109,9 +102,7 @@ export class MultisigPage implements OnInit {
         participants: this.account.participants,
       };
 
-      // const generatedSender = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
-      // multisig.txBody.sender = addrss;
-      // multisig.generatedSender = generatedSender;
+      // const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
       multisig.txBody.sender = this.account.address;
       // multisig.accountAddress = this.account.address;
       console.log('... this.multisig:', multisig);
@@ -122,61 +113,9 @@ export class MultisigPage implements OnInit {
       this.multisigServ.update(multisig);
       this.router.navigate(['/msig-add-info']);
     }
-    // const multisig: MultiSigDraft = null;
-
-    // // const multisig: MultiSigDraft = {
-    // //   accountAddress: '',
-    // //   fee: 0,
-    // //   id: 0,
-    // //   multisigInfo: null,
-    // //   unisgnedTransactions: null,
-    // //   txType: ftrxType.value,
-    // // };
-
-
-    // if (fchainType.value === 'offchain') {
-    //   multisig.signaturesInfo = null;
-    // }
-
-    // if (this.isMultiSignature) { // if account is multisig
-    //   multisig.multisigInfo = {
-    //     minSigs: this.account.minSig,
-    //     nonce: this.account.nonce,
-    //     participants: this.account.participants,
-    //   };
-    //   const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
-    //   multisig.generatedSender = address;
-    //   this.multisigServ.update(multisig);
-
-    //   // checking, one of participant must from account list
-    //   let isOneParticipant = false;
-    //   const idx = (await this.accountService
-    //     .allAccount())
-    //     .filter(res => multisig.multisigInfo.participants.includes(res.address));
-
-    //   if (idx.length > 0) {
-    //     isOneParticipant = true;
-    //   } else {
-    //     isOneParticipant = false;
-    //   }
-    //   if (!isOneParticipant) {
-    //     const message = getTranslation('you dont have any account that in participant list', this.translate);
-    //     this.utilService.showConfirmation('Opps...', message, false, null);
-    //   } else {
-    //     this.router.navigate(['/msig-create-transaction']);
-    //   }
-
-    // } else { // current account not multisig
-    //   this.multisigServ.update(multisig);
-    //   this.router.navigate(['/msig-add-info']);
-    // }
   }
 
-  radioGroupChange() {
-    console.log('radioGroupChange2: ', this.fChainType);
-  }
-
-  async getMultiSigDraft() {
+  async getDraft() {
 
     const msigDraft = this.multisigServ.getDrafts();
     if (!msigDraft) {
@@ -207,7 +146,7 @@ export class MultisigPage implements OnInit {
   }
 
 
-  async importDraft() {
+  async import() {
     const importDraft = await this.modalController.create({
       component: ImportDraftPage,
       componentProps: {}
@@ -222,15 +161,14 @@ export class MultisigPage implements OnInit {
     return await importDraft.present();
   }
 
-  async onDeleteDraft(id: number) {
-    this.presentDeleteConfirmation(id);
+  async delete(id: number) {
+    this.showConfirmation(id);
   }
 
-  async presentDeleteConfirmation(id: number) {
+  async showConfirmation(id: number) {
     const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
       header: 'Confirm!',
-      message: 'Are you sure want to delete!!!',
+      message: 'Are you sure want to delete!',
       buttons: [
         {
           text: 'Cancel',
@@ -244,7 +182,7 @@ export class MultisigPage implements OnInit {
           text: 'Oke',
           handler: () => {
             this.multisigServ.deleteDraft(id);
-            this.getMultiSigDraft();
+            this.getDraft();
             this.router.navigate(['/multisig']);
           }
         }
@@ -254,7 +192,7 @@ export class MultisigPage implements OnInit {
     await alert.present();
   }
 
-  onEditDraft(idx: number) {
+  edit(idx: number) {
     const multisig: MultiSigDraft = this.multiSigDrafts[idx];
     const { multisigInfo, unisgnedTransactions, signaturesInfo } = multisig;
     this.multisigServ.update(multisig);
@@ -268,9 +206,7 @@ export class MultisigPage implements OnInit {
     }
   }
 
-  changeTrx() {
-    console.log('=== multisig ===', this.fTrxType);
+  close() {
+    this.isShowForm = false;
   }
-
-
 }

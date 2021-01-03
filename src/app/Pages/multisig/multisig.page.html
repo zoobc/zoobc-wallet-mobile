@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'create multisignature transaction' | translate }}</ion-title>
+    <ion-title>{{ 'multisignature transaction' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,11 +11,11 @@
 
   <ion-row>
     <ion-col>
-      <ion-button (click)="showForm()" color="tertiary">
+      <ion-button fill="outline" (click)="showForm()" color="tertiary">
         +&nbsp;{{ 'create' | translate }}&nbsp;
         <ion-icon name="arrow-dropdown"></ion-icon>
       </ion-button>
-      <ion-button (click)="importDraft()" color="tertiary">
+      <ion-button fill="outline" (click)="import()" color="tertiary">
         <ion-icon name="pulse"></ion-icon>&nbsp;
         {{'sign' | translate}}
       </ion-button>
@@ -23,7 +23,7 @@
   </ion-row>
 
   <ion-card style="padding: 0;" *ngIf="isShowForm">
-    <form [formGroup]="multisigForm" (ngSubmit)="doNext()" novalidate>
+    <form [formGroup]="multisigForm" (ngSubmit)="next()" novalidate>
       <ion-item lines="none" class="form-item">
         <ion-label>
           <p class="ion-text-wrap">
@@ -33,14 +33,17 @@
       </ion-item>
       <ion-item lines="none" class="form-item">
         <ion-select style="max-width: 100% !important; border: #cccccc 1px solid " interface="popover"
-          formControlName="trxType" (ionChange)="changeTrx()">
+          formControlName="trxType">
           <ion-select-option [value]="type.code" *ngFor="let type of txType; let idx = index">
             {{ type.type | translate }}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-card-content>
-        <ion-button expand="block" color="tertiary" type="submit" [disabled]="multisigForm.invalid">
+        <ion-button color="tertiary" type="submit" [disabled]="multisigForm.invalid">
           {{ 'next' | translate }}
+        </ion-button>
+        <ion-button  color="tertiary" type="button" (click)="close()" fill="outline">
+          {{ 'close' | translate }}
         </ion-button>
       </ion-card-content>
     </form>
