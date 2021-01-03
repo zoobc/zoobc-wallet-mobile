@@ -49,14 +49,17 @@
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
-        <ion-button size="small" expand="block" (click)="showPopupMultisigAccounts()">
-          {{ 'select multisignature account' | translate }}
+        <ion-button size="small" color="tertiary" expand="block" (click)="showAccountsPopup()">
+          {{ 'import my multisignature account' | translate }}
+        </ion-button>
+        <ion-button size="small" fill="outline" color="tertiary" expand="block" (click)="createAccount()">
+          {{ 'create multisignature account' | translate }}
         </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <ng-container *ngIf="addressField.value">
+  <ng-container *ngIf="fAddress.value">
     <form [formGroup]="form" (ngSubmit)="next()" novalidate>
     <ion-grid *ngIf="draft">
       <ion-row>
@@ -102,11 +105,11 @@
             {{ 'nonce' | translate}} </ion-label>
           <ion-input formControlName="nonce" type="number" readonly="true" placeholder="{{ 'nonce' | translate }} ...">
           </ion-input>
-          <ng-container *ngIf="nonceField.touched">
-            <ion-text *ngIf="nonceField.hasError('required')">
+          <ng-container *ngIf="fNonce.touched">
+            <ion-text *ngIf="fNonce.hasError('required')">
               {{ 'nonce is required' | translate }}
             </ion-text>
-            <ion-text *ngIf="nonceField.hasError('min')">
+            <ion-text *ngIf="fNonce.hasError('min')">
               {{ 'minimum nonce is 1' | translate }}
             </ion-text>
           </ng-container>
@@ -120,11 +123,11 @@
           <ion-input type="number" formControlName="minSigs" readonly="true" placeholder="Minimum signature...">
           </ion-input>
 
-          <ng-container *ngIf="minSignatureField.touched">
-            <ion-text *ngIf="minSignatureField.hasError('required')">
+          <ng-container *ngIf="fMinSign.touched">
+            <ion-text *ngIf="fMinSign.hasError('required')">
               {{ 'minimum signature is required' | translate }}
             </ion-text>
-            <ion-text *ngIf="minSignatureField.hasError('min')">
+            <ion-text *ngIf="fMinSign.hasError('min')">
               {{ 'minimum signature is 2' | translate }}
             </ion-text>
           </ng-container>
@@ -146,7 +149,7 @@
     </ion-grid>
     </form>
   </ng-container>
-  <ng-container *ngIf="!addressField.value">
+  <ng-container *ngIf="!fAddress.value">
     <ion-row class="btn-next-disabled">
       <ion-col>
         <ion-button type="submit" color="tertiary" expand="block" disabled>
