@@ -20,7 +20,7 @@
         <ion-input type="text" formControlName="name" required></ion-input>
       </ion-item>
       <!-- Error messages -->
-      <ion-item lines="none" *ngIf="fName.touched">
+      <ion-item lines="none" *ngIf="fName.touched && fName.hasError">
         <ion-label color="danger" *ngIf="fName.hasError('required')">
           {{ 'name is required' | translate }}!
         </ion-label>
@@ -28,17 +28,17 @@
 
       <ion-item>
         <ion-label position="stacked">
-          {{ 'address' | translate }}
+          Network {{ 'address' | translate }}
         </ion-label>
         <ion-input type="text" placeholder="http://172.432.29.4:7001" formControlName="host" required></ion-input>
       </ion-item>
 
-      <ion-item lines="none" *ngIf="fHost.touched" lines="none">
+      <ion-item lines="none" *ngIf="fHost.touched && fHost.hasError" lines="none">
         <ion-label color="danger" *ngIf="fHost.hasError('required')">
           {{ 'node address is required' | translate }}!
         </ion-label>
         <ion-label color="danger" *ngIf="fHost.hasError('pattern')">
-          {{ 'invalid node address format' | translate }}!
+          {{ 'invalid node address format (with port)' | translate }}!
         </ion-label>
       </ion-item>
 

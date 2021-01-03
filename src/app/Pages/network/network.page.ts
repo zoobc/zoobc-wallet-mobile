@@ -82,7 +82,7 @@ export class NetworkPage implements OnInit {
   async deleteConfirmation() {
     const alert = await this.alertController.create({
       header: 'Confirm!',
-      message: 'Are you sure <strong>to delete</strong>!!!',
+      message: 'Are you sure <strong>to delete!</strong>',
       buttons: [
         {
           text: 'Cancel',
