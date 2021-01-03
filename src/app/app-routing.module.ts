@@ -225,8 +225,8 @@ const routes: Routes = [
   },
   { path: 'tabs', loadChildren: './Pages/tabs/tabs.module#TabsPageModule', canActivate: [AuthService] },
   { path: 'home', loadChildren: './Pages/home/home.module#HomePageModule', canActivate: [AuthService] },
-  { path: 'theme', loadChildren: './Pages/theme/theme.module#ThemePageModule' },
-  { path: 'network', loadChildren: './Pages/network/network.module#NetworkPageModule' },
+  { path: 'theme', loadChildren: './Pages/theme/theme.module#ThemePageModule', canActivate: [AuthService] },
+  { path: 'network', loadChildren: './Pages/network/network.module#NetworkPageModule', canActivate: [AuthService] },
   { path: 'explanation-screen', loadChildren: './Pages/wallet/explanation-screen/explanation-screen.module#ExplanationScreenPageModule' },
   {
     path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
