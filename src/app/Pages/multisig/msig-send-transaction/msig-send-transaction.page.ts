@@ -26,14 +26,14 @@ export class MsigSendTransactionPage implements OnInit {
   currentAccount: Account;
   minFee =  TRANSACTION_MINIMUM_FEE;
   formSend: FormGroup;
-  fieldFee = new FormControl(this.minFee, [Validators.required, Validators.min(this.minFee)]);
-  fieldSender =  new FormControl('', Validators.required);
+  fFee = new FormControl(this.minFee, [Validators.required, Validators.min(this.minFee)]);
+  fSender =  new FormControl('', Validators.required);
 
 
   draft: MultiSigDraft;
 
 
-  // isMultiSigAccount = false;
+  isMultiSigAccount = false;
   participants = [];
 
   accountBalance: any;
@@ -51,8 +51,8 @@ export class MsigSendTransactionPage implements OnInit {
     private router: Router,
     private multisigServ: MultisigService  ) {
     this.formSend = new FormGroup({
-      sender: this.fieldSender,
-      fee: this.fieldFee,
+      sender: this.fSender,
+      fee: this.fFee,
     });
   }
 
@@ -63,10 +63,10 @@ export class MsigSendTransactionPage implements OnInit {
     if (this.draft) {
       const { fee } = this.draft;
       if (fee >= this.minFee) {
-          this.fieldFee.setValue(fee);
-          this.fieldFee.markAsTouched();
+          this.fFee.setValue(fee);
+          this.fFee.markAsTouched();
       } else {
-        this.fieldFee.setValue(this.minFee);
+        this.fFee.setValue(this.minFee);
       }
     }
 
@@ -85,62 +85,22 @@ export class MsigSendTransactionPage implements OnInit {
       console.log('=== balance: ', balance);
       console.log('=== account222: ', account);
       account.balance = balance;
-      this.fieldSender.setValue(account);
-      this.fieldSender.markAsTouched();
+      this.fSender.setValue(account);
+      this.fSender.markAsTouched();
     }
-
-//
-    // this.currentAccount = await this.accountServ.getCurrAccount();
-    // if (this.currentAccount.type === ACC_TYPE_MULTISIG) {
-    //     // this.isMultiSigAccount = true;
-    // }
-
-    // this.fieldFee.setValue(this.minFee);
-    // this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
-    //   this.multisig = multisig;
-    //   const { fee } = this.multisig;
-    //   if (fee >= this.minFee) {
-    //     this.fieldFee.setValue(fee);
-    //   }
-    // });
-    // this.fieldFee.markAsTouched();
-
-    // const { multisigInfo} = this.multisig;
-    // const { participants } = multisigInfo;
-    // console.log('=== Participants: ', participants);
-
-    // this.participants = JSON.stringify(participants);
-    // if (participants) {
-    //   // this.account = await this.accountServ.getAccount(participants[0]);
-    //   this.fieldSender.setValue(this.account.address);
-    // }
-
-    // Get multisig draft
-    // this.multiSigDrafts = await this.multisigServ.getDrafts();
   }
 
-  saveDraft() {
-    // this.updateSendTransaction();
-    // const isDraft = this.multiSigDrafts.some(draft => draft.id === this.draft.id);
-    // if (isDraft) {
-    //   this.multisigServ.editDraft();
-    // } else {
-    //   this.multisigServ.saveDraft();
-    // }
-    // this.router.navigate(['/multisig']);
+  save() {
+
   }
 
-  updateSendTransaction() {
+  updateTransaction() {
     const { fee } = this.formSend.value;
     const multisig = { ...this.draft };
     multisig.fee = fee;
     this.multisigServ.update(multisig);
   }
 
-  // ngOnDestroy() {
-  //   this.multisigSubs.unsubscribe();
-  //   this.accountServ.switchMultisigAccount();
-  // }
 
   updateTrxInfo() {
     this.txType = getTxType(this.draft.txType);
@@ -159,9 +119,7 @@ export class MsigSendTransactionPage implements OnInit {
     if (!this.formSend.valid) {
         return;
     }
-    console.log('==  form: ', this.formSend.value);
-    const address = this.fieldSender.value.address;
-    console.log('=== address:', address);
+    const address = this.fSender.value.address;
     const accBalance = await zoobc.Account.getBalance(address);
     const balance  = Number(accBalance.spendableBalance / 1e8);
     if (balance < this.minFee) {
@@ -169,22 +127,11 @@ export class MsigSendTransactionPage implements OnInit {
       Swal.fire({ type: 'error', title: 'Oops...', text: message });
       return;
     }
-
     this.updateTrxInfo();
-    console.log('== trx Type: ', this.txType);
-    console.log('== trx inner Trx: ', this.innerTx);
-    console.log('=== Draft: ', this.draft);
-
     this.send();
-    //   this.confirmRefDialog = this.dialog.open(this.confirmDialog, {
-    //     width: '500px',
-    //     maxHeight: '90vh',
-    //   });
-
   }
 
   async send() {
-    //  this.updateSendTransaction();
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
       duration: 100000
@@ -195,10 +142,10 @@ export class MsigSendTransactionPage implements OnInit {
     const unisgnedTransactions =  createInnerTxBytes(this.draft.txBody, this.draft.txType);
       // (this.draft.unisgnedTransactions && Buffer.from(this.draft.unisgnedTransactions)) ||
       // createInnerTxBytes(this.draft.txBody, this.draft.txType);
-    const acc = this.fieldSender.value;
+    const acc = this.fSender.value;
     console.log('=== acc Sender:', acc);
 
-    const fees = this.fieldFee.value;
+    const fees = this.fFee.value;
     console.log('=== fees:', fees);
     const data: MultiSigInterface = {
       accountAddress: acc.address,
@@ -208,11 +155,7 @@ export class MsigSendTransactionPage implements OnInit {
       signaturesInfo,
     };
 
-
     const childSeed = this.authSrv.keyring.calcDerivationPath(acc.path);
-    console.log('==== childSeed: ', childSeed);
-    console.log('== dataXXXX: ', data);
-
     zoobc.MultiSignature.postTransaction(data, childSeed)
       .then(async () => {
         const message = getTranslation('your transaction is processing', this.translate);
@@ -229,93 +172,12 @@ export class MsigSendTransactionPage implements OnInit {
       .finally(() => {
         loading.dismiss();
       });
-
-    // this.updateSendTransaction();
-
-    // let { accountAddress} = this.multisig;
-    // const { fee, multisigInfo, unisgnedTransactions, signaturesInfo, txBody } = this.multisig;
-
-    // let data: MultiSigInterface;
-    // if (signaturesInfo !== undefined) {
-    //   const signatureInfoFilter: SignatureInfo = {
-    //     txHash: signaturesInfo.txHash,
-    //     participants: [],
-    //   };
-    //   signatureInfoFilter.participants = signaturesInfo.participants.filter(pcp => {
-    //     if (jsonBufferToString(pcp.signature).length > 0) { return pcp; }
-    //   });
-    //   this.currentAccount = await this.accountServ.getCurrAccount();
-    //   accountAddress = this.currentAccount.address;
-    //   data = {
-    //     accountAddress,
-    //     fee,
-    //     multisigInfo,
-    //     unisgnedTransactions,
-    //     signaturesInfo: signatureInfoFilter,
-    //   };
-    // } else {
-    //   this.currentAccount = await this.accountServ.getCurrAccount();
-    //   accountAddress = this.currentAccount.address;
-    //   data = {
-    //     accountAddress,
-    //     fee,
-    //     multisigInfo,
-    //     unisgnedTransactions,
-    //     signaturesInfo,
-    //   };
-    // }
-
-    // console.log('==== data: ', data);
-
-    // // const childSeed = this.authServ.seed;
-    // const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
-    // console.log('==== childSeed: ', childSeed);
-
-
-    // if (data.signaturesInfo === undefined) {
-    //   data.unisgnedTransactions = createInnerTxBytes(this.multisig.txBody, this.multisig.txType);
-    //   console.log('==== childSeed: ', data.unisgnedTransactions);
-    // }
-    // console.log('==== data2: ', data);
-
-    // zoobc.MultiSignature.postTransaction(data, childSeed)
-    // .then(async (res: MultisigPostTransactionResponse) => {
-    //   const message = getTranslation('your transaction is processing', this.translate);
-    //   const subMessage = getTranslation('you send coins to', this.translate, {
-    //     amount: txBody.amount,
-    //     recipient: txBody.recipient,
-    //   });
-    //   this.multisigServ.deleteDraft(this.multisig.id);
-    //   Swal.fire(message, subMessage, 'success');
-    //   this.router.navigateByUrl('/tabs/home');
-    // })
-    // .catch(async err => {
-    //   console.log(err.message);
-    //   const message = getTranslation(err.message, this.translate);
-    //   Swal.fire('Opps...', message, 'error');
-    // });
-
   }
 
 
   counter(i: number) {
     return new Array(i);
   }
-
-  // fillDialog() {
-  //   this.txType = getTxType(this.multisig.txType);
-  //   this.innerTx = Object.keys(this.multisig.txBody).map(key => {
-  //     const item = this.multisig.txBody;
-  //     return {
-  //       key,
-  //       value: item[key],
-  //       isAddress: isZBCAddressValid(item[key], COIN_CODE),
-  //     };
-  //   });
-  //   const div = Math.floor(this.innerTx.length / 2);
-  //   const mod = Math.floor(this.innerTx.length % 2);
-  //   this.innerPage = div + mod;
-  // }
 
   getClass(i: number) {
     if (i % 2 !== 0) { return true; }
