@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { AccountService } from 'src/app/Services/account.service';
@@ -18,6 +18,7 @@ export class ImportDraftPage implements OnInit {
   multiSigDrafts: MultiSigDraft[];
 
   constructor(private utilSrv: UtilService,
+              private modalController: ModalController,
               private multisigServ: MultisigService,
               private accountSrv: AccountService,
               private alertController: AlertController) { }
@@ -98,4 +99,7 @@ export class ImportDraftPage implements OnInit {
     }
   }
 
+  close() {
+    this.modalController.dismiss(0);
+  }
 }
