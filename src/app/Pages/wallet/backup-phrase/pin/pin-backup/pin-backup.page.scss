@@ -1,6 +1,22 @@
-.box-warning{
-    background-color: pink ; 
+ion-col {
+  text-align: center;
 }
-ion-col{
-    text-align: center;
+
+ion-footer {
+  padding-bottom: 40px;
+}
+
+ion-header {
+  padding-top: 40px;
+}
+
+.iongrid {
+  height: 100%;
+}
+
+.ionrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
