@@ -1,27 +1,19 @@
-
-
-// ion-toolbar {
-//   --color: #fff;
-//   --background: transparent;
-//   --ion-color-base: transparent !important;
-// }
-
 ion-col {
   text-align: center;
 }
 
-ion-footer{
-  padding-bottom:40px;
+ion-footer {
+  padding-bottom: 40px;
 }
 
-ion-header{
-  padding-top:40px;
+ion-header {
+  padding-top: 40px;
 }
 
-.iongrid{
+.iongrid {
   height: 100%;
 }
-.ionrow{
+.ionrow {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,4 +31,3 @@ ion-button {
   margin-right: 4px;
   color: #ffffff;
 }
-
