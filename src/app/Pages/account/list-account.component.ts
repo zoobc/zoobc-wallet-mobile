@@ -127,6 +127,14 @@ export class ListAccountComponent implements OnInit {
 
   }
 
+  async doRefresh(event: any) {
+    this.isLoadingBalance = true;
+    await this.accountService.fetchAccountsBalance();
+    this.loadData();
+    this.isLoadingBalance = false;
+    event.target.complete();
+  }
+
   async loadData() {
     this.route.queryParams.subscribe(() => {
       if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
@@ -136,11 +144,6 @@ export class ListAccountComponent implements OnInit {
       }
     });
     this.accounts = await this.accountService.getAccountsWithBalance();
-    // this.accounts = await this.accountService.allAccount();
-    console.log('=== this.accounts: ', this.accounts);
-    if (this.accounts && this.accounts.length > 0) {
-    //  this.getAllAccountBalance(this.accounts);
-    }
   }
 
   async deleteAccount(index: number) {
@@ -173,41 +176,6 @@ export class ListAccountComponent implements OnInit {
     await confirmation.present();
   }
 
-  async getAllAccountBalance(accounts: any) {
-    this.isLoadingBalance = true;
-    const accountAddresses = [];
-    // let allBalances = null;
-    accounts.forEach((acc) => {
-      accountAddresses.push(acc.address);
-    });
-
-    try {
-      const data = await zoobc.Account.getBalances(accountAddresses);
-      // allBalances = data.accountbalancesList;
-    } catch (error) {
-      console.log('__error', error);
-      this.isLoadingBalance = false;
-    }
-
-    accounts.forEach(obj => {
-      const adres = obj.address;
-      // obj.balance =  this.getBalanceByAddress(allBalances, adres);
-    });
-    this.isLoadingBalance = false;
-  }
-
-  private getBalanceByAddress(allBalances: any, address: string) {
-    if (allBalances == null) {
-      return null;
-    }
-    const accInfo = allBalances.filter(acc => {
-      return acc.accountaddress === address;
-    });
-    if (accInfo && accInfo.length > 0) {
-      return accInfo[0].balance;
-    }
-    return 0;
-  }
 
   scanQrCode() {
     this.router.navigateByUrl('/qr-scanner');
@@ -266,8 +234,6 @@ export class ListAccountComponent implements OnInit {
   viewAccount(account: Account) {
     this.openEditAccount(account, 0);
   }
-
-  openListAccount() { }
 
   async openAddAccount(arg: Account, trxMode: string) {
     const navigationExtras: NavigationExtras = {
