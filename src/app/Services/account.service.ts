@@ -16,6 +16,7 @@ import zoobc, { ZooKeyring, getZBCAddress, BIP32Interface, AccountBalance, Multi
   providedIn: 'root'
 })
 export class AccountService {
+  accountsWithBalance: Account[];
   account: Account;
   private forWhat: string;
   private plainPassphrase: string;
@@ -23,6 +24,7 @@ export class AccountService {
   private plainPin: string;
   keyring: ZooKeyring;
   private seed: BIP32Interface;
+  private tempSeed: BIP32Interface;
   willRestoreAccounts: boolean;
   private totalAccountLoaded = 20;
   public accountSubject: Subject<Account> = new Subject<Account>();
@@ -39,6 +41,10 @@ export class AccountService {
 
   getForWhat() {
     return this.forWhat;
+  }
+
+  getTempSeed() {
+    return this.tempSeed;
   }
 
   setRecipient(arg: Account) {
@@ -58,22 +64,11 @@ export class AccountService {
     const account: Account = accounts.filter((acc: Account) => {
       return acc.address && acc.address.value === address;
     });
-
-    // let account = null;
-    // // tslint:disable-next-line:prefer-for-of
-    // for (let i = 0; i < accounts.length; i++) {
-    //   const acc = accounts[i];
-    //   if (acc.address.value === address) {
-    //     account = acc;
-    //     break;
-    //   }
-    // }
     return account;
   }
 
   async allAccount(type?: AccountType) {
     const accounts = await this.strgSrv.getObject(STORAGE_ALL_ACCOUNTS);
-    console.log('=== accs:', accounts);
     if (accounts == null) {
       return null;
     }
@@ -81,11 +76,12 @@ export class AccountService {
       return accounts.filter(acc => acc.type === 'normal');
     } else if (type === 'multisig') {
       return accounts.filter(acc => acc.type === 'multisig');
-    } else if (type === 'imported') {
-      return accounts.filter(acc => acc.type === 'imported');
-    } else if (type === 'one time login') {
-      return [this.getCurrAccount()];
     }
+    // else if (type === 'imported') {
+    //   return accounts.filter(acc => acc.type === 'imported');
+    // } else if (type === 'one time login') {
+    //   return [this.getCurrAccount()];
+    // }
     return accounts;
   }
 
@@ -104,7 +100,9 @@ export class AccountService {
     return 0;
   }
 
-
+  getSeed() {
+    return this.seed;
+  }
 
   broadCastNewAccount(account: Account) {
     this.accountSubject.next(account);
@@ -241,6 +239,12 @@ export class AccountService {
     /// add additional accounts end
   }
 
+  updateTempSeed(account: Account) {
+    if (account.path != null) {
+      this.tempSeed = this.keyring.calcDerivationPath(account.path);
+    }
+  }
+
   switchAccount(account: Account) {
 
     if (account) {
@@ -262,24 +266,34 @@ export class AccountService {
     this.switchAccount(account);
   }
 
+  async getAccountsWithBalance(type?: AccountType) {
+      const accounts = this.accountsWithBalance;
+      if (accounts == null) {
+        return null;
+      }
+      if (type === 'normal') {
+        return accounts.filter(acc => acc.type === 'normal');
+      } else if (type === 'multisig') {
+        return accounts.filter(acc => acc.type === 'multisig');
+      }
+      return accounts;
 
-  async getAccountsWithBalance(type?: AccountType): Promise<Account[]> {
-    return new Promise(async (resolve, reject) => {
-      const accounts = await this.allAccount(type);
-      const addresses = accounts.map(acc => acc.address);
-      zoobc.Account.getBalances(addresses)
-        .then((accountBalances: AccountBalance[]) => {
-          accounts.map((acc, i) => {
-            acc.balance = accountBalances[i].balance;
-            return acc;
-          });
-          resolve(accounts);
-        })
-        .catch(err => {
-          console.log(err);
-          reject(err);
+  }
+
+  async fetchAccountsBalance(type?: AccountType) {
+    const accounts = await this.allAccount(type);
+    const addresses = accounts.map(acc => acc.address);
+    zoobc.Account.getBalances(addresses)
+      .then( (accountBalances: AccountBalance[]) => {
+         accounts.map((acc, i) => {
+          acc.balance = accountBalances[i].balance;
+          return acc;
         });
-    });
+         this.accountsWithBalance = accounts;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
 }
