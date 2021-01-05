@@ -57,7 +57,7 @@ export class ImportDraftPage implements OnInit {
             const message = 'There is same id in your draft';
             this.presentAlert('Opps...', message);
           } else {
-            this.multisigServ.saveDraft();
+            this.multisigServ.save();
             this.getMultiSigDraft();
             const subMessage = 'Your Draft has been saved';
             this.presentAlert('Success', subMessage);
