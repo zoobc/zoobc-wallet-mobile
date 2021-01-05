@@ -89,7 +89,9 @@
   </ion-list>
 
   <ion-list *ngIf="segmentModel !== 'escrow'" style="border-top: 1px solid #cccccc;">
-
+    <ion-item>
+      <ion-label>{{ "block height" | translate}}: {{blockHeight}}</ion-label>
+    </ion-item>
     <ion-item *ngFor="let msig of multiSigPendingList; let i = index" button>
 
       <ion-label color="dark" (click)="openMultisigDetail(msig.transactionHash)">
