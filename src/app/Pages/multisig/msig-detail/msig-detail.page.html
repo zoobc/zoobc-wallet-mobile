@@ -21,10 +21,10 @@
       <ion-label>
         <p>{{ 'participants' | translate }}:</p>
         <div class="ion-text-wrap" *ngFor="let participant of draft.multisigInfo.participants">
-          <p>{{ participant.value }}</p>
+          <p class="val">- {{ participant.value | shortAddress}}</p>
         </div>
-        <p>Nonce: {{draft.multisigInfo.nonce}}</p>
-        <p>Min Signature: {{draft.multisigInfo.minSigs}} address(es)</p>
+        <p>Nonce: <span  class="val">{{draft.multisigInfo.nonce}}</span></p>
+        <p>Min Signature: <span  class="val">{{draft.multisigInfo.minSigs}} address(es)</span></p>
       </ion-label>
     </ion-item>
 
@@ -38,8 +38,8 @@
       <ion-label>
         <ng-container *ngFor="let item of innerTx">
           <p>{{ item.key | translate }}:
-            <span *ngIf="!item.isAddress">{{ item.value }}</span>
-            <span *ngIf="item.isAddress">{{ item.value.value | shortAddress}}</span>
+            <span class="val" *ngIf="!item.isAddress">{{ item.value }}</span>
+            <span class="val" *ngIf="item.isAddress">{{ item.value.value | shortAddress}}</span>
           </p>
         </ng-container>
       </ion-label>
@@ -53,7 +53,7 @@
 
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <p>{{draft.signaturesInfo.txHash}}</p>
+        <p>{{draft.signaturesInfo.txHash | shortAddress}}</p>
       </ion-label>
     </ion-item>
 
