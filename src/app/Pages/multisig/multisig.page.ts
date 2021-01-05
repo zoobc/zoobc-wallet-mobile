@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import { TransactionType } from 'zbc-sdk';
@@ -10,10 +10,13 @@ import { ImportDraftPage } from './import-draft/import-draft.page';
 import { THEME_OPTIONS } from 'src/environments/variable.const';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { getTxType } from 'src/Helpers/multisig-utils';
-import { getTranslation } from 'src/Helpers/utils';
+import { getFileName, getTranslation } from 'src/Helpers/utils';
 import { TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
-
+import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-multisig',
   templateUrl: './multisig.page.html',
@@ -30,7 +33,7 @@ export class MultisigPage implements OnInit {
 
   account: Account;
   multisigForm: FormGroup;
-  multiSigDrafts: MultiSigDraft[];
+  drafts: MultiSigDraft[];
   fTrxType = new FormControl(TransactionType.SENDMONEYTRANSACTION, Validators.required);
   fChainType = new FormControl('onchain', Validators.required);
   themes = THEME_OPTIONS;
@@ -40,6 +43,10 @@ export class MultisigPage implements OnInit {
   signatures = false;
   draftSignedBy: number[] = [];
   isShowForm = false;
+  idx: number;
+  textDelete = 'Delete';
+  textShare = 'Share-draft';
+  textSignatureList = 'Signature-list';
 
   constructor(
     private router: Router,
@@ -47,12 +54,21 @@ export class MultisigPage implements OnInit {
     private alertController: AlertController,
     private multisigServ: MultisigService,
     private modalController: ModalController,
+    private androidPermissions: AndroidPermissions,
     private translate: TranslateService,
+    private file: File,
+    private platform: Platform,
+    private popoverCtrl: PopoverController,
     private formBuilder: FormBuilder) {
 
     this.multisigForm = this.formBuilder.group({
       trxType: this.fTrxType,
       chainType: this.fChainType
+    });
+
+    this.multisigServ.subject.subscribe((info) => {
+      console.log('== action:', info);
+      this.getDraft();
     });
 
   }
@@ -63,7 +79,9 @@ export class MultisigPage implements OnInit {
 
   async ngOnInit() {
     this.getAccountType();
+    this.getDraft();
   }
+
 
   async getAccountType() {
     this.account = await this.accountService.getCurrAccount();
@@ -102,9 +120,7 @@ export class MultisigPage implements OnInit {
         participants: this.account.participants,
       };
 
-      // const address = zoobc.MultiSignature.createMultiSigAddress(multisig.multisigInfo);
       multisig.txBody.sender = this.account.address;
-      // multisig.accountAddress = this.account.address;
       console.log('... this.multisig:', multisig);
 
       this.multisigServ.update(multisig);
@@ -115,25 +131,75 @@ export class MultisigPage implements OnInit {
     }
   }
 
-  async getDraft() {
 
-    const msigDraft = this.multisigServ.getDrafts();
-    if (!msigDraft) {
+  detail(draft: MultiSigDraft) {
+    console.log('=== detail: ', draft);
+    this.multisigServ.update(draft);
+    this.router.navigate(['/msig-detail']);
+  }
+
+  async showOption(ev: any, index: number, draft: MultiSigDraft) {
+
+    this.idx = index;
+    const popoverOptions = [
+      {
+        key: 'share',
+        label: this.textShare
+      },
+      {
+        key: 'delete',
+        label: this.textDelete
+      }
+      ,
+      {
+        key: 'list',
+        label: this.textSignatureList
+      }
+    ];
+
+    const popover = await this.popoverCtrl.create({
+      component: PopoverOptionComponent,
+      componentProps: {
+        options: popoverOptions
+      },
+      event: ev,
+      translucent: true
+    });
+
+    popover.onWillDismiss().then(({ data: action }) => {
+      switch (action) {
+        case 'share':
+          this.export(ev, draft);
+          break;
+        case 'delete':
+          this.delete(ev, draft.id);
+          break;
+        case 'list':
+          this.signlist(ev, draft);
+          break;
+      }
+    });
+
+    return popover.present();
+  }
+
+  signlist(ev, draft: MultiSigDraft) {
+    ev.stopPropagation();
+    this.multisigServ.update(draft);
+    this.router.navigate(['/msig-add-signatures']);
+  }
+
+  async getDraft() {
+    this.drafts  = await this.multisigServ.getDrafts();
+    console.log('== this.drafts : ', this.drafts );
+
+    if (!this.drafts  || this.drafts .length < 1) {
       return;
     }
 
-    this.multiSigDrafts = (await this.multisigServ
-      .getDrafts())
-      .filter(draft => {
-        const { multisigInfo, txBody, generatedSender } = draft;
-        if (generatedSender === this.account.address) { return draft; }
-        if (multisigInfo.participants.includes(this.account.address)) { return draft; }
-        if (txBody && txBody.sender === this.account.address) { return draft; }
-      })
-      .sort()
-      .reverse();
+    this.drafts = this.drafts.sort().reverse();
 
-    this.multiSigDrafts.forEach((draft, i) => {
+    this.drafts.forEach((draft, i) => {
       let total = 0;
       if (draft.signaturesInfo) {
         draft.signaturesInfo.participants.forEach(p => {
@@ -144,7 +210,6 @@ export class MultisigPage implements OnInit {
       this.draftTxType[i] = getTxType(draft.txType);
     });
   }
-
 
   async import() {
     const importDraft = await this.modalController.create({
@@ -161,39 +226,92 @@ export class MultisigPage implements OnInit {
     return await importDraft.present();
   }
 
-  async delete(id: number) {
-    this.showConfirmation(id);
-  }
 
-  async showConfirmation(id: number) {
+  async delete(e, id: number) {
+    e.stopPropagation();
+    const sentence = getTranslation('are you sure want to delete?', this.translate, {
+      alias: id,
+    });
     const alert = await this.alertController.create({
       header: 'Confirm!',
-      message: 'Are you sure want to delete!',
+      message: sentence,
       buttons: [
         {
           text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            // this.router.navigate(['/multisig']);
           }
         },
         {
           text: 'Oke',
-          handler: () => {
-            this.multisigServ.deleteDraft(id);
-            this.getDraft();
-            this.router.navigate(['/multisig']);
+          handler: async () => {
+            console.log('idx: ', id);
+            await this.multisigServ.delete(id);
+            return true;
           }
         }
       ]
     });
-
     await alert.present();
+
+  }
+
+
+
+  async signatureList(ect: any, id: number) {
+    console.log('== signatureList ==');
+  }
+
+  export2(e, draft: MultiSigDraft) {
+    e.stopPropagation();
+    const theJSON = JSON.stringify(draft);
+    const blob = new Blob([theJSON], { type: 'application/JSON' });
+    saveAs(blob, 'Multisignature-Draft.json');
+  }
+
+
+  async export(e, draft: MultiSigDraft) {
+    e.stopPropagation();
+
+    const theJSON = JSON.stringify(draft);
+    const blob = new Blob([theJSON], { type: 'application/JSON' });
+    const pathFile = await this.getDownloadPath();
+
+    const fileName = getFileName('Multisignature-draft');
+    await this.file.createFile(pathFile, fileName, true);
+    await this.file.writeFile(pathFile, fileName, blob, {
+      replace: true,
+      append: false
+    });
+    alert('File saved in Download folder with name: ' + fileName);
+
+  }
+
+  async getDownloadPath() {
+    if (this.platform.is('ios')) {
+      return this.file.documentsDirectory;
+    }
+
+    // To be able to save files on Android, we first need to ask the user for permission.
+    // We do not let the download proceed until they grant access
+    await this.androidPermissions
+      .checkPermission(
+        this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+      )
+      .then(result => {
+        if (!result.hasPermission) {
+          return this.androidPermissions.requestPermission(
+            this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+          );
+        }
+      });
+
+    return this.file.externalRootDirectory + '/Download/';
   }
 
   edit(idx: number) {
-    const multisig: MultiSigDraft = this.multiSigDrafts[idx];
+    const multisig: MultiSigDraft = this.drafts[idx];
     const { multisigInfo, unisgnedTransactions, signaturesInfo } = multisig;
     this.multisigServ.update(multisig);
 

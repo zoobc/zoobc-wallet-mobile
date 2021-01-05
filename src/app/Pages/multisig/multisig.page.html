@@ -11,11 +11,11 @@
 
   <ion-row>
     <ion-col>
-      <ion-button fill="outline" (click)="showForm()" color="tertiary">
+      <ion-button fill="outline" (click)="showForm()" size="small">
         +&nbsp;{{ 'create' | translate }}&nbsp;
         <ion-icon name="arrow-dropdown"></ion-icon>
       </ion-button>
-      <ion-button fill="outline" (click)="import()" color="tertiary">
+      <ion-button fill="outline" (click)="import()" size="small">
         <ion-icon name="pulse"></ion-icon>&nbsp;
         {{'sign' | translate}}
       </ion-button>
@@ -42,14 +42,14 @@
         <ion-button color="tertiary" type="submit" [disabled]="multisigForm.invalid">
           {{ 'next' | translate }}
         </ion-button>
-        <ion-button  color="tertiary" type="button" (click)="close()" fill="outline">
+        <ion-button color="tertiary" type="button" (click)="close()" fill="outline">
           {{ 'close' | translate }}
         </ion-button>
       </ion-card-content>
     </form>
   </ion-card>
   <ion-row>
-    <ion-col  class="draft-list-header">
+    <ion-col class="draft-list-header">
       <ion-label>
         <ion-icon name="list"></ion-icon> {{ 'multisignature drafts' | translate }}
       </ion-label>
@@ -57,10 +57,31 @@
   </ion-row>
 
   <ion-list>
-    <ion-item lines="none">
+    <ion-item lines="none" *ngIf="!drafts || drafts.length < 1">
       <ion-col class="ion-text-center">
         {{'no draft record' | translate}}
       </ion-col>
+    </ion-item>
+  </ion-list>
+  <ion-list *ngIf="drafts && drafts.length > 0">
+    <ion-item *ngFor="let draft of drafts; let idx = index">
+      <ion-label (click)="detail(draft)">
+        <p class="title">{{ 'draft id' | translate }}: {{ draft.id }}</p>
+        <p class="dateago">{{ draft.id | dateAgo }}</p>
+        
+        <div *ngIf="draft.txBody && draft.txBody.sender">
+          <p class="title">{{ 'transaction type' | translate }}:&nbsp;
+          <span class="value">{{ draftTxType[idx] | translate }}</span>
+         </p>
+        </div>
+        <div *ngIf="draft.signaturesInfo">
+          <p class="title">{{ 'transaction hash' | translate }}:&nbsp;
+          <span class="value">{{draft.signaturesInfo.txHash | shortAddress}}</span>
+          </p>
+        </div>
+
+      </ion-label>
+      <ion-icon name="zbc-option" slot="end" (click)="showOption($event, idx,  draft)"></ion-icon>
     </ion-item>
   </ion-list>
 
