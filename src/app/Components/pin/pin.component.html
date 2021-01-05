@@ -1,11 +1,11 @@
 <ion-grid style="margin-bottom: 20px;">
   <ion-row>
     <ion-col>
-      <ion-text class="pinText">{{pin2[0]}}</ion-text>
-      <ion-text class="pinText">{{pin2[1]}}</ion-text>
-      <ion-text class="pinText">{{pin2[2]}}</ion-text>
-      <ion-text class="pinText">{{pin2[3]}}</ion-text>
-      <ion-text class="pinText">{{pin2[4]}}</ion-text>
+      <ion-text class="pinText">{{pin2[0]}}&nbsp;&nbsp;</ion-text>
+      <ion-text class="pinText">{{pin2[1]}}&nbsp;&nbsp;</ion-text>
+      <ion-text class="pinText">{{pin2[2]}}&nbsp;&nbsp;</ion-text>
+      <ion-text class="pinText">{{pin2[3]}}&nbsp;&nbsp;</ion-text>
+      <ion-text class="pinText">{{pin2[4]}}&nbsp;&nbsp;</ion-text>
       <ion-text class="pinText">{{pin2[5]}}</ion-text>
     </ion-col>
   </ion-row>
@@ -46,15 +46,15 @@
   </ion-row>
   <ion-row>
     <ion-col>
-      <ion-button class="btn-with-icon" size="large" color="light" fill="outline" (click)="clear()">
-        <ion-icon name="zbc-trash"></ion-icon>
+      <ion-button size="large" color="light" fill="outline" (click)="clear()">
+        <ion-icon name="trash"></ion-icon>
       </ion-button>
     </ion-col>
     <ion-col>
       <ion-button size="large" color="light" fill="outline" (click)="handleInput('0')">0</ion-button>
     </ion-col>
     <ion-col>
-      <ion-button class="btn-with-icon" size="large" color="light" fill="outline" (click)="clearOne()">
+      <ion-button size="large" color="light" fill="outline" (click)="clearOne()">
         <ion-icon name="backspace"></ion-icon>
       </ion-button>
     </ion-col>

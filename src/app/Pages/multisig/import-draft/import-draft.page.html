@@ -1,13 +1,23 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>import-draft</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">{{"close" | translate}}</ion-button>
+    </ion-buttons>
+    <ion-title>{{ 'sign transaction' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-item>
-    <ion-label> {{'import draft' | translate}} </ion-label>
+    <ion-label>
+      <p>{{'import draft' | translate}}</p>
+      <p>Please select draft file!</p>
+    </ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-label>
+      
+    </ion-label>
     <input type="file"  (change)="uploadFile($event.target.files)"/>
   </ion-item>
-
 </ion-content>

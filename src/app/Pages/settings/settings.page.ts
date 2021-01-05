@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LanguageService } from 'src/app/Services/language.service';
-import { CurrencyService, ICurrency} from 'src/app/Services/currency.service';
+import { CurrencyService, ICurrency } from 'src/app/Services/currency.service';
 import {
   LANGUAGES,
   SELECTED_LANGUAGE,
@@ -40,6 +40,10 @@ export class SettingsPage implements OnInit {
   public currencyRate: Currency;
   public timestamp: string;
   public themes = THEME_OPTIONS;
+  private selectThemeSubscription = null;
+  private selectNetworkSubscription = null;
+  private selectLanguageSubscription = null;
+  private selectCurrencySubscription = null;
 
   constructor(
     private strgSrv: StorageService,
@@ -67,10 +71,10 @@ export class SettingsPage implements OnInit {
     this.currencyRate = this.currencyService.getRate();
 
     const activeLanguageCode = await this.strgSrv.get(SELECTED_LANGUAGE);
-    this.activeLanguage = this.languageService.getOne(activeLanguageCode?activeLanguageCode:"en");
+    this.activeLanguage = this.languageService.getOne(activeLanguageCode ? activeLanguageCode : 'en');
 
     const activeCurrencyCode = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
-    this.activeCurrency = this.currencyService.getOne(activeCurrencyCode)
+    this.activeCurrency = this.currencyService.getOne(activeCurrencyCode);
 
     this.activeNetwork = this.networks[await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX)].name;
 
@@ -83,39 +87,36 @@ export class SettingsPage implements OnInit {
     this.translateLang();
   }
 
-  translateLang(){
+  translateLang() {
     this.translateSrv.get([
-      'are you sure want to logout?', 
-      'logout', 
-      'cancel', 
-    ]).subscribe((res: any)=>{
-      this.textConfirmLogout = res["are you sure want to logout?"];
-      this.textYes = res["logout"];
-      this.textCancel = res["cancel"];
-    })
+      'are you sure want to logout?',
+      'logout',
+      'cancel',
+    ]).subscribe((res: any) => {
+      this.textConfirmLogout = res['are you sure want to logout?'];
+      this.textYes = res.logout;
+      this.textCancel = res.cancel;
+    });
   }
 
-  private selectThemeSubscription = null;
-  private selectNetworkSubscription = null;
-  private selectLanguageSubscription = null;
-  private selectCurrencySubscription = null;
+
 
   ionViewWillEnter() {
-    this.selectThemeSubscription = this.themeSrv.themeSubject.subscribe((value: string)=>{
-        this.activeTheme = value
-      })
+    this.selectThemeSubscription = this.themeSrv.themeSubject.subscribe((value: string) => {
+      this.activeTheme = value;
+    });
 
-    this.selectNetworkSubscription = this.networkService.changeNodeSubject.subscribe((network: any)=>{
-        this.activeNetwork = network.name
-      })
+    this.selectNetworkSubscription = this.networkService.changeNodeSubject.subscribe((network: any) => {
+      this.activeNetwork = network.name;
+    });
 
-    this.selectLanguageSubscription = this.languageService.selectLanguageSubject.subscribe((language: any)=>{
-        this.activeLanguage = language
-      })
+    this.selectLanguageSubscription = this.languageService.selectLanguageSubject.subscribe((language: any) => {
+      this.activeLanguage = language;
+    });
 
-    this.selectCurrencySubscription = this.currencyService.selectCurrencySubject.subscribe((currency: ICurrency)=>{
-        this.activeCurrency = currency
-      })
+    this.selectCurrencySubscription = this.currencyService.selectCurrencySubject.subscribe((currency: ICurrency) => {
+      this.activeCurrency = currency;
+    });
   }
 
   ionViewWillLeave() {
@@ -144,39 +145,39 @@ export class SettingsPage implements OnInit {
   }
 
 
-  goToTheme(){
+  goToTheme() {
     this.router.navigateByUrl('/theme');
   }
 
-  goToNetwork(){
+  goToNetwork() {
     this.router.navigateByUrl('/network');
   }
 
-  goToCurrency(){
+  goToCurrency() {
     this.router.navigateByUrl('/popup-currency');
   }
 
-  goToLanguage(){
+  goToLanguage() {
     this.router.navigateByUrl('/popup-languages');
   }
 
-  goToSeedPhrase(){
+  goToSeedPhrase() {
     this.router.navigateByUrl('/backup-phrase');
   }
 
-  goToBackupRestoreAddress(){
+  goToBackupRestoreAddress() {
     this.router.navigateByUrl('/backuprestore-address');
   }
 
-  goToHelpAndSupport(){
+  goToHelpAndSupport() {
     this.router.navigateByUrl('/help');
   }
 
-  goToFeedback(){
+  goToFeedback() {
     this.router.navigateByUrl('/feedback');
   }
 
-  goToAbout(){
+  goToAbout() {
     this.router.navigateByUrl('/about');
   }
 

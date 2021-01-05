@@ -14,9 +14,9 @@ export class CreateWalletPage implements OnInit {
   public disabledBox = [];
   public arrayPhraseOri = [];
   public randomPlaceholderOne: number;
-  public placeholderOne:{value:number} = {value: 0};
+  public placeholderOne: {value: number} = {value: 0};
   public randomPlaceholderTwo: number;
-  public placeholderTwo:{value:number} = {value: 0};
+  public placeholderTwo: {value: number} = {value: 0};
   public arrayClass = [];
   public errorMsg = '';
   public isPinSetup = false;
@@ -59,12 +59,12 @@ export class CreateWalletPage implements OnInit {
 
   generateRandomBlanks() {
     this.randomPlaceholderOne = Math.floor(Math.random() * 23);
-    this.placeholderOne.value = this.randomPlaceholderOne+1;
-    this.arrayPhrase[this.randomPlaceholderOne]='';
+    this.placeholderOne.value = this.randomPlaceholderOne + 1;
+    this.arrayPhrase[this.randomPlaceholderOne] = '';
 
     this.randomPlaceholderTwo = Math.floor(Math.random() * 23);
-    this.placeholderTwo.value = this.randomPlaceholderTwo+1;
-    this.arrayPhrase[this.randomPlaceholderTwo]='';
+    this.placeholderTwo.value = this.randomPlaceholderTwo + 1;
+    this.arrayPhrase[this.randomPlaceholderTwo] = '';
   }
 
   goback() {

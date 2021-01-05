@@ -1,35 +1,30 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MsigAddSignaturesPage } from './msig-add-signatures.page';
+import { MsigDetailPage } from './msig-detail.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { ComponentsModule } from 'src/app/Components/components.module';
-import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: MsigAddSignaturesPage
+    component: MsigDetailPage
   }
 ];
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
     ComponentsModule,
+    FormsModule,
     IonicModule,
-    ReactiveFormsModule,
     TranslateModule,
     RouterModule.forChild(routes)
   ],
-  entryComponents: [
-    PopoverAccountComponent
-  ],
-  declarations: [MsigAddSignaturesPage]
+  declarations: [MsigDetailPage]
 })
-export class MsigAddSignaturesPageModule {}
+export class MsigDetailPageModule {}

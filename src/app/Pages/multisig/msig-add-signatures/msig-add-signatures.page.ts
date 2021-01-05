@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { MultisigService } from 'src/app/Services/multisig.service';
-import { Subscription } from 'rxjs';
 import { Account } from 'src/app/Interfaces/account';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { Router } from '@angular/router';
 import { AccountService } from 'src/app/Services/account.service';
-import { Participant } from 'src/app/Interfaces/participant';
 import { signTransactionHash } from 'zbc-sdk';
 import { UtilService } from 'src/app/Services/util.service';
-import { AuthService } from 'src/app/Services/auth-service';
-import { stringToBuffer } from 'src/Helpers/utils';
+import { getTranslation, stringToBuffer } from 'src/Helpers/utils';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-msig-add-signatures',
@@ -18,207 +18,149 @@ import { stringToBuffer } from 'src/Helpers/utils';
 })
 export class MsigAddSignaturesPage implements OnInit {
 
-  transactionHash = '';
-  participantsSignature = [];
-
+  form: FormGroup;
+  fHash = new FormControl('', Validators.required);
+  fSigner = new FormControl('');
+  fSignatures = new FormArray([]);
+  draft: MultiSigDraft;
+  participants = [];
+  signers = [];
+  getSignature = false;
   account: Account;
-  enabledAddParticipant = false;
-  readOnlyTxHash = false;
-  readOnlyAddress = false;
-  multisig: MultiSigDraft;
-  multisigSubs: Subscription;
-
-  stepper = {
-    multisigInfo: false,
-    transaction: false,
-  };
 
   constructor(
-    private multisigServ: MultisigService,
+    private multisigSrv: MultisigService,
     private router: Router,
-    private accountSrv: AccountService,
-    private authSrv: AuthService,
-    private utilSrv: UtilService) { }
+    private translate: TranslateService,
+    private utilSrv: UtilService,
+    private accSrv: AccountService,
+    private formBuilder: FormBuilder) {
+    this.form = new FormGroup({
+      transactionHash: this.fHash,
+      participantsSignature: this.fSignatures,
+      signer: this.fSigner
+    });
+  }
 
   ngOnInit() {
-    this.multisigSubs = this.multisigServ.multisig.subscribe(multisig => {
-      const { multisigInfo, unisgnedTransactions } = multisig;
-      this.multisig = multisig;
-      this.stepper.multisigInfo = multisigInfo !== undefined ? true : false;
-      this.stepper.transaction = unisgnedTransactions !== undefined ? true : false;
-    });
-
-    if (this.multisig.signaturesInfo === undefined) {
-      return this.router.navigate(['/multisig']);
-    }
-
-    this.patchValue(this.multisig);
-    // this.enabledAddParticipant = this.checkEnabledAddParticipant(this.multisig);
-    this.readOnlyTxHash = this.checkReadOnlyTxHash(this.multisig);
-    // this.readOnlyAddress = this.checkReadOnlyAddress(this.multisig);
+    this.draft = this.multisigSrv.draft;
+    this.patchValue(this.draft);
+    this.participants = this.draft.multisigInfo.participants.map(pc => pc.value);
+    this.getSigner();
   }
 
-  async patchValue(multisig: MultiSigDraft) {
-    const { signaturesInfo, multisigInfo, unisgnedTransactions } = multisig;
-
-    if (!signaturesInfo || signaturesInfo == null) {
-      if (multisigInfo) {
-        return this.patchParticipant(multisigInfo.participants);
-      }
-      // if (unisgnedTransactions) {
-      //   return this.patchUnsignedAddress(transaction.sender);
-      // }
-
-      const acc = await this.accountSrv.getCurrAccount();
-      return this.pushInitParticipant(1, acc);
-    }
-
-    if (signaturesInfo.txHash) {
-      this.transactionHash = signaturesInfo.txHash;
-    }
-    if (signaturesInfo.participants) {
-      this.patchParticipant(signaturesInfo.participants);
-    }
-
-    this.enabledAddParticipant = true;
+  async getSigner() {
+    this.signers = this.participants.slice();
   }
 
+  patchValue(multisig: MultiSigDraft) {
+    const { signaturesInfo } = multisig;
+    this.fHash.patchValue(signaturesInfo.txHash);
+    this.patchParticipant(signaturesInfo.participants);
+  }
 
   patchParticipant(participant: any[]) {
     participant.forEach(pcp => {
-      console.log('===Pcp: ', pcp);
-
       let address = '';
       let signature = '';
       if (typeof pcp === 'object') {
-        address = pcp.address;
+        address = pcp.address.value;
         signature = Buffer.from(pcp.signature).toString('base64');
-      } else {
-        address = pcp;
-      }
-      this.participantsSignature.push(this.createParticipant(address, signature));
+      } else { address = pcp; }
+      this.fSignatures.push(this.createParticipant(address, signature, false));
     });
   }
 
-  createParticipant(address: string, signature: string) {
-    const participant: Participant = {
-      address,
-      signature
-    };
-    return participant;
+  createParticipant(address: string, signature: string, required: boolean): FormGroup {
+    let validator = Validators.required;
+    if (!required) { validator = null; }
+    return this.formBuilder.group({
+      address: [address, validator],
+      signature: [signature, validator],
+    });
   }
 
 
-  async patchUnsignedAddress(addres: string) {
-    const accounts = await this.accountSrv.allAccount();
-    const account = accounts.find(acc => acc.address.value === addres);
-    this.patchParticipant(account.participants);
-  }
-
-  customTrackBy(index: number): any {
-    return index;
-  }
-
-  async checkEnabledAddParticipant(multisig: MultiSigDraft) {
-    const { multisigInfo, unisgnedTransactions } = multisig;
-    if (multisigInfo || unisgnedTransactions) { return false; }
-    if ((await this.accountSrv.getCurrAccount()).type === 'multisig') {
-      return false;
+  async next() {
+    const signatures = this.fSignatures.value.filter(
+      (sign: any) => sign.signature !== null && sign.signature.length > 0
+    );
+    if (signatures.length > 0) {
+      const { txHash } = this.draft.signaturesInfo;
+      this.fHash.patchValue(txHash);
+      this.update();
+      this.router.navigate(['/msig-send-transaction']);
+      return true;
+    } else {
+      const message = getTranslation('at least 1 signature must be filled', this.translate);
+      Swal.fire('Error', message, 'error');
     }
-    return true;
   }
 
+  async save() {
+    this.update();
+    if (this.draft.id === 0) {
+      await this.multisigSrv.save();
+    } else {
+      await this.multisigSrv.edit();
+    }
+    this.router.navigate(['/multisig']);
+  }
 
-  updateMultiStorage() {
-    const multisig = { ...this.multisig };
+  update() {
+    const { transactionHash, participantsSignature } = this.form.value;
+    console.log('== transactionHash:', transactionHash);
+    console.log('== participantsSignature:', participantsSignature);
 
-    const newPcp = this.participantsSignature.map(pcp => {
-      pcp.signature = stringToBuffer(pcp.signature);
-      return pcp;
+    const multisig = { ...this.draft };
+    const signatures = participantsSignature.map(participant => {
+      participant.signature = stringToBuffer(participant.signature);
+      return {
+        address: { value: participant.address, type: 0 },
+        signature: participant.signature,
+      };
     });
 
     multisig.signaturesInfo = {
-      txHash: this.transactionHash,
-      participants: newPcp,
+      txHash: transactionHash,
+      participants: signatures,
     };
 
-    this.multisigServ.update(multisig);
+    this.multisigSrv.update(multisig);
   }
 
-  checkReadOnlyTxHash(multisig: MultiSigDraft) {
-    const { signaturesInfo, unisgnedTransactions } = multisig;
-    if (!signaturesInfo || signaturesInfo == null) { return false; }
-    if (!unisgnedTransactions) { return false; }
-    const txHash = signaturesInfo.txHash;
-    this.transactionHash = txHash;
-    return true;
-  }
-
-  async addSignature() {
-    // const curAcc = await this.accountSrv.getCurrAccount();
-    // let idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.address);
-    // if (curAcc.type === 'multisig' && idx === -1) {
-    //   idx = this.participantsSignature.findIndex(pcp => pcp.address === curAcc.signByAddress);
-    // }
-
-    // if (idx === -1) {
-    //   this.utilSrv.showConfirmation('Error', 'This account is not in Participant List', false, null);
-    //   return;
-    // }
-
-
-    for (let idx = 0; idx <= this.participantsSignature.length; idx++ ) {
-          const signerAddress =  this.participantsSignature[idx].address;
-          const signerAccount =  await this.accountSrv.getAccount(signerAddress);
-          const seed = this.authSrv.keyring.calcDerivationPath(signerAccount.path);
-          const signature = signTransactionHash(this.transactionHash, seed);
-          const base64Sig = signature.toString('base64');
-          this.participantsSignature[idx].signature = base64Sig;
+  sign() {
+    if (!this.fSigner.value) {
+      this.utilSrv.showAlert('Alert', '', 'Please select a signer first!');
+      return;
     }
 
+    this.changeAccount(this.fSigner.value);
+    const { txHash, participants } = this.draft.signaturesInfo;
+    let idx: number = participants.findIndex(pcp => pcp.address.value === this.account.address.value);
+
+    if (this.account.type === 'multisig' && idx === -1) {
+      idx = participants.findIndex(pcp => pcp.address.value === this.account.address.value);
+    }
+    const message = getTranslation('this account is not in participant list', this.translate);
+
+    if (idx === -1) {
+      return Swal.fire('Error', message, 'error');
+    }
+
+    const seed = this.accSrv.getTempSeed();
+    const signature = signTransactionHash(txHash, seed);
+
+    this.fSignatures.controls[idx].get('signature').patchValue(signature.toString('base64'));
   }
 
-  async next() {
-    const signatures = this.participantsSignature.filter(
-      sign => sign.signature !== null && sign.signature.length > 0
-    );
-
-    if (signatures.length > 0) {
-      this.updateMultiStorage();
-      return this.router.navigate(['/msig-send-transaction']);
-    }
-    const message = this.utilSrv.showConfirmation('Error', 'At least 1 signature must be filled', false, null);
+  changeAccount(account: Account) {
+    this.account = account;
+    this.accSrv.updateTempSeed(account);
   }
 
-  saveDraft() {
-    this.updateMultiStorage();
-    if (this.multisig.id === 0) {
-      this.multisigServ.saveDraft();
-    } else {
-      this.multisigServ.editDraft();
-    }
-    this.router.navigate(['/tabs/home']);
-  }
-
-  async checkReadOnlyAddress(multisig: MultiSigDraft) {
-    const { multisigInfo, unisgnedTransactions } = multisig;
-    if (multisigInfo || unisgnedTransactions) { return true; }
-    if ((await this.accountSrv.getCurrAccount()).type === 'multisig') {
-      return true;
-    }
-    return false;
-  }
-
-  pushInitParticipant(minParticipant: number, curAccount: Account) {
-    if (curAccount.type === 'normal') {
-      for (let i = 0; i < minParticipant; i++) {
-        this.participantsSignature.push(this.createParticipant('', ''));
-      }
-      return null;
-    }
-    curAccount.participants.forEach(pcp => {
-      // this.participantsSignature.push(this.createParticipant(pcp, ''));
-    });
+  toggleGetSignature() {
+    this.getSignature = !this.getSignature;
   }
 
 }

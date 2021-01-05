@@ -66,6 +66,8 @@ export class HomePage implements OnInit, OnDestroy {
     private addressBookSrv: AddressBookService,
     private popoverCtrl: PopoverController
   ) {
+
+
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
         // this.loadData();
@@ -73,9 +75,9 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     // // if account changed
-    // this.accountService.accountSubject.subscribe(() => {
-    //   this.loadData();
-    // });
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadData();
+    });
 
     // if account changed
     this.themeSrv.themeSubject.subscribe(() => {
@@ -99,7 +101,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     this.accountService.restoreAccounts();
-    this.subscribeAllAccount();
+
   }
   timeLeft = 12;
   interval: any;
@@ -146,29 +148,9 @@ export class HomePage implements OnInit, OnDestroy {
     alert('Comng soon!');
   }
 
-  async showBalanceDetail() {
-    const alert = await this.alertController.create({
-      header: 'Account:',
-      subHeader: this.account.address.value,
-      message:
-        'Balance: <br/>' +
-        this.decimalPipe.transform(this.accountBalance.balance / 1e8) +
-        ' ZBC <br/>' +
-        '<br/>' +
-        'Spendable Balance: <br/>' +
-        this.decimalPipe.transform(this.accountBalance.spendableBalance / 1e8) +
-        ' ZBC  <br/>',
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
-
-  async subscribeAllAccount() {
-    const allAcc = await this.accountService.allAccount();
-  }
 
   async doRefresh(event: any) {
+    this.accountService.fetchAccountsBalance();
     await this.loadData();
     event.target.complete();
   }
@@ -227,7 +209,6 @@ export class HomePage implements OnInit, OnDestroy {
     this.currencyRate = this.currencySrv.getRate();
 
     this.getBalance();
-    this.subscribeAllAccount();
 
   }
 
@@ -244,39 +225,12 @@ export class HomePage implements OnInit, OnDestroy {
     zoobc.Account.getBalance(this.account.address)
       .then((data: AccountBalance) => {
         this.accountBalance = data;
-        return this.accountService.getAccountsWithBalance();
       })
-      .then((res: Account[]) => (this.accounts = res))
       .catch(e => (this.isError = true))
       .finally(() => {
         this.isLoading = false;
         this.getTransactions();
       });
-
-    // await zoobc.Account.getBalance(address)
-    //   .then(data => {
-    //     this.accountBalance = data.accountbalance;
-    //     this.lastTimeGetBalance = new Date();
-    //   })
-    //   .catch(error => {
-    //     console.error(error);
-    //     this.accountBalance = {
-    //       accountaddress: '',
-    //       blockheight: 0,
-    //       spendablebalance: 0,
-    //       balance: 0,
-    //       poprevenue: '',
-    //       latest: false
-    //     };
-    //     this.isError = true;
-    //     console.log(
-    //       'dashboard balance',
-    //       'An error occurred while processing your request'
-    //     );
-    //   })
-    //   .finally(() => {
-    //     this.isLoadingBalance = false;
-    //   });
   }
 
   startTimer() {
