@@ -1,4 +1,4 @@
-<div *ngIf="account" class="sender-block" (click)="switchAccount($event)">
+<div *ngIf="account && account.address" class="sender-block" (click)="switchAccount($event)">
   <div class="account-name">{{ account.name }}</div>
   <div class="account-address">
     <span>{{ account.address.value }}</span>
