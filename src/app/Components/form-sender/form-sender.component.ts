@@ -30,12 +30,12 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
   @Input() accountType: AccountType;
   @Input() canSwitch = 'yes';
   @Input() switchToActive = 'yes';
+  @Input() showBalance = 'yes';
   @Input() predefList = [];
   disabled = false;
 
   onChange = (value: Account) => { };
   onTouched = () => { };
-
 
   constructor(
     private popoverCtrl: PopoverController,
@@ -45,10 +45,13 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
   async ngOnInit() {
 
     if (this.predefList.length < 1) {
+      console.log('this.predefList length<1: ', this.predefList.length);
       this.account = await this.accountSrv.getCurrAccount();
-      this.getBalanceByAddress(this.account.address);
+    } else {
+      console.log('this.predefList length>0: ', this.predefList.length);
+      this.account = undefined;
     }
-
+    console.log(' == this.account: ', this.account);
   }
 
   async switchAccount(ev: any) {
@@ -62,7 +65,8 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
       cssClass: 'popover-account',
       componentProps: {
         accountType: this.accountType,
-        predefList: this.predefList
+        predefList: this.predefList,
+        showBalance: this.showBalance
       },
       translucent: true
     });
@@ -70,31 +74,15 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
     popover.onWillDismiss().then(async ({ data }: { data: Account }) => {
       if (data) {
         this.account = data;
-
         if (this.switchToActive === 'yes') {
           this.accountSrv.switchAccount(data);
         }
-
-        this.getBalanceByAddress(data.address);
         this.onChange(data);
       }
     });
 
     return popover.present();
   }
-
-  private getBalanceByAddress(address: Address) {
-
-    zoobc.Account.getBalance(address)
-      .then((data: AccountBalance) => {
-        console.log('=== Account Balance: ', data);
-        this.account.balance = Number(data.spendableBalance);
-      })
-      .catch(error => { })
-      .finally(() => { });
-  }
-
-
 
   writeValue(value: Account) {
     this.account = value;
