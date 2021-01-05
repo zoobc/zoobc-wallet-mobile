@@ -48,7 +48,7 @@ export class MsigAddInfoPage implements OnInit {
   }
 
   ngOnInit() {
-    this.draft = this.multisigServ.multisigDraft;
+    this.draft = this.multisigServ.draft;
     if (this.draft) {
       const { multisigInfo } = this.draft;
       this.createParticipantsField();
