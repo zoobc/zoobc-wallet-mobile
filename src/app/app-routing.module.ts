@@ -231,7 +231,10 @@ const routes: Routes = [
   {
     path: 'import-account', loadChildren: './Pages/account/import-account/import-account.module#ImportAccountPageModule',
     canActivate: [AuthService]
-  }
+  },
+  { path: 'msig-detail', loadChildren: './Pages/multisig/msig-detail/msig-detail.module#MsigDetailPageModule',
+    canActivate: [AuthService] }
+
 
 ];
 @NgModule({
