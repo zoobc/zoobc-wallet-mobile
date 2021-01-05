@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastController, ModalController } from '@ionic/angular';
+import { ToastController, ModalController, AlertController } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ConfirmationPage } from '../Components/confirmation/confirmation.page';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ export class UtilService {
   constructor(
     private toastController: ToastController,
     private clipboard: Clipboard,
+    private alertController: AlertController,
     private router: Router,
     private modalController: ModalController) { }
 
@@ -77,6 +78,16 @@ export class UtilService {
     });
 
     return await modal.present();
+  }
+
+  async showAlert(header: string, subHeader: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      subHeader,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
 }

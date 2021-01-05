@@ -97,6 +97,25 @@ export function addressValidation(address: string) {
   } else { return false; }
 }
 
+export function getFileName(prefix: string) {
+  const currentDatetime = new Date();
+  const formattedDate =
+    currentDatetime.getDate() +
+    '-' +
+    (currentDatetime.getMonth() + 1) +
+    '-' +
+    currentDatetime.getFullYear() +
+    '-' +
+    currentDatetime.getHours() +
+    '-' +
+    currentDatetime.getMinutes() +
+    '-' +
+    currentDatetime.getSeconds();
+
+  return prefix + '_' + formattedDate + '.json';
+}
+
+
 export function isPubKeyValid(pubkey: string) {
   const addressBytes = base64ToByteArray(pubkey);
   if (addressBytes.length === 32 && pubkey.length === 44) {
