@@ -75,6 +75,7 @@ export function createTranslateLoader(http: HttpClient) {
     ConfirmationPageModule,
     TaskDetailPageModule,
     SetupPinGpPageModule,
+    PinBackupPageModule,
     SetupPinPageModule,
     EnterpinsendPageModule,
     ImportDraftPageModule,

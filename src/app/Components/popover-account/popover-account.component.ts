@@ -13,6 +13,7 @@ export class PopoverAccountComponent implements OnInit {
   accounts: Account[];
   selectedIndex: number;
   predefList = [];
+  showBalance = 'yes';
   @Input() accountType: AccountType;
 
   constructor(
@@ -23,7 +24,13 @@ export class PopoverAccountComponent implements OnInit {
 
   async ngOnInit() {
     console.log('Popup predefList : ', this.predefList);
-    const accs: Account[] = await this.accountSrv.allAccount();
+    let accs: Account[];
+
+    if (this.showBalance === 'yes') {
+      accs = await this.accountSrv.getAccountsWithBalance();
+    } else {
+      accs = await this.accountSrv.allAccount();
+    }
 
     if (this.predefList && this.predefList.length > 0) {
       this.accounts = accs.filter( acc => {// for every object in heroes
@@ -41,10 +48,10 @@ export class PopoverAccountComponent implements OnInit {
     }
 
 
-    if (this.accounts && this.accounts.length > 0) {
-      this.accounts = await this.accountSrv.getAccountsWithBalance();
-      // this.getAllAccountBalance(this.accounts);
-    }
+    // if (this.accounts && this.accounts.length > 0) {
+    //   this.accounts = await this.accountSrv.getAccountsWithBalance();
+    //   // this.getAllAccountBalance(this.accounts);
+    // }
 
     const selectedAccount = await this.accountSrv.getCurrAccount();
     this.selectedIndex = this.accounts.findIndex((account: Account) => {

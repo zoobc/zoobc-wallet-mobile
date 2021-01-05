@@ -54,7 +54,6 @@ export class SendMoneyFormComponent implements OnInit {
   });
 
   submitted = false;
-  alreadyPin = true;
 
   constructor(
     private router: Router,
@@ -111,15 +110,16 @@ export class SendMoneyFormComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.transactionSrv.isTrxConfirm = false;
     this.sendMoneySummarySubscription = this.transactionSrv.transactionSuccessSubject.subscribe(
       async (result: boolean) => {
         if (result) {
           console.log('== result: ', result);
           console.log('=== setelah submit form...');
 
-          if (!this.alreadyPin) {
+          if (this.transactionSrv.isTrxConfirm) {
             await this.inputPIN();
-            this.alreadyPin = true;
+            this.transactionSrv.isTrxConfirm = false;
           }
 
         }
@@ -206,8 +206,7 @@ export class SendMoneyFormComponent implements OnInit {
     pinmodal.onDidDismiss().then(async returnedData => {
       if (returnedData && returnedData.data && returnedData.data !== 0) {
         // const pin = returnedData.data;
-        await this.sendMoney();
-
+        this.sendMoney();
         // const extras: NavigationExtras = {
         //   state: {
         //     amount: this.amount.value,
@@ -238,15 +237,17 @@ export class SendMoneyFormComponent implements OnInit {
         state.behaviorEscrow = this.behaviorEscrow.value;
       }
 
+      this.transactionSrv.saveTrx(state);
+
       const extras: NavigationExtras = {
         state
       };
-      this.alreadyPin = false;
       this.router.navigate(['transaction-form/send-money/summary'], extras);
     }
   }
 
   async sendMoney() {
+    this.transactionSrv.isTrxConfirm = false;
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
@@ -286,6 +287,9 @@ export class SendMoneyFormComponent implements OnInit {
             recipient: data.recipient.value,
           });
           Swal.fire(message, subMessage, 'success');
+          try {
+            this.sendMoneySummarySubscription.unsubscribe();
+            } catch (e) {console.log(e); }
           this.router.navigateByUrl('/tabs/home');
         },
         async err => {

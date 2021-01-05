@@ -1,28 +1,34 @@
-ion-button {
-  width: 44px;
-  height: 44px;
-  --border-width: 1px;
-  border-radius: 4px;
-  font-family: 'Roboto-Medium';
-}
+
+
+// ion-toolbar {
+//   --color: #fff;
+//   --background: transparent;
+//   --ion-color-base: transparent !important;
+// }
 
 ion-col {
   text-align: center;
 }
 
+.iongrid{
+  height: 100%;
+}
+.ionrow{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+ion-button {
+  width: 100%;
+}
+
 .pinText {
   padding: 6px;
+  font-size: 1.5em;
   margin-left: 4px;
   margin-right: 4px;
   color: #ffffff;
 }
 
-.btn-with-icon{
-  --padding-start: 0;
-  --padding-end: 0;
-
-  ion-icon{
-    color: #ffffff;
-    width: 20px;
-  }
-}

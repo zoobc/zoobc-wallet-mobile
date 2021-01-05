@@ -7,7 +7,8 @@ import { Subject } from 'rxjs';
 export class TransactionService {
   public sendMoneySubject: Subject<any> = new Subject<any>();
   public transactionSuccessSubject: Subject<boolean> = new Subject<boolean>();
-
+  transaction: any;
+  isTrxConfirm = false;
   constructor() {
   }
 
@@ -19,7 +20,16 @@ export class TransactionService {
     return fees;
   }
 
+  saveTrx(trx: any) {
+    this.transaction = trx;
+  }
+
+  getTrx() {
+    return this.transaction ;
+  }
+
   setTransactionSuccess() {
+    this.isTrxConfirm = true;
     this.transactionSuccessSubject.next(true);
   }
 }

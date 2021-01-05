@@ -1,13 +1,13 @@
 <ion-header>
   <ion-grid>
     <ion-row>
-      <ion-col class="ion-text-center">
+      <ion-col>
         <ion-title color="light">{{ "enter your pin" | translate }}</ion-title>
       </ion-col>
     </ion-row>
 
     <ion-row>
-      <ion-col class="ion-text-center">
+      <ion-col>
         <ion-label *ngIf="isLoginValid">&nbsp;</ion-label>
         <ion-label *ngIf="!isLoginValid" class="invalidPin">{{ "invalid pin" | translate }}
         </ion-label>
@@ -99,7 +99,7 @@
 <ion-footer>
   <ion-grid>
     <ion-row>
-      <ion-col class="ion-text-center">
+      <ion-col>
         <ion-label color="light" routerLink="/initial">
           {{ "change wallet" | translate }}
         </ion-label>

@@ -18,7 +18,7 @@ export class ExportImportPage implements OnInit {
     private utilService: UtilService,
     private alertCtrl: AlertController,
     private navCtrl: NavController
-  ) {}
+  ) { }
 
   async ngOnInit() {
     // const alladdress = await this.addressBookSrv.getAll();
@@ -47,8 +47,8 @@ export class ExportImportPage implements OnInit {
         try {
           const arrAddresses: any[] = JSON.parse(fileReader.result.toString());
           const addresses: Contact[] = [];
-          for (let i = 0; i < arrAddresses.length; i++) {
-            const { name, address } = arrAddresses[i];
+          for (const addrs of arrAddresses) {
+            const { name, address } = addrs;
             if (name && address) {
               const contact: Contact = {
                 name,
@@ -76,8 +76,8 @@ export class ExportImportPage implements OnInit {
     try {
       const arrAddresses: any[] = JSON.parse(this.addresses);
       const addresses: Contact[] = [];
-      for (let i = 0; i < arrAddresses.length; i++) {
-        const { name, address } = arrAddresses[i];
+      for (const addrs of arrAddresses) {
+        const { name, address } = addrs;
         if (name && address) {
           const contact: Contact = {
             name,

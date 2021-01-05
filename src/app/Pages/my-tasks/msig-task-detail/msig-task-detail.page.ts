@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, LoadingController } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { TRANSACTION_MINIMUM_FEE, COIN_CODE } from 'src/environments/variable.const';
 import zoobc, {
-  MultiSigInterface, signTransactionHash, multisigPendingDetail
+  MultiSigInterface, signTransactionHash, multisigPendingDetail, MultisigPostTransactionResponse
 } from 'zbc-sdk';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
-import { Account } from 'src/app/Interfaces/account';
-import { base64ToHex } from 'src/Helpers/utils';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { CurrencyService } from 'src/app/Services/currency.service';
@@ -15,6 +13,9 @@ import { AccountService } from 'src/app/Services/account.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { UtilService } from 'src/app/Services/util.service';
 import { MultisigService } from 'src/app/Services/multisig.service';
+import { getTranslation } from 'src/Helpers/utils';
+import Swal from 'sweetalert2';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-msig-task-detail',
@@ -58,6 +59,7 @@ export class MsigTaskDetailPage implements OnInit {
 
   constructor(
     private modalCtrl: ModalController,
+    private translate: TranslateService,
     private modalController: ModalController,
     private currencyService: CurrencyService,
     private router: Router,
@@ -71,10 +73,10 @@ export class MsigTaskDetailPage implements OnInit {
   }
 
   ngOnInit() {
-      this.msigHash = this.msigService.getHash();
-      console.log('this.msigHash: ', this.msigHash);
-      this.loadFeeAndCurrency();
-      this.loadDetail();
+    this.msigHash = this.msigService.getHash();
+    console.log('this.msigHash: ', this.msigHash);
+    this.loadFeeAndCurrency();
+    this.loadDetail();
   }
 
   reload(event: any) {
@@ -102,17 +104,27 @@ export class MsigTaskDetailPage implements OnInit {
     }
   }
 
-  openDetailMultiSignature(txHash) {
+  openMsig(txHash) {
 
     this.isLoadingTx = true;
     zoobc.MultiSignature.getPendingByTxHash(txHash).then(async (res: multisigPendingDetail) => {
       this.multiSigDetail = res.pendingtransaction;
       console.log('== this.multiSigDetail:', this.multiSigDetail);
-      this.detailMultisig.emit(this.multiSigDetail);
+
+      // this.detailMultisig.emit(this.multiSigDetail);
+
       this.pendingSignatures = res.pendingsignaturesList;
+      console.log('= this.pendingSignatures:', this.pendingSignatures);
+
       this.participants = res.multisignatureinfo.addressesList;
+      console.log('= this.participants:', this.participants);
+
       this.participants = this.participants.map(res2 => res2.value);
+      console.log('= this.participants value:', this.participants);
+
       this.totalParticpants = res.multisignatureinfo.addressesList.length;
+      console.log('= this.participants value:', this.participants);
+
       if (this.pendingSignatures.length > 0) {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.pendingSignatures.length; i++) {
@@ -120,15 +132,25 @@ export class MsigTaskDetailPage implements OnInit {
             res3 => res3 !== this.pendingSignatures[i].accountaddress.value
           );
         }
-        const idx = (await this.accountService
+        const signers = (await this.accountService
           .allAccount())
           .filter(res5 => this.participants.includes(res5.address.value));
-        if (idx.length > 0) { this.enabledSign = true; } else { this.enabledSign = false; }
+        if (signers.length > 0) {
+          this.signerAcc = signers[0];
+          this.enabledSign = true;
+        } else {
+          this.enabledSign = false;
+        }
       } else {
-        const idx = (await this.accountService
+        const signers = (await this.accountService
           .allAccount())
           .filter(res4 => this.participants.includes(res4.address.value));
-        if (idx.length > 0) { this.enabledSign = true; } else { this.enabledSign = false; }
+        if (signers.length > 0) {
+          this.signerAcc = signers[0];
+          this.enabledSign = true;
+        } else {
+          this.enabledSign = false;
+        }
       }
       this.isLoadingTx = false;
     });
@@ -136,18 +158,11 @@ export class MsigTaskDetailPage implements OnInit {
 
   async loadDetail() {
     this.participantsWithSignatures = [];
-    this.openDetailMultiSignature(this.msigHash);
-
-    console.log('== participantsWithSignatures: ', this.participantsWithSignatures);
-    console.log('== Signer Acc: ', this.signerAcc);
+    this.openMsig(this.msigHash);
   }
 
   async copyAddress(address: string) {
     this.utilService.copyToClipboard(address);
-  }
-
-  closeModal() {
-    this.modalCtrl.dismiss();
   }
 
 
@@ -215,72 +230,53 @@ export class MsigTaskDetailPage implements OnInit {
 
   async doAccept() {
 
-    // show loading bar
     const loading = await this.loadingController.create({
       message: 'processing ..!',
       duration: 50000
     });
     loading.present();
 
-    this.isLoadingTx = true;
-    const participantsWithSignatures = [];
-
-    for (let i = 0; i <= this.participants.length; i++) {
-      const signer = this.participants[i];
-      const signerAcc = await this.accountService.getAccount(signer);
-      if (signerAcc) {
-        const idx = this.pendingSignatures.findIndex(
-          sign => sign.accountaddress === signer
-        );
-        if (idx < 0) {
-          const sgSeed = this.authSrv.keyring.calcDerivationPath(signerAcc.path);
-          participantsWithSignatures.push({
-            address: signer,
-            signature: signTransactionHash(this.multiSigDetail.transactionhash, sgSeed)
-          });
-        }
-      }
-    }
-
-    const signerSeed = this.authSrv.keyring.calcDerivationPath(this.signerAcc.path);
-    console.log('== participantsWithSignatures: ', participantsWithSignatures);
-    console.log('== signer-2:', this.signer);
-    console.log('== signerAcc-2:', this.signerAcc);
-    console.log('== seed-2:', signerSeed);
-
+    const seed = this.authSrv.keyring.calcDerivationPath(this.signerAcc.path);
     const data: MultiSigInterface = {
-      accountAddress: this.signer,
+      accountAddress: this.signerAcc.address,
       fee: this.transactionFee,
       signaturesInfo: {
-        txHash: this.multiSigDetail.transactionhash,
-        participants: participantsWithSignatures
+        txHash: this.multiSigDetail.transactionHash,
+        participants: [
+          {
+            address: this.signerAcc.address,
+            signature: signTransactionHash(this.multiSigDetail.transactionHash, seed),
+          },
+        ],
       },
     };
+    zoobc.MultiSignature.postTransaction(data, seed)
+      .then((res: MultisigPostTransactionResponse) => {
+        const message = getTranslation('transaction has been accepted', this.translate);
+        Swal.fire({
+          type: 'success',
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
 
-    // const seedMsig = this.authSrv.keyring.calcDerivationPath(signerAcc.path);
-    zoobc.MultiSignature.postTransaction(data, signerSeed)
-      .then(() => {
-        const message = 'Transaction has been accepted';
-        this.utilService.showConfirmation('Succes', message, true, null);
+        this.pendingSignatures = this.pendingSignatures.filter(
+          tx => tx.transactionHash !== this.multiSigDetail.transactionHash
+        );
       })
       .catch(err => {
-        console.log(err);
-        let message = '';
-        const errMsg = err.message;
-        if (err.code === 13 && errMsg.includes('UserBalanceNotEnough')) {
-          message = 'Signer balance is not enough!';
-        } else if (err.code === 13 && errMsg.includes('TXSenderNotFound')) {
-          message = 'Signer account not register yet, please do transaction first!';
-        } else {
-          message = 'Unknown reason!';
-        }
-        this.utilService.showConfirmation('Fail', message, false, null);
+        console.log(err.message);
+        const message = getTranslation(err.message, this.translate);
+        Swal.fire('Opps...', message, 'error');
       })
       .finally(() => {
-        this.isLoadingTx = false;
         loading.dismiss();
         this.router.navigate(['/tabs/home']);
       });
+  }
+
+  closeModal() {
+    this.modalCtrl.dismiss();
   }
 
 }
