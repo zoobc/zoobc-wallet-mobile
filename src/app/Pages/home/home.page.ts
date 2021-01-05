@@ -70,25 +70,16 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
-        // this.loadData();
+
       }
     });
 
-    // // if account changed
-    this.accountService.accountSubject.subscribe(() => {
-      this.loadData();
-    });
 
     // if account changed
     this.themeSrv.themeSubject.subscribe(() => {
       this.theme = this.themeSrv.theme;
     });
 
-    // // if post send money reload data
-    // this.transactionSrv.sendMoneySubject.subscribe(() => {
-    //   this.loadData();
-    // }
-    // );
 
     // if network changed reload data
     this.networkSrv.changeNodeSubject.subscribe(() => {
