@@ -89,7 +89,7 @@
               <ion-icon name="zbc-clock" color="secondary"></ion-icon>
               <span>{{ "transactions" | translate }}</span>
             </div>
-            <span *ngIf="recentTx && recentTx.length>=1" class="all" (click)="goToTransactions()">{{ "see all" |
+            <span class="all" (click)="goToTransactions()">{{ "see all" |
               translate }}</span>
           </div>
         </ion-item>
@@ -145,7 +145,7 @@
             </ion-item>
           </ng-container>
         </ng-template>
-        <ng-template #noTransaction>
+        <ng-template  *ngIf="unconfirmTx && unconfirmTx.length < 1" #noTransaction>
           <ion-item>
             <ion-label>{{ "you don't have any transaction." | translate }}</ion-label>
           </ion-item>

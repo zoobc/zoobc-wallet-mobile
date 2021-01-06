@@ -59,14 +59,6 @@
     </ion-item>
   </ion-list>
 
-  <ion-list *ngIf="!isLoading && accountHistory && accountHistory.length < 1 " class="ion-margin-top">
-    <ion-item class="ion-text-center">
-      <ion-label>
-        <br /> <br />
-        {{ "you don't have any transaction." | translate}}
-      </ion-label>
-    </ion-item>
-  </ion-list>
 
   <ion-list class="ion-margin-top transaction-list">
     <ng-container *ngIf="isLoading; else transactionList">
@@ -82,9 +74,11 @@
         </ion-item>
       </ng-container>
     </ng-template>
-    <ng-template #noTransaction>
-      <ion-item>
-        <ion-label>You don't have any transctions</ion-label>
+    <ng-template #noTransaction  *ngIf="unconfirmTx && unconfirmTx.length < 1">
+      <ion-item class="ion-text-center" lines="none">
+        <ion-label>
+          <br/>{{ "you don't have any transaction." | translate}}
+        </ion-label>
       </ion-item>
     </ng-template>
   </ion-list>
