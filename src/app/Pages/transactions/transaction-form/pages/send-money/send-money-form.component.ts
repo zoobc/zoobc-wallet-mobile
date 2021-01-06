@@ -117,7 +117,7 @@ export class SendMoneyFormComponent implements OnInit {
           console.log('== result: ', result);
           console.log('=== setelah submit form...');
 
-          if (this.transactionSrv.isTrxConfirm) {
+          if (this.transactionSrv.isTrxConfirm === true) {
             await this.inputPIN();
             this.transactionSrv.isTrxConfirm = false;
           }
@@ -205,17 +205,8 @@ export class SendMoneyFormComponent implements OnInit {
 
     pinmodal.onDidDismiss().then(async returnedData => {
       if (returnedData && returnedData.data && returnedData.data !== 0) {
-        // const pin = returnedData.data;
+        this.transactionSrv.isTrxConfirm = true;
         this.sendMoney();
-        // const extras: NavigationExtras = {
-        //   state: {
-        //     amount: this.amount.value,
-        //     recipient: this.recipient.value
-        //   },
-        //   replaceUrl: true
-        // };
-        // this.router.navigate(['transaction-form/send-money/success'], extras);
-
       }
     });
     return await pinmodal.present();
@@ -280,7 +271,6 @@ export class SendMoneyFormComponent implements OnInit {
     await zoobc.Transactions.sendMoney(data, childSeed)
       .then(
         async (res: PostTransactionResponses) => {
-
           const message = getTranslation('your transaction is processing', this.translate);
           const subMessage = getTranslation('you send coins to', this.translate, {
             amount: data.amount,
@@ -288,38 +278,18 @@ export class SendMoneyFormComponent implements OnInit {
           });
           Swal.fire(message, subMessage, 'success');
           try {
-            this.sendMoneySummarySubscription.unsubscribe();
+            await this.sendMoneySummarySubscription.unsubscribe();
             } catch (e) {console.log(e); }
           this.router.navigateByUrl('/tabs/home');
         },
         async err => {
           console.log(err);
-
           const message = getTranslation(err.message, this.translate);
           Swal.fire('Opps...', message, 'error');
         }
-
-        // (resolveTx: any) => {
-        //   if (resolveTx) {
-        //     this.ngOnInit();
-        //     this.showSuccessMessage();
-
-        //     if (this.behaviorEscrowChangesSubscription) {
-        //       this.behaviorEscrowChangesSubscription.unsubscribe();
-        //     }
-
-        //     this.sendForm.reset();
-        //     this.submitted = false;
-        //     this.withEscrow = false;
-        //     return;
-        //   }
-        // },
-        // error => {
-        //   console.log('__error', error);
-        //   this.showErrorMessage(error);
-        // }
       )
       .finally(() => {
+        this.transactionSrv.isTrxConfirm = true;
         this.ngOnInit();
         loading.dismiss();
       });
