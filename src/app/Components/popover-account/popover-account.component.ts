@@ -15,7 +15,7 @@ export class PopoverAccountComponent implements OnInit {
   predefList = [];
   showBalance = 'yes';
   @Input() accountType: AccountType;
-
+  isLoading = false;
   constructor(
     public popoverCtrl: PopoverController,
     private router: Router,
@@ -23,7 +23,7 @@ export class PopoverAccountComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    console.log('Popup predefList : ', this.predefList);
+    this.isLoading = true;
     let accs: Account[];
 
     if (this.showBalance === 'yes') {
@@ -48,15 +48,12 @@ export class PopoverAccountComponent implements OnInit {
     }
 
 
-    // if (this.accounts && this.accounts.length > 0) {
-    //   this.accounts = await this.accountSrv.getAccountsWithBalance();
-    //   // this.getAllAccountBalance(this.accounts);
-    // }
-
     const selectedAccount = await this.accountSrv.getCurrAccount();
     this.selectedIndex = this.accounts.findIndex((account: Account) => {
       return account.address === selectedAccount.address;
     });
+
+    this.isLoading = false;
   }
 
 
