@@ -141,7 +141,7 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   async doRefresh(event: any) {
-    this.accountService.fetchAccountsBalance();
+    // this.accountService.fetchAccountsBalance();
     await this.loadData();
     event.target.complete();
   }

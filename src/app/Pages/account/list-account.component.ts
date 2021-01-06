@@ -128,14 +128,14 @@ export class ListAccountComponent implements OnInit {
   }
 
   async doRefresh(event: any) {
-    this.isLoadingBalance = true;
-    await this.accountService.fetchAccountsBalance();
+
+    // await this.accountService.fetchAccountsBalance();
     this.loadData();
-    this.isLoadingBalance = false;
     event.target.complete();
   }
 
   async loadData() {
+    this.isLoadingBalance = true;
     this.route.queryParams.subscribe(() => {
       if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
         this.forWhat = this.router.getCurrentNavigation().extras.state.forWhat;
@@ -144,6 +144,7 @@ export class ListAccountComponent implements OnInit {
       }
     });
     this.accounts = await this.accountService.getAccountsWithBalance();
+    this.isLoadingBalance = false;
   }
 
   async deleteAccount(index: number) {
