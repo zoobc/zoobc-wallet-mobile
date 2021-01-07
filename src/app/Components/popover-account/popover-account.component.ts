@@ -33,6 +33,7 @@ export class PopoverAccountComponent implements OnInit {
     }
 
     if (this.predefList && this.predefList.length > 0) {
+      this.isLoading = false;
       this.accounts = accs.filter( acc => {// for every object in heroes
           return this.predefList.includes(acc.address.value);
       });
