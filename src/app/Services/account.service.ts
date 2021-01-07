@@ -17,6 +17,7 @@ import zoobc, { ZooKeyring, getZBCAddress, BIP32Interface, AccountBalance, Multi
 })
 export class AccountService {
   account: Account;
+  tempAccount: Account;
   private forWhat: string;
   private plainPassphrase: string;
   private arrayPhrase = [];
@@ -27,6 +28,7 @@ export class AccountService {
   willRestoreAccounts: boolean;
   private totalAccountLoaded = 20;
   public accountSubject: Subject<Account> = new Subject<Account>();
+  public tempSubject: Subject<Account> = new Subject<Account>();
   public recipientSubject: Subject<Account> = new Subject<Account>();
   public approverSubject: Subject<Account> = new Subject<Account>();
   public senderSubject: Subject<Account> = new Subject<Account>();
@@ -38,6 +40,10 @@ export class AccountService {
     this.forWhat = arg;
   }
 
+  setTemp(acc: Account) {
+    this.tempAccount = acc;
+    this.tempSubject.next(acc);
+  }
   getForWhat() {
     return this.forWhat;
   }
@@ -58,19 +64,18 @@ export class AccountService {
 
   async getAccount(address: string) {
     const accounts = await this.allAccount();
-    const account: Account = accounts.filter((acc: Account) => {
-      return acc.address && acc.address.value === address;
-    });
-
-    // let account = null;
-    // // tslint:disable-next-line:prefer-for-of
-    // for (let i = 0; i < accounts.length; i++) {
-    //   const acc = accounts[i];
-    //   if (acc.address.value === address) {
-    //     account = acc;
-    //     break;
-    //   }
-    // }
+    // const account: Account = accounts.filter((acc: Account) => {
+    //   return acc.address && acc.address.value === address;
+    // });
+    let account = null;
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < accounts.length; i++) {
+      const acc = accounts[i];
+      if (acc.address.value === address) {
+        account = acc;
+        break;
+      }
+    }
     return account;
   }
 
@@ -115,7 +120,7 @@ export class AccountService {
     this.accountSubject.next(account);
   }
 
-  async addAccount(account: Account) {
+  async addAccount(account: Account, isSwitch: boolean = true) {
     let accounts = await this.allAccount();
 
     if (accounts === null) {
@@ -133,7 +138,11 @@ export class AccountService {
     if (!isDuplicate) {
       accounts.push(account);
       this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, accounts);
-      this.switchAccount(account);
+      if (isSwitch) {
+        this.switchAccount(account);
+      } else {
+        this.updateTempSeed(account);
+      }
     }
   }
 
