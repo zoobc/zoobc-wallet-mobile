@@ -69,7 +69,7 @@
     <ng-template #transactionList>
       <ng-container *ngIf="accountHistory && accountHistory.length>=1; else noTransaction">
         <ion-item *ngFor="let transaction of accountHistory; let i = index" button
-          (click)="goToTransactionDetail(transaction.id)">
+          (click)="goToTransactionDetail(transaction)">
           <app-transaction-item [transaction]="transaction"></app-transaction-item>
         </ion-item>
       </ng-container>

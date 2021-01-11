@@ -9,15 +9,7 @@
 
 <ion-content>
 
-  <ion-list class="info-list">
-    <!--<ion-item>
-      <ion-label>
-        <p class="info-label">{{ "status" | translate }}</p>
-        <p *ngIf="status==='confirm'" class="info-val-confirm">{{ status | uppercase}}</p>
-        <p *ngIf="status!=='confirm'" class="info-val-pending">{{ status | uppercase}}</p>
-      </ion-label>
-    </ion-item>-->
-
+  <ion-list class="info-list" *ngIf="trx">
     <ion-item>
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "transaction hash" | translate }}</p>
@@ -28,7 +20,8 @@
         </ng-container>
         <ng-template #transactionHash>
           <div class="info-val" *ngIf="trx">
-            <app-with-options [options]="transHashOptions" (onClose)="onTransHashOptionsClose($event, trx.transactionHash)">
+            <app-with-options [options]="transHashOptions"
+              (onClose)="onTransHashOptionsClose($event, trx.transactionHash)">
               {{ trx.transactionHash }}
             </app-with-options>
           </div>
@@ -48,45 +41,31 @@
       </ion-label>
     </ion-item>
 
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "transaction type" | translate }}</p>
-        <div *ngIf="loading; else transactionType" class="skeleton-text" style="width: 30%;"></div>
-        <ng-template #transactionType>
-          <div class="info-val" *ngIf="trx.sender.value == currAccount.address.value">
-            {{ "Send" }}
-          </div>
-          <div class="info-val" *ngIf="trx.recipient.value == currAccount.address.value">
-            {{ "Receive" }}
-          </div>
-        </ng-template>
-      </ion-label>
-    </ion-item>
-
     <ion-item *ngIf="trx">
       <ion-label class="ion-text-wrap">
         <p class="info-label">
-          <span *ngIf="trx.recipient.value == currAccount.address.value">{{ "sender address" | translate }}</span>
-          <span *ngIf="trx.sender.value == currAccount.address.value">{{ "recipient address" | translate }}</span></p>
-        <ng-container *ngIf="loading; else sender">
-          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
-          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
-          <div class="skeleton-text" style="width: 20%;"></div>
-        </ng-container>
-        <ng-template #sender>
-          <div class="info-val" *ngIf="trx.recipient.value == currAccount.address.value">
-            <app-with-options [options]="senderRecipentOptions" (onClose)="onSenderRecipentOptionsClose($event, trx.sender.value)">
-              <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.sender.value }}"></app-info-address>
-            </app-with-options>
-          </div>
+          <span>{{ "sender address" | translate }}</span>
+        </p>
+        <div class="info-val">
+          <app-with-options [options]="senderRecipentOptions"
+            (onClose)="onSenderRecipentOptionsClose($event, trx.sender.value)">
+            <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.sender.value }}"></app-info-address>
+          </app-with-options>
+        </div>
+      </ion-label>
+    </ion-item>
 
-          <div class="info-val" *ngIf="trx.sender.value == currAccount.address.value">
-            <app-with-options [options]="senderRecipentOptions" (onClose)="onSenderRecipentOptionsClose($event, trx.recipient.value)">
-              <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.recipient.value }}"></app-info-address>
-            </app-with-options>
-          </div>
-
-        </ng-template>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">
+          <span>{{ "recipient address" | translate }}</span>
+        </p>
+        <div class="info-val">
+          <app-with-options [options]="senderRecipentOptions"
+            (onClose)="onSenderRecipentOptionsClose($event, trx.recipient.value)">
+            <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.recipient.value }}"></app-info-address>
+          </app-with-options>
+        </div>
       </ion-label>
     </ion-item>
 
@@ -96,10 +75,10 @@
         <div *ngIf="loading; else amount" class="skeleton-text" style="width: 30%;"></div>
         <ng-template #amount>
           <ng-container *ngIf="trx">
-            <div class="info-val" [ngClass]="trx.recipient.value == currAccount.address.value ? 'info-val-receive':'info-val-send'">
-              <span *ngIf="trx.sender.value == currAccount.address.value">-</span> 
-              <span
-                *ngIf="trx.recipient.value == currAccount.address.value">+</span>
+            <div class="info-val"
+              [ngClass]="trx.recipient.value == currAccount.address.value ? 'info-val-receive':'info-val-send'">
+              <span *ngIf="trx.sender.value == currAccount.address.value">-</span>
+              <span *ngIf="trx.recipient.value == currAccount.address.value">+</span>
               {{ trx.txBody.amount / 1e8 | number: '0.2-4' }}
               ZBC
             </div>
@@ -124,7 +103,7 @@
       </ion-label>
     </ion-item>
 
-    <ion-item>
+    <ion-item *ngIf="trx.height">
       <ion-label>
         <p class="info-label">{{ "height" | translate }}</p>
         <div *ngIf="loading; else height" class="skeleton-text" style="width: 30%;"></div>
@@ -133,6 +112,17 @@
             {{ trx.height }}
           </div>
         </ng-template>
+      </ion-label>
+    </ion-item>
+
+    <ion-item  *ngIf="trx.transactionIndex">
+      <ion-label>
+        <p class="info-label">{{ "transaction index" | translate }}</p>
+
+        <div class="info-val">
+          {{ trx.transactionIndex }}
+        </div>
+
       </ion-label>
     </ion-item>
 
@@ -147,15 +137,6 @@
         </ng-template>
       </ion-label>
     </ion-item>
-
-
-
-    <!-- <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Total" | translate }}</p>
-        <p class="info-val">{{ transaction.total / 1e8 }} ZBC</p>
-      </ion-label>
-    </ion-item> -->
 
   </ion-list>
 </ion-content>
