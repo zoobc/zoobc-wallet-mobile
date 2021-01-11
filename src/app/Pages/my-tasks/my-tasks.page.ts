@@ -16,7 +16,6 @@ import zoobc, {
 } from 'zbc-sdk';
 
 import { Router, NavigationExtras } from '@angular/router';
-import { dateAgo } from 'src/Helpers/utils';
 import { Currency } from 'src/app/Interfaces/currency';
 import { MultisigService } from 'src/app/Services/multisig.service';
 
@@ -120,7 +119,8 @@ export class MyTasksPage implements OnInit {
 
       const params: MultisigPendingListParams = {
         address: this.account.address,
-        // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
+          // statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED],
+       // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
         pagination: {
           page: this.pageMultiSig,
           limit: this.PerPage,

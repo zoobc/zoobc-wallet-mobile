@@ -16,6 +16,8 @@ import { MultisigService } from 'src/app/Services/multisig.service';
 import { getTranslation } from 'src/Helpers/utils';
 import Swal from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Account } from 'src/app/Interfaces/account';
 
 @Component({
   selector: 'app-msig-task-detail',
@@ -23,6 +25,11 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./msig-task-detail.page.scss'],
 })
 export class MsigTaskDetailPage implements OnInit {
+  currentAccount: Account;
+  minFee = TRANSACTION_MINIMUM_FEE;
+  formSend: FormGroup;
+  fFee = new FormControl(this.minFee, [Validators.required, Validators.min(this.minFee)]);
+  fSender = new FormControl('', Validators.required);
 
   currencyRate: Currency;
   private msigHash: any;
@@ -34,11 +41,11 @@ export class MsigTaskDetailPage implements OnInit {
   optionFee: string;
   customfee: number;
   customfee2: number;
-  transactionFee: number;
   multiSigDetail: any;
   isLoadingTx = false;
   pendingSignatures = [];
   participants = [];
+  signers = [];
   enabledSign = true;
   feeSlow = TRANSACTION_MINIMUM_FEE;
   feeMedium = this.feeSlow * 2;
@@ -51,11 +58,11 @@ export class MsigTaskDetailPage implements OnInit {
   customeChecked: boolean;
   minimumFee = TRANSACTION_MINIMUM_FEE;
   isNeedSign = false;
-  signer: any;
-  signerAcc: any;
+  signer: Account;
   participantsWithSignatures = [];
   detailMultisig: any;
   totalParticpants: number;
+  totalPending = 0;
 
   constructor(
     private modalCtrl: ModalController,
@@ -63,12 +70,19 @@ export class MsigTaskDetailPage implements OnInit {
     private modalController: ModalController,
     private currencyService: CurrencyService,
     private router: Router,
+    private utilSrv: UtilService,
     private accountService: AccountService,
     private authSrv: AuthService,
     private loadingController: LoadingController,
     private utilService: UtilService,
     private msigService: MultisigService,
     private trxService: TransactionService) {
+
+    this.formSend = new FormGroup({
+      sender: this.fSender,
+      fee: this.fFee,
+    });
+
     this.priceInUSD = this.currencyService.getPriceInUSD();
   }
 
@@ -77,6 +91,7 @@ export class MsigTaskDetailPage implements OnInit {
     console.log('this.msigHash: ', this.msigHash);
     this.loadFeeAndCurrency();
     this.loadDetail();
+    this.fFee.setValue(0.01);
   }
 
   reload(event: any) {
@@ -108,26 +123,34 @@ export class MsigTaskDetailPage implements OnInit {
 
     this.isLoadingTx = true;
     zoobc.MultiSignature.getPendingByTxHash(txHash).then(async (res: multisigPendingDetail) => {
+
+
+      console.log('== this.multisigPendingDetail:', res);
+
+
       this.multiSigDetail = res.pendingtransaction;
       console.log('== this.multiSigDetail:', this.multiSigDetail);
 
       // this.detailMultisig.emit(this.multiSigDetail);
 
       this.pendingSignatures = res.pendingsignaturesList;
+      this.totalPending = this.pendingSignatures.length;
       console.log('= this.pendingSignatures:', this.pendingSignatures);
 
       this.participants = res.multisignatureinfo.addressesList;
+      this.signers = this.participants.map(pc => pc.value);
       console.log('= this.participants:', this.participants);
+      console.log('= this.signers:', this.signers);
 
       this.participants = this.participants.map(res2 => res2.value);
       console.log('= this.participants value:', this.participants);
 
-      this.totalParticpants = res.multisignatureinfo.addressesList.length;
+      this.totalParticpants = this.participants.length;
       console.log('= this.participants value:', this.participants);
 
-      if (this.pendingSignatures.length > 0) {
+      if (this.totalPending > 0) {
         // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < this.pendingSignatures.length; i++) {
+        for (let i = 0; i < this.totalPending; i++) {
           this.participants = this.participants.filter(
             res3 => res3 !== this.pendingSignatures[i].accountaddress.value
           );
@@ -136,7 +159,7 @@ export class MsigTaskDetailPage implements OnInit {
           .allAccount())
           .filter(res5 => this.participants.includes(res5.address.value));
         if (signers.length > 0) {
-          this.signerAcc = signers[0];
+          // this.signerAcc = signers[0];
           this.enabledSign = true;
         } else {
           this.enabledSign = false;
@@ -146,7 +169,7 @@ export class MsigTaskDetailPage implements OnInit {
           .allAccount())
           .filter(res4 => this.participants.includes(res4.address.value));
         if (signers.length > 0) {
-          this.signerAcc = signers[0];
+          // this.signerAcc = signers[0];
           this.enabledSign = true;
         } else {
           this.enabledSign = false;
@@ -191,18 +214,33 @@ export class MsigTaskDetailPage implements OnInit {
     }
   }
 
-  confirm() {
-    // TODO VALIDATE THIS
-    this.transactionFee = Number(this.optionFee);
-    if (this.customeChecked) {
-      this.transactionFee = this.customfee;
+  async submit() {
+
+    if (!this.fSender.value) {
+      this.utilSrv.showAlert('Alert', '', 'Please select a sender first!');
+      return;
     }
 
-    if (!this.transactionFee) {
-      this.transactionFee = this.allFees[0].fee;
+    console.log('=== fee: ', this.fFee.value);
+    if (this.fFee.value <= 0) {
+      this.utilSrv.showAlert('Alert', '', 'Fee is required!');
+      return;
     }
-    // end
 
+    if (!this.formSend.valid) {
+      return;
+    }
+    const address = this.fSender.value.address;
+    const accBalance = await zoobc.Account.getBalance(address);
+    const balance = Number(accBalance.spendableBalance / 1e8);
+    if (balance < this.minFee) {
+      const message = getTranslation('your balances are not enough for this transaction', this.translate);
+      Swal.fire({ type: 'error', title: 'Oops...', text: message });
+      return;
+    }
+
+    this.signer = this.fSender.value;
+    console.log('== signer:', this.signer);
     this.showPin();
   }
 
@@ -218,7 +256,6 @@ export class MsigTaskDetailPage implements OnInit {
     });
     return await pinmodal.present();
   }
-
 
   doIgnore() {
     this.goBack();
@@ -236,20 +273,21 @@ export class MsigTaskDetailPage implements OnInit {
     });
     loading.present();
 
-    const seed = this.authSrv.keyring.calcDerivationPath(this.signerAcc.path);
+    const seed = this.authSrv.keyring.calcDerivationPath(this.signer.path);
     const data: MultiSigInterface = {
-      accountAddress: this.signerAcc.address,
-      fee: this.transactionFee,
+      accountAddress: this.signer.address,
+      fee: this.fFee.value,
       signaturesInfo: {
         txHash: this.multiSigDetail.transactionHash,
         participants: [
           {
-            address: this.signerAcc.address,
+            address: this.signer.address,
             signature: signTransactionHash(this.multiSigDetail.transactionHash, seed),
           },
         ],
       },
     };
+
     zoobc.MultiSignature.postTransaction(data, seed)
       .then((res: MultisigPostTransactionResponse) => {
         const message = getTranslation('transaction has been accepted', this.translate);
