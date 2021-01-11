@@ -1,5 +1,5 @@
 import { Currency } from 'src/app/Interfaces/currency';
-export const UNIQUE_DB_ID = '1';
+export const UNIQUE_DB_ID = '1x';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = '';
 export const STORAGE_ACTIVE_CURRENCY = 'strg_active_currency' + '_' + UNIQUE_DB_ID;
@@ -30,6 +30,7 @@ export const FOR_APPROVER = 'approver';
 export const FOR_ACCOUNT = 'account';
 export const MODE_EDIT = 'edit';
 export const MODE_NEW = 'new';
+export const FROM_MSIG = 'msig';
 export const EMPTY_STRING = '';
 export const CONST_DEFAULT_CURRENCY = 'USD';
 export const CONST_UNKNOWN_NAME = 'Unknown';
@@ -228,7 +229,12 @@ export const NETWORK_LIST = [
   {
     name: 'Public TestNet Node 03',
     host: 'http://n3.beta.proofofparticipation.network:7001'
+  },
+  {
+    name: 'Demo',
+    host: 'http://172.104.62.181:7001'
   }
+
   // ,
   // {
   //   name: 'Developers TestNet Node 01',
