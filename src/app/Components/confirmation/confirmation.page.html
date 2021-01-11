@@ -1,38 +1,64 @@
-<ion-header>
-  <ion-toolbar color="primary" hideBackButton="true">
-    <ion-title>{{ "transaction status" | translate }}</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content class="ion-padding">
+  <ion-grid class="iongrid">
+    <ion-row class="ionrow">
+      <ion-col>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
 
-  <ion-grid style="margin-top:10%;">
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <img *ngIf="status" src="assets/images/checked.png" style="width:100px" />
-        <img *ngIf="!status" src="assets/images/cancel.png" style="width:100px" />
-      </ion-col>
-    </ion-row>
+              <ion-grid>
+                <ion-row>
+                  <ion-col class="ion-text-center">
+                    <img *ngIf="status" class="icon" src="assets/images/checked.png"/>
+                    <img *ngIf="!status" class="icon" src="assets/images/cancel.png"/>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col class="ion-text-center">
+                    <ion-text color="dark">
+                      <h5 [innerHTML]="title"></h5>
+                    </ion-text>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col class="ion-text-center">
+                    <div [innerHTML]="msg" *ngIf="status"></div>
+                    <div class="warning" [innerHTML]="msg" *ngIf="!status"></div>
+                  </ion-col>
+                </ion-row>
+                <ion-row class="btn">
+                  <ion-col class="ion-text-center">
+                    <ion-button color="tertiary" fill="outline" (click)="close();">{{ "ok" | translate }}</ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
 
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-text color="dark">
-          <h3>{{ "transaction" | translate }} {{title}}</h3>
-        </ion-text>
-      </ion-col>
-    </ion-row>
-    <ion-row style="margin-bottom:20px;">
-      <ion-col class="ion-text-center">
-        <ion-text *ngIf="status" color="dark">{{ msg }}.
-        </ion-text>
-        <ion-text *ngIf="!status" color="danger">{{ msg }}.</ion-text>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-button color="tertiary" expand="block" (click)="close();">{{ "close" | translate }}</ion-button>
-      </ion-col>
-    </ion-row>
 
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 </ion-content>
+
+<!-- 
+<ion-content class="ion-padding">
+  <div class="transaction-success">
+    <div>
+       <ion-icon name="zbc-transaction-success"></ion-icon>
+      <img *ngIf="status" src="assets/images/checked.png" style="width:100px" />
+      <img *ngIf="!status" src="assets/images/cancel.png" style="width:100px" />
+      <ion-text class="text-title ion-text-center"> {{title}}</ion-text>
+      <ion-text class="text-let-know">We’ll let you know once it’s done.</ion-text>
+      <div class="text-sent">
+        <div [innerHTML]="msg" *ngIf="status" ></div>
+        <div class="warning" [innerHTML]="msg" *ngIf="!status"></div>
+      </div>
+   
+    </div>
+    <ion-button type="submit" color="tertiary" expand="block" (click)="close();">
+      {{ "ok" | translate }}
+    </ion-button>
+  </div>
+</ion-content> -->
