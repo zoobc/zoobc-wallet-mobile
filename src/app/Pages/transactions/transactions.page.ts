@@ -344,6 +344,7 @@ export class TransactionsPage implements OnInit {
               return uc;
             })
           );
+          console.log('== unconfirmTx: ', this.unconfirmTx);
         }
       } catch {
         this.isError = true;
@@ -395,7 +396,8 @@ export class TransactionsPage implements OnInit {
    * @param trx is unconfirm transaction object
    */
   public async openDetailUnconfirm(trx) {
-    this.loadDetailTransaction(trx, 'pending');
+    this.transactionServ.tempTrx = trx;
+    this.router.navigate(['/transaction/0']);
   }
 
   /**
@@ -468,8 +470,9 @@ export class TransactionsPage implements OnInit {
     }
   }
 
-  goToTransactionDetail(transactionId) {
-    this.router.navigate(['/transaction/' + transactionId]);
+  goToTransactionDetail(trx) {
+    this.transactionServ.tempTrx = trx;
+    this.router.navigate(['/transaction/0']);
   }
 
 

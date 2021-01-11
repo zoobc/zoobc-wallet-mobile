@@ -56,16 +56,16 @@
             *ngIf="signers" predefList="{{signers}}" ngDefaultControl></app-form-sender>
         </ion-item>
         <ion-item lines="none">
-          <ion-button (click)="sign()" [disabled]="fSignatures.value.length <= 0" color="tertiary">
+          <ion-button size="small" fill="outline" (click)="sign()" [disabled]="fSignatures.value.length <= 0" color="tertiary">
             {{ 'add my signature' | translate }}
           </ion-button>
         </ion-item>
       </div>
 
-      <ion-item>
-        <ion-button (click)="save()" expand="block" color="tertiary" expand="block" expand="block">{{"save" |
+      <ion-item lines="none" class="btn">
+        <ion-button (click)="save()" size="medium" color="tertiary" expand="block">{{"save" |
           translate}}</ion-button>
-        <ion-button (click)="next()" [disabled]="form.invalid" color="tertiary" expand="block">{{"send" | translate}}
+        <ion-button (click)="next()"  size="medium" [disabled]="form.invalid" color="tertiary">{{"send" | translate}}
         </ion-button>
       </ion-item>
     </ion-list>

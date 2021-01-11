@@ -22,7 +22,8 @@
           {{accountName.errors.accountNameExists}}
         </ion-text>
       </ion-item>
-      <ion-item lines="none" class="form-item item-checkbox">
+
+      <ion-item *ngIf="from!='msig'" lines="none" class="form-item item-checkbox">
         <ion-checkbox (ionChange)="changeToMultisig($event.target.checked)" color="primary">
         </ion-checkbox>
         <ion-label>{{ "Multi-signature account" | translate}}</ion-label>

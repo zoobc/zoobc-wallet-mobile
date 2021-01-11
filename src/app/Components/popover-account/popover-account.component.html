@@ -1,3 +1,10 @@
+<div *ngIf="isLoading" style="margin-top:5px;">
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</div>
+<div class="actions">
+  <ion-button *ngIf="(predefList.length < 1)" fill="clear" (click)="goToAccount()">{{ "manage accounts" | translate }}</ion-button>
+  <ion-button fill="clear" (click)="cancel()">{{ "cancel" | translate }}</ion-button>
+</div>
 <ion-list class="list-account" lines="none">
   <ion-radio-group value="{{ selectedIndex }}">
     <ion-item *ngFor="let account of accounts; let idx = index" (click)="selectAccount(account)">
@@ -6,7 +13,3 @@
     </ion-item>
   </ion-radio-group>
 </ion-list>
-<div class="actions">
-  <ion-button *ngIf="(predefList.length < 1)" fill="clear" (click)="goToAccount()">{{ "manage accounts" | translate }}</ion-button>
-  <ion-button fill="clear" (click)="cancel()">{{ "cancel" | translate }}</ion-button>
-</div>

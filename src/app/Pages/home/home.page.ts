@@ -21,7 +21,6 @@ import { ThemeService } from 'src/app/Services/theme.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { DecimalPipe } from '@angular/common';
 import { NetworkService } from 'src/app/Services/network.service';
-import { dateAgo } from 'src/Helpers/utils';
 import { makeShortAddress } from 'src/Helpers/converters';
 import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,7 +29,6 @@ import zoobc, {
   MempoolListParams,
   TransactionType,
   AccountBalance,
-  Address,
   EscrowListParams,
   OrderBy,
   getZBCAddress,
@@ -39,6 +37,7 @@ import zoobc, {
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 import { PopoverBlockchainObjectOptionComponent } from './popover-blockchain-object-option/popover-blockchain-object-option.component';
+import { TransactionService } from 'src/app/Services/transaction.service';
 
 @Component({
   selector: 'app-home',
@@ -58,37 +57,26 @@ export class HomePage implements OnInit, OnDestroy {
     private currencySrv: CurrencyService,
     public toastController: ToastController,
     private themeSrv: ThemeService,
-    private alertController: AlertController,
-    private decimalPipe: DecimalPipe,
+    private transactionSrv: TransactionService,
     private network: Network,
     private alertCtrl: AlertController,
     private translateSrv: TranslateService,
-    private addressBookSrv: AddressBookService,
     private popoverCtrl: PopoverController
   ) {
 
 
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
-        // this.loadData();
+
       }
     });
 
-    // // if account changed
-    this.accountService.accountSubject.subscribe(() => {
-      this.loadData();
-    });
 
     // if account changed
     this.themeSrv.themeSubject.subscribe(() => {
       this.theme = this.themeSrv.theme;
     });
 
-    // // if post send money reload data
-    // this.transactionSrv.sendMoneySubject.subscribe(() => {
-    //   this.loadData();
-    // }
-    // );
 
     // if network changed reload data
     this.networkSrv.changeNodeSubject.subscribe(() => {
@@ -120,7 +108,6 @@ export class HomePage implements OnInit, OnDestroy {
   notifId = 1;
   theme = DEFAULT_THEME;
   lastTimeGetBalance: Date;
-  lastBalanceUpdated = 'Just now';
 
   alertConnectionTitle = '';
   alertConnectionMsg = '';
@@ -150,7 +137,7 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   async doRefresh(event: any) {
-    this.accountService.fetchAccountsBalance();
+    // this.accountService.fetchAccountsBalance();
     await this.loadData();
     event.target.complete();
   }
@@ -226,17 +213,11 @@ export class HomePage implements OnInit, OnDestroy {
       .then((data: AccountBalance) => {
         this.accountBalance = data;
       })
-      .catch(e => (this.isError = true))
+      .catch(() => (this.isError = true))
       .finally(() => {
         this.isLoading = false;
         this.getTransactions();
       });
-  }
-
-  startTimer() {
-    setInterval(() => {
-      this.lastBalanceUpdated = dateAgo(this.lastTimeGetBalance);
-    }, 5000);
   }
 
   openMenu() {
@@ -272,6 +253,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   openDetailUnconfirm(trx) {
+    this.transactionSrv.tempTrx = trx;
     this.loadDetailTransaction(trx, 'pending');
   }
 
@@ -356,8 +338,9 @@ export class HomePage implements OnInit, OnDestroy {
     this.router.navigate(['/qr-scanner']);
   }
 
-  goToTransactionDetail(transactionId) {
-    this.router.navigate(['/transaction/' + transactionId]);
+  goToTransactionDetail(trx) {
+    this.transactionSrv.tempTrx = trx;
+    this.router.navigate(['/transaction/0']);
   }
 
   groupEscrowList(escrowList: any[]) {

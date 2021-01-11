@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
-import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
-import { ActivatedRoute } from '@angular/router';
-// import zoobc, { getZBCAddress, toTransactionWallet, TransactionResponse } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import { UtilService } from 'src/app/Services/util.service';
-import { AddressBookService } from 'src/app/Services/address-book.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import zoobc, { getZBCAddress, ZBCTransaction } from 'zbc-sdk';
+import { ZBCTransaction } from 'zbc-sdk';
+import { TransactionService } from 'src/app/Services/transaction.service';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -40,10 +38,9 @@ export class TransactionDetailPage implements OnInit {
     private translateSrv: TranslateService,
     private network: Network,
     private alertCtrl: AlertController,
-    private activeRoute: ActivatedRoute,
     private accountService: AccountService,
     private utilService: UtilService,
-    private addressBookSrv: AddressBookService,
+    private transactionSrv: TransactionService,
     private socialSharing: SocialSharing,
     public platform: Platform,
   ) {
@@ -53,60 +50,30 @@ export class TransactionDetailPage implements OnInit {
   async ngOnInit() {
     this.loading = true;
 
-    this.activeRoute.params.subscribe(async params => {
+    this.currAccount = await this.accountService.getCurrAccount();
+    console.log('==== currAccount: ', this.currAccount);
 
-      this.currAccount = await this.accountService.getCurrAccount();
-      console.log('==== currAccount: ', this.currAccount);
-      const transactionId = params.transId;
-
-      this.trx = await zoobc.Transactions.get(transactionId);
-      console.log('==== transaction: ', this.trx);
-      // this.transactionWallet = toTransactionWallet(transaction, currAccount.address);
-
-      // this.senderRecipentAlias = await this.addressBookSrv.getNameByAddress(
-      //   this.transactionWallet.address
-      // );
-
-      this.senderRecipentOptions = [
-        {key: 'copy', label: this.textCopyAddress},
-        {key: 'share', label: this.textShareAddress}
-      ];
-
-      this.transHashOptions = [
-        {key: 'copy', label: this.textCopyAddress},
-        {key: 'share', label: this.textShareAddress}
-      ];
-
-      if (!this.senderRecipentAlias) {
-        this.senderRecipentOptions.push({key: 'addToContact', label: this.textAddToContact});
-      }
-
-      // const pubkey = Buffer.from(transaction.transactionhash.toString(), 'base64');
-      // this.transactionWallet.transactionhash = getZBCAddress(pubkey, 'ZTX');
-
-      // this.transaction = transaction;
-
-      this.loading = false;
-
-    });
+    this.trx = this.transactionSrv.tempTrx;
+    console.log('==== transaction: ', this.trx);
 
 
-    /*if (this.navParams && this.navParams.data) {
-      this.transaction = this.navParams.data.transaction;
-      this.account = this.navParams.data.account;
-      this.status = this.navParams.data.status;
-    }*/
+    this.senderRecipentOptions = [
+      { key: 'copy', label: this.textCopyAddress },
+      { key: 'share', label: this.textShareAddress }
+    ];
 
-    /*if (this.transaction.type === 'send') {
-      this.transaction.sender = this.account.address;
-      this.transaction.recipient = this.transaction.address;
-    } else if (this.transaction.type === 'receive') {
-      this.transaction.sender = this.transaction.address;
-      this.transaction.recipient = this.account.address;
+    this.transHashOptions = [
+      { key: 'copy', label: this.textCopyAddress },
+      { key: 'share', label: this.textShareAddress }
+    ];
+
+    if (!this.senderRecipentAlias) {
+      this.senderRecipentOptions.push({ key: 'addToContact', label: this.textAddToContact });
     }
-    this.transaction.total = this.transaction.amount + this.transaction.fee;*/
 
-    this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
+    this.loading = false;
+
+    this.translateSrv.onLangChange.subscribe(() => {
       this.translateLang();
     });
 

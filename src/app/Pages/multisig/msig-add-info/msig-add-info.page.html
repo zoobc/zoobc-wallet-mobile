@@ -62,7 +62,7 @@
   <ng-container *ngIf="fAddress.value">
     <form [formGroup]="form" (ngSubmit)="next()" novalidate>
     <ion-grid *ngIf="draft">
-      <ion-row>
+      <!-- <ion-row>
         <ion-col>
           <ion-label position="stacked">
             {{ 'name' | translate }}:
@@ -70,8 +70,8 @@
           <ion-textarea rows="2" type="text" formControlName="name" readonly="true" placeholder="name ...">
           </ion-textarea>
         </ion-col>
-      </ion-row>
-      <ion-row>
+      </ion-row> -->
+      <!-- <ion-row>
         <ion-col>
           <ion-label>
             {{ 'address' | translate }}: </ion-label>
@@ -79,7 +79,7 @@
             placeholder="multisignature address..."></ion-textarea>
 
         </ion-col>
-      </ion-row>
+      </ion-row> -->
 
       <ion-row>
         <ion-col>
