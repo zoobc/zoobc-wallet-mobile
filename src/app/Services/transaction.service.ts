@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { SendMoneyInterface, ZBCTransaction } from 'zbc-sdk';
+import { Transaction } from '../Interfaces/transaction';
 
 @Injectable({
   providedIn: 'root'
@@ -7,8 +9,8 @@ import { Subject } from 'rxjs';
 export class TransactionService {
   public sendMoneySubject: Subject<any> = new Subject<any>();
   public transactionSuccessSubject: Subject<boolean> = new Subject<boolean>();
-  transaction: any;
-  isTrxConfirm = false;
+  frmSend: any;
+  tempTrx: ZBCTransaction;
   constructor() {
   }
 
@@ -21,15 +23,11 @@ export class TransactionService {
   }
 
   saveTrx(trx: any) {
-    this.transaction = trx;
+    this.frmSend = trx;
   }
 
   getTrx() {
-    return this.transaction ;
+    return this.frmSend ;
   }
 
-  setTransactionSuccess() {
-    this.isTrxConfirm = true;
-    this.transactionSuccessSubject.next(true);
-  }
 }

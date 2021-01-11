@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { MsigAddInfoPage } from './msig-add-info.page';
 import { ComponentsModule } from 'src/app/Components/components.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,9 @@ const routes: Routes = [
     ReactiveFormsModule,
     TranslateModule,
     RouterModule.forChild(routes)
+  ],
+  entryComponents: [
+    PopoverAccountComponent
   ],
   declarations: [MsigAddInfoPage]
 })

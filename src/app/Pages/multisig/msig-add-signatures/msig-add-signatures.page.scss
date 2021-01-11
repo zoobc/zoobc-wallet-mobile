@@ -1,14 +1,18 @@
-
 .create-account-page {
-    ion-item {
-      --border-color: var(--ion-color-grey);
-    }
+  ion-item {
+    --border-color: var(--ion-color-grey);
   }
-  
-  ion-checkbox{
-    margin-right: 10px;
-  }
-  
-  ion-input, ion-textarea {
-    border: solid 1px #cccccc;
-  }
+}
+
+ion-checkbox {
+  margin-right: 10px;
+}
+
+ion-input,
+ion-textarea {
+  border: solid 1px #cccccc;
+}
+
+.btn {
+  margin-top: 20px;
+}

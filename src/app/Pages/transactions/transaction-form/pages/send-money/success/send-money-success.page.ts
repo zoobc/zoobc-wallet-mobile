@@ -16,12 +16,9 @@ export class SendMoneySuccessPage implements OnInit {
   public stateValue: any;
 
   ngOnInit() {
-    this.stateValue = this.router.getCurrentNavigation().extras.state;
+    this.stateValue = this.transactionSrv.getTrx();
   }
 
-  submit() {
-    this.transactionSrv.setTransactionSuccess();
-  }
 
   done() {
     this.router.navigate(['tabs/home']);

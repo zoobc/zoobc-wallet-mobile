@@ -11,7 +11,7 @@ import { uniqueParticipant, getTranslation } from 'src/Helpers/utils';
 import Swal from 'sweetalert2';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { ModalController } from '@ionic/angular';
-import { MODE_NEW } from 'src/environments/variable.const';
+import { FROM_MSIG, MODE_NEW } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-msig-add-info',
@@ -37,6 +37,11 @@ export class MsigAddInfoPage implements OnInit {
     private modalController: ModalController,
     private translate: TranslateService
   ) {
+
+    // if temp account detected
+    this.accServ.tempSubject.subscribe((acc) => {
+      this.switchAccount(acc);
+    });
 
     this.form = new FormGroup({
       name: this.fName,
@@ -147,7 +152,8 @@ export class MsigAddInfoPage implements OnInit {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         account: null,
-        mode: MODE_NEW
+        mode: MODE_NEW,
+        from: FROM_MSIG
       }
     };
     this.router.navigate(['/create-account'], navigationExtras);

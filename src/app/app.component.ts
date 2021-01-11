@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
       this.networkService.setInitialNetwork();
       this.currencyService.setCurrencyRateList(CURRENCY_RATE_LIST);
       this.setDefaultCurrency();
-      this.accountService.fetchAccountsBalance();
+      // this.accountService.fetchAccountsBalance();
       this.splashScreen.hide();
       this.setTheme();
     });

@@ -24,8 +24,6 @@ export class EditAccountPage implements OnInit {
   accountName = EMPTY_STRING;
   isNameValid = true;
   accounts: Account[];
-  // signBy: string;
-  // signByAccount: Account;
   oldName: string;
   participants: Address[];
   indexSelected: number;
@@ -74,7 +72,7 @@ export class EditAccountPage implements OnInit {
   }
 
   ngOnInit() {
-    console.log('==== Node: ', this.mode);
+    console.log('==== mode: ', this.mode);
 
     this.activeRoute.queryParams.subscribe(params => {
       this.account = JSON.parse(params.account);
@@ -91,14 +89,12 @@ export class EditAccountPage implements OnInit {
       this.isMultisig = false;
       this.loadNormalAccount();
     }
-    console.log('this mode: ', this.mode);
   }
 
   async loadMultisigAccount() {
     this.accounts = await this.accountService.allAccount('multisig');
     this.accountJSON = JSON.stringify(this.account);
     this.participants = this.account.participants; // .sort();
-    // this.signByAccount = await this.accountService.getAccount(this.account.signByAddress);
   }
 
   async loadNormalAccount() {
@@ -111,7 +107,6 @@ export class EditAccountPage implements OnInit {
   }
 
   async ExportAccount() {
-
     const theJSON = JSON.stringify(this.account);
     const blob = new Blob([theJSON], { type: 'application/JSON' });
     const pathFile = await this.getDownloadPath();
