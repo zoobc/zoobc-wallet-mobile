@@ -61,7 +61,7 @@ export class UtilService {
    * @param status is status
    * @param path is path
    */
-  public async showConfirmation(title: string, msg: string, status: boolean, path: string) {
+  public async showConfirmation(title: string, msg: string, status: boolean, path?: string) {
     const modal = await this.modalController.create({
       component: ConfirmationPage,
       componentProps: {
@@ -71,7 +71,7 @@ export class UtilService {
       }
     });
 
-    modal.onDidDismiss().then(data => {
+    modal.onDidDismiss().then(() => {
       if (path) {
         this.router.navigateByUrl(path);
       }
