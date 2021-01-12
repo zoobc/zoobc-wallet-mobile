@@ -13,8 +13,8 @@
 @font-face {
 	font-family: 'Roboto-Medium';
 	src: url('assets/fonts/roboto-medium/Roboto-Medium.eot');
-  src: url('assets/fonts/roboto-medium/Roboto-Medium.woff') format('woff'), 
-       url('assets/fonts/roboto-medium/Roboto-Medium.ttf') format('truetype'), 
+  src: url('assets/fonts/roboto-medium/Roboto-Medium.woff') format('woff'),
+       url('assets/fonts/roboto-medium/Roboto-Medium.ttf') format('truetype'),
        url('assets/fonts/roboto-medium/Roboto-Medium.svg') format('svg');
 	font-weight: normal;
 	font-style: normal;
@@ -345,4 +345,23 @@ ion-button.item-btn-add{
 .icodisabled {
   color: #cccccc;
   font-size: 2em;
+}
+
+.footerLogin {
+  padding-bottom: 40px;
+}
+
+.titleLogin{
+  padding-top: 40px;
+}
+
+.gridLogin {
+  height: 100%;
+}
+
+.rowLogin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
