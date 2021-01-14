@@ -12,7 +12,7 @@
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "from" | translate }}</p>
         <div class="info-val">
-          <app-info-address name="{{ stateValue.sender.name }}" address="{{ stateValue.sender.address.value }}">
+          <app-info-address name="{{ formTrx.sender.name }}" address="{{ formTrx.sender.address.value }}">
           </app-info-address>
         </div>
       </ion-label>
@@ -21,7 +21,7 @@
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "to" | translate }}</p>
         <div class="info-val">
-          <app-info-address name="{{ stateValue.recipient.name }}" address="{{ stateValue.recipient.address }}">
+          <app-info-address name="{{ formTrx.recipient.name }}" address="{{ formTrx.recipient.address }}">
           </app-info-address>
         </div>
       </ion-label>
@@ -29,7 +29,7 @@
     <ion-item>
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "amount" | translate }}</p>
-        <app-info-amount-conversion value="{{ stateValue.amount }}" otherCurrency="USD"
+        <app-info-amount-conversion value="{{ formTrx.amount }}" otherCurrency="USD"
           otherCurrencyDecoration="BRACKET">
         </app-info-amount-conversion>
       </ion-label>
@@ -38,7 +38,7 @@
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "transaction fee" | translate }}</p>
         <div class="info-val">
-          <app-info-amount-conversion value="{{ stateValue.fee }}" otherCurrency="USD"
+          <app-info-amount-conversion value="{{ formTrx.fee }}" otherCurrency="USD"
             otherCurrencyDecoration="BRACKET">
           </app-info-amount-conversion>
         </div>
@@ -46,7 +46,7 @@
     </ion-item>
   </ion-list>
 
-  <app-behavior-escrow-summary *ngIf="stateValue.withEscrow" [values]="stateValue.behaviorEscrow">
+  <app-behavior-escrow-summary *ngIf="formTrx.withEscrow" [values]="formTrx.behaviorEscrow">
   </app-behavior-escrow-summary>
 
 </ion-content>

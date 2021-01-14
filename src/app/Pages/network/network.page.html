@@ -8,16 +8,59 @@
 </ion-header>
 
 <ion-content>
+  <ion-item>
+    <ion-button color="tertiary" fill="outline" (click)="addHost()">
+      <ion-icon name="add"></ion-icon>&nbsp;{{ 'add' | translate }} network</ion-button>
+  </ion-item>
+  <ion-card *ngIf="isShowForm">
+    <form [formGroup]="form" (ngSubmit)="save()" novalidate>
 
-  <ion-list>
-    <ion-radio-group value="{{ activeNetwork }}">
-      <ion-item *ngFor="let network of networks; let i = index" (click)="selectNetwork(i)">
-        <ion-radio slot="start" value="{{ i }}"></ion-radio>
-        <ion-label>
-          {{ network.name }}
+      <ion-item>
+        <ion-label position="stacked">{{ 'name' | translate }}</ion-label>
+        <ion-input type="text" formControlName="name" required></ion-input>
+      </ion-item>
+      <!-- Error messages -->
+      <ion-item lines="none" *ngIf="fName.touched && fName.hasError">
+        <ion-label color="danger" *ngIf="fName.hasError('required')">
+          {{ 'name is required' | translate }}!
         </ion-label>
       </ion-item>
-    </ion-radio-group>
+
+      <ion-item>
+        <ion-label position="stacked">
+          Network {{ 'address' | translate }}
+        </ion-label>
+        <ion-input type="text" placeholder="http://172.432.29.4:7001" formControlName="host" required></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" *ngIf="fHost.touched && fHost.hasError" lines="none">
+        <ion-label color="danger" *ngIf="fHost.hasError('required')">
+          {{ 'node address is required' | translate }}!
+        </ion-label>
+        <ion-label color="danger" *ngIf="fHost.hasError('pattern')">
+          {{ 'invalid node address format (with port)' | translate }}!
+        </ion-label>
+      </ion-item>
+
+      <ion-item class="btnForm" lines="none">
+        <ion-button size="medium" color="tertiary" *ngIf="actionMode == 'add'" type="submit">{{ 'save' | translate }}</ion-button>
+        <ion-button size="medium" color="tertiary" *ngIf="actionMode == 'edit'" type="submit">{{ 'update' | translate }}</ion-button>
+        <ion-button fill="outline" size="medium" color="tertiary" (click)="close()" type="button">{{ 'close' | translate }}</ion-button>
+      </ion-item>
+    </form>
+  </ion-card>
+  <br />
+  <ion-list *ngIf="networks && networks.length > 0">
+    <ion-list-header>
+      <ion-label><span>{{"Tap list to switch network" | translate}}.</span></ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let network of networks; let idx = index">
+      <ion-label (click)="selectNetwork(idx)">
+        <ion-icon name="cloud-outline"></ion-icon>&nbsp;
+        {{ network.name }}
+      </ion-label>
+      <ion-icon name="zbc-option" *ngIf="!network.default" slot="end" (click)="showOption($event, idx)"></ion-icon>
+    </ion-item>
   </ion-list>
 
 </ion-content>

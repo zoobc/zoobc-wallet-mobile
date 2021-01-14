@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>{{ "send money" | translate }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button  (click)="goHome()"> 
+      <ion-button (click)="goHome()">
         <ion-icon name="home"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -13,7 +13,6 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
   <div class="stepper">
     <ng-container>
       <div class="step">
@@ -42,150 +41,34 @@
       </div>
     </ng-container>
   </div>
+  <br />
 
   <form [formGroup]="formSend" (ngSubmit)="submit()" novalidate>
-    <ion-list>
-      <ion-item lines="none" class="form-item">
-        <ion-label position="stacked">{{"sender" | translate}}</ion-label>
-        <app-form-sender formControlName="sender" accountType="normal" canSwitch="yes" switchToActive="no"
-          *ngIf="participants" predefList="{{participants}}" ngDefaultControl></app-form-sender>
+
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{"sender" | translate}}</ion-label>
+      <app-form-sender formControlName="sender" accountType="normal" canSwitch="yes" switchToActive="no"
+        *ngIf="participants" predefList="{{participants}}" ngDefaultControl required></app-form-sender>
       </ion-item>
 
-      <ion-item lines="none" class="form-item">
-        <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
-        <ion-input formControlName="fee" type="number" required></ion-input>
-        <ng-container *ngIf="( fieldFee.dirty || fieldFee.touched) && fieldFee.invalid">
-          <ion-text class="text-error" *ngIf="fieldFee.errors.required">
-            {{ "transaction fee cannot be empty" | translate}}
-          </ion-text>
-          <ion-text class="text-error" *ngIf="fieldFee.errors.min">
-            {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fieldFee.errors.min.min }}
-          </ion-text>
-        </ng-container>
-      </ion-item>
-    </ion-list>
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
+      <ion-input class="fee" formControlName="fee" type="number" required></ion-input>
+      <ng-container *ngIf="( fFee.dirty || fFee.touched) && fFee.invalid">
+        <ion-text class="text-error" *ngIf="fFee.errors.required">
+          {{ "transaction fee cannot be empty" | translate}}
+        </ion-text>
+        <ion-text class="text-error" *ngIf="fFee.errors.min">
+          {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fFee.errors.min.min }}
+        </ion-text>
+      </ng-container>
+    </ion-item>
 
-    <!-- <ion-button color="tertiary" expand="block" (click)="saveDraft()">
-      {{ 'save' | translate }}
-    </ion-button> -->
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <ion-button type="submit" expand="full" color="tertiary">
-            {{ 'send' | translate }}
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <ion-item>
+      <ion-button type="submit" size="medium" expand="full" color="tertiary">
+        {{ 'send' | translate }}
+      </ion-button>
+    </ion-item>
+
   </form>
 </ion-content>
-<!-- <div *ngIf="isLoadingBalance || isLoadingTxFee">
-    <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div> -->
-<!-- 
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12">
-        {{ "sender" | translate }}
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="participants">
-      <ion-col size="12" style="border: 1px solid #cccccc">
-        <ion-select interface="popover" [(ngModel)]="signBy" (ionChange)="changeSigner()">
-          <ion-select-option *ngFor="let account of participantAccounts; let idx = index;" value="{{account.address}}">
-            {{ account.name || (account.address | shortAddress)}}
-          </ion-select-option>
-        </ion-select>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="signByAccount" style="border:2px solid #cccccc">
-      <ion-col style="padding: 10px;">
-        <ion-label>
-          <p class="ion-text-wrap" style="font-size:1.2em; margin-bottom: 10px">Address: <b>{{signByAccount.address}}</b></p>
-          <p  style="font-size:1.2em">Balance:<b>{{signByAccount.balance}} ZBC</b></p>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="!isValidSigner || !isBalanceNotEnough">
-      <ion-col>
-        <ion-label color="danger">
-          <p *ngIf="!isValidSigner">{{ "signer is empty,  or the address is not your account!" | translate}}</p>
-          <p *ngIf="!isBalanceNotEnough">{{ "balance is not enough" | translate}}</p>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-
-    
-  </ion-grid>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-label>
-          {{ "fee" | translate }}
-          <ion-text color="danger">*</ion-text>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-
-    <ion-row class="ion-row-cont">
-      <ion-col style="padding:0px;">
-        <ion-select interface="popover" [(ngModel)]="optionFee" (ionChange)="changeFee()">
-          <ion-select-option *ngFor="let sfee of allFees" value="{{sfee.fee}}">
-            {{ sfee.name }} {{ sfee.fee | number: '0.0-4' }} ZBC
-          </ion-select-option>
-          <ion-select-option value="-1">
-            {{ "custom fee" | translate}}
-          </ion-select-option>
-        </ion-select>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="!isValidFee">
-      <ion-col>
-        <ion-label color="danger">
-          {{ "commitin fee is not valid!" | translate}}
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="customeChecked" class="ion-row-cont" style="margin-bottom:10px;margin-top:10px">
-      <ion-col size="8" style="padding-left:10px">
-        <ion-input placeholder="{{'Enter fee'|translate}}" class="ion-text-right"
-          style="border-bottom: 1px solid #dddddd;font-size:1.2em; color:#0B3D65" (ionChange)="validateCustomFee()"
-          maxlength="12" type="number" [(ngModel)]="customfeeTemp">
-        </ion-input>
-        <ion-input value="{{ customfee2  | number: '0.0-6'}}" style="font-size:0.9em" class="ion-text-right" readonly
-          type="text">
-        </ion-input>
-      </ion-col>
-      <ion-col size="2" style="font-size: 0.8em; padding-left: 8px;">
-        <div style="margin-top:16px; color:#0B3D65">{{primaryCurr}}</div>
-        <div style="margin-top:24px; font-size: 0.8em;">{{secondaryCurr}}</div>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="!isCustomFeeValid">
-      <ion-col>
-        <ion-label color="danger">{{ "transaction fee is not valid! minimum fee is" | translate}} {{ minimumFee }}
-        </ion-label>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <ion-grid style="margin-top:20px;">
-    <ion-row>
-      <ion-col>
-        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="saveDraft()" expand="block">
-          {{ "Save" | translate }}
-        </ion-button>
-        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
-          {{ "Save" | translate }}
-        </ion-button>
-        <ion-button color="tertiary" *ngIf="!isLoadingBalance && !isLoadingTxFee" (click)="sendTransaction()"
-          expand="block">
-          {{ "send" | translate }}
-        </ion-button>
-        <ion-button disabled color="tertiary" *ngIf="isLoadingBalance || isLoadingTxFee" expand="block">
-          {{ "Send" | translate }}
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid> -->

@@ -1,3 +1,43 @@
+// ZooBC Copyright (C) 2020 Quasisoft Limited - Hong Kong
+// This file is part of ZooBC <https:github.com/zoobc/zoobc-wallet-mobile>
+
+// ZooBC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ZooBC is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with ZooBC.  If not, see <http:www.gnu.org/licenses/>.
+
+// Additional Permission Under GNU GPL Version 3 section 7.
+// As the special exception permitted under Section 7b, c and e,
+// in respect with the Author’s copyright, please refer to this section:
+
+// 1. You are free to convey this Program according to GNU GPL Version 3,
+//     as long as you respect and comply with the Author’s copyright by
+//     showing in its user interface an Appropriate Notice that the derivate
+//     program and its source code are “powered by ZooBC”.
+//     This is an acknowledgement for the copyright holder, ZooBC,
+//     as the implementation of appreciation of the exclusive right of the
+//     creator and to avoid any circumvention on the rights under trademark
+//     law for use of some trade names, trademarks, or service marks.
+
+// 2. Complying to the GNU GPL Version 3, you may distribute
+//     the program without any permission from the Author.
+//     However a prior notification to the authors will be appreciated.
+
+// ZooBC is architected by Roberto Capodieci & Barton Johnston
+//             contact us at roberto.capodieci[at]blockchainzoo.com
+//             and barton.johnston[at]blockchainzoo.com
+
+// IMPORTANT: The above copyright notice and this permission notice
+// shall be included in all copies or substantial portions of the Software.
+
 import { Injectable } from '@angular/core';
 import {
   STORAGE_ALL_ACCOUNTS,
@@ -17,15 +57,18 @@ import zoobc, { ZooKeyring, getZBCAddress, BIP32Interface, AccountBalance, Multi
 })
 export class AccountService {
   account: Account;
+  tempAccount: Account;
   private forWhat: string;
   private plainPassphrase: string;
   private arrayPhrase = [];
   private plainPin: string;
   keyring: ZooKeyring;
   private seed: BIP32Interface;
+  private tempSeed: BIP32Interface;
   willRestoreAccounts: boolean;
   private totalAccountLoaded = 20;
   public accountSubject: Subject<Account> = new Subject<Account>();
+  public tempSubject: Subject<Account> = new Subject<Account>();
   public recipientSubject: Subject<Account> = new Subject<Account>();
   public approverSubject: Subject<Account> = new Subject<Account>();
   public senderSubject: Subject<Account> = new Subject<Account>();
@@ -37,10 +80,16 @@ export class AccountService {
     this.forWhat = arg;
   }
 
+  setTemp(acc: Account) {
+    this.tempAccount = acc;
+    this.tempSubject.next(acc);
+  }
   getForWhat() {
     return this.forWhat;
   }
-
+  getTempSeed() {
+    return this.tempSeed;
+  }
   setRecipient(arg: Account) {
     this.recipientSubject.next(arg);
   }
@@ -55,19 +104,18 @@ export class AccountService {
 
   async getAccount(address: string) {
     const accounts = await this.allAccount();
-    const account: Account = accounts.filter((acc: Account) => {
-      return acc.address && acc.address.value === address;
-    });
-
-    // let account = null;
-    // // tslint:disable-next-line:prefer-for-of
-    // for (let i = 0; i < accounts.length; i++) {
-    //   const acc = accounts[i];
-    //   if (acc.address.value === address) {
-    //     account = acc;
-    //     break;
-    //   }
-    // }
+    // const account: Account = accounts.filter((acc: Account) => {
+    //   return acc.address && acc.address.value === address;
+    // });
+    let account = null;
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < accounts.length; i++) {
+      const acc = accounts[i];
+      if (acc.address.value === address) {
+        account = acc;
+        break;
+      }
+    }
     return account;
   }
 
@@ -104,13 +152,15 @@ export class AccountService {
     return 0;
   }
 
-
+  getSeed() {
+    return this.seed;
+  }
 
   broadCastNewAccount(account: Account) {
     this.accountSubject.next(account);
   }
 
-  async addAccount(account: Account) {
+  async addAccount(account: Account, isSwitch: boolean = true) {
     let accounts = await this.allAccount();
 
     if (accounts === null) {
@@ -128,7 +178,11 @@ export class AccountService {
     if (!isDuplicate) {
       accounts.push(account);
       this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, accounts);
-      this.switchAccount(account);
+      if (isSwitch) {
+        this.switchAccount(account);
+      } else {
+        this.updateTempSeed(account);
+      }
     }
   }
 
@@ -239,6 +293,11 @@ export class AccountService {
 
     this.willRestoreAccounts = false;
     /// add additional accounts end
+  }
+  updateTempSeed(account: Account) {
+    if (account.path != null) {
+      this.tempSeed = this.keyring.calcDerivationPath(account.path);
+    }
   }
 
   switchAccount(account: Account) {

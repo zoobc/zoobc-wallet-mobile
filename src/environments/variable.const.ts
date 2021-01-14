@@ -1,9 +1,10 @@
 import { Currency } from 'src/app/Interfaces/currency';
-export const UNIQUE_DB_ID = '1';
+export const UNIQUE_DB_ID = '1x';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = '';
 export const STORAGE_ACTIVE_CURRENCY = 'strg_active_currency' + '_' + UNIQUE_DB_ID;
 export const STORAGE_ACTIVE_NETWORK_IDX = 'strg_current_node_selected' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ALL_NETWORKS = 'strg_all_networkss' + '_' + UNIQUE_DB_ID;
 export const STORAGE_CURRENCY_RATES = 'strg_currency_rates' + '_' + UNIQUE_DB_ID;
 export const STORAGE_CURRENCY_RATE = 'strg_rate' + '_' + UNIQUE_DB_ID;
 export const STORAGE_ADDRESS_BOOK = 'strg_address_book' + '_' + UNIQUE_DB_ID;
@@ -15,7 +16,7 @@ export const STORAGE_MAIN_ACCOUNT = 'strg_main_account' + '_' + UNIQUE_DB_ID;
 export const STORAGE_ENC_PASSPHRASE_SEED = 'strg_encrypted_passphrase_seed' + '_' + UNIQUE_DB_ID;
 export const STORAGE_ESCROW_WAITING_LIST = 'strg_escrow_waiting_list' + '_' + UNIQUE_DB_ID;
 export const STORAGE_MULTISIG_DRAFTS = 'strg_multisig_drafts' + '_' + UNIQUE_DB_ID;
-export const STORAGE_ACTIVE_THEME = 'strg_storage_active_theme6' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ACTIVE_THEME = 'strg_storage_active_theme' + '_' + UNIQUE_DB_ID;
 export const DEFAULT_THEME = 'zoobc';
 export const ADDRESS_LENGTH = 44;
 export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
@@ -29,6 +30,7 @@ export const FOR_APPROVER = 'approver';
 export const FOR_ACCOUNT = 'account';
 export const MODE_EDIT = 'edit';
 export const MODE_NEW = 'new';
+export const FROM_MSIG = 'msig';
 export const EMPTY_STRING = '';
 export const CONST_DEFAULT_CURRENCY = 'USD';
 export const CONST_UNKNOWN_NAME = 'Unknown';
@@ -207,18 +209,23 @@ export const LANGUAGES = [
 
 export const NETWORK_LIST = [
   {
-    default: true,
     name: 'Public TestNet Node 01',
-    host: 'http://n0.beta.proofofparticipation.network:7001'
+    host: 'http://n0.beta.proofofparticipation.network:7001',
+    default: true
   },
   {
     name: 'Public TestNet Node 02',
-    host: '//n2.beta.proofofparticipation.network:7001'
+    host: 'http://n2.beta.proofofparticipation.network:7001'
   },
   {
     name: 'Public TestNet Node 03',
-    host: '//n3.beta.proofofparticipation.network:7001'
+    host: 'http://n3.beta.proofofparticipation.network:7001'
+  },
+  {
+    name: 'Demo',
+    host: 'http://172.104.62.181:7001'
   }
+
   // ,
   // {
   //   name: 'Developers TestNet Node 01',

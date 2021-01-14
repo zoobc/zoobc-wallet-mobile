@@ -22,7 +22,15 @@
           {{accountName.errors.accountNameExists}}
         </ion-text>
       </ion-item>
-      <ion-item lines="none" class="form-item item-checkbox">
+
+      <ion-item *ngIf="multiSignAddress" lines="none" class="form-item">
+        <ion-label position="stacked">{{'address' | translate}}</ion-label>
+        <ion-textarea rows="3" readonly>
+          {{multiSignAddress}}
+        </ion-textarea>
+      </ion-item>
+
+      <ion-item *ngIf="from!='msig'" lines="none" class="form-item item-checkbox">
         <ion-checkbox (ionChange)="changeToMultisig($event.target.checked)" color="primary">
         </ion-checkbox>
         <ion-label>{{ "Multi-signature account" | translate}}</ion-label>
@@ -31,7 +39,7 @@
         <ng-container formGroupName="participants">
           <ion-item lines="none" class="form-item" *ngFor="let participant of participants.controls; let i = index;" [formGroupName]="i">
             <ion-label position="stacked">{{ "participant" | translate }} {{ i+1 }}</ion-label>
-            <app-form-get-address formControlName="address" identity="recipient-{{ i }}"></app-form-get-address>
+            <app-form-get-address formControlName="address" (ionChange)="generateMsigAddress()" identity="recipient-{{ i }}"></app-form-get-address>
             <div class="form-feedback">
               <div>
                 <ng-container *ngIf="(submitted || participants.controls[i].controls['address'].dirty || participants.controls[i].controls['address'].touched) && participants.controls[i].controls['address'].invalid">
@@ -54,8 +62,8 @@
         </ng-container>
 
         <ion-item lines="none" class="form-item">
-          <ion-label position="stacked">{{ "nonce" | translate }}</ion-label>
-          <ion-input formControlName="nonce" type="number"></ion-input>
+          <ion-label position="stacked">{{ "Unique ID" | translate }}</ion-label>
+          <ion-input formControlName="nonce" type="number" (ionChange)="generateMsigAddress()"></ion-input>
           <ng-container *ngIf="(submitted || nonce.dirty || nonce.touched) && nonce.invalid">
             <ion-text class="text-error" *ngIf="nonce.errors.required">
               {{ "nonce cannot be empty" | translate}}
@@ -68,7 +76,7 @@
 
         <ion-item lines="none" class="form-item">
           <ion-label position="stacked">{{ "minimum signature" | translate }}</ion-label>
-          <ion-input formControlName="minimumSignature" type="number"></ion-input>
+          <ion-input formControlName="minimumSignature" type="number" (ionChange)="generateMsigAddress()"></ion-input>
           <ng-container *ngIf="(submitted || minimumSignature.dirty || minimumSignature.touched) && minimumSignature.invalid">
             <ion-text class="text-error" *ngIf="minimumSignature.errors.required">
               {{ "minimum signature cannot be empty" | translate}}

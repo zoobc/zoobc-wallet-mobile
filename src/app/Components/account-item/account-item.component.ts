@@ -10,6 +10,7 @@ import { Account } from 'src/app/Interfaces/account';
 export class AccountItemComponent implements OnInit {
   @Input() account: Account;
   @Input() horizontal: boolean;
+  @Input() showBalance = 'yes';
 
   constructor() {
   }

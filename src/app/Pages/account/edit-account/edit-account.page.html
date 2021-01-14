@@ -3,65 +3,93 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="isMultisig &&  mode && mode == 1">{{ "Edit Account" | translate }}</ion-title>
-    <ion-title *ngIf="isMultisig &&  mode && mode == 0">{{ "View Account" | translate }}</ion-title>
+    <ion-title *ngIf="mode && mode == 1">{{ "edit account" | translate }}</ion-title>
+    <ion-title *ngIf="isMultisig &&  mode && mode == 0">{{ "view account" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
   <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-label>
-          <b>{{ "account name" | translate }}</b>
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isMultisig &&  mode && mode == 0">
-      <ion-col>       
-          {{account.name}}        
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="mode && mode == 1">
-      <ion-col>
-        <ion-input padding="false" placeholder="{{ 'please enter your account name' | translate }}"
-          [(ngModel)]="account.name"></ion-input>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-label color="danger">
-          {{validationMessage}}&nbsp;
-        </ion-label>
-      </ion-col>
-    </ion-row>
 
-    <div *ngIf="account && isMultisig &&  mode == 0">
+    <!-- edit mode -->
+    <ng-container *ngIf="account && mode && mode == 1">
       <ion-row>
         <ion-col>
-          <ion-label>
-            <b>{{ "participants" | translate }}</b>
+          <h3>Account name:</h3>
+          <ion-input padding="false" placeholder="{{ 'please enter your account name' | translate }}"
+            [(ngModel)]="account.name"></ion-input>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <ion-label color="danger">
+            {{validationMessage}}&nbsp;
           </ion-label>
         </ion-col>
       </ion-row>
-      <div *ngIf="isMultisig">
-        <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
-          <ion-col size="12">
-            <ion-label> 
+      <ion-row>
+        <ion-col>
+          <ion-button color="tertiary" (click)="UpdateAccount()" type="submit">
+            <span>{{"update"|translate}}</span>
+          </ion-button>
+          <ion-button color="tertiary" routerLink="/list-account" fill="outline">
+            {{ "cancel" | translate }}</ion-button>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+
+    
+    <!-- view mode -->
+    <ng-container *ngIf="account && isMultisig &&  mode == 0">
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <ion-button strong (click)="ExportAccount()" size="small" fill="outline" color="tertiary" type="submit">
+            <span>{{"export to file"|translate}}</span>
+          </ion-button>
+          <ion-button strong (click)="copyToClipboard()" size="small" fill="outline" color="tertiary" type="submit">
+            <ion-icon name="copy"></ion-icon> {{"copy"|translate}} account
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <h3>Account name:</h3>
+            <p>{{account.name}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <h3>Address:</h3>
+            <p>{{ account.address.value}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <h3>{{ "participants" | translate }}</h3>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngFor="let participant of participants; let i = index; trackBy: customTrackBy">
+        <ion-col size="12">
+          <ion-label>
             <h5>{{ participants[i].value }}</h5>
           </ion-label>
-          </ion-col>
-        </ion-row>
-      </div>
-    </div>
-
- 
-    <ion-row *ngIf="account &&  mode == 1">
-      <ion-col>
-        <ion-button strong color="tertiary" (click)="UpdateAccount()" type="submit" expand="block">
-          <span>{{"update"|translate}}</span>
-        </ion-button>
-      </ion-col>
-    </ion-row>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <h5>{{ "scan this QRCode to import this multi-signature account" | translate}}</h5>
+          <div *ngIf="accountJSON">
+            <ngx-qrcode [qrc-value]="accountJSON" cssClass="qrcode" errorCorrectionLevel="L">
+            </ngx-qrcode>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ng-container>
   </ion-grid>
 </ion-content>

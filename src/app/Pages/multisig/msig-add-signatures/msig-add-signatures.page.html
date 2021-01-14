@@ -3,49 +3,71 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "multisignature" | translate}}</ion-title>
+    <ion-title> {{"signature list" | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-no-padding">
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <h2>{{ "send money" | translate}}</h2>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
+  <form [formGroup]="form" novalidate>
+    <ion-list>
+      <ion-item>
         <ion-label>
           <h2>{{ "transaction hash" | translate}}</h2>
-          <p>{{transactionHash}}</p>
+          <p class="ion-text-wrap">{{ fHash.value | shortAddress }}</p>
         </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
+      </ion-item>
+      <ion-item lines="none">
         <ion-label>
           <h2>{{ "participants signature" | translate}}</h2>
         </ion-label>
-      </ion-col>
-    </ion-row>
-    <div *ngIf="participantsSignature">
-      <ion-row *ngFor="let participant of participantsSignature; let i = index; trackBy: customTrackBy">
-        <ion-col>
-          {{participantsSignature[i].address}}
-          <ion-input type="text" [name]="'input-'+i" placeholder="{{ 'signature ' }} {{ i + 1 }} ..."
-            [(ngModel)]="participantsSignature[i].signature">
-          </ion-input>
-        </ion-col>
-      </ion-row>
-    </div>
+      </ion-item>
+      <div formArrayName="participantsSignature">
+        <ng-container *ngFor="let participant of fSignatures.controls; let i = index">
+          <div [formGroupName]="i">
+            <ion-item lines="none">
+              <ion-label position="stacked">
+                <p class="ion-text-wrap">
+                  {{ fSignatures.controls[i].get('address').value | shortAddress }}
+                </p>
+              </ion-label>
+              <ion-textarea rows="3" placeholder="{{ 'signature' | translate }} {{ i + 1 }}" formControlName="signature"
+                type="text">
+              </ion-textarea>
+              <ng-container *ngIf="fSignatures.controls[i].get('signature').touched">
+                <ion-label color="danger"
+                  *ngIf="fSignatures.controls[i].get('signature').hasError('required')">
+                  {{ 'signature is required' | translate }}
+                </ion-label>
+              </ng-container>
+            </ion-item>
+          </div>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-checkbox slot="start" (click)="toggleGetSignature()"></ion-checkbox>
+        <ion-label>sign with my signature</ion-label>
+      </ion-item>
 
-    <ion-row>
-      <ion-col>
-        <ion-button (click)="addSignature()" color="tertiary" expand="block">Add Your Signature</ion-button>
-        <ion-button (click)="saveDraft()" expand="block" color="tertiary"  expand="block" expand="block">Save to draft</ion-button>
-        <ion-button (click)="next()" color="tertiary" expand="block">Next</ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+      <div *ngIf="getSignature" style="margin-top: 16px;">
+
+        <ion-item lines="none" class="form-item">
+          <ion-label position="stacked">{{"signer" | translate}}</ion-label>
+          <app-form-sender formControlName="signer" showBalance="no" accountType="normal" canSwitch="yes" switchToActive="no"
+            *ngIf="signers" predefList="{{signers}}" ngDefaultControl></app-form-sender>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-button size="small" fill="outline" (click)="sign()" [disabled]="fSignatures.value.length <= 0" color="tertiary">
+            {{ 'add my signature' | translate }}
+          </ion-button>
+        </ion-item>
+      </div>
+
+      <ion-item lines="none" class="btn">
+        <ion-button (click)="save()" size="medium" color="tertiary" expand="block">{{"save" |
+          translate}}</ion-button>
+        <ion-button (click)="next()"  size="medium" [disabled]="form.invalid" color="tertiary">{{"send" | translate}}
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </form>
 </ion-content>

@@ -1,23 +1,61 @@
+
+<!--
+   ZooBC Copyright (C) 2020 Quasisoft Limited - Hong Kong
+This file is part of ZooBC <https:github.com/zoobc/zoobc-wallet-mobile>
+
+ZooBC is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ZooBC is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ZooBC.  If not, see <http:www.gnu.org/licenses/>.
+
+Additional Permission Under GNU GPL Version 3 section 7.
+As the special exception permitted under Section 7b, c and e,
+in respect with the Author’s copyright, please refer to this section:
+
+1. You are free to convey this Program according to GNU GPL Version 3,
+    as long as you respect and comply with the Author’s copyright by
+    showing in its user interface an Appropriate Notice that the derivate
+    program and its source code are “powered by ZooBC”.
+    This is an acknowledgement for the copyright holder, ZooBC,
+    as the implementation of appreciation of the exclusive right of the
+    creator and to avoid any circumvention on the rights under trademark
+    law for use of some trade names, trademarks, or service marks.
+
+2. Complying to the GNU GPL Version 3, you may distribute
+    the program without any permission from the Author.
+    However a prior notification to the authors will be appreciated.
+
+ZooBC is architected by Roberto Capodieci & Barton Johnston
+            contact us at roberto.capodieci[at]blockchainzoo.com
+            and barton.johnston[at]blockchainzoo.com
+
+IMPORTANT: The above copyright notice and this permission notice
+shall be included in all copies or substantial portions of the Software.
+-->
+
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{ "transaction detail" | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">{{ "close" | translate }}</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-  <ion-list class="info-list">
-    <!--<ion-item>
-      <ion-label>
-        <p class="info-label">{{ "status" | translate }}</p>
-        <p *ngIf="status==='confirm'" class="info-val-confirm">{{ status | uppercase}}</p>
-        <p *ngIf="status!=='confirm'" class="info-val-pending">{{ status | uppercase}}</p>
-      </ion-label>
-    </ion-item>-->
-
+  <ion-list class="info-list" *ngIf="trx">
     <ion-item>
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "transaction hash" | translate }}</p>
@@ -28,7 +66,8 @@
         </ng-container>
         <ng-template #transactionHash>
           <div class="info-val" *ngIf="trx">
-            <app-with-options [options]="transHashOptions" (onClose)="onTransHashOptionsClose($event, trx.transactionHash)">
+            <app-with-options [options]="transHashOptions"
+              (onClose)="onTransHashOptionsClose($event, trx.transactionHash)">
               {{ trx.transactionHash }}
             </app-with-options>
           </div>
@@ -36,57 +75,38 @@
       </ion-label>
     </ion-item>
 
-    <ion-item>
+    <ion-item  *ngIf="trx && trx.blockId">
       <ion-label>
         <p class="info-label">{{ "block id" | translate }}</p>
-        <div *ngIf="loading; else transactionBlockId" class="skeleton-text" style="width: 60%;"></div>
-        <ng-template #transactionBlockId>
-          <div class="info-val" *ngIf="trx">
-            {{ trx.blockId }}
-          </div>
-        </ng-template>
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "transaction type" | translate }}</p>
-        <div *ngIf="loading; else transactionType" class="skeleton-text" style="width: 30%;"></div>
-        <ng-template #transactionType>
-          <div class="info-val" *ngIf="trx.sender.value == currAccount.address.value">
-            {{ "Send" }}
-          </div>
-          <div class="info-val" *ngIf="trx.recipient.value == currAccount.address.value">
-            {{ "Receive" }}
-          </div>
-        </ng-template>
-      </ion-label>
+        <p class="info-val">{{ trx.blockId }}</p>
+       </ion-label>
     </ion-item>
 
     <ion-item *ngIf="trx">
       <ion-label class="ion-text-wrap">
         <p class="info-label">
-          <span *ngIf="trx.recipient.value == currAccount.address.value">{{ "sender address" | translate }}</span>
-          <span *ngIf="trx.sender.value == currAccount.address.value">{{ "recipient address" | translate }}</span></p>
-        <ng-container *ngIf="loading; else sender">
-          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
-          <div class="skeleton-text" style="width: 100%; margin-bottom: 5px;"></div>
-          <div class="skeleton-text" style="width: 20%;"></div>
-        </ng-container>
-        <ng-template #sender>
-          <div class="info-val" *ngIf="trx.recipient.value == currAccount.address.value">
-            <app-with-options [options]="senderRecipentOptions" (onClose)="onSenderRecipentOptionsClose($event, trx.sender.value)">
-              <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.sender.value }}"></app-info-address>
-            </app-with-options>
-          </div>
+          <span>{{ "sender" | translate }}</span>
+        </p>
+        <div class="info-val">
+          <app-with-options [options]="senderRecipentOptions"
+            (onClose)="onSenderRecipentOptionsClose($event, trx.sender.value)">
+            <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.sender.value }}"></app-info-address>
+          </app-with-options>
+        </div>
+      </ion-label>
+    </ion-item>
 
-          <div class="info-val" *ngIf="trx.sender.value == currAccount.address.value">
-            <app-with-options [options]="senderRecipentOptions" (onClose)="onSenderRecipentOptionsClose($event, trx.recipient.value)">
-              <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.recipient.value }}"></app-info-address>
-            </app-with-options>
-          </div>
-
-        </ng-template>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">
+          <span>{{ "recipient" | translate }}</span>
+        </p>
+        <div class="info-val">
+          <app-with-options [options]="senderRecipentOptions"
+            (onClose)="onSenderRecipentOptionsClose($event, trx.recipient.value)">
+            <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.recipient.value }}"></app-info-address>
+          </app-with-options>
+        </div>
       </ion-label>
     </ion-item>
 
@@ -96,10 +116,10 @@
         <div *ngIf="loading; else amount" class="skeleton-text" style="width: 30%;"></div>
         <ng-template #amount>
           <ng-container *ngIf="trx">
-            <div class="info-val" [ngClass]="trx.recipient.value == currAccount.address.value ? 'info-val-receive':'info-val-send'">
-              <span *ngIf="trx.sender.value == currAccount.address.value">-</span> 
-              <span
-                *ngIf="trx.recipient.value == currAccount.address.value">+</span>
+            <div class="info-val"
+              [ngClass]="trx.recipient.value == currAccount.address.value ? 'info-val-receive':'info-val-send'">
+              <span *ngIf="trx.sender.value == currAccount.address.value">-</span>
+              <span *ngIf="trx.recipient.value == currAccount.address.value">+</span>
               {{ trx.txBody.amount / 1e8 | number: '0.2-4' }}
               ZBC
             </div>
@@ -124,7 +144,7 @@
       </ion-label>
     </ion-item>
 
-    <ion-item>
+    <ion-item *ngIf="trx.height">
       <ion-label>
         <p class="info-label">{{ "height" | translate }}</p>
         <div *ngIf="loading; else height" class="skeleton-text" style="width: 30%;"></div>
@@ -136,9 +156,20 @@
       </ion-label>
     </ion-item>
 
+    <ion-item  *ngIf="trx.transactionIndex">
+      <ion-label>
+        <p class="info-label">{{ "transaction index" | translate }}</p>
+
+        <div class="info-val">
+          {{ trx.transactionIndex }}
+        </div>
+
+      </ion-label>
+    </ion-item>
+
     <ion-item>
       <ion-label>
-        <p class="info-label">{{ "transaction date" | translate }}</p>
+        <p class="info-label">{{ "date" | translate }}</p>
         <div *ngIf="loading; else date" class="skeleton-text" style="width: 50%;"></div>
         <ng-template #date>
           <div class="info-val" *ngIf="trx">
@@ -147,15 +178,6 @@
         </ng-template>
       </ion-label>
     </ion-item>
-
-
-
-    <!-- <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "Total" | translate }}</p>
-        <p class="info-val">{{ transaction.total / 1e8 }} ZBC</p>
-      </ion-label>
-    </ion-item> -->
 
   </ion-list>
 </ion-content>

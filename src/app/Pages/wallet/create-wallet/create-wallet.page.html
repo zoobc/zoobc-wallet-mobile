@@ -11,19 +11,18 @@
     <ion-row>
       <ion-col>
           <h4>{{ "confirm your seed phrase" | translate}}</h4>
-      </ion-col>  
+      </ion-col>
         <ion-item text-center class="head-note" lines="none">
           {{ "please enter the following words from your seed phrase to ensure you got it right" | translate }}
         </ion-item>
-          
     </ion-row>
     <ion-row>
       <ion-label position="stacked" class="ion-input-label">{{ "word #" | translate:placeholderOne}}</ion-label>
-    </ion-row>  
+    </ion-row>
     <ion-row>
         <ion-item class="ion-input-normal">
           <ion-input placeholder="{{ 'enter word #' | translate:placeholderOne }}" (ionChange)="comparePassphrase()" [(ngModel)]="arrayPhrase[randomPlaceholderOne]"></ion-input>
-        </ion-item>   
+        </ion-item>
     </ion-row>
     <ion-row>
       <ion-label position="stacked" class="ion-input-label">{{ "word #" | translate:placeholderTwo }}</ion-label>
@@ -31,7 +30,7 @@
     <ion-row>
           <ion-item class="ion-input-normal">
             <ion-input placeholder="{{ 'enter word #' | translate:placeholderTwo }}" (ionChange)="comparePassphrase()" [(ngModel)]="arrayPhrase[randomPlaceholderTwo]"></ion-input>
-          </ion-item>     
+          </ion-item>
     </ion-row>
     <ion-row *ngIf="errorMsg">
       <ion-col>
@@ -39,8 +38,8 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col style="margin-top:30px;margin-bottom: 50px;">
-          <ion-button color="tertiary" class="ion-input-submit" expand="block" (click)="setupPin()"><b>{{ "setup pin" | translate }} ></b></ion-button>
+      <ion-col>
+          <ion-button color="tertiary" class="ion-input-submit" expand="block" (click)="setupPin()"><b>{{ "setup pin" | translate }}</b></ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

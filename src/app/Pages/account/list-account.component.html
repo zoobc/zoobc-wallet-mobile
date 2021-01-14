@@ -8,6 +8,12 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
+      refreshingText="{{ 'Refreshing' | translate }} ...">
+    </ion-refresher-content>
+  </ion-refresher>
+
   <ion-item>
     <ion-button class="item-btn-add" fill="clear" (click)="showAction($event)">{{ "add account" | translate }}
     </ion-button>
@@ -33,7 +39,7 @@
     </ion-list>
   </div>
 </ion-content>
-<ion-footer class="ion-no-border" *ngIf="forWhat">
+<!-- <ion-footer class="ion-no-border" *ngIf="forWhat">
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
@@ -41,4 +47,4 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-</ion-footer>
+</ion-footer> -->

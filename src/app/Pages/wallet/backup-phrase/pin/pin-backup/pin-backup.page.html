@@ -1,28 +1,44 @@
-<ion-content class="ion-padding background-pin">
+<ion-header>
   <ion-grid>
     <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-text color="light">
-          {{ "please enter your pin" | translate }}
-         </ion-text>
+      <ion-col>
+        <ion-title color="light">{{ "enter your pin" | translate }}</ion-title>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-label *ngIf="isLoginValid">&nbsp;</ion-label>
-        <ion-label *ngIf="!isLoginValid" class="ion-text-center invalidPin">{{ "invalid pin" | translate }}</ion-label>
+        <ion-label *ngIf="!isLoginValid" class="invalidPin">{{ "invalid pin" | translate }}
+        </ion-label>
       </ion-col>
     </ion-row>
-    <ion-row>
+  </ion-grid>
+</ion-header>
+
+<ion-content class="ion-padding background-pin" fullscreen>
+  <ion-grid class="iongrid">
+    <ion-row class="ionrow">
       <ion-col>
-        <app-pin (ionChange)="login($event)"></app-pin>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+
+              <app-pin (ionChange)="login($event)"></app-pin>
+
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-col>
     </ion-row>
+  </ion-grid>
+
+</ion-content>
+<ion-footer>
+  <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
         <ion-label (click)="cancel()" color="light">{{ "cancel" | translate }}</ion-label>
       </ion-col>
     </ion-row>
   </ion-grid>
-
-</ion-content>
+</ion-footer>
