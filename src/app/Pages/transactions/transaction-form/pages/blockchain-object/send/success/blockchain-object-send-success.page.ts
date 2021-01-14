@@ -20,7 +20,7 @@ export class BlockchainObjectSendSuccessPage implements OnInit {
   }
 
   submit() {
-    this.transactionSrv.setTransactionSuccess();
+    // this.transactionSrv.setTransactionSuccess();
   }
 
   done() {

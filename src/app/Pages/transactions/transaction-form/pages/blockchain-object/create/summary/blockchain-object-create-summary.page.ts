@@ -22,6 +22,6 @@ export class BlockchainObjectCreateSummaryPage implements OnInit {
   }
 
   submit() {
-    this.transactionSrv.setTransactionSuccess();
+    // this.transactionSrv.setTransactionSuccess();
   }
 }
