@@ -288,23 +288,6 @@ export class CreateAccountPage implements OnInit {
 
     });
 
-    // let addresses: [string] = this.participants.value.filter(value => value.length > 0);
-    // addresses = addresses.sort();
-    // const participants: Address[] = addresses.map(address => ({ value: address, type: 0 }));
-    // const multiParam: MultiSigInfo = {
-    //   participants,
-    //   nonce: this.nonce.value,
-    //   minSigs: this.minimumSignature.value,
-    // };
-
-
-    // account = this.accountService.createNewMultisigAccount(
-    //   this.accountName.value.trim(),
-    //   multiParam,
-    // );
-
-
-
   }
 
   filterPrticipant(item) {
@@ -339,7 +322,7 @@ export class CreateAccountPage implements OnInit {
 
     modal.onDidDismiss().then(dataReturned => {
       if (dataReturned.data) {
-        // this.signByAccount = dataReturned.data;
+        //
       }
     });
 

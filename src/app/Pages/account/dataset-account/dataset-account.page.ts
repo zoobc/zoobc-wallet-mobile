@@ -51,7 +51,6 @@ import { AccountService } from 'src/app/Services/account.service';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { COIN_CODE, TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
 import { truncate } from 'src/Helpers/utils';
-// import zoobc, { AccountDatasetListParams, BIP32Interface, RemoveDatasetInterface } from 'zbc-sdk';
 import { NewDatasetPage } from './new-dataset/new-dataset.page';
 
 @Component({
@@ -79,10 +78,7 @@ export class DatasetAccountPage implements OnInit {
   constructor(
     private activeRoute: ActivatedRoute,
     private currencyServ: CurrencyService,
-    private modalCtrl: ModalController,
-    private authServ: AccountService,
-    private translate: TranslateService
-  ) {
+    private modalCtrl: ModalController  ) {
     this.formDataset = new FormGroup({
       fee: this.feeForm,
       feeCurr: this.feeFormCurr,
@@ -92,7 +88,6 @@ export class DatasetAccountPage implements OnInit {
 
   ngOnInit() {
     console.log('== account: ', this.account);
-    // if currency changed
     const subsRate = this.currencyServ.currencySubject.subscribe((rate: Currency) => {
       this.currencyRate = rate;
       const minCurrency = truncate(this.minFee * rate.value, 8);
@@ -121,21 +116,6 @@ export class DatasetAccountPage implements OnInit {
   getDataSetList() {
     this.isError = false;
     this.isLoading = true;
-    // const listParam: AccountDatasetListParams = {
-    //   recipientAccountAddress: this.account.address,
-    // };
-    // zoobc.AccountDataset.getList(listParam)
-    //   .then((res: AccountDatasetsResponse) => {
-    //     this.dataSetList = res.accountdatasetsList;
-    //     console.log('== this dataset: ', this.dataSetList);
-    //   })
-    //   .catch(err => {
-    //     this.isError = true;
-    //     console.log(err);
-    //   })
-    //   .finally(() => {
-    //     this.isLoading = false;
-    //   });
   }
 
 
