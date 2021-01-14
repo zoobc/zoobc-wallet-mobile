@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, Platform } from '@ionic/angular';
+import { AlertController, NavController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
 import { AccountService } from 'src/app/Services/account.service';
@@ -28,10 +28,16 @@ export class TransactionDetailPage implements OnInit {
   alertConnectionMsg = '';
   networkSubscription = null;
 
-  senderRecipentOptions = [];
   senderRecipentAlias = '';
+  senderRecipentOptions = [
+    { key: 'copy', label: 'copy' },
+    { key: 'share', label: 'share' }
+  ];
 
-  transHashOptions = [];
+  transHashOptions = [
+    { key: 'copy', label: 'copy' },
+    { key: 'share', label: 'share' }
+  ];
   currAccount: Account;
 
   constructor(
@@ -42,6 +48,7 @@ export class TransactionDetailPage implements OnInit {
     private utilService: UtilService,
     private transactionSrv: TransactionService,
     private socialSharing: SocialSharing,
+    private navCtrl: NavController,
     public platform: Platform,
   ) {
 
@@ -51,25 +58,25 @@ export class TransactionDetailPage implements OnInit {
     this.loading = true;
 
     this.currAccount = await this.accountService.getCurrAccount();
-    console.log('==== currAccount: ', this.currAccount);
+    // console.log('==== currAccount: ', this.currAccount);
 
     this.trx = this.transactionSrv.tempTrx;
-    console.log('==== transaction: ', this.trx);
+    // console.log('==== transaction: ', this.trx);
 
 
-    this.senderRecipentOptions = [
-      { key: 'copy', label: this.textCopyAddress },
-      { key: 'share', label: this.textShareAddress }
-    ];
+    // this.senderRecipentOptions = [
+    //   { key: 'copy', label: this.textCopyAddress },
+    //   { key: 'share', label: this.textShareAddress }
+    // ];
 
-    this.transHashOptions = [
-      { key: 'copy', label: this.textCopyAddress },
-      { key: 'share', label: this.textShareAddress }
-    ];
+    // this.transHashOptions = [
+    //   { key: 'copy', label: this.textCopyAddress },
+    //   { key: 'share', label: this.textShareAddress }
+    // ];
 
-    if (!this.senderRecipentAlias) {
-      this.senderRecipentOptions.push({ key: 'addToContact', label: this.textAddToContact });
-    }
+    // if (!this.senderRecipentAlias) {
+    //   this.senderRecipentOptions.push({ key: 'addToContact', label: this.textAddToContact });
+    // }
 
     this.loading = false;
 
@@ -124,6 +131,9 @@ export class TransactionDetailPage implements OnInit {
     });
   }
 
+  close(){
+    this.navCtrl.pop();
+  }
 
 
   ionViewWillEnter() {
