@@ -1,3 +1,43 @@
+// ZooBC Copyright (C) 2020 Quasisoft Limited - Hong Kong
+// This file is part of ZooBC <https:github.com/zoobc/zoobc-wallet-mobile>
+
+// ZooBC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// ZooBC is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with ZooBC.  If not, see <http:www.gnu.org/licenses/>.
+
+// Additional Permission Under GNU GPL Version 3 section 7.
+// As the special exception permitted under Section 7b, c and e,
+// in respect with the Author’s copyright, please refer to this section:
+
+// 1. You are free to convey this Program according to GNU GPL Version 3,
+//     as long as you respect and comply with the Author’s copyright by
+//     showing in its user interface an Appropriate Notice that the derivate
+//     program and its source code are “powered by ZooBC”.
+//     This is an acknowledgement for the copyright holder, ZooBC,
+//     as the implementation of appreciation of the exclusive right of the
+//     creator and to avoid any circumvention on the rights under trademark
+//     law for use of some trade names, trademarks, or service marks.
+
+// 2. Complying to the GNU GPL Version 3, you may distribute
+//     the program without any permission from the Author.
+//     However a prior notification to the authors will be appreciated.
+
+// ZooBC is architected by Roberto Capodieci & Barton Johnston
+//     contact us at roberto.capodieci[at]blockchainzoo.com
+//     and barton.johnston[at]blockchainzoo.com
+
+// IMPORTANT: The above copyright notice and this permission notice
+// shall be included in all copies or substantial portions of the Software.
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AddressBookService } from 'src/app/Services/address-book.service';
@@ -25,6 +65,10 @@ export class AddressBookPage implements OnInit, OnDestroy {
   addresses = [];
   navigationSubscription: any;
   forWhat: string;
+  private textCopyAddress: string;
+  private textEditAddress: string;
+  private textDeleteAddress: string;
+
 
   constructor(
     private router: Router,
@@ -91,9 +135,6 @@ export class AddressBookPage implements OnInit, OnDestroy {
     }
   }
 
-  private textCopyAddress: string;
-  private textEditAddress: string;
-  private textDeleteAddress: string;
 
   async ngOnInit() {
     this.route.queryParams.subscribe(() => {
@@ -113,19 +154,19 @@ export class AddressBookPage implements OnInit, OnDestroy {
     });
 
     this.translateLang();
-    
+
   }
 
-  translateLang(){
+  translateLang() {
     this.translateSrv.get([
-      'copy', 
-      'edit', 
-      'delete', 
-    ]).subscribe((res: any)=>{
-      this.textCopyAddress = res["copy"];
-      this.textEditAddress = res["edit"];
-      this.textDeleteAddress = res["delete"];
-    })
+      'copy',
+      'edit',
+      'delete',
+    ]).subscribe((res: any) => {
+      this.textCopyAddress = res.copy;
+      this.textEditAddress = res.edit;
+      this.textDeleteAddress = res.delete;
+    });
   }
 
   async getAllAddress() {
@@ -138,13 +179,9 @@ export class AddressBookPage implements OnInit, OnDestroy {
   selectAddress(address: any) {
     this.addressBookSrv.setSelectedAddress({
       identity: this.forWhat,
-      address: address
+      address
     });
 
-    // need to change
-    //if (!this.forWhat) {
-    // return;
-    //}
 
     if (this.forWhat === FOR_RECIPIENT) {
       this.addressBookSrv.setRecipientAddress(address);

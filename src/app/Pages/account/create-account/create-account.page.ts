@@ -50,7 +50,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   addressValidator,
 } from 'src/Helpers/validators';
-import zoobc, { Address, getZBCAddress, MultiSigInfo } from 'zbc-sdk';
+import zoobc, { Address, MultiSigInfo } from 'zbc-sdk';
 import { getTranslation } from 'src/Helpers/utils';
 import { TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
@@ -288,30 +288,12 @@ export class CreateAccountPage implements OnInit {
 
     });
 
-    // let addresses: [string] = this.participants.value.filter(value => value.length > 0);
-    // addresses = addresses.sort();
-    // const participants: Address[] = addresses.map(address => ({ value: address, type: 0 }));
-    // const multiParam: MultiSigInfo = {
-    //   participants,
-    //   nonce: this.nonce.value,
-    //   minSigs: this.minimumSignature.value,
-    // };
-
-
-    // account = this.accountService.createNewMultisigAccount(
-    //   this.accountName.value.trim(),
-    //   multiParam,
-    // );
-
-
-
   }
 
   filterPrticipant(item) {
     const addrs = item.address;
     if (addrs) {
       console.log('=== addrs: ', addrs.address);
-      const ad: Address = { value: addrs.address, type: 0 };
 
     }
   }
@@ -339,7 +321,7 @@ export class CreateAccountPage implements OnInit {
 
     modal.onDidDismiss().then(dataReturned => {
       if (dataReturned.data) {
-        // this.signByAccount = dataReturned.data;
+        //
       }
     });
 
