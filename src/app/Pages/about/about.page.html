@@ -3,7 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{"about"|translate}}</ion-title>
+    <ion-title>{{"About"|translate}}</ion-title>
+    <ion-buttons slot="end" color="primary">
+      <ion-button routerLink="/feedback">
+        {{ "Feedback" | translate}} 
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

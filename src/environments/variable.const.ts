@@ -68,21 +68,12 @@ export const THEME_OPTIONS  = [
 
 export const SELECTED_THEME = 'card';
 export const LANGUAGES = [
-  {
-    country: 'العربية',
-    code: 'ar',
-    img: 'assets/images/lang/ar.png'
-  }
-  ,
-  // {
-  //   country: 'ελληνικά',
   //   code: 'el',
   //   img: 'assets/images/lang/el.png'
   // },
   // {
   //   country: 'Dansk',
   //   code: 'da',
-  //   img: 'assets/images/lang/da.png'
   // },
   // {
   //   country: 'Deutsche',
