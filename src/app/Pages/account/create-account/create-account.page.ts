@@ -50,7 +50,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   addressValidator,
 } from 'src/Helpers/validators';
-import zoobc, { Address, getZBCAddress, MultiSigInfo } from 'zbc-sdk';
+import zoobc, { Address, MultiSigInfo } from 'zbc-sdk';
 import { getTranslation } from 'src/Helpers/utils';
 import { TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
@@ -294,7 +294,6 @@ export class CreateAccountPage implements OnInit {
     const addrs = item.address;
     if (addrs) {
       console.log('=== addrs: ', addrs.address);
-      const ad: Address = { value: addrs.address, type: 0 };
 
     }
   }
