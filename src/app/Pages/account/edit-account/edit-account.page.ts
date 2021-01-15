@@ -113,8 +113,7 @@ export class EditAccountPage implements OnInit {
   }
 
   ngOnInit() {
-    console.log('==== mode: ', this.mode);
-
+ 
     this.activeRoute.queryParams.subscribe(params => {
       this.account = JSON.parse(params.account);
       this.mode = params.mode;

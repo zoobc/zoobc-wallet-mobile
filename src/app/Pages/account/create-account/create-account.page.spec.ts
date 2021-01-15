@@ -48,10 +48,10 @@ import { RouterModule } from '@angular/router';
 import { ModalController} from '@ionic/angular';
 
 
-let modalSpy = jasmine.createSpyObj('Modal', ['present']);
-let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
 
-modalCtrlSpy.create.and.callFake(function () {
+modalCtrlSpy.create.and.callFake( () => {
     return modalSpy;
   });
 
@@ -63,14 +63,14 @@ describe('CreateAccountPage', () => {
     TestBed.configureTestingModule({
       declarations: [ CreateAccountPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports:[
+      imports: [
         TranslateModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,
         IonicStorageModule.forRoot(),
         RouterModule.forRoot([]),
       ],
-      providers:[
+      providers: [
         { provide: 'global', useFactory: () => window },
         {
             provide: ModalController,
