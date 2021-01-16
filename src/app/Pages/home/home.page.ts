@@ -299,6 +299,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.loadDetailTransaction(trx, 'confirm');
   }
 
+  goToAccount() {
+    this.popoverCtrl.dismiss('');
+    this.router.navigate(['/list-account']);
+  }
   /**
    * Load detail transaction
    * @ param trx

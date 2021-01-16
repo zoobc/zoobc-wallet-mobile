@@ -48,9 +48,9 @@ shall be included in all copies or substantial portions of the Software.
   </ion-refresher>
 
   <div class="home-header">
-    <div class="scan-container">
+    <!-- <div class="scan-container">
       <ion-icon name="zbc-scan" (click)="goToScan()"></ion-icon>
-    </div>
+    </div> -->
     <ion-label class="account" *ngIf="account" color="medium" (click)="switchAccount($event)">
       <div class="account-name-container">
         <h1 class="account-name">{{ account.name }}</h1>
@@ -111,10 +111,16 @@ shall be included in all copies or substantial portions of the Software.
             <h4>{{ "Blockchain Object" | translate }}</h4>
           </ion-text>
         </ion-label>
-        <ion-label (click)="showAlert();">
-          <ion-icon name="zbc-send" color="secondary"></ion-icon>
+        <ion-label (click)="goToAccount();">
+          <ion-icon name="wallet" color="secondary"></ion-icon>
           <ion-text>
-            <h4>{{ "Liquid Payment" | translate }}</h4>
+            <h4>{{ "Accounts" | translate }}</h4>
+          </ion-text>
+        </ion-label>
+        <ion-label (click)="goToScan();">
+          <ion-icon name="zbc-scan" color="secondary"></ion-icon>
+          <ion-text>
+            <h4>{{ "Scan QRCode" | translate }}</h4>
           </ion-text>
         </ion-label>
       </div>
@@ -196,9 +202,9 @@ shall be included in all copies or substantial portions of the Software.
     </ion-card-content>
   </ion-card>
 
-  <ion-card class="card-article">
+  <!-- <ion-card class="card-article">
     <ion-img src="assets/images/sampleblog1.jpg"></ion-img>
     <div class="cover"></div>
     <div class="title">What Is Lightning Network? And How Does It Work?</div>
-  </ion-card>
+  </ion-card> -->
 </ion-content>
