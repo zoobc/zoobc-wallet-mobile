@@ -58,7 +58,7 @@ import { ThemeService } from 'src/app/Services/theme.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, PopoverController } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -94,7 +94,8 @@ export class SettingsPage implements OnInit {
     private authService: AuthService,
     private router: Router,
     private alertCtrl: AlertController,
-    private translateSrv: TranslateService
+    private translateSrv: TranslateService,
+    private popoverCtrl: PopoverController
   ) {
     this.currencyService.currencySubject.subscribe((rate: Currency) => {
       this.currencyRate = rate;
@@ -125,6 +126,11 @@ export class SettingsPage implements OnInit {
     });
 
     this.translateLang();
+  }
+
+  goToAccount() {
+    this.popoverCtrl.dismiss('');
+    this.router.navigate(['/list-account']);
   }
 
   translateLang() {
