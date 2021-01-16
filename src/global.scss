@@ -88,7 +88,13 @@ ion-title{
 }
 
 .background-pin {
-  --background: #000000;
+  --background: url("src/assets/images/background.png");
+  // --background: transparent;
+  background-image: url("src/assets/images/background.png");
+  background-repeat:no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
 }
 
 

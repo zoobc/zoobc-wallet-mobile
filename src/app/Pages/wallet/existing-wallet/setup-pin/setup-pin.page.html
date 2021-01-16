@@ -40,45 +40,58 @@ IMPORTANT: The above copyright notice and this permission notice
 shall be included in all copies or substantial portions of the Software.
 -->
 
-<ion-content class="ion-padding background-pin" fullscreen>
-  <ion-grid style="height: 100%; display: flex; flex-flow: column;">
-    <ion-progress-bar *ngIf="processing" color="light" type="indeterminate"></ion-progress-bar>
+<ion-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center titleLogin">
+        <ion-progress-bar *ngIf="processing" color="light" type="indeterminate"></ion-progress-bar>
+        <ng-template [ngIf]="pagePosition === 0">
+          <ion-title color="light">{{ "enter your pin" | translate }}</ion-title>
+        </ng-template>
 
-    <ng-template [ngIf]="pagePosition === 0">
-      <ion-row style="flex-shrink: 0;">
-        <ion-col class="ion-text-center cTop">
-          <ion-label color="light">
-          <p class="ion-text-center">{{ "set your pin" | translate }}</p>
-          <p> &nbsp; </p>
-        </ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row style="flex-grow: 1;">
-        <ion-col class="ion-text-center cMiddle">
-          <app-pin (ionChange)="setupPin($event)"></app-pin>
-        </ion-col>
-      </ion-row>
-    </ng-template>
+        <ng-template [ngIf]="pagePosition === 1">
+          <ion-title color="light">{{ "confirm your pin" | translate }}</ion-title>
+        </ng-template>
 
-    <ng-template [ngIf]="pagePosition === 1">
-      <ion-row style="flex-shrink: 0;">
-        <ion-col class="ion-text-center cTop">
-          <ion-label color="light">
-          <p class="ion-text-center">{{ "confirm your pin" | translate }}</p>
-          <p *ngIf="loginFail" class="ion-text-center invalidPin">{{ "invalid pin" | translate }}</p>
-          </ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row style="flex-grow: 1;">
-        <ion-col class="ion-text-center cMiddle">
-          <app-pin (ionChange)="confirmPin($event)"></app-pin>
-        </ion-col>
-      </ion-row>
-    </ng-template>
-    <ion-row style="flex-shrink: 0;">
-      <ion-col class="ion-text-center" style="padding-bottom: 60px;">
-        <ion-label (click)="cancel()">{{ "cancel" | translate }}</ion-label>
       </ion-col>
     </ion-row>
   </ion-grid>
+</ion-header>
+<ion-content class="ion-padding background-pin" fullscreen>
+  <ion-grid class="gridLogin">
+    <ion-row class="rowLogin">
+      <ion-col>
+        <ion-grid>
+          <ion-row>
+            <ion-col class="ion-text-center">
+
+              <div *ngIf="pagePosition === 0">
+                <p>&nbsp;</p>
+                <app-pin (ionChange)="setupPin($event)"></app-pin>
+                <p>&nbsp;</p>
+              </div>
+
+              <div *ngIf="pagePosition === 1">
+                <p *ngIf="loginFail" class="invalidPin">{{ "pin is not match" | translate }}</p>
+                <app-pin (ionChange)="confirmPin($event)"></app-pin>
+                <p>&nbsp;</p>
+              </div>
+
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center footerLogin">
+        <ion-label (click)="cancel()" color="light">{{ "cancel" | translate }}</ion-label>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

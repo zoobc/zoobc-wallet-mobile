@@ -65,7 +65,7 @@ import { saveAs } from 'file-saver';
 export class MultisigPage implements OnInit {
 
   txType = [
-    { code: TransactionType.SENDMONEYTRANSACTION, type: 'send money' },
+    { code: TransactionType.SENDMONEYTRANSACTION, type: 'Transfer ZBC' },
     { code: TransactionType.SETUPACCOUNTDATASETTRANSACTION, type: 'setup account dataset' },
     { code: TransactionType.REMOVEACCOUNTDATASETTRANSACTION, type: 'remove account dataset' },
     { code: TransactionType.APPROVALESCROWTRANSACTION, type: 'escrow approval' },

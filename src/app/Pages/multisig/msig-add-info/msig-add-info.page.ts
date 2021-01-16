@@ -42,7 +42,7 @@ import { Component, OnInit } from '@angular/core';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { NavigationExtras, Router } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
-import zoobc, { Address } from 'zbc-sdk';
+import zoobc, { Address, TransactionType } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
@@ -52,6 +52,8 @@ import Swal from 'sweetalert2';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { ModalController } from '@ionic/angular';
 import { FROM_MSIG, MODE_NEW } from 'src/environments/variable.const';
+import { type } from 'os';
+import { getMultisigTitle } from 'src/Helpers/multisig-utils';
 
 @Component({
   selector: 'app-msig-add-info',
@@ -60,7 +62,7 @@ import { FROM_MSIG, MODE_NEW } from 'src/environments/variable.const';
 })
 export class MsigAddInfoPage implements OnInit {
 
-
+  title: string;
   form: FormGroup;
   participantsField = new FormArray([], uniqueParticipant);
   fName = new FormControl('');
@@ -96,8 +98,8 @@ export class MsigAddInfoPage implements OnInit {
     this.draft = this.multisigServ.draft;
     if (this.draft) {
       const { multisigInfo } = this.draft;
+      this.title = getMultisigTitle(this.draft.txType);
       this.createParticipantsField();
-
       if (multisigInfo) {
         const { participants, minSigs, nonce } = multisigInfo;
         const participansAddress = participants;

@@ -44,7 +44,7 @@ import { Router } from '@angular/router';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { createInnerTxBytes, createInnerTxForm, getInputMap } from 'src/Helpers/multisig-utils';
+import { createInnerTxBytes, createInnerTxForm, getInputMap, getMultisigTitle } from 'src/Helpers/multisig-utils';
 import { getTranslation, stringToBuffer } from 'src/Helpers/utils';
 import { Address, generateTransactionHash } from 'zbc-sdk';
 import { TranslateService } from '@ngx-translate/core';
@@ -65,6 +65,7 @@ export class MsigCreateTransactionPage implements OnInit {
   draft: MultiSigDraft;
 
   fieldList: object;
+  title: any;
   constructor(
     private multisigServ: MultisigService,
     private alertController: AlertController,
@@ -76,7 +77,8 @@ export class MsigCreateTransactionPage implements OnInit {
   ngOnInit() {
     this.draft = this.multisigServ.draft;
     if (this.draft) {
-      console.log('== Multisig: ', this.draft);
+      this.title = getMultisigTitle(this.draft.txType);
+
       this.formTrx = createInnerTxForm(this.draft.txType);
       this.fieldList = getInputMap(this.draft.txType);
 

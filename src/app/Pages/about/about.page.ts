@@ -40,6 +40,7 @@
 
 
 import { Component, OnInit } from '@angular/core';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 @Component({
   selector: 'app-about',
@@ -47,10 +48,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./about.page.scss'],
 })
 export class AboutPage implements OnInit {
-
-  constructor() { }
+  appVersion: string;
+  constructor(private appVersionService: AppVersion) { }
 
   ngOnInit() {
+    try {
+      this.appVersionService.getVersionNumber().then(verNum => {
+        this.appVersion = verNum;
+      });
+      console.log('-- App Version: ', this.appVersionService.getVersionNumber());
+    } catch { }
   }
 
 }

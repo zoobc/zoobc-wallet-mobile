@@ -65,15 +65,15 @@ shall be included in all copies or substantial portions of the Software.
       </ion-item>
 
       <ion-item lines="none" class="form-item">
-        <ion-label position="stacked">{{ "approver commission" | translate }} </ion-label>
+        <ion-label position="stacked">{{ "Escrowee Reward" | translate }} </ion-label>
         <app-form-amount-conversion (ionChange)="changeForm()" formControlName="{{ inputMap.approverCommission }}">
         </app-form-amount-conversion>
         <ng-container *ngIf="group.get(inputMap.approverCommission).touched">
           <ion-text class="text-error" *ngIf="group.get(inputMap.approverCommission).hasError('required')">
-            {{ 'commission for approver is required' | translate }}
+            {{ 'escrowee reward is required' | translate }}
           </ion-text>
           <ion-text *ngIf="group.get(inputMap.approverCommission).hasError('min')">
-            {{ 'minimum commission is' | translate: { val: '0.00000001' } }}
+            {{ 'minimum escrowee reward is' | translate: { val: '0.00000001' } }}
           </ion-text>
         </ng-container>
       </ion-item>

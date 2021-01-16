@@ -66,10 +66,10 @@ shall be included in all copies or substantial portions of the Software.
       </ion-item>
 
       <ion-item *ngIf="multiSignAddress" lines="none" class="form-item">
-        <ion-label position="stacked">{{'address' | translate}}</ion-label>
-        <ion-textarea rows="3" readonly>
-          {{multiSignAddress}}
-        </ion-textarea>
+        <ion-label class="ion-text-wrap">
+          <p><b>{{'Address' | translate}}</b></p>
+          <p>{{multiSignAddress}}</p>
+        </ion-label>
       </ion-item>
 
       <ion-item *ngIf="from!='msig'" lines="none" class="form-item item-checkbox">
@@ -104,14 +104,14 @@ shall be included in all copies or substantial portions of the Software.
         </ng-container>
 
         <ion-item lines="none" class="form-item">
-          <ion-label position="stacked">{{ "Unique ID" | translate }}</ion-label>
+          <ion-label position="stacked">{{ "Unique numeric ID" | translate }}</ion-label>
           <ion-input formControlName="nonce" type="number" (ionChange)="generateMsigAddress()"></ion-input>
           <ng-container *ngIf="(submitted || nonce.dirty || nonce.touched) && nonce.invalid">
             <ion-text class="text-error" *ngIf="nonce.errors.required">
-              {{ "nonce cannot be empty" | translate}}
+              {{ "Unique numeric ID cannot be empty" | translate}}
             </ion-text>
             <ion-text class="text-error" *ngIf="nonce.errors.min">
-              {{ "minimum nonce is 1" | translate}}
+              {{ "minimum Unique numeric ID is 1" | translate}}
             </ion-text>
           </ng-container>
         </ion-item>

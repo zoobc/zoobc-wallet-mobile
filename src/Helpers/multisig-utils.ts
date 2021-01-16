@@ -60,6 +60,19 @@ export function createInnerTxBytes(form: any, txType: number): Buffer {
   }
 }
 
+export function getMultisigTitle(txType: number){
+  if (txType === TransactionType.SENDMONEYTRANSACTION) {
+    return  'Transfer ZBC';
+  } else if (txType === TransactionType.SETUPACCOUNTDATASETTRANSACTION) {
+    return  'setup account dataset';
+  } else if (txType === TransactionType.REMOVEACCOUNTDATASETTRANSACTION) {
+    return  'remove account dataset';
+  } else if (txType === TransactionType.APPROVALESCROWTRANSACTION) {
+    return  'escrow approval';
+  }
+  return '';
+}
+
 export function createSendMoneyBytes(form: any): Buffer {
   const { sender, fee, amount, recipient } = form;
   const data: SendMoneyInterface = { sender, fee, amount, recipient };
