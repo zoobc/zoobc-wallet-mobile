@@ -1,7 +1,7 @@
 import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Contact } from 'src/app/Interfaces/contact';
-import zoobc from 'zbc-sdk';
+import zoobc, { HostInfoResponse } from 'zbc-sdk';
 
 interface IEscrow {
   approver: Contact;
@@ -24,10 +24,11 @@ interface IEscrow {
 })
 export class BehaviorEscrowFormComponent
   implements OnInit, ControlValueAccessor {
-  constructor() {}
+  constructor() { }
 
   @Input() errors: any;
   @Input() submitted: boolean;
+  // tslint:disable-next-line:no-output-on-prefix
   @Output() onChange = new EventEmitter<IEscrow>();
 
   public escrow: IEscrow;
@@ -46,13 +47,15 @@ export class BehaviorEscrowFormComponent
 
   getBlockHeight() {
     zoobc.Host.getInfo()
-      .then(res => {
-        this.blockHeight = res.chainstatusesList[1].height;
+      .then((res: HostInfoResponse) => {
+        res.chainstatusesList.filter(chain => {
+          if (chain.chaintype === 0) { this.blockHeight = chain.height; }
+        });
       })
       .catch(err => {
         console.log(err);
       })
-      .finally(() => {});
+      .finally();
   }
 
   changeForm() {
@@ -60,9 +63,9 @@ export class BehaviorEscrowFormComponent
     this.onChange.emit(this.escrow);
   }
 
-  onFormChange = (value: IEscrow) => {};
+  onFormChange = (value: IEscrow) => { };
 
-  onTouched = () => {};
+  onTouched = () => { };
 
   writeValue(value: IEscrow) {
     this.escrow = value;
