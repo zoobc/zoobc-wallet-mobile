@@ -43,16 +43,16 @@ shall be included in all copies or substantial portions of the Software.
 <div class="info-amount-conversion">
   <div class="main-amount">
     <span *ngIf="prefix">{{ prefix }}</span>
-    ZBC {{ value?value:0 | number:'0.0-2' }}
+    ZBC {{ value?value:0 | number:'0.0-4' }}
   </div>
   <!-- <div class="other-amount" *ngIf="otherCurrency">
     <div *ngIf="otherCurrencyDecoration==='BRACKET'; else noDecoration">
-      ({{ otherCurrency }} {{ otherValue?otherValue:0 | number:'0.0-2' }})
+      ({{ otherCurrency }} {{ otherValue?otherValue:0 | number:'0.0-4' }})
     </div>
   </div> -->
 </div>
 
 <!-- <ng-template #noDecoration>
   <span *ngIf="prefix">{{ prefix }}</span>
-  {{ otherCurrency }} {{ otherValue | number:'0.0-2' }}
+  {{ otherCurrency }} {{ otherValue | number:'0.0-4' }}
 </ng-template> -->

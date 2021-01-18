@@ -93,7 +93,7 @@ export class FormAmountConversionComponent
   onTouched = () => {};
 
   writeValue(value: number) {
-    // this.amount = value;
+    this.conversionAmount.ZBC = value;
   }
 
   registerOnChange(fn: (value: number) => void) {

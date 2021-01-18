@@ -41,7 +41,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, ToastController } from '@ionic/angular';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
-import { ActivatedRoute, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import {
   BarcodeScannerOptions,
   BarcodeScanner
@@ -65,7 +65,10 @@ export class QrScannerComponent implements OnInit {
   constructor(
     private barcodeScanner: BarcodeScanner,
     private navCtrl: NavController,
-    private qrScannerSrv: QrScannerService, private activeRoute: ActivatedRoute, private toastController: ToastController) {
+    private router: Router,
+    private qrScannerSrv: QrScannerService,
+    private activeRoute: ActivatedRoute,
+    private toastController: ToastController) {
     this.encodeData = '';
     // Options
     this.barcodeScannerOptions = {
@@ -104,7 +107,8 @@ export class QrScannerComponent implements OnInit {
           from: this.from
         }
       };
-      this.navCtrl.navigateForward(['/sendcoin'], navigationExtras);
+      this.router.navigate(['/transaction-form/send-money'], navigationExtras);
+      // this.navCtrl.navigateForward(['/transaction-form/send-money'], navigationExtras);
     }
     this.reset();
   }

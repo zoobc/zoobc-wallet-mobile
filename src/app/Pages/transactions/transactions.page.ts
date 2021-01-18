@@ -352,29 +352,12 @@ export class TransactionsPage implements OnInit {
   }
 
   /**
-   * Get Unconfirm transaction by address
-   * @ param address
-   */
-  private async getUnconfirmTransactions(address: string) {
-    // this.unconfirmTxs = [];
-    // console.log('==this.unconfirmTxs: ', this.unconfirmTxs);
-  }
-
-  /**
    * Open detail Unconfirm transactin
    * @param trx is unconfirm transaction object
    */
   public async openDetailUnconfirm(trx) {
     this.transactionServ.tempTrx = trx;
     this.router.navigate(['/transaction/0']);
-  }
-
-  /**
-   * Open detail of tranasaction
-   * @param trx is tranaction object
-   */
-  public async openDetailTransction(trx) {
-    this.loadDetailTransaction(trx, 'confirmed');
   }
 
   private showLoading() {
@@ -386,21 +369,6 @@ export class TransactionsPage implements OnInit {
     });
   }
 
-  public async loadDetailTransaction(trx: any, trxStatus: string) {
-
-    this.showLoading();
-
-    const modal = await this.modalCtrl.create({
-      component: TransactionDetailPage,
-      cssClass: 'modal-zbc',
-      componentProps: {
-        transaction: trx,
-        account: this.account,
-        status: trxStatus
-      }
-    });
-    await modal.present();
-  }
 
   ionViewWillEnter() {
     this.networkSubscription = this.network

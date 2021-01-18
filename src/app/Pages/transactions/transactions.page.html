@@ -63,7 +63,7 @@ shall be included in all copies or substantial portions of the Software.
     {{ "Pending Transactions" | translate }}
   </h3>
   <ion-list *ngIf="unconfirmTx && unconfirmTx.length > 0" class="ion-margin-top">
-    <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button (click)="openDetailUnconfirm(pendingtrx)">
+    <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button (click)="goToTransactionDetail(pendingtrx)">
       <ion-label>
         <ion-row class="ion-justify-content-between">
           <ion-col size="7">

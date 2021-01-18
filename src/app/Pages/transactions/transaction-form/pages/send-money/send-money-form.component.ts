@@ -40,7 +40,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Network } from '@ionic-native/network/ngx';
 import {
   AlertController,
@@ -49,9 +49,11 @@ import {
   NavController
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Contact } from 'src/app/Interfaces/contact';
 import { TrxstatusPage } from 'src/app/Pages/send-coin/modals/trxstatus/trxstatus.page';
 import { AccountService } from 'src/app/Services/account.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
+import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { UtilService } from 'src/app/Services/util.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
@@ -92,9 +94,11 @@ export class SendMoneyFormComponent implements OnInit {
   });
 
   submitted = false;
+  account: import("/Volumes/Data/MOBILE_WALLET_PROJECTS/zoobc-wallet-mobile-after-merge/src/app/Interfaces/account").Account;
 
   constructor(
     private router: Router,
+    private qrScannerSrv: QrScannerService,
     public loadingController: LoadingController,
     private modalController: ModalController,
     public alertController: AlertController,
@@ -102,6 +106,7 @@ export class SendMoneyFormComponent implements OnInit {
     private translateService: TranslateService,
     private transactionSrv: TransactionService,
     private network: Network,
+    private activeRoute: ActivatedRoute,
     private alertCtrl: AlertController,
     private navCtrl: NavController,
     private accountSrv: AccountService
@@ -127,6 +132,26 @@ export class SendMoneyFormComponent implements OnInit {
     return this.sendForm.get('behaviorEscrow');
   }
 
+  getRecipientFromScanner() {
+    const str  = this.qrScannerSrv.getResult();
+
+    if (str) {
+      const json = str.split('||');
+
+      if (json && json[0]) {
+        const addres: Contact = {
+          name: '-',
+          address: json[0]
+        };
+        this.recipient.setValue(addres);
+      }
+
+      if (json && json[1]) {
+        this.amount.setValue(json[1]);
+      }
+    }
+
+  }
 
   setBehaviorEscrowChanges() {
     this.behaviorEscrowChangesSubscription = this.behaviorEscrow.valueChanges.subscribe(
@@ -146,8 +171,9 @@ export class SendMoneyFormComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const account = await this.accountSrv.getCurrAccount();
-    this.sender.setValue(account);
+    this.account = await this.accountSrv.getCurrAccount();
+    this.sender.setValue(this.account);
+    this.getRecipientFromScanner();
   }
 
   showLoading() {

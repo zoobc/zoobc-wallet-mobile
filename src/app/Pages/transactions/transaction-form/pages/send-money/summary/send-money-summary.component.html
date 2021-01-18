@@ -97,8 +97,9 @@ shall be included in all copies or substantial portions of the Software.
   <div class="total-container">
     <ion-text>Total</ion-text>
     <div class="total">
-      <app-info-amount-conversion value="{{ total }}" otherCurrency="USD">
-      </app-info-amount-conversion>
+      ZBC {{ total | number:'0.0-8'}}
+      <!-- <app-info-amount-conversion value="{{ total }}" otherCurrency="USD">
+      </app-info-amount-conversion> -->
     </div>
   </div>
   <ion-button type="button" color="tertiary" expand="block" (click)="submit()">Confirm Transaction</ion-button>

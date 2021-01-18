@@ -59,12 +59,12 @@
   }
 
   .main-balance {
-    font-size: 32px;
+    font-size: 30px;
 
     .amount{
       display: flex;
       align-items: center;
-      
+
       .skeleton-text{
         height: 24px;
       }
@@ -249,4 +249,12 @@ ion-card {
     padding-bottom: 10px;
   }
 
+}
+
+.shortAddress{
+  font-size: 1.2em;
+}
+
+.copyAddress{
+  font-size: 1.4em;
 }
