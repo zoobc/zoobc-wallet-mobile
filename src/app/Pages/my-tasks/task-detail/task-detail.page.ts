@@ -97,7 +97,7 @@ export class TaskDetailPage implements OnInit {
 
   async ngOnInit() {
     this.escrowForm = this.formBuilder.group({
-      feesZbc: [0.2, [Validators.required]],
+      feesZbc: [0.01, [Validators.required]],
       fApprover: ['', [Validators.required]]
     });
 

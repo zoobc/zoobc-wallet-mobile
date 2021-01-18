@@ -53,7 +53,7 @@ import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { getTranslation } from 'src/Helpers/utils';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { createInnerTxBytes, getTxType } from 'src/Helpers/multisig-utils';
+import { createInnerTxBytes, getMultisigTitle, getTxType } from 'src/Helpers/multisig-utils';
 import Swal from 'sweetalert2';
 import { LoadingController } from '@ionic/angular';
 import { UtilService } from 'src/app/Services/util.service';
@@ -77,6 +77,7 @@ export class MsigSendTransactionPage implements OnInit {
   innerTx: any[] = [];
   innerPage: number;
   accounts: Account[];
+  title: string;
 
   constructor(
     public loadingController: LoadingController,
@@ -93,7 +94,7 @@ export class MsigSendTransactionPage implements OnInit {
 
   async ngOnInit() {
     this.draft = this.multisigServ.draft;
-
+    this.title = getMultisigTitle(this.draft.txType);
     this.fFee.setValue(this.minFee);
     const { fee } = this.draft;
     if (fee >= this.minFee) {

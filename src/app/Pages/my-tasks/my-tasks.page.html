@@ -83,48 +83,47 @@ shall be included in all copies or substantial portions of the Software.
 
   <ion-list class="info-list" *ngIf="segmentModel === 'escrow' && listTrxPendingEsc && listTrxPendingEsc.length > 0"
     style="border-top: 1px solid #cccccc;">
-    <ion-item>
-      <ion-label>{{ "block height" | translate}}: {{blockHeight}}</ion-label>
+    <ion-item lines="none">
+      <ion-label class="info-label">{{ "block height" | translate}}: {{blockHeight}}</ion-label>
     </ion-item>
-    <ion-item *ngFor="let escrow of listTrxPendingEsc; let i = index;" (click)="openDetail(escrow.id)">
+    <ion-item class="escItem" *ngFor="let escrow of listTrxPendingEsc; let i = index;" (click)="openDetail(escrow.id)">
       <ion-label>
         <div class="task-main-info">
           <div>
             <p class="info-label">{{ "sender" | translate}}</p>
-            <div class="info-val">{{ escrow.sender.value | shortAddress }}</div>
+            <div class="info-val" style="font-size: 0.9em">{{ escrow.sender.value | shortAddress }}</div>
             <p class="info-label task-item-margin-top">{{ "recipient" | translate}}</p>
-            <div class="info-val">{{ escrow.recipient.value | shortAddress }}</div>
+            <div class="info-val" style="margin-bottom: 8px; font-size: 0.9em">{{ escrow.recipient.value | shortAddress }}</div>
+            <p class="info-label">{{ "Created at block" | translate}}:<span><b>{{escrow.blockHeight}}</b></span> </p>
+            
+            <ion-badge *ngIf="escrow.status == 0" color="warning" shape="round">{{ "pending" | translate}}
+            </ion-badge>
+            <ion-badge *ngIf="escrow.status == 1" color="success" shape="round">{{ "approved" | translate}}
+            </ion-badge>
+            <ion-badge *ngIf="escrow.status == 2" color="danger" shape="round">{{ "rejected" | translate}}
+            </ion-badge>
+            <ion-badge *ngIf="escrow.status == 3" color="warning" shape="round">{{ "expired" | translate}}
+            </ion-badge>
+            <ion-badge *ngIf="escrow.status == 4" color="warning" shape="round">{{ "unknown" | translate}}
+            </ion-badge>
           </div>
 
           <div>
-            <p class="info-label">{{ "amount" | translate}}</p>
-            <div class="info-val">
-              <app-info-amount-conversion value="{{ escrow.amount / 1e8 }}"></app-info-amount-conversion>
+            <p class="info-label-amount">{{ "amount" | translate}}</p>
+            <div class="info-val-amount">
+              ZBC {{ escrow.amount / 1e8 }}
             </div>
-            <p class="info-label task-item-margin-top">{{"commission" | translate}}</p>
-            <div class="info-val">
-              <app-info-amount-conversion value="{{ escrow.commission / 1e8 }}"></app-info-amount-conversion>
+            <p class="info-label-amount task-item-margin-top">{{"Escrowee Reward" | translate}}</p>
+            <div class="info-val-amount">
+              ZBC {{ escrow.commission / 1e8 }}
             </div>
           </div>
         </div>
 
-        <p class="info-label task-item-margin-top" *ngIf="escrow.status !== 1 && escrow.status !== 2">
-          {{ "expired after block height" | translate}}
-        </p>
-        <div class="info-val">{{ (toNumber(escrow.timeout) + toNumber(escrow.blockHeight)) | number }}</div>
+        <!-- <p class="info-label task-item-margin-top" *ngIf="escrow.status !== 1 && escrow.status !== 2">
+          {{ "expired after block height" | translate}}: {{ (toNumber(escrow.timeout) + toNumber(escrow.blockHeight)) | number }}
+        </p> -->
 
-        <div class="task-item-margin-top">
-          <ion-badge *ngIf="escrow.status == 0" color="warning" shape="round">{{ "pending" | translate}}
-          </ion-badge>&nbsp;
-          <ion-badge *ngIf="escrow.status == 1" color="success" shape="round">{{ "approved" | translate}}
-          </ion-badge>&nbsp;
-          <ion-badge *ngIf="escrow.status == 2" color="danger" shape="round">{{ "rejected" | translate}}
-          </ion-badge>&nbsp;
-          <ion-badge *ngIf="escrow.status == 3" color="warning" shape="round">{{ "expired" | translate}}
-          </ion-badge>&nbsp;
-          <ion-badge *ngIf="escrow.status == 4" color="warning" shape="round">{{ "unknown" | translate}}
-          </ion-badge>
-        </div>
       </ion-label>
 
     </ion-item>

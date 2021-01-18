@@ -54,12 +54,12 @@ shall be included in all copies or substantial portions of the Software.
   </ion-item>
 
   <ion-item lines="none" class="form-item">
-    <ion-label position="stacked">{{ "approver commission" | translate }} </ion-label>
+    <ion-label position="stacked">{{ "Escrowee Reward" | translate }} </ion-label>
     <app-form-amount-conversion (ionChange)="changeForm()" [(ngModel)]="escrow.commission">
     </app-form-amount-conversion>
 
     <ion-text class="text-error" *ngIf="submitted && errors && errors.commission">
-      {{ "approver commission is wrong" | translate}}
+      {{ "Escrowee Reward is wrong" | translate}}
     </ion-text>
   </ion-item>
 
@@ -83,8 +83,8 @@ shall be included in all copies or substantial portions of the Software.
 
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ "instruction" | translate }}</ion-label>
-    <ion-textarea rows="4" maxlength="60" [(ngModel)]="escrow.instruction" (ionChange)="changeForm()"
-      placeholder="{{ 'enter instruction' | translate }}">
+    <ion-textarea rows="4" maxlength="256" [(ngModel)]="escrow.instruction" (ionChange)="changeForm()"
+      placeholder="{{ 'Please explain here the conditions for approval or rejection of the transaction' | translate }}">
     </ion-textarea>
   </ion-item>
 </ion-list>

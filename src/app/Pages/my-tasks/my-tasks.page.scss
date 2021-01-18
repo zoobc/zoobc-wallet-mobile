@@ -44,7 +44,7 @@
 }
 
 .task-item-margin-top{
-    margin-top: 10px;
+    margin-top: 4px;
 }
 
 .info-list{
@@ -55,11 +55,32 @@
     }
 }
 
+.status{
+  font-weight: bold;
+}
+
 .amount{
     font-size: 1.2em;
     color: purple;
 }
+
 .dateago{
     color: var(--ion-color-medium);
     font-size: 0.8em;
+}
+
+.info-label-amount{
+    text-align: end;
+    color: var(--ion-color-medium);
+}
+
+.info-val-amount{
+    text-align: end;
+    color: var(--ion-color-dark);
+}
+
+.escItem{
+    margin: 15px;
+    border: 1px solid #9D9D9D;
+
 }

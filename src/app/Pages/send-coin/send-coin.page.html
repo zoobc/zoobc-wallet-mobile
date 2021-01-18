@@ -298,10 +298,10 @@ shall be included in all copies or substantial portions of the Software.
       <ion-row *ngIf="(submitted || amount.dirty || amount.touched) && amount.invalid">
         <ion-col col-12>
           <ion-label color="danger" *ngIf="escrowCommision.errors.required">
-            {{ "minimum commission is required" | translate}}
+            {{ "minimum escrowee reward is required" | translate}}
           </ion-label>
           <ion-label color="danger" *ngIf="escrowCommision.errors.min">
-            {{ "minimum commission is" | translate}} {{escrowCommision.errors.min.min}}
+            {{ "minimum escrowee reward is" | translate}} {{escrowCommision.errors.min.min}}
           </ion-label>
         </ion-col>
       </ion-row>

@@ -50,6 +50,7 @@ import { getTranslation, stringToBuffer } from 'src/Helpers/utils';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
+import { getMultisigTitle } from 'src/Helpers/multisig-utils';
 
 @Component({
   selector: 'app-msig-add-signatures',
@@ -67,6 +68,7 @@ export class MsigAddSignaturesPage implements OnInit {
   signers = [];
   getSignature = false;
   account: Account;
+  title: string;
 
   constructor(
     private multisigSrv: MultisigService,
@@ -84,6 +86,7 @@ export class MsigAddSignaturesPage implements OnInit {
 
   ngOnInit() {
     this.draft = this.multisigSrv.draft;
+    this.title = getMultisigTitle(this.draft.txType);
     this.patchValue(this.draft);
     this.participants = this.draft.multisigInfo.participants.map(pc => pc.value);
     this.getSigner();
