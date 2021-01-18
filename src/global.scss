@@ -88,13 +88,9 @@ ion-title{
 }
 
 .background-pin {
-  --background: url("src/assets/images/background.png");
-  // --background: transparent;
-  background-image: url("src/assets/images/background.png");
-  background-repeat:no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center center;
+  --background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
+   // --background: transparent;
+  background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
 }
 
 
@@ -394,11 +390,11 @@ ion-button.item-btn-add{
 }
 
 .footerLogin {
-  padding-bottom: 40px;
+  padding-bottom: 30px;
 }
 
-.titleLogin{
-  padding-top: 40px;
+.headerlogin{
+  padding-top: 45px;
 }
 
 .gridLogin {

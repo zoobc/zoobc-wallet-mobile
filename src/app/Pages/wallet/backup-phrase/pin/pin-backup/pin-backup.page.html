@@ -40,15 +40,15 @@ IMPORTANT: The above copyright notice and this permission notice
 shall be included in all copies or substantial portions of the Software.
 -->
 
-<ion-header>
+<ion-header class="headerlogin">
   <ion-grid>
     <ion-row>
-      <ion-col>
+      <ion-col class="ion-text-center">
         <ion-title color="light">{{ "enter your pin" | translate }}</ion-title>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
+      <ion-col class="ion-text-center">
         <ion-label *ngIf="isLoginValid">&nbsp;</ion-label>
         <ion-label *ngIf="!isLoginValid" class="invalidPin">{{ "invalid pin" | translate }}
         </ion-label>
@@ -58,24 +58,18 @@ shall be included in all copies or substantial portions of the Software.
 </ion-header>
 
 <ion-content class="ion-padding background-pin" fullscreen>
-  <ion-grid class="iongrid">
-    <ion-row class="ionrow">
-      <ion-col>
-        <ion-grid>
-          <ion-row>
-            <ion-col>
+  <ion-grid class="gridLogin">
+    <ion-row class="rowLogin">
+      <ion-col class="ion-text-center">
 
-              <app-pin (ionChange)="login($event)"></app-pin>
-
-            </ion-col>
-          </ion-row>
-        </ion-grid>
+          <app-pin (ionChange)="login($event)"></app-pin>
+          <p>&nbsp;</p>
       </ion-col>
     </ion-row>
   </ion-grid>
 
 </ion-content>
-<ion-footer>
+<ion-footer  class="footerLogin">
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
