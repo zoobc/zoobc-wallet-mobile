@@ -51,12 +51,12 @@ shall be included in all copies or substantial portions of the Software.
     <!-- <div class="scan-container">
       <ion-icon name="zbc-scan" (click)="goToScan()"></ion-icon>
     </div> -->
-    <ion-label class="account" *ngIf="account" color="medium" (click)="switchAccount($event)">
-      <div class="account-name-container">
+    <ion-label class="account ion-text-center" *ngIf="account" color="medium" >
+      <div class="account-name-container  ion-text-center" style="margin-bottom:10px" (click)="switchAccount($event)">
         <h1 class="account-name">{{ account.name }}</h1>
-        <ion-icon name="zbc-chevron-down" color="secondary"></ion-icon>
+        <ion-icon name="zbc-chevron-down" style="color:  #cccccc"></ion-icon>
       </div>
-      <p>{{ account.address.value | shortAddress }}</p>
+      <p><span class="shortAddress">{{ account.address.value | shortAddress }}</span>&nbsp;&nbsp;<ion-icon class="copyAddress" name="copy" (click)="copyToClipboard()"></ion-icon></p>
     </ion-label>
 
     <ion-label class="main-balance">
@@ -64,7 +64,7 @@ shall be included in all copies or substantial portions of the Software.
         <span class="sufix">ZBC</span>
         <span *ngIf="isLoading; else boxAccountBalance" class="skeleton-text" style="width: 80px"></span>
         <ng-template #boxAccountBalance>
-          <span *ngIf="accountBalance">{{ accountBalance.balance/1e8 | number: '0.0-2' }}</span>
+          <span *ngIf="accountBalance">{{ accountBalance.balance/1e8 | number: '0.0-4' }}</span>
         </ng-template>
       </ion-text>
     </ion-label>
@@ -75,7 +75,7 @@ shall be included in all copies or substantial portions of the Software.
         <span class="sufix">ZBC</span>
         <span *ngIf="isLoading; else boxSpendableBalance" class="skeleton-text" style="width: 80px"></span>
         <ng-template #boxSpendableBalance>
-          <span *ngIf="accountBalance">{{ accountBalance.spendableBalance/1e8 | number: '0.0-2' }}</span>
+          <span *ngIf="accountBalance">{{ accountBalance.spendableBalance/1e8 | number: '0.0-4' }}</span>
         </ng-template>
       </ion-text>
     </ion-label>
@@ -149,7 +149,7 @@ shall be included in all copies or substantial portions of the Software.
         <ng-template #transactionList>
 
           <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button
-            (click)="openDetailUnconfirm(pendingtrx)">
+            (click)="goToTransactionDetail(pendingtrx)">
             <ion-label>
               <ion-row class="ion-justify-content-between">
                 <ion-col size="7">

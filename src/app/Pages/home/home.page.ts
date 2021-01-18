@@ -49,7 +49,7 @@ import {
 } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, NavigationExtras } from '@angular/router';
 import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
@@ -76,6 +76,7 @@ import zoobc, {
 import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 import { PopoverBlockchainObjectOptionComponent } from './popover-blockchain-object-option/popover-blockchain-object-option.component';
 import { TransactionService } from 'src/app/Services/transaction.service';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-home',
@@ -88,6 +89,7 @@ export class HomePage implements OnInit, OnDestroy {
     private authService: AuthService,
     private accountService: AccountService,
     private router: Router,
+    private utilSrv: UtilService,
     public modalCtrl: ModalController,
     private menuController: MenuController,
     public loadingController: LoadingController,
@@ -110,12 +112,6 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
 
-    // if account changed
-    this.themeSrv.themeSubject.subscribe(() => {
-      this.theme = this.themeSrv.theme;
-    });
-
-
     // if network changed reload data
     this.networkSrv.changeNodeSubject.subscribe(() => {
       this.loadData();
@@ -135,6 +131,7 @@ export class HomePage implements OnInit, OnDestroy {
   public offset: number;
   startMatch = 0;
   accountBalance: AccountBalance;
+  strBalance = '0.00';
   public isLoading = false;
   public currencyRate = CONST_DEFAULT_RATE;
   public priceInUSD: number;
@@ -176,20 +173,17 @@ export class HomePage implements OnInit, OnDestroy {
 
   async doRefresh(event: any) {
     // this.accountService.fetchAccountsBalance();
-    await this.loadData();
+    this.loadData();
     event.target.complete();
   }
 
-  async ngOnInit() {
-    await this.loadData();
-    this.theme = this.themeSrv.theme;
-    if (!this.theme || this.theme === undefined || this.theme === null) {
-      this.theme = DEFAULT_THEME;
-    }
-    // this.startTimer();
+  ngOnInit() {
+
   }
 
   ionViewWillEnter() {
+    console.log('== ionViewWillEnter ==');
+    this.loadData();
     this.networkSubscription = this.network
       .onDisconnect()
       .subscribe(async () => {
@@ -231,6 +225,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.offset = 1;
 
     this.account = await this.accountService.getCurrAccount();
+    console.log('=== this.account: ', this.account);
     this.currencyRate = this.currencySrv.getRate();
 
     this.getBalance();
@@ -290,13 +285,8 @@ export class HomePage implements OnInit, OnDestroy {
     this.router.navigate(['list-account']);
   }
 
-  openDetailUnconfirm(trx) {
-    this.transactionSrv.tempTrx = trx;
-    this.loadDetailTransaction(trx, 'pending');
-  }
-
-  openDetailTransction(trx) {
-    this.loadDetailTransaction(trx, 'confirm');
+  copyToClipboard() {
+    this.utilSrv.copyToClipboard(this.account.address.value);
   }
 
   goToAccount() {
@@ -377,7 +367,13 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   goToScan() {
-    this.router.navigate(['/qr-scanner']);
+    this.router.navigateByUrl('/qr-scanner');
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        from: 'dashboard'
+      }
+    };
+    this.router.navigate(['/qr-scanner'], navigationExtras);
   }
 
   goToTransactionDetail(trx) {
