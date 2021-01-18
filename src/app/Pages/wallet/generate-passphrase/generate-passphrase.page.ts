@@ -137,21 +137,21 @@ export class GeneratePassphrasePage implements OnInit {
 
   private getPassphraseText() {
     const val = this.plainPassphrase.slice();
-    // const arrayPass = val.split(' ');
-    // let strCopy = 'This is your ZooBC passphrase:\n\n With order number\n-------------------------\n';
-    // for (let i = 0; i < arrayPass.length; i++) {
-    //   strCopy += (i + 1) + '.' + arrayPass[i];
-    //   if (i < 23) {
-    //     strCopy += ',   ';
-    //   }
-    //   if ((i + 1) % 3 === 0) {
-    //     strCopy += '\n';
-    //   }
-    // }
-    // strCopy += '\n\nWithout order number\n-------------------------\n' + val;
-    // strCopy += '\n\n----------- End ----------\n\n';
-    // return strCopy;
-    return val;
+    const arrayPass = val.split(' ');
+    let strCopy = 'This is your ZooBC passphrase:\n\n With order number\n-------------------------\n';
+    for (let i = 0; i < arrayPass.length; i++) {
+      strCopy += (i + 1) + '.' + arrayPass[i];
+      if (i < 23) {
+        strCopy += ',   ';
+      }
+      if ((i + 1) % 3 === 0) {
+        strCopy += '\n';
+      }
+    }
+    strCopy += '\n\nWithout order number\n-------------------------\n' + val;
+    strCopy += '\n\n----------- End ----------\n\n';
+    return strCopy;
+    // return val;
   }
 
   copyToClipboard() {
