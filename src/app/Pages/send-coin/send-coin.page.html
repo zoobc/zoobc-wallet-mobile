@@ -80,11 +80,11 @@ shall be included in all copies or substantial portions of the Software.
             </p>
             <p>&nbsp;</p>
             <p>{{ "current balance" | translate}}</p>
-            <h1>{{ account.balance | number: '0.0-2' }} ZBC</h1>
-            <p>
+            <h1>{{ account.balance | number: '0.0-4' }} ZBC</h1>
+            <!-- <p>
               {{ balanceInUSD | number:
-              '0.0-2' }} {{ currencyRate.name }}
-            </p>
+              '0.0-4' }} {{ currencyRate.name }}
+            </p> -->
           </ion-label>
         </ion-item>
       </ion-col>
@@ -140,7 +140,7 @@ shall be included in all copies or substantial portions of the Software.
           (ionChange)="onAmountChange()"
           >
         </ion-input>
-        <ion-input value="{{ conversionValue.amount[secondaryCurr]  | number: '0.0-2'}}" style="font-size:0.8em" class="ion-text-right" readonly
+        <ion-input value="{{ conversionValue.amount[secondaryCurr]  | number: '0.0-4'}}" style="font-size:0.8em" class="ion-text-right" readonly
           type="text">
         </ion-input>
       </ion-col>
@@ -193,11 +193,11 @@ shall be included in all copies or substantial portions of the Software.
 
     <ion-row *ngIf="optionFee==='custom'" class="ion-row-cont" style="margin-bottom:10px">
       <!-- <ion-col size="8" style="padding-left:10px">
-        <ion-input placeholder="{{'Enter transaction fee'|translate}}" 
+        <ion-input placeholder="{{'Enter transaction fee'|translate}}"
         style="border-bottom: 1px solid #dddddd;font-size:1.2em; color:#0B3D65"
         (ionChange)="validateCustomFee()" maxlength="12"
           type="number" [(ngModel)]="customfee"></ion-input>
-          <ion-input value="{{ amountSecond  | number: '0.0-2'}}" style="font-size:0.8em" class="ion-text-right" readonly type="text">
+          <ion-input value="{{ amountSecond  | number: '0.0-4'}}" style="font-size:0.8em" class="ion-text-right" readonly type="text">
           </ion-input>
       </ion-col>
       <ion-col size="2" style="padding-left: 10px;">
@@ -206,7 +206,7 @@ shall be included in all copies or substantial portions of the Software.
 
       <ion-col size="8" style="padding-left:10px">
         <ion-input placeholder="{{'Enter fee'|translate}}" class="ion-text-right"
-          style="border-bottom: 1px solid #dddddd;font-size:1.2em; color:#0B3D65" 
+          style="border-bottom: 1px solid #dddddd;font-size:1.2em; color:#0B3D65"
           maxlength="12" type="number" formControlName="fee" (ionChange)="onFeeChange()">
         </ion-input>
         <ion-input value="{{ conversionValue.fee[secondaryCurr] | number: '0.0-6'}}" style="font-size:0.9em" class="ion-text-right" readonly
@@ -282,7 +282,7 @@ shall be included in all copies or substantial portions of the Software.
             style="border-bottom: 1px solid #dddddd;font-size:1.2em;" maxlength="12" type="number"
             formControlName="amount" (ionChange)="onAmountChange()">
           </ion-input>
-          <ion-input value="{{ conversionValue.amount[secondaryCurr]  | number: '0.0-2'}}" style="font-size:0.8em"
+          <ion-input value="{{ conversionValue.amount[secondaryCurr]  | number: '0.0-4'}}" style="font-size:0.8em"
             class="ion-text-right" readonly type="text">
           </ion-input>
         </ion-col>
@@ -308,7 +308,7 @@ shall be included in all copies or substantial portions of the Software.
       
       <ion-row>
         <ion-col style="margin-top:15px;" class="ion-text-right" color="primary">
-          {{ "block height" | translate}}: <ion-text color="primary">{{ blockHeight | number: '0.0-2' }}</ion-text>
+          {{ "block height" | translate}}: <ion-text color="primary">{{ blockHeight | number: '0.0-4' }}</ion-text>
         </ion-col>
       </ion-row>
     </ion-grid>
