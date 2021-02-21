@@ -10,7 +10,8 @@
     "build:ios": "cordova build ios --buildFlag='-UseModernBuildSystem=0'",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "git submodule update --init --recursive --remote"
   },
   "private": true,
   "dependencies": {
