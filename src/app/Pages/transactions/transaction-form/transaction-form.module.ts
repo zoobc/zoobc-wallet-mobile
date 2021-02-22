@@ -53,8 +53,8 @@ const routes: Routes = [
     component: TransactionFormPage
   },
   {
-    path: 'send-money',
-    loadChildren: './pages/send-money/send-money.module#SendMoneyModule'
+    path: 'send-zoobc',
+    loadChildren: './pages/send-zoobc/send-zoobc.module#SendZoobcModule'
   },
   {
     path: 'blockchain-object',
