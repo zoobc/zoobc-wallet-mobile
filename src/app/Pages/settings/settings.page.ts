@@ -46,7 +46,7 @@ import {
   SELECTED_LANGUAGE,
   CURRENCY_LIST,
   STORAGE_ACTIVE_CURRENCY,
-  STORAGE_ACTIVE_NETWORK_IDX,
+  STORAGE_ACTIVE_NETWORK_GROUP,
   NETWORK_LIST,
   THEME_OPTIONS,
   STORAGE_ACTIVE_THEME
@@ -60,6 +60,7 @@ import { AuthService } from 'src/app/Services/auth-service';
 import { Router } from '@angular/router';
 import { AlertController, PopoverController } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { GroupData } from 'zbc-sdk';
 
 @Component({
   selector: 'app-settings',
@@ -73,7 +74,8 @@ export class SettingsPage implements OnInit {
   public activeLanguage: any | null;
   public activeTheme: string;
   public activeCurrency: any;
-  public activeNetwork: any;
+  public activeNetwork: string;
+  public activeNetworkGroup: GroupData[] = [];
   public currencyRateList: any;
   public currencyList = CURRENCY_LIST;
   public networks = NETWORK_LIST;
@@ -108,8 +110,6 @@ export class SettingsPage implements OnInit {
   private textCancel: string;
 
   async ngOnInit() {
-    this.getCurrencyRates();
-    this.currencyRate = this.currencyService.getRate();
 
     const activeLanguageCode = await this.strgSrv.get(SELECTED_LANGUAGE);
     this.activeLanguage = this.languageService.getOne(activeLanguageCode ? activeLanguageCode : 'en');
@@ -117,9 +117,13 @@ export class SettingsPage implements OnInit {
     const activeCurrencyCode = await this.strgSrv.get(STORAGE_ACTIVE_CURRENCY);
     this.activeCurrency = this.currencyService.getOne(activeCurrencyCode);
 
-    this.activeNetwork = this.networks[await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX)].name;
+    const group: GroupData = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_GROUP);
+    console.log('== group selected: ', group);
+    this.activeNetworkGroup[0] = group;
 
-    this.activeTheme = await this.strgSrv.get(STORAGE_ACTIVE_THEME);
+    this.activeNetwork = group.label;
+    console.log('== activeNetwork: ', this.activeNetwork);
+
 
     this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
       this.translateLang();
@@ -148,21 +152,16 @@ export class SettingsPage implements OnInit {
 
 
   ionViewWillEnter() {
-    this.selectThemeSubscription = this.themeSrv.themeSubject.subscribe((value: string) => {
-      this.activeTheme = value;
-    });
 
     this.selectNetworkSubscription = this.networkService.changeNodeSubject.subscribe((network: any) => {
-      this.activeNetwork = network.name;
+      this.activeNetwork = network.label;
     });
 
     this.selectLanguageSubscription = this.languageService.selectLanguageSubject.subscribe((language: any) => {
       this.activeLanguage = language;
     });
 
-    this.selectCurrencySubscription = this.currencyService.selectCurrencySubject.subscribe((currency: ICurrency) => {
-      this.activeCurrency = currency;
-    });
+
   }
 
   ionViewWillLeave() {
