@@ -104,7 +104,6 @@ export function createSetupDatasetBytes(form: any): Buffer {
     recipientAccountAddress: recipientAddress,
     fee,
   };
-  console.log('=== data createSetupDatasetBytes: ', data);
-
+  
   return setupDatasetBuilder(data);
 }
