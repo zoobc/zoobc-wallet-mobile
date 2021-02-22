@@ -171,7 +171,7 @@ export class TransactionDetailPage implements OnInit {
     });
   }
 
-  close(){
+  close() {
     this.navCtrl.pop();
   }
 
