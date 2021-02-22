@@ -63,7 +63,8 @@
 
     .amount{
       display: flex;
-      align-items: center;
+      align-items:baseline;
+      vertical-align: baseline;
 
       .skeleton-text{
         height: 24px;
@@ -75,6 +76,10 @@
     }
   }
 
+  .decimalpart{
+    font-size: 0.6em;
+  }
+  
   .other-balance {
     color: #FFFFFF;
     opacity: 0.6;

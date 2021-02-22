@@ -41,12 +41,12 @@ shall be included in all copies or substantial portions of the Software.
 -->
 
 <ion-content>
+  <!-- <div class="ion-text-center readwarning" *ngIf="selectedNetwork != 1"><span class="blink_me">Attention: you are NOT in the ZooBC MainNet</span></div> -->
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
       refreshingText="{{ 'Refreshing' | translate }} ...">
     </ion-refresher-content>
   </ion-refresher>
-
   <div class="home-header">
     <!-- <div class="scan-container">
       <ion-icon name="zbc-scan" (click)="goToScan()"></ion-icon>
@@ -60,22 +60,23 @@ shall be included in all copies or substantial portions of the Software.
     </ion-label>
 
     <ion-label class="main-balance">
-      <ion-text class="amount">
+      <ion-text class="amount" (click)="showBalanceFull(accountBalance)">
         <span class="sufix">ZBC</span>
         <span *ngIf="isLoading; else boxAccountBalance" class="skeleton-text" style="width: 80px"></span>
         <ng-template #boxAccountBalance>
-          <span *ngIf="accountBalance">{{ accountBalance.balance/1e8 | number: '0.0-4' }}</span>
+          <span *ngIf="sBalances && sBalances[0]">{{sBalances[0] | number:'1.0-0'}}</span><span class="decimalpart" *ngIf="sBalances && sBalances[1]">.{{sBalances[1]}}</span>
         </ng-template>
       </ion-text>
     </ion-label>
 
-    <ion-label class="other-balance">
+    <ion-label class="other-balance" *ngIf="this.isBalanceEqual">
       <ion-text class="amount">
-        <span>{{ "spendable" | translate }}</span>
+        <span>{{ "balance" | translate }}</span>
         <span class="sufix">ZBC</span>
         <span *ngIf="isLoading; else boxSpendableBalance" class="skeleton-text" style="width: 80px"></span>
         <ng-template #boxSpendableBalance>
-          <span *ngIf="accountBalance">{{ accountBalance.spendableBalance/1e8 | number: '0.0-4' }}</span>
+          <span *ngIf="accountBalance">{{ accountBalance.balance/1e8 | number: '0.0-4' }}</span>
+          <span *ngIf="lockedBalance">, locked:  {{lockedBalance/1e8 | number: '0.0-4'}}</span>
         </ng-template>
       </ion-text>
     </ion-label>

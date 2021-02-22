@@ -57,7 +57,6 @@ import {
   CONST_DEFAULT_RATE,
   DEFAULT_THEME
 } from 'src/environments/variable.const';
-import { ThemeService } from 'src/app/Services/theme.service';
 import { Currency } from 'src/app/Interfaces/currency';
 import { NetworkService } from 'src/app/Services/network.service';
 import { makeShortAddress } from 'src/Helpers/converters';
@@ -84,7 +83,10 @@ import { UtilService } from 'src/app/Services/util.service';
   styleUrls: ['./home.page.scss']
 })
 export class HomePage implements OnInit, OnDestroy {
-
+  sBalances: string[];
+  // selectedNetwork = 0;
+  isBalanceEqual: boolean;
+  lockedBalance: number;
   constructor(
     private authService: AuthService,
     private accountService: AccountService,
@@ -96,7 +98,6 @@ export class HomePage implements OnInit, OnDestroy {
     private networkSrv: NetworkService,
     private currencySrv: CurrencyService,
     public toastController: ToastController,
-    private themeSrv: ThemeService,
     private transactionSrv: TransactionService,
     private network: Network,
     private alertCtrl: AlertController,
@@ -125,6 +126,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.accountService.restoreAccounts();
 
   }
+
   timeLeft = 12;
   interval: any;
   clickSub: any;
@@ -171,6 +173,18 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
+  formatBalance() {
+    const blnc  =  (this.accountBalance.spendableBalance / 1e8).toFixed(4).toString();
+    if (blnc.indexOf('.')) {
+      this.sBalances = blnc.split('.');
+    } else if ( blnc.indexOf(',')) {
+      this.sBalances = blnc.split(',');
+    }
+    this.lockedBalance =  Number(this.accountBalance.balance) - Number(this.accountBalance.spendableBalance);
+    this.isBalanceEqual = (Number(this.accountBalance.balance) > Number(this.accountBalance.spendableBalance));
+  }
+
+
   async doRefresh(event: any) {
     // this.accountService.fetchAccountsBalance();
     this.loadData();
@@ -178,11 +192,17 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // this.startTimer();
+  }
 
+  startTimer() {
+    setInterval(async () => {
+     this.getBalance();
+    }, 30000);
   }
 
   ionViewWillEnter() {
-    console.log('== ionViewWillEnter ==');
+
     this.loadData();
     this.networkSubscription = this.network
       .onDisconnect()
@@ -223,13 +243,8 @@ export class HomePage implements OnInit, OnDestroy {
   async loadData() {
     this.priceInUSD = this.currencySrv.getPriceInUSD();
     this.offset = 1;
-
     this.account = await this.accountService.getCurrAccount();
-    console.log('=== this.account: ', this.account);
-    this.currencyRate = this.currencySrv.getRate();
-
     this.getBalance();
-
   }
 
 
@@ -245,12 +260,29 @@ export class HomePage implements OnInit, OnDestroy {
     zoobc.Account.getBalance(this.account.address)
       .then((data: AccountBalance) => {
         this.accountBalance = data;
+        this.formatBalance();
       })
       .catch(() => (this.isError = true))
       .finally(() => {
         this.isLoading = false;
         this.getTransactions();
       });
+  }
+
+  async showBalanceFull(accountBalance: any) {
+
+    if (!accountBalance) {
+      return;
+    }
+    const strBalance =  'Balance: ' + (this.accountBalance.balance / 1e8).toFixed(8)
+    + '\n Spendable: ' +  (this.accountBalance.spendableBalance / 1e8).toFixed(8);
+    const alert = await this.alertCtrl.create({
+      message: strBalance,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+
   }
 
   openMenu() {
@@ -316,7 +348,7 @@ export class HomePage implements OnInit, OnDestroy {
       this.goToMultisig();
     } else {
       // this.router.navigate(['/sendcoin']);
-      this.router.navigate(['/transaction-form/send-money']);
+      this.router.navigate(['/transaction-form/send-zoobc']);
     }
   }
 
@@ -420,7 +452,7 @@ export class HomePage implements OnInit, OnDestroy {
 
       const params: TransactionListParams = {
         address: this.account.address,
-        transactionType: this.txType,
+         transactionType: this.txType,
         pagination: {
           page: 1,
           limit: 10,
@@ -429,7 +461,7 @@ export class HomePage implements OnInit, OnDestroy {
 
       try {
         const trxList = await zoobc.Transactions.getList(params);
-
+        console.log('== trx lst: ', trxList);
         let lastHeight = 0;
         let firstHeight = 0;
         if (trxList.total > 0) {
@@ -476,7 +508,7 @@ export class HomePage implements OnInit, OnDestroy {
           return recent;
         });
         this.recentTx = tx;
-        console.log('== ntx: ', tx);
+
         this.totalTx = trxList.total;
         const paramPool: MempoolListParams = {
           address: this.account.address,
