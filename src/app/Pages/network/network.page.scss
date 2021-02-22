@@ -42,3 +42,12 @@
     margin-top: 15px;
     margin-bottom: 15px;
 }
+.blink_me {
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    30% {
+      opacity: 0;
+    }
+}

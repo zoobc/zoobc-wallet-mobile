@@ -39,13 +39,13 @@ ZooBC is architected by Roberto Capodieci & Barton Johnston
 IMPORTANT: The above copyright notice and this permission notice
 shall be included in all copies or substantial portions of the Software.
 -->
-
+<!-- <div class="ion-text-center blink_me">Attention: you are NOT in the ZooBC MainNet</div> -->
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ "send money" | translate }}</ion-title>
+    <ion-title>{{ "Transfer ZBC" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
@@ -85,7 +85,7 @@ shall be included in all copies or substantial portions of the Software.
             {{ "amount cannot be empty" | translate}}
           </ion-text>
           <ion-text class="text-error" *ngIf="amount.errors.min">
-            {{ "insufficient balance" | translate}}
+            {{ "amount minimum 0" | translate}}
           </ion-text>
           <ion-text class="text-error" *ngIf="amount.errors.max">
             {{ "insufficient balance. the maximum amount is" | translate}} {{ amount.errors.max.max }} ZBC
@@ -94,15 +94,27 @@ shall be included in all copies or substantial portions of the Software.
       </ion-item>
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
-        <app-form-fee formControlName="fee" ngDefaultControl></app-form-fee>
+        <!-- <app-form-fee formControlName="fee" ngDefaultControl></app-form-fee> -->
+        <app-form-amount-conversion formControlName="fee" ngDefaultControl></app-form-amount-conversion>
+
         <ng-container *ngIf="(submitted || fee.dirty || fee.touched) && fee.invalid">
           <ion-text class="text-error" *ngIf="fee.errors.required">
             {{ "transaction fee cannot be empty" | translate}}
           </ion-text>
-          <ion-text class="text-error" *ngIf="fee.errors.min">
+          <ion-text class="text-error" *ngIf="minError">
+            {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fee.errors.min.min }}
+          </ion-text>
+          <ion-text class="text-error" *ngIf="minError || fee.errors.min">
             {{ "transaction fee is not valid! minimum fee is" | translate}} {{ fee.errors.min.min }}
           </ion-text>
         </ng-container>
+      </ion-item>
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">
+          Message
+        </ion-label>
+        <ion-textarea rows="3" formControlName="message" (ionChange)="updateMinimumFee()">
+        </ion-textarea>
       </ion-item>
     </ion-list>
 

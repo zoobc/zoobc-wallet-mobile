@@ -59,29 +59,36 @@ shall be included in all copies or substantial portions of the Software.
 
       <ion-item>
         <ion-label position="stacked">{{ 'name' | translate }}</ion-label>
-        <ion-input type="text" formControlName="name" required></ion-input>
-      </ion-item>
-      <!-- Error messages -->
-      <ion-item lines="none" *ngIf="fName.touched && fName.hasError">
-        <ion-label color="danger" *ngIf="fName.hasError('required')">
-          {{ 'name is required' | translate }}!
-        </ion-label>
+        <ion-input type="text" placeholder="input name" formControlName="name" required></ion-input>
+        <ng-container *ngIf="fName.touched && fName.hasError">
+          <ion-label color="danger" *ngIf="fName.hasError('required')">
+            {{ 'name is required' | translate }}!
+          </ion-label>
+        </ng-container>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">
           Network {{ 'address' | translate }}
         </ion-label>
-        <ion-input type="text" placeholder="http://172.432.29.4:7001" formControlName="host" required></ion-input>
+        <ion-textarea rows="10"
+         type="text" placeholder="input node address ex: http://172.432.29.4:7001 one per line and press enter at the end of line."
+        style="white-space: pre-wrap; text-indent: 50px;"
+         formControlName="host" required></ion-textarea>
       </ion-item>
 
       <ion-item lines="none" *ngIf="fHost.touched && fHost.hasError" lines="none">
         <ion-label color="danger" *ngIf="fHost.hasError('required')">
           {{ 'node address is required' | translate }}!
         </ion-label>
-        <ion-label color="danger" *ngIf="fHost.hasError('pattern')">
-          {{ 'invalid node address format (with port)' | translate }}!
+        <ion-label color="danger" *ngIf="!isAllAddressValid">
+          {{ 'one or more node address is not valid!' | translate }}!
         </ion-label>
+
+        <ion-label color="success" *ngIf="isAllAddressValid">
+          {{ 'all node address saved successfully!' | translate }}!
+        </ion-label>
+
       </ion-item>
 
       <ion-item class="btnForm" lines="none">
@@ -97,9 +104,13 @@ shall be included in all copies or substantial portions of the Software.
       <ion-label><span>{{"Tap list to switch network" | translate}}.</span></ion-label>
     </ion-list-header>
     <ion-item *ngFor="let network of networks; let idx = index">
-      <ion-label (click)="selectNetwork(idx)">
-        <ion-icon name="cloud-outline"></ion-icon>&nbsp;
-        {{ network.name }}
+      <ion-label (click)="selectNetwork(idx)"  *ngIf="activeNetwork && activeNetwork.label && network.label==activeNetwork.label">
+        <ion-icon name="cloudy" class="blink_me" style="font-size: 1.4em; color: #10A3D6"></ion-icon>&nbsp;
+        {{ network.label }}
+      </ion-label>
+      <ion-label (click)="selectNetwork(idx)" *ngIf="network.label!=activeNetwork.label">
+        <ion-icon name="cloudy"  style="font-size: 1.4em; color:#CFCFCF"></ion-icon>&nbsp;
+        {{ network.label }}
       </ion-label>
       <ion-icon name="zbc-option" *ngIf="!network.default" slot="end" (click)="showOption($event, idx)"></ion-icon>
     </ion-item>

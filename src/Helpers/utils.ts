@@ -62,11 +62,10 @@ export function getTranslation(
 export function stringToBuffer(str: string) {
   return Buffer.from(str, 'base64');
 }
-
 export function uniqueParticipant(formArray: FormArray): ValidationErrors {
-  const values = formArray.value.filter(val => val.length > 0);
+  const values = formArray.value.filter((val: string | any[]) => val.length > 0);
   const controls = formArray.controls;
-  const result = values.some((element, index) => {
+  const result = values.some((element: any, index: any) => {
     return values.indexOf(element) !== index;
   });
   const invalidControls = controls.filter(ctrl => ctrl.valid === false);
@@ -76,7 +75,7 @@ export function uniqueParticipant(formArray: FormArray): ValidationErrors {
   return null;
 }
 
-export function base64ToHex(str) {
+export function base64ToHex(str: string) {
   const raw = atob(str);
   let result = '';
   for (let i = 0; i < raw.length; i++) {
@@ -85,6 +84,7 @@ export function base64ToHex(str) {
   }
   return result.toUpperCase();
 }
+
 
 export function onCopyText(text: string) {
   const selBox = document.createElement('textarea');
@@ -136,16 +136,6 @@ export function truncate(num: number, places: number): number {
   return Math.trunc(num * Math.pow(10, places)) / Math.pow(10, places);
 }
 
-export function calculateMinFee(timeout: number) {
-  const blockPeriod = 10 * 1e8;
-  const feePerBlockPeriod = 0.01 * 1e8;
-  if (timeout) {
-    return (
-      (Math.ceil((timeout * 1e8) / blockPeriod) * feePerBlockPeriod) / 1e8
-    );
-  } else { return feePerBlockPeriod / 1e8; }
-}
-
 export function jsonBufferToString(buf: any) {
   if (!buf) { return ''; }
   try {
@@ -155,12 +145,13 @@ export function jsonBufferToString(buf: any) {
   }
 }
 
-export function calcMinFee(data: any) {
-  const blockPeriod = 10 * 1e8;
-  const feePerBlockPeriod = 0.01 * 1e8;
+// export function calcMinFee(data: any) {
+//   const blockPeriod = 10 * 1e8;
+//   const feePerBlockPeriod = 0.01 * 1e8;
 
-  if (data.timeout) {
-    return (Math.ceil((data.timeout * 1e8) / blockPeriod) * feePerBlockPeriod) / 1e8;
-  } else { return feePerBlockPeriod / 1e8; }
-}
+//   if (data.timeout) {
+//     return (Math.ceil((data.timeout * 1e8) / blockPeriod) * feePerBlockPeriod) / 1e8;
+//   } else { return feePerBlockPeriod / 1e8; }
+// }
+
 

@@ -40,7 +40,7 @@
 
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { SendMoneyFormComponent } from './send-money-form.component';
+import { SendZoobcFormComponent } from './send-zoobc-form.component';
 import {TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -49,9 +49,9 @@ import { IonicStorageModule } from '@ionic/storage';
 import { Network } from '@ionic-native/network/ngx';
 
 
-describe('SendMoneyFormComponent', () => {
-  let component: SendMoneyFormComponent;
-  let fixture: ComponentFixture<SendMoneyFormComponent>;
+describe('SendZoobcFormComponent', () => {
+  let component: SendZoobcFormComponent;
+  let fixture: ComponentFixture<SendZoobcFormComponent>;
 
 
   const modalSpy = jasmine.createSpyObj('Modal', ['present']);
@@ -64,7 +64,7 @@ describe('SendMoneyFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SendMoneyFormComponent],
+      declarations: [SendZoobcFormComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
           TranslateModule.forRoot(),
@@ -84,7 +84,7 @@ describe('SendMoneyFormComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SendMoneyFormComponent);
+    fixture = TestBed.createComponent(SendZoobcFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

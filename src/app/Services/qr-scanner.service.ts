@@ -47,6 +47,7 @@ import { Subject } from 'rxjs';
 export class QrScannerService implements OnInit {
 
   public qrScannerSubject: Subject<string> = new Subject<string>();
+  jsonData: string;
   constructor() { }
 
   ngOnInit() {
@@ -54,5 +55,11 @@ export class QrScannerService implements OnInit {
 
   setResult(data: string) {
     this.qrScannerSubject.next(data);
+    this.jsonData = data;
   }
+
+  getResult(){
+    return this.jsonData;
+  }
+
 }

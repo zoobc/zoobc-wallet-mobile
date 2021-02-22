@@ -49,29 +49,31 @@ import {
   NavController
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Contact } from 'src/app/Interfaces/contact';
 import { TrxstatusPage } from 'src/app/Pages/send-coin/modals/trxstatus/trxstatus.page';
 import { AccountService } from 'src/app/Services/account.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
+import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
-import { UtilService } from 'src/app/Services/util.service';
+import { Account } from 'src/app/Interfaces/account';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { calculateMinFee } from 'src/Helpers/utils';
 import {
   addressValidator,
   escrowFieldsValidator
 } from 'src/Helpers/validators';
-import { Subscription } from 'zbc-sdk';
+import { calculateMinimumFee, Subscription } from 'zbc-sdk';
 
 @Component({
-  selector: 'app-send-money-form',
-  templateUrl: './send-money-form.component.html',
-  styleUrls: ['./send-money-form.component.scss']
+  selector: 'app-send-zoobc-form',
+  templateUrl: './send-zoobc-form.component.html',
+  styleUrls: ['./send-zoobc-form.component.scss']
 })
-export class SendMoneyFormComponent implements OnInit {
+export class SendZoobcFormComponent implements OnInit {
   withEscrow: boolean;
   allFees = this.transactionSrv.transactionFees(TRANSACTION_MINIMUM_FEE);
 
   private minimumFee = TRANSACTION_MINIMUM_FEE;
+  private minimumTime = 1;
   alertConnectionTitle = '';
   alertConnectionMsg = '';
   networkSubscription = null;
@@ -83,18 +85,23 @@ export class SendMoneyFormComponent implements OnInit {
     recipient: new FormControl({}, [Validators.required, addressValidator]),
     amount: new FormControl(0, [
       Validators.required,
-      Validators.min(0.00000001)
+      Validators.min(0)
     ]),
     fee: new FormControl(this.allFees[0].fee, [
       Validators.required,
       Validators.min(this.minimumFee)
-    ])
+    ]),
+    message: new FormControl('', []),
   });
 
   submitted = false;
+  account: Account;
+  minError = false;
+  escrowInstruction = '';
 
   constructor(
     private router: Router,
+    private qrScannerSrv: QrScannerService,
     public loadingController: LoadingController,
     private modalController: ModalController,
     public alertController: AlertController,
@@ -105,10 +112,25 @@ export class SendMoneyFormComponent implements OnInit {
     private alertCtrl: AlertController,
     private navCtrl: NavController,
     private accountSrv: AccountService
-  ) { }
+  ) {
+    // if network changed reload data
+
+    if (this.transactionSrv.txEscrowSubject) {
+      this.transactionSrv.txEscrowSubject.subscribe((value) => {
+        // console.log('value: ', value);
+        this.updateMinimumFee();
+      });
+    }
+
+
+  }
 
   get sender() {
     return this.sendForm.get('sender');
+  }
+
+  get message() {
+    return this.sendForm.get('message');
   }
 
   get recipient() {
@@ -127,17 +149,36 @@ export class SendMoneyFormComponent implements OnInit {
     return this.sendForm.get('behaviorEscrow');
   }
 
+  getRecipientFromScanner() {
+    const str  = this.qrScannerSrv.getResult();
+
+    if (str) {
+      const json = str.split('||');
+
+      if (json && json[0]) {
+        const addres: Contact = {
+          name: '-',
+          address: json[0]
+        };
+        this.recipient.setValue(addres);
+      }
+
+      if (json && json[1]) {
+        this.amount.setValue(json[1]);
+      }
+    }
+
+  }
 
   setBehaviorEscrowChanges() {
+    console.log(' .. escrow changed');
     this.behaviorEscrowChangesSubscription = this.behaviorEscrow.valueChanges.subscribe(
       escrowValues => {
         if (escrowValues.commission) {
           this.setAmountValidation();
         }
-
         if (escrowValues.timeout) {
-          this.minimumFee = calculateMinFee(escrowValues.timeout.value);
-
+          // this.updateMinimumFee();
           this.setFeeValidation();
           this.setAmountValidation();
         }
@@ -146,8 +187,9 @@ export class SendMoneyFormComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const account = await this.accountSrv.getCurrAccount();
-    this.sender.setValue(account);
+    this.account = await this.accountSrv.getCurrAccount();
+    this.sender.setValue(this.account);
+    this.getRecipientFromScanner();
   }
 
   showLoading() {
@@ -169,17 +211,59 @@ export class SendMoneyFormComponent implements OnInit {
     }, 1000);
   }
 
+  updateMinimumFee() {
+    console.log('---- update value ---');
+    let msg = this.message.value;
+    this.minimumTime = 1;
+    if (this.behaviorEscrow && this.behaviorEscrow.value) {
+
+      console.log('---- update behaviorEscrow ---: ', this.behaviorEscrow.value);
+      // console.log('---- instruction ---: ', this.behaviorEscrow.value.instruction);
+
+      const currentTime  = Math.floor(Date.now() / 1000);
+      let timeDiff  = this.behaviorEscrow.value.timeout - currentTime;
+      // console.log('---- timeout ---: ', this.behaviorEscrow.value.timeout);
+      // console.log('---- current ---: ', currentTime);
+      // console.log('---- timeDiff ---: ', timeDiff);
+      // console.log('---- timeDiffMin ---: ', timeDiff / 60);
+      // console.log('---- timeDiffHour ---: ', timeDiff / 3600);
+      const pert24Hour = Math.round(timeDiff / (3600 * 24));
+
+      // console.log('---- timeDiff24Hour ---: ', pert24Hour);
+
+      if (timeDiff < 0) {
+        timeDiff = 0;
+      }
+      this.minimumTime = 1 + pert24Hour;
+      // console.log('---- minimumTime ---: ', this.minimumTime);
+      msg += this.behaviorEscrow.value.instruction;
+    }
+
+    const fee  = calculateMinimumFee(msg.length, 1).toFixed(6);
+    this.minimumFee  = Number(fee); // 1.01;
+
+    this.fee.setValue(this.minimumFee);
+
+    console.log('---- minimumFee: ', this.minimumFee);
+
+  }
+
+
   setAmountValidation() {
+
+    let commition =  0;
+    if (this.behaviorEscrow && this.behaviorEscrow.value ) {
+        commition = this.behaviorEscrow.value.commission;
+    }
+
     this.amount.setValidators([
       Validators.required,
-      Validators.min(0.00000001),
+      Validators.min(0),
       Validators.max(
         this.sender.value.balance -
         (this.minimumFee > this.fee.value
           ? this.minimumFee
-          : this.fee.value) -
-
-        this.behaviorEscrow.value.commission
+          : this.fee.value) - commition
       )
     ]);
 
@@ -195,6 +279,7 @@ export class SendMoneyFormComponent implements OnInit {
   }
 
   changeWithEscrow(value: boolean) {
+    console.log(value);
     this.withEscrow = value;
 
     if (value) {
@@ -203,7 +288,7 @@ export class SendMoneyFormComponent implements OnInit {
         new FormControl({}, [escrowFieldsValidator])
       );
 
-      this.minimumFee = calculateMinFee(this.behaviorEscrow.value.timeout);
+      this.minimumFee = calculateMinimumFee(this.behaviorEscrow.value.timeout, 1);
       this.setBehaviorEscrowChanges();
     } else {
       this.sendForm.removeControl('behaviorEscrow');
@@ -217,33 +302,80 @@ export class SendMoneyFormComponent implements OnInit {
     this.setAmountValidation();
   }
 
+  async presentAlertMinFeeConfirm() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirm!',
+      message: 'Transaction  fee  <strong>changed</strong>!!!\n please check it again!',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+            // return;
+          }
+        }, {
+          text: 'Okay',
+          handler: () => {
+            this.doSend();
+            console.log('Confirm Okay');
+          }
+        }
+      ]
+    });
 
+    await alert.present();
+  }
 
   async submit() {
+    this.minError = false;
     this.submitted = true;
+   // const msgLength = (this.message.value).length;
+    // console.log('=== msgLength: ', msgLength);
+    // const minFee = calculateMinimumFee(msgLength, 1);
+    // this.minimumFee = minFee;
 
+
+    if (this.fee.value < this.minimumFee) {
+      this.minError = true;
+      return;
+    }
+
+    if (this.fee.value > TRANSACTION_MINIMUM_FEE) {
+      this.presentAlertMinFeeConfirm();
+    } else {
+      this.doSend();
+    }
+
+  }
+
+  doSend() {
     if (this.sendForm.valid) {
       const state: any = {
         sender: this.sender.value,
         recipient: this.recipient.value,
         amount: this.amount.value,
         fee: this.fee.value,
+        message: this.message.value,
         withEscrow: this.withEscrow
       };
 
       if (this.withEscrow) {
         state.behaviorEscrow = this.behaviorEscrow.value;
+        console.log('== this.behaviorEscrow.value: ', this.behaviorEscrow.value);
       }
 
       this.transactionSrv.saveTrx(state);
-      this.router.navigate(['transaction-form/send-money/summary']);
+      this.router.navigate(['transaction-form/send-zoobc/summary']);
     }
   }
 
 
   onBehaviorEscrowChange() {
     this.minimumFee = this.behaviorEscrow.value && this.behaviorEscrow.value.timeout ?
-      calculateMinFee(this.behaviorEscrow.value.timeout) : TRANSACTION_MINIMUM_FEE;
+    calculateMinimumFee(this.behaviorEscrow.value.timeout, 1) : TRANSACTION_MINIMUM_FEE;
 
     this.setFeeValidation();
     this.setAmountValidation();
@@ -293,7 +425,7 @@ export class SendMoneyFormComponent implements OnInit {
   }
 
   async getMinimumFee(timeout: number) {
-    const fee: number = calculateMinFee(timeout);
+    const fee: number = calculateMinimumFee(timeout, 1);
     return fee;
   }
 

@@ -39,31 +39,31 @@
 // shall be included in all copies or substantial portions of the Software.
 
 // http://ionicframework.com/docs/theming/
-@import "~@ionic/angular/css/core.css";
-@import "~@ionic/angular/css/normalize.css";
-@import "~@ionic/angular/css/structure.css";
-@import "~@ionic/angular/css/typography.css";
-@import "~@ionic/angular/css/display.css";
-@import "~@ionic/angular/css/padding.css";
-@import "~@ionic/angular/css/float-elements.css";
-@import "~@ionic/angular/css/text-alignment.css";
-@import "~@ionic/angular/css/text-transformation.css";
-@import "~@ionic/angular/css/flex-utils.css";
+@import '~@ionic/angular/css/core.css';
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/display.css';
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
 
 @font-face {
-	font-family: 'Roboto-Medium';
-	src: url('assets/fonts/roboto-medium/Roboto-Medium.eot');
+  font-family: 'Roboto-Medium';
+  src: url('assets/fonts/roboto-medium/Roboto-Medium.eot');
   src: url('assets/fonts/roboto-medium/Roboto-Medium.woff') format('woff'),
-       url('assets/fonts/roboto-medium/Roboto-Medium.ttf') format('truetype'),
-       url('assets/fonts/roboto-medium/Roboto-Medium.svg') format('svg');
-	font-weight: normal;
-	font-style: normal;
+    url('assets/fonts/roboto-medium/Roboto-Medium.ttf') format('truetype'),
+    url('assets/fonts/roboto-medium/Roboto-Medium.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
 :root,
-:root[mode="md"],
-:root[mode="ios"] {
-  --ion-font-family: "Roboto-Medium", sans-serif;
+:root[mode='md'],
+:root[mode='ios'] {
+  --ion-font-family: 'Roboto-Medium', sans-serif;
   font-family: var(--ion-font-family) !important;
 }
 
@@ -83,58 +83,53 @@
   color: rgb(255, 255, 93);
 }
 
-ion-title{
-  font-size: 1.0em;
+ion-title {
+  font-size: 1em;
 }
 
 .background-pin {
-  --background: url("src/assets/images/background.png");
+  --background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
   // --background: transparent;
-  background-image: url("src/assets/images/background.png");
-  background-repeat:no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center center;
+  background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
 }
 
-
-.bg-header-night{
+.bg-header-night {
   --background: transparent;
-  background-image: url("src/assets/images/background-night.png");
-  background-repeat:no-repeat;
+  background-image: url('src/assets/images/background-night.png');
+  background-repeat: no-repeat;
   background-size: cover;
   //background-attachment: fixed;
   background-position: center center;
 }
 
-.bg-header-zoobc{
+.bg-header-zoobc {
   --background: transparent;
-  background-image: url("src/assets/images/zoobc.png");
-  background-repeat:no-repeat;
+  background-image: url('src/assets/images/zoobc.png');
+  background-repeat: no-repeat;
   background-size: cover;
   //background-attachment: fixed;
   background-position: center center;
 }
 
-.bg-header-bcz{
+.bg-header-bcz {
   --background: transparent;
-  background-image: url("src/assets/images/background.png");
-  background-repeat:no-repeat;
+  background-image: url('src/assets/images/background.png');
+  background-repeat: no-repeat;
   background-size: cover;
   //background-attachment: fixed;
   background-position: center center;
 }
 
-.bg-header-day{
+.bg-header-day {
   // --background: transparent;
-  background-image: url("src/assets/images/background-day.png");
-  background-repeat:no-repeat;
+  background-image: url('src/assets/images/background-day.png');
+  background-repeat: no-repeat;
   background-size: cover;
   //background-attachment: fixed;
   background-position: center center;
 }
 
-.alertCss{
+.alertCss {
   // --background: var(--ion-color-light) !important;
   // --color: var(--ion-color-dark) !important;
   --background: #ffffff !important;
@@ -146,22 +141,22 @@ ion-title{
   margin-top: 0.2rem;
 }
 
-ion-list.form-list{
-  ion-item.form-item{
+ion-list.form-list {
+  ion-item.form-item {
     --padding-start: 0;
     --inner-padding-end: 0;
 
     margin-bottom: 1rem;
 
-    &:last-child{
+    &:last-child {
       margin-bottom: 0;
     }
   }
 }
 
-ion-item.form-item{
-
-  ion-input, ion-textarea,
+ion-item.form-item {
+  ion-input,
+  ion-textarea,
   .input-container {
     padding-left: 2px !important;
     padding-right: 2px !important;
@@ -169,16 +164,16 @@ ion-item.form-item{
     padding-top: 2px !important;
   }
 
-  &.item-label-stacked{
+  &.item-label-stacked {
     display: flex;
     flex-direction: row;
 
-    >* {
+    > * {
       width: 100%;
     }
 
     .label-stacked.sc-ion-label-md-h {
-      transform: translate3d(0, 0, 0) scale(.75);
+      transform: translate3d(0, 0, 0) scale(0.75);
     }
 
     .sc-ion-textarea-md-h {
@@ -214,7 +209,6 @@ ion-item.form-item{
     }
 
     &.item-has-focus {
-
       input,
       textarea {
         -webkit-box-shadow: 0px 0px 0px 2px rgba(69, 118, 186, 1);
@@ -225,7 +219,6 @@ ion-item.form-item{
   }
 
   .input-container {
-
     input,
     textarea,
     button {
@@ -250,7 +243,7 @@ ion-item.form-item{
       }
     }
 
-    textarea{
+    textarea {
       height: 80px;
       resize: none;
     }
@@ -273,7 +266,6 @@ ion-item.form-item{
       }
     }
   }
-
 }
 
 .popover-account .popover-content {
@@ -281,14 +273,14 @@ ion-item.form-item{
   top: 20% !important;
 }
 
-.info-label{
+.info-label {
   color: var(--ion-color-medium);
 }
 
-.info-val{
+.info-val {
   color: var(--ion-color-dark);
 
-  .none{
+  .none {
     color: #ccc;
   }
 }
@@ -306,7 +298,12 @@ ion-item.form-item{
 
 .skeleton-text {
   height: 16px;
-  background-image: linear-gradient(90deg, #f4f4f4 0px, rgba(229, 229, 229, 0.8) 40px, #f4f4f4 80px);
+  background-image: linear-gradient(
+    90deg,
+    #f4f4f4 0px,
+    rgba(229, 229, 229, 0.8) 40px,
+    #f4f4f4 80px
+  );
   background-size: 1000px;
   border-radius: 4px;
   animation: shine-lines 2s infinite ease-out;
@@ -320,7 +317,7 @@ ion-item.form-item{
   }
 }
 
-ion-button.item-btn-add{
+ion-button.item-btn-add {
   font-weight: 700;
   margin-left: 0;
   margin-right: 0;
@@ -329,10 +326,10 @@ ion-button.item-btn-add{
   --padding-end: 0;
 }
 
-.item-checkbox{
-  ion-checkbox{
-      margin-right: 10px;
-      margin-left: 5px;
+.item-checkbox {
+  ion-checkbox {
+    margin-right: 10px;
+    margin-left: 5px;
   }
 }
 
@@ -384,7 +381,7 @@ ion-button.item-btn-add{
 }
 
 .icoactive {
-  color:#16A085;
+  color: #16a085;
   font-size: 2em;
 }
 
@@ -394,11 +391,15 @@ ion-button.item-btn-add{
 }
 
 .footerLogin {
-  padding-bottom: 40px;
+  padding-bottom: 30px;
+  --background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
+  background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
 }
 
-.titleLogin{
-  padding-top: 40px;
+.headerlogin {
+  --background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
+  background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
+  padding-top: 45px;
 }
 
 .gridLogin {
@@ -410,4 +411,21 @@ ion-button.item-btn-add{
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+
+.readwarning{
+  padding: 5px;
+  padding-top:35px;
+  background-color: red;
+}
+
+.blink_me {
+  animation: blinker 5s linear infinite;
+  color: white;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }

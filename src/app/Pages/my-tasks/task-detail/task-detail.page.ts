@@ -98,12 +98,14 @@ export class TaskDetailPage implements OnInit {
   async ngOnInit() {
     this.escrowForm = this.formBuilder.group({
       feesZbc: [0.01, [Validators.required]],
-      fApprover: ['', [Validators.required]]
+      fApprover: ['', [Validators.required]],
+      fMessage: ['']
     });
 
     this.activeRoute.queryParams.subscribe(params => {
       this.escrowId = params.escrowId;
     });
+
     await this.loadDetail();
     console.log('this.account: ', this.account);
     if (this.account) {
@@ -141,7 +143,6 @@ export class TaskDetailPage implements OnInit {
 
     this.isSubmitted = true;
     if (!this.escrowForm.valid) {
-        console.log('Please provide all the required values!');
         return false;
       } else {
         console.log(this.escrowForm.value);
@@ -168,7 +169,6 @@ export class TaskDetailPage implements OnInit {
 
     pinmodal.onDidDismiss().then((returnedData) => {
       if (returnedData && returnedData.data !== 0) {
-        // const pin = returnedData.data;
         if (this.action === 0) {
           this.executeConfirm();
         } else {
@@ -178,24 +178,26 @@ export class TaskDetailPage implements OnInit {
     });
 
     return await pinmodal.present();
+
   }
 
   async executeConfirm() {
 
     const fFee = this.escrowForm.get('feesZbc');
-    const fees = fFee.value;
     const trxId = this.escrowDetail.id;
+    const fMsg =  this.escrowForm.get('fMessage');
 
     const bc: AccountBalance = await zoobc.Account.getBalance(this.account.address);
     const balance = bc.spendableBalance / 1e8;
 
-    if (balance >= fees) {
+    if (balance >= fFee.value) {
       this.isLoading = true;
       const data: EscrowApprovalInterface = {
         approvalAddress: this.account.address,
-        fee: fees,
+        fee: fFee.value,
         approvalCode: EscrowApproval.APPROVE,
         transactionId: trxId,
+        message: fMsg.value
       };
 
       const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
@@ -230,62 +232,25 @@ export class TaskDetailPage implements OnInit {
       Swal.fire({ type: 'error', title: 'Oops...', text: message });
     }
 
-    // if (checkWaitList !== true) {
-
-    //   const data = {
-    //     approvalAddress: approval,
-    //     fee: 1,
-    //     approvalCode: 0,
-    //     transactionId: escrowId,
-    //   };
-
-    //   zoobc.Escrows.approval(data, childSeed)
-    //     .then(
-    //       async res => {
-    //         this.waitingList.push(escrowId);
-    //         this.storageService.set(
-    //           STORAGE_ESCROW_WAITING_LIST,
-    //           JSON.stringify(this.waitingList)
-    //         );
-    //         this.utilService.showConfirmation('Success', 'Transaction has approved successfully!', true, '/my-tasks');
-    //       },
-    //       async err => {
-    //         const errMsg = err.message;
-    //         let message = 'An error occurred while processing your request';
-    //         if (err.code === 13 && errMsg.includes('UserBalanceNotEnough')) {
-    //           message = 'Signer balance is not enough!';
-    //         } else if (err.code === 13 && errMsg.includes('TXSenderNotFound')) {
-    //           message = 'Signer account not register yet, please do transaction first!';
-    //         } else {
-    //           message = 'Unknown reason!';
-    //         }
-    //         this.utilService.showConfirmation('Fail', message, false, '/my-tasks');
-    //       }
-    //     )
-    //     .finally(() => {
-    //       // close dialog
-    //     });
-    // } else {
-    //   const message = 'All tasks have been processed';
-    //   this.utilService.showConfirmation('info', message, true, '/my-tasks');
-    // }
   }
 
   async executeReject() {
     const fFee = this.escrowForm.get('feesZbc');
-    const fees = fFee.value;
+    const fMsg = this.escrowForm.get('fMessage');
     const trxId = this.escrowDetail.id;
     const bc: AccountBalance = await zoobc.Account.getBalance(this.account.address);
     const balance = bc.spendableBalance / 1e8;
 
-    if (balance >= fees) {
+    if (balance >= fFee.value) {
       this.isLoading = true;
       const data: EscrowApprovalInterface = {
         approvalAddress: this.account.address,
-        fee: fees,
+        fee: fFee.value,
         approvalCode: EscrowApproval.REJECT,
         transactionId: trxId,
+        message: fMsg.value
       };
+
       const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
 
       zoobc.Escrows.approval(data, childSeed)
@@ -318,37 +283,6 @@ export class TaskDetailPage implements OnInit {
       Swal.fire({ type: 'error', title: 'Oops...', text: msg });
     }
 
-    // if (checkWaitList !== true) {
-    //   const data = {
-    //     approvalAddress: approval,
-    //     fee: 1,
-    //     approvalCode: 1,
-    //     transactionId: escrowId,
-    //   };
-
-    //   zoobc.Escrows.approval(data, childSeed)
-    //     .then(
-    //       async res => {
-    //         this.utilService.showConfirmation('Success', 'Transaction has rejected successfully', true, '/my-tasks');
-    //         this.waitingList.push(escrowId);
-    //         this.storageService.set(
-    //           STORAGE_ESCROW_WAITING_LIST,
-    //           JSON.stringify(this.waitingList)
-    //         );
-    //       },
-    //       async err => {
-    //         console.log('err', err);
-    //         const msg = 'An error occurred while processing your request' + err;
-    //         this.utilService.showConfirmation('Fail', msg, false, '/my-tasks');
-    //       }
-    //     )
-    //     .finally(() => {
-    //       // close dialog box
-    //     });
-    // } else {
-    //   const message = 'All tasks have been processed';
-    //   this.utilService.showConfirmation('info', message, true, '/my-tasks');
-    // }
   }
 
 }

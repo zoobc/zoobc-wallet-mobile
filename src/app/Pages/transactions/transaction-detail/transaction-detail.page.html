@@ -166,6 +166,17 @@ shall be included in all copies or substantial portions of the Software.
       </ion-label>
     </ion-item>
 
+    <ion-item  *ngIf="trx.message">
+      <ion-label>
+        <p class="info-label">{{ "transaction message" | translate }}</p>
+
+        <div class="info-val">
+          {{ trx.message }}
+        </div>
+
+      </ion-label>
+    </ion-item>
+
     <ion-item>
       <ion-label>
         <p class="info-label">{{ "date" | translate }}</p>

@@ -56,7 +56,7 @@ import zoobc, { ZooKeyring, getZBCAddress, BIP32Interface, AccountBalance, Multi
   providedIn: 'root'
 })
 export class AccountService {
-  account: Account;
+
   tempAccount: Account;
   private forWhat: string;
   private plainPassphrase: string;
@@ -73,7 +73,8 @@ export class AccountService {
   public approverSubject: Subject<Account> = new Subject<Account>();
   public senderSubject: Subject<Account> = new Subject<Account>();
 
-  constructor(private strgSrv: StorageService) { }
+  constructor(private strgSrv: StorageService,
+              private accountService: AccountService) { }
 
 
   setForWhat(arg: string) {
@@ -121,7 +122,7 @@ export class AccountService {
 
   async allAccount(type?: AccountType) {
     const accounts = await this.strgSrv.getObject(STORAGE_ALL_ACCOUNTS);
-    console.log('=== accs:', accounts);
+
     if (accounts == null) {
       return null;
     }
@@ -236,13 +237,13 @@ export class AccountService {
   async createInitialAccount() {
     await this.removeAllAccounts();
     const account = this.createNewAccount('Account 1', 0);
+    await this.switchAccount(account);
     await this.addAccount(account);
-    console.log('this.plainPassphrase: ', this.plainPassphrase);
     this.savePassphraseSeed(this.plainPassphrase, this.plainPin);
   }
 
   createNewAccount(accountName: string, pathNumber: number) {
-    const childSeed = this.keyring.calcDerivationPath(pathNumber);
+    const childSeed =  this.keyring.calcDerivationPath(pathNumber);
     const address: Address = { value: getZBCAddress(childSeed.publicKey), type: 0 };
 
     const account: Account = {
@@ -279,7 +280,7 @@ export class AccountService {
 
   async restoreAccounts() {
     if (!this.willRestoreAccounts) {
-      console.log('=== will return ');
+
       return;
     }
 
@@ -300,12 +301,12 @@ export class AccountService {
     }
   }
 
-  switchAccount(account: Account) {
+  async switchAccount(account: Account) {
 
     if (account) {
-      this.strgSrv.setObject(STORAGE_CURRENT_ACCOUNT, account);
+      await this.strgSrv.setObject(STORAGE_CURRENT_ACCOUNT, account);
       if (account.type === ACC_TYPE_MULTISIG) {
-        this.strgSrv.setObject(STORAGE_CURRENT_ACCOUNT_MULTISIG, account);
+        await this.strgSrv.setObject(STORAGE_CURRENT_ACCOUNT_MULTISIG, account);
       }
 
       if (account.path != null) {

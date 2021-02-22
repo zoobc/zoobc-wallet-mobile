@@ -49,6 +49,7 @@ shall be included in all copies or substantial portions of the Software.
       </ion-tab-button>
 
       <ion-tab-button tab="task">
+        <ion-badge color="danger" *ngIf="numPendingTrx > 0">{{numPendingTrx}}</ion-badge>
         <ion-icon *ngIf="activeTab=='task'; else iconTask" name="zbc-task-active"></ion-icon>
         <ion-label>{{ "tasks" | translate }}</ion-label>
       </ion-tab-button>

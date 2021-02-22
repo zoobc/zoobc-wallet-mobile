@@ -144,8 +144,8 @@ shall be included in all copies or substantial portions of the Software.
       <ion-row>
         <ion-col>
           <ion-label position="stacked">
-            {{ 'nonce' | translate}} </ion-label>
-          <ion-input formControlName="nonce" type="number" readonly="true" placeholder="{{ 'nonce' | translate }} ...">
+            {{ 'Unique ID' | translate}} </ion-label>
+          <ion-input formControlName="nonce" readonly="true" placeholder="{{ 'nonce' | translate }} ...">
           </ion-input>
           <ng-container *ngIf="fNonce.touched">
             <ion-text *ngIf="fNonce.hasError('required')">

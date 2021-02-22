@@ -43,19 +43,19 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'shortAddress'
 })
 export class ShortAddressPipe implements PipeTransform {
-  defaultFirstDigitsLength: number = 8;
-  defaultLastDigitsLength: number = 4;
+  defaultFirstDigitsLength = 8;
+  defaultLastDigitsLength = 4;
 
-  transform(value: string, firstDigitsLength?: number, lastDigitsLength?:number): any {
+  transform(value: string, lengthPre?: number, lengSuffix?: number): any {
 
     const length = value.length;
 
-    const _firstDigitsLength = firstDigitsLength?firstDigitsLength:this.defaultFirstDigitsLength;
-    const _lastDigitsLength = lastDigitsLength?lastDigitsLength: this.defaultLastDigitsLength;
+    const FirstDigitsLength = lengthPre ? lengthPre : this.defaultFirstDigitsLength;
+    const LastDigitsLength = lengSuffix ? lengSuffix : this.defaultLastDigitsLength;
 
-    const firstDigits = value.substr(0, _firstDigitsLength);
-    const lastDigits = value.substr(length - _lastDigitsLength, _lastDigitsLength);
-    
+    const firstDigits = value.substr(0, FirstDigitsLength);
+    const lastDigits = value.substr(length - LastDigitsLength, LastDigitsLength);
+
     return firstDigits + '...' + lastDigits;
   }
 }

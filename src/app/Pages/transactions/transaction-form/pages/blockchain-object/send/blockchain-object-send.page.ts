@@ -56,11 +56,12 @@ import { AddressBookService } from 'src/app/Services/address-book.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { calculateMinFee } from 'src/Helpers/utils';
+
 import {
   addressValidator,
   escrowFieldsValidator
 } from 'src/Helpers/validators';
+import { calculateMinimumFee } from 'zbc-sdk';
 
 @Component({
   selector: 'app-blockchain-object-send',
@@ -131,7 +132,7 @@ export class BlockchainObjectSendPage implements OnInit {
     this.behaviorEscrowChangesSubscription = this.behaviorEscrow.valueChanges.subscribe(
       escrowValues => {
         if (escrowValues.timeout) {
-          this.minimumFee = calculateMinFee(escrowValues.timeout.value);
+          this.minimumFee = calculateMinimumFee(2, 1);
 
           this.setFeeValidation();
         }
@@ -188,7 +189,7 @@ export class BlockchainObjectSendPage implements OnInit {
         new FormControl({}, [escrowFieldsValidator])
       );
 
-      this.minimumFee = calculateMinFee(this.behaviorEscrow.value.timeout);
+      this.minimumFee = calculateMinimumFee(this.behaviorEscrow.value.timeout, 1);
       this.setBehaviorEscrowChanges();
     } else {
       this.sendForm.removeControl('behaviorEscrow');
@@ -267,8 +268,7 @@ export class BlockchainObjectSendPage implements OnInit {
 
   onBehaviorEscrowChange() {
     this.minimumFee = this.behaviorEscrow.value && this.behaviorEscrow.value.timeout ?
-      calculateMinFee(this.behaviorEscrow.value.timeout) : TRANSACTION_MINIMUM_FEE;
-
+    calculateMinimumFee(this.behaviorEscrow.value.timeout, 1) : TRANSACTION_MINIMUM_FEE;
     this.setFeeValidation();
   }
 
@@ -303,7 +303,7 @@ export class BlockchainObjectSendPage implements OnInit {
   }
 
   async getMinimumFee(timeout: number) {
-    const fee: number = calculateMinFee(timeout);
+    const fee: number = calculateMinimumFee(timeout, 1);
     return fee;
   }
 

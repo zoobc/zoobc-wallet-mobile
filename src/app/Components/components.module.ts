@@ -41,7 +41,7 @@
 import { NgModule } from '@angular/core';
 import { PinComponent } from './pin/pin.component';
 import { IonicModule } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { CurrencyComponent } from './currency/currency.component';
@@ -62,11 +62,13 @@ import { TransactionItemComponent } from './transaction-item/transaction-item.co
 import { WithCopyComponent } from './with-copy/with-copy.component';
 import { WithOptionsComponent } from './with-options/with-options.component';
 import { EscrowApprovalFormComponent } from '../Pages/multisig/escrow-approval-form/escrow-approval-form.component';
+import { FormTransferZoobcComponent } from './transactions/form-transfer-zoobc/form-transfer-zoobc.component';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         IonicModule.forRoot(),
         TranslateModule
     ],
@@ -89,6 +91,7 @@ import { EscrowApprovalFormComponent } from '../Pages/multisig/escrow-approval-f
         AccountItemComponent,
         SkeletonTransactionComponent,
         WithOptionsComponent,
+        FormTransferZoobcComponent,
         EscrowApprovalFormComponent
     ],
     exports: [
@@ -109,6 +112,7 @@ import { EscrowApprovalFormComponent } from '../Pages/multisig/escrow-approval-f
         TransactionItemComponent,
         AccountItemComponent,
         SkeletonTransactionComponent,
+        FormTransferZoobcComponent,
         WithOptionsComponent,
         EscrowApprovalFormComponent
     ],

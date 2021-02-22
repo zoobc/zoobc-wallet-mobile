@@ -64,10 +64,9 @@ shall be included in all copies or substantial portions of the Software.
 
     <span class="time">{{ transaction.timestamp | dateAgo }}</span>
   </div>
-  
-  
+
   <div class="amount" [ngClass]="transaction.sender.value == address.value?'send':'receive'">
-    <app-info-amount-conversion value="{{ transaction.txBody.amount / 1e8 }}" otherCurrency="USD"
+    <app-info-amount-conversion value="{{ transaction.txBody.amount / 1e8 | number: '0.2-4'}}" otherCurrency="USD"
       [prefix]="transaction.sender.value == address.value?'-':'+'"></app-info-amount-conversion>
 
     <ion-badge *ngIf="transaction.escrow" color="tertiary">{{ 'escrow transaction' | translate }}</ion-badge>

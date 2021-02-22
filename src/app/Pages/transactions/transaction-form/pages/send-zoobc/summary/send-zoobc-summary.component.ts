@@ -40,23 +40,22 @@
 
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, ModalController, NavController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EnterpinsendPage } from 'src/app/Pages/send-coin/modals/enterpinsend/enterpinsend.page';
 import { AuthService } from 'src/app/Services/auth-service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { UtilService } from 'src/app/Services/util.service';
 import { getTranslation } from 'src/Helpers/utils';
-import Swal from 'sweetalert2';
-import zoobc, { PostTransactionResponses, SendMoneyInterface } from 'zbc-sdk';
+import zoobc, { SendMoneyInterface } from 'zbc-sdk';
 
 @Component({
-  selector: 'app-send-money-summary',
-  templateUrl: './send-money-summary.component.html',
-  styleUrls: ['./send-money-summary.component.scss'],
+  selector: 'app-send-zoobc-summary',
+  templateUrl: './send-zoobc-summary.component.html',
+  styleUrls: ['./send-zoobc-summary.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class SendMoneySummaryComponent implements OnInit {
+export class SendZoobcSummaryComponent implements OnInit {
 
 
   formTrx: any;
@@ -74,8 +73,8 @@ export class SendMoneySummaryComponent implements OnInit {
 
   ngOnInit() {
     this.formTrx = this.transactionSrv.getTrx();
-    console.log('=== this.formTrx: ', this.formTrx);
-    this.total = this.formTrx.amount + this.formTrx.fee;
+
+    this.total = Number(this.formTrx.amount) + Number(this.formTrx.fee);
   }
 
   submit() {
@@ -98,6 +97,11 @@ export class SendMoneySummaryComponent implements OnInit {
     return await pinmodal.present();
   }
 
+  convertDate(epoch: any) {
+    const dt = new Date(0);
+    return dt.setUTCSeconds(epoch);
+  }
+
   async sendMoney() {
 
     // show loading bar
@@ -113,8 +117,10 @@ export class SendMoneySummaryComponent implements OnInit {
       sender: this.formTrx.sender.address,
       recipient: { value: this.formTrx.recipient.address, type: 0 },
       amount: Number(this.formTrx.amount),
-      fee: Number(this.formTrx.fee)
+      fee: Number(this.formTrx.fee),
+      message: this.formTrx.message
     };
+
 
 
     if (this.formTrx.withEscrow) {
@@ -125,34 +131,26 @@ export class SendMoneySummaryComponent implements OnInit {
       data.instruction = escrow.instruction ? (escrow.instruction) : '';
     }
 
-    console.log('== form: ', data);
-
-
-
     const childSeed = this.authSrv.keyring.calcDerivationPath(
       this.formTrx.sender.path
     );
     await zoobc.Transactions.sendMoney(data, childSeed)
       .then(
-        async (res: PostTransactionResponses) => {
+        async (msg) => {
+          console.log('msg: ', msg);
           const message = getTranslation('your transaction is processing', this.translate);
           const subMessage = getTranslation('you send coins to', this.translate, {
             amount: this.formTrx.amount,
             recipient: this.formTrx.recipient.address,
           });
-          // Swal.fire(message, subMessage, 'success');
-
           this.utilSrv.showConfirmation(message, subMessage, true);
           this.router.navigateByUrl('/tabs/home');
-          // this.router.navigate(['transaction-form/send-money/success']);
         },
         async err => {
           console.log(err);
           const message = 'Opps...';
           const subMessage = getTranslation(err.message, this.translate);
           this.utilSrv.showConfirmation( message, subMessage, false);
-          // Swal.fire('Opps...', message, 'error');
-          // loading.dismiss();
         }
       )
       .finally(() => {

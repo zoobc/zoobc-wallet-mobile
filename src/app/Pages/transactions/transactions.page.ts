@@ -67,12 +67,13 @@ import zoobc, {
   ZBCTransactions,
 } from 'zbc-sdk';
 import { AddressBookService } from 'src/app/Services/address-book.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Transaction } from 'src/app/Interfaces/transaction';
 import { Currency } from 'src/app/Interfaces/currency';
 import { NetworkService } from 'src/app/Services/network.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-transactions',
@@ -83,7 +84,7 @@ export class TransactionsPage implements OnInit {
 
   accountHistory: ZBCTransaction[];
   unconfirmTx: ZBCTransaction[];
-  txType: number = TransactionType.SENDMONEYTRANSACTION;
+  txType = -1;
 
   account: Account;
   page: number;
@@ -105,6 +106,7 @@ export class TransactionsPage implements OnInit {
   currentAddress: Address;
   lastRefresh: number;
   startMatch = 0;
+  routerEvent: Subscription;
 
   constructor(
     private router: Router,
@@ -118,14 +120,15 @@ export class TransactionsPage implements OnInit {
     public toastController: ToastController,
     private translateSrv: TranslateService,
     private network: Network,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private activeRoute: ActivatedRoute
   ) {
     // if account changed
     this.accountService.accountSubject.subscribe(() => {
       this.loadData();
     });
 
-    // if post send money reload data
+    // if post send zoobc reload data
     this.transactionServ.sendMoneySubject.subscribe(() => {
       this.loadData();
     });
@@ -139,6 +142,16 @@ export class TransactionsPage implements OnInit {
     this.currencyServ.currencySubject.subscribe((rate: Currency) => {
       this.currencyRate = rate;
     });
+
+    this.routerEvent = router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.activeRoute.queryParams.subscribe(res => {
+          console.log('== res: ', res);
+          this.txType = parseInt(res.val, 10) || -1;
+        });
+        this.getTransactions(true);
+      }
+    });
   }
 
   doRefresh(event: any) {
@@ -150,11 +163,23 @@ export class TransactionsPage implements OnInit {
     }, 2000);
   }
 
+  startTimer() {
+    setInterval(async () => {
+      this.getTransactions(true);
+    }, 50000);
+  }
+
+  onFilter(val: any) {
+    this.router.navigate(['/transactions'], { queryParams: { val } });
+  }
+
   ngOnInit() {
 
     this.getAllAddress();
     this.loadData();
     this.getAllAccount();
+    this.startTimer();
+
   }
 
   private async loadData() {
@@ -236,8 +261,10 @@ export class TransactionsPage implements OnInit {
       this.isLoading = true;
       this.isError = false;
       this.currentAddress = (await this.accountService.getCurrAccount()).address;
-      console.log('=== currentAddress: ', this.currentAddress);
-      const txParam: TransactionListParams = {
+
+      console.log('===n this.txType:', this.txType);
+
+      let txParam: TransactionListParams = {
         address: this.currentAddress,
         transactionType: this.txType,
         pagination: {
@@ -246,9 +273,17 @@ export class TransactionsPage implements OnInit {
         },
       };
 
+      if (this.txType === -1) {
+        txParam = {
+          address: this.currentAddress,
+          pagination: {
+            page: this.page,
+            limit: NUMBER_OF_RECORD_IN_TRANSACTIONS,
+          },
+        };
+      }
       try {
         const trxList = await zoobc.Transactions.getList(txParam);
-        console.log('===n trxList:', trxList);
         let lastHeight = 0;
         let firstHeight = 0;
         if (trxList.transactions.length > 0) {
@@ -304,7 +339,7 @@ export class TransactionsPage implements OnInit {
         });
         this.total = trxList.total;
         this.accountHistory = reload ? txs : this.accountHistory.concat(txs);
-
+        console.log('== accountHistory: ', this.accountHistory);
         if (reload) {
           const mempoolParams: MempoolListParams = { address: this.currentAddress };
           this.unconfirmTx = await zoobc.Mempool.getList(mempoolParams).then((res: ZBCTransactions) =>
@@ -313,7 +348,7 @@ export class TransactionsPage implements OnInit {
               return uc;
             })
           );
-          console.log('== unconfirmTx: ', this.unconfirmTx);
+
         }
       } catch {
         this.isError = true;
@@ -352,29 +387,12 @@ export class TransactionsPage implements OnInit {
   }
 
   /**
-   * Get Unconfirm transaction by address
-   * @ param address
-   */
-  private async getUnconfirmTransactions(address: string) {
-    // this.unconfirmTxs = [];
-    // console.log('==this.unconfirmTxs: ', this.unconfirmTxs);
-  }
-
-  /**
    * Open detail Unconfirm transactin
    * @param trx is unconfirm transaction object
    */
   public async openDetailUnconfirm(trx) {
     this.transactionServ.tempTrx = trx;
     this.router.navigate(['/transaction/0']);
-  }
-
-  /**
-   * Open detail of tranasaction
-   * @param trx is tranaction object
-   */
-  public async openDetailTransction(trx) {
-    this.loadDetailTransaction(trx, 'confirmed');
   }
 
   private showLoading() {
@@ -386,21 +404,6 @@ export class TransactionsPage implements OnInit {
     });
   }
 
-  public async loadDetailTransaction(trx: any, trxStatus: string) {
-
-    this.showLoading();
-
-    const modal = await this.modalCtrl.create({
-      component: TransactionDetailPage,
-      cssClass: 'modal-zbc',
-      componentProps: {
-        transaction: trx,
-        account: this.account,
-        status: trxStatus
-      }
-    });
-    await modal.present();
-  }
 
   ionViewWillEnter() {
     this.networkSubscription = this.network

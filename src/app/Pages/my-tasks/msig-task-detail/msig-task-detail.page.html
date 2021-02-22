@@ -141,7 +141,7 @@ shall be included in all copies or substantial portions of the Software.
       <ion-label style="margin-left:10px;">{{ "sign this transaction" | translate}}</ion-label>
     </ion-item>
 
-    <!-- <ion-item style="margin-bottom:50px;" *ngIf="!isNeedSign && enabledSign">
+    <ion-item style="margin-bottom:50px;" *ngIf="!isNeedSign && enabledSign">
       <ion-checkbox [(ngModel)]="isNeedSign" color="primary"></ion-checkbox>
       <ion-label style="margin-left:10px;">{{ "sign this transaction" | translate}}</ion-label>
     </ion-item>
@@ -169,7 +169,13 @@ shall be included in all copies or substantial portions of the Software.
           </ion-text>
         </ng-container>
       </ion-item>
-
+      <ion-item>
+        <ion-label position="stacked">
+          Message
+        </ion-label>
+        <ion-textarea rows="3" formControlName="message">
+        </ion-textarea>
+      </ion-item>
       <ion-item class="btn" lines="none">
         <ion-button type="submit" size="medium" expand="full" color="tertiary">
           {{ 'send' | translate }}

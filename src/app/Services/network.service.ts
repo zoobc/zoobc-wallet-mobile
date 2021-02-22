@@ -40,77 +40,72 @@
 
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
-import zoobc from 'zbc-sdk';
-import { STORAGE_ACTIVE_NETWORK_IDX, NETWORK_LIST, STORAGE_ALL_NETWORKS } from 'src/environments/variable.const';
+import zoobc, { GroupData } from 'zbc-sdk';
+import { STORAGE_ACTIVE_NETWORK_GROUP, NETWORK_LIST, STORAGE_ALL_NETWORKS_GROUP } from 'src/environments/variable.const';
 import { Subject } from 'rxjs';
-import { ZbcNetwork } from '../Interfaces/zbc-network';
 @Injectable({
   providedIn: 'root'
 })
 export class NetworkService {
 
-  public nodeIndex = 0;
-  public allNetorks: ZbcNetwork[];
+
+  public allNetworks: GroupData[];
+  public selectedGroup: GroupData[] = [];
+
   constructor(
     private strgSrv: StorageService,
   ) { }
+
   public changeNodeSubject: Subject<any> = new Subject<any>();
 
   setInitialNetwork() {
 
-    this.strgSrv.getObject(STORAGE_ALL_NETWORKS).then((val: ZbcNetwork[]) => {
-      if (!val || val === null) {
-        console.log('val1: ', val);
-        this.allNetorks = NETWORK_LIST;
-        this.saveAll(this.allNetorks);
-        zoobc.Network.list(this.allNetorks);
+    this.strgSrv.getObject(STORAGE_ALL_NETWORKS_GROUP).then((networkList: GroupData[]) => {
+      if (!networkList || networkList === null) {
+        this.allNetworks = NETWORK_LIST;
+        zoobc.Network.load([this.allNetworks[0]]);
+        this.saveAll(NETWORK_LIST);
       } else {
-        console.log('val2: ', val);
-        this.allNetorks = val;
-        zoobc.Network.list(this.allNetorks);
+        this.allNetworks = networkList;
+        console.log('==  this.allNetworks: ', this.allNetworks);
       }
     });
 
-    this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX).then((val: any) => {
+    this.strgSrv.get(STORAGE_ACTIVE_NETWORK_GROUP).then((val: any) => {
       if (!val || val === null) {
-        this.setNetwork(0);
+        this.setActiveGroup(NETWORK_LIST[0]);
       } else {
-        this.setNetwork(val);
+        this.setActiveGroup(val);
       }
     });
   }
 
-  async add(network: ZbcNetwork) {
-    this.allNetorks.push(network);
-    zoobc.Network.list(this.allNetorks);
-    await this.saveAll(this.allNetorks);
+  async add(network: GroupData) {
+    this.allNetworks.push(network);
+    zoobc.Network.load(this.allNetworks);
+    await this.saveAll(this.allNetworks);
   }
 
-  getall() {
-    return this.allNetorks;
+  async getAll() {
+    return await this.strgSrv.getObject(STORAGE_ALL_NETWORKS_GROUP);
   }
 
-  async saveAll(all: ZbcNetwork[]) {
-    await this.strgSrv.setObject(STORAGE_ALL_NETWORKS, all);
+  async saveAll(all: GroupData[]) {
+    await this.strgSrv.setObject(STORAGE_ALL_NETWORKS_GROUP, all);
   }
 
-
-  async setNetwork(idx: number) {
-    this.nodeIndex = idx;
-    zoobc.Network.set(idx);
-    await this.strgSrv.set(STORAGE_ACTIVE_NETWORK_IDX, idx);
+  async setActiveGroup(obj: GroupData) {
+    console.log('== setActiveGroup: ', obj);
+    zoobc.Network.load([obj]);
+    await this.strgSrv.set(STORAGE_ACTIVE_NETWORK_GROUP, obj);
   }
 
   broadcastSelectNetwork(network: any) {
     this.changeNodeSubject.next(network);
   }
 
-  async getNetwork() {
-    await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_IDX).then((val: any) => {
-      this.nodeIndex = val;
-    });
-
-    return this.nodeIndex;
-
+  async getActiveGroup() {
+    return await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_GROUP);
   }
+
 }

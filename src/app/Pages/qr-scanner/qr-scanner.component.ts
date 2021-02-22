@@ -39,9 +39,9 @@
 // shall be included in all copies or substantial portions of the Software.
 
 import { Component, OnInit } from '@angular/core';
-import { NavController, ToastController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
-import { ActivatedRoute, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import {
   BarcodeScannerOptions,
   BarcodeScanner
@@ -65,9 +65,10 @@ export class QrScannerComponent implements OnInit {
   constructor(
     private barcodeScanner: BarcodeScanner,
     private navCtrl: NavController,
-    private qrScannerSrv: QrScannerService, private activeRoute: ActivatedRoute, private toastController: ToastController) {
+    private router: Router,
+    private qrScannerSrv: QrScannerService,
+    private activeRoute: ActivatedRoute) {
     this.encodeData = '';
-    // Options
     this.barcodeScannerOptions = {
       showTorchButton: true,
       showFlipCameraButton: true
@@ -104,7 +105,7 @@ export class QrScannerComponent implements OnInit {
           from: this.from
         }
       };
-      this.navCtrl.navigateForward(['/sendcoin'], navigationExtras);
+      this.router.navigate(['/transaction-form/send-zoobc'], navigationExtras);
     }
     this.reset();
   }

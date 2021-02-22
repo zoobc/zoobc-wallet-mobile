@@ -69,7 +69,7 @@ export class AuthService implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot) {
     const acc = await this.accountService.getCurrAccount();
-    console.log('--- acc: ', acc);
+
     if (acc === null || acc === undefined) {
       this.router.navigate(['initial']);
       return false;

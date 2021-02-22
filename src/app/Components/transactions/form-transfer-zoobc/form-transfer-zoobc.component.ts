@@ -45,19 +45,18 @@ import { Contact } from 'src/app/Interfaces/contact';
 import { AccountService } from 'src/app/Services/account.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { SendMoneyInterface, sendMoneyBuilder } from 'zbc-sdk';
+import { SendMoneyInterface, sendMoneyBuilder, calculateMinimumFee } from 'zbc-sdk';
 import { escrowMap, escrowForm } from '../form-escrow/form-escrow.component';
 import { Account } from 'src/app/Interfaces/account';
 import { map, startWith } from 'rxjs/operators';
 import { addressValidator, escrowFieldsValidator } from 'src/Helpers/validators';
-import { calculateMinFee } from 'src/Helpers/utils';
 
 @Component({
-  selector: 'app-form-send-money',
-  templateUrl: './form-send-money.component.html',
-  styleUrls: ['./form-send-money.component.scss'],
+  selector: 'app-form-transfer-zoobc',
+  templateUrl: './form-transfer-zoobc.component.html',
+  styleUrls: ['./form-transfer-zoobc.component.scss'],
 })
-export class FormSendMoneyComponent implements OnInit {
+export class FormTransferZoobcComponent implements OnInit {
   @Input() group: FormGroup;
   @Input() inputMap: any;
   @Input() multisig = false;
@@ -83,9 +82,6 @@ export class FormSendMoneyComponent implements OnInit {
   }
 
   async ngOnInit() {
-    console.log('=== group: ', this.group);
-    console.log('=== inputMap: ', this.inputMap);
-    console.log('=== multisig: ', this.multisig);
 
     this.group.get('alias').disable();
     const recipientForm = this.group.get('recipient');
@@ -100,6 +96,10 @@ export class FormSendMoneyComponent implements OnInit {
 
   get sender() {
     return this.group.get('sender');
+  }
+
+  get message() {
+    return this.group.get('message');
   }
 
   get recipient() {
@@ -127,7 +127,7 @@ export class FormSendMoneyComponent implements OnInit {
         new FormControl({}, [escrowFieldsValidator])
       );
 
-      this.minimumFee = calculateMinFee(this.behaviorEscrow.value.timeout);
+      this.minimumFee = calculateMinimumFee(this.behaviorEscrow.value.timeout, 1);
       this.setBehaviorEscrowChanges();
     } else {
       this.group.removeControl('behaviorEscrow');
@@ -143,7 +143,7 @@ export class FormSendMoneyComponent implements OnInit {
 
   onBehaviorEscrowChange() {
     this.minimumFee = this.behaviorEscrow.value && this.behaviorEscrow.value.timeout ?
-      calculateMinFee(this.behaviorEscrow.value.timeout) : TRANSACTION_MINIMUM_FEE;
+    calculateMinimumFee(this.behaviorEscrow.value.timeout, 1) : TRANSACTION_MINIMUM_FEE;
 
     this.setFeeValidation();
     this.setAmountValidation();
@@ -157,7 +157,7 @@ export class FormSendMoneyComponent implements OnInit {
         }
 
         if (escrowValues.timeout) {
-          this.minimumFee = calculateMinFee(escrowValues.timeout.value);
+          this.minimumFee = calculateMinimumFee(escrowValues.timeout, 1);
 
           this.setFeeValidation();
           this.setAmountValidation();
@@ -250,7 +250,7 @@ export class FormSendMoneyComponent implements OnInit {
   }
 }
 
-export const sendMoneyMap = {
+export const transferZoobcMap = {
   sender: 'sender',
   recipient: 'recipient',
   alias: 'alias',
@@ -259,20 +259,20 @@ export const sendMoneyMap = {
   ...escrowMap,
 };
 
-export function createSendMoneyForm(): FormGroup {
+export function createTransferZoobcForm(): FormGroup {
   return new FormGroup({
     sender: new FormControl('', Validators.required),
-    // recipient: new FormControl('', Validators.required),
+    message: new FormControl(''),
     recipient: new FormControl({}, [Validators.required, addressValidator]),
-    amount: new FormControl('', [Validators.required, Validators.min(1 / 1e8)]),
+    amount: new FormControl('', [Validators.required, Validators.min(0)]),
     alias: new FormControl('', Validators.required),
     fee: new FormControl(TRANSACTION_MINIMUM_FEE, [Validators.required, Validators.min(TRANSACTION_MINIMUM_FEE)]),
     ...escrowForm()
   });
 }
 
-export function createSendMoneyBytes(form: any): Buffer {
-  const { sender, fee, amount, recipient } = form;
-  const data: SendMoneyInterface = { sender, fee, amount, recipient };
+export function createTransferZoobcBytes(form: any): Buffer {
+  const { sender, fee, amount, recipient, message } = form;
+  const data: SendMoneyInterface = { sender, fee, amount, recipient, message };
   return sendMoneyBuilder(data);
 }

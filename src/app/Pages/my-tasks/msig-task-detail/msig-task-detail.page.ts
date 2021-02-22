@@ -70,6 +70,8 @@ export class MsigTaskDetailPage implements OnInit {
   formSend: FormGroup;
   fFee = new FormControl(this.minFee, [Validators.required, Validators.min(this.minFee)]);
   fSender = new FormControl('', Validators.required);
+  fMessage = new FormControl('');
+
 
   currencyRate: Currency;
   private msigHash: any;
@@ -121,6 +123,7 @@ export class MsigTaskDetailPage implements OnInit {
     this.formSend = new FormGroup({
       sender: this.fSender,
       fee: this.fFee,
+      message: this.fMessage
     });
 
     this.priceInUSD = this.currencyService.getPriceInUSD();
@@ -128,7 +131,6 @@ export class MsigTaskDetailPage implements OnInit {
 
   ngOnInit() {
     this.msigHash = this.msigService.getHash();
-    console.log('this.msigHash: ', this.msigHash);
     this.loadFeeAndCurrency();
     this.loadDetail();
     this.fFee.setValue(0.01);
@@ -164,32 +166,17 @@ export class MsigTaskDetailPage implements OnInit {
     this.isLoadingTx = true;
     zoobc.MultiSignature.getPendingByTxHash(txHash).then(async (res: multisigPendingDetail) => {
 
-
-      console.log('== this.multisigPendingDetail:', res);
-
-
       this.multiSigDetail = res.pendingtransaction;
-      console.log('== this.multiSigDetail:', this.multiSigDetail);
-
-      // this.detailMultisig.emit(this.multiSigDetail);
-
       this.pendingSignatures = res.pendingsignaturesList;
       this.totalPending = this.pendingSignatures.length;
-      console.log('= this.pendingSignatures:', this.pendingSignatures);
 
       this.participants = res.multisignatureinfo.addressesList;
       this.signers = this.participants.map(pc => pc.value);
-      console.log('= this.participants:', this.participants);
-      console.log('= this.signers:', this.signers);
-
       this.participants = this.participants.map(res2 => res2.value);
-      console.log('= this.participants value:', this.participants);
 
       this.totalParticpants = this.participants.length;
-      console.log('= this.participants value:', this.participants);
 
       if (this.totalPending > 0) {
-        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.totalPending; i++) {
           this.participants = this.participants.filter(
             res3 => res3 !== this.pendingSignatures[i].accountaddress.value
@@ -197,9 +184,8 @@ export class MsigTaskDetailPage implements OnInit {
         }
         const signers = (await this.accountService
           .allAccount())
-          .filter(res5 => this.participants.includes(res5.address.value));
+          .filter((res5: any) => this.participants.includes(res5.address.value));
         if (signers.length > 0) {
-          // this.signerAcc = signers[0];
           this.enabledSign = true;
         } else {
           this.enabledSign = false;
@@ -207,9 +193,8 @@ export class MsigTaskDetailPage implements OnInit {
       } else {
         const signers = (await this.accountService
           .allAccount())
-          .filter(res4 => this.participants.includes(res4.address.value));
+          .filter((res4: any) => this.participants.includes(res4.address.value));
         if (signers.length > 0) {
-          // this.signerAcc = signers[0];
           this.enabledSign = true;
         } else {
           this.enabledSign = false;
@@ -261,7 +246,6 @@ export class MsigTaskDetailPage implements OnInit {
       return;
     }
 
-    console.log('=== fee: ', this.fFee.value);
     if (this.fFee.value <= 0) {
       this.utilSrv.showAlert('Alert', '', 'Fee is required!');
       return;

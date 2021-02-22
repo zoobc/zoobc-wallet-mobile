@@ -32,64 +32,48 @@
 //     However a prior notification to the authors will be appreciated.
 
 // ZooBC is architected by Roberto Capodieci & Barton Johnston
-//             contact us at roberto.capodieci[at]blockchainzoo.com
-//             and barton.johnston[at]blockchainzoo.com
+//     contact us at roberto.capodieci[at]blockchainzoo.com
+//     and barton.johnston[at]blockchainzoo.com
 
 // IMPORTANT: The above copyright notice and this permission notice
 // shall be included in all copies or substantial portions of the Software.
 
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SendCoinPage } from './send-coin.page';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
-import { IonicStorageModule } from '@ionic/storage';
-import { HttpClientModule } from '@angular/common/http';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SendZoobcFormComponent } from './send-zoobc-form.component';
+import { SendZoobcSummaryComponent } from './summary/send-zoobc-summary.component';
+import { BehaviorEscrowModule } from '../../behaviors/escrow/behavior-escrow.module';
+import { ComponentsModule } from 'src/app/Components/components.module';
 
-describe('Send Coin Page', () => {
-    let component: SendCoinPage;
-    let fixture: ComponentFixture<SendCoinPage>;
+const routes: Routes = [
+  {
+    path: '',
+    component: SendZoobcFormComponent
+  },
+  {
+    path: 'summary',
+    component: SendZoobcSummaryComponent
+  }
+];
 
-    const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-    const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-
-    modalCtrlSpy.create.and.callFake( () => {
-        return modalSpy;
-    });
-
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [SendCoinPage],
-            imports: [
-                TranslateModule.forRoot(),
-                RouterTestingModule,
-                IonicStorageModule.forRoot(),
-                HttpClientModule,
-                ReactiveFormsModule,
-            ],
-            providers: [
-                Clipboard,
-                {
-                    provide: ModalController,
-                    useValue: modalCtrlSpy
-                }
-            ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        })
-            .compileComponents();
-    }));
-
-    beforeEach(() => {
-        fixture = TestBed.createComponent(SendCoinPage);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
-
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-});
+@NgModule({
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    IonicModule,
+    RouterModule.forChild(routes),
+    ComponentsModule,
+    BehaviorEscrowModule
+  ],
+  declarations: [
+    SendZoobcFormComponent,
+    SendZoobcSummaryComponent
+  ]
+})
+export class SendZoobcModule {}

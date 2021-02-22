@@ -40,7 +40,7 @@ IMPORTANT: The above copyright notice and this permission notice
 shall be included in all copies or substantial portions of the Software.
  -->
  
-<ng-container [formGroup]="group">
+ <ng-container [formGroup]="group"> 
   <ion-list class="form-list">
     <ion-item lines="none" class="form-item">
       <ion-label position="stacked">{{ 'sender' | translate }}</ion-label>
@@ -62,7 +62,7 @@ shall be included in all copies or substantial portions of the Software.
           {{ "amount cannot be empty" | translate}}
         </ion-text>
         <ion-text class="text-error" *ngIf="amount.errors.min">
-          {{ "insufficient balance" | translate}}
+          {{ "amount minimum 0" | translate}}
         </ion-text>
         <ion-text class="text-error" *ngIf="amount.errors.max">
           {{ "insufficient balance. the maximum amount is" | translate}} {{ amount.errors.max.max }} ZBC
@@ -81,7 +81,13 @@ shall be included in all copies or substantial portions of the Software.
         </ion-text>
       </ng-container>
     </ion-item>
-
+    <ion-item lines="none" class="form-item">
+      <ion-label position="stacked">
+        Message
+      </ion-label>
+      <ion-textarea rows="3" formControlName="message">
+      </ion-textarea>
+    </ion-item>
   </ion-list>
 
 <!--  

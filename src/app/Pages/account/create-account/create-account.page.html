@@ -104,8 +104,8 @@ shall be included in all copies or substantial portions of the Software.
         </ng-container>
 
         <ion-item lines="none" class="form-item">
-          <ion-label position="stacked">{{ "Unique numeric ID" | translate }}</ion-label>
-          <ion-input formControlName="nonce" type="number" (ionChange)="generateMsigAddress()"></ion-input>
+          <ion-label position="stacked">{{ "Unique ID" | translate }}</ion-label>
+          <ion-input formControlName="nonce" type="text" (ionChange)="generateMsigAddress()"></ion-input>
           <ng-container *ngIf="(submitted || nonce.dirty || nonce.touched) && nonce.invalid">
             <ion-text class="text-error" *ngIf="nonce.errors.required">
               {{ "Unique numeric ID cannot be empty" | translate}}
@@ -124,7 +124,7 @@ shall be included in all copies or substantial portions of the Software.
               {{ "minimum signature cannot be empty" | translate}}
             </ion-text>
             <ion-text class="text-error" *ngIf="minimumSignature.errors.min">
-              {{ "minimum signature is 2" | translate}}
+              {{ "minimum signature is 1" | translate}}
             </ion-text>
             <ion-text class="text-error" *ngIf="minimumSignature.errors.max">
               {{ "minimum signature cannot more than participants" | translate}}

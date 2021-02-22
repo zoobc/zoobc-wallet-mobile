@@ -59,12 +59,13 @@
   }
 
   .main-balance {
-    font-size: 32px;
+    font-size: 30px;
 
     .amount{
       display: flex;
-      align-items: center;
-      
+      align-items:baseline;
+      vertical-align: baseline;
+
       .skeleton-text{
         height: 24px;
       }
@@ -75,6 +76,10 @@
     }
   }
 
+  .decimalpart{
+    font-size: 0.6em;
+  }
+  
   .other-balance {
     color: #FFFFFF;
     opacity: 0.6;
@@ -249,4 +254,12 @@ ion-card {
     padding-bottom: 10px;
   }
 
+}
+
+.shortAddress{
+  font-size: 1.2em;
+}
+
+.copyAddress{
+  font-size: 1.4em;
 }

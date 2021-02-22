@@ -42,8 +42,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { IonCheckbox } from '@ionic/angular';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { calcMinFee } from 'src/Helpers/utils';
-import zoobc, { HostInfoResponse } from 'zbc-sdk';
+import zoobc, { calculateMinimumFee, HostInfoResponse } from 'zbc-sdk';
 
 @Component({
   selector: 'app-form-escrow',
@@ -116,7 +115,7 @@ export class FormEscrowComponent implements OnInit {
 
   async getMinimumFee() {
     const feeForm = this.group.get('fee');
-    const fee: number = calcMinFee(this.group.value);
+    const fee: number = calculateMinimumFee(this.group.value, 1);
     this.minFee = fee;
 
     feeForm.setValidators([Validators.required, Validators.min(fee)]);

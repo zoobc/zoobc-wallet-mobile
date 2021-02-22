@@ -44,6 +44,7 @@ import { NetworkService } from 'src/app/Services/network.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ZbcNetwork } from 'src/app/Interfaces/zbc-network';
 import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
+import { GroupData } from 'zbc-sdk';
 
 @Component({
   selector: 'app-network',
@@ -52,37 +53,53 @@ import { PopoverOptionComponent } from 'src/app/Components/popover-option/popove
 })
 export class NetworkPage implements OnInit {
   form: FormGroup;
-  networks = [];
-  activeNetwork = null;
+  networks: any;
+  activeNetwork: any;
   fName = new FormControl('', Validators.required);
-  fHost = new FormControl('', [Validators.required, Validators.pattern('^https?://+[\\w.-]+:\\d+$')]);
+  // fHost = new FormControl('', [Validators.required, Validators.pattern('^https?://+[\\w.-]+:\\d+$')]);
+  fHost = new FormControl('', [Validators.required]);
   actionMode = 'add';
   idx = 0;
   isShowForm = false;
   textEdit = 'edit';
   textDelete = 'delete';
 
+  isAllAddressValid = true;
   constructor(
     private navCtrl: NavController,
     private popoverCtrl: PopoverController,
     private alertController: AlertController,
     private networkSrv: NetworkService
-  ) { }
-
-
-
-  async ngOnInit() {
-    this.networks = this.networkSrv.getall();
+  ) {
     this.form = new FormGroup({
       name: this.fName,
       host: this.fHost
     });
-    this.activeNetwork = await this.networkSrv.getNetwork();
+  }
+
+  validURL(myURL: string) {
+    const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))' + // ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port
+    '(\\?[;&amp;a-z\\d%_.~+=-]*)?' + // query string
+    '(\\#[-a-z\\d_]*)?$', 'i');
+    return pattern.test(myURL);
+ }
+
+  async ngOnInit() {
+    this.networks = await this.networkSrv.getAll();
+    console.log('List group: ', this.networks);
+    this.activeNetwork = await this.networkSrv.getActiveGroup();
+    console.log('activeNetwork group: ', this.activeNetwork);
   }
 
   selectNetwork(index: any) {
-    this.networkSrv.setNetwork(index);
-    this.networkSrv.broadcastSelectNetwork(this.networks[index]);
+    const netSelected = this.networks[index];
+    console.log('== Selectedd: ', netSelected);
+    this.networkSrv.setActiveGroup(netSelected);
+    this.activeNetwork = netSelected;
+    this.networkSrv.broadcastSelectNetwork(netSelected);
     this.navCtrl.pop();
   }
 
@@ -91,6 +108,8 @@ export class NetworkPage implements OnInit {
   }
 
   addHost() {
+    this.fName.setValue('');
+    this.fHost.setValue('');
     this.actionMode = 'add';
     this.showForm();
   }
@@ -103,15 +122,25 @@ export class NetworkPage implements OnInit {
     this.actionMode = 'edit';
     this.idx = idx;
     this.isShowForm = true;
-    const network =   this.networks[this.idx];
-    this.fName.setValue(network.name);
-    this.fHost.setValue(network.host);
+    const networkGroup = this.networks[this.idx];
+    console.log('=== selected: ', networkGroup);
+
+    this.fName.setValue(networkGroup.label);
+    const hosts = networkGroup.wkps;
+    console.log('=== hosts: ', hosts);
+
+    const hosts2 = hosts.map( (x: string) => {
+        return x + '\n';
+    });
+
+    console.log('=== hosts2: ', hosts2);
+    this.fHost.setValue(hosts2);
   }
+
 
   async delete(idx: number) {
     this.idx = idx;
     this.networks.splice(this.idx, 1);
-    console.log('== this.networks after delte:', this.networks);
     await this.networkSrv.saveAll(this.networks);
   }
 
@@ -128,7 +157,7 @@ export class NetworkPage implements OnInit {
           text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: (blah) => {
+          handler: () => {
             console.log('Confirm Cancel: blah');
           }
         }, {
@@ -144,33 +173,76 @@ export class NetworkPage implements OnInit {
   }
 
   async save(): Promise<void> {
-
+    this.isAllAddressValid = true;
     this.fHost.markAsTouched();
     this.fName.markAsTouched();
 
     if (!this.form.valid) {
-      console.log('Please provide all the required values!');
+      this.isAllAddressValid = false;
       return;
     }
 
-    const newHost: ZbcNetwork = {
-      name: this.fName.value,
-      host: this.fHost.value,
-      default: false,
-    };
-
-    console.log('=== newHost: ', newHost);
     if (this.actionMode === 'add') {
-      console.log(' == will add', newHost);
-      await this.networkSrv.add(newHost);
-    } else if (this.actionMode === 'edit') {
-      console.log(' == will edit', newHost);
-      this.networks[this.idx] = newHost;
+      console.log('.. add ....');
+      // const nodes = this.fHost.value.split('\n').map( (x: string) => {
+      //       return this.validURL(x.trim().replace(',', ''));
+      //   }
+      // );
+
+      const lines = this.fHost.value.split('\n');
+      const nodes = [];
+
+      lines.forEach((value: string) => {
+        if (value.trim() !== '' && this.validURL(value.trim())) {
+          nodes.push(value.trim());
+        } else {
+          this.isAllAddressValid = false;
+        }
+      });
+
+      const groupAdd: GroupData = {
+        label: this.fName.value,
+        wkps: nodes
+      };
+
+      console.log('groupAdd: ', groupAdd);
+      this.networks.push(groupAdd);
+
+      console.log('this.networks: ',   this.networks);
       await this.networkSrv.saveAll(this.networks);
+
+
+
+    } else if (this.actionMode === 'edit') {
+
+      console.log('.. edit ....');
+
+      const lines = this.fHost.value.split('\n');
+      const nodes = [];
+      lines.forEach((value: string) => {
+        if (value.trim() !== '' && this.validURL(value.trim())) {
+          nodes.push(value.trim());
+        } else {
+          this.isAllAddressValid = false;
+        }
+      });
+
+      console.log('.. this.fName.value ....', this.fName.value);
+      const groupEdit: GroupData = {
+        label: this.fName.value,
+        wkps: nodes
+      };
+
+      console.log('==n groupEdit: ', groupEdit);
+      this.networks[this.idx] = groupEdit;
+      await this.networkSrv.saveAll(this.networks);
+      console.log('.. saved ....');
+      this.networks = await this.networkSrv.getAll();
     }
-    this.networks = this.networkSrv.getall();
-    console.log('== Sekarang: ', this.form.value);
-    this.isShowForm = false;
+
+    console.log('this.isAllAddressValid: ', this.isAllAddressValid);
+    this.networks = await this.networkSrv.getAll();
+    // this.isShowForm = false;
   }
 
   async showOption(ev: any, index: number) {

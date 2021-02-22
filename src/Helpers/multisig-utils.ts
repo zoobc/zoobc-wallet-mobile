@@ -38,13 +38,28 @@
 // IMPORTANT: The above copyright notice and this permission notice
 // shall be included in all copies or substantial portions of the Software.
 
-// tslint:disable-next-line:max-line-length
-import { createEscrowApprovalForm, escrowApprovalMap } from 'src/app/Components/transactions/form-escrow-approval/form-escrow-approval.component';
-// tslint:disable-next-line:max-line-length
-import { createRemoveDatasetForm, createRemoveSetupDatasetBytes, removeDatasetMap } from 'src/app/Components/transactions/form-remove-account-dataset/form-remove-account-dataset.component';
-import { createSendMoneyForm, sendMoneyMap } from 'src/app/Components/transactions/form-send-money/form-send-money.component';
-// tslint:disable-next-line:max-line-length
-import { createSetupDatasetBytes, createSetupDatasetForm, setupDatasetMap } from 'src/app/Components/transactions/form-setup-account-dataset/form-setup-account-dataset.component';
+
+import {
+  createEscrowApprovalForm,
+  escrowApprovalMap
+} from 'src/app/Components/transactions/form-escrow-approval/form-escrow-approval.component';
+
+import {
+  createRemoveDatasetForm,
+  createRemoveSetupDatasetBytes,
+  removeDatasetMap
+} from 'src/app/Components/transactions/form-remove-account-dataset/form-remove-account-dataset.component';
+
+import {
+  createSetupDatasetBytes,
+  createSetupDatasetForm,
+  setupDatasetMap
+} from 'src/app/Components/transactions/form-setup-account-dataset/form-setup-account-dataset.component';
+
+import {
+  createTransferZoobcForm,
+  transferZoobcMap
+} from 'src/app/Components/transactions/form-transfer-zoobc/form-transfer-zoobc.component';
 import { EscrowApprovalInterface, escrowBuilder, sendMoneyBuilder, SendMoneyInterface, TransactionType } from 'zbc-sdk';
 
 export function createInnerTxBytes(form: any, txType: number): Buffer {
@@ -60,7 +75,7 @@ export function createInnerTxBytes(form: any, txType: number): Buffer {
   }
 }
 
-export function getMultisigTitle(txType: number){
+export function getMultisigTitle(txType: number) {
   if (txType === TransactionType.SENDMONEYTRANSACTION) {
     return  'Transfer ZBC';
   } else if (txType === TransactionType.SETUPACCOUNTDATASETTRANSACTION) {
@@ -74,18 +89,19 @@ export function getMultisigTitle(txType: number){
 }
 
 export function createSendMoneyBytes(form: any): Buffer {
-  const { sender, fee, amount, recipient } = form;
-  const data: SendMoneyInterface = { sender, fee, amount, recipient };
+  const { sender, fee, amount, recipient, message } = form;
+  const data: SendMoneyInterface = { sender, fee, amount, recipient, message };
   return sendMoneyBuilder(data);
 }
 
 export function createEscrowApprovalBytes(form: any): Buffer {
-  const { approvalCode, fee, transactionId, sender } = form;
+  const { approvalCode, fee, transactionId, sender, message } = form;
   const data: EscrowApprovalInterface = {
     fee,
     approvalCode,
     approvalAddress: sender,
     transactionId,
+    message
   };
   return escrowBuilder(data);
 }
@@ -93,7 +109,7 @@ export function createEscrowApprovalBytes(form: any): Buffer {
 export function getTxType(type: number) {
   switch (type) {
     case TransactionType.SENDMONEYTRANSACTION:
-      return 'send money';
+      return 'transfer zoobc';
     case TransactionType.SETUPACCOUNTDATASETTRANSACTION:
       return 'setup account dataset';
     case TransactionType.REMOVEACCOUNTDATASETTRANSACTION:
@@ -106,7 +122,7 @@ export function getTxType(type: number) {
 export function createInnerTxForm(txType: number) {
   switch (txType) {
     case TransactionType.SENDMONEYTRANSACTION:
-      return createSendMoneyForm();
+      return createTransferZoobcForm();
     case TransactionType.SETUPACCOUNTDATASETTRANSACTION:
       return createSetupDatasetForm();
     case TransactionType.REMOVEACCOUNTDATASETTRANSACTION:
@@ -119,7 +135,7 @@ export function createInnerTxForm(txType: number) {
 export function getInputMap(txType: number): any {
   switch (txType) {
     case TransactionType.SENDMONEYTRANSACTION:
-      return sendMoneyMap;
+      return transferZoobcMap;
     case TransactionType.SETUPACCOUNTDATASETTRANSACTION:
       return setupDatasetMap;
     case TransactionType.REMOVEACCOUNTDATASETTRANSACTION:

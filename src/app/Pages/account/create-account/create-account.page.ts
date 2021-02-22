@@ -50,10 +50,11 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   addressValidator,
 } from 'src/Helpers/validators';
-import zoobc, { Address, MultiSigInfo } from 'zbc-sdk';
+import zoobc, { Address, MultiSigInfo, uniqueNonce } from 'zbc-sdk';
 import { getTranslation } from 'src/Helpers/utils';
 import { TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-create-account',
@@ -68,7 +69,7 @@ export class CreateAccountPage implements OnInit {
   isNameValid = true;
   accounts: Account[];
   isMultisig: boolean;
-  minimumParticipants = 2;
+  minimumParticipants = 1;
   from = '';
 
   multiSignAddress: string;
@@ -137,7 +138,7 @@ export class CreateAccountPage implements OnInit {
   setMinimumSignatureValidation() {
     this.minimumSignature.setValidators([
       Validators.required,
-      Validators.min(2),
+      Validators.min(1),
       Validators.max(this.participants.controls.length)
     ]);
 
@@ -201,13 +202,15 @@ export class CreateAccountPage implements OnInit {
       return;
     }
 
-    console.log('== this.participants.value: ', this.participants.value);
     if (this.participants.value && this.participants.value.length >  1) {
-      const participants = this.participants.value.filter(value => value.address && (value.address.address.length > 0));
-      const addresses: Address[] = participants.map(x => ({ value: x.address.address, type: 0 }));
+      const participants = this.participants.value.filter(
+        (value: { address: { address: string | any[]; }; }) => value.address && (value.address.address.length > 0));
+      const addresses: Address[] = participants.map((x: { address: { address: any; }; }) => ({ value: x.address.address, type: 0 }));
+      const unqNonce = uniqueNonce(addresses, this.nonce.value,  this.minimumSignature.value);
+
       const multiParam: MultiSigInfo = {
         participants: addresses,
-        nonce: this.nonce.value,
+        nonce: unqNonce,
         minSigs: this.minimumSignature.value,
       };
       this.multiSignAddress = zoobc.MultiSignature.createMultiSigAddress(multiParam);
@@ -246,13 +249,16 @@ export class CreateAccountPage implements OnInit {
     }).then(res => {
       if (!res.value) { return null; }
 
-      const participants = this.participants.value.filter(value => value.address && (value.address.address.length > 0));
+      const participants = this.participants.value.filter((value: {
+        address: { address: string | any[]; }; }) => value.address && (value.address.address.length > 0));
       // participants = participants.sort();
       // console.log('=== participants: ', participants);
       // participants.forEach(this.filterPrticipant);
 
-      const addresses: Address[] = participants.map(x => ({ value: x.address.address, type: 0 }));
-      console.log('=== addresses: ', addresses);
+      const addresses: Address[] = participants.map((x: { address: { address: any; }; }) => ({ value: x.address.address, type: 0 }));
+
+      const numNonce = uniqueNonce(addresses, this.nonce.value, this.minimumSignature.value);
+
       const multiParam: MultiSigInfo = {
         participants: addresses,
         nonce: this.nonce.value,
@@ -290,7 +296,7 @@ export class CreateAccountPage implements OnInit {
 
   }
 
-  filterPrticipant(item) {
+  filterPrticipant(item: { address: any; }) {
     const addrs = item.address;
     if (addrs) {
       console.log('=== addrs: ', addrs.address);

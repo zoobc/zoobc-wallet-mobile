@@ -46,7 +46,7 @@ import {
 } from 'src/environments/variable.const';
 import { ThemeService } from 'src/app/Services/theme.service';
 import { AccountService } from 'src/app/Services/account.service';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { StorageService } from 'src/app/Services/storage.service';
 
 @Component({
@@ -68,6 +68,7 @@ export class SetupPinGpPage implements OnInit {
     private authSrv: AuthService,
     private navCtrl: NavController,
     private themeSrv: ThemeService,
+    private modalCtrl: ModalController,
     private storageSrv: StorageService
   ) {
     this.pagePosition = 0;
@@ -127,5 +128,9 @@ export class SetupPinGpPage implements OnInit {
       this.pagePosition++;
       this.processing = false;
     }, 1500);
+  }
+
+  async cancel() {
+    await this.modalCtrl.dismiss('-');
   }
 }

@@ -80,7 +80,6 @@ shall be included in all copies or substantial portions of the Software.
       </ion-row>
     </ng-container>
 
-    
     <!-- view mode -->
     <ng-container *ngIf="account && isMultisig &&  mode == 0">
       <ion-row>
@@ -120,6 +119,22 @@ shall be included in all copies or substantial portions of the Software.
         <ion-col size="12">
           <ion-label>
             <h5>{{ participants[i].value }}</h5>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <h3>Unique ID:</h3>
+            <p>{{ account.nonce}}</p>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label>
+            <h3>Minimum Signature:</h3>
+            <p>{{ account.minSig}}</p>
           </ion-label>
         </ion-col>
       </ion-row>

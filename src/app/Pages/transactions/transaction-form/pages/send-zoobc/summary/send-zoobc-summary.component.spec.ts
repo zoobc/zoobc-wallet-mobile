@@ -32,49 +32,42 @@
 //     However a prior notification to the authors will be appreciated.
 
 // ZooBC is architected by Roberto Capodieci & Barton Johnston
-//             contact us at roberto.capodieci[at]blockchainzoo.com
-//             and barton.johnston[at]blockchainzoo.com
+//     contact us at roberto.capodieci[at]blockchainzoo.com
+//     and barton.johnston[at]blockchainzoo.com
 
 // IMPORTANT: The above copyright notice and this permission notice
 // shall be included in all copies or substantial portions of the Software.
 
-ion-icon{
-    display: inline-block;
-    font-size: 1.3em;
-    vertical-align: middle;
-}
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SendZoobcSummaryComponent } from './send-zoobc-summary.component';
+import {TranslateModule } from '@ngx-translate/core';
+import { RouterTestingModule } from '@angular/router/testing';
 
-.address{
-    font-size: 0.8em;
-}
+describe('SendZoobcSummaryComponent', () => {
+  let component: SendZoobcSummaryComponent;
+  let fixture: ComponentFixture<SendZoobcSummaryComponent>;
 
-ion-col{
-    padding-left: 0px;
-    padding-right: 0px;
-}
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [SendZoobcSummaryComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+          TranslateModule.forRoot(),
+          RouterTestingModule,
+      ]
+    }).compileComponents();
+  }));
 
-ion-checkbox {
-    display: inline-block;
-    font-size: 0.8em;
-    vertical-align: middle;
-}
+  beforeEach(() => {
+    fixture = TestBed.createComponent(SendZoobcSummaryComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-.textcustom{
-    display: inline-block;
-    vertical-align: middle;
-}
 
-.ion-row-cont{    
-    border: 1px solid #989aa2;
-    border-radius: 1px;
-}
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-ion-grid{
-    margin-bottom: 10px;
-}
-
-.sufix{
-    margin-top:10px; 
-    color: var(--ion-color-primary);
-}
-
+});
