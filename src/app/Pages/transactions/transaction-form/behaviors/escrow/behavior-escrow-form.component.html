@@ -65,25 +65,19 @@ shall be included in all copies or substantial portions of the Software.
 
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ "timeout" | translate }}</ion-label>
-    <ion-input placeholder="{{ 'enter timeout' | translate }}" type="number" (ionChange)="changeForm()"
-      [(ngModel)]="escrow.timeout">
-    </ion-input>
-    <ion-text class="blockheight ion-text-right">{{ "block height" | translate}}: {{ blockHeight | number: '0.0-2' }}</ion-text>
-
-    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutRequired">
+    <ion-datetime displayFormat="MMM DD, YYYY HH:mm" min="2015" max="2038"  display-timezone="utc" (ionChange)="changeForm()"
+    [(ngModel)]="strTimeout"></ion-datetime>
+    <!-- <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutRequired">
       {{ "timeout is required" | translate}}
-    </ion-text>
+    </ion-text> -->
     <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutMin">
       {{ "minimum timeout is 1" | translate}}
-    </ion-text>
-    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutMax">
-      {{ "maximumm timeout is 750" | translate}}
     </ion-text>
   </ion-item>
 
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ "instruction" | translate }}</ion-label>
-    <ion-textarea rows="4" maxlength="256" [(ngModel)]="escrow.instruction" (ionChange)="changeForm()"
+    <ion-textarea rows="5" [(ngModel)]="escrow.instruction" (ionChange)="changeForm()"
       placeholder="{{ 'Please explain here the conditions for approval or rejection of the transaction' | translate }}">
     </ion-textarea>
   </ion-item>
