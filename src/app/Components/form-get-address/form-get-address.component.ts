@@ -234,7 +234,9 @@ export class FormGetAddressComponent implements OnInit, OnDestroy, ControlValueA
 
   writeValue(value: Contact) {
     this.address = value;
-    this.textAddress = value.address;
+    if (value) {
+      this.textAddress = value.address;
+    }
   }
 
   registerOnChange(fn: (value: Contact) => void) {
