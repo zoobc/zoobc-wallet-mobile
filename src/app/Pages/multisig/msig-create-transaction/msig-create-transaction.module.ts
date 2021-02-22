@@ -50,12 +50,16 @@ import { CurrencyComponent } from 'src/app/Components/currency/currency.componen
 import { MsigCreateTransactionPage } from './msig-create-transaction.page';
 import { ComponentsModule } from 'src/app/Components/components.module';
 import { FormEscrowComponent } from 'src/app/Components/transactions/form-escrow/form-escrow.component';
-import { FormSendMoneyComponent } from 'src/app/Components/transactions/form-send-money/form-send-money.component';
-// tslint:disable-next-line:max-line-length
-import { FormSetupAccountDatasetComponent } from 'src/app/Components/transactions/form-setup-account-dataset/form-setup-account-dataset.component';
-import { FormEscrowApprovalComponent } from 'src/app/Components/transactions/form-escrow-approval/form-escrow-approval.component';
-// tslint:disable-next-line:max-line-length
-import { FormRemoveAccountDatasetComponent } from 'src/app/Components/transactions/form-remove-account-dataset/form-remove-account-dataset.component';
+import { FormTransferZoobcComponent } from 'src/app/Components/transactions/form-transfer-zoobc/form-transfer-zoobc.component';
+import {
+  FormSetupAccountDatasetComponent
+} from 'src/app/Components/transactions/form-setup-account-dataset/form-setup-account-dataset.component';
+import {
+  FormEscrowApprovalComponent
+} from 'src/app/Components/transactions/form-escrow-approval/form-escrow-approval.component';
+import {
+  FormRemoveAccountDatasetComponent
+} from 'src/app/Components/transactions/form-remove-account-dataset/form-remove-account-dataset.component';
 import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 
 const routes: Routes = [
@@ -80,7 +84,7 @@ const routes: Routes = [
   entryComponents: [
     CurrencyComponent,
     FormEscrowComponent,
-    FormSendMoneyComponent,
+    FormTransferZoobcComponent,
     FormSetupAccountDatasetComponent,
     FormRemoveAccountDatasetComponent,
     FormEscrowApprovalComponent,
@@ -89,7 +93,6 @@ const routes: Routes = [
   declarations: [
     MsigCreateTransactionPage,
     FormEscrowComponent,
-    FormSendMoneyComponent,
     FormSetupAccountDatasetComponent,
     FormRemoveAccountDatasetComponent,
     FormEscrowApprovalComponent]
