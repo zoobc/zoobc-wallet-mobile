@@ -44,7 +44,6 @@ import { LoadingController, NavController } from '@ionic/angular';
 import { CurrencyService, ICurrency } from 'src/app/Services/currency.service';
 import { StorageService } from 'src/app/Services/storage.service';
 
-
 @Component({
   selector: 'app-popup-currency',
   templateUrl: './popup-currency.page.html',
