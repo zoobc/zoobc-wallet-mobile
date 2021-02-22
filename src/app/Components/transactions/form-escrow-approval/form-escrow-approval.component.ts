@@ -78,12 +78,13 @@ export function createEscrowApprovalForm(): FormGroup {
 }
 
 export function createEscrowApprovalBytes(form: any): Buffer {
-  const { approvalCode, fee, transactionId, sender } = form;
+  const { approvalCode, fee, transactionId, sender, message } = form;
   const data: EscrowApprovalInterface = {
     fee,
     approvalCode,
     approvalAddress: sender,
     transactionId,
+    message
   };
   return escrowBuilder(data);
 }
