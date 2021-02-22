@@ -43,7 +43,7 @@ shall be included in all copies or substantial portions of the Software.
  <div class="account-item" [ngClass]="horizontal?'horizontal':''">
   <div class="info">
     <div class="name">
-      {{ account.name }}
+      {{ account.name }}     <ion-badge *ngIf="account.type=='multisig'" color="tertiary">{{ account.type}}</ion-badge>
     </div>
     <div *ngIf="horizontal" class="address">
       {{ account.address.value | shortAddress}}
