@@ -39,7 +39,7 @@
 // shall be included in all copies or substantial portions of the Software.
 
 import { Component, OnInit } from '@angular/core';
-import { NavController, ToastController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { QrScannerService } from 'src/app/Services/qr-scanner.service';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import {
@@ -67,10 +67,8 @@ export class QrScannerComponent implements OnInit {
     private navCtrl: NavController,
     private router: Router,
     private qrScannerSrv: QrScannerService,
-    private activeRoute: ActivatedRoute,
-    private toastController: ToastController) {
+    private activeRoute: ActivatedRoute) {
     this.encodeData = '';
-    // Options
     this.barcodeScannerOptions = {
       showTorchButton: true,
       showFlipCameraButton: true
@@ -107,8 +105,7 @@ export class QrScannerComponent implements OnInit {
           from: this.from
         }
       };
-      this.router.navigate(['/transaction-form/send-money'], navigationExtras);
-      // this.navCtrl.navigateForward(['/transaction-form/send-money'], navigationExtras);
+      this.router.navigate(['/transaction-form/send-zoobc'], navigationExtras);
     }
     this.reset();
   }
