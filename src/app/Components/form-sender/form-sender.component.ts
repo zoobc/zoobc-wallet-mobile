@@ -82,7 +82,7 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
   ) { }
 
   async ngOnInit() {
-
+    this.account = await this.accountSrv.getCurrAccount();
     if (this.predefList.length < 1) {
       console.log('this.predefList length<1: ', this.predefList.length);
       this.account = await this.accountSrv.getCurrAccount();
