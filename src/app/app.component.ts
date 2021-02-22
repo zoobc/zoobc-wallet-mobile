@@ -47,7 +47,6 @@ import {
   STORAGE_ACTIVE_CURRENCY,
   CONST_DEFAULT_CURRENCY,
   STORAGE_ACTIVE_THEME,
-  CURRENCY_RATE_LIST,
   DEFAULT_THEME
 } from 'src/environments/variable.const';
 
@@ -56,9 +55,7 @@ import { NetworkService } from './Services/network.service';
 import { StorageService } from './Services/storage.service';
 import { LanguageService } from 'src/app/Services/language.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CurrencyService } from 'src/app/Services/currency.service';
 import { ThemeService } from './Services/theme.service';
-import { AccountService } from './Services/account.service';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
@@ -77,8 +74,6 @@ export class AppComponent implements OnInit {
     private toastController: ToastController,
     private strgSrv: StorageService,
     private translateService: TranslateService,
-    private currencyService: CurrencyService,
-    private accountService: AccountService,
     private themeService: ThemeService
   ) {
     this.initializeApp();
@@ -90,11 +85,8 @@ export class AppComponent implements OnInit {
       this.statusBar.styleDefault();
       this.languageService.setInitialAppLanguage();
       this.networkService.setInitialNetwork();
-      this.currencyService.setCurrencyRateList(CURRENCY_RATE_LIST);
       this.setDefaultCurrency();
-      // this.accountService.fetchAccountsBalance();
       this.splashScreen.hide();
-      this.setTheme();
     });
   }
 

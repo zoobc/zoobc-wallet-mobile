@@ -60,7 +60,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { QrScannerComponent } from 'src/app/Pages/qr-scanner/qr-scanner.component';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { LanguageService } from './Services/language.service';
-import { SenddetailPageModule } from './Pages/send-coin/modals/senddetail/senddetail.module';
 import { TrxstatusPageModule } from './Pages/send-coin/modals/trxstatus/trxstatus.module';
 import { EnterpinsendPageModule } from './Pages/send-coin/modals/enterpinsend/enterpinsend.module';
 import { TransactionDetailPageModule } from './Pages/transactions/transaction-detail/transaction-detail.module';
@@ -88,7 +87,7 @@ import { ImportAccountPageModule } from './Pages/account/import-account/import-a
 import { ImportDraftPageModule } from './Pages/multisig/import-draft/import-draft.module';
 import { ComponentsModule } from './Components/components.module';
 import { MyTasksPageModule } from './Pages/my-tasks/my-tasks.module';
-
+import { DatePicker } from '@ionic-native/date-picker/ngx';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/language/locales/', '.json');
 }
@@ -109,7 +108,6 @@ export function createTranslateLoader(http: HttpClient) {
     FormsModule,
     HttpClientModule,
     NgxsModule.forRoot(),
-    SenddetailPageModule,
     TransactionDetailPageModule,
     TrxstatusPageModule,
     ConfirmationPageModule,
@@ -134,7 +132,7 @@ export function createTranslateLoader(http: HttpClient) {
       }
     }),
     NgxQRCodeModule,
-    NewDatasetPageModule,
+    NewDatasetPageModule
   ],
   providers: [
     Network,
@@ -151,6 +149,7 @@ export function createTranslateLoader(http: HttpClient) {
     { provide: 'global', useFactory: () => window },
     Clipboard,
     LanguageService,
+    DatePicker,
     DecimalPipe,
     DateAgoPipe,
     ObservableService

@@ -3,13 +3,13 @@
 
 * New UI Design.
 * Blockchain Object.
-* More options on multisig: send money, setup data account, remove data account, escrow approval.
+* More options on multisig: transfer zoobc, setup data account, remove data account, escrow approval.
 * Add Step indicator on Multisig Send Money.
-* Change ui on send transaction on multisig.
+* Change ui on transfer transaction on multisig.
 
 ### 16 October 2020
 
-* Fixing multisig Sign By when send money.
+* Fixing multisig Sign By when transfer zoobc.
 * Integrating Crypto News on dashboard.
 * Add news page, news from cryptocompare API.
 * Modify Themes.
@@ -55,7 +55,7 @@
 * Block height on my-task auto update.
 * My task list for multi-signature.
 * Transaction history with escrow and multisig badge.
-* Fix send money on multisig.
+* Fix transfer zoobc on multisig.
 * Fix multisig signer account.
 
 ### 24 August 2020
@@ -75,7 +75,7 @@
 ### 10 August 2020
 * Commition fee info on my-task.
 * Transaction list with commition fee info, if have escrow trx.
-* Can select signer on multi-signature send money.
+* Can select signer on multi-signature transfer zoobc.
 
 ### 28 July 2020
 * New Address Format, address start with ZBC.
@@ -85,7 +85,7 @@
 ### 24 July 2020
 * Approver with options: contact, accounts,QRCode.
 * Better validation on all field in escrow transaction.
-* Add sender name, recipient name, approver name on send detail confirmation if possible.
+* Add sender name, recipient name, approver name on transfer detail confirmation if possible.
 * Balance last time updated info on dashboard.
 * Balance auto update each time open dashboard.
 
@@ -121,7 +121,7 @@ Settings enhancement on language options and currency options
 
 * Change layout of dashboard.
 * Add Chat feature, with one to one chat, push notif..
-* Add Escrow feature in send money screen..
+* Add Escrow feature in transfer zoobc screen..
 * Add Theme options, with three options: zoobc, day, night..
 * Implement SDK for accessing zoobc node.
 
@@ -141,14 +141,14 @@ Settings enhancement on language options and currency options
 * In Receive page, QR Code now with amount..
 * Change storage from local storage to native storage for better performance.
 * Modify dashboard UI design..
-* Modify send coin UI design..
+* Modify transfer coin UI design..
 * Add left menu UI design.
 * Modify splash screen..
 * Modify generate passphrase, field number now inside text box as placeholder..
 * Modify restore wallet, field number now inside text box as placeholder..
 * Change copy to clipboard util, from browser clipboard to native clipboard..
 * Add blog link in dashboard.
-* Bug fixing on send coin..
+* Bug fixing on transfer coin..
 
 ### 07 Desember 2019
 
@@ -178,11 +178,11 @@ and remember it when you need it to confirm the passphrase..
 * Adding 'last updated' information in currency selector in setting page.
 * Modifying feedback form, now have error message.
 * Modifying feedback form, now feedback form will back to previous page after submiting comment succesffull.
-* Modifying feedback form now have confirmation modal after successfully sending comment..
+* Modifying feedback form now have confirmation modal after successfully transfering comment..
 * Set 1 zbc = 10 dollar..
-* Modifying dashboard to have convertion to fiat money.
-* Modifying send money form to have convertion to fiat money..
-* Modifying send money confirmation to have convertion to fiat money.
+* Modifying dashboard to have convertion to fiat zoobc.
+* Modifying transfer zoobc form to have convertion to fiat zoobc..
+* Modifying transfer zoobc confirmation to have convertion to fiat zoobc.
 * 
 ### 18 November 2019
 * Change network to alpha network.
@@ -214,14 +214,14 @@ and remember it when you need it to confirm the passphrase..
 * Add Feedback form, and used firebase as backend..
 * Add Currency rate..
 * Add Change wallet when login..
-* Modify send money screen, change transaction fee options as button..
+* Modify transfer zoobc screen, change transaction fee options as button..
 * Review code: all harcoded string convert to Constants..
 * Rearange project structure..
 
 ### 16 October 2019 18:00
 
-* Add custom Fee in send money..
-* Bug fixing in send money..
+* Add custom Fee in transfer zoobc..
+* Bug fixing in transfer zoobc..
 * Bug fixing in load more..
 
 ### 14 October 2019 18:00
@@ -252,14 +252,14 @@ and remember it when you need it to confirm the passphrase..
 * Change error msg when wrong PIN, use label instead toast..
 
 ### 4 October 2019 20:30
-* Change PIN in send coin screen.
+* Change PIN in transfer coin screen.
 * Add barcode scanner when add address book..
 * Add additional language: Spanish, Portugis ... .
 
 ### 3 October 2019 20:30
 * Modify generate passphrase to make screen without scroll.
 * Add additional language: Japan, China, Rusia .
-* Modify send screen, allow select account as sender..
+* Modify transfer screen, allow select account as sender..
 
 ### 2 October 2019 13:30
 * Modify initial Screen to make screen without scroll.
@@ -281,8 +281,8 @@ if account that edited is Active account then need refresh in dashboard...
 ### 27 September 2019 20:09
 * Minimum transfer is 0.000001.
 * Amount less than 0.000001 will round to 0.
-* Error message in send form improved!.
-* Add Balance in send form..
+* Error message in transfer form improved!.
+* Add Balance in transfer form..
 * Fix bug when switch account to new address..
 
 ### 27 September 2019

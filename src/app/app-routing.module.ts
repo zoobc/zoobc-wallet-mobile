@@ -42,7 +42,6 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth-service';
 import { QrScannerComponent } from './Pages/qr-scanner/qr-scanner.component';
-import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   {
@@ -106,28 +105,10 @@ const routes: Routes = [
     canActivate: [AuthService]
   },
   {
-    path: 'senddetail',
-    loadChildren:
-      './Pages/send-coin/modals/senddetail/senddetail.module#SenddetailPageModule',
-    canActivate: [AuthService]
-  },
-  {
     path: 'enterpinsend',
     loadChildren:
       './Pages/send-coin/modals/enterpinsend/enterpinsend.module#EnterpinsendPageModule'
   },
-  {
-    path: 'trxstatus',
-    loadChildren:
-      './Pages/send-coin/modals/trxstatus/trxstatus.module#TrxstatusPageModule',
-    canActivate: [AuthService]
-  },
-  {
-    path: 'sendcoin',
-    loadChildren: './Pages/send-coin/send-coin.module#SendCoinPageModule',
-    canActivate: [AuthService]
-  },
-
   {
     path: 'backup-phrase',
     loadChildren:
@@ -282,9 +263,6 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
-  exports: [
-    RouterModule,
-    TranslateModule
-  ]
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }

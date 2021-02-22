@@ -1,48 +1,5 @@
-
-<!--
-   ZooBC Copyright (C) 2020 Quasisoft Limited - Hong Kong
-This file is part of ZooBC <https:github.com/zoobc/zoobc-wallet-mobile>
-
-ZooBC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ZooBC is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ZooBC.  If not, see <http:www.gnu.org/licenses/>.
-
-Additional Permission Under GNU GPL Version 3 section 7.
-As the special exception permitted under Section 7b, c and e,
-in respect with the Author’s copyright, please refer to this section:
-
-1. You are free to convey this Program according to GNU GPL Version 3,
-    as long as you respect and comply with the Author’s copyright by
-    showing in its user interface an Appropriate Notice that the derivate
-    program and its source code are “powered by ZooBC”.
-    This is an acknowledgement for the copyright holder, ZooBC,
-    as the implementation of appreciation of the exclusive right of the
-    creator and to avoid any circumvention on the rights under trademark
-    law for use of some trade names, trademarks, or service marks.
-
-2. Complying to the GNU GPL Version 3, you may distribute
-    the program without any permission from the Author.
-    However a prior notification to the authors will be appreciated.
-
-ZooBC is architected by Roberto Capodieci & Barton Johnston
-            contact us at roberto.capodieci[at]blockchainzoo.com
-            and barton.johnston[at]blockchainzoo.com
-
-IMPORTANT: The above copyright notice and this permission notice
-shall be included in all copies or substantial portions of the Software.
--->
-
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.zoobc.walletmobile" version="0.3.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.zoobc.mwallet" version="0.3.9" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>ZooBC</name>
     <description>Wallet app for Zoo Blockchain.</description>
     <author email="support@zoobc.com" href="http://zoobc.com/">Zoobc Wallet Team</author>
@@ -55,7 +12,7 @@ shall be included in all copies or substantial portions of the Software.
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <preference name="ScrollEnabled" value="false" />
-    <preference name="android-minSdkVersion" value="20" />
+    <preference name="android-minSdkVersion" value="19" />
     <preference name="android-targetSdkVersion" value="29" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
@@ -155,5 +112,4 @@ shall be included in all copies or substantial portions of the Software.
     <plugin name="cordova-plugin-statusbar" spec="2.4.2" />
     <plugin name="cordova-plugin-device" spec="2.0.2" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
-    <allow-navigation href="*://*.beta.proofofparticipation.network/*" />
 </widget>
