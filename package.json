@@ -100,7 +100,7 @@
     "supercop.wasm": "^5.0.1",
     "sweetalert2": "^8.11.7",
     "tslib": "^1.9.0",
-    "zbc-sdk": "0.0.7-pre-release",
+    "zbc-sdk": "0.0.14-pre-release",
     "zone.js": "~0.8.29"
   },
   "devDependencies": {
