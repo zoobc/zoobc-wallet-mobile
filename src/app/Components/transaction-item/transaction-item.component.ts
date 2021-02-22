@@ -65,7 +65,6 @@ export class TransactionItemComponent implements OnInit {
 
   async getAccount() {
     this.address = (await this.accountService.getCurrAccount()).address;
-    console.log('==this.addres = ', this.address);
     this.currencyServ.rate.subscribe(rate => (this.currencyRate = rate));
   }
 
