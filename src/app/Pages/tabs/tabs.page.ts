@@ -40,6 +40,8 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonTabs } from '@ionic/angular';
+import { AccountService } from 'src/app/Services/account.service';
+import { TransactionService } from 'src/app/Services/transaction.service';
 
 @Component({
   selector: 'app-tabs',
@@ -51,13 +53,29 @@ export class TabsPage implements OnInit {
   @ViewChild('homeTabs') homeTabs: IonTabs;
 
   public activeTab: any;
+  numPendingTrx = 0;
+  account: any;
 
-  constructor() { }
+  constructor(
+    private transactionSrv: TransactionService,
+    private accountService: AccountService
+    ) { }
 
-  ngOnInit() { }
+  async ngOnInit() {
+    this.startTimer();
+  }
 
   tabChanged(): void {
     this.activeTab = this.homeTabs.getSelected();
   }
+
+  startTimer() {
+    setInterval(async () => {
+      this.account = await this.accountService.getCurrAccount();
+      const address = this.account.address;
+      this.numPendingTrx =  await this.transactionSrv.getPendingTrxEscrow(address);
+    }, 20000);
+  }
+
 
 }
