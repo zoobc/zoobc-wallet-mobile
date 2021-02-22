@@ -40,15 +40,22 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { SendMoneyInterface, ZBCTransaction } from 'zbc-sdk';
+import zoobc, { EscrowListParams, Escrows, EscrowStatus, OrderBy, SendMoneyInterface, ZBCTransaction } from 'zbc-sdk';
 import { Transaction } from '../Interfaces/transaction';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionService {
+  public msgNormal: string;
+  public msgEscrow: string;
+  public txTimeOut: number;
+
   public sendMoneySubject: Subject<any> = new Subject<any>();
+  public txEscrowSubject: Subject<any> = new Subject<any>();
+
   public transactionSuccessSubject: Subject<boolean> = new Subject<boolean>();
+
   frmSend: any;
   tempTrx: ZBCTransaction;
   constructor() {
@@ -68,6 +75,30 @@ export class TransactionService {
 
   getTrx() {
     return this.frmSend ;
+  }
+
+  updateEscrowForm(arg: any) {
+    this.txEscrowSubject.next(arg);
+  }
+  async getPendingTrxEscrow(address: any) {
+
+    const params: EscrowListParams = {
+      approverAddress: address,
+      statusList: [EscrowStatus.PENDING],
+      pagination: {
+        page: 1,
+        limit: 50,
+        orderBy: OrderBy.DESC,
+        orderField: 'timeout',
+      },
+      latest: true,
+    };
+
+    const trxs = await zoobc.Escrows.getList(params);
+    // console.log('== trxs: ', trxs);
+
+    return trxs ? trxs.total : 0;
+
   }
 
 }

@@ -122,7 +122,7 @@ export class AccountService {
 
   async allAccount(type?: AccountType) {
     const accounts = await this.strgSrv.getObject(STORAGE_ALL_ACCOUNTS);
-    console.log('=== accs:', accounts);
+
     if (accounts == null) {
       return null;
     }
@@ -280,7 +280,7 @@ export class AccountService {
 
   async restoreAccounts() {
     if (!this.willRestoreAccounts) {
-      console.log('=== will return ');
+
       return;
     }
 
