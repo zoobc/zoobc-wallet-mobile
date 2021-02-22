@@ -39,7 +39,7 @@
 // shall be included in all copies or substantial portions of the Software.
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   AlertController,
   LoadingController,
@@ -63,24 +63,24 @@ export class BlockchainObjectPage implements OnInit {
     private router: Router,
     public popoverController: PopoverController,
     private translateSrv: TranslateService
-  ) {}
+  ) { }
 
   blockchainObjects = [
     {
-      id: "ZBO_F6CR...WD3R",
-      info: "5 days ago"
+      id: 'ZBO_F6CR...WD3R',
+      info: '5 days ago'
     },
     {
-      id: "ZBO_F6CR...WFJ7",
-      info: "4 days ago"
+      id: 'ZBO_F6CR...WFJ7',
+      info: '4 days ago'
     },
     {
-      id: "ZBO_F6CR...OP6Y",
-      info: "3 days ago"
+      id: 'ZBO_F6CR...OP6Y',
+      info: '3 days ago'
     },
     {
-      id: "ZBO_F6CR...JK7Y",
-      info: "2 days ago"
+      id: 'ZBO_F6CR...JK7Y',
+      info: '2 days ago'
     }
   ];
 
@@ -99,13 +99,11 @@ export class BlockchainObjectPage implements OnInit {
     this.translateSrv.get([
       'View Detail',
       'edit',
-    ]).subscribe((res: any)=>{
+    ]).subscribe((res: any) => {
       this.textViewDetail = res['View Detail'];
-      this.textEdit = res['edit'];
-    })
+      this.textEdit = res.edit;
+    });
   }
-
-  ngOnDestroy() {}
 
   createBlockchainObject() {
     this.router.navigate(['/transaction-form/blockchain-object/create']);
@@ -136,7 +134,7 @@ export class BlockchainObjectPage implements OnInit {
           this.router.navigate(['/transaction-form/blockchain-object/detail']);
           break;
         case 'edit':
-          console.log("edit")
+          console.log('edit');
           break;
       }
     });
