@@ -157,8 +157,14 @@ export class MsigSendTransactionPage implements OnInit {
     };
 
     const childSeed = this.authSrv.keyring.calcDerivationPath(acc.path);
+
+    console.log('== data: ', data);
+
     zoobc.MultiSignature.postTransaction(data, childSeed)
-      .then(async () => {
+      .then(async (msg) => {
+
+        console.log('== msg:', msg);
+
         const message = getTranslation('your transaction is processing', this.translate);
         const subMessage = getTranslation('please tell the participant to approve it', this.translate);
         this.multisigServ.delete(this.draft.id);

@@ -59,6 +59,7 @@ export function getTranslation(
   return message;
 }
 
+
 export function stringToBuffer(str: string) {
   return Buffer.from(str, 'base64');
 }
@@ -144,14 +145,5 @@ export function jsonBufferToString(buf: any) {
     return buf.toString('base64');
   }
 }
-
-// export function calcMinFee(data: any) {
-//   const blockPeriod = 10 * 1e8;
-//   const feePerBlockPeriod = 0.01 * 1e8;
-
-//   if (data.timeout) {
-//     return (Math.ceil((data.timeout * 1e8) / blockPeriod) * feePerBlockPeriod) / 1e8;
-//   } else { return feePerBlockPeriod / 1e8; }
-// }
 
 

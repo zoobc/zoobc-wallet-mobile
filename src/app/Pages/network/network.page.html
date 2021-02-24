@@ -104,11 +104,11 @@ shall be included in all copies or substantial portions of the Software.
       <ion-label><span>{{"Tap list to switch network" | translate}}.</span></ion-label>
     </ion-list-header>
     <ion-item *ngFor="let network of networks; let idx = index">
-      <ion-label (click)="selectNetwork(idx)"  *ngIf="activeNetwork && activeNetwork.label && network.label==activeNetwork.label">
+      <ion-label (click)="selectNetwork(idx)"  *ngIf="network && activeNetwork && network.label==activeNetwork.label">
         <ion-icon name="cloudy" class="blink_me" style="font-size: 1.4em; color: #10A3D6"></ion-icon>&nbsp;
         {{ network.label }}
       </ion-label>
-      <ion-label (click)="selectNetwork(idx)" *ngIf="network.label!=activeNetwork.label">
+      <ion-label (click)="selectNetwork(idx)" *ngIf="network && activeNetwork && network.label!=activeNetwork.label">
         <ion-icon name="cloudy"  style="font-size: 1.4em; color:#CFCFCF"></ion-icon>&nbsp;
         {{ network.label }}
       </ion-label>

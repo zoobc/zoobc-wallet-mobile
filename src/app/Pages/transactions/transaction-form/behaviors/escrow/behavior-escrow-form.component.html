@@ -44,7 +44,7 @@ shall be included in all copies or substantial portions of the Software.
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ 'approver' | translate }}</ion-label>
     <app-form-get-address [(ngModel)]="escrow.approver" (ionChange)="changeForm()"></app-form-get-address>
-  
+
     <ion-text class="text-error" *ngIf="submitted && errors && errors.approverAddressRequired">
       {{ "address cannot be empty" | translate}}
     </ion-text>
@@ -65,14 +65,16 @@ shall be included in all copies or substantial portions of the Software.
 
   <ion-item lines="none" class="form-item">
     <ion-label position="stacked">{{ "timeout" | translate }}</ion-label>
-    <ion-datetime displayFormat="MMM DD, YYYY HH:mm" min="2015" max="2038"  display-timezone="utc" (ionChange)="changeForm()"
+    <div style="border: 1px solid #cccccc;">
+    <ion-datetime displayFormat="DD MMM YYYY HH:mm" min="2015" max="2038"  display-timezone="utc" (ionChange)="changeTimestamp()"
     [(ngModel)]="strTimeout"></ion-datetime>
-    <!-- <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutRequired">
+    </div>
+    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutRequired">
       {{ "timeout is required" | translate}}
-    </ion-text> -->
-    <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutMin">
-      {{ "minimum timeout is 1" | translate}}
     </ion-text>
+    <!-- <ion-text class="text-error" *ngIf="submitted && errors && errors.timeoutMin">
+      {{ "minimum timeout is 1" | translate}}
+    </ion-text> -->
   </ion-item>
 
   <ion-item lines="none" class="form-item">

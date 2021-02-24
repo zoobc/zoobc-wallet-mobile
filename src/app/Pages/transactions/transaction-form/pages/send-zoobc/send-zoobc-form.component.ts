@@ -73,12 +73,11 @@ export class SendZoobcFormComponent implements OnInit {
   allFees = this.transactionSrv.transactionFees(TRANSACTION_MINIMUM_FEE);
 
   private minimumFee = TRANSACTION_MINIMUM_FEE;
-  private minimumTime = 1;
   alertConnectionTitle = '';
   alertConnectionMsg = '';
   networkSubscription = null;
   sendMoneySummarySubscription = null;
-  behaviorEscrowChangesSubscription: Subscription;
+  behaviorEscrowChangesSubscription: any;
 
   sendForm = new FormGroup({
     sender: new FormControl({}),
@@ -113,15 +112,6 @@ export class SendZoobcFormComponent implements OnInit {
     private navCtrl: NavController,
     private accountSrv: AccountService
   ) {
-    // if network changed reload data
-
-    if (this.transactionSrv.txEscrowSubject) {
-      this.transactionSrv.txEscrowSubject.subscribe((value) => {
-        // console.log('value: ', value);
-        this.updateMinimumFee();
-      });
-    }
-
 
   }
 
@@ -178,7 +168,7 @@ export class SendZoobcFormComponent implements OnInit {
           this.setAmountValidation();
         }
         if (escrowValues.timeout) {
-          // this.updateMinimumFee();
+          this.updateMinimumFee();
           this.setFeeValidation();
           this.setAmountValidation();
         }
@@ -212,40 +202,33 @@ export class SendZoobcFormComponent implements OnInit {
   }
 
   updateMinimumFee() {
-    console.log('---- update value ---');
-    let msg = this.message.value;
-    this.minimumTime = 1;
+    let msg = this.message.value || '';
+
+    let per24Hour = 1;
+
     if (this.behaviorEscrow && this.behaviorEscrow.value) {
 
-      console.log('---- update behaviorEscrow ---: ', this.behaviorEscrow.value);
-      // console.log('---- instruction ---: ', this.behaviorEscrow.value.instruction);
-
-      const currentTime  = Math.floor(Date.now() / 1000);
-      let timeDiff  = this.behaviorEscrow.value.timeout - currentTime;
-      // console.log('---- timeout ---: ', this.behaviorEscrow.value.timeout);
-      // console.log('---- current ---: ', currentTime);
-      // console.log('---- timeDiff ---: ', timeDiff);
-      // console.log('---- timeDiffMin ---: ', timeDiff / 60);
-      // console.log('---- timeDiffHour ---: ', timeDiff / 3600);
-      const pert24Hour = Math.round(timeDiff / (3600 * 24));
-
-      // console.log('---- timeDiff24Hour ---: ', pert24Hour);
-
-      if (timeDiff < 0) {
-        timeDiff = 0;
+      if (this.behaviorEscrow.value.timeout) {
+        const currentTime  = Math.floor(Date.now() / 1000);
+        const timeDiff  = this.behaviorEscrow.value.timeout - currentTime;
+        console.log('=== timeDiff: ', timeDiff);
+        if (timeDiff > 0) {
+          per24Hour = Math.ceil(timeDiff / (3600 * 24));
+        }
       }
-      this.minimumTime = 1 + pert24Hour;
-      // console.log('---- minimumTime ---: ', this.minimumTime);
-      msg += this.behaviorEscrow.value.instruction;
+
+      if (this.behaviorEscrow.value.instruction) {
+        msg += this.behaviorEscrow.value.instruction;
+      }
+
     }
+    console.log('=== message length: ', msg.length);
+    console.log('=== per24Hour: ', per24Hour);
 
-    const fee  = calculateMinimumFee(msg.length, 1).toFixed(6);
-    this.minimumFee  = Number(fee); // 1.01;
-
+    const fee  = calculateMinimumFee(msg.length, per24Hour).toFixed(6);
+    this.minimumFee  = Number(fee);
     this.fee.setValue(this.minimumFee);
-
     console.log('---- minimumFee: ', this.minimumFee);
-
   }
 
 
@@ -288,7 +271,6 @@ export class SendZoobcFormComponent implements OnInit {
         new FormControl({}, [escrowFieldsValidator])
       );
 
-      this.minimumFee = calculateMinimumFee(this.behaviorEscrow.value.timeout, 1);
       this.setBehaviorEscrowChanges();
     } else {
       this.sendForm.removeControl('behaviorEscrow');
@@ -312,7 +294,7 @@ export class SendZoobcFormComponent implements OnInit {
           text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: (blah) => {
+          handler: () => {
             console.log('Confirm Cancel: blah');
             // return;
           }
@@ -374,14 +356,15 @@ export class SendZoobcFormComponent implements OnInit {
 
 
   onBehaviorEscrowChange() {
-    this.minimumFee = this.behaviorEscrow.value && this.behaviorEscrow.value.timeout ?
-    calculateMinimumFee(this.behaviorEscrow.value.timeout, 1) : TRANSACTION_MINIMUM_FEE;
-
+    // this.minimumFee = this.behaviorEscrow.value && this.behaviorEscrow.value.timeout ?
+    // calculateMinimumFee(this.behaviorEscrow.value.timeout, 1) : TRANSACTION_MINIMUM_FEE;
+    this.setBehaviorEscrowChanges();
+    this.updateMinimumFee();
     this.setFeeValidation();
     this.setAmountValidation();
   }
 
-  async showErrorMessage(error) {
+  async showErrorMessage(error: any) {
 
     let errMsg = await error.message;
     console.log('==== error: ', errMsg);

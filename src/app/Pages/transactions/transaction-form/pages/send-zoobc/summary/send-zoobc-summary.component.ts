@@ -90,7 +90,7 @@ export class SendZoobcSummaryComponent implements OnInit {
 
     pinmodal.onDidDismiss().then(async returnedData => {
       if (returnedData && returnedData.data && returnedData.data !== 0) {
-        this.sendMoney();
+        this.transferZoobc();
       }
     });
 
@@ -102,7 +102,7 @@ export class SendZoobcSummaryComponent implements OnInit {
     return dt.setUTCSeconds(epoch);
   }
 
-  async sendMoney() {
+  async transferZoobc() {
 
     // show loading bar
     const loading = await this.loadingController.create({
@@ -134,6 +134,7 @@ export class SendZoobcSummaryComponent implements OnInit {
     const childSeed = this.authSrv.keyring.calcDerivationPath(
       this.formTrx.sender.path
     );
+
     await zoobc.Transactions.sendMoney(data, childSeed)
       .then(
         async (msg) => {
