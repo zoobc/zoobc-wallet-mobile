@@ -57,6 +57,7 @@ import { PopoverOptionComponent } from 'src/app/Components/popover-option/popove
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { saveAs } from 'file-saver';
+import { UtilService } from 'src/app/Services/util.service';
 @Component({
   selector: 'app-multisig',
   templateUrl: './multisig.page.html',
@@ -96,6 +97,7 @@ export class MultisigPage implements OnInit {
     private modalController: ModalController,
     private androidPermissions: AndroidPermissions,
     private translate: TranslateService,
+    private utilSrv: UtilService,
     private file: File,
     private platform: Platform,
     private popoverCtrl: PopoverController,
@@ -161,8 +163,6 @@ export class MultisigPage implements OnInit {
       };
 
       multisig.txBody.sender = this.account.address;
-      console.log('... this.multisig:', multisig);
-
       this.multisigServ.update(multisig);
       this.router.navigate(['/msig-create-transaction']);
     } else {
@@ -231,7 +231,6 @@ export class MultisigPage implements OnInit {
 
   async getDraft() {
     this.drafts = await this.multisigServ.getDrafts();
-    console.log('== this.drafts : ', this.drafts);
 
     if (!this.drafts || this.drafts.length < 1) {
       return;
@@ -260,10 +259,32 @@ export class MultisigPage implements OnInit {
     importDraft.onDidDismiss().then(returnedData => {
       console.log('=== returneddata: ', returnedData);
       if (returnedData && returnedData.data !== 0) {
-        alert('Draft has been successfully imported');
+          this.processDraft(returnedData.data);
       }
     });
     return await importDraft.present();
+  }
+
+  async processDraft(fileResult: any) {
+    this.multisigServ.update(fileResult);
+    const listdraft = await this.multisigServ.getDrafts();
+
+    let checkExistDraft = false;
+    if (listdraft && listdraft.length > 0) {
+      checkExistDraft =  listdraft.some(
+        (res: any) => res.id === fileResult.id
+      );
+    }
+
+    if (checkExistDraft === true) {
+      const message = getTranslation('there is same id in your draft', this.translate);
+      this.utilSrv.showConfirmation('Opps...', message, false, null);
+    } else {
+      this.multisigServ.save();
+      const message = getTranslation('draft imported!', this.translate);
+      this.utilSrv.showConfirmation('Success', message, true, null);
+      this.getDraft();
+    }
   }
 
 
