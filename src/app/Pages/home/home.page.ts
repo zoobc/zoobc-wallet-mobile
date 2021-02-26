@@ -2,16 +2,16 @@
 // This file is part of ZooBC <https:github.com/zoobc/zoobc-wallet-mobile>
 
 // ZooBC is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
+// it under the terms of the GNU General License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
 // ZooBC is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU General Public License for more details.
+// See the GNU General License for more details.
 
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General License
 // along with ZooBC.  If not, see <http:www.gnu.org/licenses/>.
 
 // Additional Permission Under GNU GPL Version 3 section 7.
@@ -70,12 +70,17 @@ import zoobc, {
   EscrowListParams,
   OrderBy,
   getZBCAddress,
-  ZBCTransaction
+  ZBCTransaction,
+  GroupData
 } from 'zbc-sdk';
 import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
 import { PopoverBlockchainObjectOptionComponent } from './popover-blockchain-object-option/popover-blockchain-object-option.component';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { UtilService } from 'src/app/Services/util.service';
+import { MultiSigDraft } from 'src/app/Interfaces/multisig';
+import { getTranslation } from 'src/Helpers/utils';
+import Swal from 'sweetalert2';
+import { MultisigService } from 'src/app/Services/multisig.service';
 
 @Component({
   selector: 'app-home',
@@ -84,9 +89,40 @@ import { UtilService } from 'src/app/Services/util.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   sBalances: string[];
-  // selectedNetwork = 0;
+  networkLabel = 'mainnet';
   isBalanceEqual: boolean;
   lockedBalance: number;
+  timeLeft = 12;
+  interval: any;
+  clickSub: any;
+  offset: number;
+  startMatch = 0;
+  accountBalance: AccountBalance;
+  strBalance = '0.00';
+  isLoading = false;
+  currencyRate = CONST_DEFAULT_RATE;
+  priceInUSD: number;
+  isError = false;
+  navigationSubscription: any;
+  txType: number = TransactionType.SENDMONEYTRANSACTION;
+  account: Account;
+  accounts: Account[];
+  notifId = 1;
+  theme = DEFAULT_THEME;
+  lastTimeGetBalance: Date;
+
+  alertConnectionTitle = '';
+  alertConnectionMsg = '';
+  networkSubscription = null;
+
+  isLoadingRecentTx = false;
+  recentTx: ZBCTransaction[];
+  unconfirmTx: ZBCTransaction[];
+  isErrorRecentTx = false;
+  totalTx: number;
+  lastRefresh: number;
+  isAccMultisig: boolean;
+
   constructor(
     private authService: AuthService,
     private accountService: AccountService,
@@ -99,7 +135,9 @@ export class HomePage implements OnInit, OnDestroy {
     private currencySrv: CurrencyService,
     public toastController: ToastController,
     private transactionSrv: TransactionService,
+    private multisigServ: MultisigService,
     private network: Network,
+    private translate: TranslateService,
     private alertCtrl: AlertController,
     private translateSrv: TranslateService,
     private popoverCtrl: PopoverController
@@ -123,39 +161,14 @@ export class HomePage implements OnInit, OnDestroy {
       this.currencyRate = rate;
     });
 
-    this.accountService.restoreAccounts();
+    // if account switched
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadData();
+    });
 
   }
 
-  timeLeft = 12;
-  interval: any;
-  clickSub: any;
-  public offset: number;
-  startMatch = 0;
-  accountBalance: AccountBalance;
-  strBalance = '0.00';
-  public isLoading = false;
-  public currencyRate = CONST_DEFAULT_RATE;
-  public priceInUSD: number;
-  public isError = false;
-  public navigationSubscription: any;
-  txType: number = TransactionType.SENDMONEYTRANSACTION;
-  account: Account;
-  accounts: Account[];
-  notifId = 1;
-  theme = DEFAULT_THEME;
-  lastTimeGetBalance: Date;
 
-  alertConnectionTitle = '';
-  alertConnectionMsg = '';
-  networkSubscription = null;
-
-  isLoadingRecentTx = false;
-  recentTx: ZBCTransaction[];
-  unconfirmTx: ZBCTransaction[];
-  isErrorRecentTx = false;
-  totalTx: number;
-  lastRefresh: number;
 
   ngOnDestroy() {
     if (this.navigationSubscription) {
@@ -167,20 +180,14 @@ export class HomePage implements OnInit, OnDestroy {
     return makeShortAddress(address);
   }
 
-
-  showAlert() {
-    alert('Comng soon!');
-  }
-
-
   formatBalance() {
-    const blnc  =  (this.accountBalance.spendableBalance / 1e8).toFixed(4).toString();
+    const blnc = (this.accountBalance.spendableBalance / 1e8).toFixed(4).toString();
     if (blnc.indexOf('.')) {
       this.sBalances = blnc.split('.');
-    } else if ( blnc.indexOf(',')) {
+    } else if (blnc.indexOf(',')) {
       this.sBalances = blnc.split(',');
     }
-    this.lockedBalance =  Number(this.accountBalance.balance) - Number(this.accountBalance.spendableBalance);
+    this.lockedBalance = Number(this.accountBalance.balance) - Number(this.accountBalance.spendableBalance);
     this.isBalanceEqual = (Number(this.accountBalance.balance) > Number(this.accountBalance.spendableBalance));
   }
 
@@ -192,13 +199,14 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.startTimer();
+    this.startTimer();
   }
+
 
   startTimer() {
     setInterval(async () => {
-     this.getBalance();
-    }, 30000);
+      this.getBalance();
+    }, 60000);
   }
 
   ionViewWillEnter() {
@@ -241,9 +249,18 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async loadData() {
+
+    // console.log('List group: ', this.networks);
+    const activeNetwork: GroupData = await this.networkSrv.getActiveGroup();
+    if (activeNetwork) {
+      this.networkLabel = (activeNetwork.label).toLowerCase();
+      // console.log('activeNetwork group: ', this.networkLabel);
+    }
+
     this.priceInUSD = this.currencySrv.getPriceInUSD();
     this.offset = 1;
     this.account = await this.accountService.getCurrAccount();
+    this.isAccMultisig = this.account.type === 'multisig' ? true : false;
     this.getBalance();
   }
 
@@ -274,8 +291,8 @@ export class HomePage implements OnInit, OnDestroy {
     if (!accountBalance) {
       return;
     }
-    const strBalance =  'Balance: ' + (this.accountBalance.balance / 1e8).toFixed(8)
-    + '\n Spendable: ' +  (this.accountBalance.spendableBalance / 1e8).toFixed(8);
+    const strBalance = 'Balance: ' + (this.accountBalance.balance / 1e8).toFixed(8)
+      + '\n Spendable: ' + (this.accountBalance.spendableBalance / 1e8).toFixed(8);
     const alert = await this.alertCtrl.create({
       message: strBalance,
       buttons: ['OK']
@@ -304,9 +321,10 @@ export class HomePage implements OnInit, OnDestroy {
 
     popover.onWillDismiss().then(async ({ data }: { data: Account }) => {
       if (data) {
-        this.account = data;
-        this.accountService.switchAccount(data);
-        this.getBalance();
+        // this.account = data;
+        await this.accountService.switchAccount(data);
+        // this.getBalance();
+        // this.loadData();
       }
     });
 
@@ -343,11 +361,48 @@ export class HomePage implements OnInit, OnDestroy {
     await modal.present();
   }
 
+
+  async createMsigTransaction() {
+    const txType = TransactionType.SENDMONEYTRANSACTION;
+    const multisig: MultiSigDraft = {
+      accountAddress: null,
+      fee: 0,
+      id: 0,
+      multisigInfo: null,
+      unisgnedTransactions: null,
+      signaturesInfo: null,
+      txType,
+      txBody: {},
+    };
+
+
+    const accounts = (await this.accountService
+        .allAccount())
+        .filter((acc: any) => this.account.participants.some(address => address.value === acc.address.value));
+
+      // if no address on the participants
+    if (accounts.length < 1) {
+        const message = getTranslation('you dont have any account that in participant list', this.translate);
+        Swal.fire({ type: 'error', title: 'Oops...', text: message });
+        return false;
+      }
+
+    multisig.multisigInfo = {
+        minSigs: this.account.minSig,
+        nonce: this.account.nonce,
+        participants: this.account.participants,
+      };
+
+    multisig.txBody.sender = this.account.address;
+    this.multisigServ.update(multisig);
+    this.router.navigate(['/msig-create-transaction']);
+
+  }
+
   goToSend() {
     if (this.account.type && this.account.type === 'multisig') {
-      this.goToMultisig();
+      this.createMsigTransaction();
     } else {
-      // this.router.navigate(['/sendcoin']);
       this.router.navigate(['/transaction-form/send-zoobc']);
     }
   }
@@ -363,7 +418,6 @@ export class HomePage implements OnInit, OnDestroy {
   goToTransactions() {
     this.router.navigate(['/transactions']);
   }
-
 
   async showBlockchainObjectOption(ev: any) {
     const popover = await this.popoverCtrl.create({
@@ -408,7 +462,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.router.navigate(['/qr-scanner'], navigationExtras);
   }
 
-  goToTransactionDetail(trx) {
+  goToTransactionDetail(trx: any) {
     this.transactionSrv.tempTrx = trx;
     this.router.navigate(['/transaction/0']);
   }
@@ -452,7 +506,7 @@ export class HomePage implements OnInit, OnDestroy {
 
       const params: TransactionListParams = {
         address: this.account.address,
-         transactionType: this.txType,
+        transactionType: this.txType,
         pagination: {
           page: 1,
           limit: 10,
@@ -461,7 +515,6 @@ export class HomePage implements OnInit, OnDestroy {
 
       try {
         const trxList = await zoobc.Transactions.getList(params);
-        console.log('== trx lst: ', trxList);
         let lastHeight = 0;
         let firstHeight = 0;
         if (trxList.total > 0) {

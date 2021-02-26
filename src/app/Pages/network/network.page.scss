@@ -47,7 +47,14 @@
 }
 
 @keyframes blinker {
-    30% {
+    20% {
       opacity: 0;
     }
+}
+
+.txtArea{
+    // padding: 5px;
+    white-space: pre-wrap;
+    // text-indent: 50px;
+    // border: 1px solid #cccccc;
 }

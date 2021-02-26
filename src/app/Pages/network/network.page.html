@@ -49,32 +49,32 @@ shall be included in all copies or substantial portions of the Software.
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-item>
+<ion-content class="ion-padding">
+  <ion-item lines="none">
     <ion-button color="tertiary" fill="outline" (click)="addHost()">
-      <ion-icon name="add"></ion-icon>&nbsp;{{ 'add' | translate }} network</ion-button>
+      <ion-icon name="add"></ion-icon>&nbsp;{{ 'add' | translate }} network
+    </ion-button>
   </ion-item>
   <ion-card *ngIf="isShowForm">
     <form [formGroup]="form" (ngSubmit)="save()" novalidate>
 
-      <ion-item>
+      <ion-item lines="none">
         <ion-label position="stacked">{{ 'name' | translate }}</ion-label>
-        <ion-input type="text" placeholder="input name" formControlName="name" required></ion-input>
-        <ng-container *ngIf="fName.touched && fName.hasError">
-          <ion-label color="danger" *ngIf="fName.hasError('required')">
-            {{ 'name is required' | translate }}!
-          </ion-label>
-        </ng-container>
+        <ion-input type="text" class="txtArea" placeholder="input name" formControlName="name" required></ion-input>
+      </ion-item>
+      <ion-item *ngIf="fName.touched && fName.hasError">
+        <ion-label color="danger" *ngIf="fName.hasError('required')">
+          {{ 'name is required' | translate }}!
+        </ion-label>
       </ion-item>
 
-      <ion-item>
+      <ion-item lines="none">
         <ion-label position="stacked">
           Network {{ 'address' | translate }}
         </ion-label>
-        <ion-textarea rows="10"
-         type="text" placeholder="input node address ex: http://172.432.29.4:7001 one per line and press enter at the end of line."
-        style="white-space: pre-wrap; text-indent: 50px;"
-         formControlName="host" required></ion-textarea>
+        <ion-textarea rows="8" class="txtArea"
+          placeholder="input node address ex: http://172.432.29.4:7001 one per line and press enter at the end of line."
+           formControlName="host" required></ion-textarea>
       </ion-item>
 
       <ion-item lines="none" *ngIf="fHost.touched && fHost.hasError" lines="none">
@@ -91,10 +91,13 @@ shall be included in all copies or substantial portions of the Software.
 
       </ion-item>
 
-      <ion-item class="btnForm" lines="none">
-        <ion-button size="medium" color="tertiary" *ngIf="actionMode == 'add'" type="submit">{{ 'save' | translate }}</ion-button>
-        <ion-button size="medium" color="tertiary" *ngIf="actionMode == 'edit'" type="submit">{{ 'update' | translate }}</ion-button>
-        <ion-button fill="outline" size="medium" color="tertiary" (click)="close()" type="button">{{ 'close' | translate }}</ion-button>
+      <ion-item class="btnForm" lines="none" lines="none">
+        <ion-button size="medium" color="tertiary" *ngIf="actionMode == 'add'" type="submit">{{ 'save' | translate }}
+        </ion-button>
+        <ion-button size="medium" color="tertiary" *ngIf="actionMode == 'edit'" type="submit">{{ 'update' | translate }}
+        </ion-button>
+        <ion-button fill="outline" size="medium" color="tertiary" (click)="close()" type="button">{{ 'close' | translate
+          }}</ion-button>
       </ion-item>
     </form>
   </ion-card>
@@ -104,15 +107,16 @@ shall be included in all copies or substantial portions of the Software.
       <ion-label><span>{{"Tap list to switch network" | translate}}.</span></ion-label>
     </ion-list-header>
     <ion-item *ngFor="let network of networks; let idx = index">
-      <ion-label (click)="selectNetwork(idx)"  *ngIf="network && activeNetwork && network.label==activeNetwork.label">
-        <ion-icon name="cloudy" class="blink_me" style="font-size: 1.4em; color: #10A3D6"></ion-icon>&nbsp;
+      <ion-label (click)="selectNetwork(idx)" *ngIf="network && activeNetwork && network.label==activeNetwork.label">
+        <ion-icon name="cloudy" class="blink_me" style="font-size: 1.4em; color: #0e9ccc"></ion-icon>&nbsp;
         {{ network.label }}
       </ion-label>
       <ion-label (click)="selectNetwork(idx)" *ngIf="network && activeNetwork && network.label!=activeNetwork.label">
-        <ion-icon name="cloudy"  style="font-size: 1.4em; color:#CFCFCF"></ion-icon>&nbsp;
+        <ion-icon name="cloudy" style="font-size: 1.4em; color:#CFCFCF"></ion-icon>&nbsp;
         {{ network.label }}
       </ion-label>
-      <ion-icon name="zbc-option" *ngIf="!network.default" slot="end" (click)="showOption($event, idx)"></ion-icon>
+      <ion-icon name="zbc-option" *ngIf="toLower(network.label) != 'mainnet'" slot="end"
+        (click)="showOption($event, idx)"></ion-icon>
     </ion-item>
   </ion-list>
 
