@@ -61,7 +61,7 @@ import {
   addressValidator,
   escrowFieldsValidator
 } from 'src/Helpers/validators';
-import { calculateMinimumFee, Subscription } from 'zbc-sdk';
+import { calculateMinimumFee } from 'zbc-sdk';
 
 @Component({
   selector: 'app-send-zoobc-form',
@@ -140,7 +140,7 @@ export class SendZoobcFormComponent implements OnInit {
   }
 
   getRecipientFromScanner() {
-    const str  = this.qrScannerSrv.getResult();
+    const str = this.qrScannerSrv.getResult();
 
     if (str) {
       const json = str.split('||');
@@ -161,7 +161,6 @@ export class SendZoobcFormComponent implements OnInit {
   }
 
   setBehaviorEscrowChanges() {
-    console.log(' .. escrow changed');
     this.behaviorEscrowChangesSubscription = this.behaviorEscrow.valueChanges.subscribe(
       escrowValues => {
         if (escrowValues.commission) {
@@ -209,9 +208,8 @@ export class SendZoobcFormComponent implements OnInit {
     if (this.behaviorEscrow && this.behaviorEscrow.value) {
 
       if (this.behaviorEscrow.value.timeout) {
-        const currentTime  = Math.floor(Date.now() / 1000);
-        const timeDiff  = this.behaviorEscrow.value.timeout - currentTime;
-        console.log('=== timeDiff: ', timeDiff);
+        const currentTime = Math.floor(Date.now() / 1000);
+        const timeDiff = this.behaviorEscrow.value.timeout - currentTime;
         if (timeDiff > 0) {
           per24Hour = Math.ceil(timeDiff / (3600 * 24));
         }
@@ -222,21 +220,17 @@ export class SendZoobcFormComponent implements OnInit {
       }
 
     }
-    console.log('=== message length: ', msg.length);
-    console.log('=== per24Hour: ', per24Hour);
-
-    const fee  = calculateMinimumFee(msg.length, per24Hour).toFixed(6);
-    this.minimumFee  = Number(fee);
+    const fee = calculateMinimumFee(msg.length, per24Hour).toFixed(6);
+    this.minimumFee = Number(fee);
     this.fee.setValue(this.minimumFee);
-    console.log('---- minimumFee: ', this.minimumFee);
   }
 
 
   setAmountValidation() {
 
-    let commition =  0;
-    if (this.behaviorEscrow && this.behaviorEscrow.value ) {
-        commition = this.behaviorEscrow.value.commission;
+    let commition = 0;
+    if (this.behaviorEscrow && this.behaviorEscrow.value) {
+      commition = this.behaviorEscrow.value.commission;
     }
 
     this.amount.setValidators([
@@ -262,7 +256,6 @@ export class SendZoobcFormComponent implements OnInit {
   }
 
   changeWithEscrow(value: boolean) {
-    console.log(value);
     this.withEscrow = value;
 
     if (value) {
@@ -295,14 +288,12 @@ export class SendZoobcFormComponent implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            console.log('Confirm Cancel: blah');
-            // return;
+
           }
         }, {
           text: 'Okay',
           handler: () => {
             this.doSend();
-            console.log('Confirm Okay');
           }
         }
       ]
@@ -314,10 +305,6 @@ export class SendZoobcFormComponent implements OnInit {
   async submit() {
     this.minError = false;
     this.submitted = true;
-   // const msgLength = (this.message.value).length;
-    // console.log('=== msgLength: ', msgLength);
-    // const minFee = calculateMinimumFee(msgLength, 1);
-    // this.minimumFee = minFee;
 
 
     if (this.fee.value < this.minimumFee) {
@@ -346,7 +333,6 @@ export class SendZoobcFormComponent implements OnInit {
 
       if (this.withEscrow) {
         state.behaviorEscrow = this.behaviorEscrow.value;
-        console.log('== this.behaviorEscrow.value: ', this.behaviorEscrow.value);
       }
 
       this.transactionSrv.saveTrx(state);
@@ -356,8 +342,6 @@ export class SendZoobcFormComponent implements OnInit {
 
 
   onBehaviorEscrowChange() {
-    // this.minimumFee = this.behaviorEscrow.value && this.behaviorEscrow.value.timeout ?
-    // calculateMinimumFee(this.behaviorEscrow.value.timeout, 1) : TRANSACTION_MINIMUM_FEE;
     this.setBehaviorEscrowChanges();
     this.updateMinimumFee();
     this.setFeeValidation();
@@ -367,8 +351,6 @@ export class SendZoobcFormComponent implements OnInit {
   async showErrorMessage(error: any) {
 
     let errMsg = await error.message;
-    console.log('==== error: ', errMsg);
-
     if (errMsg.includes('UserBalanceNotEnough')) {
       errMsg = 'Balance not enought!';
     } else {
