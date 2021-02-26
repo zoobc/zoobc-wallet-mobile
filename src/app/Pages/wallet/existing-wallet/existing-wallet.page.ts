@@ -161,7 +161,7 @@ export class ExistingWalletPage implements OnInit {
     });
 
     loading.onDidDismiss().then(() => {
-      this.navCtrl.navigateRoot('/tabs/home');
+      this.navCtrl.navigateRoot('/restore-acc');
     });
 
     return await loading.present();
@@ -179,7 +179,6 @@ export class ExistingWalletPage implements OnInit {
       if (returnedData && returnedData.data !== '-') {
         this.plainPin = returnedData.data;
         this.accountSrv.setPlainPin(this.plainPin);
-        this.accountSrv.willRestoreAccounts = true;
         this.createAccount();
       }
     });
