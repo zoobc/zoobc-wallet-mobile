@@ -171,7 +171,7 @@ export class MyTasksPage implements OnInit {
           this.totalMultiSig = tx.total;
           const pendingList = tx.transactions;
           this.multiSigPendingList = pendingList;
-          console.log('=== multiSigPendingList: ', this.multiSigPendingList);
+          // console.log('=== multiSigPendingList: ', this.multiSigPendingList);
         })
         .catch(err => {
           this.isErrorMultiSig = true;
@@ -246,7 +246,7 @@ export class MyTasksPage implements OnInit {
           // }
 
           this.listTrxPendingEsc = trxList;
-          console.log('== listTrxPendingEsc: ', this.listTrxPendingEsc);
+          // console.log('== listTrxPendingEsc: ', this.listTrxPendingEsc);
         })
         .catch(err => {
           this.isError = true;
@@ -299,7 +299,7 @@ export class MyTasksPage implements OnInit {
   }
 
   openMultisigDetail(msigHash: any) {
-    console.log(msigHash);
+    // console.log(msigHash);
     this.msigService.setHash(msigHash);
     this.router.navigate(['/msig-task-detail']);
   }

@@ -49,7 +49,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 import { AuthService } from 'src/app/Services/auth-service';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { getTranslation } from 'src/Helpers/utils';
+import { getTranslation, unixTimeStampToDate } from 'src/Helpers/utils';
 import Swal from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -95,6 +95,10 @@ export class TaskDetailPage implements OnInit {
     return this.escrowForm.controls;
   }
 
+  convertDate(epoch: any) {
+    return unixTimeStampToDate(epoch);
+  }
+
   async ngOnInit() {
     this.escrowForm = this.formBuilder.group({
       feesZbc: [0.01, [Validators.required]],
@@ -107,9 +111,9 @@ export class TaskDetailPage implements OnInit {
     });
 
     await this.loadDetail();
-    console.log('this.account: ', this.account);
+    // console.log('this.account: ', this.account);
     if (this.account) {
-         this.escrowForm.get('fApprover').setValue(this.account.address.value);
+      this.escrowForm.get('fApprover').setValue(this.account.address.value);
     }
 
   }
@@ -127,7 +131,7 @@ export class TaskDetailPage implements OnInit {
       this.escrowDetail = res;
     }).finally(() => {
       this.isLoading = false;
-      console.log('===  this.escrowDetail:',  this.escrowDetail);
+      // console.log('===  this.escrowDetail:', this.escrowDetail);
     });
   }
 
@@ -143,12 +147,12 @@ export class TaskDetailPage implements OnInit {
 
     this.isSubmitted = true;
     if (!this.escrowForm.valid) {
-        return false;
-      } else {
-        console.log(this.escrowForm.value);
+      return false;
+    } else {
+      // console.log(this.escrowForm.value);
 
-        this.showPin();
-      }
+      this.showPin();
+    }
   }
 
   confirm() {
@@ -157,7 +161,7 @@ export class TaskDetailPage implements OnInit {
   }
 
   reject() {
-    console.log('== will reject');
+    // console.log('== will reject');
     this.action = 1;
     this.ngForm.onSubmit(undefined);
   }
@@ -185,7 +189,7 @@ export class TaskDetailPage implements OnInit {
 
     const fFee = this.escrowForm.get('feesZbc');
     const trxId = this.escrowDetail.id;
-    const fMsg =  this.escrowForm.get('fMessage');
+    const fMsg = this.escrowForm.get('fMessage');
 
     const bc: AccountBalance = await zoobc.Account.getBalance(this.account.address);
     const balance = bc.spendableBalance / 1e8;
@@ -225,7 +229,7 @@ export class TaskDetailPage implements OnInit {
           }
         )
         .finally(() => {
-            this.navCtrl.pop();
+          this.navCtrl.pop();
         });
     } else {
       const message = getTranslation('your balances are not enough for this transaction', this.translate);

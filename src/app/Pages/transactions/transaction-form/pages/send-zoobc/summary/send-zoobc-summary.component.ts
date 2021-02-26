@@ -97,11 +97,6 @@ export class SendZoobcSummaryComponent implements OnInit {
     return await pinmodal.present();
   }
 
-  convertDate(epoch: any) {
-    const dt = new Date(0);
-    return dt.setUTCSeconds(epoch);
-  }
-
   async transferZoobc() {
 
     // show loading bar
@@ -151,7 +146,7 @@ export class SendZoobcSummaryComponent implements OnInit {
           console.log(err);
           const message = 'Opps...';
           const subMessage = getTranslation(err.message, this.translate);
-          this.utilSrv.showConfirmation( message, subMessage, false);
+          this.utilSrv.showConfirmation(message, subMessage, false);
         }
       )
       .finally(() => {

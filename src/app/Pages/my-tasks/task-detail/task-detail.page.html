@@ -94,7 +94,7 @@ shall be included in all copies or substantial portions of the Software.
     <ion-item *ngIf="escrowDetail">
       <ion-label>
         <p class="info-label">{{ "timeout" | translate }}:</p>
-        <div class="info-val">{{escrowDetail.timeout}} blocks</div>
+        <div class="info-val">{{convertDate(escrowDetail.timeout)}}</div>
       </ion-label>
     </ion-item>
     <ion-item>
@@ -208,7 +208,7 @@ shall be included in all copies or substantial portions of the Software.
         <ion-label position="stacked">
           Message
         </ion-label>
-        <ion-textarea rows="3" formControlName="message">
+        <ion-textarea rows="3" formControlName="fMessage">
         </ion-textarea>
       </ion-item>
     </form>

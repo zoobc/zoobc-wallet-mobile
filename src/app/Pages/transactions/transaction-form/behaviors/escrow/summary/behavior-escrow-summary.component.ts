@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { unixTimeStampToDate } from 'src/Helpers/utils';
 
 @Component({
   selector: 'app-behavior-escrow-summary',
@@ -10,8 +11,7 @@ export class BehaviorEscrowSummaryComponent implements OnInit {
   constructor() {}
 
   convertDate(epoch: any) {
-    return new Date(epoch * 1000); // const dt = new Date(0);
-    // return dt.setUTCSeconds(epoch).toLocaleString();
+    return unixTimeStampToDate(epoch);
   }
 
   ngOnInit() {
