@@ -49,9 +49,9 @@ shall be included in all copies or substantial portions of the Software.
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content>
 
-  <ion-row>
+  <ion-item  lines="none" style="margin-top: 15px;">
     <ion-col>
       <ion-button fill="outline" (click)="showForm()" size="small">
         +&nbsp;{{ 'create' | translate }}&nbsp;
@@ -62,9 +62,9 @@ shall be included in all copies or substantial portions of the Software.
         {{'sign' | translate}}
       </ion-button>
     </ion-col>
-  </ion-row>
+  </ion-item>
 
-  <ion-card style="padding: 0;" *ngIf="isShowForm">
+  <ion-card  class="card" *ngIf="isShowForm">
     <form [formGroup]="multisigForm" (ngSubmit)="next()" novalidate>
       <ion-item lines="none" class="form-item">
         <ion-label>
@@ -90,13 +90,14 @@ shall be included in all copies or substantial portions of the Software.
       </ion-card-content>
     </form>
   </ion-card>
-  <ion-row>
+
+  <ion-item lines="none">
     <ion-col class="draft-list-header">
       <ion-label>
         <ion-icon name="list"></ion-icon> {{ 'multisignature drafts' | translate }}
       </ion-label>
     </ion-col>
-  </ion-row>
+  </ion-item>
 
   <ion-list>
     <ion-item lines="none" *ngIf="!drafts || drafts.length < 1">
@@ -105,12 +106,13 @@ shall be included in all copies or substantial portions of the Software.
       </ion-col>
     </ion-item>
   </ion-list>
+
   <ion-list *ngIf="drafts && drafts.length > 0">
-    <ion-item *ngFor="let draft of drafts; let idx = index">
-      <ion-label (click)="detail(draft)">
-        <p class="title">{{ 'draft id' | translate }}: {{ draft.id }}</p>
+    <ion-item *ngFor="let draft of drafts; let idx = index"  lines="none">
+      <ion-label (click)="detail(draft)" class="itemdraft" >
+        <p class="title">{{ 'draft id' | translate }}: <span class="draftid">{{ draft.id }}</span></p>
         <p class="dateago">{{ draft.id | dateAgo }}</p>
-        
+
         <div *ngIf="draft.txBody && draft.txBody.sender">
           <p class="title">{{ 'transaction type' | translate }}:&nbsp;
           <span class="value">{{ draftTxType[idx] | translate }}</span>
