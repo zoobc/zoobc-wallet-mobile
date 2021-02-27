@@ -43,6 +43,8 @@ import { ToastController, ModalController, AlertController } from '@ionic/angula
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ConfirmationPage } from '../Components/confirmation/confirmation.page';
 import { Router } from '@angular/router';
+import { AccountService } from './account.service';
+import { AddressBookService } from './address-book.service';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +56,8 @@ export class UtilService {
     private toastController: ToastController,
     private clipboard: Clipboard,
     private alertController: AlertController,
+    private accService: AccountService,
+    private abService: AddressBookService,
     private router: Router,
     private modalController: ModalController) { }
 
@@ -128,6 +132,30 @@ export class UtilService {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  async MergeAccountAndContact() {
+    this.accService.addresses = [];
+    const accounts = await this.accService.allAccount();
+    if (accounts && accounts.length > 0) {
+      accounts.forEach((obj: any) => {
+        const app = {
+          name: obj.name,
+          address: obj.address.value
+        };
+        this.accService.addresses.push(app);
+      });
+    }
+    const alladdress = await this.abService.getAll();
+    if (alladdress && alladdress.length > 0) {
+      alladdress.forEach((obj: { name: any; address: string }) => {
+        const app = {
+          name: obj.name,
+          address: obj.address
+        };
+        this.accService.addresses.push(app);
+      });
+    }
   }
 
 }
