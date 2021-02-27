@@ -69,10 +69,16 @@ export class TransactionItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    const approval = this.transaction.txBody.approval;
-    this.color = approval === '0' ? 'yellow' : approval === '1' ? 'green' : approval === '2' ? 'red' : 'red';
-    this.status =
-      approval === '0' ? 'pending' : approval === '1' ? 'approved' : approval === '2' ? 'rejected' : 'expired';
+
+    this.status = this.transaction.txBody.approval;
+    // this.color = approval === 0 ? 'green' : approval === 1 ? 'red' : approval === 2 ? 'red' : '';
+    // this.status =
+    //   approval === 0 ? 'approved' : approval === 1 ? 'rejected' : approval === 2 ? 'expired' : '';
+
+    // const approval = this.transaction.txBody.approval;
+    // this.color = approval === '0' ? 'green' : approval === '1' ? 'red' : approval === '2' ? 'yellow' : 'red';
+    // this.status =
+    //   approval === '0' ? 'approved' : approval === '1' ? 'rejected' : approval === '2' ? 'expired' : 'expired';
   }
 
 }
