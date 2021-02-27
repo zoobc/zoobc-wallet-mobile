@@ -42,7 +42,6 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController, PopoverController } from '@ionic/angular';
 import { NetworkService } from 'src/app/Services/network.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ZbcNetwork } from 'src/app/Interfaces/zbc-network';
 import { PopoverOptionComponent } from 'src/app/Components/popover-option/popover-option.component';
 import { GroupData } from 'zbc-sdk';
 
@@ -79,24 +78,21 @@ export class NetworkPage implements OnInit {
 
   validURL(myURL: string) {
     const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))' + // ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port
-    '(\\?[;&amp;a-z\\d%_.~+=-]*)?' + // query string
-    '(\\#[-a-z\\d_]*)?$', 'i');
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port
+      '(\\?[;&amp;a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$', 'i');
     return pattern.test(myURL);
- }
+  }
 
   async ngOnInit() {
     this.networks = await this.networkSrv.getAll();
-    console.log('List group: ', this.networks);
     this.activeNetwork = await this.networkSrv.getActiveGroup();
-    console.log('activeNetwork group: ', this.activeNetwork);
   }
 
   selectNetwork(index: any) {
     const netSelected = this.networks[index];
-    console.log('== Selectedd: ', netSelected);
     this.networkSrv.setActiveGroup(netSelected);
     this.activeNetwork = netSelected;
     this.networkSrv.broadcastSelectNetwork(netSelected);
@@ -123,17 +119,15 @@ export class NetworkPage implements OnInit {
     this.idx = idx;
     this.isShowForm = true;
     const networkGroup = this.networks[this.idx];
-    console.log('=== selected: ', networkGroup);
 
     this.fName.setValue(networkGroup.label);
     const hosts = networkGroup.wkps;
-    console.log('=== hosts: ', hosts);
 
-    const hosts2 = hosts.map( (x: string) => {
-        return x + '\n';
+
+    const hosts2 = hosts.map((x: string) => {
+      return x + '\n';
     });
 
-    console.log('=== hosts2: ', hosts2);
     this.fHost.setValue(hosts2);
   }
 
@@ -146,6 +140,7 @@ export class NetworkPage implements OnInit {
 
   close() {
     this.isShowForm = false;
+    this.form.reset();
   }
 
   async deleteConfirmation() {
@@ -158,7 +153,7 @@ export class NetworkPage implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            console.log('Confirm Cancel: blah');
+            // console.log('Confirm Cancel: blah');
           }
         }, {
           text: 'Okay',
@@ -183,12 +178,6 @@ export class NetworkPage implements OnInit {
     }
 
     if (this.actionMode === 'add') {
-      console.log('.. add ....');
-      // const nodes = this.fHost.value.split('\n').map( (x: string) => {
-      //       return this.validURL(x.trim().replace(',', ''));
-      //   }
-      // );
-
       const lines = this.fHost.value.split('\n');
       const nodes = [];
 
@@ -204,18 +193,10 @@ export class NetworkPage implements OnInit {
         label: this.fName.value,
         wkps: nodes
       };
-
-      console.log('groupAdd: ', groupAdd);
       this.networks.push(groupAdd);
-
-      console.log('this.networks: ',   this.networks);
       await this.networkSrv.saveAll(this.networks);
 
-
-
     } else if (this.actionMode === 'edit') {
-
-      console.log('.. edit ....');
 
       const lines = this.fHost.value.split('\n');
       const nodes = [];
@@ -227,22 +208,19 @@ export class NetworkPage implements OnInit {
         }
       });
 
-      console.log('.. this.fName.value ....', this.fName.value);
       const groupEdit: GroupData = {
         label: this.fName.value,
         wkps: nodes
       };
 
-      console.log('==n groupEdit: ', groupEdit);
       this.networks[this.idx] = groupEdit;
       await this.networkSrv.saveAll(this.networks);
-      console.log('.. saved ....');
       this.networks = await this.networkSrv.getAll();
     }
 
-    console.log('this.isAllAddressValid: ', this.isAllAddressValid);
     this.networks = await this.networkSrv.getAll();
-    // this.isShowForm = false;
+    this.isShowForm = false;
+    this.form.reset();
   }
 
   async showOption(ev: any, index: number) {
@@ -282,4 +260,8 @@ export class NetworkPage implements OnInit {
     return popover.present();
   }
 
+
+  toLower(label: string) {
+    return label.toLowerCase();
+  }
 }
