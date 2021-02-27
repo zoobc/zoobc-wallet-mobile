@@ -62,6 +62,7 @@ import {
   escrowFieldsValidator
 } from 'src/Helpers/validators';
 import { calculateMinimumFee } from 'zbc-sdk';
+import { getTranslation } from 'src/Helpers/utils';
 
 @Component({
   selector: 'app-send-zoobc-form',
@@ -69,7 +70,9 @@ import { calculateMinimumFee } from 'zbc-sdk';
   styleUrls: ['./send-zoobc-form.component.scss']
 })
 export class SendZoobcFormComponent implements OnInit {
-  withEscrow: boolean;
+  withEscrow = false;
+  withCustomFee = false;
+  withMessage = false;
   allFees = this.transactionSrv.transactionFees(TRANSACTION_MINIMUM_FEE);
 
   private minimumFee = TRANSACTION_MINIMUM_FEE;
@@ -144,7 +147,6 @@ export class SendZoobcFormComponent implements OnInit {
 
     if (str) {
       const json = str.split('||');
-
       if (json && json[0]) {
         const addres: Contact = {
           name: '-',
@@ -156,6 +158,25 @@ export class SendZoobcFormComponent implements OnInit {
       if (json && json[1]) {
         this.amount.setValue(json[1]);
       }
+    }
+
+  }
+
+  changeWithMessage(value: any) {
+    this.withMessage = value;
+    if (!this.withMessage) {
+      this.message.setValue('');
+    }
+    this.updateMinimumFee();
+  }
+
+  changeCustomFee(value: any) {
+    this.withCustomFee = value;
+
+    if (value === true) {
+      this.minimumFee = TRANSACTION_MINIMUM_FEE;
+    } else {
+      this.updateMinimumFee();
     }
 
   }
@@ -201,6 +222,12 @@ export class SendZoobcFormComponent implements OnInit {
   }
 
   updateMinimumFee() {
+
+    if (!this.withCustomFee) {
+      this.minimumFee = TRANSACTION_MINIMUM_FEE;
+      this.fee.setValue(this.minimumFee);
+    }
+
     let msg = this.message.value || '';
 
     let per24Hour = 1;
@@ -278,10 +305,15 @@ export class SendZoobcFormComponent implements OnInit {
   }
 
   async presentAlertMinFeeConfirm() {
+
+
+    const charge = this.fee.value - TRANSACTION_MINIMUM_FEE;
+    const strMsg = getTranslation('transaction  fee  changed, more than minimum fee', this.translateService, charge.toFixed(4));
+
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Confirm!',
-      message: 'Transaction  fee  <strong>changed</strong>!!!\n please check it again!',
+      message: strMsg,
       buttons: [
         {
           text: 'Cancel',
