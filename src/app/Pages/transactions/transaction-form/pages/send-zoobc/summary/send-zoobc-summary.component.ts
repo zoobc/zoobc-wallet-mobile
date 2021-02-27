@@ -140,6 +140,7 @@ export class SendZoobcSummaryComponent implements OnInit {
             recipient: this.formTrx.recipient.address,
           });
           this.utilSrv.showConfirmation(message, subMessage, true);
+          this.transactionSrv.transferZooBcSubject.next(true);
           this.router.navigateByUrl('/tabs/home');
         },
         async err => {
