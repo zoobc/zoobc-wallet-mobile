@@ -48,7 +48,6 @@ import {
 import { Account } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
-import { TransactionDetailPage } from 'src/app/Pages/transactions/transaction-detail/transaction-detail.page';
 import { CurrencyService } from 'src/app/Services/currency.service';
 import {
   NUMBER_OF_RECORD_IN_TRANSACTIONS,
@@ -58,22 +57,19 @@ import zoobc, {
   TransactionListParams,
   MempoolListParams,
   EscrowListParams,
-  TransactionType,
   Address,
   OrderBy,
   ZBCTransaction,
   getZBCAddress,
   parseAddress,
   ZBCTransactions,
+  EscrowStatus,
 } from 'zbc-sdk';
-import { AddressBookService } from 'src/app/Services/address-book.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Transaction } from 'src/app/Interfaces/transaction';
-import { Currency } from 'src/app/Interfaces/currency';
-import { NetworkService } from 'src/app/Services/network.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
 import { Subscription } from 'rxjs';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-transactions',
@@ -96,7 +92,6 @@ export class TransactionsPage implements OnInit {
   isError = false;
   navigationSubscription: any;
   isErrorRecentTx: boolean;
-  addresses = [];
   alertConnectionTitle = '';
   alertConnectionMsg = '';
   networkSubscription = null;
@@ -114,39 +109,39 @@ export class TransactionsPage implements OnInit {
     public loadingController: LoadingController,
     private accountService: AccountService,
     private transactionServ: TransactionService,
-    private networkSrv: NetworkService,
     private currencyServ: CurrencyService,
-    private addressBookSrv: AddressBookService,
     public toastController: ToastController,
     private translateSrv: TranslateService,
     private network: Network,
+    private utilService: UtilService,
     private alertCtrl: AlertController,
     private activeRoute: ActivatedRoute
   ) {
+    console.log('-- consturctor ');
     // if account changed
-    this.accountService.accountSubject.subscribe(() => {
-      this.loadData();
-    });
+    // this.accountService.accountSubject.subscribe(() => {
+    //   this.loadData();
+    // });
 
-    // if post send zoobc reload data
-    this.transactionServ.sendMoneySubject.subscribe(() => {
-      this.loadData();
-    });
+    // // if post send zoobc reload data
+    // this.transactionServ.sendMoneySubject.subscribe(() => {
+    //   this.loadData();
+    // });
 
-    // if network changed reload data
-    this.networkSrv.changeNodeSubject.subscribe(() => {
-      this.loadData();
-    });
+    // // if network changed reload data
+    // this.networkSrv.changeNodeSubject.subscribe(() => {
+    //   this.loadData();
+    // });
 
     // if currency changed
-    this.currencyServ.currencySubject.subscribe((rate: Currency) => {
-      this.currencyRate = rate;
-    });
+    // this.currencyServ.currencySubject.subscribe((rate: Currency) => {
+    //   this.currencyRate = rate;
+    // });
 
+    // this will triger when combo box on transaction list changed
     this.routerEvent = router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.activeRoute.queryParams.subscribe(res => {
-          console.log('== res: ', res);
           this.txType = parseInt(res.val, 10) || -1;
         });
         this.getTransactions(true);
@@ -154,9 +149,10 @@ export class TransactionsPage implements OnInit {
     });
   }
 
-  doRefresh(event: any) {
+  async doRefresh(event: any) {
+    await this.utilService.MergeAccountAndContact();
     this.showLoading();
-    this.loadData();
+    await this.loadData();
 
     setTimeout(() => {
       event.target.complete();
@@ -166,20 +162,18 @@ export class TransactionsPage implements OnInit {
   startTimer() {
     setInterval(async () => {
       this.getTransactions(true);
-    }, 50000);
+    }, 60000);
   }
 
   onFilter(val: any) {
     this.router.navigate(['/transactions'], { queryParams: { val } });
   }
 
-  ngOnInit() {
-
-    this.getAllAddress();
-    this.loadData();
-    this.getAllAccount();
+  async ngOnInit() {
+    console.log('-- ngOnInit');
+    await this.utilService.MergeAccountAndContact();
+    await this.loadData();
     this.startTimer();
-
   }
 
   private async loadData() {
@@ -191,46 +185,15 @@ export class TransactionsPage implements OnInit {
     this.priceInUSD = this.currencyServ.getPriceInUSD();
     this.account = await this.accountService.getCurrAccount();
     this.currencyRate = this.currencyServ.getRate();
-    //  this.getUnconfirmTransactions(this.account.address.value);
     this.getTransactions(true);
-    // this.getEscrowTransaction();
   }
 
-  async getAllAddress() {
-    const alladdress = await this.addressBookSrv.getAll();
-
-    if (alladdress && alladdress.length > 0) {
-      alladdress.forEach((obj: { name: any; address: string }) => {
-        const app = {
-          name: obj.name,
-          address: obj.address
-        };
-        this.addresses.push(app);
-      });
-    }
-  }
-
-  async getAllAccount() {
-    const accounts = await this.accountService.allAccount();
-    if (accounts && accounts.length > 0) {
-      accounts.forEach((obj) => {
-        const app = {
-          name: obj.name,
-          address: obj.address.value
-        };
-        this.addresses.push(app);
-      });
-    }
-  }
 
   /**
    * Get more transactions
    * @param event load event
    */
-  async loadMoreData(event) {
-    console.log('== this.recentTxs.length: ', this.recentTxs.length);
-    console.log('-== this page: ', this.page);
-    console.log('-== this totalTx: ', this.totalTx);
+  async loadMoreData(event: any) {
     if (this.recentTxs && this.recentTxs.length < this.totalTx) {
       this.page++;
       await this.getTransactions();
@@ -241,12 +204,8 @@ export class TransactionsPage implements OnInit {
           event.target.complete();
           event.target.disabled = true;
         }
-      }, 500);
+      }, 1000);
     }
-
-    console.log('-== this page 2: ', this.page);
-
-
   }
 
 
@@ -262,20 +221,19 @@ export class TransactionsPage implements OnInit {
       this.isError = false;
       this.currentAddress = (await this.accountService.getCurrAccount()).address;
 
-      console.log('===n this.txType:', this.txType);
-
+      // get transfer zoobc transaction list
       let txParam: TransactionListParams = {
         address: this.currentAddress,
-        transactionType: this.txType,
         pagination: {
           page: this.page,
           limit: NUMBER_OF_RECORD_IN_TRANSACTIONS,
         },
       };
 
-      if (this.txType === -1) {
+      if (this.txType !== -1) {
         txParam = {
           address: this.currentAddress,
+          transactionType: this.txType,
           pagination: {
             page: this.page,
             limit: NUMBER_OF_RECORD_IN_TRANSACTIONS,
@@ -297,7 +255,7 @@ export class TransactionsPage implements OnInit {
           blockHeightStart: firstHeight,
           blockHeightEnd: lastHeight,
           recipient: this.currentAddress,
-          statusList: [0, 1, 2, 3],
+          statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED, EscrowStatus.EXPIRED],
           latest: false,
           pagination: {
             orderBy: OrderBy.DESC,
@@ -313,8 +271,8 @@ export class TransactionsPage implements OnInit {
         const txs = trxList.transactions;
         txs.map(recent => {
           const escStatus = this.matchEscrowGroup(recent.height, escrowGroup);
-          recent.senderAlias = ''; // this.contactServ.get(recent.sender.value).name || '';
-          recent.recipientAlias = ''; // this.contactServ.get(recent.recipient.value).name || '';
+          recent.senderAlias = this.accountService.getAlias(recent.sender.value) || '';
+          recent.recipientAlias = this.accountService.getAlias(recent.recipient.value) || '';
           const nodeManagementTxType =
             this.txType === 2 || this.txType === 258 || this.txType === 514 || this.txType === 770;
           if (nodeManagementTxType) {
@@ -360,7 +318,6 @@ export class TransactionsPage implements OnInit {
     }
   }
 
-
   checkIdOnEscrow(id: any, escrowArr: any[]) {
     const filter = escrowArr.filter(arr => arr.id === id);
     if (filter.length > 0) { return true; }
@@ -372,18 +329,8 @@ export class TransactionsPage implements OnInit {
     return escrowArr[idx].status;
   }
 
-
-  getName(address: string) {
-    let nama = '';
-    if (this.addresses && this.addresses.length > 0) {
-      this.addresses.forEach((obj: { name: any; address: string; }) => {
-        if (address === obj.address) {
-          nama = obj.name;
-        }
-      });
-    }
-
-    return nama;
+  getAlias(address: string) {
+    return this.accountService.getAlias(address);
   }
 
   /**
@@ -404,8 +351,13 @@ export class TransactionsPage implements OnInit {
     });
   }
 
+  ionViewDidEnter() {
+    console.log('-- ionViewDidEnter');
+  }
 
   ionViewWillEnter() {
+    console.log('-- ionViewWillEnter');
+
     this.networkSubscription = this.network
       .onDisconnect()
       .subscribe(async () => {
@@ -437,6 +389,7 @@ export class TransactionsPage implements OnInit {
   }
 
   ionViewDidLeave() {
+    console.log('-- ionViewDidLeave ');
     if (this.networkSubscription) {
       this.networkSubscription.unsubscribe();
     }
