@@ -42,7 +42,7 @@ import { Component, OnInit } from '@angular/core';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { NavigationExtras, Router } from '@angular/router';
 import { Account } from 'src/app/Interfaces/account';
-import zoobc, { Address, TransactionType } from 'zbc-sdk';
+import zoobc, { Address } from 'zbc-sdk';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
@@ -52,8 +52,8 @@ import Swal from 'sweetalert2';
 import { AccountPopupPage } from '../../account/account-popup/account-popup.page';
 import { ModalController } from '@ionic/angular';
 import { FROM_MSIG, MODE_NEW } from 'src/environments/variable.const';
-import { type } from 'os';
 import { getMultisigTitle } from 'src/Helpers/multisig-utils';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-msig-add-info',
@@ -77,7 +77,8 @@ export class MsigAddInfoPage implements OnInit {
     private router: Router,
     private accServ: AccountService,
     private modalController: ModalController,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private util: UtilService
   ) {
 
     // if temp account detected
@@ -95,6 +96,7 @@ export class MsigAddInfoPage implements OnInit {
   }
 
   ngOnInit() {
+    this.util.MergeAccountAndContact();
     this.draft = this.multisigServ.draft;
     if (this.draft) {
       const { multisigInfo } = this.draft;
@@ -118,6 +120,11 @@ export class MsigAddInfoPage implements OnInit {
     for (let i = 0; i < minParticpant; i++) {
       this.participantsField.push(new FormControl('', [Validators.required]));
     }
+  }
+
+
+  getName(address: string) {
+    return this.accServ.getAlias(address);
   }
 
   extractData(participants: Address[]) {

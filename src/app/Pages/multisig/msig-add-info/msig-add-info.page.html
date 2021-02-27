@@ -107,9 +107,9 @@ shall be included in all copies or substantial portions of the Software.
       <ion-row>
         <ion-col>
           <ion-label position="stacked">
-            {{ 'name' | translate }}:
+            {{ 'name' | translate }}: <b>{{fName.value}}</b>
           </ion-label>
-          <ion-textarea rows="2" type="text" formControlName="name" readonly="true" placeholder="name ...">
+          <ion-textarea hidden rows="2" type="text" formControlName="name" readonly="true" placeholder="name ...">
           </ion-textarea>
         </ion-col>
       </ion-row>
@@ -117,15 +117,15 @@ shall be included in all copies or substantial portions of the Software.
         <ion-col>
           <ion-label>
             {{ 'address' | translate }}: </ion-label>
-          <ion-textarea rows="3" type="text" formControlName="address" readonly="true"
+          <ion-textarea rows="2" type="text" formControlName="address" readonly="true"
             placeholder="multisignature address..."></ion-textarea>
 
         </ion-col>
       </ion-row>
 
       <ion-row>
-        <ion-col>
-          <ion-label position="stacked">
+        <ion-col class="paddingtop">
+          <ion-label position="stacked" >
             {{"participants" | translate}}:
           </ion-label>
         </ion-col>
@@ -134,6 +134,7 @@ shall be included in all copies or substantial portions of the Software.
         <ng-container *ngFor="let participant of participantsField.controls; let i = index">
           <ion-row>
             <ion-col>
+              {{ getName(participantsField.controls[i].value)}}
               <ion-textarea rows="2" type="text" [formControlName]="i" readonly="true"
                 placeholder="participant address ..."></ion-textarea>
             </ion-col>
@@ -142,7 +143,7 @@ shall be included in all copies or substantial portions of the Software.
       </div>
 
       <ion-row>
-        <ion-col>
+        <ion-col  class="paddingtop">
           <ion-label position="stacked">
             {{ 'Unique ID' | translate}} </ion-label>
           <ion-input formControlName="nonce" readonly="true" placeholder="{{ 'nonce' | translate }} ...">
@@ -159,7 +160,7 @@ shall be included in all copies or substantial portions of the Software.
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
+        <ion-col  class="paddingtop">
           <ion-label position="stacked">
             {{ 'minimum signature' | translate }}: </ion-label>
           <ion-input type="number" formControlName="minSigs" readonly="true" placeholder="Minimum signature...">
@@ -179,7 +180,7 @@ shall be included in all copies or substantial portions of the Software.
       </ion-row>
 
       <ion-row>
-        <ion-col>
+        <ion-col  class="paddingtop">
           <ion-button type="submit" color="tertiary" expand="block" [disabled]="form.invalid">
             {{ 'next' | translate }}
           </ion-button>
