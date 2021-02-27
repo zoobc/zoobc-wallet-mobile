@@ -40,17 +40,33 @@
 
 .draft-list-header{
     margin-top: 20px;
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid #727588;
 }
 
 .title{
-   color: #7275bb;
+   color: #727588;
 }
 .dateago{
    font-style: italic;
+   color: #3c3c3d;
    margin-bottom: 10px;
 }
 
+.draftid{
+   color: #3c3c3d;
+}
+
 .value{
+   color: #3c3c3d;
    margin-bottom: 10px;
+}
+
+.card{
+   padding: 0px;
+   margin: 10px;
+}
+
+.itemdraft {
+   padding-bottom: 10px;
+   border-bottom: 1px solid #727588;
 }

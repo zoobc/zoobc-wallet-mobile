@@ -40,11 +40,13 @@
 
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Account } from 'src/app/Interfaces/account';
 import { MultiSigDraft } from 'src/app/Interfaces/multisig';
 import { AccountService } from 'src/app/Services/account.service';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { UtilService } from 'src/app/Services/util.service';
+import { getTranslation } from 'src/Helpers/utils';
 import { isZBCAddressValid } from 'zbc-sdk';
 
 @Component({
@@ -59,18 +61,15 @@ export class ImportDraftPage implements OnInit {
 
   constructor(private utilSrv: UtilService,
               private modalController: ModalController,
-              private multisigServ: MultisigService,
-              private accountSrv: AccountService,
-              private alertController: AlertController) { }
+              private translate: TranslateService) { }
 
   async ngOnInit() {
-    await this.getMultiSigDraft();
-    // this.goNextStep();
+    // await this.getMultiSigDraft();
   }
 
   validationFile(file: any): file is MultiSigDraft {
-    if ((file as MultiSigDraft).generatedSender !== undefined) {
-      return isZBCAddressValid((file as MultiSigDraft).generatedSender);
+    if ((file as MultiSigDraft).txBody.sender !== undefined) {
+      return isZBCAddressValid((file as MultiSigDraft).txBody.sender, 'ZBC');
     }
     return false;
   }
@@ -84,60 +83,33 @@ export class ImportDraftPage implements OnInit {
         const fileResult = JSON.parse(fileReader.result.toString());
         const validation = this.validationFile(fileResult);
         if (!validation) {
-          const message = 'You imported the wrong file';
-          this.presentAlert('Opps...', message);
+          const message = getTranslation('you imported the wrong file', this.translate);
+          this.utilSrv.showConfirmation('Opps...', message, false, null);
         } else {
-          this.multisigServ.update(fileResult);
-          const listdraft = await this.multisigServ.getDrafts();
-          const checkExistDraft = listdraft.some(
-            res => res.id === fileResult.id
-          );
-
-          if (checkExistDraft === true) {
-            const message = 'There is same id in your draft';
-            this.presentAlert('Opps...', message);
-          } else {
-            this.multisigServ.save();
-            this.getMultiSigDraft();
-            const subMessage = 'Your Draft has been saved';
-            this.presentAlert('Success', subMessage);
-          }
+          this.modalController.dismiss(fileResult);
         }
       };
       fileReader.onerror = async err => {
         console.log(err);
-        const message = 'An error occurred while processing your request';
+        const message = getTranslation('an error occurred while processing your request', this.translate);
         this.utilSrv.showConfirmation('Opps...', message, false, null);
       };
     }
   }
 
-  async presentAlert(title: string, msg: string) {
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Confirmation',
-      subHeader: title,
-      message: msg,
-      buttons: ['OK']
-    });
+  // async getMultiSigDraft() {
+  //   const currAccount = await this.accountSrv.getCurrAccount();
+  //   this.account = currAccount;
 
-    await alert.present();
-  }
+  //   this.isMultiSignature = this.account.type !== 'multisig' ? false : true;
 
+  //   const drafts = await this.multisigServ.getDrafts();
+  //   console.log('=== Drfts: ', drafts);
+  //   if (drafts) {
+  //     this.multiSigDrafts = drafts;
 
-  async getMultiSigDraft() {
-    const currAccount = await this.accountSrv.getCurrAccount();
-    this.account = currAccount;
-
-    this.isMultiSignature = this.account.type !== 'multisig' ? false : true;
-
-    const drafts = await this.multisigServ.getDrafts();
-    console.log('=== Drfts: ', drafts);
-    if (drafts) {
-      this.multiSigDrafts = drafts;
-
-    }
-  }
+  //   }
+  // }
 
   close() {
     this.modalController.dismiss(0);

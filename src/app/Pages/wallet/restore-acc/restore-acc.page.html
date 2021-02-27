@@ -42,23 +42,41 @@ shall be included in all copies or substantial portions of the Software.
 
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="end">
-      <ion-button (click)="close()">{{"close" | translate}}</ion-button>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'import draft' | translate }}</ion-title>
+    <ion-title>{{ "restore child accounts" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-item>
-    <ion-label>
-      <p>{{'please select a draft file!' | translate}}</p>
-    </ion-label>
-  </ion-item>
-  <ion-item>
-    <ion-label>
-      
-    </ion-label>
-    <input type="file"  (change)="uploadFile($event.target.files)"/>
-  </ion-item>
+<ion-content class="ion-padding">
+
+  <ion-grid>
+    <ion-row>
+      <ion-col class="info">
+        <div *ngIf="!isRestoring">
+          <p>Would you like to recover all child accounts and those with balances?
+          </p>
+        </div>
+
+        <div *ngIf="isRestoring">
+          <h4>Restoring childs accounts</h4>
+          <p>Please wait a moment!</p>
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button *ngIf="!isRestoring" class="btnLayout" expand="block" (click)="restore()" color="tertiary">
+          Yes
+        </ion-button>
+        <ion-button *ngIf="!isRestoring" expand="block" fill="outline" (click)="next()" color="tertiary">
+          No
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
 </ion-content>

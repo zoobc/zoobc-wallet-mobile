@@ -39,38 +39,77 @@ ZooBC is architected by Roberto Capodieci & Barton Johnston
 IMPORTANT: The above copyright notice and this permission notice
 shall be included in all copies or substantial portions of the Software.
  -->
- 
+
 <div class="transaction-item" *ngIf="transaction && address">
   <div class="info">
 
-    <span class="sender" *ngIf="transaction.recipient && transaction.recipient.value == address.value">
-      <div class="name" *ngIf="transaction.senderAlias">
-        {{ transaction.senderAlias }}
-      </div>
-      <div class="address" *ngIf="!transaction.senderAlias">
-        <span>{{ transaction.sender.value | shortAddress }}</span>
-      </div>
-    </span>
+    <!-- if transaction type = 1 normal send money -->
+    <ng-container *ngIf="transaction.transactionType == 1">
+      <span class="sender" *ngIf="transaction.recipient && transaction.recipient.value == address.value">
+        <div class="address" *ngIf="transaction.senderAlias">
+          {{ transaction.senderAlias }}
+        </div>
+        <div class="address" *ngIf="!transaction.senderAlias">
+          <span>{{ transaction.sender.value | shortAddress }}</span>
+        </div>
+      </span>
 
-    <span class="sender" *ngIf="transaction.sender && transaction.sender.value == address.value">
-      <div class="name" *ngIf="transaction.recipientAlias">
-        {{ transaction.recipientAlias }}
-      </div>
-      <div class="address" *ngIf="!transaction.recipientAlias">
-        <span>{{ transaction.recipient.value | shortAddress }}</span>
-      </div>
-    </span>
+      <span class="sender" *ngIf="transaction.sender && transaction.sender.value == address.value">
+        <div class="address" *ngIf="transaction.recipientAlias">
+          {{ transaction.recipientAlias }}
+        </div>
+        <div class="address" *ngIf="!transaction.recipientAlias">
+          <span>{{ transaction.recipient.value | shortAddress }}</span>
+        </div>
+      </span>
+    </ng-container>
+    <!-- end off -->
 
+    <!-- if transaction type = 4 escrow -->
+    <ng-container *ngIf="transaction.transactionType == 4">
+      <span class="sender" *ngIf="transaction.transactionHash">
+        <div class="time">
+          {{ 'Transaction Hash' | translate }}:
+        </div>
+        <div class="address">
+          <span>{{ transaction.transactionHash | shortAddress}}</span>
+        </div>
+      </span>
+    </ng-container>
+    <!-- end off -->
+
+    <!-- if transaction type = 5 multisig -->
+    <ng-container *ngIf="transaction.transactionType == 5">
+      <span class="sender" *ngIf="transaction.transactionHash">
+        <div class="name">
+          {{ 'Transaction Hash' | translate }}:
+        </div>
+        <div class="address">
+          <span>{{ transaction.transactionHash | shortAddress}}</span>
+        </div>
+      </span>
+    </ng-container>
+    <!-- end off -->
 
     <span class="time">{{ transaction.timestamp | dateAgo }}</span>
   </div>
 
   <div class="amount" [ngClass]="transaction.sender.value == address.value?'send':'receive'">
-    <app-info-amount-conversion value="{{ transaction.txBody.amount / 1e8 | number: '0.2-4'}}" otherCurrency="USD"
+
+    <app-info-amount-conversion value="{{ transaction.txBody.amount / 1e8 | number: '0.0-8'}}" otherCurrency="USD"
       [prefix]="transaction.sender.value == address.value?'-':'+'"></app-info-amount-conversion>
 
-    <ion-badge *ngIf="transaction.escrow" color="tertiary">{{ 'escrow transaction' | translate }}</ion-badge>
-    <ion-badge *ngIf="transaction.escrow" color="warning">{{ status | translate }}</ion-badge>
-    <ion-badge *ngIf="transaction.multisig" color="tertiary">{{ 'multisignature' | translate }}</ion-badge>
+      <ion-text class="txfee" *ngIf="transaction.sender.value == address.value">- ZBC {{ transaction.fee / 1e8 | number: '0.0-8' }} {{ 'fee' | translate }}</ion-text>
+ 
+
+      <ion-text *ngIf="transaction.transactionTypeString" color="tertiary">
+      <span style="font-size: 0.6em;">{{transaction.transactionTypeString | translate }}</span>
+      <ion-icon *ngIf="status==0" color="success" name="checkmark-circle"></ion-icon>
+      <ion-icon *ngIf="status==1" color="danger" name="close-circle"></ion-icon>
+      <ion-icon *ngIf="status==2" color="warning" name="alarm"></ion-icon>
+    </ion-text>
+
+    <!-- <ion-badge *ngIf="transaction.transactionType == 4"  [ngClass]="color">{{ status | translate }}</ion-badge> -->
+    <!-- <ion-badge *ngIf="transaction.multisig" color="tertiary">{{ 'multisignature' | translate }}</ion-badge> -->
   </div>
 </div>

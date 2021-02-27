@@ -56,7 +56,6 @@ export class AboutPage implements OnInit {
       this.appVersionService.getVersionNumber().then(verNum => {
         this.appVersion = verNum;
       });
-      console.log('-- App Version: ', this.appVersionService.getVersionNumber());
     } catch { }
   }
 

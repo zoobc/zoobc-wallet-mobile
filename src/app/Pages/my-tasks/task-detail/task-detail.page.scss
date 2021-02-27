@@ -1,3 +1,45 @@
 .fee{
-  border: 1px solid #cccccc;
+  border: 1px solid #979797;
+}
+
+.txArea{
+  border: 1px solid #979797;
+  background-color: #ffffff;
+}
+
+.frm{
+  margin-top: 20px;
+  --border: none;
+}
+
+.confirmTitle{
+  padding-top: 15px;
+  border-top: 1px solid #636262;
+}
+
+
+.input-container {
+
+  &:first-child {
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  position: relative;
+
+  .currency {
+    position: absolute;
+    width: 50px;
+    text-align: center;
+    display: inline-block;
+    top: 7px;
+    text-align: center;
+  }
+
+  input {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 50px !important;
+  }
+  margin-top: 10px;
 }

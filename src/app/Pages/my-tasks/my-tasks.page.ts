@@ -58,6 +58,8 @@ import zoobc, {
 import { Router, NavigationExtras } from '@angular/router';
 import { Currency } from 'src/app/Interfaces/currency';
 import { MultisigService } from 'src/app/Services/multisig.service';
+import { NetworkService } from 'src/app/Services/network.service';
+import { TransactionService } from 'src/app/Services/transaction.service';
 
 @Component({
   selector: 'app-my-tasks',
@@ -94,7 +96,25 @@ export class MyTasksPage implements OnInit {
   constructor(
     private router: Router,
     private msigService: MultisigService,
-    private accountService: AccountService) { }
+    private networkSrv: NetworkService,
+    private transactionSrv: TransactionService,
+    private accountService: AccountService) {
+
+    // if network changed reload data
+    this.networkSrv.changeNodeSubject.subscribe(() => {
+      this.loadTask();
+    });
+
+    // // // if post send zoobc reload data
+    this.transactionSrv.transferZooBcSubject.subscribe(() => {
+      this.loadTask();
+    });
+
+    // if account switched
+    this.accountService.accountSubject.subscribe(() => {
+      this.loadTask();
+    });
+  }
 
   ngOnInit() {
     this.loadTask();
@@ -116,9 +136,9 @@ export class MyTasksPage implements OnInit {
 
   async loadTask() {
     this.account = await this.accountService.getCurrAccount();
-    // if (this.account.type !== 'normal') {
-    //   this.segmentModel = 'multisig';
-    // }
+    if (this.account.type !== 'normal') {
+      this.segmentModel = 'multisig';
+    }
 
     this.getPengingTrxEsc();
     this.getMultiSigPendingList();
@@ -159,8 +179,8 @@ export class MyTasksPage implements OnInit {
 
       const params: MultisigPendingListParams = {
         address: this.account.address,
-          // statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED],
-       // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
+        // statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED],
+        // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
         pagination: {
           page: this.pageMultiSig,
           limit: this.PerPage,
@@ -171,7 +191,7 @@ export class MyTasksPage implements OnInit {
           this.totalMultiSig = tx.total;
           const pendingList = tx.transactions;
           this.multiSigPendingList = pendingList;
-          console.log('=== multiSigPendingList: ', this.multiSigPendingList);
+          console.log('=== multiSigPendingList: ', pendingList);
         })
         .catch(err => {
           this.isErrorMultiSig = true;
@@ -200,6 +220,7 @@ export class MyTasksPage implements OnInit {
         transactions: id,
       };
     });
+    console.log('=== list: ', list);
     return list;
   }
 
@@ -226,7 +247,7 @@ export class MyTasksPage implements OnInit {
 
     const params: EscrowListParams = {
       approverAddress: this.account.address,
-      statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED],
+      statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED, EscrowStatus.EXPIRED],
       pagination: {
         page: this.page,
         limit: this.PerPage,
@@ -237,22 +258,22 @@ export class MyTasksPage implements OnInit {
     };
 
     zoobc.Escrows.getList(params)
-        .then(async (res: Escrows) => {
-          this.totalPendingTrxEsc = res.total;
-          const trxList = res.escrowList;
+      .then(async (res: Escrows) => {
+        this.totalPendingTrxEsc = res.total;
+        const trxList = res.escrowList;
 
-          // if (trxList.length > 0) {
-          //   trxList = await this.checkVisibleEscrow(trxList);
-          // }
+        // if (trxList.length > 0) {
+        //   trxList = await this.checkVisibleEscrow(trxList);
+        // }
 
-          this.listTrxPendingEsc = trxList;
-          console.log('== listTrxPendingEsc: ', this.listTrxPendingEsc);
-        })
-        .catch(err => {
-          this.isError = true;
-          console.log(err);
-        })
-        .finally(() => (this.isLoading = false));
+        this.listTrxPendingEsc = trxList;
+        console.log('== listTrxPendingEsc: ', this.listTrxPendingEsc);
+      })
+      .catch(err => {
+        this.isError = true;
+        console.log(err);
+      })
+      .finally(() => (this.isLoading = false));
   }
 
   getStatusName(status: number): any {
@@ -299,7 +320,7 @@ export class MyTasksPage implements OnInit {
   }
 
   openMultisigDetail(msigHash: any) {
-    console.log(msigHash);
+    // console.log(msigHash);
     this.msigService.setHash(msigHash);
     this.router.navigate(['/msig-task-detail']);
   }

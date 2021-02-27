@@ -216,11 +216,8 @@ export class FormTransferZoobcComponent implements OnInit {
   }
 
   isAddressInContacts() {
-    console.log('== isAddressInContacts');
     const aliasField = this.group.get('alias');
-
     const recipientForm = this.group.get('recipient');
-
     const isAddressInContacts = this.contacts.some(c => {
       if (c.address === recipientForm.value) {
         this.contact = c;

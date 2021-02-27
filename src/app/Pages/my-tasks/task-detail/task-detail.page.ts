@@ -41,7 +41,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { STORAGE_ESCROW_WAITING_LIST } from 'src/environments/variable.const';
-import zoobc, { AccountBalance, EscrowApproval, EscrowApprovalInterface } from 'zbc-sdk';
+import zoobc, { AccountBalance, calculateMinimumFee, EscrowApproval, EscrowApprovalInterface, generateTransactionHash } from 'zbc-sdk';
 import { StorageService } from 'src/app/Services/storage.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
@@ -49,9 +49,10 @@ import { ActivatedRoute } from '@angular/router';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 import { AuthService } from 'src/app/Services/auth-service';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { getTranslation } from 'src/Helpers/utils';
+import { getTranslation, unixTimeStampToDate } from 'src/Helpers/utils';
 import Swal from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -83,16 +84,17 @@ export class TaskDetailPage implements OnInit {
     private translate: TranslateService,
     private accountService: AccountService,
     private storageService: StorageService,
+    private utilService: UtilService,
     private formBuilder: FormBuilder
   ) {
-
-
-
-
   }
 
   get errorControl() {
     return this.escrowForm.controls;
+  }
+
+  convertDate(epoch: any) {
+    return unixTimeStampToDate(epoch);
   }
 
   async ngOnInit() {
@@ -107,14 +109,15 @@ export class TaskDetailPage implements OnInit {
     });
 
     await this.loadDetail();
-    console.log('this.account: ', this.account);
+    // console.log('this.account: ', this.account);
     if (this.account) {
-         this.escrowForm.get('fApprover').setValue(this.account.address.value);
+      this.escrowForm.get('fApprover').setValue(this.account.address.value);
     }
 
   }
 
   async loadDetail() {
+    this.utilService.MergeAccountAndContact();
     this.isLoading = true;
     this.account = await this.accountService.getCurrAccount();
     this.waitingList = (await this.storageService.getObject(STORAGE_ESCROW_WAITING_LIST)) || [];
@@ -127,7 +130,7 @@ export class TaskDetailPage implements OnInit {
       this.escrowDetail = res;
     }).finally(() => {
       this.isLoading = false;
-      console.log('===  this.escrowDetail:',  this.escrowDetail);
+      // console.log('===  this.escrowDetail:', this.escrowDetail);
     });
   }
 
@@ -139,16 +142,20 @@ export class TaskDetailPage implements OnInit {
     this.modalCtrl.dismiss();
   }
 
+  getName(address: string) {
+    return this.accountService.getAlias(address);
+  }
+
   submitForm() {
 
     this.isSubmitted = true;
     if (!this.escrowForm.valid) {
-        return false;
-      } else {
-        console.log(this.escrowForm.value);
+      return false;
+    } else {
+      // console.log(this.escrowForm.value);
 
-        this.showPin();
-      }
+      this.showPin();
+    }
   }
 
   confirm() {
@@ -157,7 +164,7 @@ export class TaskDetailPage implements OnInit {
   }
 
   reject() {
-    console.log('== will reject');
+    // console.log('== will reject');
     this.action = 1;
     this.ngForm.onSubmit(undefined);
   }
@@ -181,11 +188,26 @@ export class TaskDetailPage implements OnInit {
 
   }
 
+  calculateFee() {
+    const val = this.escrowForm.get('fMessage').value;
+    if (val && (val.length > 0)) {
+      const minFee = calculateMinimumFee(val.length, 1);
+      this.escrowForm.get('feesZbc').setValue(minFee.toFixed(4));
+    } else {
+      this.escrowForm.get('feesZbc').setValue(0.01);
+    }
+  }
+
+  getTrxHash(id: any) {
+    const bfr = Buffer.from(id);
+    return generateTransactionHash(bfr);
+  }
+
   async executeConfirm() {
 
     const fFee = this.escrowForm.get('feesZbc');
     const trxId = this.escrowDetail.id;
-    const fMsg =  this.escrowForm.get('fMessage');
+    const fMsg = this.escrowForm.get('fMessage');
 
     const bc: AccountBalance = await zoobc.Account.getBalance(this.account.address);
     const balance = bc.spendableBalance / 1e8;
@@ -225,7 +247,7 @@ export class TaskDetailPage implements OnInit {
           }
         )
         .finally(() => {
-            this.navCtrl.pop();
+          this.navCtrl.pop();
         });
     } else {
       const message = getTranslation('your balances are not enough for this transaction', this.translate);

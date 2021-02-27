@@ -81,20 +81,14 @@ shall be included in all copies or substantial portions of the Software.
         <p class="info-label">{{ "id" | translate }}: </p>
         <div class="skeleton-text" style="width: 60%;" *ngIf="isLoading; else id"></div>
         <ng-template #id>
-          <div class="info-val">{{escrowDetail.id}}</div>
+          <div class="info-val">{{ escrowDetail.id }}</div>
         </ng-template>
       </ion-label>
     </ion-item>
     <ion-item *ngIf="escrowDetail">
       <ion-label>
-        <p class="info-label">{{ "height" | translate }}:</p>
+        <p class="info-label">{{ "Created at block" | translate }}:</p>
         <div class="info-val">{{escrowDetail.blockHeight}}</div>
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="escrowDetail">
-      <ion-label>
-        <p class="info-label">{{ "timeout" | translate }}:</p>
-        <div class="info-val">{{escrowDetail.timeout}} blocks</div>
       </ion-label>
     </ion-item>
     <ion-item>
@@ -107,6 +101,7 @@ shall be included in all copies or substantial portions of the Software.
         </ng-container>
         <ng-template #sender>
           <div class="info-val">
+            <p>{{getName(escrowDetail.sender.value)}}</p>
             <app-with-copy title="{{ escrowDetail.sender.value }}" value="{{ escrowDetail.sender.value }}">
             </app-with-copy>
           </div>
@@ -123,6 +118,7 @@ shall be included in all copies or substantial portions of the Software.
         </ng-container>
         <ng-template #recipient>
           <div class="info-val">
+            <p>{{getName(escrowDetail.recipient.value)}}</p>
             <app-with-copy title="{{ escrowDetail.recipient.value }}" value="{{ escrowDetail.recipient.value }}">
             </app-with-copy>
           </div>
@@ -155,11 +151,11 @@ shall be included in all copies or substantial portions of the Software.
     </ion-item>
     <ion-item *ngIf="escrowDetail && (escrowDetail.status !== 1 && escrowDetail.status !== 2)">
       <ion-label>
-        <p class="info-label">{{ "expired after block height" | translate }}</p>
+        <p class="info-label">{{ "will expired on" | translate }}</p>
         <div class="skeleton-text" style="width: 20%;" *ngIf="isLoading; else expired"></div>
         <ng-template #expired>
           <div class="info-val">
-            {{ toNumber(escrowDetail.blockHeight) + toNumber(escrowDetail.timeout) | number}}
+            {{ convertDate(escrowDetail.timeout) }}
           </div>
         </ng-template>
       </ion-label>
@@ -181,14 +177,29 @@ shall be included in all copies or substantial portions of the Software.
     </ion-item>
   </ion-list>
 
-  <ng-container *ngIf="escrowDetail && escrowDetail.status == 0">
-    <form [formGroup]="escrowForm" (ngSubmit)="submitForm()" novalidate #myForm="ngForm">
-      <ion-item>
+  <ng-container *ngIf="escrowDetail && escrowDetail.status == 0" style="margin-top: 50px;">
+
+    <form [formGroup]="escrowForm" (ngSubmit)="submitForm()" novalidate #myForm="ngForm" class="frm">
+
+      <ion-item lines="none" class="confirmTitle">
+        <ion-label>
+          <h2>Confirm the transaction</h2>
+        </ion-label>
+      </ion-item>
+
+      <ion-item lines="none">
         <ion-label position="stacked">{{ "approver" | translate }}</ion-label>
         <ion-textarea formControlName="fApprover" rows="3" type="text" required></ion-textarea>
       </ion-item>
+
       <ion-item lines="none">
         <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
+
+        <div class="input-container">
+          <span class="currency">ZBC</span>
+          <input formControlName="feesZbc" type="number" required/>
+        </div>
+<!--
         <ion-row>
           <ion-col size="3" style="padding-top: 15px">
             ZBC
@@ -196,7 +207,7 @@ shall be included in all copies or substantial portions of the Software.
           <ion-col  size="9">
             <ion-input class="fee" formControlName="feesZbc" type="number" required></ion-input>
           </ion-col>
-        </ion-row>
+        </ion-row> -->
       </ion-item>
       <!-- Error messages -->
       <ion-item *ngIf="errorControl.feesZbc.errors">
@@ -204,20 +215,19 @@ shall be included in all copies or substantial portions of the Software.
           Fees is required!
         </ion-text>
       </ion-item>
-      <ion-item>
+      <ion-item lines="none">
         <ion-label position="stacked">
           Message
         </ion-label>
-        <ion-textarea rows="3" formControlName="message">
+        <ion-textarea class="txArea" rows="4" formControlName="fMessage" (ionChange)="calculateFee()">
         </ion-textarea>
       </ion-item>
     </form>
-    <ion-item>
-      <br/>
-      <ion-button size="big" type="button" expand="block" color="primary" fill="outline" (click)="reject()">{{
-        "reject" | translate }}</ion-button>
+    <ion-item lines="none" style="margin-top: 20px">
       <ion-button size="medium" type="button" expand="block" color="primary" (click)="confirm()">{{ "confirm" |
         translate }}</ion-button>
+      <ion-button size="big" type="button" expand="block" color="primary" fill="outline" (click)="reject()">{{
+        "reject" | translate }}</ion-button>
     </ion-item>
 
     <ion-item>

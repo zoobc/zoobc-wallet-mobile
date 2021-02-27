@@ -89,7 +89,7 @@ shall be included in all copies or substantial portions of the Software.
         <div class="info-val">
           <app-with-options [options]="senderRecipentOptions"
             (onClose)="onSenderRecipentOptionsClose($event, trx.sender.value)">
-            <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.sender.value }}"></app-info-address>
+            <app-info-address name="{{ getName(trx.sender.value) }}" address="{{ trx.sender.value }}"></app-info-address>
           </app-with-options>
         </div>
       </ion-label>
@@ -103,7 +103,7 @@ shall be included in all copies or substantial portions of the Software.
         <div class="info-val">
           <app-with-options [options]="senderRecipentOptions"
             (onClose)="onSenderRecipentOptionsClose($event, trx.recipient.value)">
-            <app-info-address name="{{ senderRecipentAlias }}" address="{{ trx.recipient.value }}"></app-info-address>
+            <app-info-address name="{{ getName(trx.recipient.value ) }}" address="{{ trx.recipient.value }}"></app-info-address>
           </app-with-options>
         </div>
       </ion-label>

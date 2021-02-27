@@ -62,6 +62,7 @@ export class TabsPage implements OnInit {
     ) { }
 
   async ngOnInit() {
+    this.getPendingTransaction();
     this.startTimer();
   }
 
@@ -69,12 +70,16 @@ export class TabsPage implements OnInit {
     this.activeTab = this.homeTabs.getSelected();
   }
 
+  async getPendingTransaction() {
+    this.account = await this.accountService.getCurrAccount();
+    const address = this.account.address;
+    this.numPendingTrx =  await this.transactionSrv.getPendingTrxEscrow(address);
+  }
+
   startTimer() {
     setInterval(async () => {
-      this.account = await this.accountService.getCurrAccount();
-      const address = this.account.address;
-      this.numPendingTrx =  await this.transactionSrv.getPendingTrxEscrow(address);
-    }, 20000);
+      this.getPendingTransaction();
+    }, 60000);
   }
 
 

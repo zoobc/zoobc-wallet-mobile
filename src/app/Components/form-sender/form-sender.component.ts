@@ -84,13 +84,10 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
   async ngOnInit() {
     this.account = await this.accountSrv.getCurrAccount();
     if (this.predefList.length < 1) {
-      console.log('this.predefList length<1: ', this.predefList.length);
       this.account = await this.accountSrv.getCurrAccount();
     } else {
-      console.log('this.predefList length>0: ', this.predefList.length);
       this.account = undefined;
     }
-    console.log(' == this.account: ', this.account);
   }
 
   async switchAccount(ev: any) {

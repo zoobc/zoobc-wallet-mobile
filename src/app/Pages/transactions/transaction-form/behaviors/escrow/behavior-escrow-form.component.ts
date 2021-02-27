@@ -37,7 +37,7 @@ export class BehaviorEscrowFormComponent
 
   public escrow: IEscrow;
   public blockHeight: number;
-  public  strTimeout: string;
+  public strTimeout: string;
 
   ngOnInit() {
 
@@ -51,6 +51,7 @@ export class BehaviorEscrowFormComponent
       instruction: ''
     };
 
+    this.escrow.commission = 0.01;
     this.getBlockHeight();
   }
 
@@ -67,47 +68,21 @@ export class BehaviorEscrowFormComponent
       .finally();
   }
 
-
-
-  convertDateToHeight() {
-   // const dt1 = Date.now();
-    // const date1 = Math.floor(dt1 / 1000);
-    const date2 = new Date(this.strTimeout);
-    const dt = date2.getTime() / 1000;
-
-    this.strTimeout = new Date().toISOString();
-
-
-    // console.log('Time selected: ', dt);
-    // if(dt < date1) {
-      // this.strTimeout = dt1.toString();
-      // dt = date1;
-    // }
-    // co//nsole.log('date1: ', date1);
-    // console.log('date2: ', date2);
-    // const seconds = (date2.getTime() - date1.getTime()) / 1000;
-    // console.log('seconds: ', seconds);
-    // const height = Math.round(seconds / 15);
-    // console.log('Math.round(dt);: ', Math.round(dt));
+  changeTimestamp() {
+    const dateSelected = new Date(this.strTimeout);
+    const dt = dateSelected.getTime() / 1000;
     this.escrow.timeout = Math.round(dt);
-
-    // this.trxService.txTimeOut =  Math.round(dt);
-
+    this.onFormChange(this.escrow);
+    this.onChange.emit(this.escrow);
   }
 
+
   changeForm() {
-
-
-    // this.onFormChange(this.escrow);
-    // this.onChange.emit(this.escrow);
-    this.convertDateToHeight();
-    this.trxService.updateEscrowForm(this.escrow);
-    // this.trxService.msgEscrow = this.escrow.instruction;
-
+    this.onFormChange(this.escrow);
+    this.onChange.emit(this.escrow);
   }
 
   onFormChange = (value: IEscrow) => {
-   // console.log( 'form Changed', value);
   }
 
   onTouched = () => { };

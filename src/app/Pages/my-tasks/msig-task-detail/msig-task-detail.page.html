@@ -123,7 +123,7 @@ shall be included in all copies or substantial portions of the Software.
         </p>
       </ion-label>
     </ion-item>
-    <ion-item>
+    <ion-item lines="none" class="form-item">
       <ion-label color="danger" *ngIf="totalPending == 0">
         <p> {{ "no participants have signed yet" | translate }}</p>
       </ion-label>
@@ -135,8 +135,9 @@ shall be included in all copies or substantial portions of the Software.
       </ion-label>
     </ng-container>
     </ion-item>
+    <ion-item lines="none" class="form-item"></ion-item>
 
-    <ion-item *ngIf="isNeedSign && enabledSign">
+    <!-- <ion-item *ngIf="isNeedSign && enabledSign">
       <ion-checkbox [(ngModel)]="isNeedSign" color="primary"></ion-checkbox>
       <ion-label style="margin-left:10px;">{{ "sign this transaction" | translate}}</ion-label>
     </ion-item>
@@ -144,20 +145,30 @@ shall be included in all copies or substantial portions of the Software.
     <ion-item style="margin-bottom:50px;" *ngIf="!isNeedSign && enabledSign">
       <ion-checkbox [(ngModel)]="isNeedSign" color="primary"></ion-checkbox>
       <ion-label style="margin-left:10px;">{{ "sign this transaction" | translate}}</ion-label>
-    </ion-item>
+    </ion-item> -->
 
   </ion-list>
+  <br/>
 
-  <ng-container *ngIf="multiSigDetail && !isLoading && isNeedSign">
+  <ng-container *ngIf="multiSigDetail && !isLoading && enabledSign">
     <form [formGroup]="formSend" (ngSubmit)="submit()" novalidate>
+
+      <ion-item lines="none" class="confirmTitle">
+        <ion-label>
+          <h2>Sign transaction</h2>
+        </ion-label>
+      </ion-item>
+
+ 
+
       <ion-item lines="none" class="form-item">
         <!-- <ion-label position="stacked">{{"signed by" | translate}}</ion-label> -->
-        <ion-label position="stacked">{{"approver" | translate}}</ion-label>
+        <ion-label position="stacked">{{"signer" | translate}}</ion-label>
         <app-form-sender formControlName="sender" accountType="normal" canSwitch="yes" switchToActive="no"
           *ngIf="signers" predefList="{{signers}}" ngDefaultControl required></app-form-sender>
       </ion-item>
 
-      <ion-item lines="none" class="form-item">
+      <ion-item lines="none" class="form-item margintop">
         <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
         <app-form-amount-conversion formControlName="fee" ngDefaultControl required></app-form-amount-conversion>
         <ng-container *ngIf="( fFee.dirty || fFee.touched) && fFee.invalid">
@@ -169,14 +180,15 @@ shall be included in all copies or substantial portions of the Software.
           </ion-text>
         </ng-container>
       </ion-item>
-      <ion-item>
+
+      <ion-item  lines="none" class="form-item margintop">
         <ion-label position="stacked">
           Message
         </ion-label>
-        <ion-textarea rows="3" formControlName="message">
+        <ion-textarea rows="3" class="txArea" formControlName="message">
         </ion-textarea>
       </ion-item>
-      <ion-item class="btn" lines="none">
+      <ion-item lines="none" class="form-item btn margintop">
         <ion-button type="submit" size="medium" expand="full" color="tertiary">
           {{ 'send' | translate }}
         </ion-button>

@@ -46,7 +46,6 @@ import {
 } from 'src/environments/variable.const';
 import { StorageService } from './storage.service';
 import { Contact } from '../Interfaces/contact';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -138,7 +137,6 @@ export class AddressBookService {
         address: dt.address
       });
     }
-
     await this.update(this.addresses);
   }
 
@@ -156,7 +154,6 @@ export class AddressBookService {
     }
     contact.name = name;
     newAddress.push(contact);
-
     await this.update(newAddress);
   }
 

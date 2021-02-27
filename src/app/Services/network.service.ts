@@ -67,7 +67,6 @@ export class NetworkService {
         this.saveAll(NETWORK_LIST);
       } else {
         this.allNetworks = networkList;
-        console.log('==  this.allNetworks: ', this.allNetworks);
       }
     });
 
@@ -95,7 +94,6 @@ export class NetworkService {
   }
 
   async setActiveGroup(obj: GroupData) {
-    console.log('== setActiveGroup: ', obj);
     zoobc.Network.load([obj]);
     await this.strgSrv.set(STORAGE_ACTIVE_NETWORK_GROUP, obj);
   }

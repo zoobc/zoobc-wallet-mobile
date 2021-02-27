@@ -46,6 +46,11 @@ shall be included in all copies or substantial portions of the Software.
       <ion-back-button (click)="goDashboard()"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ "my tasks" | translate}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="reload($event)">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
     <ion-segment value="multisig" [(ngModel)]="segmentModel" (ionChange)="segmentChanged()">
@@ -130,14 +135,14 @@ shall be included in all copies or substantial portions of the Software.
   </ion-list>
 
   <ion-list *ngIf="segmentModel !== 'escrow'" style="border-top: 1px solid #cccccc;">
-    <ion-item *ngIf="multiSigPendingList.length > 0">
+    <ion-item *ngIf="multiSigPendingList && multiSigPendingList.length > 0">
       <ion-label>{{ "block height" | translate}}: {{blockHeight}}</ion-label>
     </ion-item>
     <ion-item *ngFor="let msig of multiSigPendingList; let i = index" button>
 
       <ion-label color="dark" (click)="openMultisigDetail(msig.transactionHash)">
         <h3>{{ msig.sender.value | shortAddress }}</h3>
-        <ion-text class="dateago">{{ (msig.timestamp * 1000) | dateAgo}}</ion-text>
+        <ion-text class="dateago">{{ (msig.timestamp) | dateAgo}}</ion-text>
 
         <ion-badge *ngIf="msig.status == 0" color="warning" shape="round">
           Pending
