@@ -108,14 +108,6 @@ shall be included in all copies or substantial portions of the Software.
     <app-form-escrow [group]="formTrx" [inputMap]="fieldList"></app-form-escrow>
 
 
-    <!-- <ion-button expand="full" *ngIf="multisig.signaturesInfo !== undefined" color="primary"
-      (click)="generateUri()" [disabled]="formTrx.invalid">
-      {{ 'export draft multi signature' | translate }}
-    </ion-button>
-
-    <ion-button color="tertiary" expand="block" (click)="save()">
-      {{ 'save' | translate }}
-    </ion-button> -->
     <ion-button type="submit" color="tertiary" expand="block" [disabled]="formTrx.invalid">
       {{ 'next' | translate }}
     </ion-button>
