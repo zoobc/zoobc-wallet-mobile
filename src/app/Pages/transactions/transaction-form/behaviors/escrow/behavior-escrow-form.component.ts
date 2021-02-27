@@ -37,7 +37,7 @@ export class BehaviorEscrowFormComponent
 
   public escrow: IEscrow;
   public blockHeight: number;
-  public  strTimeout: string;
+  public strTimeout: string;
 
   ngOnInit() {
 
@@ -51,6 +51,7 @@ export class BehaviorEscrowFormComponent
       instruction: ''
     };
 
+    this.escrow.commission = 0.01;
     this.getBlockHeight();
   }
 
@@ -68,13 +69,9 @@ export class BehaviorEscrowFormComponent
   }
 
   changeTimestamp() {
-    console.log('changeTimestamp.this.strTimeout : ', this.strTimeout);
-
     const dateSelected = new Date(this.strTimeout);
     const dt = dateSelected.getTime() / 1000;
-    console.log('Math.round(dt);: ', Math.round(dt));
     this.escrow.timeout = Math.round(dt);
-
     this.onFormChange(this.escrow);
     this.onChange.emit(this.escrow);
   }
@@ -83,15 +80,9 @@ export class BehaviorEscrowFormComponent
   changeForm() {
     this.onFormChange(this.escrow);
     this.onChange.emit(this.escrow);
-
-    // this.convertDateToHeight();
-    // this.trxService.updateEscrowForm(this.escrow);
-    // this.trxService.msgEscrow = this.escrow.instruction;
-
   }
 
   onFormChange = (value: IEscrow) => {
-    console.log( 'form Changed', value);
   }
 
   onTouched = () => { };
