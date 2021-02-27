@@ -143,6 +143,9 @@ export class TransactionDetailPage implements OnInit {
     }
   }
 
+  getName(address: string) {
+    return this.accountService.getAlias(address);
+  }
   onSenderRecipentOptionsClose(event, address) {
     switch (event) {
       case 'copy':
