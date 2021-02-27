@@ -77,60 +77,19 @@ shall be included in all copies or substantial portions of the Software.
     </ion-item>
   </ion-list>
 
-  <h3 *ngIf="unconfirmTx && unconfirmTx.length > 0" class="ion-padding-horizontal">
-    {{ "Pending Transactions" | translate }}
-  </h3>
-
-  <ion-list class="ion-margin-top transaction-list">
+  <ion-list  *ngIf="unconfirmTx && unconfirmTx.length > 0" class="ion-margin-top transaction-list boderbottom">
+    <ion-list-header>
+      <p>{{'pending transaction' | translate}}</p>
+    </ion-list-header>
     <ng-container *ngIf="unconfirmTx && unconfirmTx.length > 0">
       <ion-item *ngFor="let transaction of unconfirmTx; let i = index" button
         (click)="goToTransactionDetail(transaction)">
         <app-transaction-item [transaction]="transaction"></app-transaction-item>
-        <span style="color:orange">{{ "pending" | translate }}</span>
       </ion-item>
     </ng-container>
   </ion-list>
-  <!-- <ion-list *ngIf="unconfirmTx && unconfirmTx.length > 0" class="ion-margin-top">
- 
 
-    <ion-item *ngFor="let pendingtrx of unconfirmTx; let i = index" button (click)="goToTransactionDetail(pendingtrx)">
-      <ion-label>
-        <ion-row class="ion-justify-content-between">
-          <ion-col size="7">
-            <div *ngIf="pendingtrx.recipient.value == currentAddress.value">
-              <ion-label  class="title">
-                {{ pendingtrx.senderAlias }}
-              </ion-label>
-              <ion-label class="title">
-                {{ pendingtrx.sender.value | shortAddress }}
-              </ion-label>
-           </div>
-
-           <div *ngIf="pendingtrx.sender.value == currentAddress.value">
-              <ion-label  class="title">
-                {{ pendingtrx.recipientAlias }}
-              </ion-label>
-              <ion-label class="title">
-                {{ pendingtrx.recipient.value | shortAddress }}
-              </ion-label>
-          </div>
-
-            <ion-label class="date" style="font-size: 0.7em">{{
-                  pendingtrx.timestamp | dateAgo
-                }} <span style="color:orange">{{ "pending" | translate }}</span>
-            </ion-label>
-          </ion-col>
-          <ion-col size="5" class="ion-text-end">
-            <ion-label class="amount pending">
-              {{ pendingtrx.txBody.amount / 1e8 | number: '0.0-6' }} <span style="color:grey">ZBC</span>
-            </ion-label>
-          </ion-col>
-        </ion-row>
-      </ion-label>
-    </ion-item>
-  </ion-list> -->
-
-  <ion-list class="ion-margin-top transaction-list">
+  <ion-list class="ion-margin-top transaction-list boderbottom">
     <ng-container *ngIf="isLoading; else transactionList">
       <ion-item lines="none">
         <ion-progress-bar type="indeterminate"></ion-progress-bar>

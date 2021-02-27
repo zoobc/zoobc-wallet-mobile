@@ -123,8 +123,8 @@ export class TransactionsPage implements OnInit {
     //   this.loadData();
     // });
 
-    // // if post send zoobc reload data
-    // this.transactionServ.sendMoneySubject.subscribe(() => {
+    // // // if post send zoobc reload data
+    // this.transactionServ.transferZooBcSubject.subscribe(() => {
     //   this.loadData();
     // });
 
@@ -170,7 +170,6 @@ export class TransactionsPage implements OnInit {
   }
 
   async ngOnInit() {
-    console.log('-- ngOnInit');
     await this.utilService.MergeAccountAndContact();
     await this.loadData();
     this.startTimer();
@@ -211,7 +210,8 @@ export class TransactionsPage implements OnInit {
 
   async getTransactions(reload: boolean = false) {
     if (!this.isLoading) {
-
+      this.unconfirmTx = [];
+      this.accountHistory = [];
       if (reload) {
         this.accountHistory = null;
         this.page = 1;
