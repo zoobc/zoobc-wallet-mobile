@@ -171,7 +171,7 @@ export class MyTasksPage implements OnInit {
           this.totalMultiSig = tx.total;
           const pendingList = tx.transactions;
           this.multiSigPendingList = pendingList;
-          // console.log('=== multiSigPendingList: ', this.multiSigPendingList);
+          console.log('=== multiSigPendingList: ', pendingList);
         })
         .catch(err => {
           this.isErrorMultiSig = true;
@@ -200,6 +200,7 @@ export class MyTasksPage implements OnInit {
         transactions: id,
       };
     });
+    console.log('=== list: ', list);
     return list;
   }
 
@@ -226,7 +227,7 @@ export class MyTasksPage implements OnInit {
 
     const params: EscrowListParams = {
       approverAddress: this.account.address,
-      statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED],
+      statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED, EscrowStatus.EXPIRED],
       pagination: {
         page: this.page,
         limit: this.PerPage,
@@ -246,7 +247,7 @@ export class MyTasksPage implements OnInit {
           // }
 
           this.listTrxPendingEsc = trxList;
-          // console.log('== listTrxPendingEsc: ', this.listTrxPendingEsc);
+          console.log('== listTrxPendingEsc: ', this.listTrxPendingEsc);
         })
         .catch(err => {
           this.isError = true;

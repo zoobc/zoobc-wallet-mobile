@@ -79,7 +79,6 @@ export class InitialPage implements OnInit {
         this.appVersion = verNum;
       });
     } catch { }
-    console.log('-- App Version: ', this.appVersionService.getVersionNumber());
   }
 
   openSendFeedbak() {
