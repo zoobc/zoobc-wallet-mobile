@@ -56,6 +56,7 @@ import { StorageService } from './Services/storage.service';
 import { LanguageService } from 'src/app/Services/language.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ThemeService } from './Services/theme.service';
+import { UtilService } from './Services/util.service';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
@@ -74,7 +75,8 @@ export class AppComponent implements OnInit {
     private toastController: ToastController,
     private strgSrv: StorageService,
     private translateService: TranslateService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private utilService: UtilService
   ) {
     this.initializeApp();
     // this.darkMode();
@@ -86,6 +88,7 @@ export class AppComponent implements OnInit {
       this.languageService.setInitialAppLanguage();
       this.networkService.setInitialNetwork();
       this.setDefaultCurrency();
+      this.utilService.MergeAccountAndContact();
       this.splashScreen.hide();
     });
   }
