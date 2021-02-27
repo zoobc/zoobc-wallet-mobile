@@ -40,8 +40,7 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import zoobc, { EscrowListParams, Escrows, EscrowStatus, OrderBy, SendMoneyInterface, ZBCTransaction } from 'zbc-sdk';
-import { Transaction } from '../Interfaces/transaction';
+import zoobc, { EscrowListParams, EscrowStatus, MultisigPendingListParams, OrderBy, ZBCTransaction, ZBCTransactions } from 'zbc-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -51,11 +50,9 @@ export class TransactionService {
   public msgEscrow: string;
   public txTimeOut: number;
 
-  public sendMoneySubject: Subject<any> = new Subject<any>();
+  public transferZooBcSubject: Subject<any> = new Subject<any>();
   public txEscrowSubject: Subject<any> = new Subject<any>();
-
   public transactionSuccessSubject: Subject<boolean> = new Subject<boolean>();
-
   frmSend: any;
   tempTrx: ZBCTransaction;
   constructor() {
@@ -63,9 +60,9 @@ export class TransactionService {
 
   transactionFees(minimumFee: number) {
     const fees = [{
-        name: 'Regular',
-        fee: minimumFee
-      }];
+      name: 'Regular',
+      fee: minimumFee
+    }];
     return fees;
   }
 
@@ -74,7 +71,7 @@ export class TransactionService {
   }
 
   getTrx() {
-    return this.frmSend ;
+    return this.frmSend;
   }
 
   updateEscrowForm(arg: any) {
@@ -94,10 +91,26 @@ export class TransactionService {
       latest: true,
     };
 
-    const trxs = await zoobc.Escrows.getList(params);
-    // console.log('== trxs: ', trxs);
+    const mgParams: MultisigPendingListParams = {
+      address,
+      pagination: {
+        page: 1,
+        limit: 50,
+      },
+    };
 
-    return trxs ? trxs.total : 0;
+    let total = 0;
+    const trxs = await zoobc.Escrows.getList(params);
+    if (trxs) {
+      total = total + trxs.total;
+    }
+
+    const msTx = await zoobc.MultiSignature.getPendingList(mgParams);
+    if (msTx) {
+      total = total + msTx.total;
+    }
+
+    return total;
 
   }
 
