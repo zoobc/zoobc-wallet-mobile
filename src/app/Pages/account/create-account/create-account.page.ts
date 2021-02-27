@@ -229,7 +229,7 @@ export class CreateAccountPage implements OnInit {
         pathNumber
       );
       await this.accountService.addAccount(account);
-      this.accountService.broadCastNewAccount(account);
+      // this.accountService.broadCastNewAccount(account);
       this.goListAccount();
       return;
     }
