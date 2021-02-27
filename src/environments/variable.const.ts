@@ -40,7 +40,7 @@
 
 
 import { Currency } from 'src/app/Interfaces/currency';
-export const UNIQUE_DB_ID = '0003';
+export const UNIQUE_DB_ID = '0004';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = '';
 export const STORAGE_ACTIVE_CURRENCY = 'strg_active_currency' + '_' + UNIQUE_DB_ID;
@@ -120,6 +120,16 @@ export const CURRENCY_LIST = {
 
 export const NETWORK_LIST = [
   {
+    label: 'MainNet',
+    wkps: [
+      'http://n0.beta.proofofparticipation.network:7001',
+      'http://n1.beta.proofofparticipation.network:7001',
+      'http://n2.beta.proofofparticipation.network:7001',
+      'http://n3.beta.proofofparticipation.network:7001',
+      'http://n4.beta.proofofparticipation.network:7001'
+    ]
+  },
+  {
     label: 'ExperiNet',
     wkps: [
       'http://n0.beta.proofofparticipation.network:7001',
@@ -130,7 +140,7 @@ export const NETWORK_LIST = [
     ]
   },
   {
-    label: 'AlpiNet',
+    label: 'Alpha Net',
     wkps: [
       'http://n0.alpha.proofofparticipation.network:7001',
       'http://n1.alpha.proofofparticipation.network:7001',
@@ -140,7 +150,7 @@ export const NETWORK_LIST = [
     ]
   },
   {
-    label: 'DeviNet',
+    label: 'Dev Net',
     wkps: [
       'http://172.104.62.181:7001'
     ]
