@@ -81,22 +81,22 @@ shall be included in all copies or substantial portions of the Software.
         <p class="info-label">{{ "id" | translate }}: </p>
         <div class="skeleton-text" style="width: 60%;" *ngIf="isLoading; else id"></div>
         <ng-template #id>
-          <div class="info-val">{{escrowDetail.id}}</div>
+          <div class="info-val">{{ escrowDetail.id }}</div>
         </ng-template>
       </ion-label>
     </ion-item>
     <ion-item *ngIf="escrowDetail">
       <ion-label>
-        <p class="info-label">{{ "height" | translate }}:</p>
+        <p class="info-label">{{ "Created at block" | translate }}:</p>
         <div class="info-val">{{escrowDetail.blockHeight}}</div>
       </ion-label>
     </ion-item>
-    <ion-item *ngIf="escrowDetail">
+    <!-- <ion-item *ngIf="escrowDetail">
       <ion-label>
         <p class="info-label">{{ "timeout" | translate }}:</p>
         <div class="info-val">{{convertDate(escrowDetail.timeout)}}</div>
       </ion-label>
-    </ion-item>
+    </ion-item> -->
     <ion-item>
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "sender" | translate }}</p>
@@ -155,11 +155,11 @@ shall be included in all copies or substantial portions of the Software.
     </ion-item>
     <ion-item *ngIf="escrowDetail && (escrowDetail.status !== 1 && escrowDetail.status !== 2)">
       <ion-label>
-        <p class="info-label">{{ "expired after block height" | translate }}</p>
+        <p class="info-label">{{ "will expired on" | translate }}</p>
         <div class="skeleton-text" style="width: 20%;" *ngIf="isLoading; else expired"></div>
         <ng-template #expired>
           <div class="info-val">
-            {{ toNumber(escrowDetail.blockHeight) + toNumber(escrowDetail.timeout) | number}}
+            {{ convertDate(escrowDetail.timeout) }}
           </div>
         </ng-template>
       </ion-label>
@@ -182,8 +182,6 @@ shall be included in all copies or substantial portions of the Software.
   </ion-list>
 
   <ng-container *ngIf="escrowDetail && escrowDetail.status == 0" style="margin-top: 50px;">
-
-
 
     <form [formGroup]="escrowForm" (ngSubmit)="submitForm()" novalidate #myForm="ngForm" class="frm">
 
@@ -225,7 +223,7 @@ shall be included in all copies or substantial portions of the Software.
         <ion-label position="stacked">
           Message
         </ion-label>
-        <ion-textarea class="txArea" rows="4" formControlName="fMessage">
+        <ion-textarea class="txArea" rows="4" formControlName="fMessage" (ionChange)="calculateFee()">
         </ion-textarea>
       </ion-item>
     </form>

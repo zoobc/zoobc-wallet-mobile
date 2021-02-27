@@ -41,7 +41,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { STORAGE_ESCROW_WAITING_LIST } from 'src/environments/variable.const';
-import zoobc, { AccountBalance, EscrowApproval, EscrowApprovalInterface } from 'zbc-sdk';
+import zoobc, { AccountBalance, calculateMinimumFee, EscrowApproval, EscrowApprovalInterface, generateTransactionHash } from 'zbc-sdk';
 import { StorageService } from 'src/app/Services/storage.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
@@ -85,10 +85,6 @@ export class TaskDetailPage implements OnInit {
     private storageService: StorageService,
     private formBuilder: FormBuilder
   ) {
-
-
-
-
   }
 
   get errorControl() {
@@ -183,6 +179,21 @@ export class TaskDetailPage implements OnInit {
 
     return await pinmodal.present();
 
+  }
+
+  calculateFee() {
+    const val = this.escrowForm.get('fMessage').value;
+    if (val && (val.length > 0)) {
+      const minFee = calculateMinimumFee(val.length, 1);
+      this.escrowForm.get('feesZbc').setValue(minFee.toFixed(4));
+    } else {
+      this.escrowForm.get('feesZbc').setValue(0.01);
+    }
+  }
+
+  getTrxHash(id: any) {
+    const bfr = Buffer.from(id);
+    return generateTransactionHash(bfr);
   }
 
   async executeConfirm() {
