@@ -99,12 +99,13 @@ export class MsigTaskDetailPage implements OnInit {
   errorMsg: string;
   customeChecked: boolean;
   minimumFee = TRANSACTION_MINIMUM_FEE;
-  isNeedSign = false;
+  isNeedSign = true;
   signer: Account;
   participantsWithSignatures = [];
   detailMultisig: any;
   totalParticpants: number;
   totalPending = 0;
+  allAcc: any;
 
   constructor(
     private modalCtrl: ModalController,
@@ -129,7 +130,8 @@ export class MsigTaskDetailPage implements OnInit {
     this.priceInUSD = this.currencyService.getPriceInUSD();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.allAcc = await this.accountService.allAccount();
     this.msigHash = this.msigService.getHash();
     this.loadFeeAndCurrency();
     this.loadDetail();
@@ -168,38 +170,59 @@ export class MsigTaskDetailPage implements OnInit {
 
       this.multiSigDetail = res.pendingtransaction;
       this.pendingSignatures = res.pendingsignaturesList;
+
+      console.log('this.pendingSignatures: ', this.pendingSignatures);
+
       this.totalPending = this.pendingSignatures.length;
 
       this.participants = res.multisignatureinfo.addressesList;
+      console.log('== this.participants1: ', this.participants);
+
       this.signers = this.participants.map(pc => pc.value);
       this.participants = this.participants.map(res2 => res2.value);
 
       this.totalParticpants = this.participants.length;
 
       if (this.totalPending > 0) {
+
+        // if one or more already sign the transaction
         for (let i = 0; i < this.totalPending; i++) {
           this.participants = this.participants.filter(
-            res3 => res3 !== this.pendingSignatures[i].accountaddress.value
+            (res3) => res3 !== this.pendingSignatures[i].accountaddress.value
           );
         }
-        const signers = (await this.accountService
-          .allAccount())
-          .filter((res5: any) => this.participants.includes(res5.address.value));
-        if (signers.length > 0) {
-          this.enabledSign = true;
-        } else {
-          this.enabledSign = false;
-        }
-      } else {
-        const signers = (await this.accountService
-          .allAccount())
-          .filter((res4: any) => this.participants.includes(res4.address.value));
-        if (signers.length > 0) {
-          this.enabledSign = true;
-        } else {
-          this.enabledSign = false;
-        }
       }
+
+      console.log('== this.participants: ', this.participants);
+      console.log('== this.signers1: ', this.signers);
+
+      // const signers = (await this.accountService
+      //   .allAccount())
+      //   .filter((res5: any) => this.participants.includes(res5.address.value));
+      // if (signers.length > 0) {
+      //   this.enabledSign = true;
+      // } else {
+      //   this.enabledSign = false;
+      // }
+
+      // no one sign the transaction
+
+      for (let i = 0; i < this.totalPending; i++) {
+        this.signers = this.signers.filter(
+          (res3) => res3 !== this.pendingSignatures[i].accountaddress.value
+        );
+      }
+
+      // this.signers = this.allAcc.filter(res4 => this.participants.includes(res4.address.value));
+
+      const signers = this.allAcc
+        .filter((res5: any) => this.signers.includes(res5.address.value));
+      if (signers.length > 0) {
+        this.enabledSign = true;
+      } else {
+        this.enabledSign = false;
+      }
+
       this.isLoadingTx = false;
     });
   }
