@@ -105,6 +105,10 @@ export class EditAccountPage implements OnInit {
 
   }
 
+  getName(address: string) {
+      return this.accountService.getAlias(address);
+  }
+
   async getScannerResult(arg: string) {
     const result = arg.split('||');
     if (this.scanForWhat === FOR_PARTICIPANT) {
@@ -112,10 +116,12 @@ export class EditAccountPage implements OnInit {
     }
   }
 
-  ngOnInit() {
- 
+  async ngOnInit() {
+    await this.utilService.MergeAccountAndContact();
+
     this.activeRoute.queryParams.subscribe(params => {
       this.account = JSON.parse(params.account);
+      console.log('== this.account: ', this.account);
       this.mode = params.mode;
       if (this.account) {
         this.oldName = this.account.name;
@@ -205,7 +211,7 @@ export class EditAccountPage implements OnInit {
 
     this.isNameValid = true;
     if (this.oldName === this.account.name) {
-      this.accountService.broadCastNewAccount(this.account);
+      // this.accountService.broadCastNewAccount(this.account);
       this.goListAccount();
       return;
     }
@@ -224,7 +230,7 @@ export class EditAccountPage implements OnInit {
 
     this.account.name = (this.account.name);
     this.accountService.updateAccount(this.account);
-    this.accountService.broadCastNewAccount(this.account);
+    // this.accountService.broadCastNewAccount(this.account);
     this.goListAccount();
 
   }
