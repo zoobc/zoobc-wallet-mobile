@@ -91,12 +91,6 @@ shall be included in all copies or substantial portions of the Software.
         <div class="info-val">{{escrowDetail.blockHeight}}</div>
       </ion-label>
     </ion-item>
-    <!-- <ion-item *ngIf="escrowDetail">
-      <ion-label>
-        <p class="info-label">{{ "timeout" | translate }}:</p>
-        <div class="info-val">{{convertDate(escrowDetail.timeout)}}</div>
-      </ion-label>
-    </ion-item> -->
     <ion-item>
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "sender" | translate }}</p>
@@ -107,6 +101,7 @@ shall be included in all copies or substantial portions of the Software.
         </ng-container>
         <ng-template #sender>
           <div class="info-val">
+            <p>{{getName(escrowDetail.sender.value)}}</p>
             <app-with-copy title="{{ escrowDetail.sender.value }}" value="{{ escrowDetail.sender.value }}">
             </app-with-copy>
           </div>
@@ -123,6 +118,7 @@ shall be included in all copies or substantial portions of the Software.
         </ng-container>
         <ng-template #recipient>
           <div class="info-val">
+            <p>{{getName(escrowDetail.recipient.value)}}</p>
             <app-with-copy title="{{ escrowDetail.recipient.value }}" value="{{ escrowDetail.recipient.value }}">
             </app-with-copy>
           </div>

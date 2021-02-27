@@ -52,6 +52,7 @@ import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { getTranslation, unixTimeStampToDate } from 'src/Helpers/utils';
 import Swal from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -83,6 +84,7 @@ export class TaskDetailPage implements OnInit {
     private translate: TranslateService,
     private accountService: AccountService,
     private storageService: StorageService,
+    private utilService: UtilService,
     private formBuilder: FormBuilder
   ) {
   }
@@ -115,6 +117,7 @@ export class TaskDetailPage implements OnInit {
   }
 
   async loadDetail() {
+    this.utilService.MergeAccountAndContact();
     this.isLoading = true;
     this.account = await this.accountService.getCurrAccount();
     this.waitingList = (await this.storageService.getObject(STORAGE_ESCROW_WAITING_LIST)) || [];
@@ -137,6 +140,10 @@ export class TaskDetailPage implements OnInit {
 
   closeModal() {
     this.modalCtrl.dismiss();
+  }
+
+  getName(address: string) {
+    return this.accountService.getAlias(address);
   }
 
   submitForm() {
