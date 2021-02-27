@@ -100,7 +100,7 @@
     "supercop.wasm": "^5.0.1",
     "sweetalert2": "^8.11.7",
     "tslib": "^1.9.0",
-    "zbc-sdk": "0.0.14-pre-release",
+    "zbc-sdk": "../zoobc-sdk",
     "zone.js": "~0.8.29"
   },
   "devDependencies": {
@@ -147,7 +147,9 @@
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-network-information": {},
       "cordova-plugin-x-socialsharing": {
-        "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
+        "ANDROID_SUPPORT_V4_VERSION": "24.1.1+",
+        "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
+        "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
       },
       "cordova.plugins.diagnostic": {
         "ANDROID_SUPPORT_VERSION": "28.+"
