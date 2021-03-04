@@ -80,9 +80,12 @@ shall be included in all copies or substantial portions of the Software.
 
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "timeout" | translate }}</ion-label>
-        <ion-input type="number" (change)="onChangeTimeOut()" formControlName="{{ inputMap.timeout }}"
+        <ion-datetime displayFormat="DD MMM YYYY HH:mm" min="2015" max="2038" formControlName="{{ inputMap.timeout }}" display-timezone="utc" (ionChange)="changeTimestamp()"></ion-datetime>
+
+        <!-- <ion-input type="number" (change)="onChangeTimeOut()" formControlName="{{ inputMap.timeout }}"
           placeholder="{{ 'timeout' | translate }}">
-        </ion-input>
+        </ion-input> -->
+
         <ion-text class="blockheight ion-text-right">{{ "block height" | translate}}:
           {{ blockHeight | number: '0.0-2' }}
         </ion-text>

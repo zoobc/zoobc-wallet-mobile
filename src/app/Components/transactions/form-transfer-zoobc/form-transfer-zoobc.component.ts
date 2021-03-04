@@ -45,7 +45,7 @@ import { Contact } from 'src/app/Interfaces/contact';
 import { AccountService } from 'src/app/Services/account.service';
 import { AddressBookService } from 'src/app/Services/address-book.service';
 import { TRANSACTION_MINIMUM_FEE } from 'src/environments/variable.const';
-import { SendMoneyInterface, sendMoneyBuilder, calculateMinimumFee } from 'zbc-sdk';
+import { SendZBCInterface, SendZBCBuilder, calculateMinimumFee } from 'zbc-sdk';
 import { escrowMap, escrowForm } from '../form-escrow/form-escrow.component';
 import { Account } from 'src/app/Interfaces/account';
 import { map, startWith } from 'rxjs/operators';
@@ -76,6 +76,8 @@ export class FormTransferZoobcComponent implements OnInit {
   account: Account;
   accounts: Account[];
   behaviorEscrowChangesSubscription: any;
+  withMessage = false;
+  withCustomFee = false;
 
   constructor(private accountServ: AccountService,
               private addressBookServ: AddressBookService) {
@@ -175,6 +177,28 @@ export class FormTransferZoobcComponent implements OnInit {
   }
 
 
+
+  changeWithMessage(value: any) {
+    this.withMessage = value;
+    if (!this.withMessage) {
+      this.message.setValue('');
+    }
+    this.updateMinimumFee();
+  }
+
+  updateMinimumFee() {
+    console.log('-- test ---');
+  }
+
+  changeCustomFee(value: any) {
+    this.withCustomFee = value;
+    if (value === true) {
+      this.minimumFee = TRANSACTION_MINIMUM_FEE;
+    } else {
+      this.updateMinimumFee();
+    }
+  }
+
   setAmountValidation() {
     this.amount.setValidators([
       Validators.required,
@@ -270,6 +294,6 @@ export function createTransferZoobcForm(): FormGroup {
 
 export function createTransferZoobcBytes(form: any): Buffer {
   const { sender, fee, amount, recipient, message } = form;
-  const data: SendMoneyInterface = { sender, fee, amount, recipient, message };
-  return sendMoneyBuilder(data);
+  const data: SendZBCInterface = { sender, fee, amount, recipient, message };
+  return SendZBCBuilder(data);
 }

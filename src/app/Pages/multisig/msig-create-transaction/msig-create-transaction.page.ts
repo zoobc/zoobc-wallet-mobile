@@ -66,6 +66,10 @@ export class MsigCreateTransactionPage implements OnInit {
 
   fieldList: object;
   title: any;
+  withMessage: any;
+  message: any;
+  withCustomFee: any;
+  minimumFee: number;
   constructor(
     private multisigServ: MultisigService,
     private alertController: AlertController,
