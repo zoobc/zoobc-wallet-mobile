@@ -65,6 +65,28 @@ shall be included in all copies or substantial portions of the Software.
     </ng-container>
     <!-- end off -->
 
+    <!-- if transaction type = 2 register node -->
+    <ng-container *ngIf="transaction.transactionType == 2">
+      <span class="sender" *ngIf="transaction.recipient && transaction.recipient.value == address.value">
+        <div class="address" *ngIf="transaction.senderAlias">
+          {{ transaction.senderAlias }}
+        </div>
+        <div class="address" *ngIf="!transaction.senderAlias">
+          <span>{{ transaction.sender.value | shortAddress }}</span>
+        </div>
+      </span>
+
+      <span class="sender" *ngIf="transaction.sender && transaction.sender.value == address.value">
+        <div class="address" *ngIf="transaction.recipientAlias">
+          {{ transaction.recipientAlias }}
+        </div>
+        <div class="address" *ngIf="!transaction.recipientAlias">
+          <span>{{ transaction.recipient.value | shortAddress }}</span>
+        </div>
+      </span>
+    </ng-container>
+    <!-- end off -->
+
     <!-- if transaction type = 4 escrow -->
     <ng-container *ngIf="transaction.transactionType == 4">
       <span class="sender" *ngIf="transaction.transactionHash">
@@ -90,6 +112,27 @@ shall be included in all copies or substantial portions of the Software.
       </span>
     </ng-container>
     <!-- end off -->
+    <!-- if transaction type = 6 liquid transaction -->
+    <ng-container *ngIf="transaction.transactionType == 6">
+      <span class="sender" *ngIf="transaction.recipient && transaction.recipient.value == address.value">
+        <div class="address" *ngIf="transaction.senderAlias">
+          {{ transaction.senderAlias }}
+        </div>
+        <div class="address" *ngIf="!transaction.senderAlias">
+          <span>{{ transaction.sender.value | shortAddress }}</span>
+        </div>
+      </span>
+
+      <span class="sender" *ngIf="transaction.sender && transaction.sender.value == address.value">
+        <div class="address" *ngIf="transaction.recipientAlias">
+          {{ transaction.recipientAlias }}
+        </div>
+        <div class="address" *ngIf="!transaction.recipientAlias">
+          <span>{{ transaction.recipient.value | shortAddress }}</span>
+        </div>
+      </span>
+    </ng-container>
+    <!-- end off -->
 
     <span class="time">{{ transaction.timestamp | dateAgo }}</span>
   </div>
@@ -99,10 +142,11 @@ shall be included in all copies or substantial portions of the Software.
     <app-info-amount-conversion value="{{ transaction.txBody.amount / 1e8 | number: '0.0-8'}}" otherCurrency="USD"
       [prefix]="transaction.sender.value == address.value?'-':'+'"></app-info-amount-conversion>
 
-      <ion-text class="txfee" *ngIf="transaction.sender.value == address.value">- ZBC {{ transaction.fee / 1e8 | number: '0.0-8' }} {{ 'fee' | translate }}</ion-text>
- 
+    <ion-text class="txfee" *ngIf="transaction.sender.value == address.value">- ZBC {{ transaction.fee / 1e8 | number:
+      '0.0-8' }} {{ 'fee' | translate }}</ion-text>
 
-      <ion-text *ngIf="transaction.transactionTypeString" color="tertiary">
+
+    <ion-text *ngIf="transaction.transactionTypeString" color="tertiary">
       <span style="font-size: 0.6em;">{{transaction.transactionTypeString | translate }}</span>
       <ion-icon *ngIf="status==0" color="success" name="checkmark-circle"></ion-icon>
       <ion-icon *ngIf="status==1" color="danger" name="close-circle"></ion-icon>
