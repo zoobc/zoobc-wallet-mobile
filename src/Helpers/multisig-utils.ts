@@ -60,11 +60,11 @@ import {
   createTransferZoobcForm,
   transferZoobcMap
 } from 'src/app/Components/transactions/form-transfer-zoobc/form-transfer-zoobc.component';
-import { EscrowApprovalInterface, escrowBuilder, sendMoneyBuilder, SendMoneyInterface, TransactionType } from 'zbc-sdk';
+import { EscrowApprovalInterface, escrowBuilder, SendZBCBuilder, SendZBCInterface, TransactionType } from 'zbc-sdk';
 
 export function createInnerTxBytes(form: any, txType: number): Buffer {
   switch (txType) {
-    case TransactionType.SENDMONEYTRANSACTION:
+    case TransactionType.SENDZBCTRANSACTION:
       return createSendMoneyBytes(form);
     case TransactionType.SETUPACCOUNTDATASETTRANSACTION:
       return createSetupDatasetBytes(form);
@@ -76,7 +76,7 @@ export function createInnerTxBytes(form: any, txType: number): Buffer {
 }
 
 export function getMultisigTitle(txType: number) {
-  if (txType === TransactionType.SENDMONEYTRANSACTION) {
+  if (txType === TransactionType.SENDZBCTRANSACTION) {
     return  'Transfer ZBC';
   } else if (txType === TransactionType.SETUPACCOUNTDATASETTRANSACTION) {
     return  'setup account dataset';
@@ -90,8 +90,8 @@ export function getMultisigTitle(txType: number) {
 
 export function createSendMoneyBytes(form: any): Buffer {
   const { sender, fee, amount, recipient, message } = form;
-  const data: SendMoneyInterface = { sender, fee, amount, recipient, message };
-  return sendMoneyBuilder(data);
+  const data: SendZBCInterface = { sender, fee, amount, recipient, message };
+  return SendZBCBuilder(data);
 }
 
 export function createEscrowApprovalBytes(form: any): Buffer {
@@ -108,7 +108,7 @@ export function createEscrowApprovalBytes(form: any): Buffer {
 
 export function getTxType(type: number) {
   switch (type) {
-    case TransactionType.SENDMONEYTRANSACTION:
+    case TransactionType.SENDZBCTRANSACTION:
       return 'transfer zoobc';
     case TransactionType.SETUPACCOUNTDATASETTRANSACTION:
       return 'setup account dataset';
@@ -121,7 +121,7 @@ export function getTxType(type: number) {
 
 export function createInnerTxForm(txType: number) {
   switch (txType) {
-    case TransactionType.SENDMONEYTRANSACTION:
+    case TransactionType.SENDZBCTRANSACTION:
       return createTransferZoobcForm();
     case TransactionType.SETUPACCOUNTDATASETTRANSACTION:
       return createSetupDatasetForm();
@@ -134,7 +134,7 @@ export function createInnerTxForm(txType: number) {
 
 export function getInputMap(txType: number): any {
   switch (txType) {
-    case TransactionType.SENDMONEYTRANSACTION:
+    case TransactionType.SENDZBCTRANSACTION:
       return transferZoobcMap;
     case TransactionType.SETUPACCOUNTDATASETTRANSACTION:
       return setupDatasetMap;

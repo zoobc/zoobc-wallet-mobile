@@ -47,7 +47,7 @@ import { AuthService } from 'src/app/Services/auth-service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { UtilService } from 'src/app/Services/util.service';
 import { getTranslation } from 'src/Helpers/utils';
-import zoobc, { SendMoneyInterface } from 'zbc-sdk';
+import zoobc, { SendZBCInterface } from 'zbc-sdk';
 
 @Component({
   selector: 'app-send-zoobc-summary',
@@ -108,7 +108,7 @@ export class SendZoobcSummaryComponent implements OnInit {
     await loading.present();
 
 
-    const data: SendMoneyInterface = {
+    const data: SendZBCInterface = {
       sender: this.formTrx.sender.address,
       recipient: { value: this.formTrx.recipient.address, type: 0 },
       amount: Number(this.formTrx.amount),
@@ -130,7 +130,7 @@ export class SendZoobcSummaryComponent implements OnInit {
       this.formTrx.sender.path
     );
 
-    await zoobc.Transactions.sendMoney(data, childSeed)
+    await zoobc.Transactions.SendZBC(data, childSeed)
       .then(
         async (msg) => {
           console.log('msg: ', msg);

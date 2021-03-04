@@ -383,7 +383,7 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   async createMsigTransaction() {
-    const txType = TransactionType.SENDMONEYTRANSACTION;
+    const txType = TransactionType.SENDZBCTRANSACTION;
     const multisig: MultiSigDraft = {
       accountAddress: null,
       fee: 0,
