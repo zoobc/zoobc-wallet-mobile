@@ -67,7 +67,7 @@ shall be included in all copies or substantial portions of the Software.
           <div class="info-val" *ngIf="trx">
             <app-with-options [options]="transHashOptions"
               (onClose)="onTransHashOptionsClose($event, trx.transactionHash)">
-              {{ trx.transactionHash }}
+             <p class="hashsmaller"> {{ trx.transactionHash }}</p>
             </app-with-options>
           </div>
         </ng-template>
