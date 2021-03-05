@@ -51,7 +51,7 @@ export class StorageService {
   // set a key/value
   async set(key: string, value: any): Promise<any> {
     try {
-      const result = await this.storage.set(key, value);
+      await this.storage.set(key, value);
       return true;
     } catch (reason) {
       console.log(reason);
@@ -75,7 +75,7 @@ export class StorageService {
   // set a key/value object
   async setObject(key: string, object: object) {
     try {
-      const result = await this.storage.set(key, JSON.stringify(object));
+      await this.storage.set(key, JSON.stringify(object));
 
       return true;
     } catch (reason) {

@@ -40,7 +40,7 @@
 
 
 import { Currency } from 'src/app/Interfaces/currency';
-export const UNIQUE_DB_ID = '0005';
+export const UNIQUE_DB_ID = '0006';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = '';
 export const STORAGE_ACTIVE_CURRENCY = 'strg_active_currency' + '_' + UNIQUE_DB_ID;
@@ -57,6 +57,7 @@ export const STORAGE_MAIN_ACCOUNT = 'strg_main_account' + '_' + UNIQUE_DB_ID;
 export const STORAGE_ENC_PASSPHRASE_SEED = 'strg_encrypted_passphrase_seed' + '_' + UNIQUE_DB_ID;
 export const STORAGE_ESCROW_WAITING_LIST = 'strg_escrow_waiting_list' + '_' + UNIQUE_DB_ID;
 export const STORAGE_MULTISIG_DRAFTS = 'strg_multisig_drafts' + '_' + UNIQUE_DB_ID;
+export const STORAGE_DRAFT_ID = 'strg_draft_id' + '_' + UNIQUE_DB_ID;
 export const STORAGE_ACTIVE_THEME = 'strg_storage_active_theme' + '_' + UNIQUE_DB_ID;
 export const DEFAULT_THEME = 'zoobc';
 export const ADDRESS_LENGTH = 44;
@@ -119,16 +120,16 @@ export const CURRENCY_LIST = {
 };
 
 export const NETWORK_LIST = [
-  {
-    label: 'MainNet',
-    wkps: [
-      'http://n0.beta.proofofparticipation.network:7001',
-      'http://n1.beta.proofofparticipation.network:7001',
-      'http://n2.beta.proofofparticipation.network:7001',
-      'http://n3.beta.proofofparticipation.network:7001',
-      'http://n4.beta.proofofparticipation.network:7001'
-    ]
-  },
+  // {
+  //   label: 'MainNet',
+  //   wkps: [
+  //     'http://n0.beta.proofofparticipation.network:7001',
+  //     'http://n1.beta.proofofparticipation.network:7001',
+  //     'http://n2.beta.proofofparticipation.network:7001',
+  //     'http://n3.beta.proofofparticipation.network:7001',
+  //     'http://n4.beta.proofofparticipation.network:7001'
+  //   ]
+  // },
   {
     label: 'ExperiNet',
     wkps: [
