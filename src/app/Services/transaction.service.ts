@@ -67,6 +67,7 @@ export class TransactionService {
   }
 
   saveTrx(trx: any) {
+    console.log('== trx service, saveTrx: ', trx);
     this.frmSend = trx;
   }
 
