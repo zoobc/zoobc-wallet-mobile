@@ -78,17 +78,23 @@ shall be included in all copies or substantial portions of the Software.
         </ng-container>
       </ion-item>
 
+  
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "timeout" | translate }}</ion-label>
-        <ion-datetime displayFormat="DD MMM YYYY HH:mm" min="2015" max="2038" formControlName="{{ inputMap.timeout }}" display-timezone="utc" (ionChange)="changeTimestamp()"></ion-datetime>
+        <div class="tmstamp">
+          <ion-datetime displayFormat="DD MMM YYYY HH:mm" min="2015" max="2038" formControlName="{{ inputMap.timeout }}" display-timezone="utc" (ionChange)="changeTimestamp()"></ion-datetime>
+        </div>
+
 
         <!-- <ion-input type="number" (change)="onChangeTimeOut()" formControlName="{{ inputMap.timeout }}"
           placeholder="{{ 'timeout' | translate }}">
         </ion-input> -->
 
-        <ion-text class="blockheight ion-text-right">{{ "block height" | translate}}:
+        <!-- <ion-text class="blockheight ion-text-right">{{ "block height" | translate}}:
           {{ blockHeight | number: '0.0-2' }}
-        </ion-text>
+        </ion-text> -->
+
+
         <ng-container *ngIf="group.get(inputMap.timeout).touched">
 
           <ion-text class="text-error" *ngIf="group.get(inputMap.timeout).hasError('required')">{{
