@@ -40,7 +40,7 @@
 
 
 import { Currency } from 'src/app/Interfaces/currency';
-export const UNIQUE_DB_ID = '0006';
+export const UNIQUE_DB_ID = '0007';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = '';
 export const STORAGE_ACTIVE_CURRENCY = 'strg_active_currency' + '_' + UNIQUE_DB_ID;
@@ -120,16 +120,32 @@ export const CURRENCY_LIST = {
 };
 
 export const NETWORK_LIST = [
-  // {
-  //   label: 'MainNet',
-  //   wkps: [
-  //     'http://n0.beta.proofofparticipation.network:7001',
-  //     'http://n1.beta.proofofparticipation.network:7001',
-  //     'http://n2.beta.proofofparticipation.network:7001',
-  //     'http://n3.beta.proofofparticipation.network:7001',
-  //     'http://n4.beta.proofofparticipation.network:7001'
-  //   ]
-  // },
+  {
+    label: 'MainNet',
+    wkps: [
+      'http://158.247.207.68:7001',
+      'http://45.32.12.195:7001',
+      'http://141.164.59.195:7001',
+      'http://167.179.94.49:7001',
+      'http://108.160.138.200:7001',
+      'http://185.177.93.97:7001',
+      'http://185.189.68.248:7001',
+      'http://185.189.68.247:7001',
+      'http://185.189.68.249:7001',
+      'http://185.177.92.164:7001',
+      'http://64.227.104.19:7001',
+      'http://185.177.92.163:7001',
+      'http://142.93.221.153:7001',
+      'http://128.199.250.237:7001',
+      'http://159.89.17.165:7001',
+      'http://188.166.83.158:7001',
+      'http://172.105.181.56:7001',
+      'http://45.79.127.201:7001',
+      'http://139.162.116.79:7001',
+      'http://172.104.180.153:7001',
+      'http://176.58.124.29:7001'
+    ]
+  },
   {
     label: 'ExperiNet',
     wkps: [
