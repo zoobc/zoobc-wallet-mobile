@@ -37,3 +37,32 @@
 
 // IMPORTANT: The above copyright notice and this permission notice
 // shall be included in all copies or substantial portions of the Software.
+
+.input-container {
+
+    &:first-child {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    position: relative;
+
+    .currency {
+      position: absolute;
+      width: 50px;
+      text-align: center;
+      display: inline-block;
+      top: 10px;
+    }
+
+    input {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      padding-left: 50px !important;
+    }
+    margin-top: 0px;
+  }
+
+  .txtliquid{
+    border: solid 1px rgb(121, 120, 120)
+  }

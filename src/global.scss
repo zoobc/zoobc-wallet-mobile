@@ -87,47 +87,6 @@ ion-title {
   font-size: 1em;
 }
 
-.background-pin {
-  --background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
-  // --background: transparent;
-  background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
-}
-
-.bg-header-night {
-  --background: transparent;
-  background-image: url('src/assets/images/background-night.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  //background-attachment: fixed;
-  background-position: center center;
-}
-
-.bg-header-zoobc {
-  --background: transparent;
-  background-image: url('src/assets/images/zoobc.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  //background-attachment: fixed;
-  background-position: center center;
-}
-
-.bg-header-bcz {
-  --background: transparent;
-  background-image: url('src/assets/images/background.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  //background-attachment: fixed;
-  background-position: center center;
-}
-
-.bg-header-day {
-  // --background: transparent;
-  background-image: url('src/assets/images/background-day.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  //background-attachment: fixed;
-  background-position: center center;
-}
 
 .alertCss {
   // --background: var(--ion-color-light) !important;
@@ -390,16 +349,27 @@ ion-button.item-btn-add {
   font-size: 2em;
 }
 
-.footerLogin {
-  padding-bottom: 30px;
-  --background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
-  background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
+.background-pin {
+  --background: linear-gradient(to bottom, #0a1d40 20%, #184a86 80%);
+  // --background: transparent;
+  //background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
 }
 
+.footerLogin {
+  padding-bottom: 30px;
+  --background: #184a86;
+  background: #184a86;
+  // --background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
+  // background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
+}
+
+
 .headerlogin {
-  --background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
-  background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
+  --background: #0a1d40;
+  // --background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
+  // background: linear-gradient(to bottom, #3e8feb 0%, #0d2c92 100%);
   padding-top: 45px;
+  background: #0a1d40;
 }
 
 .gridLogin {
@@ -416,6 +386,11 @@ ion-button.item-btn-add {
 .readwarning{
   padding: 5px;
   padding-top:35px;
+  background-color: red;
+}
+
+.readwarning_a{
+  padding: 10px;
   background-color: red;
 }
 
