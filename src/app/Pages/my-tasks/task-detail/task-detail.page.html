@@ -187,19 +187,22 @@ shall be included in all copies or substantial portions of the Software.
         </ion-label>
       </ion-item>
 
-      <ion-item lines="none">
+      <!-- <ion-item lines="none">
         <ion-label position="stacked">{{ "approver" | translate }}</ion-label>
-        <ion-textarea formControlName="fApprover" rows="3" type="text" required></ion-textarea>
-      </ion-item>
+        <p>{{escrowDetail.approver.value | shortAddress}}</p>
+        <ion-textarea formControlName="fApprover" rows="3" type="text" hidden required></ion-textarea>
+      </ion-item> -->
+      
+      <ion-textarea formControlName="fApprover" rows="3" type="text" hidden required></ion-textarea>
 
       <ion-item lines="none">
         <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
 
         <div class="input-container">
           <span class="currency">ZBC</span>
-          <input formControlName="feesZbc" type="number" required/>
+          <input formControlName="feesZbc" type="number" required />
         </div>
-<!--
+        <!--
         <ion-row>
           <ion-col size="3" style="padding-top: 15px">
             ZBC
@@ -224,14 +227,26 @@ shall be included in all copies or substantial portions of the Software.
       </ion-item>
     </form>
     <ion-item lines="none" style="margin-top: 20px">
-      <ion-button size="medium" type="button" expand="block" color="primary" (click)="confirm()">{{ "confirm" |
-        translate }}</ion-button>
-      <ion-button size="big" type="button" expand="block" color="primary" fill="outline" (click)="reject()">{{
-        "reject" | translate }}</ion-button>
+
+      <ng-container *ngIf="!btnDisabled">
+        <ion-button size="medium" type="button" expand="block" color="primary" (click)="confirm()">{{ "confirm" |
+          translate }}</ion-button>
+        <ion-button size="big" type="button" expand="block" color="primary" fill="outline" (click)="reject()">{{
+          "reject" | translate }}</ion-button>
+      </ng-container>
+
+      <ng-container *ngIf="btnDisabled">
+        <ion-button size="medium" type="button" expand="block" color="primary" disabled>{{ "confirm" |
+          translate }}</ion-button>
+        <ion-button size="big" type="button" expand="block" color="primary" fill="outline"  disabled>{{
+          "reject" | translate }}</ion-button>
+      </ng-container>
+
     </ion-item>
 
     <ion-item>
       <p>&nbsp;</p>
     </ion-item>
+
   </ng-container>
 </ion-content>

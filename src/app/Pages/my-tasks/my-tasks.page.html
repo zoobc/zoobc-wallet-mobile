@@ -47,7 +47,7 @@ shall be included in all copies or substantial portions of the Software.
     </ion-buttons>
     <ion-title>{{ "my tasks" | translate}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="reload($event)">
+      <ion-button (click)="loadTask()">
         <ion-icon name="refresh"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -65,7 +65,7 @@ shall be included in all copies or substantial portions of the Software.
 </ion-header>
 
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="reload($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="pullReload($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
       refreshingText="{{ 'Refreshing' | translate }} ...">
     </ion-refresher-content>
@@ -90,6 +90,9 @@ shall be included in all copies or substantial portions of the Software.
     style="border-top: 1px solid #cccccc;">
     <ion-item lines="none">
       <ion-label class="info-label">{{ "block height" | translate}}: {{blockHeight}}</ion-label>
+      <!-- <ion-label slot="end">
+        <p routerLink="/escrow-history">Show history</p>
+      </ion-label> -->
     </ion-item>
     <ion-item class="escItem" *ngFor="let escrow of listTrxPendingEsc; let i = index;" (click)="openDetail(escrow.id)">
       <ion-label>
@@ -100,7 +103,7 @@ shall be included in all copies or substantial portions of the Software.
             <p class="info-label task-item-margin-top">{{ "recipient" | translate}}</p>
             <div class="info-val" style="margin-bottom: 8px; font-size: 0.9em">{{ escrow.recipient.value | shortAddress }}</div>
             <p class="info-label">{{ "Created at block" | translate}}:<span><b>{{escrow.blockHeight}}</b></span> </p>
-            
+
             <ion-badge *ngIf="escrow.status == 0" color="warning" shape="round">{{ "pending" | translate}}
             </ion-badge>
             <ion-badge *ngIf="escrow.status == 1" color="success" shape="round">{{ "approved" | translate}}

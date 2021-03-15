@@ -39,7 +39,7 @@
 // shall be included in all copies or substantial portions of the Software.
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ModalController, NavController } from '@ionic/angular';
+import { LoadingController, ModalController, NavController } from '@ionic/angular';
 import { STORAGE_ESCROW_WAITING_LIST } from 'src/environments/variable.const';
 import zoobc, { AccountBalance, calculateMinimumFee, EscrowApproval, EscrowApprovalInterface, generateTransactionHash } from 'zbc-sdk';
 import { StorageService } from 'src/app/Services/storage.service';
@@ -67,6 +67,7 @@ export class TaskDetailPage implements OnInit {
   private account: Account;
   public escrowDetail: any;
   private escrowId: any;
+  btnDisabed = false;
 
   private action: number;
   public isLoading = false;
@@ -85,6 +86,7 @@ export class TaskDetailPage implements OnInit {
     private accountService: AccountService,
     private storageService: StorageService,
     private utilService: UtilService,
+    private loadingController: LoadingController,
     private formBuilder: FormBuilder
   ) {
   }
@@ -130,7 +132,7 @@ export class TaskDetailPage implements OnInit {
       this.escrowDetail = res;
     }).finally(() => {
       this.isLoading = false;
-      // console.log('===  this.escrowDetail:', this.escrowDetail);
+      console.log('===  this.escrowDetail:', this.escrowDetail);
     });
   }
 
@@ -203,8 +205,25 @@ export class TaskDetailPage implements OnInit {
     return generateTransactionHash(bfr);
   }
 
+  async presentLoading() {
+    const loading = await this.loadingController.create({
+      spinner: null,
+      duration: 5000,
+      message: 'Please wait...',
+      translucent: true
+    });
+
+    loading.onDidDismiss().then(() => {
+
+    });
+
+    return await loading.present();
+  }
+
   async executeConfirm() {
 
+    this.presentLoading();
+    this.btnDisabed = true;
     const fFee = this.escrowForm.get('feesZbc');
     const trxId = this.escrowDetail.id;
     const fMsg = this.escrowForm.get('fMessage');
@@ -247,9 +266,11 @@ export class TaskDetailPage implements OnInit {
           }
         )
         .finally(() => {
+          this.btnDisabed = false;
           this.navCtrl.pop();
         });
     } else {
+      this.btnDisabed = false;
       const message = getTranslation('your balances are not enough for this transaction', this.translate);
       Swal.fire({ type: 'error', title: 'Oops...', text: message });
     }
@@ -257,6 +278,10 @@ export class TaskDetailPage implements OnInit {
   }
 
   async executeReject() {
+
+    this.presentLoading();
+    this.btnDisabed = true;
+
     const fFee = this.escrowForm.get('feesZbc');
     const fMsg = this.escrowForm.get('fMessage');
     const trxId = this.escrowDetail.id;
@@ -293,14 +318,18 @@ export class TaskDetailPage implements OnInit {
           err => {
             this.isLoading = false;
             console.log('err', err);
+            this.btnDisabed = false;
             const message = getTranslation(err.message, this.translate);
             Swal.fire('Opps...', message, 'error');
           }
         )
         .finally(() => {
+          this.isLoading = false;
+          this.btnDisabed = false;
           this.navCtrl.pop();
         });
     } else {
+      this.btnDisabed = false;
       const msg = getTranslation('your balances are not enough for this transaction', this.translate);
       Swal.fire({ type: 'error', title: 'Oops...', text: msg });
     }
