@@ -47,7 +47,8 @@ import {
 } from 'src/environments/variable.const';
 import { AccountService } from './account.service';
 import { StorageService } from './storage.service';
-import zoobc, { ZooKeyring } from 'zbc-sdk';
+import zoobc, { BIP32Interface, isZBCAddressValid, ZooKeyring } from 'zbc-sdk';
+import { Account } from '../Interfaces/account';
 
 @Injectable({
   providedIn: 'root'
@@ -59,13 +60,14 @@ export class AuthService implements CanActivate {
   keyring: ZooKeyring;
   restoring: boolean;
   tempAccounts = [];
+   seedByPrivateKey: BIP32Interface;
 
   constructor(
     private router: Router,
     private strgSrv: StorageService,
     private accountService: AccountService) {
-      this.isUserLoggenIn = false;
-    }
+    this.isUserLoggenIn = false;
+  }
 
   async canActivate(route: ActivatedRouteSnapshot) {
     const acc = await this.accountService.getCurrAccount();
@@ -99,6 +101,15 @@ export class AuthService implements CanActivate {
       return this.isUserLoggenIn;
     }
     this.isUserLoggenIn = false;
+    return this.isUserLoggenIn;
+  }
+
+  loginWithoutPin(account: Account, seed?: BIP32Interface): boolean {
+    if (!isZBCAddressValid(account.address.value)) { return false; }
+    this.accountService.switchAccount(account);
+
+    if (seed) { this.seedByPrivateKey = seed; }
+    this.isUserLoggenIn = true;
     return this.isUserLoggenIn;
   }
 
