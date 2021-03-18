@@ -40,50 +40,38 @@ IMPORTANT: The above copyright notice and this permission notice
 shall be included in all copies or substantial portions of the Software.
 -->
 
-<ion-header no-border no-shadow>
-  <ion-toolbar>
-    <ion-select slot="start" color="light" interface="action-sheet" [(ngModel)]="activeLanguage"
-      (ionChange)="selectActiveLanguage()">
-      <ion-select-option *ngFor="let language of languages" value="{{ language.code }}">
-        {{ language.country }}
-      </ion-select-option>
-    </ion-select>
-    <ion-button slot="end" fill="clear" (click)="goToFeedback()" color="light">{{ "feedback" | translate}}</ion-button>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "login with private key" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding background-zoobc" fullscreen>
-  <div class="blendBg1"></div>
-  <div class="blendBg2"></div>
-  <div class="content">
-    <div class="welcome-container">
-      <div class="logo-container">
-        <ion-icon name="zbc-logo"></ion-icon>
-      </div>
-      <ion-text color="light">
-        <h3 class="welcome ion-text-center">{{ "welcome to zoobc app" | translate }}</h3>
-        <div class="ion-text-center">{{ "the easy way to spend and receive zbc" | translate }}</div>
-        <div class="ion-text-center">version: {{appVersion}}</div>
+<ion-content>
+
+  <form [formGroup]="form" (submit)="onLogin()">
+    <ion-item lines="none" class="marginTop">
+      <ion-label position="stacked">{{ 'private key' | translate }}</ion-label>
+      <ion-textarea class="sTxtArea" rows=4 placeholder="e.g. KwFtuCkKXYqiE6sWU7BEQsphD8dNFbnxhqg1vy2cSf33eihZUgqi"
+        formControlName="privateKey"></ion-textarea>
+    </ion-item>
+
+    <ion-item lines="none" *ngIf="privKeyField.touched && privKeyField.hasError('required')">
+      <ion-text color="danger">
+        {{ 'private key is required' | translate }}
       </ion-text>
-    </div>
+    </ion-item>
 
-  </div>
+    <ion-item lines="none" class="marginTop">
+      <ion-button size="default" color="primary" type="submit">
+        {{ 'login' | translate }}
+      </ion-button>
+      <ion-button size="default" type="reset" fill="outline">
+        {{ 'reset' | translate}}
+      </ion-button>
+    </ion-item>
+  </form>
+
 </ion-content>
-
-<ion-footer class="footerLogin" no-shadow no-border>
-  <ion-grid>
-    <ion-row>
-      <ion-col class="ion-text-center">
-
-        <ion-button expand="block" class="btnNew" routerLink="/explanation-screen">
-          {{ "create new wallet" | translate }}</ion-button>
-        <ion-button expand="block" class="opnExisting" fill="outline" routerLink="/existing-wallet">
-          {{ 'restore wallet' | translate }} </ion-button>
-        <ion-button expand="block" class="opnExisting" fill="outline" routerLink="/private-key">
-          {{ 'private key' | translate }} </ion-button>
-        <ion-button expand="block" class="opnExisting" fill="outline" routerLink="/zbc-address">
-          {{ 'view address' | translate }} </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-footer>
