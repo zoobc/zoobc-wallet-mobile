@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "open existing wallet" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <form [formGroup]="form" (submit)="onLogin()">
+    <ion-label>{{ 'private key' | translate }}</ion-label>
+    <ion-input type="text" placeholder="e.g. KwFtuCkKXYqiE6sWU7BEQsphD8dNFbnxhqg1vy2cSf33eihZUgqi"
+      formControlName="privateKey"></ion-input>
+
+    <ng-container *ngIf="privKeyField.touched">
+      <ion-text color="red" *ngIf="privKeyField.hasError('required')">
+        {{ 'private key is required' | translate }}
+      </ion-text>
+    </ng-container>
+
+    <ion-button color="primary" type="submit" [disabled]="form.invalid">
+      <span>{{ 'login' | translate }}</span>
+    </ion-button>
+  </form>
+
+</ion-content>
