@@ -45,7 +45,8 @@ import {
   LoadingController,
   ModalController,
   AlertController,
-  PopoverController
+  PopoverController,
+  Platform
 } from '@ionic/angular';
 import { Account } from 'src/app/Interfaces/account';
 import { AuthService } from 'src/app/Services/auth-service';
@@ -129,6 +130,7 @@ export class HomePage implements OnInit, OnDestroy {
   accountHistory: ZBCTransaction[];
   isLoadingBalance: boolean;
   isErrorBalance: boolean;
+  isIPhone = false;
 
   constructor(
     private authService: AuthService,
@@ -147,7 +149,8 @@ export class HomePage implements OnInit, OnDestroy {
     private translate: TranslateService,
     private alertCtrl: AlertController,
     private translateSrv: TranslateService,
-    private popoverCtrl: PopoverController
+    private popoverCtrl: PopoverController,
+    public platform: Platform
   ) {
 
 
@@ -210,6 +213,13 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    const currentPlatform = this.platform.platforms();
+    if (currentPlatform.includes('iphone')) {
+        this.isIPhone = true;
+    } else {
+        this.isIPhone = false;
+    }
+    console.log('=== currentPlatform: ', currentPlatform);
     this.fullBalance = false;
     this.startTimer();
   }
@@ -383,7 +393,7 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   async createMsigTransaction() {
-    const txType = TransactionType.SENDMONEYTRANSACTION;
+    const txType = TransactionType.SENDZBCTRANSACTION;
     const multisig: MultiSigDraft = {
       accountAddress: null,
       fee: 0,
@@ -584,6 +594,7 @@ export class HomePage implements OnInit, OnDestroy {
 
         this.total = trxList.total;
         this.accountHistory = txs;
+        console.log('=== txs: ', txs);
 
         this.getUnconfirmTransaction();
 

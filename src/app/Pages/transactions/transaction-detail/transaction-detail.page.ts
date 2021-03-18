@@ -95,14 +95,10 @@ export class TransactionDetailPage implements OnInit {
   }
 
   async ngOnInit() {
+    this.utilService.MergeAccountAndContact();
     this.loading = true;
-
     this.currAccount = await this.accountService.getCurrAccount();
-    // console.log('==== currAccount: ', this.currAccount);
-
     this.trx = this.transactionSrv.tempTrx;
-    // console.log('==== transaction: ', this.trx);
-
 
     // this.senderRecipentOptions = [
     //   { key: 'copy', label: this.textCopyAddress },

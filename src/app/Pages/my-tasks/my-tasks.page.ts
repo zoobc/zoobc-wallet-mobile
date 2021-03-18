@@ -60,6 +60,15 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { NetworkService } from 'src/app/Services/network.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
+import { Transaction } from 'zbc-sdk/grpc/model/transaction_pb';
+import { Contact } from 'src/app/Interfaces/contact';
+import { Address } from 'cluster';
+
+interface IEscrow {
+  sender: any;
+  amount: number;
+  commission: number;
+}
 
 @Component({
   selector: 'app-my-tasks',
@@ -120,7 +129,7 @@ export class MyTasksPage implements OnInit {
     this.loadTask();
   }
 
-  reload(event: any) {
+  pullReload(event: any) {
     this.loadTask();
     setTimeout(() => {
       event.target.complete();
@@ -242,6 +251,23 @@ export class MyTasksPage implements OnInit {
   }
 
   private getPengingTrxEsc() {
+    // this.listTrxPendingEsc = [];
+
+    // for (let i = 0; i < 3; i++) {
+    //   const tx: IEscrow = {
+    //     sender: {value: (i + 2), type: 0},
+    //     amount: (i * 10),
+    //     commission: i,
+    //   };
+    //   this.listTrxPendingEsc.push(tx);
+    // }
+
+    // console.log('==  tx: ', this.listTrxPendingEsc);
+
+    // if (this.listTrxPendingEsc.length > 1 ) {
+    //   return;
+    // }
+
     this.isLoading = true;
     this.isError = false;
 

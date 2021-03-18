@@ -255,7 +255,13 @@ const routes: Routes = [
     canActivate: [AuthService]
   },
   { path: 'msig-detail', loadChildren: './Pages/multisig/msig-detail/msig-detail.module#MsigDetailPageModule',
-    canActivate: [AuthService] },  { path: 'restore-acc', loadChildren: './Pages/wallet/restore-acc/restore-acc.module#RestoreAccPageModule' }
+    canActivate: [AuthService] },
+  { path: 'restore-acc', loadChildren: './Pages/wallet/restore-acc/restore-acc.module#RestoreAccPageModule' },
+  { path: 'escrow-history', loadChildren: './Pages/my-tasks/escrow-history/escrow-history.module#EscrowHistoryPageModule' },
+  { path: 'zbc-address', loadChildren: './Pages/wallet/zbc-address/zbc-address.module#ZbcAddressPageModule' },
+  { path: 'private-key', loadChildren: './Pages/wallet/private-key/private-key.module#PrivateKeyPageModule' }
+
+
 
 
 

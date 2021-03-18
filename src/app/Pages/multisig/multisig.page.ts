@@ -66,7 +66,7 @@ import { UtilService } from 'src/app/Services/util.service';
 export class MultisigPage implements OnInit {
 
   txType = [
-    { code: TransactionType.SENDMONEYTRANSACTION, type: 'Transfer ZBC' },
+    { code: TransactionType.SENDZBCTRANSACTION, type: 'Transfer ZBC' },
     { code: TransactionType.SETUPACCOUNTDATASETTRANSACTION, type: 'setup account dataset' },
     { code: TransactionType.REMOVEACCOUNTDATASETTRANSACTION, type: 'remove account dataset' },
     { code: TransactionType.APPROVALESCROWTRANSACTION, type: 'escrow approval' },
@@ -75,7 +75,7 @@ export class MultisigPage implements OnInit {
   account: Account;
   multisigForm: FormGroup;
   drafts: MultiSigDraft[];
-  fTrxType = new FormControl(TransactionType.SENDMONEYTRANSACTION, Validators.required);
+  fTrxType = new FormControl(TransactionType.SENDZBCTRANSACTION, Validators.required);
   fChainType = new FormControl('onchain', Validators.required);
   themes = THEME_OPTIONS;
   isAccMultisig = false;

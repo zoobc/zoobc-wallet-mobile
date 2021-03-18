@@ -39,38 +39,39 @@ ZooBC is architected by Roberto Capodieci & Barton Johnston
 IMPORTANT: The above copyright notice and this permission notice
 shall be included in all copies or substantial portions of the Software.
 -->
-<ion-header class="headerlogin"  no-shadow no-border>
-  <ion-grid>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-title color="light">{{ "enter your pin" | translate }}</ion-title>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-label *ngIf="isLoginValid">&nbsp;</ion-label>
-        <ion-label *ngIf="!isLoginValid" class="invalidPin">{{ "invalid pin" | translate }}
-        </ion-label>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "login with private key" | translate }}</ion-title>
+  </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding background-pin" fullscreen>
-  <ion-grid class="gridLogin">
-    <ion-row class="rowLogin">
-      <ion-col class="ion-text-center">
-        <app-pin (ionChange)="login($event)"></app-pin>
-        <p>&nbsp;</p>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+<ion-content>
+
+  <form [formGroup]="form" (submit)="onLogin()">
+    <ion-item lines="none" class="marginTop">
+      <ion-label position="stacked">{{ 'private key' | translate }}</ion-label>
+      <ion-textarea class="sTxtArea" rows=4 placeholder="e.g. KwFtuCkKXYqiE6sWU7BEQsphD8dNFbnxhqg1vy2cSf33eihZUgqi"
+        formControlName="privateKey"></ion-textarea>
+    </ion-item>
+
+    <ion-item lines="none" *ngIf="privKeyField.touched && privKeyField.hasError('required')">
+      <ion-text color="danger">
+        {{ 'private key is required' | translate }}
+      </ion-text>
+    </ion-item>
+
+    <ion-item lines="none" class="marginTop">
+      <ion-button size="default" color="primary" type="submit">
+        {{ 'login' | translate }}
+      </ion-button>
+      <ion-button size="default" type="reset" fill="outline">
+        {{ 'reset' | translate}}
+      </ion-button>
+    </ion-item>
+  </form>
+
 </ion-content>
-<ion-footer class="footerLogin"  no-shadow no-border>
-  <ion-grid>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-label (click)="cancel()" color="light">{{ "cancel" | translate }}</ion-label>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-footer>

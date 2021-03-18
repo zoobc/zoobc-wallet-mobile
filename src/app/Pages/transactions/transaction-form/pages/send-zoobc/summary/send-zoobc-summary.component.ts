@@ -47,7 +47,7 @@ import { AuthService } from 'src/app/Services/auth-service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { UtilService } from 'src/app/Services/util.service';
 import { getTranslation } from 'src/Helpers/utils';
-import zoobc, { SendMoneyInterface } from 'zbc-sdk';
+import zoobc, { LiquidTransactionsInterface, PostTransactionResponses, SendZBCInterface } from 'zbc-sdk';
 
 @Component({
   selector: 'app-send-zoobc-summary',
@@ -107,33 +107,33 @@ export class SendZoobcSummaryComponent implements OnInit {
 
     await loading.present();
 
+    console.log('=== this form trx', this.formTrx);
+    if (this.formTrx.completeMinutes) {
 
-    const data: SendMoneyInterface = {
-      sender: this.formTrx.sender.address,
-      recipient: { value: this.formTrx.recipient.address, type: 0 },
-      amount: Number(this.formTrx.amount),
-      fee: Number(this.formTrx.fee),
-      message: this.formTrx.message
-    };
+      const data: LiquidTransactionsInterface = {
+        sender: this.formTrx.sender.address,
+        recipient: { value: this.formTrx.recipient.address, type: 0 },
+        amount: Number(this.formTrx.amount),
+        fee: Number(this.formTrx.fee),
+        completeMinutes: this.formTrx.completeMinutes.value,
+        message: this.formTrx.message
+      };
 
+      if (this.formTrx.withEscrow) {
+        const escrow = this.formTrx.behaviorEscrow;
+        data.approverAddress = { value: escrow.approver.address, type: 0 };
+        data.commission = escrow.commission ? escrow.commission : 0;
+        data.timeout = escrow.timeout;
+        data.instruction = escrow.instruction ? (escrow.instruction) : '';
+      }
 
+      const childSeed = this.authSrv.keyring.calcDerivationPath(
+        this.formTrx.sender.path
+      );
 
-    if (this.formTrx.withEscrow) {
-      const escrow = this.formTrx.behaviorEscrow;
-      data.approverAddress = { value: escrow.approver.address, type: 0 };
-      data.commission = escrow.commission ? escrow.commission : 0;
-      data.timeout = escrow.timeout;
-      data.instruction = escrow.instruction ? (escrow.instruction) : '';
-    }
-
-    const childSeed = this.authSrv.keyring.calcDerivationPath(
-      this.formTrx.sender.path
-    );
-
-    await zoobc.Transactions.sendMoney(data, childSeed)
-      .then(
-        async (msg) => {
-          console.log('msg: ', msg);
+      await zoobc.Liquid.sendLiquid(data, childSeed).then(
+        async (res: PostTransactionResponses) => {
+          console.log('msg: ', res);
           const message = getTranslation('your transaction is processing', this.translate);
           const subMessage = getTranslation('you send coins to', this.translate, {
             amount: this.formTrx.amount,
@@ -146,13 +146,63 @@ export class SendZoobcSummaryComponent implements OnInit {
         async err => {
           console.log(err);
           const message = 'Opps...';
+          loading.dismiss();
           const subMessage = getTranslation(err.message, this.translate);
           this.utilSrv.showConfirmation(message, subMessage, false);
         }
-      )
-      .finally(() => {
+      ).finally(() => {
         loading.dismiss();
       });
+
+    } else {
+
+
+      const data: SendZBCInterface = {
+        sender: this.formTrx.sender.address,
+        recipient: { value: this.formTrx.recipient.address, type: 0 },
+        amount: Number(this.formTrx.amount),
+        fee: Number(this.formTrx.fee),
+        message: this.formTrx.message
+      };
+
+      if (this.formTrx.withEscrow) {
+        const escrow = this.formTrx.behaviorEscrow;
+        data.approverAddress = { value: escrow.approver.address, type: 0 };
+        data.commission = escrow.commission ? escrow.commission : 0;
+        data.timeout = escrow.timeout;
+        data.instruction = escrow.instruction ? (escrow.instruction) : '';
+      }
+
+      const childSeed = this.authSrv.keyring.calcDerivationPath(
+        this.formTrx.sender.path
+      );
+
+      await zoobc.Transactions.SendZBC(data, childSeed)
+        .then(
+          async (msg) => {
+            console.log('msg: ', msg);
+            const message = getTranslation('your transaction is processing', this.translate);
+            const subMessage = getTranslation('you send coins to', this.translate, {
+              amount: this.formTrx.amount,
+              recipient: this.formTrx.recipient.address,
+            });
+            this.utilSrv.showConfirmation(message, subMessage, true);
+            this.transactionSrv.transferZooBcSubject.next(true);
+            this.router.navigateByUrl('/tabs/home');
+          },
+          async err => {
+            console.log(err);
+            const message = 'Opps...';
+            loading.dismiss();
+            const subMessage = getTranslation(err.message, this.translate);
+            this.utilSrv.showConfirmation(message, subMessage, false);
+          }
+        )
+        .finally(() => {
+          loading.dismiss();
+        });
+
+    }
   }
 
 }

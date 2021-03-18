@@ -59,10 +59,14 @@ export class FormEscrowComponent implements OnInit {
   blockHeight: number;
   approver = '';
   minFee: number = TRANSACTION_MINIMUM_FEE;
+  withCustomFee = false;
+  minimumFee: number;
+  strTimeout: string;
 
   constructor() { }
 
   ngOnInit() {
+    this.strTimeout = new Date().toISOString();
     if (this.group.get(this.inputMap.addressApprover).enabled) {
       this.showEscrow = true;
       this.advanceCheckBox.checked = true;
@@ -127,7 +131,22 @@ export class FormEscrowComponent implements OnInit {
   onChangeTimeOut() {
     this.getMinimumFee();
   }
+
+  changeCustomFee(value: any) {
+    this.withCustomFee = value;
+    if (value === true) {
+      this.minimumFee = TRANSACTION_MINIMUM_FEE;
+    } else {
+      this.updateMinimumFee();
+    }
+  }
+  updateMinimumFee() {
+    console.log('-- TODO minimum Fee');
+  }
+
 }
+
+
 
 export const escrowMap = {
   addressApprover: 'addressApprover',
@@ -145,9 +164,7 @@ export function escrowForm() {
       Validators.min(1 / 1e8),
     ]),
     timeout: new FormControl({ value: '', disabled: true }, [
-      Validators.required,
-      Validators.min(1),
-      Validators.max(720),
+      Validators.required
     ]),
     instruction: new FormControl({ value: '', disabled: true }, Validators.required),
   };

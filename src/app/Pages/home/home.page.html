@@ -41,8 +41,12 @@ shall be included in all copies or substantial portions of the Software.
 -->
 
 <ion-content>
-  <div class="ion-text-center readwarning" *ngIf="networkLabel != 'mainnet'"><span class="blink_me">Attention: you are
-      NOT in the ZooBC MainNet</span></div>
+  <div class="ion-text-center readwarning" *ngIf="networkLabel != 'mainnet'  && isIPhone"><span class="blink_me">Attention: you are
+  NOT in the ZooBC MainNet</span></div>
+
+  <div class="ion-text-center readwarning_a" *ngIf="networkLabel != 'mainnet' && !isIPhone"><span class="blink_me">Attention: you are
+  NOT in the ZooBC MainNet</span></div>
+
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
       refreshingText="{{ 'Refreshing' | translate }} ...">

@@ -41,13 +41,13 @@ export class BehaviorEscrowFormComponent
 
   ngOnInit() {
 
-    this.strTimeout = new Date().toISOString();
+  //  this.strTimeout = new Date().toISOString();
 
 
     this.escrow = {
       approver: null,
       commission: 0,
-      timeout: 0,
+      timeout: null,
       instruction: ''
     };
 

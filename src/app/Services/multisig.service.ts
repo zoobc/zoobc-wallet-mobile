@@ -40,7 +40,7 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { STORAGE_MULTISIG_DRAFTS } from 'src/environments/variable.const';
+import { STORAGE_DRAFT_ID, STORAGE_MULTISIG_DRAFTS } from 'src/environments/variable.const';
 import { MultiSigDraft } from '../Interfaces/multisig';
 import { StorageService } from './storage.service';
 
@@ -68,16 +68,27 @@ export class MultisigService {
   }
 
   async save() {
+
     let multisigDrafts = await this.getDrafts();
+
     let len = 0;
     if (multisigDrafts) {
       len = multisigDrafts.length;
     } else {
       multisigDrafts = [];
     }
-    this.draft.id = new Date().getTime();
+
+    let id = await this.strgSrv.get(STORAGE_DRAFT_ID);
+    if (!id) {
+      id = 1;
+    } else {
+      id = id + 1;
+    }
+
+    this.draft.id = id;
     multisigDrafts[len] = this.draft;
     await this.strgSrv.setObject(STORAGE_MULTISIG_DRAFTS, multisigDrafts);
+    await this.strgSrv.set(STORAGE_DRAFT_ID, id);
     this.subject.next('save');
   }
 

@@ -38,19 +38,22 @@
 // IMPORTANT: The above copyright notice and this permission notice
 // shall be included in all copies or substantial portions of the Software.
 
-.form-advanced-option {
-  font-weight: bold;
-  display: flex;
-  flex-direction: row;
-  margin: 24px 0 10px 0;
-  color: #3c3c3c;
+// .form-advanced-option {
+//   font-weight: bold;
+//   display: flex;
+//   flex-direction: row;
+//   margin: 24px 0 10px 0;
+//   color: #3c3c3c;
 
-  &:before,
-  &:after {
-    content: '';
-    flex: 1 1;
-    border-bottom: 2px solid  #cccccc;
-    margin: 10px;
-  }
+//   &:before,
+//   &:after {
+//     content: '';
+//     flex: 1 1;
+//     border-bottom: 2px solid  #cccccc;
+//     margin: 10px;
+//   }
+// }
+
+.item-checkbox{
+  padding: 0px;
 }
-

@@ -89,24 +89,27 @@ ion-toolbar{
 }
 
 .btnNew{
-  margin-bottom:20px;
+  margin-bottom:10px;
   --background: white;
   color:#28456D;
 }
 
 .opnExisting{
+  margin-bottom:10px;
   color: white;
   background-color: transparent;
   --border-color: white;
 }
 
 .background-zoobc{
-  --background: url(../../../assets/images/bgInitial.jpg);
+  //--background: url('src/assets/images/bgInitial.png');
+  //--background-image: url('/src/assets/images/bgInitial.png');
   background-repeat:no-repeat;
   background-size: cover;
   background-attachment: fixed;
   background-position: center center;
-  background-color: #28456D;
+  //background-color: #28456D;
+  --background: linear-gradient(to bottom, #0a1d40 40%, #184a86 60%);
   mix-blend-mode: hard-light;
   position: relative;
 
@@ -116,18 +119,18 @@ ion-toolbar{
     bottom: 0;
     right: 0;
     top: 0;
-    background-color: #28456D;
+   // background-color: #28456D;
     z-index: 1;
     mix-blend-mode: hard-light;
   }
-  
+
   .blendBg2{
     position: absolute;
     left: 0;
     bottom: 0;
     right: 0;
     top: 0;
-    background-color: #28456D;
+    //background-color: #28456D;
     opacity: 0.2;
     z-index: 1;
     mix-blend-mode: screen;

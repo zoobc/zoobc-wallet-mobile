@@ -75,6 +75,9 @@ shall be included in all copies or substantial portions of the Software.
         <ion-button *ngIf="!isRestoring" expand="block" fill="outline" (click)="next()" color="tertiary">
           No
         </ion-button>
+        <ion-button *ngIf="isRestoring" expand="block" fill="outline" (click)="next()" color="tertiary">
+          Cancel
+        </ion-button>
       </ion-col>
     </ion-row>
 

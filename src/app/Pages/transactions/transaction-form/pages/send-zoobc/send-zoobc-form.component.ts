@@ -85,7 +85,7 @@ export class SendZoobcFormComponent implements OnInit {
   sendForm = new FormGroup({
     sender: new FormControl({}),
     recipient: new FormControl({}, [Validators.required, addressValidator]),
-    amount: new FormControl(0, [
+    amount: new FormControl(null, [
       Validators.required,
       Validators.min(0)
     ]),
@@ -94,12 +94,14 @@ export class SendZoobcFormComponent implements OnInit {
       Validators.min(this.minimumFee)
     ]),
     message: new FormControl('', []),
+    completeMinutes: new FormControl({ value: 0}, [Validators.required, Validators.min(0)]),
   });
 
   submitted = false;
   account: Account;
   minError = false;
   escrowInstruction = '';
+  withLiquid = false;
 
   constructor(
     private router: Router,
@@ -140,6 +142,10 @@ export class SendZoobcFormComponent implements OnInit {
 
   get behaviorEscrow() {
     return this.sendForm.get('behaviorEscrow');
+  }
+
+  get completeMinutes() {
+    return this.sendForm.get('completeMinutes');
   }
 
   getRecipientFromScanner() {
@@ -282,6 +288,11 @@ export class SendZoobcFormComponent implements OnInit {
     this.fee.updateValueAndValidity();
   }
 
+  changeWithLiquid(value: boolean) {
+    this.withLiquid = value;
+    console.log('--Liquid: ', value);
+  }
+
   changeWithEscrow(value: boolean) {
     this.withEscrow = value;
 
@@ -306,9 +317,8 @@ export class SendZoobcFormComponent implements OnInit {
 
   async presentAlertMinFeeConfirm() {
 
-
-    const charge = this.fee.value - TRANSACTION_MINIMUM_FEE;
-    const strMsg = getTranslation('transaction  fee  changed, more than minimum fee', this.translateService, charge.toFixed(4));
+    const charge = this.fee.value;
+    const strMsg = getTranslation('transaction  fee  changed, more than minimum fee', this.translateService, {value: charge.toFixed(4)});
 
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
@@ -323,7 +333,7 @@ export class SendZoobcFormComponent implements OnInit {
 
           }
         }, {
-          text: 'Okay',
+          text: 'Approve',
           handler: () => {
             this.doSend();
           }
@@ -365,6 +375,11 @@ export class SendZoobcFormComponent implements OnInit {
 
       if (this.withEscrow) {
         state.behaviorEscrow = this.behaviorEscrow.value;
+      }
+
+      if (this.withLiquid && this.completeMinutes && this.completeMinutes.value) {
+        console.log('=== this.completeMinutes.value: ', this.completeMinutes.value);
+        state.completeMinutes = this.completeMinutes.value;
       }
 
       this.transactionSrv.saveTrx(state);

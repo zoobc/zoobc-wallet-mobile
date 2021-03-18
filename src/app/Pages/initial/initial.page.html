@@ -42,8 +42,8 @@ shall be included in all copies or substantial portions of the Software.
 
 <ion-header no-border no-shadow>
   <ion-toolbar>
-    <ion-select slot="start" color="light" interface="action-sheet"
-      [(ngModel)]="activeLanguage" (ionChange)="selectActiveLanguage()">
+    <ion-select slot="start" color="light" interface="action-sheet" [(ngModel)]="activeLanguage"
+      (ionChange)="selectActiveLanguage()">
       <ion-select-option *ngFor="let language of languages" value="{{ language.code }}">
         {{ language.country }}
       </ion-select-option>
@@ -61,15 +61,29 @@ shall be included in all copies or substantial portions of the Software.
         <ion-icon name="zbc-logo"></ion-icon>
       </div>
       <ion-text color="light">
-        <h3 class="welcome ion-text-center">{{ "Welcome to ZooBC" | translate }}</h3>
-        <div class="ion-text-center">{{ "The easy way to send, receive ZooBC" | translate }}</div>
-        <div class="ion-text-center">Version: {{appVersion}}</div>
+        <h3 class="welcome ion-text-center">{{ "welcome to zoobc app" | translate }}</h3>
+        <div class="ion-text-center">{{ "the easy way to spend and receive zbc" | translate }}</div>
+        <div class="ion-text-center">version: {{appVersion}}</div>
       </ion-text>
     </div>
-    <div>
-      <ion-button expand="block" class="btnNew" routerLink="/explanation-screen">
-        {{ "create new wallet" | translate }}</ion-button>
-      <ion-button expand="block"  class="opnExisting" fill="outline" routerLink="/existing-wallet">
-        {{ "open existing wallet" | translate }} </ion-button></div>
-    </div>
+
+  </div>
 </ion-content>
+
+<ion-footer class="footerLogin" no-shadow no-border>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+
+        <ion-button expand="block" class="btnNew" routerLink="/explanation-screen">
+          {{ "create new wallet" | translate }}</ion-button>
+        <ion-button expand="block" class="opnExisting" fill="outline" routerLink="/existing-wallet">
+          {{ 'restore wallet' | translate }} </ion-button>
+        <ion-button expand="block" class="opnExisting" fill="outline" routerLink="/private-key">
+          {{ 'private key' | translate }} </ion-button>
+        <ion-button expand="block" class="opnExisting" fill="outline" routerLink="/zbc-address">
+          {{ 'view address' | translate }} </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>
