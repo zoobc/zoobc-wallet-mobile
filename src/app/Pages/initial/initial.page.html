@@ -78,8 +78,11 @@ shall be included in all copies or substantial portions of the Software.
         <ion-button expand="block" class="btnNew" routerLink="/explanation-screen">
           {{ "create new wallet" | translate }}</ion-button>
         <ion-button expand="block" class="opnExisting" fill="outline" routerLink="/existing-wallet">
-          {{ "open existing wallet" | translate }} </ion-button>
-        <br/>
+          {{ 'restore wallet' | translate }} </ion-button>
+        <ion-button expand="block" class="opnExisting" fill="outline" routerLink="/private-key">
+          {{ 'private key' | translate }} </ion-button>
+        <ion-button expand="block" class="opnExisting" fill="outline" routerLink="/zbc-address">
+          {{ 'view address' | translate }} </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

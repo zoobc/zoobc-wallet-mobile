@@ -89,12 +89,13 @@ ion-toolbar{
 }
 
 .btnNew{
-  margin-bottom:20px;
+  margin-bottom:10px;
   --background: white;
   color:#28456D;
 }
 
 .opnExisting{
+  margin-bottom:10px;
   color: white;
   background-color: transparent;
   --border-color: white;
@@ -108,7 +109,7 @@ ion-toolbar{
   background-attachment: fixed;
   background-position: center center;
   //background-color: #28456D;
-  --background: linear-gradient(to bottom, #0a1d40 20%, #184a86 80%);
+  --background: linear-gradient(to bottom, #0a1d40 40%, #184a86 60%);
   mix-blend-mode: hard-light;
   position: relative;
 

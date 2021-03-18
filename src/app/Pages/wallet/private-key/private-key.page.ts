@@ -45,6 +45,8 @@ export class PrivateKeyPage implements OnInit {
       if (this.authServ.loginWithoutPin(account, seed)) {
         this.router.navigateByUrl('/tabs/home');
       }
+    } else {
+      this.privKeyField.markAsTouched();
     }
   }
 
