@@ -40,12 +40,22 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { STORAGE_LIQUID_STOPED } from 'src/environments/variable.const';
 import zoobc, { EscrowListParams, EscrowStatus, MultisigPendingListParams, OrderBy, ZBCTransaction, ZBCTransactions } from 'zbc-sdk';
+import { StorageService } from './storage.service';
+
+export interface LiquidSaved {
+      txId: string;
+      doneOn: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class TransactionService {
+
   public msgNormal: string;
   public msgEscrow: string;
   public txTimeOut: number;
@@ -55,7 +65,7 @@ export class TransactionService {
   public transactionSuccessSubject: Subject<boolean> = new Subject<boolean>();
   frmSend: any;
   tempTrx: ZBCTransaction;
-  constructor() {
+  constructor(private strgSrv: StorageService) {
   }
 
   transactionFees(minimumFee: number) {
@@ -64,6 +74,24 @@ export class TransactionService {
       fee: minimumFee
     }];
     return fees;
+  }
+
+  async saveLiquidStoped(txId: any, doneOn: number) {
+      const list = await this.strgSrv.getObject(STORAGE_LIQUID_STOPED);
+      if (list && list.length > 0) {
+        return;
+      }
+      const data: LiquidSaved = {txId, doneOn};
+      this.strgSrv.setObject(STORAGE_LIQUID_STOPED, data);
+  }
+
+
+  async getLiquidStoped(txId: any) {
+    const list = await this.strgSrv.getObject(STORAGE_LIQUID_STOPED);
+    console.log('.... list: ', list);
+    const lst = list.filter(txs => txs.txId === txId);
+    console.log('.... lst: ', lst);
+    return lst;
   }
 
   saveTrx(trx: any) {
