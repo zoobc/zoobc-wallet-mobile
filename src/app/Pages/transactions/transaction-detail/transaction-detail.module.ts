@@ -40,7 +40,7 @@
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TransactionDetailPage } from './transaction-detail.page';
@@ -58,9 +58,10 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
+    TranslateModule,
+    ReactiveFormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    TranslateModule,
     ComponentsModule
   ],
   declarations: [TransactionDetailPage]

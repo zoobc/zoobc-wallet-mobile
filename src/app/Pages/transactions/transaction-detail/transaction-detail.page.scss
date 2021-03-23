@@ -50,6 +50,11 @@ ion-content{
   }
 }
 
+.confirmTitle{
+  padding-top: 15px;
+  border-top: 1px solid #636262;
+}
+
 .hashsmaller{
   font-size: 0.9em;
 }
@@ -77,4 +82,63 @@ ion-content{
 .iconCopy{
     margin-left: 10px;
     font-size: 1.4em;
+}
+
+.frm{
+  margin-top: 20px;
+  --border: none;
+}
+
+
+.fee{
+  border: 1px solid #979797;
+}
+
+.txArea{
+  border: 1px solid #979797;
+  background-color: #ffffff;
+}
+
+.frm{
+  margin-top: 20px;
+  --border: none;
+}
+
+.confirmTitle{
+  padding-top: 15px;
+  border-top: 1px solid #636262;
+}
+
+
+.input-container {
+
+  &:first-child {
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  position: relative;
+
+  .currency {
+    position: absolute;
+    width: 50px;
+    text-align: center;
+    display: inline-block;
+    top: 10px;
+    text-align: center;
+    z-index: 100;
+  }
+
+  ion-input {
+    border: 1px solid #979797;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 50px !important;
+    --background: #fff;
+  }
+  margin-top: 10px;
+}
+
+.marginTop{
+  padding-top: 15px;
 }

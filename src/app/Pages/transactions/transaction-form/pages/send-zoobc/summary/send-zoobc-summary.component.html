@@ -68,11 +68,12 @@ shall be included in all copies or substantial portions of the Software.
         </div>
       </ion-label>
     </ion-item>
+
+
     <ion-item>
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "amount" | translate }}</p>
-        <app-info-amount-conversion value="{{ formTrx.amount }}" otherCurrency="USD"
-          otherCurrencyDecoration="BRACKET">
+        <app-info-amount-conversion value="{{ formTrx.amount }}" otherCurrency="USD" otherCurrencyDecoration="BRACKET">
         </app-info-amount-conversion>
       </ion-label>
     </ion-item>
@@ -80,12 +81,22 @@ shall be included in all copies or substantial portions of the Software.
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "transaction fee" | translate }}</p>
         <div class="info-val">
-          <app-info-amount-conversion value="{{ formTrx.fee }}" otherCurrency="USD"
-            otherCurrencyDecoration="BRACKET">
+          <app-info-amount-conversion value="{{ formTrx.fee }}" otherCurrency="USD" otherCurrencyDecoration="BRACKET">
           </app-info-amount-conversion>
         </div>
       </ion-label>
     </ion-item>
+
+    <ion-item *ngIf="formTrx.withLiquid">
+      <ion-label class="ion-text-wrap">
+        <p class="info-label">{{ "liquid transfer" | translate }}</p>
+        <div class="info-val">
+          Complete on: {{ formTrx.completeMinutes }} minute(s)
+        </div>
+      </ion-label>
+    </ion-item>
+
+
     <ion-item>
       <ion-label class="ion-text-wrap">
         <p class="info-label">{{ "message" | translate }}</p>

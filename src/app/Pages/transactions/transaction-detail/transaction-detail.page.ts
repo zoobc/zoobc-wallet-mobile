@@ -39,15 +39,20 @@
 // shall be included in all copies or substantial portions of the Software.
 
 import { Component, OnInit } from '@angular/core';
-import { AlertController, NavController, Platform } from '@ionic/angular';
+import { AlertController, LoadingController, NavController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@ionic-native/network/ngx';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
 import { UtilService } from 'src/app/Services/util.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { ZBCTransaction } from 'zbc-sdk';
+import zoobc, { ZBCTransaction } from 'zbc-sdk';
 import { TransactionService } from 'src/app/Services/transaction.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { getTranslation } from 'src/Helpers/utils';
+import { AuthService } from 'src/app/Services/auth-service';
+import { Router } from '@angular/router';
+import { LiquidStopTransactionInterface } from 'zbc-sdk/types/helper/transaction-builder/liquid-transaction';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -56,13 +61,10 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 })
 export class TransactionDetailPage implements OnInit {
   status: string;
-  transactionId: string;
   trx: ZBCTransaction;
   loading: boolean;
 
-  private textCopyAddress: string;
-  private textAddToContact: string;
-  private textShareAddress: string;
+  liquidForm: FormGroup;
 
   alertConnectionTitle = '';
   alertConnectionMsg = '';
@@ -79,6 +81,15 @@ export class TransactionDetailPage implements OnInit {
     { key: 'share', label: 'share' }
   ];
   currAccount: Account;
+  doneOn: number;
+  allowStop = false;
+
+  public errorMessages = {
+    fFee: [
+      { type: 'required', message: 'Fee is required' },
+      { type: 'min', message: 'Minimum 0.01 ZBC' }
+    ]
+  };
 
   constructor(
     private translateSrv: TranslateService,
@@ -89,30 +100,108 @@ export class TransactionDetailPage implements OnInit {
     private transactionSrv: TransactionService,
     private socialSharing: SocialSharing,
     private navCtrl: NavController,
+    private authSrv: AuthService,
+    private translate: TranslateService,
+    private utilSrv: UtilService,
+    private router: Router,
     public platform: Platform,
+    private loadingController: LoadingController,
+    private formBuilder: FormBuilder
   ) {
+    this.liquidForm = this.formBuilder.group({
+      fTxId: ['', Validators.required],
+      fSender: ['', Validators.required],
+      fMessage: [''],
+      fFee: [0.01, Validators.required]
+    });
+  }
+
+  calculateFee() {
+    // TODO
+  }
+
+  async submitForm() {
+    if (this.liquidForm.dirty && this.liquidForm.valid) {
+
+      // show loading bar
+      const loading = await this.loadingController.create({
+        message: 'Please wait, submiting!',
+        duration: 100000
+      });
+
+      await loading.present();
+
+      const txId = this.liquidForm.value.fTxId;
+      const data: LiquidStopTransactionInterface = {
+        accountAddress: {value: this.liquidForm.value.fSender, type: 0},
+        transactionId: txId,
+        fee: Number(this.liquidForm.value.fFee),
+        message: this.liquidForm.value.fMessage
+      };
+      const childSeed = this.authSrv.keyring.calcDerivationPath(
+        this.currAccount.path
+      );
+      zoobc.Liquid.stopLiquid(data, childSeed).then(
+        res => {
+          console.log('msg: ', res);
+          // save stopped liqud transaction
+          this.transactionSrv.saveLiquidStoped(txId, this.doneOn);
+          loading.dismiss();
+          const message = getTranslation('your transaction is processing', this.translate);
+          const subMessage = '';
+          this.utilSrv.showConfirmation(message, subMessage, true);
+          this.transactionSrv.transferZooBcSubject.next(true);
+          this.router.navigateByUrl('/tabs/home');
+        },
+        err => {
+          console.log(err);
+          const message = 'Opps...';
+          loading.dismiss();
+          const subMessage = getTranslation(err.message, this.translate);
+          this.utilSrv.showConfirmation(message, subMessage, false);
+        }
+      ).finally(() => {
+        loading.dismiss();
+      });
+    }
 
   }
 
+
   async ngOnInit() {
+
+
     this.utilService.MergeAccountAndContact();
     this.loading = true;
     this.currAccount = await this.accountService.getCurrAccount();
+
+
     this.trx = this.transactionSrv.tempTrx;
 
-    // this.senderRecipentOptions = [
-    //   { key: 'copy', label: this.textCopyAddress },
-    //   { key: 'share', label: this.textShareAddress }
-    // ];
+    if (this.trx && this.trx.transactionTypeString && this.trx.transactionTypeString === 'liquid transaction') {
+      this.liquidForm.get('fTxId').setValue(this.trx.id);
+      if (this.currAccount) {
+        this.liquidForm.get('fSender').setValue(this.currAccount.address.value);
+      }
 
-    // this.transHashOptions = [
-    //   { key: 'copy', label: this.textCopyAddress },
-    //   { key: 'share', label: this.textShareAddress }
-    // ];
+      this.liquidForm.get('fFee').setValue(0.01);
 
-    // if (!this.senderRecipentAlias) {
-    //   this.senderRecipentOptions.push({ key: 'addToContact', label: this.textAddToContact });
-    // }
+      this.doneOn = this.trx.timestamp + (this.trx.txBody.completeminutes * 60 * 1000);
+
+
+      const ts = Math.round((new Date()).getTime());
+
+      console.log('==  this.doneOn: ', this.doneOn);
+      console.log('== ts: ', ts);
+
+      if (this.doneOn >= ts) {
+        this.allowStop = true;
+      } else {
+        this.allowStop = false;
+      }
+      console.log('alllow stop: ', this.allowStop);
+
+    }
 
     this.loading = false;
 
@@ -164,9 +253,6 @@ export class TransactionDetailPage implements OnInit {
       'share address',
       'add to contact',
     ]).subscribe((res: any) => {
-      this.textCopyAddress = res['copy address'] || 'copy address';
-      this.textShareAddress = res['share address'] || 'share address';
-      this.textAddToContact = res['add to contact'] || 'add to contact';
     });
   }
 

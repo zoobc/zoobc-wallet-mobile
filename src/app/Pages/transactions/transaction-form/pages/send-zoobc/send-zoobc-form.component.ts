@@ -94,7 +94,7 @@ export class SendZoobcFormComponent implements OnInit {
       Validators.min(this.minimumFee)
     ]),
     message: new FormControl('', []),
-    completeMinutes: new FormControl({ value: 0}, [Validators.required, Validators.min(0)]),
+    minutes: new FormControl(null, [Validators.min(1), Validators.max(1000000)]),
   });
 
   submitted = false;
@@ -145,7 +145,7 @@ export class SendZoobcFormComponent implements OnInit {
   }
 
   get completeMinutes() {
-    return this.sendForm.get('completeMinutes');
+    return this.sendForm.get('minutes');
   }
 
   getRecipientFromScanner() {
@@ -290,7 +290,13 @@ export class SendZoobcFormComponent implements OnInit {
 
   changeWithLiquid(value: boolean) {
     this.withLiquid = value;
-    console.log('--Liquid: ', value);
+    if (value === false) {
+      console.log('== cek liquid false');
+      this.completeMinutes.setValue(1);
+      this.completeMinutes.markAsUntouched();
+      this.completeMinutes.reset();
+      // this.sendForm.setErrors({invalid: false});
+    }
   }
 
   changeWithEscrow(value: boolean) {
@@ -348,11 +354,28 @@ export class SendZoobcFormComponent implements OnInit {
     this.minError = false;
     this.submitted = true;
 
-
     if (this.fee.value < this.minimumFee) {
       this.minError = true;
       return;
     }
+
+    if (this.withLiquid === true) {
+      let val = 0;
+      if (this.completeMinutes && this.completeMinutes.value !== null) {
+        val = this.completeMinutes.value;
+      }
+
+      if (val < 1) {
+        this.completeMinutes.setValue(val);
+        this.completeMinutes.markAsTouched();
+        return;
+      }
+
+    } else {
+      this.completeMinutes.setValue(1);
+      this.completeMinutes.markAsUntouched();
+    }
+
 
     if (this.fee.value > TRANSACTION_MINIMUM_FEE) {
       this.presentAlertMinFeeConfirm();
@@ -363,6 +386,7 @@ export class SendZoobcFormComponent implements OnInit {
   }
 
   doSend() {
+    console.log('this.sendForm.valid: ', this.sendForm.valid);
     if (this.sendForm.valid) {
       const state: any = {
         sender: this.sender.value,
@@ -377,9 +401,10 @@ export class SendZoobcFormComponent implements OnInit {
         state.behaviorEscrow = this.behaviorEscrow.value;
       }
 
-      if (this.withLiquid && this.completeMinutes && this.completeMinutes.value) {
+      if (this.withLiquid === true) {
         console.log('=== this.completeMinutes.value: ', this.completeMinutes.value);
         state.completeMinutes = this.completeMinutes.value;
+        state.withLiquid = true;
       }
 
       this.transactionSrv.saveTrx(state);
