@@ -106,16 +106,21 @@ export class SendZoobcSummaryComponent implements OnInit {
     });
 
     await loading.present();
+    console.log('is liquid: ', this.formTrx.withLiquid);
+    console.log('==  this.formTrx.sender.path', this.formTrx.sender.path);
+    const childSeed = this.authSrv.keyring.calcDerivationPath(
+      this.formTrx.sender.path
+    );
+    console.log('==  childSeed', childSeed);
 
-    console.log('=== this form trx', this.formTrx);
-    if (this.formTrx.completeMinutes) {
-
+    if (this.formTrx.withLiquid === true) {
+      console.log('==  send liqueid');
       const data: LiquidTransactionsInterface = {
         sender: this.formTrx.sender.address,
         recipient: { value: this.formTrx.recipient.address, type: 0 },
         amount: Number(this.formTrx.amount),
         fee: Number(this.formTrx.fee),
-        completeMinutes: this.formTrx.completeMinutes.value,
+        completeMinutes: this.formTrx.completeMinutes,
         message: this.formTrx.message
       };
 
@@ -127,9 +132,9 @@ export class SendZoobcSummaryComponent implements OnInit {
         data.instruction = escrow.instruction ? (escrow.instruction) : '';
       }
 
-      const childSeed = this.authSrv.keyring.calcDerivationPath(
-        this.formTrx.sender.path
-      );
+      console.log('== data liquid', data);
+
+
 
       await zoobc.Liquid.sendLiquid(data, childSeed).then(
         async (res: PostTransactionResponses) => {
@@ -141,6 +146,7 @@ export class SendZoobcSummaryComponent implements OnInit {
           });
           this.utilSrv.showConfirmation(message, subMessage, true);
           this.transactionSrv.transferZooBcSubject.next(true);
+          loading.dismiss();
           this.router.navigateByUrl('/tabs/home');
         },
         async err => {
@@ -156,7 +162,7 @@ export class SendZoobcSummaryComponent implements OnInit {
 
     } else {
 
-
+      console.log('==  send reqular');
       const data: SendZBCInterface = {
         sender: this.formTrx.sender.address,
         recipient: { value: this.formTrx.recipient.address, type: 0 },
@@ -173,9 +179,7 @@ export class SendZoobcSummaryComponent implements OnInit {
         data.instruction = escrow.instruction ? (escrow.instruction) : '';
       }
 
-      const childSeed = this.authSrv.keyring.calcDerivationPath(
-        this.formTrx.sender.path
-      );
+      console.log('== data regular', data);
 
       await zoobc.Transactions.SendZBC(data, childSeed)
         .then(
@@ -188,6 +192,7 @@ export class SendZoobcSummaryComponent implements OnInit {
             });
             this.utilSrv.showConfirmation(message, subMessage, true);
             this.transactionSrv.transferZooBcSubject.next(true);
+            loading.dismiss();
             this.router.navigateByUrl('/tabs/home');
           },
           async err => {
