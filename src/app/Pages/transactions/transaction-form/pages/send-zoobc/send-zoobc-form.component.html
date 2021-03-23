@@ -122,26 +122,23 @@ shall be included in all copies or substantial portions of the Software.
           </ion-text>
         </ng-container>
       </ion-item>
-<!-- 
+
       <ion-item class="item-checkbox ion-no-padding" lines="none">
         <ion-checkbox (ionChange)="changeWithLiquid($event.target.checked)" color="primary">
         </ion-checkbox>
         <ion-label> {{ 'liquid transaction' | translate }} </ion-label>
       </ion-item>
       <ion-item lines="none" *ngIf="withLiquid" class="form-item">
-        <ion-label position="stacked">{{ 'complete minutes' | translate }}</ion-label>
-        <ion-input type="number" formControlName="completeMinutes" class="txtliquid" required></ion-input>
-      </ion-item> -->
+        <ion-label position="stacked">{{ 'complete in minutes' | translate }}</ion-label>
+        <ion-input type="number" formControlName="minutes" class="txtliquid" placeholder="complete in minutes" required></ion-input>
+      </ion-item>
 
-      <ng-container *ngIf="(submitted || completeMinutes.dirty || completeMinutes.touched) && completeMinutes.invalid">
-        <ion-text class="text-error" *ngIf="completeMinutes.errors.required">
-          {{ "complete minutes cannot be empty" | translate}}
+      <ng-container *ngIf="(submitted || completeMinutes.touched)">
+        <ion-text class="text-error" *ngIf="completeMinutes.errors  && completeMinutes.errors.min">
+          {{ "complete minutes is not valid! minimum  is" | translate}} {{ completeMinutes.errors.min.min }} minutes
         </ion-text>
-        <ion-text class="text-error" *ngIf="minError">
-          {{ "complete minutes is not valid! minimum  is" | translate}} {{ completeMinutes.errors.min.min }}
-        </ion-text>
-        <ion-text class="text-error" *ngIf="minError || completeMinutes.errors.min">
-          {{ "complete Minutes is not valid! minimum  is" | translate}} {{ completeMinutes.errors.min.min }}
+        <ion-text class="text-error" *ngIf="completeMinutes.errors && completeMinutes.errors.max">
+          {{ "complete minutes is not valid! maximum  is" | translate}} {{ completeMinutes.errors.max.max }}  minutes
         </ion-text>
       </ng-container>
 

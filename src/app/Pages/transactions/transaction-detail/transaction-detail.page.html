@@ -67,19 +67,42 @@ shall be included in all copies or substantial portions of the Software.
           <div class="info-val" *ngIf="trx">
             <app-with-options [options]="transHashOptions"
               (onClose)="onTransHashOptionsClose($event, trx.transactionHash)">
-             <p class="hashsmaller"> {{ trx.transactionHash }}</p>
+              <p class="hashsmaller"> {{ trx.transactionHash }}</p>
             </app-with-options>
           </div>
         </ng-template>
       </ion-label>
     </ion-item>
 
-    <ion-item  *ngIf="trx && trx.blockId">
+    <ion-item *ngIf="trx && trx.blockId">
       <ion-label>
         <p class="info-label">{{ "block id" | translate }}</p>
         <p class="info-val">{{ trx.blockId }}</p>
-       </ion-label>
+      </ion-label>
     </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p class="info-label">{{ "date" | translate }}</p>
+        <div *ngIf="loading; else date" class="skeleton-text" style="width: 50%;"></div>
+        <ng-template #date>
+          <div class="info-val" *ngIf="trx">
+            {{ trx.timestamp | date: "medium" }}
+          </div>
+        </ng-template>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="trx && trx.transactionTypeString && trx.transactionTypeString === 'liquid transaction'">
+      <ion-label>
+        <p class="info-label">{{ "liquid transfer" | translate }}</p>
+        <div class="info-val">Complete on: {{ trx.txBody.completeminutes }} minute(s)</div>
+        <div class="info-val" *ngIf="doneOn">
+          Complete at: {{ doneOn | date: "medium" }}
+        </div>
+      </ion-label>
+    </ion-item>
+
 
     <ion-item *ngIf="trx">
       <ion-label class="ion-text-wrap">
@@ -89,7 +112,8 @@ shall be included in all copies or substantial portions of the Software.
         <div class="info-val">
           <app-with-options [options]="senderRecipentOptions"
             (onClose)="onSenderRecipentOptionsClose($event, trx.sender.value)">
-            <app-info-address name="{{ getName(trx.sender.value) }}" address="{{ trx.sender.value }}"></app-info-address>
+            <app-info-address name="{{ getName(trx.sender.value) }}" address="{{ trx.sender.value }}">
+            </app-info-address>
           </app-with-options>
         </div>
       </ion-label>
@@ -103,11 +127,13 @@ shall be included in all copies or substantial portions of the Software.
         <div class="info-val">
           <app-with-options [options]="senderRecipentOptions"
             (onClose)="onSenderRecipentOptionsClose($event, trx.recipient.value)">
-            <app-info-address name="{{ getName(trx.recipient.value ) }}" address="{{ trx.recipient.value }}"></app-info-address>
+            <app-info-address name="{{ getName(trx.recipient.value ) }}" address="{{ trx.recipient.value }}">
+            </app-info-address>
           </app-with-options>
         </div>
       </ion-label>
     </ion-item>
+
 
     <ion-item>
       <ion-label>
@@ -155,7 +181,7 @@ shall be included in all copies or substantial portions of the Software.
       </ion-label>
     </ion-item>
 
-    <ion-item  *ngIf="trx.transactionIndex">
+    <ion-item *ngIf="trx.transactionIndex">
       <ion-label>
         <p class="info-label">{{ "transaction index" | translate }}</p>
 
@@ -166,28 +192,66 @@ shall be included in all copies or substantial portions of the Software.
       </ion-label>
     </ion-item>
 
-    <ion-item  *ngIf="trx.message">
+    <ion-item lines="none" *ngIf="trx.message">
       <ion-label>
         <p class="info-label">{{ "transaction message" | translate }}</p>
 
         <div class="info-val">
           {{ trx.message }}
         </div>
-
-      </ion-label>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>
-        <p class="info-label">{{ "date" | translate }}</p>
-        <div *ngIf="loading; else date" class="skeleton-text" style="width: 50%;"></div>
-        <ng-template #date>
-          <div class="info-val" *ngIf="trx">
-            {{ trx.timestamp | date: "medium" }}
-          </div>
-        </ng-template>
       </ion-label>
     </ion-item>
 
   </ion-list>
+
+
+  <ng-container *ngIf="trx && allowStop && trx.sender.value == currAccount.address.value" style="margin-top: 50px;">
+    <form [formGroup]="liquidForm" (ngSubmit)="submitForm()">
+      
+      <ion-item lines="none" class="confirmTitle">
+        <ion-label>
+          <h2>Stop liquid transaction</h2>
+        </ion-label>
+      </ion-item>
+
+      <ion-input formControlName="fTxId" type="text" hidden required></ion-input>
+      <ion-textarea formControlName="fSender" rows="3" type="text" hidden required></ion-textarea>
+
+      <ion-item lines="none">
+        <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
+        <div class="input-container">
+          <span class="currency">ZBC</span>
+          <ion-input formControlName="fFee" type="number" required></ion-input>
+        </div>
+      </ion-item>
+
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of liquidForm.fFee">
+          <div class="error-message"
+            *ngIf="liquidForm.get('fFee').hasError(validation.type) && (liquidForm.get('fFee').dirty || liquidForm.get('fFee').touched)">
+            {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+
+      <ion-item lines="none">
+        <ion-label position="stacked">
+          Message
+        </ion-label>
+        <ion-textarea class="txArea" rows="4" formControlName="fMessage" (ionChange)="calculateFee()">
+        </ion-textarea>
+      </ion-item>
+
+      <ion-item lines="none" class="marginTop">
+        <ion-button size="default" color="primary" type="submit">
+          stop
+        </ion-button>
+        <ion-button size="default" type="reset" fill="outline">
+          reset
+        </ion-button>
+      </ion-item>
+    </form>
+  </ng-container>
+
+
 </ion-content>
