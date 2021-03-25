@@ -39,7 +39,7 @@
 // shall be included in all copies or substantial portions of the Software.
 
 import { Component, OnInit } from '@angular/core';
-import { ModalController, LoadingController } from '@ionic/angular';
+import { ModalController, LoadingController, NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { TRANSACTION_MINIMUM_FEE, COIN_CODE } from 'src/environments/variable.const';
 import zoobc, {
@@ -75,7 +75,6 @@ export class MsigTaskDetailPage implements OnInit {
 
   currencyRate: Currency;
   private msigHash: any;
-  public isLoading = false;
   priceInUSD: number;
   primaryCurr = COIN_CODE;
   secondaryCurr: string;
@@ -84,7 +83,7 @@ export class MsigTaskDetailPage implements OnInit {
   customfee: number;
   customfee2: number;
   multiSigDetail: any;
-  isLoadingTx = false;
+  isLoading = false;
   pendingSignatures = [];
   participants = [];
   signers = [];
@@ -106,6 +105,7 @@ export class MsigTaskDetailPage implements OnInit {
   totalParticpants: number;
   totalPending = 0;
   allAcc: any;
+  btnDisabled = false;
 
   constructor(
     private modalCtrl: ModalController,
@@ -130,12 +130,20 @@ export class MsigTaskDetailPage implements OnInit {
     this.priceInUSD = this.currencyService.getPriceInUSD();
   }
 
+  getName(address: string) {
+    return this.accountService.getAlias(address);
+  }
+
   async ngOnInit() {
+    this.isLoading = true;
+    await this.utilService.MergeAccountAndContact();
+
     this.allAcc = await this.accountService.allAccount();
     this.msigHash = this.msigService.getHash();
     this.loadFeeAndCurrency();
-    this.loadDetail();
+    await this.loadDetail();
     this.fFee.setValue(0.01);
+    this.isLoading = false;
   }
 
   reload(event: any) {
@@ -163,21 +171,14 @@ export class MsigTaskDetailPage implements OnInit {
     }
   }
 
-  openMsig(txHash) {
+  async openMsig(txHash) {
 
-    this.isLoadingTx = true;
-    zoobc.MultiSignature.getPendingByTxHash(txHash).then(async (res: multisigPendingDetail) => {
+    await zoobc.MultiSignature.getPendingByTxHash(txHash).then(async (res: multisigPendingDetail) => {
 
       this.multiSigDetail = res.pendingtransaction;
       this.pendingSignatures = res.pendingsignaturesList;
-
-      console.log('this.pendingSignatures: ', this.pendingSignatures);
-
       this.totalPending = this.pendingSignatures.length;
-
       this.participants = res.multisignatureinfo.addressesList;
-      console.log('== this.participants1: ', this.participants);
-
       this.signers = this.participants.map(pc => pc.value);
       this.participants = this.participants.map(res2 => res2.value);
 
@@ -193,8 +194,6 @@ export class MsigTaskDetailPage implements OnInit {
         }
       }
 
-      console.log('== this.participants: ', this.participants);
-      console.log('== this.signers1: ', this.signers);
 
       // const signers = (await this.accountService
       //   .allAccount())
@@ -223,7 +222,7 @@ export class MsigTaskDetailPage implements OnInit {
         this.enabledSign = false;
       }
 
-      this.isLoadingTx = false;
+
     });
   }
 
@@ -287,7 +286,6 @@ export class MsigTaskDetailPage implements OnInit {
     }
 
     this.signer = this.fSender.value;
-    console.log('== signer:', this.signer);
     this.showPin();
   }
 
@@ -313,19 +311,23 @@ export class MsigTaskDetailPage implements OnInit {
   }
 
   async doAccept() {
-
+    this.btnDisabled = true;
     const loading = await this.loadingController.create({
       message: 'processing ..!',
       duration: 50000
     });
     loading.present();
 
+    const trxId = this.multiSigDetail.transactionHash;
+    console.log('== trxId:', trxId);
     const seed = this.authSrv.keyring.calcDerivationPath(this.signer.path);
+
+
     const data: MultiSigInterface = {
       accountAddress: this.signer.address,
       fee: this.fFee.value,
       signaturesInfo: {
-        txHash: this.multiSigDetail.transactionHash,
+        txHash: trxId,
         participants: [
           {
             address: this.signer.address,
@@ -336,7 +338,7 @@ export class MsigTaskDetailPage implements OnInit {
     };
 
     zoobc.MultiSignature.postTransaction(data, seed)
-      .then((res: MultisigPostTransactionResponse) => {
+      .then(async () => {
         const message = getTranslation('transaction has been accepted', this.translate);
         Swal.fire({
           type: 'success',
@@ -344,20 +346,24 @@ export class MsigTaskDetailPage implements OnInit {
           showConfirmButton: false,
           timer: 1500,
         });
-
+        await this.trxService.saveEscrowApprovedOrRejected(trxId);
+        this.btnDisabled = false;
         this.pendingSignatures = this.pendingSignatures.filter(
           tx => tx.transactionHash !== this.multiSigDetail.transactionHash
         );
       })
       .catch(err => {
+        this.btnDisabled = false;
         console.log(err.message);
         const message = getTranslation(err.message, this.translate);
         Swal.fire('Opps...', message, 'error');
       })
       .finally(() => {
+        this.btnDisabled = false;
         loading.dismiss();
-        this.router.navigate(['/tabs/home']);
+        this.router.navigate(['/tabs/task']);
       });
+
   }
 
   closeModal() {

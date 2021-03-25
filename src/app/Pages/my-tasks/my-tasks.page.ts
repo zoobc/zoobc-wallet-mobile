@@ -53,6 +53,7 @@ import zoobc, {
   MultisigPendingListParams,
   PendingTransactionStatus,
   ZBCTransactions,
+  Escrow,
 } from 'zbc-sdk';
 
 import { Router, NavigationExtras } from '@angular/router';
@@ -60,9 +61,7 @@ import { Currency } from 'src/app/Interfaces/currency';
 import { MultisigService } from 'src/app/Services/multisig.service';
 import { NetworkService } from 'src/app/Services/network.service';
 import { TransactionService } from 'src/app/Services/transaction.service';
-import { Transaction } from 'zbc-sdk/grpc/model/transaction_pb';
-import { Contact } from 'src/app/Interfaces/contact';
-import { Address } from 'cluster';
+import { unixTimeStampToDate } from 'src/Helpers/utils';
 
 interface IEscrow {
   sender: any;
@@ -101,6 +100,7 @@ export class MyTasksPage implements OnInit {
   PerPage = 1000;
   totalPendingTrxEsc: number;
   isError: boolean;
+  savedIds: any;
 
   constructor(
     private router: Router,
@@ -114,8 +114,11 @@ export class MyTasksPage implements OnInit {
       this.loadTask();
     });
 
-    // // // if post send zoobc reload data
     this.transactionSrv.transferZooBcSubject.subscribe(() => {
+      this.loadTask();
+    });
+
+    this.transactionSrv.txApprovedRejected.subscribe(() => {
       this.loadTask();
     });
 
@@ -125,7 +128,7 @@ export class MyTasksPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loadTask();
   }
 
@@ -149,9 +152,11 @@ export class MyTasksPage implements OnInit {
       this.segmentModel = 'multisig';
     }
 
+    // load from approved/rejected task
+    this.savedIds = await this.transactionSrv.getEscrowApprovedOrRejected();
     this.getPengingTrxEsc();
     this.getMultiSigPendingList();
-    this.getBlockHeight();
+    // this.getBlockHeight();
 
   }
 
@@ -189,7 +194,7 @@ export class MyTasksPage implements OnInit {
       const params: MultisigPendingListParams = {
         address: this.account.address,
         // statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED],
-        // status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
+        status: PendingTransactionStatus.PENDINGTRANSACTIONPENDING,
         pagination: {
           page: this.pageMultiSig,
           limit: this.PerPage,
@@ -198,9 +203,22 @@ export class MyTasksPage implements OnInit {
       zoobc.MultiSignature.getPendingList(params)
         .then(async (tx: ZBCTransactions) => {
           this.totalMultiSig = tx.total;
-          const pendingList = tx.transactions;
-          this.multiSigPendingList = pendingList;
-          console.log('=== multiSigPendingList: ', pendingList);
+          const trxList = tx.transactions;
+          console.log('== trxList Msig: ', trxList);
+          console.log('== savedIds: ', this.savedIds);
+          if (this.savedIds !== null) {
+            const filtered = trxList.filter(
+              function(e) {
+                return this.indexOf(e.transactionHash) < 0;
+              },
+              (this.savedIds)
+            );
+            console.log('== filtered: ', filtered);
+            this.multiSigPendingList = filtered;
+          } else {
+            this.multiSigPendingList = trxList;
+          }
+          console.log('=== multiSigPendingList: ',  this.multiSigPendingList);
         })
         .catch(err => {
           this.isErrorMultiSig = true;
@@ -250,30 +268,19 @@ export class MyTasksPage implements OnInit {
     }
   }
 
+  convertDate(epoch: any) {
+    return unixTimeStampToDate(epoch);
+  }
+
   private getPengingTrxEsc() {
-    // this.listTrxPendingEsc = [];
-
-    // for (let i = 0; i < 3; i++) {
-    //   const tx: IEscrow = {
-    //     sender: {value: (i + 2), type: 0},
-    //     amount: (i * 10),
-    //     commission: i,
-    //   };
-    //   this.listTrxPendingEsc.push(tx);
-    // }
-
-    // console.log('==  tx: ', this.listTrxPendingEsc);
-
-    // if (this.listTrxPendingEsc.length > 1 ) {
-    //   return;
-    // }
 
     this.isLoading = true;
     this.isError = false;
 
     const params: EscrowListParams = {
       approverAddress: this.account.address,
-      statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED, EscrowStatus.EXPIRED],
+      // statusList: [EscrowStatus.PENDING, EscrowStatus.REJECTED, EscrowStatus.APPROVED, EscrowStatus.EXPIRED],
+      statusList: [EscrowStatus.PENDING],
       pagination: {
         page: this.page,
         limit: this.PerPage,
@@ -287,12 +294,21 @@ export class MyTasksPage implements OnInit {
       .then(async (res: Escrows) => {
         this.totalPendingTrxEsc = res.total;
         const trxList = res.escrowList;
-
-        // if (trxList.length > 0) {
-        //   trxList = await this.checkVisibleEscrow(trxList);
-        // }
-
-        this.listTrxPendingEsc = trxList;
+        console.log('== trxList: ', trxList);
+        // fiter list with saved id;
+        console.log('== savedIds: ', this.savedIds);
+        if (this.savedIds !== null) {
+          const filtered = trxList.filter(
+            function(e: Escrow) {
+              return this.indexOf(e.id) < 0;
+            },
+            (this.savedIds)
+          );
+          console.log('== filtered: ', filtered);
+          this.listTrxPendingEsc = filtered;
+        } else {
+          this.listTrxPendingEsc = trxList;
+        }
         console.log('== listTrxPendingEsc: ', this.listTrxPendingEsc);
       })
       .catch(err => {

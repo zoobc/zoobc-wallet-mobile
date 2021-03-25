@@ -55,42 +55,59 @@ shall be included in all copies or substantial portions of the Software.
       refreshingText="{{ 'Refreshing' | translate }} ...">
     </ion-refresher-content>
   </ion-refresher>
+  
   <div *ngIf="isLoading" style="margin-top:5px;">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
 
-  <div style="text-align: center;">
+  <div *ngIf="!isLoading" style="text-align: center;">
     <h5> {{ "multi signature transaction detail" | translate}} </h5>
   </div>
-  <ion-list *ngIf="multiSigDetail && !isLoading">
+
+  <ion-list *ngIf="multiSigDetail">
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "hash" | translate }}</h5>
+        <p class="info-label">{{ "hash" | translate }}</p>
+        <div class="info-val">
+          <app-with-copy title="{{ multiSigDetail.transactionHash }}" value="{{ multiSigDetail.transactionHash }}">
+          </app-with-copy>
+        </div>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h5>{{ "date" | translate }}</h5>
         <p class="info-val">
-          {{ multiSigDetail.transactionHash}}
+          {{multiSigDetail.timestamp * 1000 | date: 'medium'}}
         </p>
       </ion-label>
     </ion-item>
+
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "sender" | translate }}</h5>
-        <p class="info-val">
-          {{ multiSigDetail.sender.value | shortAddress}}
-        </p>
+        <p class="info-label">{{ "sender" | translate }}</p>
+        <div class="info-val">
+          <p *ngIf="getName(multiSigDetail.sender.value)">{{getName(multiSigDetail.sender.value)}}</p>
+          <app-with-copy title="{{ multiSigDetail.sender.value }}" value="{{ multiSigDetail.sender.value }}">
+          </app-with-copy>
+        </div>
       </ion-label>
-      <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.sender.value)">
-      </ion-icon>
     </ion-item>
+
     <ion-item>
       <ion-label class="ion-text-wrap">
-        <h5>{{ "recipient" | translate }}</h5>
-        <p class="info-val">
-          {{ multiSigDetail.recipient.value | shortAddress }}
-        </p>
+        <p class="info-label">{{ "recipient" | translate }}</p>
+
+        <div class="info-val">
+          <p *ngIf="getName(multiSigDetail.recipient.value)">{{getName(multiSigDetail.recipient.value)}}</p>
+          <app-with-copy title="{{ multiSigDetail.recipient.value }}" value="{{ multiSigDetail.recipient.value }}">
+          </app-with-copy>
+        </div>
+
       </ion-label>
-      <ion-icon class="info-val" slot="end" name="copy" (click)="copyAddress(multiSigDetail.recipient.value)">
-      </ion-icon>
     </ion-item>
+
     <ion-item>
       <ion-label>
         <h5>{{ "amount" | translate }}</h5>
@@ -115,40 +132,20 @@ shall be included in all copies or substantial portions of the Software.
         </p>
       </ion-label>
     </ion-item>
-    <ion-item>
-      <ion-label class="ion-text-wrap">
-        <h5>{{ "date" | translate }}</h5>
-        <p class="info-val">
-          {{multiSigDetail.timestamp * 1000 | date: 'medium'}}
-        </p>
-      </ion-label>
-    </ion-item>
     <ion-item lines="none" class="form-item">
       <ion-label color="danger" *ngIf="totalPending == 0">
         <p> {{ "no participants have signed yet" | translate }}</p>
       </ion-label>
       <ng-container *ngIf="totalPending > 0">
-      <ion-label color="danger">
-        <p>Signed by {{ totalPending }} of {{ totalParticpants }}
-          participants
-        </p>
-      </ion-label>
-    </ng-container>
+        <ion-label color="danger">
+          <p>Signed by {{ totalPending }} of {{ totalParticpants }}
+            participants
+          </p>
+        </ion-label>
+      </ng-container>
     </ion-item>
-    <ion-item lines="none" class="form-item"></ion-item>
-
-    <!-- <ion-item *ngIf="isNeedSign && enabledSign">
-      <ion-checkbox [(ngModel)]="isNeedSign" color="primary"></ion-checkbox>
-      <ion-label style="margin-left:10px;">{{ "sign this transaction" | translate}}</ion-label>
-    </ion-item>
-
-    <ion-item style="margin-bottom:50px;" *ngIf="!isNeedSign && enabledSign">
-      <ion-checkbox [(ngModel)]="isNeedSign" color="primary"></ion-checkbox>
-      <ion-label style="margin-left:10px;">{{ "sign this transaction" | translate}}</ion-label>
-    </ion-item> -->
-
   </ion-list>
-  <br/>
+  <br />
 
   <ng-container *ngIf="multiSigDetail && !isLoading && enabledSign">
     <form [formGroup]="formSend" (ngSubmit)="submit()" novalidate>
@@ -159,15 +156,11 @@ shall be included in all copies or substantial portions of the Software.
         </ion-label>
       </ion-item>
 
- 
-
       <ion-item lines="none" class="form-item">
-        <!-- <ion-label position="stacked">{{"signed by" | translate}}</ion-label> -->
         <ion-label position="stacked">{{"signer" | translate}}</ion-label>
         <app-form-sender formControlName="sender" accountType="normal" canSwitch="yes" switchToActive="no"
           *ngIf="signers" predefList="{{signers}}" ngDefaultControl required></app-form-sender>
       </ion-item>
-
       <ion-item lines="none" class="form-item margintop">
         <ion-label position="stacked">{{ "fee" | translate }}</ion-label>
         <app-form-amount-conversion formControlName="fee" ngDefaultControl required></app-form-amount-conversion>
@@ -181,7 +174,7 @@ shall be included in all copies or substantial portions of the Software.
         </ng-container>
       </ion-item>
 
-      <ion-item  lines="none" class="form-item margintop">
+      <ion-item lines="none" class="form-item margintop">
         <ion-label position="stacked">
           Message
         </ion-label>
@@ -189,11 +182,13 @@ shall be included in all copies or substantial portions of the Software.
         </ion-textarea>
       </ion-item>
       <ion-item lines="none" class="form-item btn margintop">
-        <ion-button type="submit" size="medium" expand="full" color="tertiary">
+        <ion-button *ngIf="!btnDisabled" type="submit" size="medium" expand="full" color="tertiary">
           {{ 'send' | translate }}
         </ion-button>
+        <ion-button *ngIf="btnDisabled" size="medium" expand="full" color="tertiary" disabled>
+          {{ 'sending' | translate }}
+        </ion-button>
       </ion-item>
-
     </form>
   </ng-container>
 </ion-content>
