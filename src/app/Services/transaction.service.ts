@@ -40,15 +40,14 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { STORAGE_LIQUID_STOPED } from 'src/environments/variable.const';
-import zoobc, { EscrowListParams, EscrowStatus, MultisigPendingListParams, OrderBy, ZBCTransaction, ZBCTransactions } from 'zbc-sdk';
+import { STORAGE_ESCROW_APPROVED_REJECTED, STORAGE_LIQUID_STOPED } from 'src/environments/variable.const';
+import zoobc, { EscrowListParams, EscrowStatus, MultisigPendingListParams, OrderBy, ZBCTransaction } from 'zbc-sdk';
 import { StorageService } from './storage.service';
 
 export interface LiquidSaved {
       txId: string;
       doneOn: number;
 }
-
 @Injectable({
   providedIn: 'root'
 })
@@ -62,6 +61,7 @@ export class TransactionService {
 
   public transferZooBcSubject: Subject<any> = new Subject<any>();
   public txEscrowSubject: Subject<any> = new Subject<any>();
+  public txApprovedRejected: Subject<any> = new Subject<any>();
   public transactionSuccessSubject: Subject<boolean> = new Subject<boolean>();
   frmSend: any;
   tempTrx: ZBCTransaction;
@@ -74,6 +74,21 @@ export class TransactionService {
       fee: minimumFee
     }];
     return fees;
+  }
+
+  async getEscrowApprovedOrRejected() {
+    return await this.strgSrv.getObject(STORAGE_ESCROW_APPROVED_REJECTED);
+  }
+
+  async saveEscrowApprovedOrRejected(txId: string) {
+    let list = await this.strgSrv.getObject(STORAGE_ESCROW_APPROVED_REJECTED);
+    if (list === null) {
+      list = [txId];
+    } else {
+      list.push(txId);
+    }
+    await this.strgSrv.setObject(STORAGE_ESCROW_APPROVED_REJECTED, list);
+    this.txApprovedRejected.next(txId);
   }
 
   async saveLiquidStoped(txId: any, doneOn: number) {
@@ -106,7 +121,10 @@ export class TransactionService {
   updateEscrowForm(arg: any) {
     this.txEscrowSubject.next(arg);
   }
-  async getPendingTrxEscrow(address: any) {
+
+  async getNumberOfPendingTrx(address: any) {
+
+    const savedIds = await this.getEscrowApprovedOrRejected();
 
     const params: EscrowListParams = {
       approverAddress: address,
@@ -129,16 +147,40 @@ export class TransactionService {
     };
 
     let total = 0;
-    const trxs = await zoobc.Escrows.getList(params);
-    if (trxs) {
-      total = total + trxs.total;
+    const lsEscrowPending = await zoobc.Escrows.getList(params);
+    console.log('== lsEscrowPending: ', lsEscrowPending);
+
+    if (lsEscrowPending && lsEscrowPending.total > 0) {
+      let txPendings = lsEscrowPending.escrowList;
+      if (savedIds !== null) {
+        const filtered = txPendings.filter(
+          function(e) {
+            return this.indexOf(e.id) < 0;
+          },
+          (savedIds)
+        );
+        console.log('== lsEscrowPending filtered: ', filtered);
+        txPendings = filtered;
+      }
+      total = total + txPendings.length;
     }
 
-    const msTx = await zoobc.MultiSignature.getPendingList(mgParams);
-    if (msTx) {
-      total = total + msTx.total;
-    }
+    const lsMultisigPending = await zoobc.MultiSignature.getPendingList(mgParams);
+    console.log('== lsMultisigPending:', lsMultisigPending);
 
+    if (lsMultisigPending && lsMultisigPending.total > 0) {
+      let txPendings = lsMultisigPending.transactions;
+      if (savedIds !== null) {
+        const filtered = txPendings.filter(
+          function(e) {
+            return this.indexOf(e.transactionHash) < 0;
+          }, savedIds
+        );
+        console.log('== lsMultisigPending filtered: ', filtered);
+        txPendings = filtered;
+      }
+      total = total + txPendings.length;
+    }
     return total;
 
   }
