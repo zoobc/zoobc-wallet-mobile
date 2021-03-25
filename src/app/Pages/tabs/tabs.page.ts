@@ -59,7 +59,13 @@ export class TabsPage implements OnInit {
   constructor(
     private transactionSrv: TransactionService,
     private accountService: AccountService
-    ) { }
+  ) {
+
+    this.transactionSrv.txApprovedRejected.subscribe(() => {
+      this.getPendingTransaction();
+    });
+
+  }
 
   async ngOnInit() {
     this.getPendingTransaction();
@@ -71,16 +77,17 @@ export class TabsPage implements OnInit {
   }
 
   async getPendingTransaction() {
-    this.account = await this.accountService.getCurrAccount();
-    const address = this.account.address;
-    this.numPendingTrx =  await this.transactionSrv.getPendingTrxEscrow(address);
+    try {
+      this.account = await this.accountService.getCurrAccount();
+      const address = this.account.address;
+      this.numPendingTrx = await this.transactionSrv.getNumberOfPendingTrx(address);
+    } catch (e) { }
   }
 
   startTimer() {
     setInterval(async () => {
       this.getPendingTransaction();
-    }, 60000);
+    }, 10000);
   }
-
 
 }
