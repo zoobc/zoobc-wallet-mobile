@@ -377,7 +377,7 @@ export class AccountService {
       zoobc.Account.getBalances(addresses)
         .then((accountBalances: AccountBalance[]) => {
           accounts.map((acc, i) => {
-            acc.balance = accountBalances[i].balance;
+            acc.balance = accountBalances[i].spendableBalance;
             return acc;
           });
           resolve(accounts);

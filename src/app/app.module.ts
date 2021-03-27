@@ -88,6 +88,8 @@ import { ImportDraftPageModule } from './Pages/multisig/import-draft/import-draf
 import { ComponentsModule } from './Components/components.module';
 import { MyTasksPageModule } from './Pages/my-tasks/my-tasks.module';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/language/locales/', '.json');
 }
@@ -141,6 +143,7 @@ export function createTranslateLoader(http: HttpClient) {
     File,
     AppVersion,
     FileChooser,
+    InAppBrowser,
     FilePath,
     BarcodeScanner,
     AndroidPermissions,
