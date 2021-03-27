@@ -50,6 +50,8 @@ import { PopoverController } from '@ionic/angular';
 import { Account, AccountType } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
 import { PopoverAccountComponent } from 'src/app/Components/popover-account/popover-account.component';
+import zoobc from 'zbc-sdk';
+import { TransactionService } from 'src/app/Services/transaction.service';
 
 @Component({
   selector: 'app-form-sender',
@@ -72,19 +74,37 @@ export class FormSenderComponent implements OnInit, ControlValueAccessor {
   @Input() showBalance = 'yes';
   @Input() predefList = [];
   disabled = false;
+  isLoading = false;
+
 
   onChange = (value: Account) => { };
   onTouched = () => { };
 
   constructor(
     private popoverCtrl: PopoverController,
-    private accountSrv: AccountService
-  ) { }
+    private accountSrv: AccountService,
+    private transactionSrv: TransactionService
+  ) {
+
+    this.transactionSrv.transferZooBcSubject.subscribe(() => {
+      this.loadData();
+    });
+  }
+
+  async loadData() {
+    this.account = await this.accountSrv.getCurrAccount();
+    this.isLoading = true;
+    this.account = await this.accountSrv.getCurrAccount();
+    const sender = this.account.address;
+    const accBalance = await zoobc.Account.getBalance(sender);
+    this.account.balance = Number(accBalance.spendableBalance);
+    this.isLoading = false;
+  }
 
   async ngOnInit() {
-    this.account = await this.accountSrv.getCurrAccount();
+
     if (this.predefList.length < 1) {
-      this.account = await this.accountSrv.getCurrAccount();
+      this.loadData();
     } else {
       this.account = undefined;
     }

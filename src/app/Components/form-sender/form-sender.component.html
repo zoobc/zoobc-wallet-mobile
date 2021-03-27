@@ -40,14 +40,19 @@ IMPORTANT: The above copyright notice and this permission notice
 shall be included in all copies or substantial portions of the Software.
  -->
  
-<div *ngIf="account && account.address" class="sender-block" (click)="switchAccount($event)">
+<div *ngIf="!isLoading && account && account.address" class="sender-block" (click)="switchAccount($event)">
   <div class="account-name">{{ account.name }}</div>
   <div class="account-address">
     <span>{{ account.address.value }}</span>
     <ion-icon name="zbc-chevron-right" *ngIf="accountType=='normal'"></ion-icon>
   </div>
-  <div class="account-balance" *ngIf="showBalance=='yes'">
-    <app-info-amount-conversion [value]="account.balance / 1e8" otherCurrency="USD"></app-info-amount-conversion>
+  <div class="account-balance" *ngIf="showBalance=='yes' && account.balance">
+    <div class="info-amount-conversion">
+      <div class="main-amount">
+        <span *ngIf="prefix">{{ prefix }}</span>
+        ZBC {{ account.balance/1e8 | number:'0.0-8' }}
+      </div>
+    </div>
   </div>
 </div>
 <div *ngIf="!account" class="sender-block" (click)="switchAccount($event)">

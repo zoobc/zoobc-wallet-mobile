@@ -53,6 +53,6 @@ shall be included in all copies or substantial portions of the Software.
     </div>
   </div>
   <div class="balance" *ngIf="showBalance === 'yes'">
-    <app-info-amount-conversion [value]="(account.balance / 1e8) | number: '0.0-6'" otherCurrency="USD"></app-info-amount-conversion>
+    <app-info-amount-conversion [value]="(account.balance / 1e8) | number: '0.0-8'" otherCurrency="USD"></app-info-amount-conversion>
   </div>
 </div>
