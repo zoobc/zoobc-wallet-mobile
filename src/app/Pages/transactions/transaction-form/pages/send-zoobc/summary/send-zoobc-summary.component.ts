@@ -47,6 +47,7 @@ import { AuthService } from 'src/app/Services/auth-service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { UtilService } from 'src/app/Services/util.service';
 import { getTranslation } from 'src/Helpers/utils';
+import Swal from 'sweetalert2';
 import zoobc, { LiquidTransactionsInterface, PostTransactionResponses, SendZBCInterface } from 'zbc-sdk';
 
 @Component({
@@ -65,7 +66,7 @@ export class SendZoobcSummaryComponent implements OnInit {
     private transactionSrv: TransactionService,
     private translate: TranslateService,
     private authSrv: AuthService,
-    private utilSrv: UtilService,
+    private utilService: UtilService,
     private loadingController: LoadingController,
     private modalController: ModalController,
     private router: Router
@@ -99,6 +100,19 @@ export class SendZoobcSummaryComponent implements OnInit {
 
   async transferZoobc() {
 
+    const sender = this.formTrx.sender.address;
+    const amount = Number(this.formTrx.amount);
+    const fee = Number(this.formTrx.fee);
+
+    const accBalance = await zoobc.Account.getBalance(sender);
+    const balance = Number(accBalance.spendableBalance / 1e8);
+    const total = (amount + fee);
+    if (balance < total) {
+      const message = getTranslation('your balances are not enough for this transaction', this.translate);
+      this.utilService.showConfirmation('Oops...', message, false);
+      return;
+    }
+
     // show loading bar
     const loading = await this.loadingController.create({
       message: 'Please wait, submiting!',
@@ -106,15 +120,14 @@ export class SendZoobcSummaryComponent implements OnInit {
     });
 
     await loading.present();
-    console.log('is liquid: ', this.formTrx.withLiquid);
-    console.log('==  this.formTrx.sender.path', this.formTrx.sender.path);
+
     const childSeed = this.authSrv.keyring.calcDerivationPath(
       this.formTrx.sender.path
     );
-    console.log('==  childSeed', childSeed);
+
 
     if (this.formTrx.withLiquid === true) {
-      console.log('==  send liqueid');
+
       const data: LiquidTransactionsInterface = {
         sender: this.formTrx.sender.address,
         recipient: { value: this.formTrx.recipient.address, type: 0 },
@@ -132,19 +145,15 @@ export class SendZoobcSummaryComponent implements OnInit {
         data.instruction = escrow.instruction ? (escrow.instruction) : '';
       }
 
-      console.log('== data liquid', data);
-
-
-
       await zoobc.Liquid.sendLiquid(data, childSeed).then(
         async (res: PostTransactionResponses) => {
-          console.log('msg: ', res);
+
           const message = getTranslation('your transaction is processing', this.translate);
           const subMessage = getTranslation('you send coins to', this.translate, {
             amount: this.formTrx.amount,
             recipient: this.formTrx.recipient.address,
           });
-          this.utilSrv.showConfirmation(message, subMessage, true);
+          this.utilService.showConfirmation(message, subMessage, true);
           this.transactionSrv.transferZooBcSubject.next(true);
           loading.dismiss();
           this.router.navigateByUrl('/tabs/home');
@@ -154,7 +163,7 @@ export class SendZoobcSummaryComponent implements OnInit {
           const message = 'Opps...';
           loading.dismiss();
           const subMessage = getTranslation(err.message, this.translate);
-          this.utilSrv.showConfirmation(message, subMessage, false);
+          this.utilService.showConfirmation(message, subMessage, false);
         }
       ).finally(() => {
         loading.dismiss();
@@ -162,7 +171,7 @@ export class SendZoobcSummaryComponent implements OnInit {
 
     } else {
 
-      console.log('==  send reqular');
+
       const data: SendZBCInterface = {
         sender: this.formTrx.sender.address,
         recipient: { value: this.formTrx.recipient.address, type: 0 },
@@ -179,18 +188,16 @@ export class SendZoobcSummaryComponent implements OnInit {
         data.instruction = escrow.instruction ? (escrow.instruction) : '';
       }
 
-      console.log('== data regular', data);
 
       await zoobc.Transactions.SendZBC(data, childSeed)
         .then(
           async (msg) => {
-            console.log('msg: ', msg);
             const message = getTranslation('your transaction is processing', this.translate);
             const subMessage = getTranslation('you send coins to', this.translate, {
               amount: this.formTrx.amount,
               recipient: this.formTrx.recipient.address,
             });
-            this.utilSrv.showConfirmation(message, subMessage, true);
+            this.utilService.showConfirmation(message, subMessage, true);
             this.transactionSrv.transferZooBcSubject.next(true);
             loading.dismiss();
             this.router.navigateByUrl('/tabs/home');
@@ -200,7 +207,7 @@ export class SendZoobcSummaryComponent implements OnInit {
             const message = 'Opps...';
             loading.dismiss();
             const subMessage = getTranslation(err.message, this.translate);
-            this.utilSrv.showConfirmation(message, subMessage, false);
+            this.utilService.showConfirmation(message, subMessage, false);
           }
         )
         .finally(() => {

@@ -55,6 +55,7 @@ export const STORAGE_CURRENT_ACCOUNT = 'strg_curr_account2' + '_' + UNIQUE_DB_ID
 export const STORAGE_CURRENT_ACCOUNT_MULTISIG = 'strg_curr_account_multisig' + '_' + UNIQUE_DB_ID;
 export const STORAGE_MAIN_ACCOUNT = 'strg_main_account' + '_' + UNIQUE_DB_ID;
 export const STORAGE_LIQUID_STOPED = 'strg_liquid_stoped' + '_' + UNIQUE_DB_ID;
+export const STORAGE_ESCROW_APPROVED_REJECTED = 'strg_escrow_approved_rejected13' + '_' + UNIQUE_DB_ID;
 export const STORAGE_ENC_PASSPHRASE_SEED = 'strg_encrypted_passphrase_seed' + '_' + UNIQUE_DB_ID;
 export const STORAGE_ESCROW_WAITING_LIST = 'strg_escrow_waiting_list' + '_' + UNIQUE_DB_ID;
 export const STORAGE_MULTISIG_DRAFTS = 'strg_multisig_drafts' + '_' + UNIQUE_DB_ID;
@@ -77,7 +78,7 @@ export const FROM_MSIG = 'msig';
 export const EMPTY_STRING = '';
 export const CONST_DEFAULT_CURRENCY = 'USD';
 export const CONST_UNKNOWN_NAME = 'Unknown';
-export const BLOCKCHAIN_BLOG_URL = 'https://blogchainzoo.com';
+export const ZOOBC_EXPL0RER_URL = 'https://zoobc.net/transactions';
 export const ACC_TYPE_MULTISIG = 'multisig';
 export const ACC_TYPE_NORMAL = 'normal';
 export const CONST_DEFAULT_RATE: Currency = {
@@ -160,7 +161,57 @@ export const NETWORK_LIST = [
       'http://n7.beta.proofofparticipation.network:7001',
       'http://n8.beta.proofofparticipation.network:7001',
       'http://n9.beta.proofofparticipation.network:7001',
-      'http://n10.beta.proofofparticipation.network:7001'
+      'http://n10.beta.proofofparticipation.network:7001',
+      'http://n11.beta.proofofparticipation.network:7001',
+      'http://n12.beta.proofofparticipation.network:7001',
+      'http://n13.beta.proofofparticipation.network:7001',
+      'http://n14.beta.proofofparticipation.network:7001',
+      'http://n15.beta.proofofparticipation.network:7001',
+      'http://n16.beta.proofofparticipation.network:7001',
+      'http://n17.beta.proofofparticipation.network:7001',
+      'http://n18.beta.proofofparticipation.network:7001',
+      'http://n19.beta.proofofparticipation.network:7001',
+      'http://n20.beta.proofofparticipation.network:7001',
+      'http://n21.beta.proofofparticipation.network:7001',
+      'http://n22.beta.proofofparticipation.network:7001',
+      'http://n23.beta.proofofparticipation.network:7001',
+      'http://n24.beta.proofofparticipation.network:7001',
+      'http://n25.beta.proofofparticipation.network:7001',
+      'http://n26.beta.proofofparticipation.network:7001',
+      'http://n27.beta.proofofparticipation.network:7001',
+      'http://n28.beta.proofofparticipation.network:7001',
+      'http://n29.beta.proofofparticipation.network:7001',
+      'http://n30.beta.proofofparticipation.network:7001',
+      'http://n31.beta.proofofparticipation.network:7001',
+      'http://n32.beta.proofofparticipation.network:7001',
+      'http://n33.beta.proofofparticipation.network:7001',
+      'http://n34.beta.proofofparticipation.network:7001',
+      'http://n35.beta.proofofparticipation.network:7001',
+      'http://n36.beta.proofofparticipation.network:7001',
+      'http://n37.beta.proofofparticipation.network:7001',
+      'http://n38.beta.proofofparticipation.network:7001',
+      'http://n39.beta.proofofparticipation.network:7001',
+      'http://n40.beta.proofofparticipation.network:7001',
+      'http://n41.beta.proofofparticipation.network:7001',
+      'http://n42.beta.proofofparticipation.network:7001',
+      'http://n43.beta.proofofparticipation.network:7001',
+      'http://n44.beta.proofofparticipation.network:7001',
+      'http://n45.beta.proofofparticipation.network:7001',
+      'http://n46.beta.proofofparticipation.network:7001',
+      'http://n47.beta.proofofparticipation.network:7001',
+      'http://n48.beta.proofofparticipation.network:7001',
+      'http://n49.beta.proofofparticipation.network:7001',
+      'http://n50.beta.proofofparticipation.network:7001',
+      'http://n51.beta.proofofparticipation.network:7001',
+      'http://n52.beta.proofofparticipation.network:7001',
+      'http://n53.beta.proofofparticipation.network:7001',
+      'http://n54.beta.proofofparticipation.network:7001',
+      'http://n55.beta.proofofparticipation.network:7001',
+      'http://n56.beta.proofofparticipation.network:7001',
+      'http://n57.beta.proofofparticipation.network:7001',
+      'http://n58.beta.proofofparticipation.network:7001',
+      'http://n59.beta.proofofparticipation.network:7001',
+      'http://n60.beta.proofofparticipation.network:7001'
     ]
   }
 ];

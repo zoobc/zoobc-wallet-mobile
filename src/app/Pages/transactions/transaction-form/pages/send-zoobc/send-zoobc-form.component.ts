@@ -61,8 +61,9 @@ import {
   addressValidator,
   escrowFieldsValidator
 } from 'src/Helpers/validators';
-import { calculateMinimumFee } from 'zbc-sdk';
+import zoobc, { calculateMinimumFee } from 'zbc-sdk';
 import { getTranslation } from 'src/Helpers/utils';
+import { UtilService } from 'src/app/Services/util.service';
 
 @Component({
   selector: 'app-send-zoobc-form',
@@ -115,6 +116,7 @@ export class SendZoobcFormComponent implements OnInit {
     private network: Network,
     private alertCtrl: AlertController,
     private navCtrl: NavController,
+    private utilService: UtilService,
     private accountSrv: AccountService
   ) {
 
@@ -379,9 +381,26 @@ export class SendZoobcFormComponent implements OnInit {
 
     if (this.fee.value > TRANSACTION_MINIMUM_FEE) {
       this.presentAlertMinFeeConfirm();
-    } else {
-      this.doSend();
+      return;
     }
+
+    const sender = this.sender.value.address;
+    const amount = Number(this.amount.value);
+    const fee =  Number(this.fee.value);
+
+
+    const accBalance = await zoobc.Account.getBalance(sender);
+    const balance = Number(accBalance.spendableBalance / 1e8);
+    const total = (amount + fee);
+
+    if (balance < total) {
+      const message = getTranslation('your balances are not enough for this transaction', this.translateService);
+      this.utilService.showConfirmation('Oops...', message, false);
+      return;
+    }
+
+
+    this.doSend();
 
   }
 

@@ -139,7 +139,7 @@ shall be included in all copies or substantial portions of the Software.
 
   <div class="amount" [ngClass]="transaction.sender.value == address.value?'send':'receive'">
 
-    <app-info-amount-conversion value="{{ transaction.txBody.amount / 1e8 | number: '0.0-8'}}" otherCurrency="USD"
+    <app-info-amount-conversion *ngIf="transaction.txBody" value="{{ transaction.txBody.amount / 1e8 | number: '0.0-8'}}" otherCurrency="USD"
       [prefix]="transaction.sender.value == address.value?'-':'+'"></app-info-amount-conversion>
 
     <ion-text class="txfee" *ngIf="transaction.sender.value == address.value">- ZBC {{ transaction.fee / 1e8 | number:

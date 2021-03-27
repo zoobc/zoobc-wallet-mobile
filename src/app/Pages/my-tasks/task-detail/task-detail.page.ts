@@ -45,7 +45,7 @@ import zoobc, { AccountBalance, calculateMinimumFee, EscrowApproval, EscrowAppro
 import { StorageService } from 'src/app/Services/storage.service';
 import { AccountService } from 'src/app/Services/account.service';
 import { Account } from 'src/app/Interfaces/account';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EnterpinsendPage } from '../../send-coin/modals/enterpinsend/enterpinsend.page';
 import { AuthService } from 'src/app/Services/auth-service';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
@@ -53,6 +53,7 @@ import { getTranslation, unixTimeStampToDate } from 'src/Helpers/utils';
 import Swal from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
 import { UtilService } from 'src/app/Services/util.service';
+import { TransactionService } from 'src/app/Services/transaction.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -67,26 +68,26 @@ export class TaskDetailPage implements OnInit {
   private account: Account;
   public escrowDetail: any;
   private escrowId: any;
-  btnDisabed = false;
+  btnDisabled = false;
 
   private action: number;
   public isLoading = false;
   escrowForm: FormGroup;
   showForm = false;
   isSubmitted: boolean;
-  escrowTransactionsData: any;
 
   constructor(
     private modalCtrl: ModalController,
-    private navCtrl: NavController,
     private activeRoute: ActivatedRoute,
     private modalController: ModalController,
     private authSrv: AuthService,
     private translate: TranslateService,
     private accountService: AccountService,
+    private txService: TransactionService,
     private storageService: StorageService,
     private utilService: UtilService,
     private loadingController: LoadingController,
+    private router: Router,
     private formBuilder: FormBuilder
   ) {
   }
@@ -100,6 +101,8 @@ export class TaskDetailPage implements OnInit {
   }
 
   async ngOnInit() {
+    await this.utilService.MergeAccountAndContact();
+
     this.escrowForm = this.formBuilder.group({
       feesZbc: [0.01, [Validators.required]],
       fApprover: ['', [Validators.required]],
@@ -119,7 +122,6 @@ export class TaskDetailPage implements OnInit {
   }
 
   async loadDetail() {
-    this.utilService.MergeAccountAndContact();
     this.isLoading = true;
     this.account = await this.accountService.getCurrAccount();
     this.waitingList = (await this.storageService.getObject(STORAGE_ESCROW_WAITING_LIST)) || [];
@@ -131,9 +133,9 @@ export class TaskDetailPage implements OnInit {
     await zoobc.Escrows.get(this.escrowId).then(res => {
       this.escrowDetail = res;
     }).finally(() => {
-      this.isLoading = false;
       console.log('===  this.escrowDetail:', this.escrowDetail);
     });
+    this.isLoading = false;
   }
 
   toNumber(arg: any) {
@@ -158,6 +160,13 @@ export class TaskDetailPage implements OnInit {
 
       this.showPin();
     }
+  }
+
+  reload(event: any) {
+    this.loadDetail();
+    setTimeout(() => {
+      event.target.complete();
+    }, 2000);
   }
 
   confirm() {
@@ -205,25 +214,16 @@ export class TaskDetailPage implements OnInit {
     return generateTransactionHash(bfr);
   }
 
-  async presentLoading() {
-    const loading = await this.loadingController.create({
-      spinner: null,
-      duration: 5000,
-      message: 'Please wait...',
-      translucent: true
-    });
-
-    loading.onDidDismiss().then(() => {
-
-    });
-
-    return await loading.present();
-  }
 
   async executeConfirm() {
 
-    this.presentLoading();
-    this.btnDisabed = true;
+    const loading = await this.loadingController.create({
+      message: 'processing ..!',
+      duration: 50000
+    });
+    loading.present();
+
+    this.btnDisabled = true;
     const fFee = this.escrowForm.get('feesZbc');
     const trxId = this.escrowDetail.id;
     const fMsg = this.escrowForm.get('fMessage');
@@ -232,7 +232,6 @@ export class TaskDetailPage implements OnInit {
     const balance = bc.spendableBalance / 1e8;
 
     if (balance >= fFee.value) {
-      this.isLoading = true;
       const data: EscrowApprovalInterface = {
         approvalAddress: this.account.address,
         fee: fFee.value,
@@ -242,11 +241,9 @@ export class TaskDetailPage implements OnInit {
       };
 
       const childSeed = this.authSrv.keyring.calcDerivationPath(this.account.path);
-
       zoobc.Escrows.approval(data, childSeed)
         .then(
           () => {
-            this.isLoading = false;
             const message = getTranslation('transaction has been approved', this.translate);
             Swal.fire({
               type: 'success',
@@ -254,23 +251,24 @@ export class TaskDetailPage implements OnInit {
               showConfirmButton: false,
               timer: 1500,
             });
-            this.escrowTransactionsData = this.escrowTransactionsData.filter(
-              tx => tx.id !== trxId
-            );
+
+            this.txService.saveEscrowApprovedOrRejected(trxId);
           },
           err => {
-            this.isLoading = false;
             console.log('err', err);
             const message = getTranslation(err.message, this.translate);
             Swal.fire('Opps...', message, 'error');
           }
         )
         .finally(() => {
-          this.btnDisabed = false;
-          this.navCtrl.pop();
+          loading.dismiss();
+          this.btnDisabled = false;
+          this.router.navigate(['/tabs/task']);
         });
+
+
     } else {
-      this.btnDisabed = false;
+      this.btnDisabled = false;
       const message = getTranslation('your balances are not enough for this transaction', this.translate);
       Swal.fire({ type: 'error', title: 'Oops...', text: message });
     }
@@ -279,8 +277,12 @@ export class TaskDetailPage implements OnInit {
 
   async executeReject() {
 
-    this.presentLoading();
-    this.btnDisabed = true;
+    const loading = await this.loadingController.create({
+      message: 'processing ..!',
+      duration: 50000
+    });
+    loading.present();
+    this.btnDisabled = true;
 
     const fFee = this.escrowForm.get('feesZbc');
     const fMsg = this.escrowForm.get('fMessage');
@@ -303,7 +305,6 @@ export class TaskDetailPage implements OnInit {
       zoobc.Escrows.approval(data, childSeed)
         .then(
           () => {
-            this.isLoading = false;
             const message = getTranslation('transaction has been rejected', this.translate);
             Swal.fire({
               type: 'success',
@@ -311,25 +312,23 @@ export class TaskDetailPage implements OnInit {
               showConfirmButton: false,
               timer: 1500,
             });
-            this.escrowTransactionsData = this.escrowTransactionsData.filter(
-              tx => tx.id !== trxId
-            );
+
+            this.txService.saveEscrowApprovedOrRejected(trxId);
           },
           err => {
-            this.isLoading = false;
             console.log('err', err);
-            this.btnDisabed = false;
+            this.btnDisabled = false;
             const message = getTranslation(err.message, this.translate);
             Swal.fire('Opps...', message, 'error');
           }
         )
         .finally(() => {
-          this.isLoading = false;
-          this.btnDisabed = false;
-          this.navCtrl.pop();
+          loading.dismiss();
+          this.btnDisabled = false;
+          this.router.navigate(['/tabs/task']);
         });
     } else {
-      this.btnDisabed = false;
+      this.btnDisabled = false;
       const msg = getTranslation('your balances are not enough for this transaction', this.translate);
       Swal.fire({ type: 'error', title: 'Oops...', text: msg });
     }

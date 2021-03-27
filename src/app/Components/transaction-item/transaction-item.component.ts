@@ -70,7 +70,10 @@ export class TransactionItemComponent implements OnInit {
 
   ngOnInit() {
 
-    this.status = this.transaction.txBody.approval;
+    if (this.transaction.txBody && this.transaction.txBody.approval) {
+      this.status = this.transaction.txBody.approval;
+    }
+
     // this.color = approval === 0 ? 'green' : approval === 1 ? 'red' : approval === 2 ? 'red' : '';
     // this.status =
     //   approval === 0 ? 'approved' : approval === 1 ? 'rejected' : approval === 2 ? 'expired' : '';

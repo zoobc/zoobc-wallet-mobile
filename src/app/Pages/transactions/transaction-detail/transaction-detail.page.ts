@@ -51,8 +51,10 @@ import { TransactionService } from 'src/app/Services/transaction.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { getTranslation } from 'src/Helpers/utils';
 import { AuthService } from 'src/app/Services/auth-service';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Router } from '@angular/router';
 import { LiquidStopTransactionInterface } from 'zbc-sdk/types/helper/transaction-builder/liquid-transaction';
+import { ZOOBC_EXPL0RER_URL } from 'src/environments/variable.const';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -62,14 +64,13 @@ import { LiquidStopTransactionInterface } from 'zbc-sdk/types/helper/transaction
 export class TransactionDetailPage implements OnInit {
   status: string;
   trx: ZBCTransaction;
-  loading: boolean;
+  isLoading: boolean;
 
   liquidForm: FormGroup;
 
   alertConnectionTitle = '';
   alertConnectionMsg = '';
   networkSubscription = null;
-
   senderRecipentAlias = '';
   senderRecipentOptions = [
     { key: 'copy', label: 'copy' },
@@ -90,6 +91,8 @@ export class TransactionDetailPage implements OnInit {
       { type: 'min', message: 'Minimum 0.01 ZBC' }
     ]
   };
+  txId: any;
+  savedIds: any;
 
   constructor(
     private translateSrv: TranslateService,
@@ -105,6 +108,7 @@ export class TransactionDetailPage implements OnInit {
     private utilSrv: UtilService,
     private router: Router,
     public platform: Platform,
+    private iab: InAppBrowser,
     private loadingController: LoadingController,
     private formBuilder: FormBuilder
   ) {
@@ -114,10 +118,6 @@ export class TransactionDetailPage implements OnInit {
       fMessage: [''],
       fFee: [0.01, Validators.required]
     });
-  }
-
-  calculateFee() {
-    // TODO
   }
 
   async submitForm() {
@@ -131,10 +131,10 @@ export class TransactionDetailPage implements OnInit {
 
       await loading.present();
 
-      const txId = this.liquidForm.value.fTxId;
+      this.txId = this.liquidForm.value.fTxId;
       const data: LiquidStopTransactionInterface = {
-        accountAddress: {value: this.liquidForm.value.fSender, type: 0},
-        transactionId: txId,
+        accountAddress: { value: this.liquidForm.value.fSender, type: 0 },
+        transactionId: this.txId,
         fee: Number(this.liquidForm.value.fFee),
         message: this.liquidForm.value.fMessage
       };
@@ -142,14 +142,15 @@ export class TransactionDetailPage implements OnInit {
         this.currAccount.path
       );
       zoobc.Liquid.stopLiquid(data, childSeed).then(
-        res => {
+        async res => {
           console.log('msg: ', res);
           // save stopped liqud transaction
-          this.transactionSrv.saveLiquidStoped(txId, this.doneOn);
+          this.transactionSrv.saveLiquidStoped(this.txId, this.doneOn);
           loading.dismiss();
           const message = getTranslation('your transaction is processing', this.translate);
           const subMessage = '';
           this.utilSrv.showConfirmation(message, subMessage, true);
+          await this.transactionSrv.saveEscrowApprovedOrRejected(this.txId);
           this.transactionSrv.transferZooBcSubject.next(true);
           this.router.navigateByUrl('/tabs/home');
         },
@@ -167,17 +168,36 @@ export class TransactionDetailPage implements OnInit {
 
   }
 
+  reload(event: any) {
+    this.loadData();
+    setTimeout(() => {
+      event.target.complete();
+    }, 1000);
+  }
 
   async ngOnInit() {
+    // load from approved/rejected task
+    this.savedIds = await this.transactionSrv.getEscrowApprovedOrRejected();
 
+    this.loadData();
+  }
 
-    this.utilService.MergeAccountAndContact();
-    this.loading = true;
+  goToExplorer() {
+    this.platform.ready().then(() => {
+      const browser = this.iab.create(ZOOBC_EXPL0RER_URL + '/' + this.txId, '_system');
+      browser.show();
+    });
+  }
+
+  async loadData() {
+
+    this.isLoading = true;
+    await this.utilService.MergeAccountAndContact();
+
     this.currAccount = await this.accountService.getCurrAccount();
-
-
     this.trx = this.transactionSrv.tempTrx;
-
+    this.txId = this.trx.id;
+    console.log('== this.trx: ', this.trx);
     if (this.trx && this.trx.transactionTypeString && this.trx.transactionTypeString === 'liquid transaction') {
       this.liquidForm.get('fTxId').setValue(this.trx.id);
       if (this.currAccount) {
@@ -185,31 +205,26 @@ export class TransactionDetailPage implements OnInit {
       }
 
       this.liquidForm.get('fFee').setValue(0.01);
-
       this.doneOn = this.trx.timestamp + (this.trx.txBody.completeminutes * 60 * 1000);
-
-
       const ts = Math.round((new Date()).getTime());
 
-      console.log('==  this.doneOn: ', this.doneOn);
-      console.log('== ts: ', ts);
-
-      if (this.doneOn >= ts) {
+      if (this.doneOn >= ts && this.trx.height) {
         this.allowStop = true;
       } else {
         this.allowStop = false;
       }
-      console.log('alllow stop: ', this.allowStop);
+      console.log('saved cointain txId: ', this.savedIds.includes(this.txId));
 
+      if (this.savedIds && this.savedIds.length > 0 && this.savedIds.includes(this.txId)) {
+        this.allowStop = false;
+      }
     }
-
-    this.loading = false;
-
     this.translateSrv.onLangChange.subscribe(() => {
       this.translateLang();
     });
 
     this.translateLang();
+    this.isLoading = false;
   }
 
   onTransHashOptionsClose(event, address) {
