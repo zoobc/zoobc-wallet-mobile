@@ -68,19 +68,20 @@ export class ExistingWalletPage implements OnInit {
   public loginFail = false;
   private lang: string;
   public arrayPhrase = [];
+  isProcessing = false;
+
   constructor(
     public loadingController: LoadingController,
     private navCtrl: NavController,
     private location: Location,
     private authSrv: AuthService,
     private modalController: ModalController,
-    private accountSrv: AccountService,
-    private storageSrv: StorageService
-  ) {
+    private accountSrv: AccountService  ) {
     this.lang = 'english';
   }
 
   ngOnInit() {
+    this.isProcessing = false;
     this.errorMsg = '';
     this.isValidPhrase = true;
     this.wordCounter = 0;
@@ -140,6 +141,7 @@ export class ExistingWalletPage implements OnInit {
     this.accountSrv.setPlainPassphrase(this.passphrase);
 
     this.errorMsg = '';
+    this.isProcessing = true;
     this.showPinDialog();
   }
 
@@ -148,23 +150,10 @@ export class ExistingWalletPage implements OnInit {
     // this.storageSrv.remove(STORAGE_ADDRESS_BOOK);
     const loginStatus = this.authSrv.login(this.plainPin);
     if (loginStatus) {
-      this.presentLoading();
-    }
-  }
-
-  async presentLoading() {
-    const loading = await this.loadingController.create({
-      spinner: null,
-      duration: 2000,
-      message: 'Please wait...',
-      translucent: true
-    });
-
-    loading.onDidDismiss().then(() => {
       this.navCtrl.navigateRoot('/restore-acc');
-    });
-
-    return await loading.present();
+    } else {
+      this.isProcessing = false;
+    }
   }
 
   async showPinDialog() {
@@ -180,6 +169,8 @@ export class ExistingWalletPage implements OnInit {
         this.plainPin = returnedData.data;
         this.accountSrv.setPlainPin(this.plainPin);
         this.createAccount();
+      } else {
+        this.isProcessing = false;
       }
     });
     return await pinmodal.present();

@@ -43,12 +43,13 @@ import { Router } from '@angular/router';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EnterpinsendPage } from 'src/app/Pages/send-coin/modals/enterpinsend/enterpinsend.page';
+import { AccountService } from 'src/app/Services/account.service';
 import { AuthService } from 'src/app/Services/auth-service';
 import { TransactionService } from 'src/app/Services/transaction.service';
 import { UtilService } from 'src/app/Services/util.service';
 import { getTranslation } from 'src/Helpers/utils';
 import Swal from 'sweetalert2';
-import zoobc, { LiquidTransactionsInterface, PostTransactionResponses, SendZBCInterface } from 'zbc-sdk';
+import zoobc, { BIP32Interface, LiquidTransactionsInterface, PostTransactionResponses, SendZBCInterface } from 'zbc-sdk';
 
 @Component({
   selector: 'app-send-zoobc-summary',
@@ -61,11 +62,14 @@ export class SendZoobcSummaryComponent implements OnInit {
 
   formTrx: any;
   total = 0;
+  accSeed: BIP32Interface;
+  loginType: number;
 
   constructor(
     private transactionSrv: TransactionService,
     private translate: TranslateService,
     private authSrv: AuthService,
+    private accService: AccountService,
     private utilService: UtilService,
     private loadingController: LoadingController,
     private modalController: ModalController,
@@ -73,6 +77,8 @@ export class SendZoobcSummaryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.loginType = this.authSrv.loginType;
+    console.log('=== loginType: ', this.loginType);
     this.formTrx = this.transactionSrv.getTrx();
 
     this.total = Number(this.formTrx.amount) + Number(this.formTrx.fee);
@@ -121,10 +127,18 @@ export class SendZoobcSummaryComponent implements OnInit {
 
     await loading.present();
 
-    const childSeed = this.authSrv.keyring.calcDerivationPath(
-      this.formTrx.sender.path
-    );
 
+    if (this.loginType !== 0) {
+      console.log('=== loginTp: ', this.loginType);
+      this.accSeed = this.accService.getTempSeed();
+    } else {
+      console.log('=== loginTp: ', this.loginType);
+      this.accSeed = this.authSrv.keyring.calcDerivationPath(
+        this.formTrx.sender.path
+      );
+    }
+
+    console.log('===   this.accSeed: ',   this.accSeed);
 
     if (this.formTrx.withLiquid === true) {
 
@@ -145,7 +159,7 @@ export class SendZoobcSummaryComponent implements OnInit {
         data.instruction = escrow.instruction ? (escrow.instruction) : '';
       }
 
-      await zoobc.Liquid.sendLiquid(data, childSeed).then(
+      await zoobc.Liquid.sendLiquid(data, this.accSeed).then(
         async (res: PostTransactionResponses) => {
 
           const message = getTranslation('your transaction is processing', this.translate);
@@ -189,9 +203,10 @@ export class SendZoobcSummaryComponent implements OnInit {
       }
 
 
-      await zoobc.Transactions.SendZBC(data, childSeed)
+      await zoobc.Transactions.SendZBC(data, this.accSeed)
         .then(
-          async (msg) => {
+           (msg) => {
+            console.log('== msg');
             const message = getTranslation('your transaction is processing', this.translate);
             const subMessage = getTranslation('you send coins to', this.translate, {
               amount: this.formTrx.amount,
@@ -202,7 +217,7 @@ export class SendZoobcSummaryComponent implements OnInit {
             loading.dismiss();
             this.router.navigateByUrl('/tabs/home');
           },
-          async err => {
+           err => {
             console.log(err);
             const message = 'Opps...';
             loading.dismiss();

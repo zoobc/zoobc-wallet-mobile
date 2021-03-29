@@ -57,10 +57,16 @@ shall be included in all copies or substantial portions of the Software.
       <ion-icon name="zbc-scan" (click)="goToScan()"></ion-icon>
     </div> -->
     <ion-label class="account ion-text-center" *ngIf="account" color="medium">
-      <div class="account-name-container  ion-text-center" style="margin-bottom:10px" (click)="switchAccount($event)">
+ 
+      <div class="account-name-container  ion-text-center" *ngIf="loginType != 0" style="margin-bottom:10px">
+        <h1 class="account-name">{{ account.name }}</h1>
+      </div>
+
+      <div class="account-name-container  ion-text-center" *ngIf="loginType == 0" style="margin-bottom:10px" (click)="switchAccount($event)">
         <h1 class="account-name">{{ account.name }}</h1>
         <ion-icon name="zbc-chevron-down" style="color:  #cccccc"></ion-icon>
       </div>
+
       <p><span class="shortAddress">{{ account.address.value | shortAddress }}</span>&nbsp;&nbsp;<ion-icon
           class="copyAddress" name="copy" (click)="copyToClipboard()"></ion-icon>
       </p>
@@ -94,22 +100,22 @@ shall be included in all copies or substantial portions of the Software.
     <ion-card-content>
       <div class="main-buttons">
 
-        <ion-label (click)="goToSend()">
-          <ion-icon name="zbc-arrow-up" color="secondary"></ion-icon>
+        <ion-label (click)="goToSend()" *ngIf="loginType != 2">
+          <ion-icon name="md-arrow-up" class="icon-size"></ion-icon>
           <ion-text>
             <h2>{{ "send" | translate }}</h2>
           </ion-text>
         </ion-label>
 
-        <!-- <ion-label  *ngIf="isAccMultisig" (click)="goToMultisig()">
-          <ion-icon ios="ios-create" md="md-create" color="secondary"></ion-icon>
-          <ion-text>
-            <h2>{{ "multisignature" | translate }}</h2>
+        <ion-label *ngIf="loginType == 2">
+          <ion-icon name="md-arrow-up" color="light" class="icon-size"></ion-icon>
+          <ion-text color="light">
+            <h2>{{ "send" | translate }}</h2>
           </ion-text>
-        </ion-label> -->
+        </ion-label>
 
         <ion-label (click)="goToReceive()">
-          <ion-icon name="zbc-arrow-down" color="secondary"></ion-icon>
+          <ion-icon name="md-arrow-down" class="icon-size"></ion-icon>
           <ion-text>
             <h2>{{ "receive" | translate }}</h2>
           </ion-text>
@@ -118,29 +124,40 @@ shall be included in all copies or substantial portions of the Software.
 
       <div class="other-buttons">
         <ion-label (click)="goToMultisig()">
-          <ion-icon ios="ios-create" md="md-create"></ion-icon>
+          <ion-icon name="md-people" class="icon-size"></ion-icon>
           <ion-text>
             <h4>{{ "multisignature" | translate }}</h4>
           </ion-text>
         </ion-label>
         <ion-label (click)="showBlockchainObjectOption($event)">
-          <ion-icon name="zbc-boxes" color="secondary"></ion-icon>
+          <ion-icon name="md-cube" class="icon-size"></ion-icon>
           <ion-text>
             <h4>{{ "Blockchain Object" | translate }}</h4>
           </ion-text>
         </ion-label>
-        <ion-label (click)="goToAccount();">
-          <ion-icon name="wallet" color="secondary"></ion-icon>
-          <ion-text>
-            <h4>{{ "Accounts" | translate }}</h4>
-          </ion-text>
-        </ion-label>
+
         <ion-label (click)="goToScan();">
-          <ion-icon name="zbc-scan" color="secondary"></ion-icon>
+          <ion-icon name="md-qr-scanner" class="icon-size"></ion-icon>
           <ion-text>
             <h4>{{ "Scan QRCode" | translate }}</h4>
           </ion-text>
         </ion-label>
+
+        <ion-label *ngIf="loginType!=0">
+          <ion-icon name="md-card" color="light" class="icon-size"></ion-icon>
+          <ion-text color="light">
+            <h4>{{ "Accounts" | translate }}</h4>
+          </ion-text>
+        </ion-label>
+
+        <ion-label (click)="goToAccount();" *ngIf="loginType==0">
+          <ion-icon name="md-card" color="secondary" class="icon-size"></ion-icon>
+          <ion-text>
+            <h4>{{ "Accounts" | translate }}</h4>
+          </ion-text>
+        </ion-label>
+ 
+
       </div>
 
     </ion-card-content>

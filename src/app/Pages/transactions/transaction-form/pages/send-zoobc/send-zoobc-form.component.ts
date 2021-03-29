@@ -64,6 +64,7 @@ import {
 import zoobc, { calculateMinimumFee } from 'zbc-sdk';
 import { getTranslation } from 'src/Helpers/utils';
 import { UtilService } from 'src/app/Services/util.service';
+import { AuthService } from 'src/app/Services/auth-service';
 
 @Component({
   selector: 'app-send-zoobc-form',
@@ -103,8 +104,10 @@ export class SendZoobcFormComponent implements OnInit {
   minError = false;
   escrowInstruction = '';
   withLiquid = false;
+  loginTp: number;
 
   constructor(
+    private authService: AuthService,
     private router: Router,
     private qrScannerSrv: QrScannerService,
     public loadingController: LoadingController,
@@ -205,6 +208,12 @@ export class SendZoobcFormComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.loginTp = this.authService.loginType;
+    console.log('=== this.loginTp: ', this.loginTp);
+
+    const seed  = this.accountSrv.getTempSeed();
+    console.log('=== the seed: ', seed);
+
     this.account = await this.accountSrv.getCurrAccount();
     this.sender.setValue(this.account);
     this.getRecipientFromScanner();

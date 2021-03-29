@@ -50,18 +50,22 @@ import {
 import { Subject } from 'rxjs';
 import { StorageService } from './storage.service';
 import { Account, AccountType } from '../Interfaces/account';
-import zoobc, { ZooKeyring, getZBCAddress,
+import zoobc, {
+  ZooKeyring, getZBCAddress,
   BIP32Interface, AccountBalance, MultiSigInfo,
-  Address, TransactionListParams, ZBCTransactions } from 'zbc-sdk';
+  Address, TransactionListParams, ZBCTransactions
+} from 'zbc-sdk';
+import * as wif from 'wif';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
 
-
   private forWhat: string;
   private plainPassphrase: string;
+  private plainPrivateKey: string;
+  private zbcAddress: string;
   private arrayPhrase = [];
   private plainPin: string;
   private seed: BIP32Interface;
@@ -134,7 +138,7 @@ export class AccountService {
       return accounts.filter(acc => acc.type === 'multisig');
     } else if (type === 'imported') {
       return accounts.filter(acc => acc.type === 'imported');
-    } else if (type === 'one time login') {
+    } else if (type === 'privateKey') {
       return [this.getCurrAccount()];
     }
     return accounts;
@@ -215,6 +219,22 @@ export class AccountService {
     this.keyring = new ZooKeyring(this.plainPassphrase, SALT_PASSPHRASE);
   }
 
+  setPlainPk(arg: string) {
+    this.plainPrivateKey = arg;
+  }
+
+  setZbcAddress(arg: string) {
+    this.zbcAddress = arg;
+  }
+
+  getZbcAddress(): string {
+    return this.zbcAddress;
+  }
+
+  getPlainPk(): string {
+    return this.plainPrivateKey;
+  }
+
   getPassphrase(): string {
     return this.plainPassphrase;
   }
@@ -243,8 +263,48 @@ export class AccountService {
     this.savePassphraseSeed(this.plainPassphrase, this.plainPin);
   }
 
+  async createAccountWithPK() {
+    try {
+      await this.removeAllAccounts();
+      const privateKey = Buffer.from(this.plainPrivateKey, 'hex');
+      const key = wif.encode(128, privateKey, true);
+      const bip = wif.decode(key);
+      const keyring = new ZooKeyring('');
+      const seed = keyring.generateBip32ExtendedKey('ed25519', bip);
+      this.setTempSeed(seed);
+      const address = getZBCAddress(seed.publicKey);
+      console.log('== address: ', address);
+      const account: Account = {
+        name: 'Imported Account',
+        address: { type: 0, value: address },
+        type: 'privateKey',
+      };
+      await this.switchAccount(account);
+      await this.addAccount(account);
+      this.savePassphraseSeed(this.plainPrivateKey, this.plainPin);
+    } catch (e) {
+      alert('Error parsing the private key!');
+      return;
+    }
+  }
+
+  async createAccountWithAddress() {
+    await this.removeAllAccounts();
+    const account: Account = {
+      name: 'View Only Account',
+      address: { type: 0, value: this.zbcAddress },
+      type: 'address',
+    };
+
+    await this.switchAccount(account);
+    await this.addAccount(account);
+    this.savePassphraseSeed(this.zbcAddress, this.plainPin);
+
+  }
+
+
   createNewAccount(accountName: string, pathNumber: number) {
-    const childSeed =  this.keyring.calcDerivationPath(pathNumber);
+    const childSeed = this.keyring.calcDerivationPath(pathNumber);
     const address: Address = { value: getZBCAddress(childSeed.publicKey), type: 0 };
 
     const account: Account = {
@@ -281,71 +341,75 @@ export class AccountService {
 
   async restoreAccounts() {
 
-      let accountPath = 1;
-      let accountsTemp = [];
-      let accounts = await this.allAccount();
-      let counter = 0;
+    let accountPath = 1;
+    let accountsTemp = [];
+    let accounts = await this.allAccount();
+    let counter = 0;
 
-      while (counter < 20) {
-        const childSeed =  this.keyring.calcDerivationPath(accountPath);
-        const address = getZBCAddress(childSeed.publicKey);
+    while (counter < 20) {
+      const childSeed = this.keyring.calcDerivationPath(accountPath);
+      const address = getZBCAddress(childSeed.publicKey);
 
-        const account: Account = {
-          name: 'Account '.concat((accountPath + 1).toString()),
-          path: accountPath,
-          nodeIP: null,
-          address: { value: address, type: 0 },
-          type: 'normal',
-        };
+      const account: Account = {
+        name: 'Account '.concat((accountPath + 1).toString()),
+        path: accountPath,
+        nodeIP: null,
+        address: { value: address, type: 0 },
+        type: 'normal',
+      };
 
-        const params: TransactionListParams = {
-          address: { value: address, type: 0 },
-          transactionType: 1,
-          pagination: {
-            page: 1,
-            limit: 1,
-          },
-        };
+      const params: TransactionListParams = {
+        address: { value: address, type: 0 },
+        transactionType: 1,
+        pagination: {
+          page: 1,
+          limit: 1,
+        },
+      };
 
-        await zoobc.Transactions.getList(params).then((res: ZBCTransactions) => {
-          const totalTx = res.total;
-          accountsTemp.push(account);
-          if (totalTx > 0) {
-            accounts = accounts.concat(accountsTemp);
-            accountsTemp = [];
-            counter = 0;
-          }
-        });
-        accountPath++;
-        counter++;
-      }
-
-      // checking if there's a new account created by user during this process
-      const oldAccounts = await this.allAccount();
-      for (let i = 1; i < oldAccounts.length; i++) {
-        const account = oldAccounts[i];
-        let isDuplicate = false;
-        // tslint:disable-next-line:prefer-for-of
-        for (let j = 0; j < accounts.length; j++) {
-          const account2 = accounts[j];
-          if (account.address.value === account2.address.value) {
-            isDuplicate = true;
-            break;
-          }
+      await zoobc.Transactions.getList(params).then((res: ZBCTransactions) => {
+        const totalTx = res.total;
+        accountsTemp.push(account);
+        if (totalTx > 0) {
+          accounts = accounts.concat(accountsTemp);
+          accountsTemp = [];
+          counter = 0;
         }
+      });
+      accountPath++;
+      counter++;
+    }
 
-        // if the account created by user isnt in accounts list generated by this process, push it to the array
-        if (!isDuplicate) { accounts.push(account); }
+    // checking if there's a new account created by user during this process
+    const oldAccounts = await this.allAccount();
+    for (let i = 1; i < oldAccounts.length; i++) {
+      const account = oldAccounts[i];
+      let isDuplicate = false;
+      // tslint:disable-next-line:prefer-for-of
+      for (let j = 0; j < accounts.length; j++) {
+        const account2 = accounts[j];
+        if (account.address.value === account2.address.value) {
+          isDuplicate = true;
+          break;
+        }
       }
-      // console.log('==== accounts:', accounts);
-      await this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, accounts);
-      // localStorage.setItem('ACCOUNT', JSON.stringify(accounts));
+
+      // if the account created by user isnt in accounts list generated by this process, push it to the array
+      if (!isDuplicate) { accounts.push(account); }
+    }
+    // console.log('==== accounts:', accounts);
+    await this.strgSrv.setObject(STORAGE_ALL_ACCOUNTS, accounts);
+    // localStorage.setItem('ACCOUNT', JSON.stringify(accounts));
   }
 
   updateTempSeed(account: Account) {
     if (account.path != null) {
       this.tempSeed = this.keyring.calcDerivationPath(account.path);
     }
+  }
+
+  setTempSeed(seed: BIP32Interface) {
+    this.tempSeed = seed;
   }
 
   async switchAccount(account: Account) {
@@ -397,10 +461,10 @@ export class AccountService {
     }
 
     const obj = this.addresses.filter((x) => {
-      return x.address ===  value;
+      return x.address === value;
     });
     if (obj && obj.length > 0) {
-        return obj[0].name;
+      return obj[0].name;
     } else {
       return '';
     }

@@ -117,7 +117,7 @@ export class TransactionsPage implements OnInit {
     private alertCtrl: AlertController,
     private activeRoute: ActivatedRoute
   ) {
-    console.log('-- consturctor ');
+    // console.log('-- consturctor ');
     // if account changed
     // this.accountService.accountSubject.subscribe(() => {
     //   this.loadData();
@@ -297,7 +297,7 @@ export class TransactionsPage implements OnInit {
         });
         this.total = trxList.total;
         this.accountHistory = reload ? txs : this.accountHistory.concat(txs);
-        console.log('== accountHistory: ', this.accountHistory);
+        // console.log('== accountHistory: ', this.accountHistory);
         if (reload) {
           const mempoolParams: MempoolListParams = { address: this.currentAddress };
           this.unconfirmTx = await zoobc.Mempool.getList(mempoolParams).then((res: ZBCTransactions) =>
@@ -351,12 +351,12 @@ export class TransactionsPage implements OnInit {
     });
   }
 
-  ionViewDidEnter() {
-    console.log('-- ionViewDidEnter');
-  }
+  // ionViewDidEnter() {
+  //   console.log('-- ionViewDidEnter');
+  // }
 
   ionViewWillEnter() {
-    console.log('-- ionViewWillEnter');
+    // console.log('-- ionViewWillEnter');
 
     this.networkSubscription = this.network
       .onDisconnect()

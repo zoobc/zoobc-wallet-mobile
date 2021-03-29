@@ -32,61 +32,39 @@
 //     However a prior notification to the authors will be appreciated.
 
 // ZooBC is architected by Roberto Capodieci & Barton Johnston
-//     contact us at roberto.capodieci[at]blockchainzoo.com
-//     and barton.johnston[at]blockchainzoo.com
+//             contact us at roberto.capodieci[at]blockchainzoo.com
+//             and barton.johnston[at]blockchainzoo.com
 
 // IMPORTANT: The above copyright notice and this permission notice
 // shall be included in all copies or substantial portions of the Software.
 
-import { Component,  OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { PopoverController } from '@ionic/angular';
-import { IBlockchainObjectItem } from 'src/app/Interfaces/bc-object-item';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
 
-@Component({
-  selector: 'app-popover-blockchain-object',
-  templateUrl: './popover-blockchain-object.component.html',
-  styleUrls: ['./popover-blockchain-object.component.scss']
+import { IonicModule } from '@ionic/angular';
+
+import { PkeyPinPage } from './pkey-pin.page';
+import { TranslateModule } from '@ngx-translate/core';
+import { ComponentsModule } from 'src/app/Components/components.module';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: PkeyPinPage
+  }
+];
+
+@NgModule({
+  imports: [
+    CommonModule,
+    ComponentsModule,
+    FormsModule,
+    IonicModule,
+    TranslateModule,
+    RouterModule.forChild(routes)
+  ],
+  declarations: [PkeyPinPage]
 })
-export class PopoverBlockchainObjectComponent implements OnInit {
-  selectedIndex: number;
-
-  blockchainObjectItems: IBlockchainObjectItem[] = [
-  // {
-  //   title: 'ZBO_F6CR...WD3R',
-  //   desc: '2 minutes ago'
-  // },
-  // {
-  //   title: 'ZBO_F6CR...WFJ7',
-  //   desc: '10 minutes ago'
-  // },
-  // {
-  //   title: 'ZBO_F6CR...OP6Y',
-  //   desc: '2 days ago'
-  // },
-  // {
-  //   title: 'ZBO_F6CR...JK7Y',
-  //   desc: '1 week ago'
-  // }
-  ];
-
-  constructor(
-    public popoverCtrl: PopoverController,
-    private router: Router,
-  ) { }
-
-  async ngOnInit() {}
-
-  async select(blockchainObjectItem: IBlockchainObjectItem) {
-    this.popoverCtrl.dismiss(blockchainObjectItem);
-  }
-
-  goToBlockchainObject() {
-    this.popoverCtrl.dismiss('');
-    this.router.navigate(['/transaction-form/blockchain-object']);
-  }
-
-  cancel() {
-    this.popoverCtrl.dismiss('');
-  }
-}
+export class PkeyPinPageModule {}

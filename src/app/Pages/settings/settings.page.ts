@@ -118,12 +118,10 @@ export class SettingsPage implements OnInit {
     this.activeCurrency = this.currencyService.getOne(activeCurrencyCode);
 
     const group: GroupData = await this.strgSrv.get(STORAGE_ACTIVE_NETWORK_GROUP);
-    console.log('== group selected: ', group);
+
     this.activeNetworkGroup[0] = group;
 
     this.activeNetwork = group.label;
-    console.log('== activeNetwork: ', this.activeNetwork);
-
 
     this.translateSrv.onLangChange.subscribe((event: LangChangeEvent) => {
       this.translateLang();
@@ -239,7 +237,7 @@ export class SettingsPage implements OnInit {
           text: this.textYes,
           handler: () => {
             this.authService.logout();
-            this.router.navigateByUrl('/login');
+            this.router.navigateByUrl('/');
           }
         }
       ]

@@ -40,7 +40,7 @@
 
 
 import { Currency } from 'src/app/Interfaces/currency';
-export const UNIQUE_DB_ID = 'mbl_' + '02d';
+export const UNIQUE_DB_ID = 'mbl_' + '02e';
 export const COIN_CODE = 'ZBC';
 export const SALT_PASSPHRASE = '';
 export const STORAGE_ACTIVE_CURRENCY = 'strg_active_currency' + '_' + UNIQUE_DB_ID;
@@ -67,6 +67,9 @@ export const TRANSACTION_TYPE = Buffer.from([1, 0, 0, 0]);
 export const TRANSACTION_MINIMUM_FEE = 0.01;
 export const TRANSACTION_VERSION = Buffer.from([1]);
 export const FOR_SENDER = 'sender';
+export const LOGIN_TYPE_PASSPHRASE = 0;
+export const LOGIN_TYPE_PKEY = 1;
+export const LOGIN_TYPE_ADDRESS = 2;
 export const FOR_PARTICIPANT = 'participant';
 export const FOR_SIGNBY = 'signby';
 export const FOR_RECIPIENT = 'recipient';
@@ -125,27 +128,32 @@ export const NETWORK_LIST = [
   {
     label: 'MainNet',
     wkps: [
-      'http://158.247.207.68:7004',
-      'http://45.32.12.195:7004',
-      'http://141.164.59.195:7004',
-      'http://167.179.94.49:7004',
-      'http://108.160.138.200:7004',
-      'http://185.177.93.97:7004',
-      'http://185.189.68.248:7004',
-      'http://185.189.68.247:7004',
-      'http://185.189.68.249:7004',
-      'http://185.177.92.164:7004',
-      'http://64.227.104.19:7004',
-      'http://185.177.92.163:7004',
-      'http://142.93.221.153:7004',
-      'http://128.199.250.237:7004',
-      'http://159.89.17.165:7004',
-      'http://188.166.83.158:7004',
-      'http://172.105.181.56:7004',
-      'http://45.79.127.201:7004',
-      'http://139.162.116.79:7004',
-      'http://172.104.180.153:7004',
-      'http://176.58.124.29:7004'
+      'http://172.104.180.153:7001',
+      'http://176.58.124.29:7001',
+      'http://172.105.90.139:7001',
+      'http://139.162.116.79:7001',
+      'http://45.79.127.201:7001',
+      'http://172.105.181.56:7001',
+      'http://172.105.109.190:7001',
+      'http://188.166.83.158:7001',
+      'http://128.199.250.237:7001',
+      'http://46.101.42.38:7001',
+      'http://159.89.17.165:7001',
+      'http://134.122.34.173:7001',
+      'http://142.93.221.153:7001',
+      'http://64.227.104.19:7001',
+      'http://185.177.92.163:7001',
+      'http://185.177.92.164:7001',
+      'http://185.189.68.249:7001',
+      'http://185.189.68.247:7001',
+      'http://185.189.68.248:7001',
+      'http://185.177.93.97:7001',
+      'http://185.177.93.220:7001',
+      'http://108.160.138.200:7001',
+      'http://167.179.94.49:7001',
+      'http://141.164.59.195:7001',
+      'http://45.32.12.195:7001',
+      'http://158.247.207.68:7001'
     ]
   },
   {
@@ -161,57 +169,7 @@ export const NETWORK_LIST = [
       'http://n7.beta.proofofparticipation.network:7001',
       'http://n8.beta.proofofparticipation.network:7001',
       'http://n9.beta.proofofparticipation.network:7001',
-      'http://n10.beta.proofofparticipation.network:7001',
-      'http://n11.beta.proofofparticipation.network:7001',
-      'http://n12.beta.proofofparticipation.network:7001',
-      'http://n13.beta.proofofparticipation.network:7001',
-      'http://n14.beta.proofofparticipation.network:7001',
-      'http://n15.beta.proofofparticipation.network:7001',
-      'http://n16.beta.proofofparticipation.network:7001',
-      'http://n17.beta.proofofparticipation.network:7001',
-      'http://n18.beta.proofofparticipation.network:7001',
-      'http://n19.beta.proofofparticipation.network:7001',
-      'http://n20.beta.proofofparticipation.network:7001',
-      'http://n21.beta.proofofparticipation.network:7001',
-      'http://n22.beta.proofofparticipation.network:7001',
-      'http://n23.beta.proofofparticipation.network:7001',
-      'http://n24.beta.proofofparticipation.network:7001',
-      'http://n25.beta.proofofparticipation.network:7001',
-      'http://n26.beta.proofofparticipation.network:7001',
-      'http://n27.beta.proofofparticipation.network:7001',
-      'http://n28.beta.proofofparticipation.network:7001',
-      'http://n29.beta.proofofparticipation.network:7001',
-      'http://n30.beta.proofofparticipation.network:7001',
-      'http://n31.beta.proofofparticipation.network:7001',
-      'http://n32.beta.proofofparticipation.network:7001',
-      'http://n33.beta.proofofparticipation.network:7001',
-      'http://n34.beta.proofofparticipation.network:7001',
-      'http://n35.beta.proofofparticipation.network:7001',
-      'http://n36.beta.proofofparticipation.network:7001',
-      'http://n37.beta.proofofparticipation.network:7001',
-      'http://n38.beta.proofofparticipation.network:7001',
-      'http://n39.beta.proofofparticipation.network:7001',
-      'http://n40.beta.proofofparticipation.network:7001',
-      'http://n41.beta.proofofparticipation.network:7001',
-      'http://n42.beta.proofofparticipation.network:7001',
-      'http://n43.beta.proofofparticipation.network:7001',
-      'http://n44.beta.proofofparticipation.network:7001',
-      'http://n45.beta.proofofparticipation.network:7001',
-      'http://n46.beta.proofofparticipation.network:7001',
-      'http://n47.beta.proofofparticipation.network:7001',
-      'http://n48.beta.proofofparticipation.network:7001',
-      'http://n49.beta.proofofparticipation.network:7001',
-      'http://n50.beta.proofofparticipation.network:7001',
-      'http://n51.beta.proofofparticipation.network:7001',
-      'http://n52.beta.proofofparticipation.network:7001',
-      'http://n53.beta.proofofparticipation.network:7001',
-      'http://n54.beta.proofofparticipation.network:7001',
-      'http://n55.beta.proofofparticipation.network:7001',
-      'http://n56.beta.proofofparticipation.network:7001',
-      'http://n57.beta.proofofparticipation.network:7001',
-      'http://n58.beta.proofofparticipation.network:7001',
-      'http://n59.beta.proofofparticipation.network:7001',
-      'http://n60.beta.proofofparticipation.network:7001'
+      'http://n10.beta.proofofparticipation.network:7001'
     ]
   }
 ];

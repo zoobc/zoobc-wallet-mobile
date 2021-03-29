@@ -66,22 +66,22 @@ export class BlockchainObjectPage implements OnInit {
   ) { }
 
   blockchainObjects = [
-    {
-      id: 'ZBO_F6CR...WD3R',
-      info: '5 days ago'
-    },
-    {
-      id: 'ZBO_F6CR...WFJ7',
-      info: '4 days ago'
-    },
-    {
-      id: 'ZBO_F6CR...OP6Y',
-      info: '3 days ago'
-    },
-    {
-      id: 'ZBO_F6CR...JK7Y',
-      info: '2 days ago'
-    }
+    // {
+    //   id: 'ZBO_F6CR...WD3R',
+    //   info: '5 days ago'
+    // },
+    // {
+    //   id: 'ZBO_F6CR...WFJ7',
+    //   info: '4 days ago'
+    // },
+    // {
+    //   id: 'ZBO_F6CR...OP6Y',
+    //   info: '3 days ago'
+    // },
+    // {
+    //   id: 'ZBO_F6CR...JK7Y',
+    //   info: '2 days ago'
+    // }
   ];
 
   private textViewDetail: string;

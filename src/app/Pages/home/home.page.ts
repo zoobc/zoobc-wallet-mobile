@@ -56,7 +56,9 @@ import { CurrencyService } from 'src/app/Services/currency.service';
 import { AccountService } from 'src/app/Services/account.service';
 import {
   CONST_DEFAULT_RATE,
-  DEFAULT_THEME} from 'src/environments/variable.const';
+  DEFAULT_THEME,
+  LOGIN_TYPE_ADDRESS,
+  LOGIN_TYPE_PASSPHRASE} from 'src/environments/variable.const';
 import { Currency } from 'src/app/Interfaces/currency';
 import { NetworkService } from 'src/app/Services/network.service';
 import { makeShortAddress } from 'src/Helpers/converters';
@@ -131,6 +133,7 @@ export class HomePage implements OnInit, OnDestroy {
   isLoadingBalance: boolean;
   isErrorBalance: boolean;
   isIPhone = false;
+  loginType: number;
 
   constructor(
     private authService: AuthService,
@@ -153,8 +156,6 @@ export class HomePage implements OnInit, OnDestroy {
     public platform: Platform
   ) {
 
-
-    // // // if post send zoobc reload data
     this.transactionSrv.transferZooBcSubject.subscribe(() => {
       this.loadData();
     });
@@ -213,13 +214,14 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.loginType = this.authService.loginType;
+    // console.log('=== this.loginType:', this.loginType);
     const currentPlatform = this.platform.platforms();
     if (currentPlatform.includes('iphone')) {
         this.isIPhone = true;
     } else {
         this.isIPhone = false;
     }
-    console.log('=== currentPlatform: ', currentPlatform);
     this.fullBalance = false;
     this.startTimer();
   }
@@ -232,7 +234,8 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
+    this.loginType = this.authService.loginType;
+    console.log('=== this.loginType:', this.loginType);
     this.networkSubscription = this.network
       .onDisconnect()
       .subscribe(async () => {
@@ -370,6 +373,10 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   goToAccount() {
+    if (this.loginType !== LOGIN_TYPE_PASSPHRASE) {
+      this.utilSrv.showAlert('Error', 'Manage account denied!', 'Manage account is not Allowed if login with Address or private key!');
+      return;
+    }
     this.popoverCtrl.dismiss('');
     this.router.navigate(['/list-account']);
   }
@@ -430,6 +437,12 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   goToSend() {
+
+    if (this.loginType === LOGIN_TYPE_ADDRESS) {
+      this.utilSrv.showAlert('Error', 'Transfer ZBC denied!', 'Transfer ZBC is not Allowed if login with Address!');
+      return;
+    }
+
     if (this.account.type && this.account.type === 'multisig') {
       this.createMsigTransaction();
     } else {
@@ -594,8 +607,6 @@ export class HomePage implements OnInit, OnDestroy {
 
         this.total = trxList.total;
         this.accountHistory = txs;
-        console.log('=== txs: ', txs);
-
         this.getUnconfirmTransaction();
 
       } catch {
@@ -618,7 +629,6 @@ export class HomePage implements OnInit, OnDestroy {
           return uc;
         })
       );
-    console.log('this.unconfirmTx: ', this.unconfirmTx);
   }
 
 }

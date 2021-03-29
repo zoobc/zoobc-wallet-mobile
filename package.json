@@ -1,8 +1,8 @@
 {
   "name": "zoobc-wallet",
-  "version": "0.2.10",
+  "version": "0.3.12",
   "author": "Zoobc Wallet Team",
-  "homepage": "https://zoobc.com/",
+  "homepage": "https://zoobc.app/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -29,12 +29,13 @@
     "@ionic-native/core": "^5.10.0",
     "@ionic-native/date-picker": "^5.31.1",
     "@ionic-native/device-accounts": "^5.21.6",
-    "@ionic-native/diagnostic": "^5.13.0",
+    "@ionic-native/diagnostic": "^5.31.1",
     "@ionic-native/dialogs": "^5.30.0",
     "@ionic-native/file": "^5.27.0",
     "@ionic-native/file-chooser": "^5.27.0",
     "@ionic-native/file-path": "^5.27.0",
     "@ionic-native/http": "^5.14.0",
+    "@ionic-native/in-app-browser": "^5.31.1",
     "@ionic-native/ionic-webview": "^5.26.0",
     "@ionic-native/network": "^5.10.0",
     "@ionic-native/network-interface": "^5.14.0",
@@ -50,12 +51,12 @@
     "@ngxs/store": "^3.4.3",
     "axios": "^0.19.0",
     "base58-encode": "^0.1.4",
+    "bitcoinjs-lib": "^5.2.0",
     "bn.js": "^5.0.0",
     "chart.js": "^2.8.0",
     "color": "^3.1.2",
     "cordova-android": "^8.1.0",
     "cordova-android-support-gradle-release": "^3.0.1",
-    "cordova-browser": "6.0.0",
     "cordova-clipboard": "^1.3.0",
     "cordova-device-accounts-v2": "^2.0.8",
     "cordova-ios": "^5.1.1",
@@ -102,7 +103,7 @@
     "sweetalert2": "^8.11.7",
     "tslib": "^1.9.0",
     "wif": "^2.0.6",
-    "zbc-sdk": "../zoobc-sdk",
+    "zbc-sdk": "0.0.30-pre-release",
     "zone.js": "~0.8.29"
   },
   "devDependencies": {
@@ -137,7 +138,7 @@
     "typescript": "~3.2.4",
     "worker-plugin": "^3.1.0"
   },
-  "description": "An Ionic project",
+  "description": "ZooBC wallet mobile",
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
@@ -153,9 +154,7 @@
         "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
         "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
       },
-      "cordova.plugins.diagnostic": {
-        "ANDROID_SUPPORT_VERSION": "28.+"
-      },
+      "cordova.plugins.diagnostic": {},
       "cordova-plugin-networkinterface": {},
       "cordova-android-support-gradle-release": {
         "ANDROID_SUPPORT_VERSION": "27.+"
@@ -185,8 +184,7 @@
     },
     "platforms": [
       "ios",
-      "android",
-      "browser"
+      "android"
     ]
   }
 }
