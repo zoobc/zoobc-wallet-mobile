@@ -43,13 +43,16 @@ import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 
 import {
   STORAGE_ENC_PASSPHRASE_SEED,
-  SALT_PASSPHRASE
+  SALT_PASSPHRASE,
+  LOGIN_TYPE_PKEY,
+  LOGIN_TYPE_PASSPHRASE,
+  LOGIN_TYPE_ADDRESS
 } from 'src/environments/variable.const';
 import { AccountService } from './account.service';
 import { StorageService } from './storage.service';
 import zoobc, { BIP32Interface, isZBCAddressValid, ZooKeyring } from 'zbc-sdk';
 import { Account } from '../Interfaces/account';
-
+import * as wif from 'wif';
 @Injectable({
   providedIn: 'root'
 })
@@ -60,16 +63,19 @@ export class AuthService implements CanActivate {
   keyring: ZooKeyring;
   restoring: boolean;
   tempAccounts = [];
-   seedByPrivateKey: BIP32Interface;
+  seedByPrivateKey: BIP32Interface;
+  loginType: number;
 
   constructor(
     private router: Router,
     private strgSrv: StorageService,
     private accountService: AccountService) {
     this.isUserLoggenIn = false;
+    // this.accWithPrivateKey = false;
   }
 
   async canActivate(route: ActivatedRouteSnapshot) {
+    this.loginType = LOGIN_TYPE_PASSPHRASE;
     const acc = await this.accountService.getCurrAccount();
 
     if (acc === null || acc === undefined) {
@@ -81,7 +87,17 @@ export class AuthService implements CanActivate {
       return false;
     }
 
+    if (acc.type === 'privateKey') {
+      this.loginType = LOGIN_TYPE_PKEY;
+    } else if (acc.type === 'address') {
+      this.loginType = LOGIN_TYPE_ADDRESS;
+    }
+    console.log('=== this.loginType:', this.loginType);
     return true;
+  }
+
+  setLoggedIn() {
+    this.isUserLoggenIn = true;
   }
 
   isLoggedIn() {
@@ -98,23 +114,66 @@ export class AuthService implements CanActivate {
       this.keyring = new ZooKeyring(passphrase, SALT_PASSPHRASE);
       this.accountService.keyring = this.keyring;
       this.isUserLoggenIn = true;
+      this.loginType = LOGIN_TYPE_PASSPHRASE;
       return this.isUserLoggenIn;
     }
     this.isUserLoggenIn = false;
     return this.isUserLoggenIn;
   }
 
-  loginWithoutPin(account: Account, seed?: BIP32Interface): boolean {
-    if (!isZBCAddressValid(account.address.value)) { return false; }
-    this.accountService.switchAccount(account);
+  async loginWithPK(pin: string) {
+    this.tempKey = pin;
 
-    if (seed) { this.seedByPrivateKey = seed; }
-    this.isUserLoggenIn = true;
+    const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
+    const hexPriv = zoobc.Wallet.decryptPassphrase(passEncryptSaved, pin);
+
+    if (hexPriv) {
+
+      const privateKey = Buffer.from(hexPriv, 'hex');
+      const key = wif.encode(128, privateKey, true);
+      const bip = wif.decode(key);
+      const keyring = new ZooKeyring('');
+      const seed = keyring.generateBip32ExtendedKey('ed25519', bip);
+      this.accountService.setTempSeed(seed);
+
+      this.isUserLoggenIn = true;
+      this.loginType = LOGIN_TYPE_PKEY;
+      return this.isUserLoggenIn;
+    }
+    this.isUserLoggenIn = false;
     return this.isUserLoggenIn;
   }
 
+  async loginWithAddress(pin: string) {
+    this.tempKey = pin;
+
+    const passEncryptSaved = await this.strgSrv.get(STORAGE_ENC_PASSPHRASE_SEED);
+    const zbcAddress = zoobc.Wallet.decryptPassphrase(passEncryptSaved, pin);
+
+    if (zbcAddress) {
+      this.isUserLoggenIn = true;
+      this.loginType = LOGIN_TYPE_ADDRESS;
+      return this.isUserLoggenIn;
+    }
+
+    this.isUserLoggenIn = false;
+    return this.isUserLoggenIn;
+  }
+
+  // loginTp(account: Account, seed?: BIP32Interface): boolean {
+  //   if (!isZBCAddressValid(account.address.value)) { return false; }
+  //   this.accountService.switchAccount(account);
+
+  //   if (seed) { this.seedByPrivateKey = seed; }
+  //   this.isUserLoggenIn = true;
+  //   this.accWithPrivateKey = true;
+  //   return this.isUserLoggenIn;
+  // }
+
   async logout() {
+    this.loginType =  LOGIN_TYPE_PASSPHRASE;
     this.isUserLoggenIn = false;
     this.tempKey = null;
+    this.tempAccounts = [];
   }
 }

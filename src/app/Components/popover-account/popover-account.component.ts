@@ -43,6 +43,7 @@ import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { Account, AccountType } from 'src/app/Interfaces/account';
 import { AccountService } from 'src/app/Services/account.service';
+import { AuthService } from 'src/app/Services/auth-service';
 
 @Component({
   selector: 'app-popover-account',
@@ -56,13 +57,16 @@ export class PopoverAccountComponent implements OnInit {
   showBalance = 'yes';
   @Input() accountType: AccountType;
   isLoading = false;
+  loginType: number;
   constructor(
     public popoverCtrl: PopoverController,
     private router: Router,
-    private accountSrv: AccountService
+    private accountSrv: AccountService,
+    private authService: AuthService
   ) { }
 
   async ngOnInit() {
+    this.loginType = this.authService.loginType;
     this.isLoading = true;
     let accs: Account[];
 

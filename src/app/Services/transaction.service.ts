@@ -148,7 +148,6 @@ export class TransactionService {
 
     let total = 0;
     const lsEscrowPending = await zoobc.Escrows.getList(params);
-    console.log('== lsEscrowPending: ', lsEscrowPending);
 
     if (lsEscrowPending && lsEscrowPending.total > 0) {
       let txPendings = lsEscrowPending.escrowList;
@@ -166,7 +165,7 @@ export class TransactionService {
     }
 
     const lsMultisigPending = await zoobc.MultiSignature.getPendingList(mgParams);
-    console.log('== lsMultisigPending:', lsMultisigPending);
+
 
     if (lsMultisigPending && lsMultisigPending.total > 0) {
       let txPendings = lsMultisigPending.transactions;

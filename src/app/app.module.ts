@@ -89,6 +89,8 @@ import { ComponentsModule } from './Components/components.module';
 import { MyTasksPageModule } from './Pages/my-tasks/my-tasks.module';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { PkeyPinPageModule } from './Pages/wallet/private-key/pkey-pin/pkey-pin.module';
+import { AddressPinPageModule } from './Pages/wallet/zbc-address/address-pin/address-pin.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/language/locales/', '.json');
@@ -117,6 +119,8 @@ export function createTranslateLoader(http: HttpClient) {
     SetupPinGpPageModule,
     PinBackupPageModule,
     SetupPinPageModule,
+    AddressPinPageModule,
+    PkeyPinPageModule,
     EnterpinsendPageModule,
     ImportDraftPageModule,
     ImportAccountPageModule,

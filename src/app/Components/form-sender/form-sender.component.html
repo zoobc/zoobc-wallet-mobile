@@ -42,10 +42,14 @@ shall be included in all copies or substantial portions of the Software.
  
 <div *ngIf="!isLoading && account && account.address" class="sender-block" (click)="switchAccount($event)">
   <div class="account-name">{{ account.name }}</div>
-  <div class="account-address">
+  <div class="account-address" *ngIf="canSwitch == 'yes'">
     <span>{{ account.address.value }}</span>
     <ion-icon name="zbc-chevron-right" *ngIf="accountType=='normal'"></ion-icon>
   </div>
+  <div class="account-address"  *ngIf="canSwitch == 'no'">
+    <span>{{ account.address.value }}</span>
+  </div>
+
   <div class="account-balance" *ngIf="showBalance=='yes' && account.balance">
     <div class="info-amount-conversion">
       <div class="main-amount">

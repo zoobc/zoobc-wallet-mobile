@@ -50,8 +50,14 @@ shall be included in all copies or substantial portions of the Software.
 </ion-header>
 
 <ion-content class="ion-padding">
+  <ion-progress-bar *ngIf="isProcessing" type="indeterminate"></ion-progress-bar>
+  <ion-item lines="none" class="marginTop" *ngIf="isProcessing">
+    <ion-label class="ion-text-center">
+      <h3>Processing ...</h3>
+    </ion-label>
+  </ion-item>
 
-  <ion-grid>
+  <ion-grid *ngIf="!isProcessing">
     <ion-row>
       <ion-col size="12" style="margin-bottom: 10px;">
         <h4>

@@ -72,6 +72,7 @@ export class FormGetAddressComponent implements OnInit, OnDestroy, ControlValueA
   ) {}
 
   @Input() identity: string;
+  @Input() accounts = 'yes';
 
   private textContacts: string;
   private textAccounts: string;
@@ -178,23 +179,39 @@ export class FormGetAddressComponent implements OnInit, OnDestroy, ControlValueA
   }
 
   async showOption(ev: any) {
+    let accs = [
+      {
+        key: 'contact',
+        label: this.textContacts
+      },
+      {
+        key: 'my-account',
+        label: this.textAccounts
+      },
+      {
+        key: 'new-address',
+        label: this.textNewAddress
+      }
+    ];
+
+    if (this.accounts === 'no') {
+      accs = [
+        {
+          key: 'contact',
+          label: this.textContacts
+        },
+        {
+          key: 'new-address',
+          label: this.textNewAddress
+        }
+      ];
+
+    }
     const popover = await this.popoverCtrl.create({
+
       component: PopoverOptionComponent,
       componentProps: {
-        options: [
-          {
-            key: 'contact',
-            label: this.textContacts
-          },
-          {
-            key: 'my-account',
-            label: this.textAccounts
-          },
-          {
-            key: 'new-address',
-            label: this.textNewAddress
-          }
-        ]
+        options: accs
       },
       event: ev,
       translucent: true

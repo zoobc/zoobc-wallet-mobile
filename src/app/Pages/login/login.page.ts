@@ -55,6 +55,7 @@ export class LoginPage implements OnInit {
   private start = 0;
   public pin = '';
   public pin2 = [];
+  currentAccount: any;
 
   public isLoginValid = true;
   theme = DEFAULT_THEME;
@@ -115,8 +116,9 @@ export class LoginPage implements OnInit {
     if (!this.theme || this.theme === '' || this.theme === undefined) {
       this.theme = DEFAULT_THEME;
     }
-    const acc = await this.accountService.getCurrAccount();
-    if (acc === null) {
+    this.currentAccount = await this.accountService.getCurrAccount();
+
+    if (this.currentAccount === null) {
       this.router.navigate(['initial']);
       return;
     }
@@ -159,7 +161,25 @@ export class LoginPage implements OnInit {
 
     // const { pin } = e;
     this.isLoginValid = true;
-    const isUserLoggedIn = await this.authService.login(pin);
+    // const loginTp = this.authService.accWithPrivateKey;
+   
+    let isUserLoggedIn = false;
+    if (this.currentAccount.type === 'privateKey' ) {
+      console.log('=== this.currentAccount.privateKey: ', this.currentAccount.type);
+
+      // this.authService.accWithPrivateKey = true;
+      isUserLoggedIn = await this.authService.loginWithPK(pin);
+    } else if (this.currentAccount.type === 'address') {
+      console.log('=== this.currentAccount.address: ', this.currentAccount.type);
+
+      // this.authService.accWithAddress = true;
+      isUserLoggedIn = await this.authService.loginWithAddress(pin);
+    } else {
+      // this.authService.accWithPrivateKey = false;
+      // this.authService.accWithAddress = false;
+      isUserLoggedIn = await this.authService.login(pin);
+    }
+
     if (isUserLoggedIn) {
       this.navCtrl.navigateRoot('/tabs/home');
     } else {

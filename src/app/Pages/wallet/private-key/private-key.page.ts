@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth-service';
-import { ZooKeyring, getZBCAddress } from 'zbc-sdk';
-import * as wif from 'wif';
-import { Account } from 'src/app/Interfaces/account';
+import { AccountService } from 'src/app/Services/account.service';
+import { LoadingController, ModalController, NavController } from '@ionic/angular';
+import { PkeyPinPage } from './pkey-pin/pkey-pin.page';
 
 @Component({
   selector: 'app-private-key',
@@ -15,11 +14,16 @@ export class PrivateKeyPage implements OnInit {
 
   form: FormGroup;
   privKeyField = new FormControl('', Validators.required);
+  hexPriv: string;
+  plainPin: string;
+  isProcessing = false;
 
   constructor(
+    public loadingController: LoadingController,
     private authServ: AuthService,
-    private router: Router
-  ) {
+    private accServ: AccountService,
+    private modalController: ModalController,
+    private navCtrl: NavController  ) {
     this.form = new FormGroup({
       privateKey: this.privKeyField,
     });
@@ -27,26 +31,48 @@ export class PrivateKeyPage implements OnInit {
 
 
   ngOnInit(): void {
-
+    this.isProcessing = false;
   }
 
-  onLogin() {
+  async onLogin() {
     if (this.form.valid) {
-      const bip = wif.decode(this.privKeyField.value);
-      const keyring = new ZooKeyring('');
-      const seed = keyring.generateBip32ExtendedKey('ed25519', bip);
-      const address = getZBCAddress(seed.publicKey);
-
-      const account: Account = {
-        name: 'Imported Account',
-        address: { type: 0, value: address },
-        type: 'one time login',
-      };
-      if (this.authServ.loginWithoutPin(account, seed)) {
-        this.router.navigateByUrl('/tabs/home');
-      }
+      this.hexPriv = this.privKeyField.value;
+      this.accServ.setPlainPk(this.hexPriv);
+      this.isProcessing = true;
+      this.showPinDialog();
     } else {
+      this.isProcessing = false;
       this.privKeyField.markAsTouched();
+    }
+  }
+
+  async showPinDialog() {
+    const pinmodal = await this.modalController.create({
+      component: PkeyPinPage,
+      cssClass: 'modal-zbc',
+      componentProps: {
+      }
+    });
+
+    pinmodal.onDidDismiss().then(returnedData => {
+      if (returnedData && returnedData.data !== '-') {
+        this.plainPin = returnedData.data;
+        this.accServ.setPlainPin(this.plainPin);
+        this.createAccount();
+      } else {
+        this.isProcessing = false;
+      }
+    });
+    return await pinmodal.present();
+  }
+
+  async createAccount() {
+    await this.accServ.createAccountWithPK();
+    const loginStatus = this.authServ.loginWithPK(this.plainPin);
+    if (loginStatus) {
+      this.navCtrl.navigateRoot('/tabs/home');
+    } else {
+      this.isProcessing = false;
     }
   }
 

@@ -50,28 +50,35 @@ shall be included in all copies or substantial portions of the Software.
 </ion-header>
 
 <ion-content>
+  <ion-progress-bar *ngIf="isProcessing" type="indeterminate"></ion-progress-bar>
+  <ion-item lines="none" class="marginTop" *ngIf="isProcessing">
+    <ion-label class="ion-text-center">
+      <h3>Processing ...</h3>
+    </ion-label>
+  </ion-item>
+  <div  *ngIf="!isProcessing">
+    <form [formGroup]="form" (submit)="onLogin()">
+      <ion-item lines="none" class="marginTop">
+        <ion-label position="stacked">{{ 'private key' | translate }}</ion-label>
+        <ion-textarea class="sTxtArea" rows=4
+          placeholder="e.g. 9a2bb3555118faf5ca3cdb9f267b2a2cb08c24bd11ece757a2ebfb53198c66d5"
+          formControlName="privateKey"></ion-textarea>
+      </ion-item>
 
-  <form [formGroup]="form" (submit)="onLogin()">
-    <ion-item lines="none" class="marginTop">
-      <ion-label position="stacked">{{ 'private key' | translate }}</ion-label>
-      <ion-textarea class="sTxtArea" rows=4 placeholder="e.g. KwFtuCkKXYqiE6sWU7BEQsphD8dNFbnxhqg1vy2cSf33eihZUgqi"
-        formControlName="privateKey"></ion-textarea>
-    </ion-item>
+      <ion-item lines="none" *ngIf="privKeyField.touched && privKeyField.hasError('required')">
+        <ion-text color="danger">
+          {{ 'private key is required' | translate }}
+        </ion-text>
+      </ion-item>
 
-    <ion-item lines="none" *ngIf="privKeyField.touched && privKeyField.hasError('required')">
-      <ion-text color="danger">
-        {{ 'private key is required' | translate }}
-      </ion-text>
-    </ion-item>
-
-    <ion-item lines="none" class="marginTop">
-      <ion-button size="default" color="primary" type="submit">
-        {{ 'login' | translate }}
-      </ion-button>
-      <ion-button size="default" type="reset" fill="outline">
-        {{ 'reset' | translate}}
-      </ion-button>
-    </ion-item>
-  </form>
-
+      <ion-item lines="none" class="marginTop">
+        <ion-button size="default" color="primary" type="submit">
+          {{ 'login' | translate }}
+        </ion-button>
+        <ion-button size="default" type="reset" fill="outline">
+          {{ 'reset' | translate}}
+        </ion-button>
+      </ion-item>
+    </form>
+  </div>
 </ion-content>

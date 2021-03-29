@@ -63,10 +63,15 @@ shall be included in all copies or substantial portions of the Software.
     <ion-list class="form-list">
       <ion-item lines="none" class="form-item">
         <app-form-sender formControlName="sender" accountType="normal" ngDefaultControl></app-form-sender>
+        <!-- <app-form-sender formControlName="sender" *ngIf="loginTp" canSwitch="no" accountType="normal" ngDefaultControl></app-form-sender> -->
+
       </ion-item>
       <ion-item lines="none" class="form-item">
         <ion-label position="stacked">{{ "send to" | translate }}</ion-label>
+ 
         <app-form-get-address formControlName="recipient" identity="recipient" ngDefaultControl></app-form-get-address>
+        <!-- <app-form-get-address formControlName="recipient" *ngIf="loginTp" accounts="no" identity="recipient" ngDefaultControl></app-form-get-address> -->
+ 
         <ng-container *ngIf="(submitted || recipient.dirty || recipient.touched) && recipient.invalid">
           <ion-text class="text-error" *ngIf="recipient.errors.addressRequired">
             {{ "address cannot be empty" | translate}}

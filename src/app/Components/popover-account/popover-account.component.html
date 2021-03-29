@@ -44,7 +44,8 @@ shall be included in all copies or substantial portions of the Software.
   <ion-progress-bar type="indeterminate"></ion-progress-bar>
 </div>
 <div class="actions">
-  <ion-button *ngIf="(predefList.length < 1)" fill="clear" (click)="goToAccount()">{{ "manage accounts" | translate }}</ion-button>
+  <ion-button *ngIf="loginType == 0 && (predefList.length < 1)" fill="clear" (click)="goToAccount()">{{ "manage accounts" | translate }}</ion-button>
+  <ion-button *ngIf="loginType != 0 && (predefList.length < 1)" fill="clear"></ion-button>
   <ion-button fill="clear" (click)="cancel()">{{ "cancel" | translate }}</ion-button>
 </div>
 <ion-list class="list-account" lines="none">
