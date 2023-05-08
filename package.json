@@ -92,7 +92,7 @@
     "ngx-build-plus": "^7.8.3",
     "ngx-qrcode2": "0.0.9",
     "node-fetch": "^2.6.7",
-    "node-sass": "^4.12.0",
+    "node-sass": "^8.0.0",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "qrcode-generator": "^1.4.3",
     "rxjs": "^6.5.2",
@@ -107,7 +107,7 @@
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.12.3",
-    "@angular-devkit/build-angular": "~0.12.3",
+    "@angular-devkit/build-angular": "~16.0.0",
     "@angular-devkit/core": "~7.3.8",
     "@angular-devkit/schematics": "~7.3.8",
     "@angular/cli": "~16.0.0",
